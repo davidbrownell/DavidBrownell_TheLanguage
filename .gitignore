@@ -22,3 +22,5 @@ Deactivate.*.sh
 coverage.xml
 
 .vscode/*
+
+.pytest_cache
