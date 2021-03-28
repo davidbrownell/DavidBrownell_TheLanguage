@@ -325,8 +325,8 @@ class TestNormalize:
             )
 
             assert ex.Message == "The closing token for this multiline string was not found."
-            assert ex.Line == 4
-            assert ex.Column == 1
+            assert ex.Line == 2
+            assert ex.Column == 5
 
         # ----------------------------------------------------------------------
         def test_InvalidOpeningToken(self):
