@@ -147,14 +147,24 @@ def Normalize(
             comment_token_offset = None
             whitespace_length = 0
 
-        elif Utils.IsTokenMatch(content, len_content, offset, Tokens.COMMENT_TOKEN):
+        elif Utils.IsTokenMatch(
+            content,
+            Tokens.COMMENT_TOKEN,
+            len_content=len_content,
+            offset=offset,
+        ):
             if comment_token_offset is None:
                 comment_token_offset = offset
 
             offset += len(Tokens.COMMENT_TOKEN)
             continue
 
-        elif Utils.IsTokenMatch(content, len_content, offset, Tokens.MULTILINE_STRING_TOKEN):
+        elif Utils.IsTokenMatch(
+            content,
+            Tokens.MULTILINE_STRING_TOKEN,
+            len_content=len_content,
+            offset=offset,
+        ):
             if (
                 offset + len(Tokens.MULTILINE_STRING_TOKEN) >= len_content
                 or content[offset + len(Tokens.MULTILINE_STRING_TOKEN)] != "\n"
