@@ -98,6 +98,7 @@ def Normalize(
 
     offset = 0
     len_content = len(content)
+    len_token = len('"""')
 
     comment_token_offset = None
 
@@ -109,13 +110,13 @@ def Normalize(
             and content[offset + 2] == '"'
         ):
             if (
-                offset + 3 == len_content
-                or content[offset + 3] != "\n"
+                offset + len_token == len_content
+                or content[offset + len_token] != "\n"
             ):
                 raise Errors.MissingMultilineTokenNewlineSuffixError(
                     source_name,
                     len(lines) + len(string_lines),
-                    offset - line_start_offset + 1 + 3,
+                    offset - line_start_offset + len_token + 1,
                 )
 
             if InMultilineString():
@@ -131,7 +132,7 @@ def Normalize(
                 assert not string_content[-1]
 
                 string_content_lines = len(string_content) - 1
-                line_start_offset = offset + 3
+                line_start_offset = offset + len_token
 
                 # Add the new string and empty lines for the content that is no longer valid
                 string_content = "\n".join(string_content[:-1]).replace('"', '\\"')
@@ -147,7 +148,7 @@ def Normalize(
                 active_lines_list = string_lines
 
             # Move beyond the triple quote
-            offset += 3
+            offset += len_token
 
         if content[offset] == "\n":
             line_end_offset = offset
@@ -174,8 +175,9 @@ def Normalize(
     if InMultilineString():
         raise Errors.MissingMultilineStringTerminatorError(
             source_name,
-            len(lines) + len(string_lines) + 1,
-            1,
+            len(lines) + 1,
+            # The column will be the length of the first string line minus the length of the token
+            string_lines[0][1] - string_lines[0][0] - len_token + 1,
         )
 
     assert offset == line_start_offset, (offset, line_start_offset)
