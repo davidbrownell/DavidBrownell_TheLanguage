@@ -38,7 +38,10 @@ with CallOnExit(lambda: sys.path.pop(0)):
 class TestNormalize:
     # ----------------------------------------------------------------------
     def test_SingleLine(self):
-        assert Normalize(None, "single line") == ["single line"]
+        assert Normalize(None, "single line") == (
+            ["single line"],
+            [Indentation(0, 0)],
+        )
 
     # ----------------------------------------------------------------------
     def test_MultipleLines(self):
@@ -51,11 +54,96 @@ class TestNormalize:
                 trailing
                 """,
             ).rstrip(),
-        ) == [
-            "first line",
-            "second line",
-            "trailing",
-        ]
+        ) == (
+            [
+                "first line",
+                "second line",
+                "trailing",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+            ],
+        )
+
+    # ----------------------------------------------------------------------
+    def test_Indentation(self):
+        # With spaces
+        assert Normalize(
+            None,
+            textwrap.dedent(
+                """\
+                1
+                  2
+                    3
+                      4
+                    5
+                  6
+                    7
+                8
+                """,
+            ),
+        ) == (
+            [
+                "1",
+                "  2",
+                "    3",
+                "      4",
+                "    5",
+                "  6",
+                "    7",
+                "8",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(2, 2),
+                Indentation(4, 4),
+                Indentation(6, 6),
+                Indentation(4, 4),
+                Indentation(2, 2),
+                Indentation(4, 4),
+                Indentation(0, 0),
+            ],
+        )
+
+        # With tabs
+        assert Normalize(
+            None,
+            textwrap.dedent(
+                """\
+                1
+                \t2
+                \t\t3
+                \t\t\t4
+                \t\t5
+                \t6
+                \t\t7
+                8
+                """,
+            ),
+        ) == (
+            [
+                "1",
+                "\t2",
+                "\t\t3",
+                "\t\t\t4",
+                "\t\t5",
+                "\t6",
+                "\t\t7",
+                "8",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(2, 1),
+                Indentation(4, 2),
+                Indentation(6, 3),
+                Indentation(4, 2),
+                Indentation(2, 1),
+                Indentation(4, 2),
+                Indentation(0, 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     def test_EmptyLines(self):
@@ -69,12 +157,20 @@ class TestNormalize:
                 last line
                 """,
             ),
-        ) == [
-            "first line",
-            "",
-            "third line",
-            "last line",
-        ]
+        ) == (
+            [
+                "first line",
+                "",
+                "third line",
+                "last line",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     def test_BlankLines(self):
@@ -82,11 +178,18 @@ class TestNormalize:
             None,
             # Note: not using textwrap.dedent here as my helpful editor keeps removing the empty whitespace in the blank line
             "first line\n    \nlast line\n",
-        ) == [
-            "first line",
-            "",
-            "last line",
-        ]
+        ) == (
+            [
+                "first line",
+                "",
+                "last line",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(4, 4),
+                Indentation(0, 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     def test_CommentExtraction(self):
@@ -103,28 +206,46 @@ class TestNormalize:
                 5
                 """,
             ),
-        ) == [
-            "0",
-            "1",
-            "2",
-            "3",
-            "    4",
-            "",
-            "5",
-        ]
+        ) == (
+            [
+                "0",
+                "1",
+                "2",
+                "3",
+                "    4",
+                "",
+                "5",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(4, 4),
+                Indentation(0, 0),
+                Indentation(0, 0),
+            ],
+        )
 
         assert Normalize(
             None,
             # Note: not using textwrap.dedent here as my helpful editor keeps removing the empty whitespace in the blank line
             "1\n    # a comment\n2",
-        ) == [
-            "1",
-            "",
-            "2",
-        ]
+        ) == (
+            [
+                "1",
+                "",
+                "2",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(4, 4),
+                Indentation(0, 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
-    def test_MultilineContent(self):
+    def test_MultilineStrings(self):
         # Single line
         assert Normalize(
             None,
@@ -137,13 +258,22 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            "Before",
-            '"Single line"',
-            "",
-            "",
-            "After",
-        ]
+        ) == (
+            [
+                "Before",
+                '"Single line"',
+                "",
+                "",
+                "After",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(0, 0),
+            ],
+        )
 
         # Multi line
         assert Normalize(
@@ -159,15 +289,26 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            "Before",
-            '"Line 1\n  Line 2\n    Line 3"',
-            "",
-            "",
-            "",
-            "",
-            "After",
-        ]
+        ) == (
+            [
+                "Before",
+                '"Line 1\n  Line 2\n    Line 3"',
+                "",
+                "",
+                "",
+                "",
+                "After",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(0, 0),
+            ],
+        )
 
         # Content with Empty lines
         assert Normalize(
@@ -183,15 +324,26 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            "Before",
-            '"Line 1\n\n    Line 3"',
-            "",
-            "",
-            "",
-            "",
-            "After",
-        ]
+        ) == (
+            [
+                "Before",
+                '"Line 1\n\n    Line 3"',
+                "",
+                "",
+                "",
+                "",
+                "After",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(0, 0),
+            ],
+        )
 
         # first line has whitespace
         assert Normalize(
@@ -207,30 +359,53 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            "Before",
-            '"  Line 1\n  Line 2\n    Line 3"',
-            "",
-            "",
-            "",
-            "",
-            "After",
-        ]
+        ) == (
+            [
+                "Before",
+                '"  Line 1\n  Line 2\n    Line 3"',
+                "",
+                "",
+                "",
+                "",
+                "After",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(0, 0),
+            ],
+        )
 
         # last line has whitespace
         assert Normalize(
             None,
             'Before\n"""\nLine 1\n  Line 2\n  \nLine 3\n"""\nAfter',
-        ) == [
-            "Before",
-            '"Line 1\n  Line 2\n  \nLine 3"',
-            "",
-            "",
-            "",
-            "",
-            "",
-            "After",
-        ]
+        ) == (
+            [
+                "Before",
+                '"Line 1\n  Line 2\n  \nLine 3"',
+                "",
+                "",
+                "",
+                "",
+                "",
+                "After",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+            ],
+        )
 
         # Trailing line
         assert Normalize(
@@ -248,17 +423,30 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            "Before",
-            '"Line 1\n  Line 2\n    Line 3\n\n"',
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "After",
-        ]
+        ) == (
+            [
+                "Before",
+                '"Line 1\n  Line 2\n    Line 3\n\n"',
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "After",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(0, 0),
+            ],
+        )
 
         # No content
         assert Normalize(
@@ -271,12 +459,20 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            "Before",
-            '""',
-            "",
-            "After",
-        ]
+        ) == (
+            [
+                "Before",
+                '""',
+                "",
+                "After",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(4, 0),
+                Indentation(4, 0),
+                Indentation(0, 0),
+            ],
+        )
 
         # Escaped quotes
         assert Normalize(
@@ -290,13 +486,22 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            "Before",
-            '"The \\"content\\"!"',
-            "",
-            "",
-            "After",
-        ]
+        ) == (
+            [
+                "Before",
+                '"The \\"content\\"!"',
+                "",
+                "",
+                "After",
+            ],
+            [
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+                Indentation(0, 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     class TestMultilineCommentErrors:
@@ -453,4 +658,4 @@ class TestNormalize:
 
             assert ex.Message == expected_message
             assert ex.Line == 3
-            assert ex.Column == 1
+            assert ex.Column == 2
