@@ -16,11 +16,9 @@
 """Contains types that facilitate the tokenization process"""
 
 import os
-import string
 
-from typing import List
-
-import six
+from collections import namedtuple
+from typing import List, Optional
 
 import CommonEnvironment
 
@@ -30,12 +28,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 import Errors
+import Tokens
+import Utils
+
+# ----------------------------------------------------------------------
+NormalizedLine                              = namedtuple("NormalizedLine", ["Value", "Indentation"])
 
 # ----------------------------------------------------------------------
 def Normalize(
     source_name: str,
     content: str,
-) -> List[str]:
+) -> List[NormalizedLine]:
     """\
     Removes comments and converts multiline strings into single line-strings.
 
@@ -48,142 +51,172 @@ def Normalize(
     if content[-1] != "\n":
         content += "\n"
 
-    # When we encounter a newline, we will append to one of these lists
-    lines = []
-    string_lines = []
-    active_lines_list = lines
+    # ----------------------------------------------------------------------
+    StringLineInfo                          = namedtuple("StringLineInfo", ["StartOffset", "EndOffset", "Indentation", "NumIndentationChars"])
 
     # ----------------------------------------------------------------------
-    def InMultilineString() -> bool:
-        return active_lines_list is string_lines
+
+    len_content = len(content)
+    offset = 0
+
+    lines: List[NormalizedLine] = []
+
+    string_line_infos: List[StringLineInfo] = []
+    process_string_lines = False
 
     # ----------------------------------------------------------------------
-    def ExtractStringContent(line_index: int) -> str:
-        assert line_index > 0 and line_index < len(string_lines)
+    def GenerateLine():
+        nonlocal offset
+        nonlocal string_line_infos
+        nonlocal process_string_lines
 
-        reference_line = string_lines[0]
-        this_line = string_lines[line_index]
+        line_start_offset = offset
 
-        index = 0
+        indentation_value: Optional[int] = None
+        indentation_value_calc = 0
+        indentation_chars = 0
 
-        if (
-            this_line[0] != this_line[1]
-            or content[this_line[0]] != "\n"
-        ):
-            while (
-                content[reference_line[0] + index] != '"'
-                and index != reference_line[1]
-                and index != this_line[1]
-                and content[this_line[0] + index] == content[reference_line[0] + index]
-            ):
-                index += 1
+        comment_token_offset = None
 
-            if content[reference_line[0] + index] != '"':
-                raise Errors.InvalidMultilineStringPrefixError(
-                    source_name,
-                    len(lines) + line_index + 1,
-                    index + 1,
+        while offset < len_content:
+            char = content[offset]
+
+            if indentation_value is None:
+                if char == " ":
+                    indentation_value_calc += 1
+                elif char == "\t":
+                    indentation_value_calc += 2
+                else:
+                    assert char == "\n" or not char.isspace(), char
+
+                    indentation_value = indentation_value_calc
+                    indentation_chars = offset - line_start_offset
+
+            if char == "\n":
+                line_end_offset = offset
+                offset += 1
+
+                # If we aren't looking at string content...
+                if not string_line_infos and not process_string_lines:
+                    # Capture the extent of the line without trailing comments
+                    if comment_token_offset is not None:
+                        line_end_offset = comment_token_offset
+
+                    # Remove trailing whitespace
+                    while line_end_offset > line_start_offset and content[line_end_offset - 1].isspace():
+                        line_end_offset -= 1
+
+                    return [
+                        NormalizedLine(content[line_start_offset + indentation_chars : line_end_offset], indentation_value),
+                    ]
+
+                # If here, we are looking at string content...
+                string_line_infos.append(
+                    StringLineInfo(
+                        line_start_offset,
+                        line_end_offset,
+                        indentation_value,
+                        indentation_chars,
+                    ),
                 )
 
-        assert index <= reference_line[1]
+                # Nothing to do if we are still processing the string lines
+                if process_string_lines:
+                    return []
 
-        return content[
-            this_line[0] + index
-            : this_line[1]
-        ]
+                assert len(string_line_infos) >= 2, string_line_infos
+
+                # The string delimiters must have matching indentation levels
+                if string_line_infos[0].Indentation != string_line_infos[-1].Indentation:
+                    raise Errors.InvalidMultilineStringPrefixError(
+                        source_name,
+                        len(lines) + len(string_line_infos),
+                        string_line_infos[-1].NumIndentationChars + 1,
+                    )
+
+                # All string content must be indented at least as much as the delimiters
+                ref_string_info = string_line_infos[0]
+                string_content = []
+
+                for delta in range(1, len(string_line_infos) - 1):
+                    this_string_info = string_line_infos[delta]
+
+                    if (
+                        this_string_info.EndOffset != this_string_info.StartOffset
+                        and this_string_info.Indentation < ref_string_info.Indentation
+                    ):
+                        raise Errors.InvalidMultilineStringPrefixError(
+                            source_name,
+                            len(lines) + delta + 1,
+                            this_string_info.NumIndentationChars + 1,
+                        )
+
+                    string_content.append(
+                        content[
+                            this_string_info.StartOffset + ref_string_info.NumIndentationChars
+                            : this_string_info.EndOffset
+                        ],
+                    )
+
+                indentation = string_line_infos[0].Indentation
+                num_empty_lines = len(string_line_infos) - 1
+
+                string_line_infos = []
+
+                return [
+                    NormalizedLine('"{}"'.format("\n".join(string_content).replace('"', '\\"')), indentation),
+                ] + ([NormalizedLine("", indentation)] * num_empty_lines)
+
+            elif Utils.IsTokenMatch(
+                content,
+                Tokens.COMMENT_TOKEN,                   # <Module 'Tokens' has no '___' member> pylint: disable=E1101
+                offset=offset,
+                len_content=len_content,
+                len_token=Tokens.COMMENT_TOKEN_length,  # <Module 'Tokens' has no '___' member> pylint: disable=E1101
+            )[0]:
+                if comment_token_offset is None:
+                    comment_token_offset = offset
+
+                offset += Tokens.COMMENT_TOKEN_length   # <Module 'Tokens' has no '___' member> pylint: disable=E1101
+                continue
+
+            elif Utils.IsTokenMatch(
+                content,
+                Tokens.MULTILINE_STRING_TOKEN,                              # <Module 'Tokens' has no '___' member> pylint: disable=E1101
+                offset=offset,
+                len_content=len_content,
+                len_token=Tokens.MULTILINE_STRING_TOKEN_length,             # <Module 'Tokens' has no '___' member> pylint: disable=E1101
+            )[0]:
+                if (
+                    offset + Tokens.MULTILINE_STRING_TOKEN_length >= len_content        # <Module 'Tokens' has no '___' member> pylint: disable=E1101
+                    or content[offset + Tokens.MULTILINE_STRING_TOKEN_length] != "\n"   # <Module 'Tokens' has no '___' member> pylint: disable=E1101
+                ):
+                    raise Errors.MissingMultilineTokenNewlineSuffixError(
+                        source_name,
+                        len(lines) + len(string_line_infos or []),
+                        offset - line_start_offset + Tokens.MULTILINE_STRING_TOKEN_length + 1,  # <Module 'Tokens' has no '___' member> pylint: disable=E1101
+                    )
+
+                process_string_lines = not process_string_lines
+
+                offset += Tokens.MULTILINE_STRING_TOKEN_length              # <Module 'Tokens' has no '___' member> pylint: disable=E1101
+                continue
+
+            offset += 1
+
+        return []
 
     # ----------------------------------------------------------------------
-
-    line_start_offset = 0
-
-    offset = 0
-    len_content = len(content)
-    len_token = len('"""')
-
-    comment_token_offset = None
 
     while offset < len_content:
-        if (
-            offset + 2 < len_content
-            and content[offset] == '"'
-            and content[offset + 1] == '"'
-            and content[offset + 2] == '"'
-        ):
-            if (
-                offset + len_token == len_content
-                or content[offset + len_token] != "\n"
-            ):
-                raise Errors.MissingMultilineTokenNewlineSuffixError(
-                    source_name,
-                    len(lines) + len(string_lines),
-                    offset - line_start_offset + len_token + 1,
-                )
+        lines += GenerateLine()
 
-            if InMultilineString():
-                # We are looking at a closing token
-                string_lines.append((line_start_offset, offset))
-
-                # Get the string lines without the prefix
-                string_content = [
-                    ExtractStringContent(index) for index in range(1, len(string_lines))
-                ]
-
-                assert string_content
-                assert not string_content[-1]
-
-                string_content_lines = len(string_content) - 1
-                line_start_offset = offset + len_token
-
-                # Add the new string and empty lines for the content that is no longer valid
-                string_content = "\n".join(string_content[:-1]).replace('"', '\\"')
-
-                lines.append('"{}"'.format(string_content))
-                lines += [""] * string_content_lines
-
-                active_lines_list = lines
-                string_lines = []
-
-            else:
-                # We are looking at an opening token
-                active_lines_list = string_lines
-
-            # Move beyond the triple quote
-            offset += len_token
-
-        if content[offset] == "\n":
-            line_end_offset = offset
-
-            if not InMultilineString():
-                # Capture the extent of the line without trailing comments
-                if comment_token_offset is not None:
-                    line_end_offset = comment_token_offset
-
-                # Remove trailing whitespace
-                while line_end_offset > line_start_offset and content[line_end_offset - 1] in string.whitespace:
-                    line_end_offset -= 1
-
-            active_lines_list.append((line_start_offset, line_end_offset))
-
-            line_start_offset = offset + 1
-            comment_token_offset = None
-
-        elif content[offset] == "#" and comment_token_offset is None:
-            comment_token_offset = offset
-
-        offset += 1
-
-    if InMultilineString():
+    if string_line_infos:
         raise Errors.MissingMultilineStringTerminatorError(
             source_name,
             len(lines) + 1,
             # The column will be the length of the first string line minus the length of the token
-            string_lines[0][1] - string_lines[0][0] - len_token + 1,
+            string_line_infos[0].EndOffset - string_line_infos[0].StartOffset - Tokens.MULTILINE_STRING_TOKEN_length + 1,   # <Module 'Tokens' has no '___' member> pylint: disable=E1101
         )
 
-    assert offset == line_start_offset, (offset, line_start_offset)
-
-    # Convert the lines to strings
-    return [
-        line if isinstance(line, six.string_types) else content[line[0]:line[1]]
-        for line in lines
-    ]
+    return lines
