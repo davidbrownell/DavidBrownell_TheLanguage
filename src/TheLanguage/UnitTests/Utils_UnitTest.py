@@ -18,6 +18,8 @@
 import os
 import sys
 
+import pytest
+
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
 
@@ -34,28 +36,42 @@ with CallOnExit(lambda: sys.path.pop(0)):
 class TestIsTokenMatch:
     # ----------------------------------------------------------------------
     def test_Start(self):
-        assert IsTokenMatch("These are tokens", "These")
-        assert IsTokenMatch("These are tokens", "these") == False
+        assert IsTokenMatch("These are tokens", "These") == (True, 5)
+        assert IsTokenMatch("These are tokens", "these") == (False, 0)
+
         assert IsTokenMatch(
             "These are tokens",
             "These",
             offset=1,
-        ) == False
+        ) == (False, 1)
 
     # ----------------------------------------------------------------------
     def test_Middle(self):
-        assert IsTokenMatch("These are tokens", "are") == False
+        assert IsTokenMatch("These are tokens", "are") == (False, 0)
+
         assert IsTokenMatch(
             "These are tokens",
             "are",
             offset=6,
-        )
+        ) == (True, 9)
+
         assert IsTokenMatch(
             "These are tokens",
             "These",
             offset=7,
-        ) == False
+        ) == (False, 7)
 
     # ----------------------------------------------------------------------
     def test_TokenTooLong(self):
-        assert IsTokenMatch("short tokens", "a_very_long_token_greater_than_the_length_of_the_string") == False
+        assert IsTokenMatch("short tokens", "a_very_long_token_greater_than_the_length_of_the_string") == (False, 0)
+
+    # ----------------------------------------------------------------------
+    def test_InvalidArgument(self):
+        with pytest.raises(Exception) as ex:
+            IsTokenMatch(
+                "short tokens",
+                "short",
+                offset=99999,
+            )
+
+        assert str(ex.value) == "Invalid argument 'offset'"

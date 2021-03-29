@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional
+from typing import Optional, Tuple
 
 import CommonEnvironment
 
@@ -30,21 +30,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 def IsTokenMatch(
     content: str,
     token: str,
-    len_content: Optional[int] = None,
     offset: Optional[int] = None,
-) -> bool:
-    """Returns True if the token matches the content at the current offset"""
+    len_content: Optional[int] = None,
+    len_token: Optional[int] = None,
+) -> Tuple[bool, int]:
+    """Returns True and the new offset accounting for the number of characters consumed if the token matches the content"""
 
-    len_content = len_content or len(content)
     offset = offset or 0
+    len_content = len_content = len(content)
+    len_token = len_token or len(token)
 
-    len_token = len(token)
+    if offset >= len_content:
+        raise Exception("Invalid argument 'offset'")
 
     if offset + len_token >= len_content:
-        return False
+        return False, offset
 
-    for delta in range(len_token):
-        if content[offset + delta] != token[delta]:
-            return False
+    for index in range(len_token):
+        if content[offset + index] != token[index]:
+            return False, offset
 
-    return True
+    return True, offset + len_token
