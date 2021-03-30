@@ -18,7 +18,7 @@
 import os
 
 from collections import namedtuple
-from typing import List, Optional
+from typing import List, Optional, Tuple, Union
 
 import CommonEnvironment
 
@@ -32,7 +32,34 @@ import Tokens
 import Utils
 
 # ----------------------------------------------------------------------
-NormalizedLine                              = namedtuple("NormalizedLine", ["Value", "Indentation"])
+class NormalizedLine(object):
+    """\
+    Information about a line that has been modified.
+
+    The content is either a starting and ending offset into the original content or a copy of
+    modified content.
+    """
+
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        value: Union[
+            Tuple[int, int],                # Tuple if start and end offset if the line has not been modified
+            str,                            # Line content when the original line required modification
+        ],
+        indentation: int,                   # Indentation Level (note that this isn't necessarily the number of indentation characters)
+    ):
+        self.Value                          = value
+        self.Indentation                    = indentation
+
+    # ----------------------------------------------------------------------
+    def __repr__(self):
+        return CommonEnvironment.ObjectReprImpl(self)
+
+    # ----------------------------------------------------------------------
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
 
 # ----------------------------------------------------------------------
 def Normalize(
@@ -106,8 +133,10 @@ def Normalize(
                     while line_end_offset > line_start_offset and content[line_end_offset - 1].isspace():
                         line_end_offset -= 1
 
+                    assert indentation_value is not None
+
                     return [
-                        NormalizedLine(content[line_start_offset + indentation_chars : line_end_offset], indentation_value),
+                        NormalizedLine((line_start_offset + indentation_chars, line_end_offset), indentation_value),
                     ]
 
                 # If here, we are looking at string content...
@@ -124,6 +153,7 @@ def Normalize(
                 if process_string_lines:
                     return []
 
+                # We should have at least a starting and ending token
                 assert len(string_line_infos) >= 2, string_line_infos
 
                 # The string delimiters must have matching indentation levels
@@ -161,8 +191,10 @@ def Normalize(
                 indentation = string_line_infos[0].Indentation
                 num_empty_lines = len(string_line_infos) - 1
 
+                # Reset the state
                 string_line_infos = []
 
+                # Create the new content
                 return [
                     NormalizedLine('"{}"'.format("\n".join(string_content).replace('"', '\\"')), indentation),
                 ] + ([NormalizedLine("", indentation)] * num_empty_lines)

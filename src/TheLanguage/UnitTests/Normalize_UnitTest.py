@@ -19,6 +19,8 @@ import os
 import sys
 import textwrap
 
+from typing import List, Tuple
+
 import pytest
 
 import CommonEnvironment
@@ -37,31 +39,46 @@ with CallOnExit(lambda: sys.path.pop(0)):
 # ----------------------------------------------------------------------
 class TestNormalize:
     # ----------------------------------------------------------------------
+    @staticmethod
+    def Test(
+        content: str,
+        expected_items: List[Tuple[str, int]],
+    ):
+        results = Normalize("source", content)
+
+        for result, expected in zip(results, expected_items):
+            if isinstance(result.Value, tuple):
+                assert content[result.Value[0]:result.Value[1]] == expected[0]
+
+            assert result.Indentation == expected[1]
+
+        assert len(results) == len(expected_items)
+
+    # ----------------------------------------------------------------------
     def test_SingleLine(self):
-        assert Normalize(None, "single line") == [NormalizedLine("single line", 0)]
+        self.Test("single line", [("single line", 0)])
 
     # ----------------------------------------------------------------------
     def test_MultipleLines(self):
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 """\
                 first line
                 second line
                 trailing
                 """,
-            ).rstrip(),
-        ) == [
-            NormalizedLine("first line", 0),
-            NormalizedLine("second line", 0),
-            NormalizedLine("trailing", 0),
-        ]
+            ),
+            [
+                ("first line", 0),
+                ("second line", 0),
+                ("trailing", 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     def test_Indentation(self):
         # With spaces
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 """\
                 1
@@ -74,20 +91,20 @@ class TestNormalize:
                 8
                 """,
             ),
-        ) == [
-            NormalizedLine("1", 0),
-            NormalizedLine("2", 2),
-            NormalizedLine("3", 4),
-            NormalizedLine("4", 6),
-            NormalizedLine("5", 4),
-            NormalizedLine("6", 2),
-            NormalizedLine("7", 4),
-            NormalizedLine("8", 0),
-        ]
+            [
+                ("1", 0),
+                ("2", 2),
+                ("3", 4),
+                ("4", 6),
+                ("5", 4),
+                ("6", 2),
+                ("7", 4),
+                ("8", 0),
+            ],
+        )
 
         # With tabs
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 """\
                 1
@@ -100,21 +117,21 @@ class TestNormalize:
                 8
                 """,
             ),
-        ) == [
-            NormalizedLine("1", 0),
-            NormalizedLine("2", 2),
-            NormalizedLine("3", 4),
-            NormalizedLine("4", 6),
-            NormalizedLine("5", 4),
-            NormalizedLine("6", 2),
-            NormalizedLine("7", 4),
-            NormalizedLine("8", 0),
-        ]
+            [
+                ("1", 0),
+                ("2", 2),
+                ("3", 4),
+                ("4", 6),
+                ("5", 4),
+                ("6", 2),
+                ("7", 4),
+                ("8", 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     def test_EmptyLines(self):
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 """\
                 first line
@@ -123,29 +140,29 @@ class TestNormalize:
                 last line
                 """,
             ),
-        ) == [
-            NormalizedLine("first line", 0),
-            NormalizedLine("", 0),
-            NormalizedLine("third line", 0),
-            NormalizedLine("last line", 0),
-        ]
+            [
+                ("first line", 0),
+                ("", 0),
+                ("third line", 0),
+                ("last line", 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     def test_BlankLines(self):
-        assert Normalize(
-            None,
+        self.Test(
             # Note: not using textwrap.dedent here as my helpful editor keeps removing the empty whitespace in the blank line
             "first line\n    \nlast line\n",
-        ) == [
-            NormalizedLine("first line", 0),
-            NormalizedLine("", 4),
-            NormalizedLine("last line", 0),
-        ]
+            [
+                ("first line", 0),
+                ("", 4),
+                ("last line", 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     def test_CommentExtraction(self):
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 """\
                 0 # the comment
@@ -157,31 +174,31 @@ class TestNormalize:
                 5
                 """,
             ),
-        ) == [
-            NormalizedLine("0", 0),
-            NormalizedLine("1", 0),
-            NormalizedLine("2", 0),
-            NormalizedLine("3", 0),
-            NormalizedLine("4", 4),
-            NormalizedLine("", 0),
-            NormalizedLine("5", 0),
-        ]
+            [
+                ("0", 0),
+                ("1", 0),
+                ("2", 0),
+                ("3", 0),
+                ("4", 4),
+                ("", 0),
+                ("5", 0),
+            ],
+        )
 
-        assert Normalize(
-            None,
+        self.Test(
             # Note: not using textwrap.dedent here as my helpful editor keeps removing the empty whitespace in the blank line
             "1\n    # a comment\n2",
-        ) == [
-            NormalizedLine("1", 0),
-            NormalizedLine("", 4),
-            NormalizedLine("2", 0),
-        ]
+            [
+                ("1", 0),
+                ("", 4),
+                ("2", 0),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     def test_MultilineStrings(self):
         # Single line
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 '''\
                 Before
@@ -191,17 +208,17 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            NormalizedLine("Before", 0),
-            NormalizedLine('"Single line"', 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("After", 0),
-        ]
+            [
+                ("Before", 0),
+                ('"Single line"', 4),
+                ("", 4),
+                ("", 4),
+                ("After", 0),
+            ],
+        )
 
         # Multi line
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 '''\
                 Before
@@ -214,20 +231,20 @@ class TestNormalize:
                 Final
                 ''',
             ),
-        ) == [
-            NormalizedLine("Before", 0),
-            NormalizedLine('"Line 1\n  Line 2\n    Line 3"', 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("After", 4),
-            NormalizedLine("Final", 0),
-        ]
+            [
+                ("Before", 0),
+                ('"Line 1\n  Line 2\n    Line 3"', 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("After", 4),
+                ("Final", 0),
+            ],
+        )
 
         # Content with Empty lines
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 '''\
                 Before
@@ -239,19 +256,19 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            NormalizedLine("Before", 0),
-            NormalizedLine('"Line 1\n\n    Line 3"', 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("After", 0),
-        ]
+            [
+                ("Before", 0),
+                ('"Line 1\n\n    Line 3"', 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("After", 0),
+            ],
+        )
 
         # first line has whitespace
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 '''\
                 Before
@@ -263,34 +280,34 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            NormalizedLine("Before", 0),
-            NormalizedLine('"  Line 1\n  Line 2\n    Line 3"', 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("After", 0),
-        ]
+            [
+                ("Before", 0),
+                ('"  Line 1\n  Line 2\n    Line 3"', 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("After", 0),
+            ],
+        )
 
         # last line has whitespace
-        assert Normalize(
-            None,
+        self.Test(
             'Before\n"""\nLine 1\n  Line 2\n  \nLine 3\n"""\nAfter',
-        ) == [
-            NormalizedLine("Before", 0),
-            NormalizedLine('"Line 1\n  Line 2\n  \nLine 3"', 0),
-            NormalizedLine("", 0),
-            NormalizedLine("", 0),
-            NormalizedLine("", 0),
-            NormalizedLine("", 0),
-            NormalizedLine("", 0),
-            NormalizedLine("After", 0),
-        ]
+            [
+                ("Before", 0),
+                ('"Line 1\n  Line 2\n  \nLine 3"', 0),
+                ("", 0),
+                ("", 0),
+                ("", 0),
+                ("", 0),
+                ("", 0),
+                ("After", 0),
+            ],
+        )
 
         # Trailing line
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 '''\
                 Before
@@ -304,21 +321,21 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            NormalizedLine("Before", 0),
-            NormalizedLine('"Line 1\n  Line 2\n    Line 3\n\n"', 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("", 4),
-            NormalizedLine("After", 0),
-        ]
+            [
+                ("Before", 0),
+                ('"Line 1\n  Line 2\n    Line 3\n\n"', 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("", 4),
+                ("After", 0),
+            ],
+        )
 
         # No content
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 '''\
                 Before
@@ -327,16 +344,16 @@ class TestNormalize:
                 After
                 ''',
             ),
-        ) == [
-            NormalizedLine("Before", 0),
-            NormalizedLine('""', 4),
-            NormalizedLine("", 4),
-            NormalizedLine("After", 0),
-        ]
+            [
+                ("Before", 0),
+                ('""', 4),
+                ("", 4),
+                ("After", 0),
+            ],
+        )
 
         # Escaped quotes
-        assert Normalize(
-            None,
+        self.Test(
             textwrap.dedent(
                 '''\
                 Before
@@ -346,13 +363,14 @@ class TestNormalize:
                     After
                 ''',
             ),
-        ) == [
-            NormalizedLine("Before", 0),
-            NormalizedLine('"The \\"content\\"!"', 0),
-            NormalizedLine("", 0),
-            NormalizedLine("", 0),
-            NormalizedLine("After", 4),
-        ]
+            [
+                ("Before", 0),
+                ('"The \\"content\\"!"', 0),
+                ("", 0),
+                ("", 0),
+                ("After", 4),
+            ],
+        )
 
     # ----------------------------------------------------------------------
     class TestMultilineCommentErrors:
