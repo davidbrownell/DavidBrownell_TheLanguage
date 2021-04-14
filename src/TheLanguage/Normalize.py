@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 from collections import namedtuple
 
@@ -46,23 +46,29 @@ class LineInfo(object):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        offset: int,
-        new_indentation: Optional[Tuple[int, int]],     # (startpos, endpos)
-        num_dedents: int,
+        offset_start: int,
+        offset_end: int,
         startpos: int,
         endpos: int,
+        indentation_info: Union[
+            None,                           # New new indentation
+            bool,                           # New Indent
+            int,                            # New Dedents (with the specific number)
+        ],
     ):
-        assert offset >= 0, offset
-        assert new_indentation is None or (new_indentation[0] == offset and new_indentation[-1] >= offset), new_indentation
-        assert num_dedents >= 0, num_dedents
-        assert startpos >= offset, (startpos, offset)
+        assert offset_start >= 0, offset_start
+        assert offset_end >= offset_start, (offset_start, offset_end)
+        assert startpos >= offset_start, (startpos, offset_start)
+        assert endpos <= offset_end, (endpos, offset_end)
         assert endpos >= startpos, (startpos, endpos)
 
-        self.Offset                         = offset
-        self.NewIndentation                 = new_indentation
-        self.NumDedents                     = num_dedents
+        self.OffsetStart                    = offset_start
+        self.OffsetEnd                      = offset_end
+
         self.StartPos                       = startpos
         self.EndPos                         = endpos
+
+        self.IndentationInfo                = indentation_info
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):
@@ -75,9 +81,29 @@ class LineInfo(object):
             include_id=False,
         )
 
+    # ----------------------------------------------------------------------
+    def HasWhitespacePrefix(self):
+        return self.StartPos > self.OffsetStart
+
+    # ----------------------------------------------------------------------
+    def HasWhitespaceSuffix(self):
+        return self.EndPos < self.OffsetEnd
+
+    # ----------------------------------------------------------------------
+    def HasNewIndent(self):
+        return isinstance(self.IndentationInfo, bool) and self.IndentationInfo
+
+    # ----------------------------------------------------------------------
+    def HasNewDedents(self):
+        return not isinstance(self.IndentationInfo, bool) and isinstance(self.IndentationInfo, int)
+
+    # ----------------------------------------------------------------------
+    def NumDedents(self):
+        return self.IndentationInfo if self.HasNewDedents() else 0
+
 
 # ----------------------------------------------------------------------
-class NormalizeResult(object):
+class NormalizedContent(object):
     """Data returned from calls to the function `Normalize`"""
 
     # ----------------------------------------------------------------------
@@ -114,7 +140,7 @@ class NormalizeResult(object):
 # ----------------------------------------------------------------------
 def Normalize(
     content: str,
-) -> NormalizeResult:
+) -> NormalizedContent:
     """\
     Normalizes the provided content to prevent repeated calculations.
 
@@ -127,6 +153,8 @@ def Normalize(
     IndentationInfo                         = namedtuple("IndentationInfo", ["num_chars", "value"])
 
     # ----------------------------------------------------------------------
+
+    assert content
 
     if content[-1] != "\n":
         content += "\n"
@@ -146,9 +174,11 @@ def Normalize(
         line_end_offset: Optional[int] = None
 
         indentation_value = 0
-        new_indentation: Optional[Tuple[int, int]] = None
+        has_new_indentation = False
         num_dedents = 0
+
         content_start_offset: Optional[int] = None
+        content_end_offset: Optional[int] = None
 
         while offset < len_content:
             char = content[offset]
@@ -180,7 +210,7 @@ def Normalize(
                             # Detect indents
                             if num_chars > indentation_stack[-1].num_chars:
                                 indentation_stack.append(IndentationInfo(num_chars, indentation_value))
-                                new_indentation = (line_start_offset, offset)
+                                has_new_indentation = True
 
                         # Detect dedents
                         while num_chars < indentation_stack[-1].num_chars:
@@ -201,19 +231,26 @@ def Normalize(
                 offset += 1
 
                 # Remove trailing whitespace
-                while line_end_offset > content_start_offset and content[line_end_offset - 1].isspace():
-                    line_end_offset -= 1
+                content_end_offset = line_end_offset
+
+                assert content_start_offset is not None
+                while content_end_offset > content_start_offset and content[content_end_offset - 1].isspace():
+                    content_end_offset -= 1
 
                 break
 
             offset += 1
 
+        assert line_end_offset is not None
+        assert content_start_offset is not None
+        assert content_end_offset is not None
+
         return LineInfo(
             line_start_offset,
-            new_indentation,
-            num_dedents,
-            content_start_offset,
             line_end_offset,
+            content_start_offset,
+            content_end_offset,
+            True if has_new_indentation else (num_dedents or None),
         )
 
     # ----------------------------------------------------------------------
@@ -222,9 +259,17 @@ def Normalize(
         line_infos.append(CreateLineInfo())
 
     if len(indentation_stack) > 1:
-        line_infos.append(LineInfo(offset, None, len(indentation_stack) - 1, offset, offset))
+        line_infos.append(
+            LineInfo(
+                offset,
+                offset,
+                offset,
+                offset,
+                len(indentation_stack) - 1,
+            ),
+        )
 
-    return NormalizeResult(
+    return NormalizedContent(
         content,
         len_content,
         line_infos,

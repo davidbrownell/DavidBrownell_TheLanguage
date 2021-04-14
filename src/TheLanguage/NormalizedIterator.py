@@ -1,0 +1,142 @@
+# ----------------------------------------------------------------------
+# |
+# |  NormalizedIterator.py
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-04-11 12:32:03
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+"""Contains the NormalizedIterator object"""
+
+import os
+
+import CommonEnvironment
+
+# ----------------------------------------------------------------------
+_script_fullpath                            = CommonEnvironment.ThisFullpath()
+_script_dir, _script_name                   = os.path.split(_script_fullpath)
+# ----------------------------------------------------------------------
+
+from Normalize import LineInfo, NormalizedContent
+
+# ----------------------------------------------------------------------
+class NormalizedIterator(NormalizedContent):
+    """Object used to iterate through content generated via a call to `Normalize`"""
+
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        normalized_content: NormalizedContent,
+    ):
+        super(NormalizedIterator, self).__init__(
+            normalized_content.Content,
+            normalized_content.ContentLen,
+            normalized_content.LineInfos,
+        )
+
+        self._line_info_index               = 0
+        self._offset                        = 0
+
+    # ----------------------------------------------------------------------
+    @property
+    def LineInfo(self) -> LineInfo:
+        assert not self.AtEnd()
+        return self.LineInfos[self._line_info_index]
+
+    # ----------------------------------------------------------------------
+    @property
+    def Offset(self) -> int:
+        assert not self.AtEnd()
+        return self._offset
+
+    # ----------------------------------------------------------------------
+    def AtEnd(self) -> bool:
+        return self._line_info_index == len(self.LineInfos)
+
+    # ----------------------------------------------------------------------
+    def HasTrailingDedents(self) -> bool:
+        return bool(
+            self.LineInfos
+            and self.LineInfos[-1].HasNewDedents()
+            and self.LineInfos[-1].OffsetStart == self.LineInfos[-1].OffsetEnd
+            and self.LineInfos[-1].OffsetStart == self.LineInfos[-1].StartPos
+            and self.LineInfos[-1].OffsetEnd == self.LineInfos[-1].EndPos
+        )
+
+    # ----------------------------------------------------------------------
+    def SkipPrefix(self) -> "NormalizedIterator":
+        offset = self.Offset
+        info = self.LineInfo
+
+        assert offset == info.OffsetStart
+
+        delta = info.StartPos - info.OffsetStart
+        if delta == 0:
+            return self
+
+        return self.Advance(delta)
+
+    # ----------------------------------------------------------------------
+    def SkipSuffix(self) -> "NormalizedIterator":
+        offset = self.Offset
+        info = self.LineInfo
+
+        assert offset == info.EndPos
+
+        delta = info.OffsetEnd - info.EndPos
+        if delta == 0:
+            return self
+
+        return self.Advance(delta)
+
+    # ----------------------------------------------------------------------
+    def Advance(
+        self,
+        delta: int,
+    ) -> "NormalizedIterator":
+        info = self.LineInfo
+        offset = self.Offset
+
+        if offset == info.OffsetEnd:
+            if (
+                self._line_info_index + 1 == len(self.LineInfos)
+                and self.HasTrailingDedents()
+            ):
+                assert delta == 0, delta
+            else:
+                assert delta == 1, delta
+
+            if not self.AtEnd():
+                self._line_info_index += 1
+
+        else:
+            assert offset >= info.OffsetStart and offset <= info.OffsetEnd, (offset, info)
+            assert offset + delta <= info.OffsetEnd, (delta, offset, info)
+            assert (
+                offset >= info.StartPos
+                or (offset == info.OffsetStart and offset + delta == info.StartPos)
+            ), (offset, info)
+            assert (
+                offset < info.EndPos
+                or (offset == info.EndPos and offset + delta == info.OffsetEnd)
+            ), (offset, info)
+
+        self._offset += delta
+
+        return self
+
+    # ----------------------------------------------------------------------
+    def Clone(self) -> "NormalizedIterator":
+        result = self.__class__(self)
+
+        result._offset = self._offset
+        result._line_info_index = self._line_info_index
+
+        return result
