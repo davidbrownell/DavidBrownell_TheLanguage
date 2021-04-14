@@ -3,7 +3,7 @@
 # |  Normalize_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-03-27 11:00:01
+# |      2021-04-09 19:46:46
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit tests for Normalize"""
+"""Unit tests for Normalize.py"""
 
 import os
 import sys
 import textwrap
-
-from typing import List, Tuple
 
 import pytest
 
@@ -33,498 +31,315 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 sys.path.insert(0, os.path.join(_script_dir, ".."))
 with CallOnExit(lambda: sys.path.pop(0)):
-    from Errors import *
     from Normalize import *
 
 # ----------------------------------------------------------------------
-class TestNormalize:
+class TestLineInfo(object):
+    # ----------------------------------------------------------------------
+    def test_StandardWithPrefixAndSuffix(self):
+        li = LineInfo(1, 4, 2, 3, None)
+
+        assert li.OffsetStart == 1
+        assert li.OffsetEnd == 4
+        assert li.StartPos == 2
+        assert li.EndPos == 3
+        assert li.IndentationInfo is None
+
+        assert li.HasWhitespacePrefix()
+        assert li.HasWhitespaceSuffix()
+        assert li.HasNewIndent() == False
+        assert li.HasNewDedents() == False
+        assert li.NumDedents() == 0
+
+        assert li == li
+
+    # ----------------------------------------------------------------------
+    def test_StandardWithPrefix(self):
+        li = LineInfo(1, 3, 2, 3, None)
+
+        assert li.OffsetStart == 1
+        assert li.OffsetEnd == 3
+        assert li.StartPos == 2
+        assert li.EndPos == 3
+        assert li.IndentationInfo is None
+
+        assert li.HasWhitespacePrefix()
+        assert li.HasWhitespaceSuffix() == False
+        assert li.HasNewIndent() == False
+        assert li.HasNewDedents() == False
+        assert li.NumDedents() == 0
+
+        assert li == li
+
+    # ----------------------------------------------------------------------
+    def test_StandardWithSuffix(self):
+        li = LineInfo(1, 4, 1, 3, None)
+
+        assert li.OffsetStart == 1
+        assert li.OffsetEnd == 4
+        assert li.StartPos == 1
+        assert li.EndPos == 3
+        assert li.IndentationInfo is None
+
+        assert li.HasWhitespacePrefix() == False
+        assert li.HasWhitespaceSuffix()
+        assert li.HasNewIndent() == False
+        assert li.HasNewDedents() == False
+        assert li.NumDedents() == 0
+
+        assert li == li
+
+    # ----------------------------------------------------------------------
+    def test_StandardWithIndentation(self):
+        li = LineInfo(1, 4, 1, 3, True)
+
+        assert li.OffsetStart == 1
+        assert li.OffsetEnd == 4
+        assert li.StartPos == 1
+        assert li.EndPos == 3
+        assert li.IndentationInfo == True
+
+        assert li.HasWhitespacePrefix() == False
+        assert li.HasWhitespaceSuffix()
+        assert li.HasNewIndent()
+        assert li.HasNewDedents() == False
+        assert li.NumDedents() == 0
+
+        assert li == li
+
+    # ----------------------------------------------------------------------
+    def test_StandardWithDedents(self):
+        li = LineInfo(1, 4, 1, 3, 2)
+
+        assert li.OffsetStart == 1
+        assert li.OffsetEnd == 4
+        assert li.StartPos == 1
+        assert li.EndPos == 3
+        assert li.IndentationInfo == 2
+
+        assert li.HasWhitespacePrefix() == False
+        assert li.HasWhitespaceSuffix()
+        assert li.HasNewIndent() == False
+        assert li.HasNewDedents()
+        assert li.NumDedents() == 2
+
+        assert li == li
+
+    # ----------------------------------------------------------------------
+    def test_Errors(self):
+        for args in [
+            (-1, 0, 0, 0, None),            # Invalid offset start
+            (5, 1, 0, 0, None),             # Invalid offset end
+            (5, 10, 2, 10, None),           # Invalid startpos
+            (5, 10, 5, 11, None),           # Invalid endpos
+            (5, 10, 6, 5, None),            # Invalid startpos/endpos
+        ]:
+            with pytest.raises(AssertionError):
+                LineInfo(*args)
+
+
+# ----------------------------------------------------------------------
+class TestNormalizedContent(object):
+    # ----------------------------------------------------------------------
+    def test_Standard(self):
+        result = NormalizedContent("hello", 5, [LineInfo(1, 4, 3, 4, None)])
+
+        assert result.Content == "hello"
+        assert result.ContentLen == 5
+        assert result.LineInfos == [LineInfo(1, 4, 3, 4, None)]
+
+        assert result == result
+
+    # ----------------------------------------------------------------------
+    def test_Errors(self):
+        for args in [
+            (None, 10, [1, 2, 3]),          # Invalid content
+            ("", 10, [1, 2, 3]),            # Invalid content
+            ("hello", 0, [1, 2, 3]),        # Invalid length
+            ("hello", 5, None),             # Invalid LineInfos
+            ("hello", 5, []),               # Invalid LineInfos
+        ]:
+            with pytest.raises(AssertionError):
+                NormalizedContent(*args)
+
+
+# ----------------------------------------------------------------------
+class TestNormalize(object):
     # ----------------------------------------------------------------------
     @staticmethod
-    def Test(
-        content: str,
-        expected_items: List[Tuple[str, int]],
-    ):
-        results = Normalize("source", content)
-
-        for result, expected in zip(results, expected_items):
-            if isinstance(result.Value, tuple):
-                assert content[result.Value[0]:result.Value[1]] == expected[0]
-
-            assert result.Indentation == expected[1]
-
-        assert len(results) == len(expected_items)
+    def Test(content, line_infos):
+        assert Normalize(content) == NormalizedContent(content, len(content), line_infos)
 
     # ----------------------------------------------------------------------
-    def test_SingleLine(self):
-        self.Test("single line", [("single line", 0)])
-
-    # ----------------------------------------------------------------------
-    def test_MultipleLines(self):
-        self.Test(
-            textwrap.dedent(
-                """\
-                first line
-                second line
-                trailing
-                """,
-            ),
-            [
-                ("first line", 0),
-                ("second line", 0),
-                ("trailing", 0),
-            ],
-        )
-
-    # ----------------------------------------------------------------------
-    def test_Indentation(self):
-        # With spaces
+    def test_Simple(self):
+        # No indent
         self.Test(
             textwrap.dedent(
                 """\
                 1
-                  2
-                    3
-                      4
-                    5
-                  6
-                    7
-                8
+                22
+                333
                 """,
             ),
             [
-                ("1", 0),
-                ("2", 2),
-                ("3", 4),
-                ("4", 6),
-                ("5", 4),
-                ("6", 2),
-                ("7", 4),
-                ("8", 0),
+                LineInfo(0, 1, 0, 1, None),
+                LineInfo(2, 4, 2, 4, None),
+                LineInfo(5, 8, 5, 8, None),
             ],
         )
 
-        # With tabs
+    # ----------------------------------------------------------------------
+    def test_Indent(self):
         self.Test(
             textwrap.dedent(
                 """\
                 1
-                \t2
-                \t\t3
-                \t\t\t4
-                \t\t5
-                \t6
-                \t\t7
-                8
+                    22
+                        333
                 """,
             ),
             [
-                ("1", 0),
-                ("2", 2),
-                ("3", 4),
-                ("4", 6),
-                ("5", 4),
-                ("6", 2),
-                ("7", 4),
-                ("8", 0),
+                LineInfo(0, 1, 0, 1, None),
+                LineInfo(2, 8, 6, 8, True),
+                LineInfo(9, 20, 17, 20, True),
+                LineInfo(21, 21, 21, 21, 2),
             ],
         )
 
     # ----------------------------------------------------------------------
-    def test_EmptyLines(self):
+    def test_IndentWithDedents(self):
         self.Test(
             textwrap.dedent(
                 """\
-                first line
-
-                third line
-                last line
+                1
+                    22
+                        333
+                    4444
+                55555
                 """,
             ),
             [
-                ("first line", 0),
-                ("", 0),
-                ("third line", 0),
-                ("last line", 0),
+                LineInfo(0, 1, 0, 1, None),
+                LineInfo(2, 8, 6, 8, True),
+                LineInfo(9, 20, 17, 20, True),
+                LineInfo(21, 29, 25, 29, 1),
+                LineInfo(30, 35, 30, 35, 1),
             ],
         )
 
     # ----------------------------------------------------------------------
-    def test_BlankLines(self):
+    def test_TrailingWhitespace(self):
         self.Test(
-            # Note: not using textwrap.dedent here as my helpful editor keeps removing the empty whitespace in the blank line
-            "first line\n    \nlast line\n",
+            # Not using textwrap.dedent as the editor removes the trailing whitespace
+            "12  \n 34\n",
             [
-                ("first line", 0),
-                ("", 4),
-                ("last line", 0),
+                LineInfo(0, 4, 0, 2, None),
+                LineInfo(5, 8, 6, 8, True),
+                LineInfo(9, 9, 9, 9, 1),
             ],
         )
 
     # ----------------------------------------------------------------------
-    def test_CommentExtraction(self):
+    def test_EmptyLine(self):
         self.Test(
-            textwrap.dedent(
-                """\
-                0 # the comment
-                1# comment
-                2 #comment
-                3#comment
-                    4
-                # comment
-                5
-                """,
-            ),
+            # Not using textwrap.dedent as the editor removes the empty whitespace
+            "12\n\n34\n",
             [
-                ("0", 0),
-                ("1", 0),
-                ("2", 0),
-                ("3", 0),
-                ("4", 4),
-                ("", 0),
-                ("5", 0),
-            ],
-        )
-
-        self.Test(
-            # Note: not using textwrap.dedent here as my helpful editor keeps removing the empty whitespace in the blank line
-            "1\n    # a comment\n2",
-            [
-                ("1", 0),
-                ("", 4),
-                ("2", 0),
+                LineInfo(0, 2, 0, 2, None),
+                LineInfo(3, 3, 3, 3, None),
+                LineInfo(4, 6, 4, 6, None),
             ],
         )
 
     # ----------------------------------------------------------------------
-    def test_MultilineStrings(self):
-        # Single line
+    def test_SpacesOnEmptyLine(self):
         self.Test(
-            textwrap.dedent(
-                '''\
-                Before
-                    """
-                    Single line
-                    """
-                After
-                ''',
-            ),
+            # Not using textwrap.dedent as the editor removes the empty whitespace
+            "12\n    \n34\n",
             [
-                ("Before", 0),
-                ('"Single line"', 4),
-                ("", 4),
-                ("", 4),
-                ("After", 0),
-            ],
-        )
-
-        # Multi line
-        self.Test(
-            textwrap.dedent(
-                '''\
-                Before
-                    """
-                    Line 1
-                      Line 2
-                        Line 3
-                    """
-                    After
-                Final
-                ''',
-            ),
-            [
-                ("Before", 0),
-                ('"Line 1\n  Line 2\n    Line 3"', 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("After", 4),
-                ("Final", 0),
-            ],
-        )
-
-        # Content with Empty lines
-        self.Test(
-            textwrap.dedent(
-                '''\
-                Before
-                    """
-                    Line 1
-
-                        Line 3
-                    """
-                After
-                ''',
-            ),
-            [
-                ("Before", 0),
-                ('"Line 1\n\n    Line 3"', 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("After", 0),
-            ],
-        )
-
-        # first line has whitespace
-        self.Test(
-            textwrap.dedent(
-                '''\
-                Before
-                    """
-                      Line 1
-                      Line 2
-                        Line 3
-                    """
-                After
-                ''',
-            ),
-            [
-                ("Before", 0),
-                ('"  Line 1\n  Line 2\n    Line 3"', 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("After", 0),
-            ],
-        )
-
-        # last line has whitespace
-        self.Test(
-            'Before\n"""\nLine 1\n  Line 2\n  \nLine 3\n"""\nAfter',
-            [
-                ("Before", 0),
-                ('"Line 1\n  Line 2\n  \nLine 3"', 0),
-                ("", 0),
-                ("", 0),
-                ("", 0),
-                ("", 0),
-                ("", 0),
-                ("After", 0),
-            ],
-        )
-
-        # Trailing line
-        self.Test(
-            textwrap.dedent(
-                '''\
-                Before
-                    """
-                    Line 1
-                      Line 2
-                        Line 3
-
-
-                    """
-                After
-                ''',
-            ),
-            [
-                ("Before", 0),
-                ('"Line 1\n  Line 2\n    Line 3\n\n"', 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("", 4),
-                ("After", 0),
-            ],
-        )
-
-        # No content
-        self.Test(
-            textwrap.dedent(
-                '''\
-                Before
-                    """
-                    """
-                After
-                ''',
-            ),
-            [
-                ("Before", 0),
-                ('""', 4),
-                ("", 4),
-                ("After", 0),
-            ],
-        )
-
-        # Escaped quotes
-        self.Test(
-            textwrap.dedent(
-                '''\
-                Before
-                """
-                The "content"!
-                """
-                    After
-                ''',
-            ),
-            [
-                ("Before", 0),
-                ('"The \\"content\\"!"', 0),
-                ("", 0),
-                ("", 0),
-                ("After", 4),
+                LineInfo(0, 2, 0, 2, None),
+                LineInfo(3, 7, 7, 7, None),
+                LineInfo(8, 10, 8, 10, None),
             ],
         )
 
     # ----------------------------------------------------------------------
-    class TestMultilineCommentErrors:
-        # ----------------------------------------------------------------------
-        @staticmethod
-        def Impl(expected_exception_type, content):
-            with pytest.raises(expected_exception_type) as ex:
-                Normalize("foo", content)
+    def test_SpacesOnEmptyLineWithMatchingIndent(self):
+        self.Test(
+            # Not using textwrap.dedent as the editor removes the empty whitespace
+            "    12\n    \n34\n",
+            [
+                LineInfo(0, 6, 4, 6, True),
+                LineInfo(7, 11, 11, 11, None),
+                LineInfo(12, 14, 12, 14, 1),
+            ],
+        )
 
-            ex = ex.value
+    # ----------------------------------------------------------------------
+    def test_TabsVsSpaces1(self):
+        self.Test(
+            # Not using textwrap.dedent so tabs can be embedded
+            "1\n  2\n3\n\t4\n\t5\n\t 6\n\t 7\n",
+            [
+                LineInfo(0, 1, 0, 1, None),             # 1
+                LineInfo(2, 5, 4, 5, True),             # 2
+                LineInfo(6, 7, 6, 7, 1),                # 3
+                LineInfo(8, 10, 9, 10, True),           # 4
+                LineInfo(11, 13, 12, 13, None),         # 5
+                LineInfo(14, 17, 16, 17, True),         # 6
+                LineInfo(18, 21, 20, 21, None),         # 7
+                LineInfo(22, 22, 22, 22, 2),
+            ],
+        )
 
-            assert ex.Source == "foo"
-            return ex
+    # ----------------------------------------------------------------------
+    def test_TabsVsSpaces2(self):
+        self.Test(
+            # Not using textwrap.dedent so tabs can be embedded
+            "1\n  2\n3\n\t4\n\t5\n \t6\n \t7\n",
+            [
+                LineInfo(0, 1, 0, 1, None),             # 1
+                LineInfo(2, 5, 4, 5, True),             # 2
+                LineInfo(6, 7, 6, 7, 1),                # 3
+                LineInfo(8, 10, 9, 10, True),           # 4
+                LineInfo(11, 13, 12, 13, None),         # 5
+                LineInfo(14, 17, 16, 17, True),         # 6
+                LineInfo(18, 21, 20, 21, None),         # 7
+                LineInfo(22, 22, 22, 22, 2),
+            ],
+        )
 
-        # ----------------------------------------------------------------------
-        def test_MissingTerminator(self):
-            ex = self.Impl(
-                MissingMultilineStringTerminatorError,
+    # ----------------------------------------------------------------------
+    def test_NewlineAdded(self):
+        assert Normalize("123") == NormalizedContent("123\n", 4, [LineInfo(0, 3, 0, 3, None)])
+
+    # ----------------------------------------------------------------------
+    def test_TabAndSpaceMix(self):
+        with pytest.raises(InvalidTabsAndSpacesNormalizeException) as ex:
+            Normalize("   One\n\t\t\tTwo\n")
+
+        assert ex.value.Line == 2
+        assert ex.value.Column == 4
+
+        with pytest.raises(InvalidTabsAndSpacesNormalizeException) as ex:
+            Normalize("if True:\n  \tone\n \t two")
+
+        assert ex.value.Line == 3
+        assert ex.value.Column == 4
+
+    # ----------------------------------------------------------------------
+    def test_InvalidIndentation(self):
+        with pytest.raises(InvalidIndentationNormalizeException) as ex:
+            Normalize(
                 textwrap.dedent(
-                    '''\
-                    Before
-                        """
-                    After
-                    ''',
+                    """\
+                    1
+                            22
+                        333 # Invalid indentation
+                    4444
+                    """,
                 ),
             )
 
-            assert ex.Message == "The closing token for this multiline string was not found."
-            assert ex.Line == 2
-            assert ex.Column == 5
-
-        # ----------------------------------------------------------------------
-        def test_InvalidOpeningToken(self):
-            ex = self.Impl(
-                MissingMultilineTokenNewlineSuffixError,
-                textwrap.dedent(
-                    '''
-                    Before
-                        """After
-                        """
-                    ''',
-                ),
-            )
-
-            assert ex.Message == "This multiline string token must be followed by a newline."
-            assert ex.Line == 2
-            assert ex.Column == 8
-
-        # ----------------------------------------------------------------------
-        def test_InvalidClosingToken(self):
-            ex = self.Impl(
-                MissingMultilineTokenNewlineSuffixError,
-                textwrap.dedent(
-                    '''
-                    Before
-                        """
-                        Content
-                        """After
-                    ''',
-                ),
-            )
-
-            assert ex.Message == "This multiline string token must be followed by a newline."
-            assert ex.Line == 4
-            assert ex.Column == 8
-
-        # ----------------------------------------------------------------------
-        def test_InvalidPrefixes(self):
-            expected_message = "The prefix for this multiline string is not valid; each line must be aligned with the opening token."
-
-            # First line is dedented to col 1
-            ex = self.Impl(
-                InvalidMultilineStringPrefixError,
-                textwrap.dedent(
-                    '''\
-                    Line 1
-                        """
-                    In comment
-                        """
-                    ''',
-                ),
-            )
-
-            assert ex.Message == expected_message
-            assert ex.Line == 3
-            assert ex.Column == 1
-
-            # First line is dedented to col 3
-            ex = self.Impl(
-                InvalidMultilineStringPrefixError,
-                textwrap.dedent(
-                    '''\
-                    Line 1
-                        """
-                      In comment
-                        """
-                    ''',
-                ),
-            )
-
-            assert ex.Message == expected_message
-            assert ex.Line == 3
-            assert ex.Column == 3
-
-            # Terminator is dedented to col 1
-            ex = self.Impl(
-                InvalidMultilineStringPrefixError,
-                textwrap.dedent(
-                    '''\
-                    Line 1
-                        """
-                        In comment
-                    """
-                    ''',
-                ),
-            )
-
-            assert ex.Message == expected_message
-            assert ex.Line == 4
-            assert ex.Column == 1
-
-            # Terminator is dedented to col 3
-            ex = self.Impl(
-                InvalidMultilineStringPrefixError,
-                textwrap.dedent(
-                    '''\
-                    Line 1
-                        """
-                        In comment
-                      """
-                    ''',
-                ),
-            )
-
-            assert ex.Message == expected_message
-            assert ex.Line == 4
-            assert ex.Column == 3
-
-            # Whitespace, no content
-            ex = self.Impl(
-                InvalidMultilineStringPrefixError,
-                '    """\n  \n    """\n',
-            )
-
-            assert ex.Message == expected_message
-            assert ex.Line == 2
-            assert ex.Column == 3
-
-            # Mix of tabs and spaces
-            ex = self.Impl(
-                InvalidMultilineStringPrefixError,
-                '    """\n    \n\tTest\n    """\n',
-            )
-
-            assert ex.Message == expected_message
-            assert ex.Line == 3
-            assert ex.Column == 2
+        assert ex.value.Line == 3
+        assert ex.value.Column == 5
