@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Errors.py
+# |  Error.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-03-27 13:57:41
+# |      2021-04-09 20:25:53
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains errors that are produced during the compilation process"""
+"""Base class for errors"""
 
 import os
 
@@ -29,23 +29,38 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 class Error(Exception, Interface.Interface):
     # ----------------------------------------------------------------------
     @Interface.abstractproperty
-    def MessageTemplate(self):
+    def MessageTemplate(self) -> str:
         raise Exception("Abstract property")
 
     # ----------------------------------------------------------------------
-    def __init__(self, source, line, column, **kwargs):
-        self.Source                         = source
+    def __init__(
+        self,
+        line: int,                          # 1-based
+        column: int,                        # 1-based
+        **kwargs
+    ):
         self.Line                           = line
         self.Column                         = column
         self.Message                        = self.MessageTemplate.format(**kwargs)
 
     # ----------------------------------------------------------------------
     def __repr__(self):
-        return CommonEnvironment.ObjectReprImpl(self)
+        return CommonEnvironment.ObjectReprImpl(
+            self,
+            include_id=False,
+        )
+
+    # ----------------------------------------------------------------------
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
 
 
 # ----------------------------------------------------------------------
-def CreateErrorClass(message_template):
+def CreateErrorClass(
+    message_template: str,
+):
+    """Creates an Error class"""
+
     # ----------------------------------------------------------------------
     class TheError(Error):
         MessageTemplate                     = Interface.DerivedProperty(message_template)
@@ -53,9 +68,3 @@ def CreateErrorClass(message_template):
     # ----------------------------------------------------------------------
 
     return TheError
-
-
-# ----------------------------------------------------------------------
-MissingMultilineTokenNewlineSuffixError     = CreateErrorClass("This multiline string token must be followed by a newline.")
-MissingMultilineStringTerminatorError       = CreateErrorClass("The closing token for this multiline string was not found.")
-InvalidMultilineStringPrefixError           = CreateErrorClass("The prefix for this multiline string is not valid; each line must be aligned with the opening token.")

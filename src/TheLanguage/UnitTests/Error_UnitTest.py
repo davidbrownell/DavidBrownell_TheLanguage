@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Errors_UnitTest.py
+# |  Error_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-03-27 16:49:02
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for Errors.py"""
+"""Unit test for Error.py"""
 
 import os
 import sys
@@ -29,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 sys.path.insert(0, os.path.join(_script_dir, ".."))
 with CallOnExit(lambda: sys.path.pop(0)):
-    from Errors import *
+    from Error import *
 
 # ----------------------------------------------------------------------
 class StandardError(Error):
@@ -38,10 +38,9 @@ class StandardError(Error):
 
 # ----------------------------------------------------------------------
 def test_StandardError():
-    error = StandardError("source", 100, 200)
+    error = StandardError(100, 200)
 
     assert error.Message == "This is the message"
-    assert error.Source == "source"
     assert error.Line == 100
     assert error.Column == 200
 
@@ -50,7 +49,6 @@ def test_CustomException():
     ErrorClass = CreateErrorClass("Values: one={one} two={two}")
 
     error = ErrorClass(
-        "source",
         100,
         200,
         one="ONE",
@@ -58,6 +56,5 @@ def test_CustomException():
     )
 
     assert error.Message == "Values: one=ONE two=TWO"
-    assert error.Source == "source"
     assert error.Line == 100
     assert error.Column == 200
