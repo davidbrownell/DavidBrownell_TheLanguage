@@ -46,13 +46,24 @@ class NormalizedIterator(NormalizedContent):
 
     # ----------------------------------------------------------------------
     @property
+    def Line(self) -> int:
+        """Returns the current (1-based) line number"""
+        return self._line_info_index + (0 if self.HasTrailingDedents() and self.AtEnd() else 1)
+
+    @property
+    def Column(self) -> int:
+        """Returns the current (1-based) column number"""
+        return self._offset - self.LineInfo.OffsetStart + 1
+
+    @property
     def LineInfo(self) -> LineInfo:
+        """Returns the current LineInfo object"""
         assert not self.AtEnd()
         return self.LineInfos[self._line_info_index]
 
-    # ----------------------------------------------------------------------
     @property
     def Offset(self) -> int:
+        """Returns the current offset"""
         assert not self.AtEnd()
         return self._offset
 

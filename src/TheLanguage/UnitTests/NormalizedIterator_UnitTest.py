@@ -57,11 +57,15 @@ def test_Standard():
     assert iter.Offset == 0
     assert iter.LineInfo == iter.LineInfos[0]
     assert iter.Content[iter.Offset] == "1"
+    assert iter.Line == 1
+    assert iter.Column == 1
     iter.Advance(1)
 
     assert iter.Offset == 1
     assert iter.LineInfo == iter.LineInfos[0]
     assert iter.Content[iter.Offset] == "\n"
+    assert iter.Line == 1
+    assert iter.Column == 2
     iter.Advance(1)
 
     assert iter.AtEnd() == False
@@ -72,16 +76,22 @@ def test_Standard():
     assert iter.Offset == 2
     assert iter.LineInfo == iter.LineInfos[1]
     assert iter.Content[iter.Offset : iter.Offset + 4] == "    "
+    assert iter.Line == 2
+    assert iter.Column == 1
     iter.SkipPrefix()
 
     assert iter.Offset == 6
     assert iter.LineInfo == iter.LineInfos[1]
     assert iter.Content[iter.Offset : iter.Offset + 2] == "22"
+    assert iter.Line == 2
+    assert iter.Column == 5
     iter.Advance(2)
 
     assert iter.Offset == 8
     assert iter.LineInfo == iter.LineInfos[1]
     assert iter.Content[iter.Offset] == "\n"
+    assert iter.Line == 2
+    assert iter.Column == 7
     iter.Advance(1)
 
     assert iter.AtEnd() == False
@@ -92,16 +102,22 @@ def test_Standard():
     assert iter.Offset == 9
     assert iter.LineInfo == iter.LineInfos[2]
     assert iter.Content[iter.Offset : iter.Offset + 8] == "        "
+    assert iter.Line == 3
+    assert iter.Column == 1
     iter.SkipPrefix()
 
     assert iter.Offset == 17
     assert iter.LineInfo == iter.LineInfos[2]
     assert iter.Content[iter.Offset : iter.Offset + 3] == "333"
+    assert iter.Line == 3
+    assert iter.Column == 9
     iter.Advance(3)
 
     assert iter.Offset == 20
     assert iter.LineInfo == iter.LineInfos[2]
     assert iter.Content[iter.Offset] == "\n"
+    assert iter.Line == 3
+    assert iter.Column == 12
     iter.Advance(1)
 
     assert iter.AtEnd() == False
@@ -112,16 +128,22 @@ def test_Standard():
     assert iter.Offset == 21
     assert iter.LineInfo == iter.LineInfos[3]
     assert iter.Content[iter.Offset : iter.Offset + 4] == "    "
+    assert iter.Line == 4
+    assert iter.Column == 1
     iter.SkipPrefix()
 
     assert iter.Offset == 25
     assert iter.LineInfo == iter.LineInfos[3]
     assert iter.Content[iter.Offset : iter.Offset + 4] == "4444"
+    assert iter.Line == 4
+    assert iter.Column == 5
     iter.Advance(4)
 
     assert iter.Offset == 29
     assert iter.LineInfo == iter.LineInfos[3]
     assert iter.Content[iter.Offset] == "\n"
+    assert iter.Line == 4
+    assert iter.Column == 9
     iter.Advance(1)
 
     assert iter.AtEnd() == False
@@ -132,16 +154,22 @@ def test_Standard():
     assert iter.Offset == 30
     assert iter.LineInfo == iter.LineInfos[4]
     assert iter.Content[iter.Offset : iter.Offset + 8] == "        "
+    assert iter.Line == 5
+    assert iter.Column == 1
     iter.SkipPrefix()
 
     assert iter.Offset == 38
     assert iter.LineInfo == iter.LineInfos[4]
     assert iter.Content[iter.Offset : iter.Offset + 5] == "55555"
+    assert iter.Line == 5
+    assert iter.Column == 9
     iter.Advance(5)
 
     assert iter.Offset == 43
     assert iter.LineInfo == iter.LineInfos[4]
     assert iter.Content[iter.Offset] == "\n"
+    assert iter.Line == 5
+    assert iter.Column == 14
     iter.Advance(1)
 
     assert iter.AtEnd() == False
@@ -152,11 +180,15 @@ def test_Standard():
     assert iter.Offset == 44
     assert iter.LineInfo == iter.LineInfos[5]
     assert iter.Content[iter.Offset : iter.Offset + 8] == "        "
+    assert iter.Line == 6
+    assert iter.Column == 1
     iter.SkipPrefix()
 
     assert iter.Offset == 52
     assert iter.LineInfo == iter.LineInfos[5]
     assert iter.Content[iter.Offset : iter.Offset + 6] == "666666"
+    assert iter.Line == 6
+    assert iter.Column == 9
     iter.Advance(2)
     iter.Advance(2)
     iter.Advance(2)
@@ -164,6 +196,8 @@ def test_Standard():
     assert iter.Offset == 58
     assert iter.LineInfo == iter.LineInfos[5]
     assert iter.Content[iter.Offset] == "\n"
+    assert iter.Line == 6
+    assert iter.Column == 15
     iter.Advance(1)
 
     assert iter.AtEnd() == False
@@ -175,6 +209,8 @@ def test_Standard():
 
     assert iter.Offset == 59
     assert iter.LineInfo == iter.LineInfos[6]
+    assert iter.Line == 7
+    assert iter.Column == 1
     iter.Advance(0)
 
     assert iter.AtEnd()
@@ -197,36 +233,62 @@ def test_NoFinalDedents():
 def test_SkipPrefix():
     iter = NormalizedIterator(Normalize("    one"))
 
+    assert iter.Line == 1
+    assert iter.Column == 1
     assert iter.Offset == 0
     iter.SkipPrefix()
+
+    assert iter.Line == 1
+    assert iter.Column == 5
     assert iter.Offset == 4
 
 # ----------------------------------------------------------------------
 def test_SkipPrefixNoPrefix():
     iter = NormalizedIterator(Normalize("one"))
 
+    assert iter.Line == 1
+    assert iter.Column == 1
     assert iter.Offset == 0
     iter.SkipPrefix()
+
+    assert iter.Line == 1
+    assert iter.Column == 1
     assert iter.Offset == 0
 
 # ----------------------------------------------------------------------
 def test_SkipSuffix():
     iter = NormalizedIterator(Normalize("one    "))
 
+    assert iter.Line == 1
+    assert iter.Column == 1
+
     iter.Advance(3)
 
+    assert iter.Line == 1
+    assert iter.Column == 4
     assert iter.Offset == 3
     iter.SkipSuffix()
+
+    assert iter.Line == 1
+    assert iter.Column == 8
     assert iter.Offset == 7
 
 # ----------------------------------------------------------------------
 def test_SkipSuffixNoSuffix():
     iter = NormalizedIterator(Normalize("one"))
 
+    assert iter.Line == 1
+    assert iter.Column == 1
+
     iter.Advance(3)
 
+    assert iter.Line == 1
+    assert iter.Column == 4
     assert iter.Offset == 3
     iter.SkipSuffix()
+
+    assert iter.Line == 1
+    assert iter.Column == 4
     assert iter.Offset == 3
 
 # ----------------------------------------------------------------------
