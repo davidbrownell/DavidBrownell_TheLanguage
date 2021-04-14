@@ -147,7 +147,7 @@ class NormalizedIterator(NormalizedContent):
     def Clone(self) -> "NormalizedIterator":
         result = self.__class__(self)
 
-        result._offset = self._offset
-        result._line_info_index = self._line_info_index
+        result._offset = self._offset                                       # <Access to a protected member> pylint: disable=W0212
+        result._line_info_index = self._line_info_index                     # <Access to a protected member> pylint: disable=W0212
 
         return result
