@@ -34,10 +34,33 @@ class Token(Interface.Interface):
     """Base class for various Token types"""
 
     MatchType                               = Union[
-        "Token",                            # Newline, Dedent
-        Tuple[int, int],                    # Indent
-        Match,                              # Regex match
+        # Newline
+        Tuple[
+            "Token",
+            int,                            # start range
+            int,                            # end range
+        ],
+
+        # Indent
+        Tuple[
+            "Token",
+            int,                            # start range
+            int,                            # end range
+            int,                            # token value
+        ],
+
+        # Dedent
+        "Token",
+
+        # Regex match
+        Match,
     ]
+
+    # ----------------------------------------------------------------------
+    # A Control Token is a token that doesn't consume content, but modifies
+    # behavior of a statement. This concept is necessary because we are combining
+    # the lexing and parsing passes into 1 pass.
+    IsControlToken                          = False
 
     # ----------------------------------------------------------------------
     @Interface.abstractproperty
@@ -58,17 +81,38 @@ class Token(Interface.Interface):
 # ----------------------------------------------------------------------
 @Interface.staticderived
 class NewlineToken(Token):
-    Name                                    = Interface.DerivedProperty("Newline")
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        capture_many=True,
+    ):
+        self._name                          = "Newline{}".format("+" if capture_many else "")
+        self._capture_many                  = capture_many
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    @property
     @Interface.override
-    def Match(normalized_iter):
+    def Name(self):
+        return self._name
+
+    @property
+    def CaptureMany(self):
+        return self._capture_many
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Match(self, normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.EndPos and not normalized_iter.AtEnd():
+            newline_start = normalized_iter.Offset
+
             normalized_iter.SkipSuffix()
             normalized_iter.Advance(1)
 
-            return NewlineToken
+            if self._capture_many:
+                while normalized_iter.IsBlankLine():
+                    normalized_iter.SkipLine()
+
+            return (NewlineToken, newline_start, normalized_iter.Offset)
 
         return None
 
@@ -79,12 +123,12 @@ class IndentToken(Token):
     Name                                    = Interface.DerivedProperty("Indent")
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    @classmethod
     @Interface.override
-    def Match(normalized_iter):
+    def Match(cls, normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.HasNewIndent():
             normalized_iter.SkipPrefix()
-            return (normalized_iter.LineInfo.OffsetStart, normalized_iter.LineInfo.StartPos)
+            return (cls, normalized_iter.LineInfo.OffsetStart, normalized_iter.LineInfo.StartPos)
 
         return None
 
@@ -95,12 +139,12 @@ class DedentToken(Token):
     Name                                    = Interface.DerivedProperty("Dedent")
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    @classmethod
     @Interface.override
-    def Match(normalized_iter):
+    def Match(cls, normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.NumDedents():
             normalized_iter.SkipPrefix()
-            return [DedentToken] * normalized_iter.LineInfo.NumDedents()
+            return [cls] * normalized_iter.LineInfo.NumDedents()
 
         return None
 
@@ -138,3 +182,43 @@ class RegexToken(Token):
             return match
 
         return None
+
+
+# ----------------------------------------------------------------------
+class ControlTokenBase(Token):
+    """Base class for Control tokens. See the definition of `IsControlToken` in the base class for more info"""
+
+    IsControlToken                          = True
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def Match(normalized_iter):
+        raise Exception("This method should never be invoked for control tokens")
+
+
+# ----------------------------------------------------------------------
+@Interface.staticderived
+class PushIgnoreWhitespaceControlToken(ControlTokenBase):
+    """\
+    Signals that newline, indent, and dedent whitespace should be ignored.
+
+    Note that the tokens themselves will still be captured, they just won't
+    participate in matching logic. This token must always be paired with a
+    corresponding `PopIgnoreWhitespaceControlToken` to restore meaningful
+    whitespace matching.
+    """
+
+    Name                                    = Interface.DerivedProperty("PushIgnoreWhitespaceControl")
+
+
+# ----------------------------------------------------------------------
+@Interface.staticderived
+class PopIgnoreWhitespaceControlToken(ControlTokenBase):
+    """\
+    Restores whitespace processing.
+
+    See `PushIgnoreWhitespaceControlToken` for more information.
+    """
+
+    Name                                    = Interface.DerivedProperty("PopIgnoreWhitespaceControl")
