@@ -71,7 +71,7 @@ def test_Standard():
     assert iter.AtEnd() == False
 
     # Second line
-    assert iter.LineInfo.IndentationInfo == True
+    assert iter.LineInfo.IndentationInfo == (LineInfo.IndentType.Indent, 4)
 
     assert iter.Offset == 2
     assert iter.LineInfo == iter.LineInfos[1]
@@ -97,7 +97,7 @@ def test_Standard():
     assert iter.AtEnd() == False
 
     # Third line
-    assert iter.LineInfo.IndentationInfo == True
+    assert iter.LineInfo.IndentationInfo == (LineInfo.IndentType.Indent, 8)
 
     assert iter.Offset == 9
     assert iter.LineInfo == iter.LineInfos[2]
@@ -123,7 +123,7 @@ def test_Standard():
     assert iter.AtEnd() == False
 
     # Fourth line
-    assert iter.LineInfo.IndentationInfo == 1
+    assert iter.LineInfo.IndentationInfo == (LineInfo.IndentType.Dedent, 1)
 
     assert iter.Offset == 21
     assert iter.LineInfo == iter.LineInfos[3]
@@ -149,7 +149,7 @@ def test_Standard():
     assert iter.AtEnd() == False
 
     # Fifth line
-    assert iter.LineInfo.IndentationInfo == True
+    assert iter.LineInfo.IndentationInfo == (LineInfo.IndentType.Indent, 8)
 
     assert iter.Offset == 30
     assert iter.LineInfo == iter.LineInfos[4]
@@ -205,7 +205,7 @@ def test_Standard():
     # Final dedents
     assert iter.HasTrailingDedents()
 
-    assert iter.LineInfo.IndentationInfo == 2
+    assert iter.LineInfo.IndentationInfo == (LineInfo.IndentType.Dedent, 2)
 
     assert iter.Offset == 59
     assert iter.LineInfo == iter.LineInfos[6]
@@ -290,6 +290,196 @@ def test_SkipSuffixNoSuffix():
     assert iter.Line == 1
     assert iter.Column == 4
     assert iter.Offset == 3
+
+# ----------------------------------------------------------------------
+def test_IsBlankLine():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                """\
+                one
+
+                three
+                \t
+                    \t
+                six
+                """,
+            ),
+        ),
+    )
+
+    # Line 1
+    assert iter.Line == 1
+    assert iter.Column == 1
+    assert iter.Offset == 0
+    assert iter.IsBlankLine() == False
+
+    iter.Advance(3)
+
+    assert iter.Line == 1
+    assert iter.Column == 4
+    assert iter.Offset == 3
+
+    iter.Advance(1)
+
+    # Line 2
+    assert iter.Line == 2
+    assert iter.Column == 1
+    assert iter.Offset == 4
+    assert iter.IsBlankLine()
+
+    iter.SkipPrefix()
+    iter.SkipSuffix()
+    assert iter.Line == 2
+    assert iter.Column == 1
+    assert iter.Offset == 4
+
+    iter.Advance(1)
+
+    # Line 3
+    assert iter.Line == 3
+    assert iter.Column == 1
+    assert iter.Offset == 5
+    assert iter.IsBlankLine() == False
+
+    iter.SkipPrefix()
+    assert iter.Line == 3
+    assert iter.Column == 1
+    assert iter.Offset == 5
+
+    iter.Advance(len("three"))
+
+    assert iter.Line == 3
+    assert iter.Column == 6
+    assert iter.Offset == 10
+
+    iter.SkipSuffix()
+
+    assert iter.Line == 3
+    assert iter.Column == 6
+    assert iter.Offset == 10
+
+    iter.Advance(1)
+
+    # Line 4
+    assert iter.Line == 4
+    assert iter.Column == 1
+    assert iter.Offset == 11
+    assert iter.IsBlankLine()
+
+    iter.SkipPrefix()
+
+    assert iter.Line == 4
+    assert iter.Column == 1
+    assert iter.Offset == 11
+
+    iter.Advance(1)
+
+    # Line 5
+    assert iter.Line == 5
+    assert iter.Column == 1
+    assert iter.Offset == 12
+    assert iter.IsBlankLine()
+
+    iter.SkipPrefix()
+
+    assert iter.Line == 5
+    assert iter.Column == 1
+    assert iter.Offset == 12
+
+    iter.SkipSuffix()
+
+    assert iter.Line == 5
+    assert iter.Column == 1
+    assert iter.Offset == 12
+
+    iter.Advance(1)
+
+    # Line 6
+    assert iter.Line == 6
+    assert iter.Column == 1
+    assert iter.Offset == 13
+    assert iter.IsBlankLine() == False
+
+    iter.SkipPrefix()
+
+    assert iter.Line == 6
+    assert iter.Column == 1
+    assert iter.Offset == 13
+
+    iter.Advance(len("six"))
+
+    assert iter.Line == 6
+    assert iter.Column == 4
+    assert iter.Offset == 16
+
+    assert iter.AtEnd() == False
+    assert iter.Advance(1)
+
+    assert iter.Line == 7
+    assert iter.Column == 1
+    assert iter.Offset == 17
+    assert iter.AtEnd()
+    assert iter.IsBlankLine() == False
+
+# ----------------------------------------------------------------------
+def test_SkipLine():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                """\
+                one
+                two
+
+                four
+                \t
+                    \t
+                seven
+                """,
+            ),
+        ),
+    )
+
+    assert iter.Line == 1
+    assert iter.Column == 1
+    assert iter.Offset == 0
+    iter.SkipLine()
+
+    assert iter.Line == 2
+    assert iter.Column == 1
+    assert iter.Offset == 4
+    iter.SkipLine()
+
+    assert iter.Line == 3
+    assert iter.Column == 1
+    assert iter.Offset == 8
+    iter.SkipLine()
+
+    assert iter.Line == 4
+    assert iter.Column == 1
+    assert iter.Offset == 9
+    iter.SkipLine()
+
+    assert iter.Line == 5
+    assert iter.Column == 1
+    assert iter.Offset == 14
+    iter.SkipLine()
+
+    assert iter.Line == 6
+    assert iter.Column == 1
+    assert iter.Offset == 15
+    iter.SkipLine()
+
+    assert iter.AtEnd() == False
+    assert iter.Line == 7
+    assert iter.Column == 1
+    assert iter.Offset == 16
+    iter.SkipLine()
+
+    assert iter.AtEnd()
+    assert iter.Line == 8
+    assert iter.Column == 1
+    assert iter.Offset == 22
 
 # ----------------------------------------------------------------------
 def test_Errors():

@@ -49,6 +49,7 @@ class TestLineInfo(object):
         assert li.HasWhitespaceSuffix()
         assert li.HasNewIndent() == False
         assert li.HasNewDedents() == False
+        assert li.IndentationValue() is None
         assert li.NumDedents() == 0
 
         assert li == li
@@ -67,6 +68,7 @@ class TestLineInfo(object):
         assert li.HasWhitespaceSuffix() == False
         assert li.HasNewIndent() == False
         assert li.HasNewDedents() == False
+        assert li.IndentationValue() is None
         assert li.NumDedents() == 0
 
         assert li == li
@@ -85,42 +87,45 @@ class TestLineInfo(object):
         assert li.HasWhitespaceSuffix()
         assert li.HasNewIndent() == False
         assert li.HasNewDedents() == False
+        assert li.IndentationValue() is None
         assert li.NumDedents() == 0
 
         assert li == li
 
     # ----------------------------------------------------------------------
     def test_StandardWithIndentation(self):
-        li = LineInfo(1, 4, 1, 3, True)
+        li = LineInfo(1, 4, 1, 3, (LineInfo.IndentType.Indent, 10))
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
         assert li.StartPos == 1
         assert li.EndPos == 3
-        assert li.IndentationInfo == True
+        assert li.IndentationInfo == (LineInfo.IndentType.Indent, 10)
 
         assert li.HasWhitespacePrefix() == False
         assert li.HasWhitespaceSuffix()
         assert li.HasNewIndent()
         assert li.HasNewDedents() == False
+        assert li.IndentationValue() == 10
         assert li.NumDedents() == 0
 
         assert li == li
 
     # ----------------------------------------------------------------------
     def test_StandardWithDedents(self):
-        li = LineInfo(1, 4, 1, 3, 2)
+        li = LineInfo(1, 4, 1, 3, (LineInfo.IndentType.Dedent, 2))
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
         assert li.StartPos == 1
         assert li.EndPos == 3
-        assert li.IndentationInfo == 2
+        assert li.IndentationInfo == (LineInfo.IndentType.Dedent, 2)
 
         assert li.HasWhitespacePrefix() == False
         assert li.HasWhitespaceSuffix()
         assert li.HasNewIndent() == False
         assert li.HasNewDedents()
+        assert li.IndentationValue() is None
         assert li.NumDedents() == 2
 
         assert li == li
@@ -200,9 +205,9 @@ class TestNormalize(object):
             ),
             [
                 LineInfo(0, 1, 0, 1, None),
-                LineInfo(2, 8, 6, 8, True),
-                LineInfo(9, 20, 17, 20, True),
-                LineInfo(21, 21, 21, 21, 2),
+                LineInfo(2, 8, 6, 8, (LineInfo.IndentType.Indent, 4)),
+                LineInfo(9, 20, 17, 20, (LineInfo.IndentType.Indent, 8)),
+                LineInfo(21, 21, 21, 21, (LineInfo.IndentType.Dedent, 2)),
             ],
         )
 
@@ -220,10 +225,10 @@ class TestNormalize(object):
             ),
             [
                 LineInfo(0, 1, 0, 1, None),
-                LineInfo(2, 8, 6, 8, True),
-                LineInfo(9, 20, 17, 20, True),
-                LineInfo(21, 29, 25, 29, 1),
-                LineInfo(30, 35, 30, 35, 1),
+                LineInfo(2, 8, 6, 8, (LineInfo.IndentType.Indent, 4)),
+                LineInfo(9, 20, 17, 20, (LineInfo.IndentType.Indent, 8)),
+                LineInfo(21, 29, 25, 29, (LineInfo.IndentType.Dedent, 1)),
+                LineInfo(30, 35, 30, 35, (LineInfo.IndentType.Dedent, 1)),
             ],
         )
 
@@ -234,8 +239,8 @@ class TestNormalize(object):
             "12  \n 34\n",
             [
                 LineInfo(0, 4, 0, 2, None),
-                LineInfo(5, 8, 6, 8, True),
-                LineInfo(9, 9, 9, 9, 1),
+                LineInfo(5, 8, 6, 8, (LineInfo.IndentType.Indent, 1)),
+                LineInfo(9, 9, 9, 9, (LineInfo.IndentType.Dedent, 1)),
             ],
         )
 
@@ -269,9 +274,9 @@ class TestNormalize(object):
             # Not using textwrap.dedent as the editor removes the empty whitespace
             "    12\n    \n34\n",
             [
-                LineInfo(0, 6, 4, 6, True),
+                LineInfo(0, 6, 4, 6, (LineInfo.IndentType.Indent, 4)),
                 LineInfo(7, 11, 11, 11, None),
-                LineInfo(12, 14, 12, 14, 1),
+                LineInfo(12, 14, 12, 14, (LineInfo.IndentType.Dedent, 1)),
             ],
         )
 
@@ -281,14 +286,14 @@ class TestNormalize(object):
             # Not using textwrap.dedent so tabs can be embedded
             "1\n  2\n3\n\t4\n\t5\n\t 6\n\t 7\n",
             [
-                LineInfo(0, 1, 0, 1, None),             # 1
-                LineInfo(2, 5, 4, 5, True),             # 2
-                LineInfo(6, 7, 6, 7, 1),                # 3
-                LineInfo(8, 10, 9, 10, True),           # 4
-                LineInfo(11, 13, 12, 13, None),         # 5
-                LineInfo(14, 17, 16, 17, True),         # 6
+                LineInfo(0, 1, 0, 1, None),                                     # 1
+                LineInfo(2, 5, 4, 5, (LineInfo.IndentType.Indent, 2)),          # 2
+                LineInfo(6, 7, 6, 7, (LineInfo.IndentType.Dedent, 1)),          # 3
+                LineInfo(8, 10, 9, 10, (LineInfo.IndentType.Indent, 100)),      # 4
+                LineInfo(11, 13, 12, 13, None),                                 # 5
+                LineInfo(14, 17, 16, 17, (LineInfo.IndentType.Indent, 101)),    # 6
                 LineInfo(18, 21, 20, 21, None),         # 7
-                LineInfo(22, 22, 22, 22, 2),
+                LineInfo(22, 22, 22, 22, (LineInfo.IndentType.Dedent, 2)),
             ],
         )
 
@@ -298,14 +303,14 @@ class TestNormalize(object):
             # Not using textwrap.dedent so tabs can be embedded
             "1\n  2\n3\n\t4\n\t5\n \t6\n \t7\n",
             [
-                LineInfo(0, 1, 0, 1, None),             # 1
-                LineInfo(2, 5, 4, 5, True),             # 2
-                LineInfo(6, 7, 6, 7, 1),                # 3
-                LineInfo(8, 10, 9, 10, True),           # 4
-                LineInfo(11, 13, 12, 13, None),         # 5
-                LineInfo(14, 17, 16, 17, True),         # 6
-                LineInfo(18, 21, 20, 21, None),         # 7
-                LineInfo(22, 22, 22, 22, 2),
+                LineInfo(0, 1, 0, 1, None),                                     # 1
+                LineInfo(2, 5, 4, 5, (LineInfo.IndentType.Indent, 2)),          # 2
+                LineInfo(6, 7, 6, 7, (LineInfo.IndentType.Dedent, 1)),          # 3
+                LineInfo(8, 10, 9, 10, (LineInfo.IndentType.Indent, 100)),      # 4
+                LineInfo(11, 13, 12, 13, None),                                 # 5
+                LineInfo(14, 17, 16, 17, (LineInfo.IndentType.Indent, 201)),    # 6
+                LineInfo(18, 21, 20, 21, None),                                 # 7
+                LineInfo(22, 22, 22, 22, (LineInfo.IndentType.Dedent, 2)),
             ],
         )
 
