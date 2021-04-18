@@ -15,9 +15,10 @@
 # ----------------------------------------------------------------------
 """Contains types and functions that normalize source content"""
 
+import enum
 import os
 
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 from collections import namedtuple
 
@@ -44,17 +45,25 @@ class LineInfo(object):
     """Information about a line"""
 
     # ----------------------------------------------------------------------
+    class IndentType(enum.Enum):
+        Indent                              = enum.auto()
+        Dedent                              = enum.auto()
+
+    # ----------------------------------------------------------------------
     def __init__(
         self,
         offset_start: int,
         offset_end: int,
         startpos: int,
         endpos: int,
-        indentation_info: Union[
-            None,                           # New new indentation
-            bool,                           # New Indent
-            int,                            # New Dedents (with the specific number)
-        ],
+        indentation_info: Optional[
+            Tuple[
+                IndentType,
+                int,                        # When...
+                                            #   Indent: indentation value
+                                            #   Dedent: number of dedents
+            ]
+        ]
     ):
         assert offset_start >= 0, offset_start
         assert offset_end >= offset_start, (offset_start, offset_end)
@@ -75,13 +84,6 @@ class LineInfo(object):
         return self.__dict__ == other.__dict__
 
     # ----------------------------------------------------------------------
-    def __repr__(self):
-        return CommonEnvironment.ObjectReprImpl(
-            self,
-            include_id=False,
-        )
-
-    # ----------------------------------------------------------------------
     def HasWhitespacePrefix(self):
         return self.StartPos > self.OffsetStart
 
@@ -91,15 +93,19 @@ class LineInfo(object):
 
     # ----------------------------------------------------------------------
     def HasNewIndent(self):
-        return isinstance(self.IndentationInfo, bool) and self.IndentationInfo
+        return self.IndentationInfo is not None and self.IndentationInfo[0] == LineInfo.IndentType.Indent
 
     # ----------------------------------------------------------------------
     def HasNewDedents(self):
-        return not isinstance(self.IndentationInfo, bool) and isinstance(self.IndentationInfo, int)
+        return self.IndentationInfo is not None and self.IndentationInfo[0] == LineInfo.IndentType.Dedent
+
+    # ----------------------------------------------------------------------
+    def IndentationValue(self):
+        return self.IndentationInfo[1] if self.HasNewIndent() else None
 
     # ----------------------------------------------------------------------
     def NumDedents(self):
-        return self.IndentationInfo if self.HasNewDedents() else 0
+        return self.IndentationInfo[1] if self.HasNewDedents() else 0
 
 
 # ----------------------------------------------------------------------
@@ -124,13 +130,6 @@ class NormalizedContent(object):
     # ----------------------------------------------------------------------
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
-
-    # ----------------------------------------------------------------------
-    def __repr__(self):
-        return CommonEnvironment.ObjectReprImpl(
-            self,
-            include_id=False,
-        )
 
 
 # ----------------------------------------------------------------------
@@ -174,7 +173,7 @@ def Normalize(
         line_end_offset: Optional[int] = None
 
         indentation_value = 0
-        has_new_indentation = False
+        new_indentation_value: Optional[int] = None
         num_dedents = 0
 
         content_start_offset: Optional[int] = None
@@ -188,7 +187,7 @@ def Normalize(
                     indentation_value += 1
                 elif char == "\t":
                     # Ensure that " \t" compares as different from "\t "
-                    indentation_value += (offset - line_start_offset) * 100
+                    indentation_value += (offset - line_start_offset + 1) * 100
                 else:
                     assert char == "\n" or not char.isspace(), char
 
@@ -210,7 +209,7 @@ def Normalize(
                             # Detect indents
                             if num_chars > indentation_stack[-1].num_chars:
                                 indentation_stack.append(IndentationInfo(num_chars, indentation_value))
-                                has_new_indentation = True
+                                new_indentation_value = indentation_value
 
                         # Detect dedents
                         while num_chars < indentation_stack[-1].num_chars:
@@ -245,12 +244,19 @@ def Normalize(
         assert content_start_offset is not None
         assert content_end_offset is not None
 
+        if isinstance(new_indentation_value, int):
+            indentation_info = (LineInfo.IndentType.Indent, new_indentation_value)
+        elif num_dedents:
+            indentation_info = (LineInfo.IndentType.Dedent, num_dedents)
+        else:
+            indentation_info = None
+
         return LineInfo(
             line_start_offset,
             line_end_offset,
             content_start_offset,
             content_end_offset,
-            True if has_new_indentation else (num_dedents or None),
+            indentation_info,
         )
 
     # ----------------------------------------------------------------------
@@ -265,7 +271,7 @@ def Normalize(
                 offset,
                 offset,
                 offset,
-                len(indentation_stack) - 1,
+                (LineInfo.IndentType.Dedent, len(indentation_stack) - 1),
             ),
         )
 

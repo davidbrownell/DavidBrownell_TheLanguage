@@ -24,6 +24,7 @@ import pytest
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
+from CommonEnvironment import Interface
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
@@ -35,8 +36,6 @@ with CallOnExit(lambda: sys.path.pop(0)):
     from Token import *
     from Normalize import Normalize
     from NormalizedIterator import NormalizedIterator
-
-# ----------------------------------------------------------------------
 
 # ----------------------------------------------------------------------
 def test_NewlineToken():
@@ -56,18 +55,16 @@ def test_NewlineToken():
 
     token = NewlineToken()
 
-    assert token.Name == "Newline"
+    assert token.Name == "Newline+"
+    assert token.CaptureMany
 
-    assert token.Match(iter) is NewlineToken            # Line 1
-    assert token.Match(iter) is NewlineToken            # Line 2
-    assert token.Match(iter) is NewlineToken            # Line 3
+    assert token.Match(iter) == (NewlineToken, 0, 3)    # Lines 1-3
 
     # line with 'last_line'
     assert token.Match(iter) is None
     iter.Advance(len("last_line"))
-    assert token.Match(iter) is NewlineToken
-
-    assert token.Match(iter) is NewlineToken            # Line 5
+    assert iter.Offset == 12
+    assert token.Match(iter) == (NewlineToken, 12, 14)
 
     assert iter.AtEnd()
 
@@ -77,23 +74,77 @@ def test_NewlineTokenWithWhitespace():
 
     token = NewlineToken()
 
-    assert token.Name == "Newline"
+    assert token.Name == "Newline+"
+    assert token.CaptureMany
 
-    assert token.Match(iter) is NewlineToken            # Line 1
-    assert token.Match(iter) is NewlineToken            # Line 2
-
-    # Line 3
-    assert token.Match(iter) is None
-    assert iter.LineInfo.IndentationInfo is None
-    iter.SkipPrefix()
-    assert token.Match(iter) is NewlineToken            # Line 3
+    assert token.Match(iter) == (NewlineToken, 0, 7)    # Line 1 - 3
 
     # line with 'last_line'
     assert token.Match(iter) is None
     iter.Advance(len("last_line"))
-    assert token.Match(iter) is NewlineToken
+    assert iter.Offset == 16
+    assert token.Match(iter) == (NewlineToken, 16, 20)
 
-    assert token.Match(iter) is NewlineToken            # Line 5
+    assert iter.AtEnd()
+
+# ----------------------------------------------------------------------
+def test_NonGreedyNewline():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                """\
+
+
+
+                last_line
+
+                """,
+            ),
+        ),
+    )
+
+    token = NewlineToken(
+        capture_many=False,
+    )
+
+    assert token.Name == "Newline"
+    assert token.CaptureMany == False
+
+    # Line 1
+    assert iter.Line == 1
+    assert iter.Column == 1
+    assert iter.Offset == 0
+    assert token.Match(iter) == (NewlineToken, 0, 1)
+
+    # Line 2
+    assert iter.Line == 2
+    assert iter.Column == 1
+    assert iter.Offset == 1
+    assert token.Match(iter) == (NewlineToken, 1, 2)
+
+    # Line 3
+    assert iter.Line == 3
+    assert iter.Column == 1
+    assert iter.Offset == 2
+    assert token.Match(iter) == (NewlineToken, 2, 3)
+
+    # Line 4
+    assert iter.Line == 4
+    assert iter.Column == 1
+    assert iter.Offset == 3
+    assert token.Match(iter) is None
+
+    iter.Advance(len("last_line"))
+    assert iter.Offset == 12
+    assert token.Match(iter) == (NewlineToken, 12, 13)
+
+    # Line 5
+    assert iter.AtEnd() == False
+
+    assert iter.Line == 5
+    assert iter.Column == 1
+    assert iter.Offset == 13
+    assert token.Match(iter) == (NewlineToken, 13, 14)
 
     assert iter.AtEnd()
 
@@ -124,13 +175,13 @@ def test_Indent():
     iter.Advance(1)
 
     # Line 2
-    assert token.Match(iter) == (4, 8)
+    assert token.Match(iter) == (IndentToken, 4, 8)
     assert token.Match(iter) is None
     iter.Advance(len("two"))
     iter.Advance(1)
 
     # Line 3
-    assert token.Match(iter) == (12, 18)
+    assert token.Match(iter) == (IndentToken, 12, 18)
     assert token.Match(iter) is None
     iter.Advance(len("three"))
     iter.Advance(1)
@@ -258,3 +309,33 @@ def test_Regex():
 def test_RegexErrors():
     with pytest.raises(AssertionError):
         RegexToken(None, "doesn't matter")
+
+# ----------------------------------------------------------------------
+def test_ControlTokens():
+    assert NewlineToken().IsControlToken == False
+
+    # ----------------------------------------------------------------------
+    @Interface.staticderived
+    class MyControlToken(ControlTokenBase):
+        Name                                = Interface.DerivedProperty("MyControlToken")
+
+    # ----------------------------------------------------------------------
+
+    assert MyControlToken.IsControlToken
+
+    with pytest.raises(Exception):
+        MyControlToken.Match(None)
+
+# ----------------------------------------------------------------------
+def test_PushIgnoreWhitespaceControlToken():
+    token = PushIgnoreWhitespaceControlToken()
+
+    assert token.IsControlToken
+    assert token.Name == "PushIgnoreWhitespaceControl"
+
+# ----------------------------------------------------------------------
+def test_PopIgnoreWhitespaceControlToken():
+    token = PopIgnoreWhitespaceControlToken()
+
+    assert token.IsControlToken
+    assert token.Name == "PopIgnoreWhitespaceControl"
