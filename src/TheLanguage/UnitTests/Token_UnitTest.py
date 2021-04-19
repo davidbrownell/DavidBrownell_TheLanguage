@@ -38,6 +38,11 @@ with CallOnExit(lambda: sys.path.pop(0)):
     from NormalizedIterator import NormalizedIterator
 
 # ----------------------------------------------------------------------
+def test_Equal():
+    assert NewlineToken() == NewlineToken()
+    assert NewlineToken() != NewlineToken(False)
+
+# ----------------------------------------------------------------------
 def test_NewlineToken():
     iter = NormalizedIterator(
         Normalize(
@@ -83,7 +88,10 @@ def test_NewlineTokenWithWhitespace():
     assert token.Match(iter) is None
     iter.Advance(len("last_line"))
     assert iter.Offset == 16
-    assert token.Match(iter) == (NewlineToken, 16, 20)
+
+    assert token.Match(iter) is None
+    iter.SkipSuffix()
+    assert token.Match(iter) == (NewlineToken, 18, 20)
 
     assert iter.AtEnd()
 
@@ -175,13 +183,13 @@ def test_Indent():
     iter.Advance(1)
 
     # Line 2
-    assert token.Match(iter) == (IndentToken, 4, 8)
+    assert token.Match(iter) == (IndentToken, 4, 8, 4)
     assert token.Match(iter) is None
     iter.Advance(len("two"))
     iter.Advance(1)
 
     # Line 3
-    assert token.Match(iter) == (IndentToken, 12, 18)
+    assert token.Match(iter) == (IndentToken, 12, 18, 6)
     assert token.Match(iter) is None
     iter.Advance(len("three"))
     iter.Advance(1)

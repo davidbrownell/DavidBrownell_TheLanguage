@@ -77,6 +77,10 @@ class Token(Interface.Interface):
         """Returns match information if applicable"""
         raise Exception("Abstract method")
 
+    # ----------------------------------------------------------------------
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
 
 # ----------------------------------------------------------------------
 @Interface.staticderived
@@ -102,10 +106,13 @@ class NewlineToken(Token):
     # ----------------------------------------------------------------------
     @Interface.override
     def Match(self, normalized_iter):
-        if normalized_iter.Offset == normalized_iter.LineInfo.EndPos and not normalized_iter.AtEnd():
+
+        if (
+            normalized_iter.Offset == normalized_iter.LineInfo.OffsetEnd
+            and not normalized_iter.AtEnd()
+        ):
             newline_start = normalized_iter.Offset
 
-            normalized_iter.SkipSuffix()
             normalized_iter.Advance(1)
 
             if self._capture_many:
@@ -128,7 +135,12 @@ class IndentToken(Token):
     def Match(cls, normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.HasNewIndent():
             normalized_iter.SkipPrefix()
-            return (cls, normalized_iter.LineInfo.OffsetStart, normalized_iter.LineInfo.StartPos)
+            return (
+                cls,
+                normalized_iter.LineInfo.OffsetStart,
+                normalized_iter.LineInfo.StartPos,
+                normalized_iter.LineInfo.IndentationValue(),
+            )
 
         return None
 
@@ -144,7 +156,13 @@ class DedentToken(Token):
     def Match(cls, normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.NumDedents():
             normalized_iter.SkipPrefix()
-            return [cls] * normalized_iter.LineInfo.NumDedents()
+
+            num_dedents = normalized_iter.LineInfo.NumDedents()
+
+            if normalized_iter.AtTrailingDedents():
+                normalized_iter.Advance(0)
+
+            return [cls] * num_dedents
 
         return None
 
@@ -190,6 +208,12 @@ class ControlTokenBase(Token):
 
     IsControlToken                          = True
 
+    # Some control tokens must be paired with other control tokens
+    # when they are used (do/undo, push/pop, etc). Set this value
+    # if necessary.
+    ClosingToken: Optional["ControlTokenBase"]          = None
+    OpeningToken: Optional["ControlTokenBase"]          = None
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
@@ -210,7 +234,7 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
     """
 
     Name                                    = Interface.DerivedProperty("PushIgnoreWhitespaceControl")
-
+    ClosingToken                            = "PopIgnoreWhitespaceControlToken" # Set below
 
 # ----------------------------------------------------------------------
 @Interface.staticderived
@@ -222,3 +246,7 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
     """
 
     Name                                    = Interface.DerivedProperty("PopIgnoreWhitespaceControl")
+    OpeningToken                            = PushIgnoreWhitespaceControlToken
+
+
+PushIgnoreWhitespaceControlToken.ClosingToken           = PopIgnoreWhitespaceControlToken

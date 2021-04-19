@@ -84,6 +84,10 @@ class NormalizedIterator(NormalizedContent):
         )
 
     # ----------------------------------------------------------------------
+    def AtTrailingDedents(self) -> bool:
+        return self.HasTrailingDedents() and self._line_info_index == len(self.LineInfos) - 1
+
+    # ----------------------------------------------------------------------
     def IsBlankLine(self) -> bool:
         """Returns True if the offset is positioned at the beginning of a blank line"""
 
@@ -92,19 +96,22 @@ class NormalizedIterator(NormalizedContent):
         if self.AtEnd():
             return False
 
-        offset = self.Offset
-        info = self.LineInfo
+        # The trailing dedents line should not be considered a blank line
+        if (
+            self._line_info_index == len(self.LineInfos) - 1
+            and self.HasTrailingDedents()
+        ):
+            return False
 
-        assert offset == info.OffsetStart
+        info = self.LineInfo
         return info.EndPos == info.StartPos
 
     # ----------------------------------------------------------------------
     def SkipLine(self) -> "NormalizedIterator":
         info = self.LineInfo
 
-        assert self.Offset == info.OffsetStart
-
         self._offset = info.OffsetEnd
+
         return self.Advance(1)
 
     # ----------------------------------------------------------------------
@@ -159,10 +166,6 @@ class NormalizedIterator(NormalizedContent):
             assert (
                 offset >= info.StartPos
                 or (offset == info.OffsetStart and offset + delta == info.StartPos)
-            ), (offset, info)
-            assert (
-                offset < info.EndPos
-                or (offset == info.EndPos and offset + delta == info.OffsetEnd)
             ), (offset, info)
 
         self._offset += delta
