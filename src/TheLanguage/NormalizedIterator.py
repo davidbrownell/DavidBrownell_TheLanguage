@@ -53,6 +53,9 @@ class NormalizedIterator(NormalizedContent):
     @property
     def Column(self) -> int:
         """Returns the current (1-based) column number"""
+        if self.AtEnd():
+            return 1
+
         return self._offset - self.LineInfo.OffsetStart + 1
 
     @property
@@ -64,7 +67,6 @@ class NormalizedIterator(NormalizedContent):
     @property
     def Offset(self) -> int:
         """Returns the current offset"""
-        assert not self.AtEnd()
         return self._offset
 
     # ----------------------------------------------------------------------
@@ -80,6 +82,30 @@ class NormalizedIterator(NormalizedContent):
             and self.LineInfos[-1].OffsetStart == self.LineInfos[-1].StartPos
             and self.LineInfos[-1].OffsetEnd == self.LineInfos[-1].EndPos
         )
+
+    # ----------------------------------------------------------------------
+    def IsBlankLine(self) -> bool:
+        """Returns True if the offset is positioned at the beginning of a blank line"""
+
+        # We don't have any line when we are at the end, so we can't have
+        # a blank line.
+        if self.AtEnd():
+            return False
+
+        offset = self.Offset
+        info = self.LineInfo
+
+        assert offset == info.OffsetStart
+        return info.EndPos == info.StartPos
+
+    # ----------------------------------------------------------------------
+    def SkipLine(self) -> "NormalizedIterator":
+        info = self.LineInfo
+
+        assert self.Offset == info.OffsetStart
+
+        self._offset = info.OffsetEnd
+        return self.Advance(1)
 
     # ----------------------------------------------------------------------
     def SkipPrefix(self) -> "NormalizedIterator":
