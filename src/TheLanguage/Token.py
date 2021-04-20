@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Match, Optional, Pattern, Tuple, Union
+from typing import List, Match, NamedTuple, Optional, Pattern, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,27 +33,33 @@ from NormalizedIterator import NormalizedIterator
 class Token(Interface.Interface):
     """Base class for various Token types"""
 
+    # ----------------------------------------------------------------------
+    class NewlineMatch(NamedTuple):
+        token: "Token"
+        start: int
+        end: int
+
+    # ----------------------------------------------------------------------
+    class IndentMatch(NamedTuple):
+        token: "Token"
+        start: int
+        end: int
+        value: int
+
+    # ----------------------------------------------------------------------
+    class DedentMatch(NamedTuple):
+        token: "Token"
+
+    # ----------------------------------------------------------------------
+    class RegexMatch(NamedTuple):
+        match: Match
+
+    # ----------------------------------------------------------------------
     MatchType                               = Union[
-        # Newline
-        Tuple[
-            "Token",
-            int,                            # start range
-            int,                            # end range
-        ],
-
-        # Indent
-        Tuple[
-            "Token",
-            int,                            # start range
-            int,                            # end range
-            int,                            # token value
-        ],
-
-        # Dedent
-        "Token",
-
-        # Regex match
-        Match,
+        NewlineMatch,
+        IndentMatch,
+        DedentMatch,
+        RegexMatch,
     ]
 
     # ----------------------------------------------------------------------
@@ -119,7 +125,11 @@ class NewlineToken(Token):
                 while normalized_iter.IsBlankLine():
                     normalized_iter.SkipLine()
 
-            return (NewlineToken, newline_start, normalized_iter.Offset)
+            return Token.NewlineMatch(
+                NewlineToken,
+                newline_start,
+                normalized_iter.Offset,
+            )
 
         return None
 
@@ -135,7 +145,7 @@ class IndentToken(Token):
     def Match(cls, normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.HasNewIndent():
             normalized_iter.SkipPrefix()
-            return (
+            return Token.IndentMatch(
                 cls,
                 normalized_iter.LineInfo.OffsetStart,
                 normalized_iter.LineInfo.StartPos,
@@ -162,7 +172,7 @@ class DedentToken(Token):
             if normalized_iter.AtTrailingDedents():
                 normalized_iter.Advance(0)
 
-            return [cls] * num_dedents
+            return [Token.DedentMatch(cls)] * num_dedents
 
         return None
 
@@ -197,7 +207,7 @@ class RegexToken(Token):
 
         if match:
             normalized_iter.Advance(match.end() - match.start())
-            return match
+            return Token.RegexMatch(match)
 
         return None
 
