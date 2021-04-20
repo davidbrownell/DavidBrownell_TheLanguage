@@ -198,12 +198,16 @@ def test_Standard():
     assert iter.Content[iter.Offset] == "\n"
     assert iter.Line == 6
     assert iter.Column == 15
+
+    assert iter.AtTrailingDedents() == False
     iter.Advance(1)
 
     assert iter.AtEnd() == False
 
     # Final dedents
     assert iter.HasTrailingDedents()
+    assert iter.AtTrailingDedents()
+    assert iter.IsBlankLine() == False
 
     assert iter.LineInfo.IndentationInfo == (LineInfo.IndentType.Dedent, 2)
 
