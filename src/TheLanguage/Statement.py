@@ -28,6 +28,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 from NormalizedIterator import NormalizedIterator
+
+# <No name...> pylint: disable=E0611
 from Token import (
     DedentToken,
     IndentToken,
