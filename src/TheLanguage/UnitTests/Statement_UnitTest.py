@@ -971,3 +971,21 @@ class TestEmbeddedStatements(object):
         assert result.results[1][0].iter.Line == 1
         assert result.results[1][0].iter.Column == 6
         assert result.results[1][0].is_ignored == False
+
+    # ----------------------------------------------------------------------
+    def test_NoMatchFirstOnly(self):
+        result = self._statement.Parse(NormalizedIterator(Normalize("( ")))
+
+        assert result.success == False
+
+        assert result.iter.Line == 1
+        assert result.iter.Column == 2
+        assert result.iter.AtEnd() == False
+
+        assert len(result.results) == 1
+
+        assert result.results[0].whitespace is None
+        assert result.results[0].value.match.group("value") == "("
+        assert result.results[0].iter.Line == 1
+        assert result.results[0].iter.Column == 2
+        assert result.results[0].is_ignored == False
