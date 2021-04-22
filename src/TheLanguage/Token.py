@@ -16,6 +16,7 @@
 """Contains various token objects"""
 
 import os
+import re
 
 from typing import List, Match, NamedTuple, Optional, Pattern, Tuple, Union
 
@@ -91,6 +92,8 @@ class Token(Interface.Interface):
 # ----------------------------------------------------------------------
 @Interface.staticderived
 class NewlineToken(Token):
+    """Token that matches 1 or more newlines (depending on `capture_many`)"""
+
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -137,6 +140,8 @@ class NewlineToken(Token):
 # ----------------------------------------------------------------------
 @Interface.staticderived
 class IndentToken(Token):
+    """Token that matches indentations"""
+
     Name                                    = Interface.DerivedProperty("Indent")
 
     # ----------------------------------------------------------------------
@@ -158,6 +163,8 @@ class IndentToken(Token):
 # ----------------------------------------------------------------------
 @Interface.staticderived
 class DedentToken(Token):
+    """Token that matches dedents"""
+
     Name                                    = Interface.DerivedProperty("Dedent")
 
     # ----------------------------------------------------------------------
@@ -179,16 +186,20 @@ class DedentToken(Token):
 
 # ----------------------------------------------------------------------
 class RegexToken(Token):
+    """Token that matches content based on the provided regular expression"""
+
     # ----------------------------------------------------------------------
     def __init__(
         self,
         name: str,
         regex: Pattern,
+        is_multiline: Optional[bool]=False,
     ):
         assert name
 
         self._name                          = name
         self._regex                         = regex
+        self._is_multiline                  = is_multiline
 
     # ----------------------------------------------------------------------
     @property
@@ -202,14 +213,49 @@ class RegexToken(Token):
         match = self._regex.match(
             normalized_iter.Content,
             pos=normalized_iter.Offset,
-            endpos=normalized_iter.LineInfo.EndPos,
+            endpos=normalized_iter.ContentLen if self._is_multiline else normalized_iter.LineInfo.EndPos,
         )
 
         if match:
-            normalized_iter.Advance(match.end() - match.start())
+            if self._is_multiline:
+                # The match may span multiple lines, so we have to be intentional about how we advance.
+                to_advance = match.end() - match.start()
+
+                while to_advance:
+                    line_to_advance = min(to_advance, normalized_iter.LineInfo.OffsetEnd - normalized_iter.Offset)
+                    assert line_to_advance
+
+                    normalized_iter.Advance(line_to_advance)
+                    to_advance -= line_to_advance
+
+                    # Skip the newline (if necessary)
+                    if to_advance:
+                        normalized_iter.Advance(1)
+                        to_advance -= 1
+            else:
+                normalized_iter.Advance(match.end() - match.start())
+
             return Token.RegexMatch(match)
 
         return None
+
+
+# ----------------------------------------------------------------------
+class WordToken(RegexToken):
+    """Token that matches letters, numbers, _, -, ."""
+
+    CONTENT_MATCH_GROUP_NAME                = "word"
+
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        name: str,
+    ):
+        super(WordToken, self).__init__(
+            name=name,
+            regex=re.compile(r"(?P<{}>[a-zA-Z0-9_\-\.]+)".format(self.CONTENT_MATCH_GROUP_NAME)),
+            is_multiline=False,
+        )
 
 
 # ----------------------------------------------------------------------
