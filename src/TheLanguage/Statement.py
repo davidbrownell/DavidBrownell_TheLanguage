@@ -262,9 +262,10 @@ class StandardStatement(Statement):
                 result = item.Parse(normalized_iter)
 
                 # Copy any matching contents, even if the call wasn't successful
-                results.append(result.results)
+                if result.results:
+                    results.append(result.results)
 
-                normalized_iter = result.iter
+                    normalized_iter = result.iter
 
                 if not result.success:
                     success = False

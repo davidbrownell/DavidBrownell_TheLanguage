@@ -317,6 +317,73 @@ def test_RegexErrors():
         RegexToken(None, "doesn't matter")
 
 # ----------------------------------------------------------------------
+def test_MultilineRegex():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                '''\
+                """
+                one
+                two
+                """after
+                ''',
+            ),
+        ),
+    )
+
+    regex = re.compile(r'"""(?P<content>.+?)"""', re.DOTALL | re.MULTILINE)
+
+    # The match should fail when multiline is not set
+    assert RegexToken("Should not match", regex).Match(iter) is None
+
+    # The match should succeed when multiline is set
+    result = RegexToken(
+        "Should match",
+        regex,
+        is_multiline=True,
+    ).Match(iter)
+
+    assert result is not None
+    assert result.match.group("content") == "\none\ntwo\n"
+    assert result.match.start() == 0
+    assert result.match.end() == 15
+
+    assert iter.Offset == 15
+
+# ----------------------------------------------------------------------
+def test_WordToken():
+    token = WordToken("A word")
+
+    iter = NormalizedIterator(Normalize("one two2 _three-1.2 (four)"))
+
+    # one
+    assert token.Match(iter).match.group(token.CONTENT_MATCH_GROUP_NAME) == "one"
+
+    # Whitespace
+    assert token.Match(iter) is None
+    iter.Advance(1)
+
+    # two2
+    assert token.Match(iter).match.group(token.CONTENT_MATCH_GROUP_NAME) == "two2"
+
+    # Whitespace
+    assert token.Match(iter) is None
+    iter.Advance(1)
+
+    # _three-1.2
+    assert token.Match(iter).match.group(token.CONTENT_MATCH_GROUP_NAME) == "_three-1.2"
+
+    # Whitespace
+    assert token.Match(iter) is None
+    iter.Advance(1)
+
+    # (four)
+    assert token.Match(iter) is None
+    iter.Advance(1)
+
+    assert token.Match(iter).match.group(token.CONTENT_MATCH_GROUP_NAME) == "four"
+
+# ----------------------------------------------------------------------
 def test_ControlTokens():
     assert NewlineToken().IsControlToken == False
 
