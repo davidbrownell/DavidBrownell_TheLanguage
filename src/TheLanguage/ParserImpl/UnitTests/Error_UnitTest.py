@@ -17,7 +17,6 @@
 
 import os
 import sys
-import textwrap
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
