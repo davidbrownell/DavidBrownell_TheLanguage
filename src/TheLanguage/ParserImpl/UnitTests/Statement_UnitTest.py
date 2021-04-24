@@ -122,7 +122,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 7, 8)
+        assert result.results[2].value == Token.NewlineMatch(7, 8)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -167,7 +167,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 9, 10)
+        assert result.results[2].value == Token.NewlineMatch(9, 10)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -207,7 +207,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 7, 8)
+        assert result.results[2].value == Token.NewlineMatch(7, 8)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -247,7 +247,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 9, 10)
+        assert result.results[2].value == Token.NewlineMatch(9, 10)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -287,7 +287,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace == (7, 8)
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 8, 9)
+        assert result.results[2].value == Token.NewlineMatch(8, 9)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -327,7 +327,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace == (7, 10)
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 10, 11)
+        assert result.results[2].value == Token.NewlineMatch(10, 11)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -367,7 +367,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace == (7, 8)
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 8, 9)
+        assert result.results[2].value == Token.NewlineMatch(8, 9)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -407,7 +407,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace == (7, 11)
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 11, 12)
+        assert result.results[2].value == Token.NewlineMatch(11, 12)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -461,7 +461,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 7, 8)
+        assert result.results[2].value == Token.NewlineMatch(7, 8)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -502,7 +502,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 18, 19)
+        assert result.results[2].value == Token.NewlineMatch(18, 19)
         assert result.results[2].iter.Line == 3
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -545,7 +545,7 @@ class TestSingleLine(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 7, 17)
+        assert result.results[2].value == Token.NewlineMatch(7, 17)
         assert result.results[2].iter.Line == 5
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
@@ -652,7 +652,7 @@ class TestIndentAndDedent(object):
         assert result.results[1].token == NewlineToken()
 
         assert result.results[1].whitespace is None
-        assert result.results[1].value == Token.NewlineMatch(NewlineToken, 3, 4)
+        assert result.results[1].value == Token.NewlineMatch(3, 4)
         assert result.results[1].iter.Line == 2
         assert result.results[1].iter.Column == 1
         assert result.results[1].is_ignored == False
@@ -660,7 +660,7 @@ class TestIndentAndDedent(object):
         assert result.results[2].token == IndentToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.IndentMatch(IndentToken, 4, 8, 4)
+        assert result.results[2].value == Token.IndentMatch(4, 8, 4)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 5
         assert result.results[2].is_ignored == False
@@ -676,7 +676,7 @@ class TestIndentAndDedent(object):
         assert result.results[4].token == NewlineToken()
 
         assert result.results[4].whitespace is None
-        assert result.results[4].value == Token.NewlineMatch(NewlineToken, 11, 12)
+        assert result.results[4].value == Token.NewlineMatch(11, 12)
         assert result.results[4].iter.Line == 3
         assert result.results[4].iter.Column == 1
         assert result.results[4].is_ignored == False
@@ -692,7 +692,7 @@ class TestIndentAndDedent(object):
         assert result.results[6].token == NewlineToken()
 
         assert result.results[6].whitespace is None
-        assert result.results[6].value == Token.NewlineMatch(NewlineToken, 21, 22)
+        assert result.results[6].value == Token.NewlineMatch(21, 22)
         assert result.results[6].iter.Line == 4
         assert result.results[6].iter.Column == 1
         assert result.results[6].is_ignored == False
@@ -700,7 +700,7 @@ class TestIndentAndDedent(object):
         assert result.results[7].token == DedentToken()
 
         assert result.results[7].whitespace is None
-        assert result.results[7].value == Token.DedentMatch(DedentToken)
+        assert result.results[7].value == Token.DedentMatch()
         assert result.results[7].iter.Line == 4
         assert result.results[7].iter.Column == 1
         assert result.results[7].is_ignored == False
@@ -748,7 +748,7 @@ class TestIndentAndDedent(object):
         assert result.results[1].token == NewlineToken()
 
         assert result.results[1].whitespace is None
-        assert result.results[1].value == (NewlineToken, 3, 4)
+        assert result.results[1].value == Token.NewlineMatch(3, 4)
         assert result.results[1].iter.Line == 2
         assert result.results[1].iter.Column == 1
         assert result.results[1].is_ignored == False
@@ -756,7 +756,7 @@ class TestIndentAndDedent(object):
         assert result.results[2].token == IndentToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == (IndentToken, 4, 8, 4)
+        assert result.results[2].value == Token.IndentMatch(4, 8, 4)
         assert result.results[2].iter.Line == 2
         assert result.results[2].iter.Column == 5
         assert result.results[2].is_ignored == False
@@ -772,7 +772,7 @@ class TestIndentAndDedent(object):
         assert result.results[4].token == NewlineToken()
 
         assert result.results[4].whitespace is None
-        assert result.results[4].value == (NewlineToken, 11, 12)
+        assert result.results[4].value == Token.NewlineMatch(11, 12)
         assert result.results[4].iter.Line == 3
         assert result.results[4].iter.Column == 1
         assert result.results[4].is_ignored == False
@@ -814,7 +814,7 @@ def test_FinishEarly():
     assert result.results[1].token == NewlineToken()
 
     assert result.results[1].whitespace is None
-    assert result.results[1].value == (NewlineToken, 3, 4)
+    assert result.results[1].value == Token.NewlineMatch(3, 4)
     assert result.results[1].iter.Line == 2
     assert result.results[1].iter.Column == 1
     assert result.results[1].is_ignored == False
@@ -907,7 +907,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[2].token == NewlineToken()
 
         assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(NewlineToken, 5, 8)
+        assert result.results[2].value == Token.NewlineMatch(5, 8)
         assert result.results[2].iter.Line == 4
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == True
@@ -916,7 +916,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[3].token == IndentToken()
 
         assert result.results[3].whitespace is None
-        assert result.results[3].value == Token.IndentMatch(IndentToken, 8, 12, 4)
+        assert result.results[3].value == Token.IndentMatch(8, 12, 4)
         assert result.results[3].iter.Line == 4
         assert result.results[3].iter.Column == 5
         assert result.results[3].is_ignored == True
@@ -933,7 +933,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[5].token == NewlineToken()
 
         assert result.results[5].whitespace is None
-        assert result.results[5].value == Token.NewlineMatch(NewlineToken, 15, 17)
+        assert result.results[5].value == Token.NewlineMatch(15, 17)
         assert result.results[5].iter.Line == 6
         assert result.results[5].iter.Column == 1
         assert result.results[5].is_ignored == True
@@ -942,7 +942,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[6].token == IndentToken()
 
         assert result.results[6].whitespace is None
-        assert result.results[6].value == Token.IndentMatch(IndentToken, 17, 25, 8)
+        assert result.results[6].value == Token.IndentMatch(17, 25, 8)
         assert result.results[6].iter.Line == 6
         assert result.results[6].iter.Column == 9
         assert result.results[6].is_ignored == True
@@ -958,7 +958,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[8].token == NewlineToken()
 
         assert result.results[8].whitespace is None
-        assert result.results[8].value == Token.NewlineMatch(NewlineToken, 30, 31)
+        assert result.results[8].value == Token.NewlineMatch(30, 31)
         assert result.results[8].iter.Line == 7
         assert result.results[8].iter.Column == 1
         assert result.results[8].is_ignored == True
@@ -967,7 +967,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[9].token == DedentToken()
 
         assert result.results[9].whitespace is None
-        assert result.results[9].value == Token.DedentMatch(DedentToken)
+        assert result.results[9].value == Token.DedentMatch()
         assert result.results[9].iter.Line == 7
         assert result.results[9].iter.Column == 5
         assert result.results[9].is_ignored == True
@@ -983,7 +983,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[11].token == NewlineToken()
 
         assert result.results[11].whitespace is None
-        assert result.results[11].value == Token.NewlineMatch(NewlineToken, 39, 40)
+        assert result.results[11].value == Token.NewlineMatch(39, 40)
         assert result.results[11].iter.Line == 8
         assert result.results[11].iter.Column == 1
         assert result.results[11].is_ignored == True
@@ -992,7 +992,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[12].token == IndentToken()
 
         assert result.results[12].whitespace is None
-        assert result.results[12].value == Token.IndentMatch(IndentToken, 40, 48, 8)
+        assert result.results[12].value == Token.IndentMatch(40, 48, 8)
         assert result.results[12].iter.Line == 8
         assert result.results[12].iter.Column == 9
         assert result.results[12].is_ignored == True
@@ -1008,7 +1008,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[14].token == NewlineToken()
 
         assert result.results[14].whitespace is None
-        assert result.results[14].value == Token.NewlineMatch(NewlineToken, 52, 54)
+        assert result.results[14].value == Token.NewlineMatch(52, 54)
         assert result.results[14].iter.Line == 10
         assert result.results[14].iter.Column == 1
         assert result.results[14].is_ignored == True
@@ -1017,7 +1017,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[15].token == DedentToken()
 
         assert result.results[15].whitespace is None
-        assert result.results[15].value == Token.DedentMatch(DedentToken)
+        assert result.results[15].value == Token.DedentMatch()
         assert result.results[15].iter.Line == 10
         assert result.results[15].iter.Column == 1
         assert result.results[15].is_ignored == True
@@ -1025,7 +1025,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[16].token == DedentToken()
 
         assert result.results[16].whitespace is None
-        assert result.results[16].value == Token.DedentMatch(DedentToken)
+        assert result.results[16].value == Token.DedentMatch()
         assert result.results[16].iter.Line == 10
         assert result.results[16].iter.Column == 1
         assert result.results[16].is_ignored == True
@@ -1050,7 +1050,7 @@ class TestIgnoreWhitespace(object):
         assert result.results[19].token == NewlineToken()
 
         assert result.results[19].whitespace is None
-        assert result.results[19].value == Token.NewlineMatch(NewlineToken, 59, 60)
+        assert result.results[19].value == Token.NewlineMatch(59, 60)
         assert result.results[19].iter.Line == 11
         assert result.results[19].iter.Column == 1
         assert result.results[19].iter.AtEnd()

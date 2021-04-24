@@ -36,20 +36,18 @@ class Token(Interface.Interface):
 
     # ----------------------------------------------------------------------
     class NewlineMatch(NamedTuple):
-        token: "Token"
         start: int
         end: int
 
     # ----------------------------------------------------------------------
     class IndentMatch(NamedTuple):
-        token: "Token"
         start: int
         end: int
         value: int
 
     # ----------------------------------------------------------------------
     class DedentMatch(NamedTuple):
-        token: "Token"
+        pass
 
     # ----------------------------------------------------------------------
     class RegexMatch(NamedTuple):
@@ -129,7 +127,6 @@ class NewlineToken(Token):
                     normalized_iter.SkipLine()
 
             return Token.NewlineMatch(
-                NewlineToken,
                 newline_start,
                 normalized_iter.Offset,
             )
@@ -145,13 +142,12 @@ class IndentToken(Token):
     Name                                    = Interface.DerivedProperty("Indent")
 
     # ----------------------------------------------------------------------
-    @classmethod
+    @staticmethod
     @Interface.override
-    def Match(cls, normalized_iter):
+    def Match(normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.HasNewIndent():
             normalized_iter.SkipPrefix()
             return Token.IndentMatch(
-                cls,
                 normalized_iter.LineInfo.OffsetStart,
                 normalized_iter.LineInfo.StartPos,
                 normalized_iter.LineInfo.IndentationValue(),
@@ -168,9 +164,9 @@ class DedentToken(Token):
     Name                                    = Interface.DerivedProperty("Dedent")
 
     # ----------------------------------------------------------------------
-    @classmethod
+    @staticmethod
     @Interface.override
-    def Match(cls, normalized_iter):
+    def Match(normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.NumDedents():
             normalized_iter.SkipPrefix()
 
@@ -179,7 +175,7 @@ class DedentToken(Token):
             if normalized_iter.AtTrailingDedents():
                 normalized_iter.Advance(0)
 
-            return [Token.DedentMatch(cls)] * num_dedents
+            return [Token.DedentMatch()] * num_dedents
 
         return None
 
