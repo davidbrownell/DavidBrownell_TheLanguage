@@ -44,16 +44,31 @@ class Statement(Interface.Interface):
     """Abstract base class for objects that identify tokens"""
 
     # ----------------------------------------------------------------------
-    class ParseResultItem(NamedTuple):
+    class TokenParseResultItem(NamedTuple):
+        token: Token
+
         whitespace: Optional[Tuple[int, int]]           # Whitespace immediately before the token
         value: Token.MatchType                          # Result of the call to Token.Match
         iter: NormalizedIterator                        # NormalizedIterator after the token has been consumed
         is_ignored: bool                                # True if the result is whitespace while whitespace is being ignored
 
     # ----------------------------------------------------------------------
+    class StatementParseResultItem(NamedTuple):
+        statement: "Statement"
+        results: "Statement.ParseResultsType"
+
+    # ----------------------------------------------------------------------
+    ParseResultsType                        = List[
+        Union[
+            TokenParseResultItem,
+            StatementParseResultItem,
+        ],
+    ]
+
+    # ----------------------------------------------------------------------
     class ParseResult(NamedTuple):
         success: bool
-        results: List["ParseResultItem"]
+        results: "Statement.ParseResultsType"
         iter: NormalizedIterator
 
     # ----------------------------------------------------------------------
@@ -205,7 +220,8 @@ class StandardStatement(Statement):
                 assert not isinstance(result, list), result
 
                 results.append(
-                    Statement.ParseResultItem(
+                    Statement.TokenParseResultItem(
+                        eat_indent_token,
                         None,
                         result,
                         normalized_iter.Clone(),
@@ -224,7 +240,8 @@ class StandardStatement(Statement):
 
                     for res in result:
                         results.append(
-                            Statement.ParseResultItem(
+                            Statement.TokenParseResultItem(
+                                eat_dedent_token,
                                 None,
                                 res,
                                 normalized_iter.Clone(),
@@ -245,7 +262,8 @@ class StandardStatement(Statement):
                 assert not isinstance(result, list), result
 
                 results.append(
-                    Statement.ParseResultItem(
+                    Statement.TokenParseResultItem(
+                        eat_newline_token,
                         potetnial_whitespace,
                         result,
                         potential_iter.Clone(),
@@ -276,11 +294,12 @@ class StandardStatement(Statement):
 
             # Statement
             if isinstance(item, Statement):
+                # BugBug: This may need to be a callback so that we can handle dynamic statements
                 result = item.Parse(normalized_iter, observer)
 
                 # Copy any matching contents, even if the call wasn't successful
                 if result.results:
-                    results.append(result.results)
+                    results.append(Statement.StatementParseResultItem(item, result.results))
 
                     normalized_iter = result.iter
 
@@ -321,8 +340,9 @@ class StandardStatement(Statement):
 
                         for res in result:
                             results.append(
-                                Statement.ParseResultItem(
-                                    None,
+                                Statement.TokenParseResultItem(
+                                    item,
+                                    potential_whitespace,
                                     res,
                                     potential_iter.Clone(),
                                     is_ignored=False,
@@ -330,7 +350,8 @@ class StandardStatement(Statement):
                             )
                     else:
                         results.append(
-                            Statement.ParseResultItem(
+                            Statement.TokenParseResultItem(
+                                item,
                                 potential_whitespace,
                                 result,
                                 potential_iter.Clone(),
