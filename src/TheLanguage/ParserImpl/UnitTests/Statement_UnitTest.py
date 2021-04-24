@@ -20,6 +20,8 @@ import re
 import sys
 import textwrap
 
+from unittest.mock import Mock
+
 import pytest
 
 import CommonEnvironment
@@ -87,7 +89,12 @@ class TestSingleLine(object):
         assert iter.Column == 1
         assert iter.Offset == 0
 
-        result = self._statement.Parse(iter)
+        mock = Mock()
+        result = self._statement.Parse(iter, mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success
 
         assert result.iter.AtEnd()
@@ -121,7 +128,12 @@ class TestSingleLine(object):
 
     # ----------------------------------------------------------------------
     def test_MultipleSpaceSep(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("one   two")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("one   two")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success
 
         assert result.iter.AtEnd()
@@ -150,7 +162,12 @@ class TestSingleLine(object):
 
     # ----------------------------------------------------------------------
     def test_TabSep(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("one\ttwo")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("one\ttwo")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success
 
         assert result.iter.AtEnd()
@@ -179,7 +196,12 @@ class TestSingleLine(object):
 
     # ----------------------------------------------------------------------
     def test_MultipleTabSep(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("one\t\t\ttwo")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("one\t\t\ttwo")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success
 
         assert result.iter.AtEnd()
@@ -208,7 +230,12 @@ class TestSingleLine(object):
 
     # ----------------------------------------------------------------------
     def test_TrailingSpace(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("one two ")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two ")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success
 
         assert result.iter.AtEnd()
@@ -237,7 +264,12 @@ class TestSingleLine(object):
 
     # ----------------------------------------------------------------------
     def test_MultipleTrailingSpace(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("one two   ")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two   ")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success
 
         assert result.iter.AtEnd()
@@ -266,7 +298,12 @@ class TestSingleLine(object):
 
     # ----------------------------------------------------------------------
     def test_TrailingTab(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("one two\t")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two\t")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success
 
         assert result.iter.AtEnd()
@@ -295,7 +332,12 @@ class TestSingleLine(object):
 
     # ----------------------------------------------------------------------
     def test_MultipleTrailingTabs(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("one two\t\t\t\t")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two\t\t\t\t")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success
 
         assert result.iter.AtEnd()
@@ -339,8 +381,10 @@ class TestSingleLine(object):
         assert iter.Column == 1
         assert iter.Offset == 0
 
+        mock = Mock()
+
         # First Line
-        result = self._statement.Parse(iter)
+        result = self._statement.Parse(iter, mock)
 
         assert result.success
 
@@ -375,7 +419,7 @@ class TestSingleLine(object):
         iter = result.iter
 
         # Second Line
-        result = self._statement.Parse(iter)
+        result = self._statement.Parse(iter, mock)
 
         assert result.success
 
@@ -403,9 +447,17 @@ class TestSingleLine(object):
         assert result.results[2].iter.Column == 1
         assert result.results[2].is_ignored == False
 
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
     # ----------------------------------------------------------------------
     def test_TrailingWhitespace(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("one two\n\n  \n    \n")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two\n\n  \n    \n")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success
 
         assert result.iter.AtEnd()
@@ -440,7 +492,12 @@ class TestSingleLine(object):
         assert iter.Column == 1
         assert iter.Offset == 0
 
-        result = self._statement.Parse(iter)
+        mock = Mock()
+        result = self._statement.Parse(iter, mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
+
         assert result.success == False
 
         assert result.iter.AtEnd() == False
@@ -486,6 +543,8 @@ class TestIndentAndDedent(object):
 
     # ----------------------------------------------------------------------
     def test_Match(self):
+        mock = Mock()
+
         result = self._statement.Parse(
             NormalizedIterator(
                 Normalize(
@@ -498,7 +557,11 @@ class TestIndentAndDedent(object):
                     ),
                 ),
             ),
+            mock,
         )
+
+        assert mock.OnIndent.call_count == 1
+        assert mock.OnDedent.call_count == 1
 
         assert result.success
         assert result.iter.Line == 4
@@ -558,6 +621,8 @@ class TestIndentAndDedent(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
+        mock = Mock()
+
         result = self._statement.Parse(
             NormalizedIterator(
                 Normalize(
@@ -570,7 +635,13 @@ class TestIndentAndDedent(object):
                     ),
                 ),
             ),
+            mock,
         )
+
+        # The code stopped parsing after 'two', so only 1 indent was encountered and 0 dedents were
+        # encountered
+        assert mock.OnIndent.call_count == 1
+        assert mock.OnDedent.call_count == 0
 
         assert result.success == False
         assert result.iter.Line == 3
@@ -622,7 +693,12 @@ def test_FinishEarly():
     assert iter.Column == 1
     assert iter.Offset == 0
 
-    result = statement.Parse(iter)
+    mock = Mock()
+    result = statement.Parse(iter, mock)
+
+    assert mock.OnIndent.call_count == 0
+    assert mock.OnDedent.call_count == 0
+
     assert result.success == False
 
     assert result.iter.AtEnd()
@@ -671,6 +747,8 @@ class TestIgnoreWhitespace(object):
 
     # ----------------------------------------------------------------------
     def test_MatchNoExtra(self):
+        mock = Mock()
+
         result = self._statement.Parse(
             NormalizedIterator(
                 Normalize(
@@ -690,7 +768,11 @@ class TestIgnoreWhitespace(object):
                     ),
                 ),
             ),
+            mock,
         )
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
 
         assert result.success
 
@@ -841,13 +923,18 @@ def test_IgnoreControlTokens():
 
     # ----------------------------------------------------------------------
 
+    mock = Mock()
+
     result = StandardStatement(
         "IgnoreControlTokens",
         [
             MyControlToken(),
             RegexToken("test", re.compile("test")),
         ],
-    ).Parse(NormalizedIterator(Normalize("test")))
+    ).Parse(NormalizedIterator(Normalize("test")), mock)
+
+    assert mock.OnIndent.call_count == 0
+    assert mock.OnDedent.call_count == 0
 
     assert result.success
 
@@ -878,7 +965,11 @@ class TestEmbeddedStatements(object):
 
     # ----------------------------------------------------------------------
     def test_Match(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("( one two )")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("( one two )")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
 
         assert result.success
 
@@ -916,7 +1007,11 @@ class TestEmbeddedStatements(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatchAllInner(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("( one two")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("( one two")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
 
         assert result.success == False
 
@@ -948,7 +1043,11 @@ class TestEmbeddedStatements(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatchPartialInner(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("( one ")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("( one ")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
 
         assert result.success == False
 
@@ -974,7 +1073,11 @@ class TestEmbeddedStatements(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatchFirstOnly(self):
-        result = self._statement.Parse(NormalizedIterator(Normalize("( ")))
+        mock = Mock()
+        result = self._statement.Parse(NormalizedIterator(Normalize("( ")), mock)
+
+        assert mock.OnIndent.call_count == 0
+        assert mock.OnDedent.call_count == 0
 
         assert result.success == False
 
