@@ -116,11 +116,12 @@ class NewlineToken(Token):
 
         if (
             normalized_iter.Offset == normalized_iter.LineInfo.OffsetEnd
+            and normalized_iter.HasConsumedDedents()
             and not normalized_iter.AtEnd()
         ):
             newline_start = normalized_iter.Offset
 
-            normalized_iter.Advance(1)
+            normalized_iter.Advance(0 if normalized_iter.AtTrailingDedents() else 1)
 
             if self._capture_many:
                 while normalized_iter.IsBlankLine():
@@ -167,7 +168,11 @@ class DedentToken(Token):
     @staticmethod
     @Interface.override
     def Match(normalized_iter):
-        if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.NumDedents():
+        if (
+            normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
+            and not normalized_iter.HasConsumedDedents()
+        ):
+            normalized_iter.ConsumeDedents()
             normalized_iter.SkipPrefix()
 
             num_dedents = normalized_iter.LineInfo.NumDedents()
@@ -206,6 +211,9 @@ class RegexToken(Token):
     # ----------------------------------------------------------------------
     @Interface.override
     def Match(self, normalized_iter):
+        if not normalized_iter.HasConsumedDedents():
+            return None
+
         match = self._regex.match(
             normalized_iter.Content,
             pos=normalized_iter.Offset,
@@ -234,24 +242,6 @@ class RegexToken(Token):
             return Token.RegexMatch(match)
 
         return None
-
-
-# ----------------------------------------------------------------------
-class WordToken(RegexToken):
-    """Token that matches letters, numbers, _, -, ."""
-
-    CONTENT_MATCH_GROUP_NAME                = "word"
-
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        name: str,
-    ):
-        super(WordToken, self).__init__(
-            name=name,
-            regex=re.compile(r"(?P<{}>[a-zA-Z0-9_\-\.]+)".format(self.CONTENT_MATCH_GROUP_NAME)),
-            is_multiline=False,
-        )
 
 
 # ----------------------------------------------------------------------

@@ -43,6 +43,10 @@ class Error(Exception, Interface.Interface):
         self.Column                         = column
         self.Message                        = self.MessageTemplate.format(**kwargs)
 
+        for k, v in kwargs.items():
+            assert not hasattr(self, k), k
+            setattr(self, k, v)
+
     # ----------------------------------------------------------------------
     def __repr__(self):
         return CommonEnvironment.ObjectReprImpl(

@@ -350,38 +350,6 @@ def test_MultilineRegex():
 
     assert iter.Offset == 15
 
-# ----------------------------------------------------------------------
-def test_WordToken():
-    token = WordToken("A word")
-
-    iter = NormalizedIterator(Normalize("one two2 _three-1.2 (four)"))
-
-    # one
-    assert token.Match(iter).match.group(token.CONTENT_MATCH_GROUP_NAME) == "one"
-
-    # Whitespace
-    assert token.Match(iter) is None
-    iter.Advance(1)
-
-    # two2
-    assert token.Match(iter).match.group(token.CONTENT_MATCH_GROUP_NAME) == "two2"
-
-    # Whitespace
-    assert token.Match(iter) is None
-    iter.Advance(1)
-
-    # _three-1.2
-    assert token.Match(iter).match.group(token.CONTENT_MATCH_GROUP_NAME) == "_three-1.2"
-
-    # Whitespace
-    assert token.Match(iter) is None
-    iter.Advance(1)
-
-    # (four)
-    assert token.Match(iter) is None
-    iter.Advance(1)
-
-    assert token.Match(iter).match.group(token.CONTENT_MATCH_GROUP_NAME) == "four"
 
 # ----------------------------------------------------------------------
 def test_ControlTokens():

@@ -44,6 +44,8 @@ class NormalizedIterator(NormalizedContent):
         self._line_info_index               = 0
         self._offset                        = 0
 
+        self._last_consumed_dedent_line     = None
+
     # ----------------------------------------------------------------------
     @property
     def Line(self) -> int:
@@ -86,6 +88,29 @@ class NormalizedIterator(NormalizedContent):
     # ----------------------------------------------------------------------
     def AtTrailingDedents(self) -> bool:
         return self.HasTrailingDedents() and self._line_info_index == len(self.LineInfos) - 1
+
+    # ----------------------------------------------------------------------
+    def HasConsumedDedents(self):
+        """\
+        Returns True if the dedents on the current line have been consumed.
+
+        Dedents on lines without a prefix are troublesome, as there isn't any
+        way to indicate that they have already been consumed. Because of this,
+        we can find ourselves in an infinite loop when attempting to consume
+        a dedent like this over and over.
+
+        Maintain the line of the last dedent consumed so that we can determine
+        if the dedent should be ignored.
+        """
+
+        return not self.LineInfo.HasNewDedents() or self._last_consumed_dedent_line == self._line_info_index
+
+    # ----------------------------------------------------------------------
+    def ConsumeDedents(self):
+        assert self.LineInfo.HasNewDedents()
+        assert self._last_consumed_dedent_line != self._line_info_index
+
+        self._last_consumed_dedent_line = self._line_info_index
 
     # ----------------------------------------------------------------------
     def IsBlankLine(self) -> bool:
@@ -176,7 +201,8 @@ class NormalizedIterator(NormalizedContent):
     def Clone(self) -> "NormalizedIterator":
         result = self.__class__(self)
 
-        result._offset = self._offset                                       # <Access to a protected member> pylint: disable=W0212
-        result._line_info_index = self._line_info_index                     # <Access to a protected member> pylint: disable=W0212
+        result._offset = self._offset                                           # <Access to a protected member> pylint: disable=W0212
+        result._line_info_index = self._line_info_index                         # <Access to a protected member> pylint: disable=W0212
+        result._last_consumed_dedent_line = self._last_consumed_dedent_line     # <Access to a protected member> pylint: disable=W0212
 
         return result

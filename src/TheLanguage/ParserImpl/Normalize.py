@@ -29,15 +29,15 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-import Error
+from Error import CreateErrorClass
 
 # ----------------------------------------------------------------------
 # |
 # |  Public Types
 # |
 # ----------------------------------------------------------------------
-InvalidTabsAndSpacesNormalizeException      = Error.CreateErrorClass("The tabs and/or spaces used to indent this line differ from the tabs and/or spaces used on previous lines")
-InvalidIndentationNormalizeException        = Error.CreateErrorClass("The unindent level on this line does not match any outer indentation level")
+InvalidTabsAndSpacesNormalizeException      = CreateErrorClass("The tabs and/or spaces used to indent this line differ from the tabs and/or spaces used on previous lines")
+InvalidIndentationNormalizeException        = CreateErrorClass("The unindent level on this line does not match any outer indentation level")
 
 
 # ----------------------------------------------------------------------

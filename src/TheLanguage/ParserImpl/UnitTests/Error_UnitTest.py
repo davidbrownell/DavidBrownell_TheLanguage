@@ -57,3 +57,22 @@ def test_CustomException():
     assert error.Message == "Values: one=ONE two=TWO"
     assert error.Line == 100
     assert error.Column == 200
+
+# ----------------------------------------------------------------------
+def test_AdditionalArgs():
+    ErrorClass = CreateErrorClass("Values: one={one}")
+
+    error = ErrorClass(
+        100,
+        200,
+        one="ONE",
+        two="TWO",
+        three="THREE",
+    )
+
+    assert error.Message == "Values: one=ONE"
+    assert error.Line == 100
+    assert error.Column == 200
+    assert error.one == "ONE"
+    assert error.two == "TWO"
+    assert error.three == "THREE"
