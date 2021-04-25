@@ -36,20 +36,18 @@ class Token(Interface.Interface):
 
     # ----------------------------------------------------------------------
     class NewlineMatch(NamedTuple):
-        token: "Token"
         start: int
         end: int
 
     # ----------------------------------------------------------------------
     class IndentMatch(NamedTuple):
-        token: "Token"
         start: int
         end: int
         value: int
 
     # ----------------------------------------------------------------------
     class DedentMatch(NamedTuple):
-        token: "Token"
+        pass
 
     # ----------------------------------------------------------------------
     class RegexMatch(NamedTuple):
@@ -118,18 +116,18 @@ class NewlineToken(Token):
 
         if (
             normalized_iter.Offset == normalized_iter.LineInfo.OffsetEnd
+            and normalized_iter.HasConsumedDedents()
             and not normalized_iter.AtEnd()
         ):
             newline_start = normalized_iter.Offset
 
-            normalized_iter.Advance(1)
+            normalized_iter.Advance(0 if normalized_iter.AtTrailingDedents() else 1)
 
             if self._capture_many:
                 while normalized_iter.IsBlankLine():
                     normalized_iter.SkipLine()
 
             return Token.NewlineMatch(
-                NewlineToken,
                 newline_start,
                 normalized_iter.Offset,
             )
@@ -145,13 +143,12 @@ class IndentToken(Token):
     Name                                    = Interface.DerivedProperty("Indent")
 
     # ----------------------------------------------------------------------
-    @classmethod
+    @staticmethod
     @Interface.override
-    def Match(cls, normalized_iter):
+    def Match(normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.HasNewIndent():
             normalized_iter.SkipPrefix()
             return Token.IndentMatch(
-                cls,
                 normalized_iter.LineInfo.OffsetStart,
                 normalized_iter.LineInfo.StartPos,
                 normalized_iter.LineInfo.IndentationValue(),
@@ -168,10 +165,14 @@ class DedentToken(Token):
     Name                                    = Interface.DerivedProperty("Dedent")
 
     # ----------------------------------------------------------------------
-    @classmethod
+    @staticmethod
     @Interface.override
-    def Match(cls, normalized_iter):
-        if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.NumDedents():
+    def Match(normalized_iter):
+        if (
+            normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
+            and not normalized_iter.HasConsumedDedents()
+        ):
+            normalized_iter.ConsumeDedents()
             normalized_iter.SkipPrefix()
 
             num_dedents = normalized_iter.LineInfo.NumDedents()
@@ -179,7 +180,7 @@ class DedentToken(Token):
             if normalized_iter.AtTrailingDedents():
                 normalized_iter.Advance(0)
 
-            return [Token.DedentMatch(cls)] * num_dedents
+            return [Token.DedentMatch()] * num_dedents
 
         return None
 
@@ -210,6 +211,9 @@ class RegexToken(Token):
     # ----------------------------------------------------------------------
     @Interface.override
     def Match(self, normalized_iter):
+        if not normalized_iter.HasConsumedDedents():
+            return None
+
         match = self._regex.match(
             normalized_iter.Content,
             pos=normalized_iter.Offset,
@@ -238,24 +242,6 @@ class RegexToken(Token):
             return Token.RegexMatch(match)
 
         return None
-
-
-# ----------------------------------------------------------------------
-class WordToken(RegexToken):
-    """Token that matches letters, numbers, _, -, ."""
-
-    CONTENT_MATCH_GROUP_NAME                = "word"
-
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        name: str,
-    ):
-        super(WordToken, self).__init__(
-            name=name,
-            regex=re.compile(r"(?P<{}>[a-zA-Z0-9_\-\.]+)".format(self.CONTENT_MATCH_GROUP_NAME)),
-            is_multiline=False,
-        )
 
 
 # ----------------------------------------------------------------------

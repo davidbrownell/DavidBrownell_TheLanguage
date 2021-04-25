@@ -199,6 +199,7 @@ def test_Standard():
     assert iter.Line == 6
     assert iter.Column == 15
 
+    assert iter.HasConsumedDedents()
     assert iter.AtTrailingDedents() == False
     iter.Advance(1)
 
@@ -215,6 +216,11 @@ def test_Standard():
     assert iter.LineInfo == iter.LineInfos[6]
     assert iter.Line == 7
     assert iter.Column == 1
+
+    assert iter.HasConsumedDedents() == False
+    iter.ConsumeDedents()
+    assert iter.HasConsumedDedents()
+
     iter.Advance(0)
 
     assert iter.AtEnd()
