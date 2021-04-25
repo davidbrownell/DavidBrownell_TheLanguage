@@ -205,12 +205,10 @@ class StandardStatement(Statement):
         eat_indent_token = IndentToken()
         eat_dedent_token = DedentToken()
         eat_newline_token = NewlineToken()
-        eat_last_dedent_line: Optional[int] = None
 
         # ----------------------------------------------------------------------
         def EatWhitespaceTokens() -> bool:
             nonlocal normalized_iter
-            nonlocal eat_last_dedent_line
 
             if not ignore_whitespace_ctr:
                 return False
@@ -231,26 +229,22 @@ class StandardStatement(Statement):
 
                 return True
 
-            # We don't want to match dedents over and over, so
-            # capture the line that it was found on.
-            if normalized_iter.Line != eat_last_dedent_line:
-                result = eat_dedent_token.Match(normalized_iter)
-                if result:
-                    assert isinstance(result, list), result
+            result = eat_dedent_token.Match(normalized_iter)
+            if result:
+                assert isinstance(result, list), result
 
-                    for res in result:
-                        results.append(
-                            Statement.TokenParseResultItem(
-                                eat_dedent_token,
-                                None,
-                                res,
-                                normalized_iter.Clone(),
-                                is_ignored=True,
-                            ),
-                        )
+                for res in result:
+                    results.append(
+                        Statement.TokenParseResultItem(
+                            eat_dedent_token,
+                            None,
+                            res,
+                            normalized_iter.Clone(),
+                            is_ignored=True,
+                        ),
+                    )
 
-                    eat_last_dedent_line = normalized_iter.Line
-                    return True
+                return True
 
             # A potential newline may have potential whitespace
             potential_iter = normalized_iter.Clone()
@@ -294,7 +288,6 @@ class StandardStatement(Statement):
 
             # Statement
             if isinstance(item, Statement):
-                # BugBug: This may need to be a callback so that we can handle dynamic statements
                 result = item.Parse(normalized_iter, observer)
 
                 # Copy any matching contents, even if the call wasn't successful
