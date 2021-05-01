@@ -17,7 +17,10 @@
 
 import os
 
-from typing import List, NamedTuple, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
+
+from dataclasses import dataclass
+from rop import read_only_properties
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -44,18 +47,20 @@ class Statement(Interface.Interface):
     """Abstract base class for objects that identify tokens"""
 
     # ----------------------------------------------------------------------
-    class TokenParseResultItem(NamedTuple):
-        token: Token
+    @dataclass(frozen=True)
+    class TokenParseResultItem(object):
+        Token: Token
 
-        whitespace: Optional[Tuple[int, int]]           # Whitespace immediately before the token
-        value: Token.MatchType                          # Result of the call to Token.Match
-        iter: NormalizedIterator                        # NormalizedIterator after the token has been consumed
-        is_ignored: bool                                # True if the result is whitespace while whitespace is being ignored
+        Whitespace: Optional[Tuple[int, int]]           # Whitespace immediately before the token
+        Value: Token.MatchType                          # Result of the call to Token.Match
+        Iter: NormalizedIterator                        # NormalizedIterator after the token has been consumed
+        IsIgnored: bool                                 # True if the result is whitespace while whitespace is being ignored
 
     # ----------------------------------------------------------------------
-    class StatementParseResultItem(NamedTuple):
-        statement: "Statement"
-        results: "Statement.ParseResultsType"
+    @dataclass(frozen=True)
+    class StatementParseResultItem(object):
+        StatementItem: "Statement"
+        Results: "Statement.ParseResultsType"
 
     # ----------------------------------------------------------------------
     ParseResultsType                        = List[
@@ -66,10 +71,11 @@ class Statement(Interface.Interface):
     ]
 
     # ----------------------------------------------------------------------
-    class ParseResult(NamedTuple):
-        success: bool
-        results: "Statement.ParseResultsType"
-        iter: NormalizedIterator
+    @dataclass(frozen=True)
+    class ParseResult(object):
+        Success: bool
+        Results: "Statement.ParseResultsType"
+        Iter: NormalizedIterator
 
     # ----------------------------------------------------------------------
     class Observer(Interface.Interface):
@@ -136,6 +142,7 @@ class Statement(Interface.Interface):
         return None
 
 # ----------------------------------------------------------------------
+@read_only_properties("Items")
 class StandardStatement(Statement):
     """Statement type that parses tokens"""
 
@@ -182,17 +189,13 @@ class StandardStatement(Statement):
         assert not control_token_check
 
         self._name                          = name
-        self._items                         = items
+        self.Items                          = items
 
     # ----------------------------------------------------------------------
     @property
     @Interface.override
     def Name(self):
         return self._name
-
-    @property
-    def Items(self):
-        return self._items
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -223,7 +226,7 @@ class StandardStatement(Statement):
                         None,
                         result,
                         normalized_iter.Clone(),
-                        is_ignored=True,
+                        IsIgnored=True,
                     ),
                 )
 
@@ -240,7 +243,7 @@ class StandardStatement(Statement):
                             None,
                             res,
                             normalized_iter.Clone(),
-                            is_ignored=True,
+                            IsIgnored=True,
                         ),
                     )
 
@@ -261,7 +264,7 @@ class StandardStatement(Statement):
                         potetnial_whitespace,
                         result,
                         potential_iter.Clone(),
-                        is_ignored=True,
+                        IsIgnored=True,
                     ),
                 )
 
@@ -276,7 +279,7 @@ class StandardStatement(Statement):
         success = True
         item_index = 0
 
-        while item_index < len(self._items):
+        while item_index < len(self.Items):
             if normalized_iter.AtEnd():
                 success = False
                 break
@@ -284,19 +287,19 @@ class StandardStatement(Statement):
             if EatWhitespaceTokens():
                 continue
 
-            item = self._items[item_index]
+            item = self.Items[item_index]
 
             # Statement
             if isinstance(item, Statement):
                 result = item.Parse(normalized_iter, observer)
 
                 # Copy any matching contents, even if the call wasn't successful
-                if result.results:
-                    results.append(Statement.StatementParseResultItem(item, result.results))
+                if result.Results:
+                    results.append(Statement.StatementParseResultItem(item, result.Results))
 
-                    normalized_iter = result.iter
+                    normalized_iter = result.Iter
 
-                if not result.success:
+                if not result.Success:
                     success = False
                     break
 
@@ -338,7 +341,7 @@ class StandardStatement(Statement):
                                     potential_whitespace,
                                     res,
                                     potential_iter.Clone(),
-                                    is_ignored=False,
+                                    IsIgnored=False,
                                 ),
                             )
                     else:
@@ -348,7 +351,7 @@ class StandardStatement(Statement):
                                 potential_whitespace,
                                 result,
                                 potential_iter.Clone(),
-                                is_ignored=False,
+                                IsIgnored=False,
                             ),
                         )
 

@@ -95,37 +95,37 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 2
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 8
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 8
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(7, 8)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.NewlineMatch(7, 8)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
         # Iterator is not modified
         assert iter.Line == 1
@@ -140,37 +140,37 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 2
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 6)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 10
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 6)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 10
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(9, 10)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.NewlineMatch(9, 10)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_TabSep(self):
@@ -180,37 +180,37 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 2
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 8
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 8
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(7, 8)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.NewlineMatch(7, 8)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_MultipleTabSep(self):
@@ -220,37 +220,37 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 2
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 6)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 10
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 6)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 10
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(9, 10)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.NewlineMatch(9, 10)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_TrailingSpace(self):
@@ -260,37 +260,37 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 2
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 8
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 8
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace == (7, 8)
-        assert result.results[2].value == Token.NewlineMatch(8, 9)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace == (7, 8)
+        assert result.Results[2].Value == Token.NewlineMatch(8, 9)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_MultipleTrailingSpace(self):
@@ -300,37 +300,37 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 2
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 8
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 8
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace == (7, 10)
-        assert result.results[2].value == Token.NewlineMatch(10, 11)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace == (7, 10)
+        assert result.Results[2].Value == Token.NewlineMatch(10, 11)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_TrailingTab(self):
@@ -340,37 +340,37 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 2
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 8
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 8
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace == (7, 8)
-        assert result.results[2].value == Token.NewlineMatch(8, 9)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace == (7, 8)
+        assert result.Results[2].Value == Token.NewlineMatch(8, 9)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_MultipleTrailingTabs(self):
@@ -380,37 +380,37 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 2
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 8
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 8
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace == (7, 11)
-        assert result.results[2].value == Token.NewlineMatch(11, 12)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace == (7, 11)
+        assert result.Results[2].Value == Token.NewlineMatch(11, 12)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_MultipleLines(self):
@@ -434,78 +434,78 @@ class TestSingleLine(object):
         # First Line
         result = self._statement.Parse(iter, mock)
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd() == False
-        assert result.iter.Line == 2
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd() == False
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 8
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 8
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(7, 8)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.NewlineMatch(7, 8)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
         assert iter.Line == 1
         assert iter.Column == 1
         assert iter.Offset == 0
 
-        iter = result.iter
+        iter = result.Iter
 
         # Second Line
         result = self._statement.Parse(iter, mock)
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 3
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 3
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "three"
-        assert result.results[0].iter.Line == 2
-        assert result.results[0].iter.Column == 6
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "three"
+        assert result.Results[0].Iter.Line == 2
+        assert result.Results[0].Iter.Column == 6
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (13, 14)
-        assert result.results[1].value.match.group("value") == "four"
-        assert result.results[1].iter.Line == 2
-        assert result.results[1].iter.Column == 11
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (13, 14)
+        assert result.Results[1].Value.Match.group("value") == "four"
+        assert result.Results[1].Iter.Line == 2
+        assert result.Results[1].Iter.Column == 11
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(18, 19)
-        assert result.results[2].iter.Line == 3
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.NewlineMatch(18, 19)
+        assert result.Results[2].Iter.Line == 3
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
@@ -518,37 +518,37 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 5
-        assert result.iter.Column == 1
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 5
+        assert result.Iter.Column == 1
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 8
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 8
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(7, 17)
-        assert result.results[2].iter.Line == 5
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.NewlineMatch(7, 17)
+        assert result.Results[2].Iter.Line == 5
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
@@ -564,29 +564,29 @@ class TestSingleLine(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success == False
+        assert result.Success == False
 
-        assert result.iter.AtEnd() == False
-        assert result.iter.Line == 1
-        assert result.iter.Column == 8
+        assert result.Iter.AtEnd() == False
+        assert result.Iter.Line == 1
+        assert result.Iter.Column == 8
 
-        assert len(result.results) == 2
+        assert len(result.Results) == 2
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == self._word_token
+        assert result.Results[1].Token == self._word_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match.group("value") == "two"
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 8
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 8
+        assert result.Results[1].IsIgnored == False
 
         # Iterator is not modified
         assert iter.Line == 1
@@ -633,77 +633,77 @@ class TestIndentAndDedent(object):
         assert mock.OnIndent.call_count == 1
         assert mock.OnDedent.call_count == 1
 
-        assert result.success
-        assert result.iter.Line == 4
-        assert result.iter.Column == 1
-        assert result.iter.Offset == 22
-        assert result.iter.AtEnd()
+        assert result.Success
+        assert result.Iter.Line == 4
+        assert result.Iter.Column == 1
+        assert result.Iter.Offset == 22
+        assert result.Iter.AtEnd()
 
-        assert len(result.results) == 8
+        assert len(result.Results) == 8
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == NewlineToken()
+        assert result.Results[1].Token == NewlineToken()
 
-        assert result.results[1].whitespace is None
-        assert result.results[1].value == Token.NewlineMatch(3, 4)
-        assert result.results[1].iter.Line == 2
-        assert result.results[1].iter.Column == 1
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace is None
+        assert result.Results[1].Value == Token.NewlineMatch(3, 4)
+        assert result.Results[1].Iter.Line == 2
+        assert result.Results[1].Iter.Column == 1
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == IndentToken()
+        assert result.Results[2].Token == IndentToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.IndentMatch(4, 8, 4)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 5
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.IndentMatch(4, 8, 4)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 5
+        assert result.Results[2].IsIgnored == False
 
-        assert result.results[3].token == self._word_token
+        assert result.Results[3].Token == self._word_token
 
-        assert result.results[3].whitespace is None
-        assert result.results[3].value.match.group("value") == "two"
-        assert result.results[3].iter.Line == 2
-        assert result.results[3].iter.Column == 8
-        assert result.results[3].is_ignored == False
+        assert result.Results[3].Whitespace is None
+        assert result.Results[3].Value.Match.group("value") == "two"
+        assert result.Results[3].Iter.Line == 2
+        assert result.Results[3].Iter.Column == 8
+        assert result.Results[3].IsIgnored == False
 
-        assert result.results[4].token == NewlineToken()
+        assert result.Results[4].Token == NewlineToken()
 
-        assert result.results[4].whitespace is None
-        assert result.results[4].value == Token.NewlineMatch(11, 12)
-        assert result.results[4].iter.Line == 3
-        assert result.results[4].iter.Column == 1
-        assert result.results[4].is_ignored == False
+        assert result.Results[4].Whitespace is None
+        assert result.Results[4].Value == Token.NewlineMatch(11, 12)
+        assert result.Results[4].Iter.Line == 3
+        assert result.Results[4].Iter.Column == 1
+        assert result.Results[4].IsIgnored == False
 
-        assert result.results[5].token == self._word_token
+        assert result.Results[5].Token == self._word_token
 
-        assert result.results[5].whitespace is None
-        assert result.results[5].value.match.group("value") == "three"
-        assert result.results[5].iter.Line == 3
-        assert result.results[5].iter.Column == 10
-        assert result.results[5].is_ignored == False
+        assert result.Results[5].Whitespace is None
+        assert result.Results[5].Value.Match.group("value") == "three"
+        assert result.Results[5].Iter.Line == 3
+        assert result.Results[5].Iter.Column == 10
+        assert result.Results[5].IsIgnored == False
 
-        assert result.results[6].token == NewlineToken()
+        assert result.Results[6].Token == NewlineToken()
 
-        assert result.results[6].whitespace is None
-        assert result.results[6].value == Token.NewlineMatch(21, 22)
-        assert result.results[6].iter.Line == 4
-        assert result.results[6].iter.Column == 1
-        assert result.results[6].is_ignored == False
+        assert result.Results[6].Whitespace is None
+        assert result.Results[6].Value == Token.NewlineMatch(21, 22)
+        assert result.Results[6].Iter.Line == 4
+        assert result.Results[6].Iter.Column == 1
+        assert result.Results[6].IsIgnored == False
 
-        assert result.results[7].token == DedentToken()
+        assert result.Results[7].Token == DedentToken()
 
-        assert result.results[7].whitespace is None
-        assert result.results[7].value == Token.DedentMatch()
-        assert result.results[7].iter.Line == 4
-        assert result.results[7].iter.Column == 1
-        assert result.results[7].is_ignored == False
+        assert result.Results[7].Whitespace is None
+        assert result.Results[7].Value == Token.DedentMatch()
+        assert result.Results[7].Iter.Line == 4
+        assert result.Results[7].Iter.Column == 1
+        assert result.Results[7].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
@@ -729,53 +729,53 @@ class TestIndentAndDedent(object):
         assert mock.OnIndent.call_count == 1
         assert mock.OnDedent.call_count == 0
 
-        assert result.success == False
-        assert result.iter.Line == 3
-        assert result.iter.Column == 1
-        assert result.iter.Offset == 12
-        assert result.iter.AtEnd() == False
+        assert result.Success == False
+        assert result.Iter.Line == 3
+        assert result.Iter.Column == 1
+        assert result.Iter.Offset == 12
+        assert result.Iter.AtEnd() == False
 
-        assert len(result.results) == 5
+        assert len(result.Results) == 5
 
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].token == NewlineToken()
+        assert result.Results[1].Token == NewlineToken()
 
-        assert result.results[1].whitespace is None
-        assert result.results[1].value == Token.NewlineMatch(3, 4)
-        assert result.results[1].iter.Line == 2
-        assert result.results[1].iter.Column == 1
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace is None
+        assert result.Results[1].Value == Token.NewlineMatch(3, 4)
+        assert result.Results[1].Iter.Line == 2
+        assert result.Results[1].Iter.Column == 1
+        assert result.Results[1].IsIgnored == False
 
-        assert result.results[2].token == IndentToken()
+        assert result.Results[2].Token == IndentToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.IndentMatch(4, 8, 4)
-        assert result.results[2].iter.Line == 2
-        assert result.results[2].iter.Column == 5
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.IndentMatch(4, 8, 4)
+        assert result.Results[2].Iter.Line == 2
+        assert result.Results[2].Iter.Column == 5
+        assert result.Results[2].IsIgnored == False
 
-        assert result.results[3].token == self._word_token
+        assert result.Results[3].Token == self._word_token
 
-        assert result.results[3].whitespace is None
-        assert result.results[3].value.match.group("value") == "two"
-        assert result.results[3].iter.Line == 2
-        assert result.results[3].iter.Column == 8
-        assert result.results[3].is_ignored == False
+        assert result.Results[3].Whitespace is None
+        assert result.Results[3].Value.Match.group("value") == "two"
+        assert result.Results[3].Iter.Line == 2
+        assert result.Results[3].Iter.Column == 8
+        assert result.Results[3].IsIgnored == False
 
-        assert result.results[4].token == NewlineToken()
+        assert result.Results[4].Token == NewlineToken()
 
-        assert result.results[4].whitespace is None
-        assert result.results[4].value == Token.NewlineMatch(11, 12)
-        assert result.results[4].iter.Line == 3
-        assert result.results[4].iter.Column == 1
-        assert result.results[4].is_ignored == False
+        assert result.Results[4].Whitespace is None
+        assert result.Results[4].Value == Token.NewlineMatch(11, 12)
+        assert result.Results[4].Iter.Line == 3
+        assert result.Results[4].Iter.Column == 1
+        assert result.Results[4].IsIgnored == False
 
 # ----------------------------------------------------------------------
 def test_FinishEarly():
@@ -795,29 +795,29 @@ def test_FinishEarly():
     assert mock.OnIndent.call_count == 0
     assert mock.OnDedent.call_count == 0
 
-    assert result.success == False
+    assert result.Success == False
 
-    assert result.iter.AtEnd()
-    assert result.iter.Line == 2
-    assert result.iter.Column == 1
+    assert result.Iter.AtEnd()
+    assert result.Iter.Line == 2
+    assert result.Iter.Column == 1
 
-    assert len(result.results) == 2
+    assert len(result.Results) == 2
 
-    assert result.results[0].token == word_token
+    assert result.Results[0].Token == word_token
 
-    assert result.results[0].whitespace is None
-    assert result.results[0].value.match.group("value") == "one"
-    assert result.results[0].iter.Line == 1
-    assert result.results[0].iter.Column == 4
-    assert result.results[0].is_ignored == False
+    assert result.Results[0].Whitespace is None
+    assert result.Results[0].Value.Match.group("value") == "one"
+    assert result.Results[0].Iter.Line == 1
+    assert result.Results[0].Iter.Column == 4
+    assert result.Results[0].IsIgnored == False
 
-    assert result.results[1].token == NewlineToken()
+    assert result.Results[1].Token == NewlineToken()
 
-    assert result.results[1].whitespace is None
-    assert result.results[1].value == Token.NewlineMatch(3, 4)
-    assert result.results[1].iter.Line == 2
-    assert result.results[1].iter.Column == 1
-    assert result.results[1].is_ignored == False
+    assert result.Results[1].Whitespace is None
+    assert result.Results[1].Value == Token.NewlineMatch(3, 4)
+    assert result.Results[1].Iter.Line == 2
+    assert result.Results[1].Iter.Column == 1
+    assert result.Results[1].IsIgnored == False
 
     # Iterator is not modified
     assert iter.Line == 1
@@ -876,185 +876,185 @@ class TestIgnoreWhitespace(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.AtEnd()
-        assert result.iter.Line == 11
-        assert result.iter.Column == 1
-        assert result.iter.Offset == 60
+        assert result.Iter.AtEnd()
+        assert result.Iter.Line == 11
+        assert result.Iter.Column == 1
+        assert result.Iter.Offset == 60
 
-        assert len(result.results) == 20
+        assert len(result.Results) == 20
 
         # Line 1
-        assert result.results[0].token == self._word_token
+        assert result.Results[0].Token == self._word_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "one"
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 4
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "one"
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 4
+        assert result.Results[0].IsIgnored == False
 
         # lpar
-        assert result.results[1].token == self._lpar_token
+        assert result.Results[1].Token == self._lpar_token
 
-        assert result.results[1].whitespace == (3, 4)
-        assert result.results[1].value.match
-        assert result.results[1].iter.Line == 1
-        assert result.results[1].iter.Column == 6
-        assert result.results[1].is_ignored == False
+        assert result.Results[1].Whitespace == (3, 4)
+        assert result.Results[1].Value.Match
+        assert result.Results[1].Iter.Line == 1
+        assert result.Results[1].Iter.Column == 6
+        assert result.Results[1].IsIgnored == False
 
         # Line 2-3
-        assert result.results[2].token == NewlineToken()
+        assert result.Results[2].Token == NewlineToken()
 
-        assert result.results[2].whitespace is None
-        assert result.results[2].value == Token.NewlineMatch(5, 8)
-        assert result.results[2].iter.Line == 4
-        assert result.results[2].iter.Column == 1
-        assert result.results[2].is_ignored == True
+        assert result.Results[2].Whitespace is None
+        assert result.Results[2].Value == Token.NewlineMatch(5, 8)
+        assert result.Results[2].Iter.Line == 4
+        assert result.Results[2].Iter.Column == 1
+        assert result.Results[2].IsIgnored == True
 
         # Line 4
-        assert result.results[3].token == IndentToken()
+        assert result.Results[3].Token == IndentToken()
 
-        assert result.results[3].whitespace is None
-        assert result.results[3].value == Token.IndentMatch(8, 12, 4)
-        assert result.results[3].iter.Line == 4
-        assert result.results[3].iter.Column == 5
-        assert result.results[3].is_ignored == True
+        assert result.Results[3].Whitespace is None
+        assert result.Results[3].Value == Token.IndentMatch(8, 12, 4)
+        assert result.Results[3].Iter.Line == 4
+        assert result.Results[3].Iter.Column == 5
+        assert result.Results[3].IsIgnored == True
 
-        assert result.results[4].token == self._word_token
+        assert result.Results[4].Token == self._word_token
 
-        assert result.results[4].whitespace is None
-        assert result.results[4].value.match.group("value") == "two"
-        assert result.results[4].iter.Line == 4
-        assert result.results[4].iter.Column == 8
-        assert result.results[4].is_ignored == False
+        assert result.Results[4].Whitespace is None
+        assert result.Results[4].Value.Match.group("value") == "two"
+        assert result.Results[4].Iter.Line == 4
+        assert result.Results[4].Iter.Column == 8
+        assert result.Results[4].IsIgnored == False
 
         # Line 5
-        assert result.results[5].token == NewlineToken()
+        assert result.Results[5].Token == NewlineToken()
 
-        assert result.results[5].whitespace is None
-        assert result.results[5].value == Token.NewlineMatch(15, 17)
-        assert result.results[5].iter.Line == 6
-        assert result.results[5].iter.Column == 1
-        assert result.results[5].is_ignored == True
+        assert result.Results[5].Whitespace is None
+        assert result.Results[5].Value == Token.NewlineMatch(15, 17)
+        assert result.Results[5].Iter.Line == 6
+        assert result.Results[5].Iter.Column == 1
+        assert result.Results[5].IsIgnored == True
 
         # Line 6
-        assert result.results[6].token == IndentToken()
+        assert result.Results[6].Token == IndentToken()
 
-        assert result.results[6].whitespace is None
-        assert result.results[6].value == Token.IndentMatch(17, 25, 8)
-        assert result.results[6].iter.Line == 6
-        assert result.results[6].iter.Column == 9
-        assert result.results[6].is_ignored == True
+        assert result.Results[6].Whitespace is None
+        assert result.Results[6].Value == Token.IndentMatch(17, 25, 8)
+        assert result.Results[6].Iter.Line == 6
+        assert result.Results[6].Iter.Column == 9
+        assert result.Results[6].IsIgnored == True
 
-        assert result.results[7].token == self._word_token
+        assert result.Results[7].Token == self._word_token
 
-        assert result.results[7].whitespace is None
-        assert result.results[7].value.match.group("value") == "three"
-        assert result.results[7].iter.Line == 6
-        assert result.results[7].iter.Column == 14
-        assert result.results[7].is_ignored == False
+        assert result.Results[7].Whitespace is None
+        assert result.Results[7].Value.Match.group("value") == "three"
+        assert result.Results[7].Iter.Line == 6
+        assert result.Results[7].Iter.Column == 14
+        assert result.Results[7].IsIgnored == False
 
-        assert result.results[8].token == NewlineToken()
+        assert result.Results[8].Token == NewlineToken()
 
-        assert result.results[8].whitespace is None
-        assert result.results[8].value == Token.NewlineMatch(30, 31)
-        assert result.results[8].iter.Line == 7
-        assert result.results[8].iter.Column == 1
-        assert result.results[8].is_ignored == True
+        assert result.Results[8].Whitespace is None
+        assert result.Results[8].Value == Token.NewlineMatch(30, 31)
+        assert result.Results[8].Iter.Line == 7
+        assert result.Results[8].Iter.Column == 1
+        assert result.Results[8].IsIgnored == True
 
         # Line 7
-        assert result.results[9].token == DedentToken()
+        assert result.Results[9].Token == DedentToken()
 
-        assert result.results[9].whitespace is None
-        assert result.results[9].value == Token.DedentMatch()
-        assert result.results[9].iter.Line == 7
-        assert result.results[9].iter.Column == 5
-        assert result.results[9].is_ignored == True
+        assert result.Results[9].Whitespace is None
+        assert result.Results[9].Value == Token.DedentMatch()
+        assert result.Results[9].Iter.Line == 7
+        assert result.Results[9].Iter.Column == 5
+        assert result.Results[9].IsIgnored == True
 
-        assert result.results[10].token == self._word_token
+        assert result.Results[10].Token == self._word_token
 
-        assert result.results[10].whitespace is None
-        assert result.results[10].value.match.group("value") == "four"
-        assert result.results[10].iter.Line == 7
-        assert result.results[10].iter.Column == 9
-        assert result.results[10].is_ignored == False
+        assert result.Results[10].Whitespace is None
+        assert result.Results[10].Value.Match.group("value") == "four"
+        assert result.Results[10].Iter.Line == 7
+        assert result.Results[10].Iter.Column == 9
+        assert result.Results[10].IsIgnored == False
 
-        assert result.results[11].token == NewlineToken()
+        assert result.Results[11].Token == NewlineToken()
 
-        assert result.results[11].whitespace is None
-        assert result.results[11].value == Token.NewlineMatch(39, 40)
-        assert result.results[11].iter.Line == 8
-        assert result.results[11].iter.Column == 1
-        assert result.results[11].is_ignored == True
+        assert result.Results[11].Whitespace is None
+        assert result.Results[11].Value == Token.NewlineMatch(39, 40)
+        assert result.Results[11].Iter.Line == 8
+        assert result.Results[11].Iter.Column == 1
+        assert result.Results[11].IsIgnored == True
 
         # Line 8
-        assert result.results[12].token == IndentToken()
+        assert result.Results[12].Token == IndentToken()
 
-        assert result.results[12].whitespace is None
-        assert result.results[12].value == Token.IndentMatch(40, 48, 8)
-        assert result.results[12].iter.Line == 8
-        assert result.results[12].iter.Column == 9
-        assert result.results[12].is_ignored == True
+        assert result.Results[12].Whitespace is None
+        assert result.Results[12].Value == Token.IndentMatch(40, 48, 8)
+        assert result.Results[12].Iter.Line == 8
+        assert result.Results[12].Iter.Column == 9
+        assert result.Results[12].IsIgnored == True
 
-        assert result.results[13].token == self._word_token
+        assert result.Results[13].Token == self._word_token
 
-        assert result.results[13].whitespace is None
-        assert result.results[13].value.match.group("value") == "five"
-        assert result.results[13].iter.Line == 8
-        assert result.results[13].iter.Column == 13
-        assert result.results[13].is_ignored == False
+        assert result.Results[13].Whitespace is None
+        assert result.Results[13].Value.Match.group("value") == "five"
+        assert result.Results[13].Iter.Line == 8
+        assert result.Results[13].Iter.Column == 13
+        assert result.Results[13].IsIgnored == False
 
-        assert result.results[14].token == NewlineToken()
+        assert result.Results[14].Token == NewlineToken()
 
-        assert result.results[14].whitespace is None
-        assert result.results[14].value == Token.NewlineMatch(52, 54)
-        assert result.results[14].iter.Line == 10
-        assert result.results[14].iter.Column == 1
-        assert result.results[14].is_ignored == True
+        assert result.Results[14].Whitespace is None
+        assert result.Results[14].Value == Token.NewlineMatch(52, 54)
+        assert result.Results[14].Iter.Line == 10
+        assert result.Results[14].Iter.Column == 1
+        assert result.Results[14].IsIgnored == True
 
         # Line 10
-        assert result.results[15].token == DedentToken()
+        assert result.Results[15].Token == DedentToken()
 
-        assert result.results[15].whitespace is None
-        assert result.results[15].value == Token.DedentMatch()
-        assert result.results[15].iter.Line == 10
-        assert result.results[15].iter.Column == 1
-        assert result.results[15].is_ignored == True
+        assert result.Results[15].Whitespace is None
+        assert result.Results[15].Value == Token.DedentMatch()
+        assert result.Results[15].Iter.Line == 10
+        assert result.Results[15].Iter.Column == 1
+        assert result.Results[15].IsIgnored == True
 
-        assert result.results[16].token == DedentToken()
+        assert result.Results[16].Token == DedentToken()
 
-        assert result.results[16].whitespace is None
-        assert result.results[16].value == Token.DedentMatch()
-        assert result.results[16].iter.Line == 10
-        assert result.results[16].iter.Column == 1
-        assert result.results[16].is_ignored == True
+        assert result.Results[16].Whitespace is None
+        assert result.Results[16].Value == Token.DedentMatch()
+        assert result.Results[16].Iter.Line == 10
+        assert result.Results[16].Iter.Column == 1
+        assert result.Results[16].IsIgnored == True
 
         # rpar
-        assert result.results[17].token == self._rpar_token
+        assert result.Results[17].Token == self._rpar_token
 
-        assert result.results[17].whitespace is None
-        assert result.results[17].value.match
-        assert result.results[17].iter.Line == 10
-        assert result.results[17].iter.Column == 2
-        assert result.results[17].is_ignored == False
+        assert result.Results[17].Whitespace is None
+        assert result.Results[17].Value.Match
+        assert result.Results[17].Iter.Line == 10
+        assert result.Results[17].Iter.Column == 2
+        assert result.Results[17].IsIgnored == False
 
-        assert result.results[18].token == self._word_token
+        assert result.Results[18].Token == self._word_token
 
-        assert result.results[18].whitespace == (55, 56)
-        assert result.results[18].value.match.group("value") == "six"
-        assert result.results[18].iter.Line == 10
-        assert result.results[18].iter.Column == 6
-        assert result.results[18].is_ignored == False
+        assert result.Results[18].Whitespace == (55, 56)
+        assert result.Results[18].Value.Match.group("value") == "six"
+        assert result.Results[18].Iter.Line == 10
+        assert result.Results[18].Iter.Column == 6
+        assert result.Results[18].IsIgnored == False
 
-        assert result.results[19].token == NewlineToken()
+        assert result.Results[19].Token == NewlineToken()
 
-        assert result.results[19].whitespace is None
-        assert result.results[19].value == Token.NewlineMatch(59, 60)
-        assert result.results[19].iter.Line == 11
-        assert result.results[19].iter.Column == 1
-        assert result.results[19].iter.AtEnd()
-        assert result.results[19].is_ignored == False
+        assert result.Results[19].Whitespace is None
+        assert result.Results[19].Value == Token.NewlineMatch(59, 60)
+        assert result.Results[19].Iter.Line == 11
+        assert result.Results[19].Iter.Column == 1
+        assert result.Results[19].Iter.AtEnd()
+        assert result.Results[19].IsIgnored == False
 
 # ----------------------------------------------------------------------
 def test_IgnoreControlTokens():
@@ -1081,21 +1081,21 @@ def test_IgnoreControlTokens():
     assert mock.OnIndent.call_count == 0
     assert mock.OnDedent.call_count == 0
 
-    assert result.success
+    assert result.Success
 
-    assert result.iter.Line == 1
-    assert result.iter.Column == 5
-    assert result.iter.AtEnd() == False
+    assert result.Iter.Line == 1
+    assert result.Iter.Column == 5
+    assert result.Iter.AtEnd() == False
 
-    assert len(result.results) == 1
+    assert len(result.Results) == 1
 
-    assert result.results[0].token == regex_token
+    assert result.Results[0].Token == regex_token
 
-    assert result.results[0].whitespace is None
-    assert result.results[0].value
-    assert result.results[0].iter.Line == 1
-    assert result.results[0].iter.Column == 5
-    assert result.results[0].is_ignored == False
+    assert result.Results[0].Whitespace is None
+    assert result.Results[0].Value
+    assert result.Results[0].Iter.Line == 1
+    assert result.Results[0].Iter.Column == 5
+    assert result.Results[0].IsIgnored == False
 
 # ----------------------------------------------------------------------
 class TestEmbeddedStatements(object):
@@ -1121,49 +1121,49 @@ class TestEmbeddedStatements(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success
+        assert result.Success
 
-        assert result.iter.Line == 1
-        assert result.iter.Column == 12
-        assert result.iter.AtEnd() == False
+        assert result.Iter.Line == 1
+        assert result.Iter.Column == 12
+        assert result.Iter.AtEnd() == False
 
-        assert len(result.results) == 3
+        assert len(result.Results) == 3
 
-        assert result.results[0].token == self._lpar_token
+        assert result.Results[0].Token == self._lpar_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "("
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 2
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "("
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 2
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].statement == self._inner_statement
+        assert result.Results[1].StatementItem == self._inner_statement
 
-        assert len(result.results[1].results) == 2
+        assert len(result.Results[1].Results) == 2
 
-        assert result.results[1].results[0].token == self._word_token
+        assert result.Results[1].Results[0].Token == self._word_token
 
-        assert result.results[1].results[0].whitespace == (1, 2)
-        assert result.results[1].results[0].value.match.group("value") == "one"
-        assert result.results[1].results[0].iter.Line == 1
-        assert result.results[1].results[0].iter.Column == 6
-        assert result.results[1].results[0].is_ignored == False
+        assert result.Results[1].Results[0].Whitespace == (1, 2)
+        assert result.Results[1].Results[0].Value.Match.group("value") == "one"
+        assert result.Results[1].Results[0].Iter.Line == 1
+        assert result.Results[1].Results[0].Iter.Column == 6
+        assert result.Results[1].Results[0].IsIgnored == False
 
-        assert result.results[1].results[1].token == self._word_token
+        assert result.Results[1].Results[1].Token == self._word_token
 
-        assert result.results[1].results[1].whitespace == (5, 6)
-        assert result.results[1].results[1].value.match.group("value") == "two"
-        assert result.results[1].results[1].iter.Line == 1
-        assert result.results[1].results[1].iter.Column == 10
-        assert result.results[1].results[1].is_ignored == False
+        assert result.Results[1].Results[1].Whitespace == (5, 6)
+        assert result.Results[1].Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Results[1].Iter.Line == 1
+        assert result.Results[1].Results[1].Iter.Column == 10
+        assert result.Results[1].Results[1].IsIgnored == False
 
-        assert result.results[2].token == self._rpar_token
+        assert result.Results[2].Token == self._rpar_token
 
-        assert result.results[2].whitespace == (9, 10)
-        assert result.results[2].value.match.group("value") == ")"
-        assert result.results[2].iter.Line == 1
-        assert result.results[2].iter.Column == 12
-        assert result.results[2].is_ignored == False
+        assert result.Results[2].Whitespace == (9, 10)
+        assert result.Results[2].Value.Match.group("value") == ")"
+        assert result.Results[2].Iter.Line == 1
+        assert result.Results[2].Iter.Column == 12
+        assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_NoMatchAllInner(self):
@@ -1173,41 +1173,41 @@ class TestEmbeddedStatements(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success == False
+        assert result.Success == False
 
-        assert result.iter.Line == 1
-        assert result.iter.Column == 10
-        assert result.iter.AtEnd() == False
+        assert result.Iter.Line == 1
+        assert result.Iter.Column == 10
+        assert result.Iter.AtEnd() == False
 
-        assert len(result.results) == 2
+        assert len(result.Results) == 2
 
-        assert result.results[0].token == self._lpar_token
+        assert result.Results[0].Token == self._lpar_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "("
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 2
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "("
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 2
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].statement == self._inner_statement
+        assert result.Results[1].StatementItem == self._inner_statement
 
-        assert len(result.results[1].results) == 2
+        assert len(result.Results[1].Results) == 2
 
-        assert result.results[1].results[0].token == self._word_token
+        assert result.Results[1].Results[0].Token == self._word_token
 
-        assert result.results[1].results[0].whitespace == (1, 2)
-        assert result.results[1].results[0].value.match.group("value") == "one"
-        assert result.results[1].results[0].iter.Line == 1
-        assert result.results[1].results[0].iter.Column == 6
-        assert result.results[1].results[0].is_ignored == False
+        assert result.Results[1].Results[0].Whitespace == (1, 2)
+        assert result.Results[1].Results[0].Value.Match.group("value") == "one"
+        assert result.Results[1].Results[0].Iter.Line == 1
+        assert result.Results[1].Results[0].Iter.Column == 6
+        assert result.Results[1].Results[0].IsIgnored == False
 
-        assert result.results[1].results[1].token == self._word_token
+        assert result.Results[1].Results[1].Token == self._word_token
 
-        assert result.results[1].results[1].whitespace == (5, 6)
-        assert result.results[1].results[1].value.match.group("value") == "two"
-        assert result.results[1].results[1].iter.Line == 1
-        assert result.results[1].results[1].iter.Column == 10
-        assert result.results[1].results[1].is_ignored == False
+        assert result.Results[1].Results[1].Whitespace == (5, 6)
+        assert result.Results[1].Results[1].Value.Match.group("value") == "two"
+        assert result.Results[1].Results[1].Iter.Line == 1
+        assert result.Results[1].Results[1].Iter.Column == 10
+        assert result.Results[1].Results[1].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_NoMatchPartialInner(self):
@@ -1217,33 +1217,33 @@ class TestEmbeddedStatements(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success == False
+        assert result.Success == False
 
-        assert result.iter.Line == 1
-        assert result.iter.Column == 6
-        assert result.iter.AtEnd() == False
+        assert result.Iter.Line == 1
+        assert result.Iter.Column == 6
+        assert result.Iter.AtEnd() == False
 
-        assert len(result.results) == 2
+        assert len(result.Results) == 2
 
-        assert result.results[0].token == self._lpar_token
+        assert result.Results[0].Token == self._lpar_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "("
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 2
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "("
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 2
+        assert result.Results[0].IsIgnored == False
 
-        assert result.results[1].statement == self._inner_statement
+        assert result.Results[1].StatementItem == self._inner_statement
 
-        assert len(result.results[1].results) == 1
+        assert len(result.Results[1].Results) == 1
 
-        assert result.results[1].results[0].token == self._word_token
+        assert result.Results[1].Results[0].Token == self._word_token
 
-        assert result.results[1].results[0].whitespace == (1, 2)
-        assert result.results[1].results[0].value.match.group("value") == "one"
-        assert result.results[1].results[0].iter.Line == 1
-        assert result.results[1].results[0].iter.Column == 6
-        assert result.results[1].results[0].is_ignored == False
+        assert result.Results[1].Results[0].Whitespace == (1, 2)
+        assert result.Results[1].Results[0].Value.Match.group("value") == "one"
+        assert result.Results[1].Results[0].Iter.Line == 1
+        assert result.Results[1].Results[0].Iter.Column == 6
+        assert result.Results[1].Results[0].IsIgnored == False
 
     # ----------------------------------------------------------------------
     def test_NoMatchFirstOnly(self):
@@ -1253,18 +1253,18 @@ class TestEmbeddedStatements(object):
         assert mock.OnIndent.call_count == 0
         assert mock.OnDedent.call_count == 0
 
-        assert result.success == False
+        assert result.Success == False
 
-        assert result.iter.Line == 1
-        assert result.iter.Column == 2
-        assert result.iter.AtEnd() == False
+        assert result.Iter.Line == 1
+        assert result.Iter.Column == 2
+        assert result.Iter.AtEnd() == False
 
-        assert len(result.results) == 1
+        assert len(result.Results) == 1
 
-        assert result.results[0].token == self._lpar_token
+        assert result.Results[0].Token == self._lpar_token
 
-        assert result.results[0].whitespace is None
-        assert result.results[0].value.match.group("value") == "("
-        assert result.results[0].iter.Line == 1
-        assert result.results[0].iter.Column == 2
-        assert result.results[0].is_ignored == False
+        assert result.Results[0].Whitespace is None
+        assert result.Results[0].Value.Match.group("value") == "("
+        assert result.Results[0].Iter.Line == 1
+        assert result.Results[0].Iter.Column == 2
+        assert result.Results[0].IsIgnored == False
