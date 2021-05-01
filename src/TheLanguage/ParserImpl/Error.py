@@ -17,8 +17,11 @@
 
 import os
 
+from dataclasses import dataclass
+
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import StringHelpers
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
@@ -26,49 +29,47 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class Error(Exception, Interface.Interface):
+    """Error for all Parse-related errors"""
+
+    Line: int
+    Column: int
+
     # ----------------------------------------------------------------------
     @Interface.abstractproperty
-    def MessageTemplate(self) -> str:
+    def MessageTemplate(self):
+        """Template used when generating the exception string"""
         raise Exception("Abstract property")
 
     # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        line: int,                          # 1-based
-        column: int,                        # 1-based
-        **kwargs
-    ):
-        self.Line                           = line
-        self.Column                         = column
-        self.Message                        = self.MessageTemplate.format(**kwargs)
-
-        for k, v in kwargs.items():
-            assert not hasattr(self, k), k
-            setattr(self, k, v)
-
-    # ----------------------------------------------------------------------
-    def __repr__(self):
-        return CommonEnvironment.ObjectReprImpl(
-            self,
-            include_id=False,
-        )
-
-    # ----------------------------------------------------------------------
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
-
+    def __str__(self):
+        return self.MessageTemplate.format(**self.__dict__)
 
 # ----------------------------------------------------------------------
-def CreateErrorClass(
-    message_template: str,
-):
-    """Creates an Error class"""
+@dataclass(frozen=True)
+class SourceError(Error):
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class Extent(object):
+        StartLine: int
+        StartColumn: int
+        EndLine: int
+        EndColumn: int
 
     # ----------------------------------------------------------------------
-    class TheError(Error):
-        MessageTemplate                     = Interface.DerivedProperty(message_template)
+
+    Source: str
 
     # ----------------------------------------------------------------------
-
-    return TheError
+    def __str__(self):
+        return "{} <{}, {}>:\n{}\n".format(
+            self.Source,
+            self.Line,
+            self.Column,
+            StringHelpers.LeftJustify(
+                super(SourceError, self).__str__(),
+                2,
+                skip_first_line=False,
+            ).rstrip(),
+        )

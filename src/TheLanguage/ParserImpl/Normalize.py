@@ -20,27 +20,36 @@ import os
 
 from typing import List, Optional, Tuple
 
-from collections import namedtuple
+from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-from Error import CreateErrorClass
+from Error import Error
 
 # ----------------------------------------------------------------------
 # |
 # |  Public Types
 # |
 # ----------------------------------------------------------------------
-InvalidTabsAndSpacesNormalizeException      = CreateErrorClass("The tabs and/or spaces used to indent this line differ from the tabs and/or spaces used on previous lines")
-InvalidIndentationNormalizeException        = CreateErrorClass("The unindent level on this line does not match any outer indentation level")
+@dataclass(frozen=True)
+class InvalidTabsAndSpacesNormalizeError(Error):
+    MessageTemplate                         = Interface.DerivedProperty("The tabs and/or spaces used to indent this line differ from the tabs and/or spaces used on previous lines")
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidIndentationNormalizeError(Error):
+    MessageTemplate                         = Interface.DerivedProperty("The unindent level on this line does not match any outer indentation level")
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class LineInfo(object):
     """Information about a line"""
 
@@ -50,38 +59,28 @@ class LineInfo(object):
         Dedent                              = enum.auto()
 
     # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        offset_start: int,
-        offset_end: int,
-        startpos: int,
-        endpos: int,
-        indentation_info: Optional[
-            Tuple[
-                IndentType,
-                int,                        # When...
+    OffsetStart: int
+    OffsetEnd: int
+
+    StartPos: int
+    EndPos: int
+
+    IndentationInfo: Optional[
+        Tuple[
+            IndentType,
+            int,                            # When...
                                             #   Indent: indentation value
                                             #   Dedent: number of dedents
-            ]
         ]
-    ):
-        assert offset_start >= 0, offset_start
-        assert offset_end >= offset_start, (offset_start, offset_end)
-        assert startpos >= offset_start, (startpos, offset_start)
-        assert endpos <= offset_end, (endpos, offset_end)
-        assert endpos >= startpos, (startpos, endpos)
-
-        self.OffsetStart                    = offset_start
-        self.OffsetEnd                      = offset_end
-
-        self.StartPos                       = startpos
-        self.EndPos                         = endpos
-
-        self.IndentationInfo                = indentation_info
+    ]
 
     # ----------------------------------------------------------------------
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+    def __post_init__(self):
+        assert self.OffsetStart >= 0, self
+        assert self.OffsetEnd >= self.OffsetStart, self
+        assert self.StartPos >= self.OffsetStart, self
+        assert self.EndPos <= self.OffsetEnd, self
+        assert self.EndPos >= self.StartPos, self
 
     # ----------------------------------------------------------------------
     def HasWhitespacePrefix(self):
@@ -109,27 +108,19 @@ class LineInfo(object):
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class NormalizedContent(object):
     """Data returned from calls to the function `Normalize`"""
 
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        content: str,
-        content_len: int,
-        line_infos: List[LineInfo],
-    ):
-        assert content
-        assert content_len
-        assert line_infos
-
-        self.Content                        = content
-        self.ContentLen                     = content_len
-        self.LineInfos                      = line_infos
+    Content: str
+    ContentLen: int
+    LineInfos: List[LineInfo]
 
     # ----------------------------------------------------------------------
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+    def __post_init__(self):
+        assert self.Content
+        assert self.ContentLen
+        assert self.LineInfos
 
 
 # ----------------------------------------------------------------------
@@ -149,7 +140,10 @@ def Normalize(
     """
 
     # ----------------------------------------------------------------------
-    IndentationInfo                         = namedtuple("IndentationInfo", ["num_chars", "value"])
+    @dataclass
+    class IndentationInfo(object):
+        num_chars: int
+        value: int
 
     # ----------------------------------------------------------------------
 
@@ -201,7 +195,7 @@ def Normalize(
                                 num_chars == indentation_stack[-1].num_chars
                                 and indentation_value != indentation_stack[-1].value
                             ):
-                                raise InvalidTabsAndSpacesNormalizeException(
+                                raise InvalidTabsAndSpacesNormalizeError(
                                     len(line_infos) + 1,
                                     offset - line_start_offset + 1,
                                 )
@@ -217,7 +211,7 @@ def Normalize(
                             num_dedents += 1
 
                             if num_chars > indentation_stack[-1].num_chars:
-                                raise InvalidIndentationNormalizeException(
+                                raise InvalidIndentationNormalizeError(
                                     len(line_infos) + 1,
                                     offset - line_start_offset + 1,
                                 )

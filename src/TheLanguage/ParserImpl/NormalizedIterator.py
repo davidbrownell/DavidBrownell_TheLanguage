@@ -17,6 +17,9 @@
 
 import os
 
+from dataclasses import fields
+from rop import read_only_properties
+
 import CommonEnvironment
 
 # ----------------------------------------------------------------------
@@ -27,7 +30,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 from Normalize import LineInfo, NormalizedContent
 
 # ----------------------------------------------------------------------
-class NormalizedIterator(NormalizedContent):
+@read_only_properties(
+    "Content",
+    "ContentLen",
+    "LineInfos",
+)
+class NormalizedIterator(object):
     """Object used to iterate through content generated via a call to `Normalize`"""
 
     # ----------------------------------------------------------------------
@@ -35,16 +43,18 @@ class NormalizedIterator(NormalizedContent):
         self,
         normalized_content: NormalizedContent,
     ):
-        super(NormalizedIterator, self).__init__(
-            normalized_content.Content,
-            normalized_content.ContentLen,
-            normalized_content.LineInfos,
-        )
+        self.Content                        = normalized_content.Content
+        self.ContentLen                     = normalized_content.ContentLen
+        self.LineInfos                      = normalized_content.LineInfos
 
         self._line_info_index               = 0
         self._offset                        = 0
 
         self._last_consumed_dedent_line     = None
+
+    # ----------------------------------------------------------------------
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
 
     # ----------------------------------------------------------------------
     @property
@@ -199,7 +209,14 @@ class NormalizedIterator(NormalizedContent):
 
     # ----------------------------------------------------------------------
     def Clone(self) -> "NormalizedIterator":
-        result = self.__class__(self)
+        # Dynamically created the NormalizedContent object
+        result = self.__class__(
+            NormalizedContent(
+                self.Content,
+                self.ContentLen,
+                self.LineInfos,
+            ),
+        )
 
         result._offset = self._offset                                           # <Access to a protected member> pylint: disable=W0212
         result._line_info_index = self._line_info_index                         # <Access to a protected member> pylint: disable=W0212
