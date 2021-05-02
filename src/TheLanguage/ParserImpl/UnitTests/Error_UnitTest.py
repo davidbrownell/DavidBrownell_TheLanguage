@@ -91,36 +91,3 @@ def test_AdditionalArgs():
     assert error.Line == 100
     assert error.Column == 200
     assert error.one == "ONE"
-
-# ----------------------------------------------------------------------
-def test_SourceError():
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class MySourceError(SourceError):
-        one: str
-        two: str
-
-        MessageTemplate                     = Interface.DerivedProperty("Values: one={one} two={two}")
-
-    # ----------------------------------------------------------------------
-
-    error = MySourceError(
-        100,
-        200,
-        "source_name",
-        "ONE",
-        "TWO",
-    )
-
-    assert str(error) == textwrap.dedent(
-        """\
-        source_name <100, 200>:
-          Values: one=ONE two=TWO
-        """,
-    )
-
-    assert error.Source == "source_name"
-    assert error.Line == 100
-    assert error.Column == 200
-    assert error.one == "ONE"
-    assert error.two == "TWO"

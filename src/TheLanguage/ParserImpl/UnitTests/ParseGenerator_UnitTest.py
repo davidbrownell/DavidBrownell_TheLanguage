@@ -21,12 +21,14 @@ import sys
 import textwrap
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from unittest.mock import Mock
 
 import pytest
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
+from CommonEnvironment import Interface
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
@@ -48,6 +50,70 @@ with CallOnExit(lambda: sys.path.pop(0)):
     )
 
 # ----------------------------------------------------------------------
+@contextmanager
+def CreateObserver():
+    with ThreadPoolExecutor() as executor:
+        # ----------------------------------------------------------------------
+        class MyObserver(Observer):
+            # ----------------------------------------------------------------------
+            @staticmethod
+            def Execute(iter):
+                results = []
+
+                while True:
+                    try:
+                        results.append(next(iter))
+                    except StopIteration as ex:
+                        results.append(ex.value)
+                        break
+
+                return results
+
+            # ----------------------------------------------------------------------
+            def __init__(self):
+                self.mock = Mock(
+                    return_value=Observer.OnStatementCompleteFlag.Continue,
+                )
+
+            # ----------------------------------------------------------------------
+            def VerifyCallArgs(self, index, statement, node, before_line, before_col, after_line, after_col):
+                callback_args = self.mock.call_args_list[index][0]
+
+                assert callback_args[0] == statement
+                assert callback_args[1] == node
+                assert callback_args[2].Line == before_line
+                assert callback_args[2].Column == before_col
+                assert callback_args[3].Line == after_line
+                assert callback_args[3].Column == after_col
+
+            # ----------------------------------------------------------------------
+            @staticmethod
+            @Interface.override
+            def OnIndent():
+                pass
+
+            # ----------------------------------------------------------------------
+            @staticmethod
+            @Interface.override
+            def OnDedent():
+                pass
+
+            # ----------------------------------------------------------------------
+            @Interface.override
+            def OnStatementComplete(self, statement, node, iter_before, iter_after):
+                return self.mock(statement, node, iter_before, iter_after)
+
+            # ----------------------------------------------------------------------
+            @Interface.override
+            def _Enqueue(funcs):
+                return [executor.submit(func) for func in funcs]
+
+        # ----------------------------------------------------------------------
+
+        yield MyObserver()
+
+
+# ----------------------------------------------------------------------
 class TestSimple(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
@@ -61,12 +127,8 @@ class TestSimple(object):
 
     # ----------------------------------------------------------------------
     def test_MatchStandard(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock(
-                return_value=None,
-            )
-
-            results = list(
+        with CreateObserver() as observer:
+            results = observer.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -80,14 +142,16 @@ class TestSimple(object):
                         ),
                     ),
                     self._statements,
-                    callback_mock,
-                    executor,
+                    observer,
                 ),
             )
 
             # Verify the results
-            assert len(results) == 1
-            results = results[0]
+            assert len(results) == 4
+            assert results[0] == True
+            assert results[1] == True
+            assert results[2] == True
+            results = results[3]
 
             assert results.Parent is None
             assert len(results.Children) == 3
@@ -100,7 +164,7 @@ class TestSimple(object):
 
             assert results.Children[0].Children[0].Parent == results.Children[0]
             assert results.Children[0].Children[0].Type == self._upper_token
-            assert results.Children[0].Children[0].Value.match.group("value") == "ONE"
+            assert results.Children[0].Children[0].Value.Match.group("value") == "ONE"
             assert results.Children[0].Children[0].Whitespace is None
             assert results.Children[0].Children[0].Iter.Line == 1
             assert results.Children[0].Children[0].Iter.Column == 4
@@ -120,7 +184,7 @@ class TestSimple(object):
 
             assert results.Children[1].Children[0].Parent == results.Children[1]
             assert results.Children[1].Children[0].Type == self._lower_token
-            assert results.Children[1].Children[0].Value.match.group("value") == "two"
+            assert results.Children[1].Children[0].Value.Match.group("value") == "two"
             assert results.Children[1].Children[0].Whitespace is None
             assert results.Children[1].Children[0].Iter.Line == 2
             assert results.Children[1].Children[0].Iter.Column == 4
@@ -140,7 +204,7 @@ class TestSimple(object):
 
             assert results.Children[2].Children[0].Parent == results.Children[2]
             assert results.Children[2].Children[0].Type == self._number_token
-            assert results.Children[2].Children[0].Value.match.group("value") == "33333"
+            assert results.Children[2].Children[0].Value.Match.group("value") == "33333"
             assert results.Children[2].Children[0].Whitespace is None
             assert results.Children[2].Children[0].Iter.Line == 3
             assert results.Children[2].Children[0].Iter.Column == 6
@@ -155,20 +219,16 @@ class TestSimple(object):
             assert results.Children[2].Children[1].Iter.AtEnd()
 
             # Verify the callback
-            assert callback_mock.call_count == 3
+            assert observer.mock.call_count == 3
 
-            assert callback_mock.call_args_list[0][0] == (self._upper_statement, results.Children[0], 2)
-            assert callback_mock.call_args_list[1][0] == (self._lower_statement, results.Children[1], 3)
-            assert callback_mock.call_args_list[2][0] == (self._number_statement, results.Children[2], 4)
+            observer.VerifyCallArgs(0, self._upper_statement, results.Children[0], 1, 1, 2, 1)
+            observer.VerifyCallArgs(1, self._lower_statement, results.Children[1], 2, 1, 3, 1)
+            observer.VerifyCallArgs(2, self._number_statement, results.Children[2], 3, 1, 4, 1)
 
     # ----------------------------------------------------------------------
     def test_MatchReverse(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock(
-                return_value=None,
-            )
-
-            results = list(
+        with CreateObserver() as observer:
+            results = observer.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -182,14 +242,16 @@ class TestSimple(object):
                         ),
                     ),
                     self._statements,
-                    callback_mock,
-                    executor,
+                    observer,
                 ),
             )
 
             # Verify the results
-            assert len(results) == 1
-            results = results[0]
+            assert len(results) == 4
+            assert results[0] == True
+            assert results[1] == True
+            assert results[2] == True
+            results = results[3]
 
             assert results.Parent is None
             assert len(results.Children) == 3
@@ -202,7 +264,7 @@ class TestSimple(object):
 
             assert results.Children[0].Children[0].Parent == results.Children[0]
             assert results.Children[0].Children[0].Type == self._number_token
-            assert results.Children[0].Children[0].Value.match.group("value") == "33"
+            assert results.Children[0].Children[0].Value.Match.group("value") == "33"
             assert results.Children[0].Children[0].Whitespace is None
             assert results.Children[0].Children[0].Iter.Line == 1
             assert results.Children[0].Children[0].Iter.Column == 3
@@ -222,7 +284,7 @@ class TestSimple(object):
 
             assert results.Children[1].Children[0].Parent == results.Children[1]
             assert results.Children[1].Children[0].Type == self._lower_token
-            assert results.Children[1].Children[0].Value.match.group("value") == "twoooooooo"
+            assert results.Children[1].Children[0].Value.Match.group("value") == "twoooooooo"
             assert results.Children[1].Children[0].Whitespace is None
             assert results.Children[1].Children[0].Iter.Line == 2
             assert results.Children[1].Children[0].Iter.Column == 11
@@ -242,7 +304,7 @@ class TestSimple(object):
 
             assert results.Children[2].Children[0].Parent == results.Children[2]
             assert results.Children[2].Children[0].Type == self._upper_token
-            assert results.Children[2].Children[0].Value.match.group("value") == "ONE"
+            assert results.Children[2].Children[0].Value.Match.group("value") == "ONE"
             assert results.Children[2].Children[0].Whitespace is None
             assert results.Children[2].Children[0].Iter.Line == 3
             assert results.Children[2].Children[0].Iter.Column == 4
@@ -257,20 +319,16 @@ class TestSimple(object):
             assert results.Children[2].Children[1].Iter.AtEnd()
 
             # Verify the callback
-            assert callback_mock.call_count == 3
+            assert observer.mock.call_count == 3
 
-            assert callback_mock.call_args_list[0][0] == (self._number_statement, results.Children[0], 2)
-            assert callback_mock.call_args_list[1][0] == (self._lower_statement, results.Children[1], 3)
-            assert callback_mock.call_args_list[2][0] == (self._upper_statement, results.Children[2], 4)
+            observer.VerifyCallArgs(0, self._number_statement, results.Children[0], 1, 1, 2, 1)
+            observer.VerifyCallArgs(1, self._lower_statement, results.Children[1], 2, 1, 3, 1)
+            observer.VerifyCallArgs(2, self._upper_statement, results.Children[2],  3, 1, 4, 1)
 
     # ----------------------------------------------------------------------
     def test_MatchSame(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock(
-                return_value=None,
-            )
-
-            results = list(
+        with CreateObserver() as observer:
+            results = observer.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -284,14 +342,16 @@ class TestSimple(object):
                         ),
                     ),
                     self._statements,
-                    callback_mock,
-                    executor,
+                    observer,
                 ),
             )
 
             # Verify the results
-            assert len(results) == 1
-            results = results[0]
+            assert len(results) == 4
+            assert results[0] == True
+            assert results[1] == True
+            assert results[2] == True
+            results = results[3]
 
             assert results.Parent is None
             assert len(results.Children) == 3
@@ -304,7 +364,7 @@ class TestSimple(object):
 
             assert results.Children[0].Children[0].Parent == results.Children[0]
             assert results.Children[0].Children[0].Type == self._number_token
-            assert results.Children[0].Children[0].Value.match.group("value") == "1"
+            assert results.Children[0].Children[0].Value.Match.group("value") == "1"
             assert results.Children[0].Children[0].Whitespace is None
             assert results.Children[0].Children[0].Iter.Line == 1
             assert results.Children[0].Children[0].Iter.Column == 2
@@ -324,7 +384,7 @@ class TestSimple(object):
 
             assert results.Children[1].Children[0].Parent == results.Children[1]
             assert results.Children[1].Children[0].Type == self._number_token
-            assert results.Children[1].Children[0].Value.match.group("value") == "22"
+            assert results.Children[1].Children[0].Value.Match.group("value") == "22"
             assert results.Children[1].Children[0].Whitespace is None
             assert results.Children[1].Children[0].Iter.Line == 2
             assert results.Children[1].Children[0].Iter.Column == 3
@@ -344,7 +404,7 @@ class TestSimple(object):
 
             assert results.Children[2].Children[0].Parent == results.Children[2]
             assert results.Children[2].Children[0].Type == self._number_token
-            assert results.Children[2].Children[0].Value.match.group("value") == "333"
+            assert results.Children[2].Children[0].Value.Match.group("value") == "333"
             assert results.Children[2].Children[0].Whitespace is None
             assert results.Children[2].Children[0].Iter.Line == 3
             assert results.Children[2].Children[0].Iter.Column == 4
@@ -359,11 +419,169 @@ class TestSimple(object):
             assert results.Children[2].Children[1].Iter.AtEnd()
 
             # Verify the callback
-            assert callback_mock.call_count == 3
+            assert observer.mock.call_count == 3
 
-            assert callback_mock.call_args_list[0][0] == (self._number_statement, results.Children[0], 2)
-            assert callback_mock.call_args_list[1][0] == (self._number_statement, results.Children[1], 3)
-            assert callback_mock.call_args_list[2][0] == (self._number_statement, results.Children[2], 4)
+            observer.VerifyCallArgs(0, self._number_statement, results.Children[0], 1, 1, 2, 1)
+            observer.VerifyCallArgs(1, self._number_statement, results.Children[1], 2, 1, 3, 1)
+            observer.VerifyCallArgs(2, self._number_statement, results.Children[2], 3, 1, 4, 1)
+
+    # ----------------------------------------------------------------------
+    def test_EarlyTermination(self):
+        with CreateObserver() as observer:
+            observer.mock.side_effect = [
+                Observer.OnStatementCompleteFlag.Continue,
+                Observer.OnStatementCompleteFlag.Terminate,
+            ]
+
+            results = observer.Execute(
+                Parse(
+                    NormalizedIterator(
+                        Normalize(
+                            textwrap.dedent(
+                                """\
+                                1
+                                22
+                                333
+                                """,
+                            ),
+                        ),
+                    ),
+                    self._statements,
+                    observer,
+                ),
+            )
+
+            # Verify the results
+            assert len(results) == 4
+            assert results[0] == True
+            assert results[1] == True
+            assert results[2] == False
+            assert results[3] is None
+
+            # Verify the callback
+            assert observer.mock.call_count == 2
+
+            # Note that we can't compare the 2nd arg, as we don't have easy access to the Node
+            # to compare it with
+            assert observer.mock.call_args_list[0][0][0] == self._number_statement
+            assert observer.mock.call_args_list[0][0][2].Line == 1
+            assert observer.mock.call_args_list[0][0][2].Column == 1
+            assert observer.mock.call_args_list[0][0][3].Line == 2
+            assert observer.mock.call_args_list[0][0][3].Column == 1
+
+            assert observer.mock.call_args_list[1][0][0] == self._number_statement
+            assert observer.mock.call_args_list[1][0][2].Line == 2
+            assert observer.mock.call_args_list[1][0][2].Column == 1
+            assert observer.mock.call_args_list[1][0][3].Line == 3
+            assert observer.mock.call_args_list[1][0][3].Column == 1
+
+    # ----------------------------------------------------------------------
+    def test_Yield(self):
+        with CreateObserver() as observer:
+            observer.mock.side_effect = [
+                Observer.OnStatementCompleteFlag.Yield,
+                Observer.OnStatementCompleteFlag.Yield,
+                Observer.OnStatementCompleteFlag.Continue,
+            ]
+
+            results = observer.Execute(
+                Parse(
+                    NormalizedIterator(
+                        Normalize(
+                            textwrap.dedent(
+                                """\
+                                1
+                                22
+                                333
+                                """,
+                            ),
+                        ),
+                    ),
+                    self._statements,
+                    observer,
+                ),
+            )
+
+            # Verify the results
+            assert len(results) == 6
+            assert results[0] == True
+            assert results[1] == True
+            assert results[2] == True
+            assert results[3] == True
+            assert results[4] == True
+            results = results[5]
+
+            assert results.Parent is None
+            assert len(results.Children) == 3
+
+            # Line 1
+            assert results.Children[0].Parent == results
+            assert results.Children[0].Type == self._number_statement
+
+            assert len(results.Children[0].Children) == 2
+
+            assert results.Children[0].Children[0].Parent == results.Children[0]
+            assert results.Children[0].Children[0].Type == self._number_token
+            assert results.Children[0].Children[0].Value.Match.group("value") == "1"
+            assert results.Children[0].Children[0].Whitespace is None
+            assert results.Children[0].Children[0].Iter.Line == 1
+            assert results.Children[0].Children[0].Iter.Column == 2
+
+            assert results.Children[0].Children[1].Parent == results.Children[0]
+            assert results.Children[0].Children[1].Type == NewlineToken()
+            assert results.Children[0].Children[1].Value == Token.NewlineMatch(1, 2)
+            assert results.Children[0].Children[1].Whitespace is None
+            assert results.Children[0].Children[1].Iter.Line == 2
+            assert results.Children[0].Children[1].Iter.Column == 1
+
+            # Line 2
+            assert results.Children[1].Parent == results
+            assert results.Children[1].Type == self._number_statement
+
+            assert len(results.Children[1].Children) == 2
+
+            assert results.Children[1].Children[0].Parent == results.Children[1]
+            assert results.Children[1].Children[0].Type == self._number_token
+            assert results.Children[1].Children[0].Value.Match.group("value") == "22"
+            assert results.Children[1].Children[0].Whitespace is None
+            assert results.Children[1].Children[0].Iter.Line == 2
+            assert results.Children[1].Children[0].Iter.Column == 3
+
+            assert results.Children[1].Children[1].Parent == results.Children[1]
+            assert results.Children[1].Children[1].Type == NewlineToken()
+            assert results.Children[1].Children[1].Value == Token.NewlineMatch(4, 5)
+            assert results.Children[1].Children[1].Whitespace is None
+            assert results.Children[1].Children[1].Iter.Line == 3
+            assert results.Children[1].Children[1].Iter.Column == 1
+
+            # Line 3
+            assert results.Children[2].Parent == results
+            assert results.Children[2].Type == self._number_statement
+
+            assert len(results.Children[2].Children) == 2
+
+            assert results.Children[2].Children[0].Parent == results.Children[2]
+            assert results.Children[2].Children[0].Type == self._number_token
+            assert results.Children[2].Children[0].Value.Match.group("value") == "333"
+            assert results.Children[2].Children[0].Whitespace is None
+            assert results.Children[2].Children[0].Iter.Line == 3
+            assert results.Children[2].Children[0].Iter.Column == 4
+
+            assert results.Children[2].Children[1].Parent == results.Children[2]
+            assert results.Children[2].Children[1].Type == NewlineToken()
+            assert results.Children[2].Children[1].Value == Token.NewlineMatch(8, 9)
+            assert results.Children[2].Children[1].Whitespace is None
+            assert results.Children[2].Children[1].Iter.Line == 4
+            assert results.Children[2].Children[1].Iter.Column == 1
+
+            assert results.Children[2].Children[1].Iter.AtEnd()
+
+            # Verify the callback
+            assert observer.mock.call_count == 3
+
+            observer.VerifyCallArgs(0, self._number_statement, results.Children[0], 1, 1, 2, 1)
+            observer.VerifyCallArgs(1, self._number_statement, results.Children[1], 2, 1, 3, 1)
+            observer.VerifyCallArgs(2, self._number_statement, results.Children[2], 3, 1, 4, 1)
 
 # ----------------------------------------------------------------------
 class TestIndentation(object):
@@ -385,12 +603,8 @@ class TestIndentation(object):
 
     # ----------------------------------------------------------------------
     def test_Match(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock(
-                return_value=None,
-            )
-
-            results = list(
+        with CreateObserver() as observer:
+            results = observer.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -403,14 +617,14 @@ class TestIndentation(object):
                         ),
                     ),
                     self._statements,
-                    callback_mock,
-                    executor,
+                    observer,
                 ),
             )
 
             # Verify the results
-            assert len(results) == 1
-            results = results[0]
+            assert len(results) == 2
+            assert results[0] == True
+            results = results[1]
 
             assert results.Parent is None
             assert len(results.Children) == 1
@@ -423,7 +637,7 @@ class TestIndentation(object):
             # Line 1
             assert results.Children[0].Children[0].Parent == results.Children[0]
             assert results.Children[0].Children[0].Type == self._upper_token
-            assert results.Children[0].Children[0].Value.match.group("value") == "ONE"
+            assert results.Children[0].Children[0].Value.Match.group("value") == "ONE"
             assert results.Children[0].Children[0].Whitespace is None
             assert results.Children[0].Children[0].Iter.Line == 1
             assert results.Children[0].Children[0].Iter.Column == 4
@@ -445,14 +659,14 @@ class TestIndentation(object):
 
             assert results.Children[0].Children[3].Parent == results.Children[0]
             assert results.Children[0].Children[3].Type == self._upper_token
-            assert results.Children[0].Children[3].Value.match.group("value") == "TWO"
+            assert results.Children[0].Children[3].Value.Match.group("value") == "TWO"
             assert results.Children[0].Children[3].Whitespace is None
             assert results.Children[0].Children[3].Iter.Line == 2
             assert results.Children[0].Children[3].Iter.Column == 8
 
             assert results.Children[0].Children[4].Parent == results.Children[0]
             assert results.Children[0].Children[4].Type == self._upper_token
-            assert results.Children[0].Children[4].Value.match.group("value") == "THREE"
+            assert results.Children[0].Children[4].Value.Match.group("value") == "THREE"
             assert results.Children[0].Children[4].Whitespace == (11, 16)
             assert results.Children[0].Children[4].Iter.Line == 2
             assert results.Children[0].Children[4].Iter.Column == 18
@@ -474,9 +688,9 @@ class TestIndentation(object):
             assert results.Children[0].Children[6].Iter.AtEnd()
 
             # Verify the Callbacks
-            assert callback_mock.call_count == 1
+            assert observer.mock.call_count == 1
 
-            assert callback_mock.call_args_list[0][0] == (self._statement, results.Children[0], 3)
+            observer.VerifyCallArgs(0, self._statement, results.Children[0], 1, 1, 3, 1)
 
 # ----------------------------------------------------------------------
 class TestNewStatements(object):
@@ -491,16 +705,12 @@ class TestNewStatements(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
-        with ThreadPoolExecutor() as executor:
+        with CreateObserver() as observer:
             # The callback isn't returning any new statements; therefore an
             # error will be generated when attempting to parse the lowercase
             # token.
-            callback_mock = Mock(
-                return_value=None,
-            )
-
-            with pytest.raises(SyntaxErrorException) as ex:
-                results = list(
+            with pytest.raises(SyntaxInvalidError) as ex:
+                results = observer.Execute(
                     Parse(
                         NormalizedIterator(
                             Normalize(
@@ -512,8 +722,7 @@ class TestNewStatements(object):
                             ),
                         ),
                         self._statements,
-                        callback_mock,
-                        executor,
+                        observer,
                     ),
                 )
 
@@ -522,17 +731,18 @@ class TestNewStatements(object):
             # Validate
             assert ex.Line == 1
             assert ex.Column == 4
-            assert ex.Message == "The syntax is not recognized"
-            assert not ex.Potentials
+            assert str(ex) == "The syntax is not recognized"
+            assert not ex.PotentialStatements
 
     # ----------------------------------------------------------------------
     def test_Match(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock()
+        with CreateObserver() as observer:
+            observer.mock.side_effect = [
+                self._new_statements,
+                Observer.OnStatementCompleteFlag.Continue,
+            ]
 
-            callback_mock.side_effect = [self._new_statements, None]
-
-            results = list(
+            results = observer.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -544,14 +754,15 @@ class TestNewStatements(object):
                         ),
                     ),
                     self._statements,
-                    callback_mock,
-                    executor,
+                    observer,
                 ),
             )
 
             # Verify the results
-            assert len(results) == 1
-            results = results[0]
+            assert len(results) == 3
+            assert results[0] == True
+            assert results[1] == True
+            results = results[2]
 
             assert results.Parent is None
             assert len(results.Children) == 2
@@ -563,7 +774,7 @@ class TestNewStatements(object):
 
             assert results.Children[0].Children[0].Parent == results.Children[0]
             assert results.Children[0].Children[0].Type == self._upper_token
-            assert results.Children[0].Children[0].Value.match.group("value") == "ONE"
+            assert results.Children[0].Children[0].Value.Match.group("value") == "ONE"
             assert results.Children[0].Children[0].Whitespace is None
             assert results.Children[0].Children[0].Iter.Line == 1
             assert results.Children[0].Children[0].Iter.Column == 4
@@ -575,7 +786,7 @@ class TestNewStatements(object):
 
             assert results.Children[1].Children[0].Parent == results.Children[1]
             assert results.Children[1].Children[0].Type == self._lower_token
-            assert results.Children[1].Children[0].Value.match.group("value") == "two"
+            assert results.Children[1].Children[0].Value.Match.group("value") == "two"
             assert results.Children[1].Children[0].Whitespace == (3, 4)
             assert results.Children[1].Children[0].Iter.Line == 1
             assert results.Children[1].Children[0].Iter.Column == 8
@@ -588,10 +799,10 @@ class TestNewStatements(object):
             assert results.Children[1].Children[1].Iter.Column == 1
 
             # Verify the callbacks
-            assert callback_mock.call_count == 2
+            assert observer.mock.call_count == 2
 
-            assert callback_mock.call_args_list[0][0] == (self._upper_statement, results.Children[0], 1)
-            assert callback_mock.call_args_list[1][0] == (self._lower_statement, results.Children[1], 2)
+            observer.VerifyCallArgs(0, self._upper_statement, results.Children[0], 1, 1, 1, 4)
+            observer.VerifyCallArgs(1, self._lower_statement, results.Children[1], 1, 4, 2, 1)
 
 # ----------------------------------------------------------------------
 class TestNewScopedStatements(object):
@@ -610,19 +821,17 @@ class TestNewScopedStatements(object):
 
     # ----------------------------------------------------------------------
     def test_Match(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock()
-
-            callback_mock.side_effect = [
-                None,                       # ONE
-                None,                       # Newline
-                self._new_statements,       # Indent
-                None,                       # two
-                None,                       # Newline
-                None,                       # Dedent
+        with CreateObserver() as observer:
+            observer.mock.side_effect = [
+                Observer.OnStatementCompleteFlag.Continue,                  # ONE
+                Observer.OnStatementCompleteFlag.Continue,                  # Newline
+                self._new_statements,                                       # Indent
+                Observer.OnStatementCompleteFlag.Continue,                  # two
+                Observer.OnStatementCompleteFlag.Continue,                  # Newline
+                Observer.OnStatementCompleteFlag.Continue,                  # Dedent
             ]
 
-            results = list(
+            results = observer.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -635,14 +844,19 @@ class TestNewScopedStatements(object):
                         ),
                     ),
                     self._statements,
-                    callback_mock,
-                    executor,
+                    observer,
                 ),
             )
 
             # Verify the results
-            assert len(results) == 1
-            results = results[0]
+            assert len(results) == 7
+            assert results[0] == True
+            assert results[1] == True
+            assert results[2] == True
+            assert results[3] == True
+            assert results[4] == True
+            assert results[5] == True
+            results = results[6]
 
             assert results.Parent is None
             assert len(results.Children) == 6
@@ -655,7 +869,7 @@ class TestNewScopedStatements(object):
 
             assert results.Children[0].Children[0].Parent == results.Children[0]
             assert results.Children[0].Children[0].Type == self._upper_token
-            assert results.Children[0].Children[0].Value.match.group("value") == "ONE"
+            assert results.Children[0].Children[0].Value.Match.group("value") == "ONE"
             assert results.Children[0].Children[0].Whitespace is None
             assert results.Children[0].Children[0].Iter.Line == 1
             assert results.Children[0].Children[0].Iter.Column == 4
@@ -692,7 +906,7 @@ class TestNewScopedStatements(object):
 
             assert results.Children[3].Children[0].Parent == results.Children[3]
             assert results.Children[3].Children[0].Type == self._lower_token
-            assert results.Children[3].Children[0].Value.match.group("value") == "two"
+            assert results.Children[3].Children[0].Value.Match.group("value") == "two"
             assert results.Children[3].Children[0].Whitespace is None
             assert results.Children[3].Children[0].Iter.Line == 2
             assert results.Children[3].Children[0].Iter.Column == 8
@@ -724,31 +938,29 @@ class TestNewScopedStatements(object):
             assert results.Children[5].Children[0].Iter.AtEnd()
 
             # Verify the callbacks
-            assert callback_mock.call_count == 6
+            assert observer.mock.call_count == 6
 
-            assert callback_mock.call_args_list[0][0] == (self._upper_statement, results.Children[0], 1)
-            assert callback_mock.call_args_list[1][0] == (self._newline_statement, results.Children[1], 2)
-            assert callback_mock.call_args_list[2][0] == (self._indent_statement, results.Children[2], 2)
-            assert callback_mock.call_args_list[3][0] == (self._lower_statement, results.Children[3], 2)
-            assert callback_mock.call_args_list[4][0] == (self._newline_statement, results.Children[4], 3)
-            assert callback_mock.call_args_list[5][0] == (self._dedent_statement, results.Children[5], 3)
+            observer.VerifyCallArgs(0, self._upper_statement, results.Children[0], 1, 1, 1, 4)
+            observer.VerifyCallArgs(1, self._newline_statement, results.Children[1], 1, 4, 2, 1)
+            observer.VerifyCallArgs(2, self._indent_statement, results.Children[2], 2, 1, 2, 5)
+            observer.VerifyCallArgs(3, self._lower_statement, results.Children[3], 2, 5, 2, 8)
+            observer.VerifyCallArgs(4, self._newline_statement, results.Children[4], 2, 8, 3, 1)
+            observer.VerifyCallArgs(5, self._dedent_statement, results.Children[5], 3, 1, 3, 1)
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock()
-
-            callback_mock.side_effect = [
-                None,                       # ONE
-                None,                       # Newline
-                self._new_statements,       # Indent
-                None,                       # two
-                None,                       # Newline
-                None,                       # Dedent
+        with CreateObserver() as observer:
+            observer.mock.side_effect = [
+                Observer.OnStatementCompleteFlag.Continue,                  # ONE
+                Observer.OnStatementCompleteFlag.Continue,                  # Newline
+                self._new_statements,                                       # Indent
+                Observer.OnStatementCompleteFlag.Continue,                  # two
+                Observer.OnStatementCompleteFlag.Continue,                  # Newline
+                Observer.OnStatementCompleteFlag.Continue,                  # Dedent
             ]
 
-            with pytest.raises(SyntaxErrorException) as ex:
-                results = list(
+            with pytest.raises(SyntaxInvalidError) as ex:
+                results = observer.Execute(
                     Parse(
                         NormalizedIterator(
                             Normalize(
@@ -763,8 +975,7 @@ class TestNewScopedStatements(object):
                             ),
                         ),
                         self._statements,
-                        callback_mock,
-                        executor,
+                        observer,
                     ),
                 )
 
@@ -773,150 +984,9 @@ class TestNewScopedStatements(object):
             # Validate
             assert ex.Line == 4
             assert ex.Column == 1
-            assert ex.Message == "The syntax is not recognized"
-            assert not ex.Potentials
+            assert str(ex) == "The syntax is not recognized"
+            assert not ex.PotentialStatements
 
-
-# ----------------------------------------------------------------------
-class TestCallable(object):
-    _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
-    _upper_statement                        = StandardStatement("Upper Statement", [_upper_token, NewlineToken()])
-
-    _statements                             = [_upper_statement]
-
-    # ----------------------------------------------------------------------
-    def test_Standard(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock(
-                return_value=None,
-            )
-
-            callback_mock.side_effect = [
-                None,
-                lambda: None,
-                None,
-                lambda: None,
-                None,
-            ]
-
-            results = list(
-                Parse(
-                    NormalizedIterator(
-                        Normalize(
-                            textwrap.dedent(
-                                """\
-                                ONE
-                                TWO
-                                THREE
-                                FOUR
-                                FIVE
-                                """,
-                            ),
-                        ),
-                    ),
-                    self._statements,
-                    callback_mock,
-                    executor,
-                ),
-            )
-
-            # Verify the results
-            assert len(results) == 3
-
-            assert callable(results[0])
-            assert results[0]() is None
-
-            assert callable(results[1])
-            assert results[1]() is None
-
-            results = results[2]
-
-            assert results.Parent is None
-            assert len(results.Children) == 5
-
-            # Line 1
-            assert results.Children[0].Children[0].Parent == results.Children[0]
-            assert results.Children[0].Children[0].Type == self._upper_token
-            assert results.Children[0].Children[0].Value.match.group("value") == "ONE"
-            assert results.Children[0].Children[0].Whitespace is None
-            assert results.Children[0].Children[0].Iter.Line == 1
-            assert results.Children[0].Children[0].Iter.Column == 4
-
-            assert results.Children[0].Children[1].Parent == results.Children[0]
-            assert results.Children[0].Children[1].Type == NewlineToken()
-            assert results.Children[0].Children[1].Value == Token.NewlineMatch(3, 4)
-            assert results.Children[0].Children[1].Whitespace is None
-            assert results.Children[0].Children[1].Iter.Line == 2
-            assert results.Children[0].Children[1].Iter.Column == 1
-
-            # Line 2
-            assert results.Children[1].Children[0].Parent == results.Children[1]
-            assert results.Children[1].Children[0].Type == self._upper_token
-            assert results.Children[1].Children[0].Value.match.group("value") == "TWO"
-            assert results.Children[1].Children[0].Whitespace is None
-            assert results.Children[1].Children[0].Iter.Line == 2
-            assert results.Children[1].Children[0].Iter.Column == 4
-
-            assert results.Children[1].Children[1].Parent == results.Children[1]
-            assert results.Children[1].Children[1].Type == NewlineToken()
-            assert results.Children[1].Children[1].Value == Token.NewlineMatch(7, 8)
-            assert results.Children[1].Children[1].Whitespace is None
-            assert results.Children[1].Children[1].Iter.Line == 3
-            assert results.Children[1].Children[1].Iter.Column == 1
-
-            # Line 3
-            assert results.Children[2].Children[0].Parent == results.Children[2]
-            assert results.Children[2].Children[0].Type == self._upper_token
-            assert results.Children[2].Children[0].Value.match.group("value") == "THREE"
-            assert results.Children[2].Children[0].Whitespace is None
-            assert results.Children[2].Children[0].Iter.Line == 3
-            assert results.Children[2].Children[0].Iter.Column == 6
-
-            assert results.Children[2].Children[1].Parent == results.Children[2]
-            assert results.Children[2].Children[1].Type == NewlineToken()
-            assert results.Children[2].Children[1].Value == Token.NewlineMatch(13, 14)
-            assert results.Children[2].Children[1].Whitespace is None
-            assert results.Children[2].Children[1].Iter.Line == 4
-            assert results.Children[2].Children[1].Iter.Column == 1
-
-            # Line 4
-            assert results.Children[3].Children[0].Parent == results.Children[3]
-            assert results.Children[3].Children[0].Type == self._upper_token
-            assert results.Children[3].Children[0].Value.match.group("value") == "FOUR"
-            assert results.Children[3].Children[0].Whitespace is None
-            assert results.Children[3].Children[0].Iter.Line == 4
-            assert results.Children[3].Children[0].Iter.Column == 5
-
-            assert results.Children[3].Children[1].Parent == results.Children[3]
-            assert results.Children[3].Children[1].Type == NewlineToken()
-            assert results.Children[3].Children[1].Value == Token.NewlineMatch(18, 19)
-            assert results.Children[3].Children[1].Whitespace is None
-            assert results.Children[3].Children[1].Iter.Line == 5
-            assert results.Children[3].Children[1].Iter.Column == 1
-
-            # Line 5
-            assert results.Children[4].Children[0].Parent == results.Children[4]
-            assert results.Children[4].Children[0].Type == self._upper_token
-            assert results.Children[4].Children[0].Value.match.group("value") == "FIVE"
-            assert results.Children[4].Children[0].Whitespace is None
-            assert results.Children[4].Children[0].Iter.Line == 5
-            assert results.Children[4].Children[0].Iter.Column == 5
-
-            assert results.Children[4].Children[1].Parent == results.Children[4]
-            assert results.Children[4].Children[1].Type == NewlineToken()
-            assert results.Children[4].Children[1].Value == Token.NewlineMatch(23, 24)
-            assert results.Children[4].Children[1].Whitespace is None
-            assert results.Children[4].Children[1].Iter.Line == 6
-            assert results.Children[4].Children[1].Iter.Column == 1
-
-            # Verify the callbacks
-            assert callback_mock.call_count == 5
-
-            assert callback_mock.call_args_list[0][0] == (self._upper_statement, results.Children[0], 2)
-            assert callback_mock.call_args_list[1][0] == (self._upper_statement, results.Children[1], 3)
-            assert callback_mock.call_args_list[2][0] == (self._upper_statement, results.Children[2], 4)
-            assert callback_mock.call_args_list[3][0] == (self._upper_statement, results.Children[3], 5)
-            assert callback_mock.call_args_list[4][0] == (self._upper_statement, results.Children[4], 6)
 
 # ----------------------------------------------------------------------
 class TestEmbeddedStatements(object):
@@ -932,12 +1002,8 @@ class TestEmbeddedStatements(object):
 
     # ----------------------------------------------------------------------
     def test_Match(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock(
-                return_value=None,
-            )
-
-            results = list(
+        with CreateObserver() as observer:
+            results = observer.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -950,14 +1016,15 @@ class TestEmbeddedStatements(object):
                         ),
                     ),
                     self._statements,
-                    callback_mock,
-                    executor,
+                    observer,
                 ),
             )
 
             # Verify the results
-            assert len(results) == 1
-            results = results[0]
+            assert len(results) == 3
+            assert results[0] == True
+            assert results[1] == True
+            results = results[2]
 
             assert results.Parent is None
             assert len(results.Children) == 2
@@ -970,7 +1037,7 @@ class TestEmbeddedStatements(object):
 
             assert results.Children[0].Children[0].Parent == results.Children[0]
             assert results.Children[0].Children[0].Type == self._upper_token
-            assert results.Children[0].Children[0].Value.match.group("value") == "ONE"
+            assert results.Children[0].Children[0].Value.Match.group("value") == "ONE"
             assert results.Children[0].Children[0].Whitespace is None
             assert results.Children[0].Children[0].Iter.Line == 1
             assert results.Children[0].Children[0].Iter.Column == 4
@@ -982,14 +1049,14 @@ class TestEmbeddedStatements(object):
 
             assert results.Children[0].Children[1].Children[0].Parent == results.Children[0].Children[1]
             assert results.Children[0].Children[1].Children[0].Type == self._upper_token
-            assert results.Children[0].Children[1].Children[0].Value.match.group("value") == "TWO"
+            assert results.Children[0].Children[1].Children[0].Value.Match.group("value") == "TWO"
             assert results.Children[0].Children[1].Children[0].Whitespace == (3, 4)
             assert results.Children[0].Children[1].Children[0].Iter.Line == 1
             assert results.Children[0].Children[1].Children[0].Iter.Column == 8
 
             assert results.Children[0].Children[1].Children[1].Parent == results.Children[0].Children[1]
             assert results.Children[0].Children[1].Children[1].Type == self._lower_token
-            assert results.Children[0].Children[1].Children[1].Value.match.group("value") == "three"
+            assert results.Children[0].Children[1].Children[1].Value.Match.group("value") == "three"
             assert results.Children[0].Children[1].Children[1].Whitespace == (7, 9)
             assert results.Children[0].Children[1].Children[1].Iter.Line == 1
             assert results.Children[0].Children[1].Children[1].Iter.Column == 15
@@ -1009,7 +1076,7 @@ class TestEmbeddedStatements(object):
 
             assert results.Children[1].Children[0].Parent == results.Children[1]
             assert results.Children[1].Children[0].Type == self._lower_token
-            assert results.Children[1].Children[0].Value.match.group("value") == "four"
+            assert results.Children[1].Children[0].Value.Match.group("value") == "four"
             assert results.Children[1].Children[0].Whitespace is None
             assert results.Children[1].Children[0].Iter.Line == 2
             assert results.Children[1].Children[0].Iter.Column == 5
@@ -1021,14 +1088,14 @@ class TestEmbeddedStatements(object):
 
             assert results.Children[1].Children[1].Children[0].Parent == results.Children[1].Children[1]
             assert results.Children[1].Children[1].Children[0].Type == self._upper_token
-            assert results.Children[1].Children[1].Children[0].Value.match.group("value") == "FIVE"
+            assert results.Children[1].Children[1].Children[0].Value.Match.group("value") == "FIVE"
             assert results.Children[1].Children[1].Children[0].Whitespace == (19, 23)
             assert results.Children[1].Children[1].Children[0].Iter.Line == 2
             assert results.Children[1].Children[1].Children[0].Iter.Column == 13
 
             assert results.Children[1].Children[1].Children[1].Parent == results.Children[1].Children[1]
             assert results.Children[1].Children[1].Children[1].Type == self._lower_token
-            assert results.Children[1].Children[1].Children[1].Value.match.group("value") == "six"
+            assert results.Children[1].Children[1].Children[1].Value.Match.group("value") == "six"
             assert results.Children[1].Children[1].Children[1].Whitespace == (27, 28)
             assert results.Children[1].Children[1].Children[1].Iter.Line == 2
             assert results.Children[1].Children[1].Children[1].Iter.Column == 17
@@ -1041,10 +1108,10 @@ class TestEmbeddedStatements(object):
             assert results.Children[1].Children[1].Children[2].Iter.Column == 1
 
             # Verify the callbacks
-            assert callback_mock.call_count == 2
+            assert observer.mock.call_count == 2
 
-            assert callback_mock.call_args_list[0][0] == (self._uul_statement, results.Children[0], 2)
-            assert callback_mock.call_args_list[1][0] == (self._lul_statement, results.Children[1], 3)
+            observer.VerifyCallArgs(0, self._uul_statement, results.Children[0], 1, 1, 2, 1)
+            observer.VerifyCallArgs(1, self._lul_statement, results.Children[1], 2, 1, 3, 1)
 
 # ----------------------------------------------------------------------
 class TestNoMatchError(object):
@@ -1059,12 +1126,8 @@ class TestNoMatchError(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock(
-                return_value=None,
-            )
-
-            with pytest.raises(SyntaxErrorException) as ex:
+        with CreateObserver() as observer:
+            with pytest.raises(SyntaxInvalidError) as ex:
                 list(
                     Parse(
                         NormalizedIterator(
@@ -1077,8 +1140,7 @@ class TestNoMatchError(object):
                             ),
                         ),
                         self._statements,
-                        callback_mock,
-                        executor,
+                        observer,
                     ),
                 )
 
@@ -1087,19 +1149,19 @@ class TestNoMatchError(object):
             # Validate
             assert ex.Line == 1
             assert ex.Column == 1
-            assert ex.Message == "The syntax is not recognized"
+            assert str(ex) == "The syntax is not recognized"
 
-            assert len(ex.Potentials) == 2
+            assert len(ex.PotentialStatements) == 2
 
-            assert len(ex.Potentials[self._upper_statement].results) == 1
-            assert ex.Potentials[self._upper_statement].results[0].token == self._upper_token
-            assert ex.Potentials[self._upper_statement].results[0].iter.Line == 1
-            assert ex.Potentials[self._upper_statement].results[0].iter.Column == 4
+            assert len(ex.PotentialStatements[self._upper_statement].Results) == 1
+            assert ex.PotentialStatements[self._upper_statement].Results[0].Token == self._upper_token
+            assert ex.PotentialStatements[self._upper_statement].Results[0].Iter.Line == 1
+            assert ex.PotentialStatements[self._upper_statement].Results[0].Iter.Column == 4
 
-            assert len(ex.Potentials[self._lower_statement].results) == 1
-            assert ex.Potentials[self._lower_statement].results[0].token == self._upper_token
-            assert ex.Potentials[self._lower_statement].results[0].iter.Line == 1
-            assert ex.Potentials[self._lower_statement].results[0].iter.Column == 4
+            assert len(ex.PotentialStatements[self._lower_statement].Results) == 1
+            assert ex.PotentialStatements[self._lower_statement].Results[0].Token == self._upper_token
+            assert ex.PotentialStatements[self._lower_statement].Results[0].Iter.Line == 1
+            assert ex.PotentialStatements[self._lower_statement].Results[0].Iter.Column == 4
 
 # ----------------------------------------------------------------------
 class TestAmbiguousError(object):
@@ -1111,12 +1173,8 @@ class TestAmbiguousError(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
-        with ThreadPoolExecutor() as executor:
-            callback_mock = Mock(
-                return_value=None,
-            )
-
-            with pytest.raises(SyntaxAmbiguousException) as ex:
+        with CreateObserver() as observer:
+            with pytest.raises(SyntaxAmbiguousError) as ex:
                 list(
                     Parse(
                         NormalizedIterator(
@@ -1129,8 +1187,7 @@ class TestAmbiguousError(object):
                             ),
                         ),
                         self._statements,
-                        callback_mock,
-                        executor,
+                        observer,
                     ),
                 )
 
@@ -1139,16 +1196,16 @@ class TestAmbiguousError(object):
             # Validate
             assert ex.Line == 1
             assert ex.Column == 1
-            assert ex.Message == "The syntax is ambiguous"
+            assert str(ex) == "The syntax is ambiguous"
 
-            assert len(ex.Potentials) == 2
+            assert len(ex.PotentialStatements) == 2
 
-            assert len(ex.Potentials[self._upper_statement1].results) == 1
-            assert ex.Potentials[self._upper_statement1].results[0].token == self._upper_token
-            assert ex.Potentials[self._upper_statement1].results[0].iter.Line == 1
-            assert ex.Potentials[self._upper_statement1].results[0].iter.Column == 4
+            assert len(ex.PotentialStatements[self._upper_statement1].Results) == 1
+            assert ex.PotentialStatements[self._upper_statement1].Results[0].Token == self._upper_token
+            assert ex.PotentialStatements[self._upper_statement1].Results[0].Iter.Line == 1
+            assert ex.PotentialStatements[self._upper_statement1].Results[0].Iter.Column == 4
 
-            assert len(ex.Potentials[self._upper_statement2].results) == 1
-            assert ex.Potentials[self._upper_statement2].results[0].token == self._upper_token
-            assert ex.Potentials[self._upper_statement2].results[0].iter.Line == 1
-            assert ex.Potentials[self._upper_statement2].results[0].iter.Column == 4
+            assert len(ex.PotentialStatements[self._upper_statement2].Results) == 1
+            assert ex.PotentialStatements[self._upper_statement2].Results[0].Token == self._upper_token
+            assert ex.PotentialStatements[self._upper_statement2].Results[0].Iter.Line == 1
+            assert ex.PotentialStatements[self._upper_statement2].Results[0].Iter.Column == 4

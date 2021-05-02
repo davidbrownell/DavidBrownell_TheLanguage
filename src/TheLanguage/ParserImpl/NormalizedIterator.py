@@ -17,7 +17,6 @@
 
 import os
 
-from dataclasses import fields
 from rop import read_only_properties
 
 import CommonEnvironment

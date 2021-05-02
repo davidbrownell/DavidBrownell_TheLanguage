@@ -45,31 +45,3 @@ class Error(Exception, Interface.Interface):
     # ----------------------------------------------------------------------
     def __str__(self):
         return self.MessageTemplate.format(**self.__dict__)
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class SourceError(Error):
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class Extent(object):
-        StartLine: int
-        StartColumn: int
-        EndLine: int
-        EndColumn: int
-
-    # ----------------------------------------------------------------------
-
-    Source: str
-
-    # ----------------------------------------------------------------------
-    def __str__(self):
-        return "{} <{}, {}>:\n{}\n".format(
-            self.Source,
-            self.Line,
-            self.Column,
-            StringHelpers.LeftJustify(
-                super(SourceError, self).__str__(),
-                2,
-                skip_first_line=False,
-            ).rstrip(),
-        )

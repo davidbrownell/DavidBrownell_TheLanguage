@@ -19,8 +19,11 @@ from collections import OrderedDict
 import itertools
 import os
 
-from concurrent.futures import ThreadPoolExecutor
-from typing import Callable, List, Optional, Tuple, Union
+from concurrent.futures import Future
+from enum import auto, Enum
+from typing import Callable, Dict, Generator, List, Optional, Tuple, Union
+
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -36,58 +39,58 @@ from Statement import Statement
 from Token import Token                                 # <No name in module> pylint: disable=E0611
 
 # ----------------------------------------------------------------------
-class _SyntaxException(Error):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        statements,
-        line,
-        column,
-    ):
-        super(_SyntaxException, self).__init__(line, column)
+@dataclass(frozen=True)
+class _SyntaxError(Error):
+    """Base class for all exceptions thrown by this module"""
 
+    PotentialStatements: Dict[Statement, Statement.ParseResult]             = field(init=False)
+    statements: InitVar[List[Statement]]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, statements):
         potentials = OrderedDict()
 
         for statement, result in statements:
-            if result.results:
+            if result.Results:
                 potentials[statement] = result
 
-        self.Potentials                     = potentials
+        object.__setattr__(self, "PotentialStatements", potentials)
 
 
 # ----------------------------------------------------------------------
-class SyntaxErrorException(_SyntaxException):
+class SyntaxInvalidError(_SyntaxError):
+    """Exception thrown when there are no statement matches"""
+
     MessageTemplate                         = Interface.DerivedProperty("The syntax is not recognized")
 
 
 # ----------------------------------------------------------------------
-class SyntaxAmbiguousException(_SyntaxException):
+class SyntaxAmbiguousError(_SyntaxError):
+    """Exception thrown when there are multiple potential matches (we should rarely see this exception in practices, as it is a single of problematic grammar design)"""
+
     MessageTemplate                         = Interface.DerivedProperty("The syntax is ambiguous")
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class _ParseResultBase(object):
-    """Base class for entities returned when parsed"""
+    """Base class for parsed AST entities"""
+
+    Type: Union[Statement, Token]
 
     # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        result_type: Union[Statement, Token],
-    ):
-        self.Type                                       = result_type
-        self.Parent: Optional[_ParseResultBase]         = None
+    def __post_init__(self):
+        object.__setattr__(self, "Parent", None)        # This value will be set when _Create- functions are invoked
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class _Node(_ParseResultBase):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        statement: Optional[Statement],
-    ):
-        super(_Node, self).__init__(statement)
 
-        self.Children                       = []
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        super(_Node, self).__post_init__()
+        object.__setattr__(self, "Children", [])        # This value will be populated when _Create- functions are invoked
 
 
 # ----------------------------------------------------------------------
@@ -99,6 +102,8 @@ class RootNode(_Node):
 
 # ----------------------------------------------------------------------
 class Node(_Node):
+    """AST results of a Statement"""
+
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -108,128 +113,181 @@ class Node(_Node):
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class Leaf(_ParseResultBase):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        token: Token,
-        whitespace: Optional[Tuple[int, int]],          # Whitespace immediately before the token
-        value: Token.MatchType,                         # Result of the call to Token.Match
-        normalized_iter: NormalizedIterator,            # NormalizedIterator after the token has been consumed
-        is_ignored: bool,                               # True if the result is whitespace while whitespace is being ignored
-    ):
-        super(Leaf, self).__init__(token)
+    """AST results of a Token"""
 
-        self.Whitespace                     = whitespace
-        self.Value                          = value
-        self.Iter                           = normalized_iter
-        self.IsIgnored                      = is_ignored
+    Whitespace: Optional[Tuple[int, int]]   # Whitespace immediately before the token
+    Value: Token.MatchType                  # Result of the call to Token.Match
+    Iter: NormalizedIterator                # NormalizedIterator after the token has been consumed
+    IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
+
+
+# ----------------------------------------------------------------------
+class Observer(Interface.Interface):
+    # ----------------------------------------------------------------------
+    class OnStatementCompleteFlag(Enum):
+        Continue                            = auto()
+        Yield                               = auto()
+        Terminate                           = auto()
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnIndent():
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnDedent():
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Enqueue(
+        cls,
+        func_or_funcs: Union[Callable[[], None], List[Callable[[], None]]],
+    ) -> Union[Future, List[Future]]:
+        if isinstance(func_or_funcs, list):
+            return cls._Enqueue(func_or_funcs)
+
+        results = cls._Enqueue([func_or_funcs])
+        assert len(results) == 1
+
+        return results[0]
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnStatementComplete(
+        statement: Statement,
+        node: Node,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator
+    ) -> Union[
+        "OnStatementCompleteFlag",
+        List[Statement],                    # New statements to add to the current scope (implies continue)
+    ]:
+        """Called on the completion of each statement"""
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def _Enqueue(
+        funcs: List[Callable[[], None]],
+    ) -> List[Future]:
+        """Enqueues a list of functions to be executed; the Generator will yield immediately after this call"""
+        raise Exception("Abstract method")
 
 
 # ----------------------------------------------------------------------
 def Parse(
     normalized_iter: NormalizedIterator,
-    statements: List[Statement],
-    on_statement_complete: Callable[
-        [
-            Statement,                      # Matching statement
-            Node,                           # Result node
-            int,                            # Line number
-        ],
-        Optional[
-            Union[
-                Callable[[], None],
-                List[Statement],
-            ]
-        ]
-    ],
-    executor: ThreadPoolExecutor,
-) -> Node:
+    initial_statements: List[Statement],
+    observer: Observer,
+) -> Generator[
+    bool,                                   # True to yield and continue, False to terminate
+    None,
+    Optional[RootNode],                     # Parsing result or None if terminated
+]:
     """Parses the provided content based on the provided statements"""
 
     assert normalized_iter.Offset == 0, normalized_iter.Offset
 
-    statements = [statements]
-
-    # ----------------------------------------------------------------------
-    @Interface.staticderived
-    class Observer(Statement.Observer):
-        # ----------------------------------------------------------------------
-        @staticmethod
-        @Interface.override
-        def OnIndent():
-            statements.append([])
-
-        # ----------------------------------------------------------------------
-        @staticmethod
-        @Interface.override
-        def OnDedent():
-            assert statements
-            statements.pop()
-            assert len(statements) >= 1, statements
-
-    # ----------------------------------------------------------------------
+    statement_observer = _StatementObserver([initial_statements], observer)
 
     root = RootNode()
 
     while not normalized_iter.AtEnd():
-        futures = [
-            (
-                statement,
-                executor.submit(
-                    statement.Parse,
-                    normalized_iter.Clone(),
-                    Observer,
-                ),
-            )
-            for statement in itertools.chain(*statements)
-        ]
+        these_statements = []
+        these_parse_funcs = []
+
+        for statement in itertools.chain(*statement_observer.statements):
+            these_statements.append(statement)
+            these_parse_funcs.append(lambda statement=statement: statement.Parse(normalized_iter.Clone(), statement_observer))
+
+        these_futures = observer.Enqueue(these_parse_funcs)
+        yield True
 
         successes = []
         failures = []
 
-        for statement, future in futures:
+        for statement, future in zip(these_statements, these_futures):
             result = future.result()
 
-            if result.success:
+            if result.Success:
                 successes.append((statement, result))
             else:
                 failures.append((statement, result))
 
         if not successes:
-            raise SyntaxErrorException(failures, normalized_iter.Line, normalized_iter.Column)
+            raise SyntaxInvalidError(normalized_iter.Line, normalized_iter.Column, failures)
 
         if len(successes) > 1:
-            raise SyntaxAmbiguousException(successes, normalized_iter.Line, normalized_iter.Column)
+            raise SyntaxAmbiguousError(normalized_iter.Line, normalized_iter.Column, successes)
 
         assert len(successes) == 1
         statement, result = successes[0]
 
-        normalized_iter = result.iter
+        prev_iter = normalized_iter
+        normalized_iter = result.Iter
 
-        result = on_statement_complete(
+        result = observer.OnStatementComplete(
             statement,
-            _CreateNode(root, statement, result.results),
-            result.iter.Line,
+            _CreateNode(root, statement, result.Results),
+            prev_iter,
+            normalized_iter,
         )
 
-        if result is None:
+        if isinstance(result, list):
+            statement_observer.statements[-1].extend(result)
+
+        elif result == Observer.OnStatementCompleteFlag.Continue:
             continue
 
-        if callable(result):
-            yield result
-        elif isinstance(result, list):
-            statements[-1].extend(result)
+        elif result == Observer.OnStatementCompleteFlag.Yield:
+            yield True
+
+        elif result == Observer.OnStatementCompleteFlag.Terminate:
+            yield False
+            return None
+
         else:
             assert False, result
 
     assert normalized_iter.AtEnd()
 
-    yield root
+    return root
 
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+@dataclass
+class _StatementObserver(Statement.Observer):
+    statements: List[List[Statement]]
+    observer: Observer
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnIndent(self):
+        self.statements.append([])
+
+        self.observer.OnIndent()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnDedent(self):
+        assert self.statements
+        self.statements.pop()
+
+        assert len(self.statements) >= 1, self.statements
+
+        self.observer.OnDedent()
+
+
 # ----------------------------------------------------------------------
 def _CreateNode(
     parent: Union[RootNode, Node],
@@ -240,14 +298,14 @@ def _CreateNode(
 
     node = Node(statement)
 
-    node.Parent = parent
+    object.__setattr__(node, "Parent", parent)
     parent.Children.append(node)
 
     for result in parse_results:
         if isinstance(result, Statement.TokenParseResultItem):
             _CreateLeaf(node, result)
         elif isinstance(result, Statement.StatementParseResultItem):
-            _CreateNode(node, result.statement, result.results)
+            _CreateNode(node, result.StatementItem, result.Results)
         else:
             assert False, result
 
@@ -262,14 +320,14 @@ def _CreateLeaf(
     """Converts a parse result item into a leaf"""
 
     leaf = Leaf(
-        result.token,
-        result.whitespace,
-        result.value,
-        result.iter,
-        result.is_ignored,
+        result.Token,
+        result.Whitespace,
+        result.Value,
+        result.Iter,
+        result.IsIgnored,
     )
 
-    leaf.Parent = parent
+    object.__setattr__(leaf, "Parent", parent)
     parent.Children.append(leaf)
 
     return leaf
