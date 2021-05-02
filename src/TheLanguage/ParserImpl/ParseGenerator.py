@@ -21,7 +21,7 @@ import os
 
 from concurrent.futures import Future
 from enum import auto, Enum
-from typing import Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Callable, cast, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -134,6 +134,15 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
+    def Enqueue(
+        funcs: List[Callable[[], None]],
+    ) -> List[Future]:
+        """Enqueues a list of functions to be executed; the Generator will yield immediately after this call"""
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
     def OnIndent():
         raise Exception("Abstract method")
 
@@ -142,20 +151,6 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     def OnDedent():
         raise Exception("Abstract method")
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Enqueue(
-        cls,
-        func_or_funcs: Union[Callable[[], None], List[Callable[[], None]]],
-    ) -> Union[Future, List[Future]]:
-        if isinstance(func_or_funcs, list):
-            return cls._Enqueue(func_or_funcs)
-
-        results = cls._Enqueue([func_or_funcs])
-        assert len(results) == 1
-
-        return results[0]
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -170,15 +165,6 @@ class Observer(Interface.Interface):
         List[Statement],                    # New statements to add to the current scope (implies continue)
     ]:
         """Called on the completion of each statement"""
-        raise Exception("Abstract method")
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def _Enqueue(
-        funcs: List[Callable[[], None]],
-    ) -> List[Future]:
-        """Enqueues a list of functions to be executed; the Generator will yield immediately after this call"""
         raise Exception("Abstract method")
 
 
@@ -208,7 +194,7 @@ def Parse(
             these_statements.append(statement)
             these_parse_funcs.append(lambda statement=statement: statement.Parse(normalized_iter.Clone(), statement_observer))
 
-        these_futures = observer.Enqueue(these_parse_funcs)
+        these_futures = cast(List[Future], observer.Enqueue(these_parse_funcs))
         yield True
 
         successes = []

@@ -21,7 +21,6 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment import StringHelpers
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()

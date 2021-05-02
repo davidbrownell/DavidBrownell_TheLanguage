@@ -22,7 +22,6 @@ from typing import (
     Match as TypingMatch,
     Optional,
     Pattern,
-    Tuple,
     Union,
 )
 

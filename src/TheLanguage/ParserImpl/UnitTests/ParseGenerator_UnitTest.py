@@ -104,8 +104,9 @@ def CreateObserver():
                 return self.mock(statement, node, iter_before, iter_after)
 
             # ----------------------------------------------------------------------
+            @staticmethod
             @Interface.override
-            def _Enqueue(funcs):
+            def Enqueue(funcs):
                 return [executor.submit(func) for func in funcs]
 
         # ----------------------------------------------------------------------
