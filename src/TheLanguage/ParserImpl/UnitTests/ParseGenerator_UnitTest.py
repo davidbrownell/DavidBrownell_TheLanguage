@@ -17,7 +17,6 @@
 
 import os
 import re
-import sys
 import textwrap
 
 from concurrent.futures import ThreadPoolExecutor
@@ -27,22 +26,22 @@ from unittest.mock import Mock
 import pytest
 
 import CommonEnvironment
-from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-sys.path.insert(0, os.path.join(_script_dir, ".."))
-with CallOnExit(lambda: sys.path.pop(0)):
-    from Normalize import *
-    from NormalizedIterator import NormalizedIterator
-    from ParseGenerator import *
-    from Statement import StandardStatement
+with InitRelativeImports():
+    from ..Normalize import *
+    from ..NormalizedIterator import NormalizedIterator
+    from ..ParseGenerator import *
+    from ..StandardStatement import StandardStatement
 
-    from Token import (
+    from ..Token import (
         DedentToken,
         IndentToken,
         NewlineToken,
@@ -56,35 +55,21 @@ def CreateObserver():
         # ----------------------------------------------------------------------
         class MyObserver(Observer):
             # ----------------------------------------------------------------------
-            @staticmethod
-            def Execute(iter):
-                results = []
-
-                while True:
-                    try:
-                        results.append(next(iter))
-                    except StopIteration as ex:
-                        results.append(ex.value)
-                        break
-
-                return results
-
-            # ----------------------------------------------------------------------
             def __init__(self):
                 self.mock = Mock(
-                    return_value=Observer.OnStatementCompleteFlag.Continue,
+                    return_value=Coroutine.Status.Continue,
                 )
 
             # ----------------------------------------------------------------------
             def VerifyCallArgs(self, index, statement, node, before_line, before_col, after_line, after_col):
                 callback_args = self.mock.call_args_list[index][0]
 
-                assert callback_args[0] == statement
-                assert callback_args[1] == node
-                assert callback_args[2].Line == before_line
-                assert callback_args[2].Column == before_col
-                assert callback_args[3].Line == after_line
-                assert callback_args[3].Column == after_col
+                assert callback_args[0] == node
+                assert callback_args[0].Type == statement
+                assert callback_args[1].Line == before_line
+                assert callback_args[1].Column == before_col
+                assert callback_args[2].Line == after_line
+                assert callback_args[2].Column == after_col
 
             # ----------------------------------------------------------------------
             @staticmethod
@@ -100,14 +85,8 @@ def CreateObserver():
 
             # ----------------------------------------------------------------------
             @Interface.override
-            def OnStatementComplete(self, statement, node, iter_before, iter_after):
-                return self.mock(statement, node, iter_before, iter_after)
-
-            # ----------------------------------------------------------------------
-            @staticmethod
-            @Interface.override
-            def Enqueue(funcs):
-                return [executor.submit(func) for func in funcs]
+            def OnStatementComplete(self, node, iter_before, iter_after):
+                return self.mock(node, iter_before, iter_after)
 
         # ----------------------------------------------------------------------
 
@@ -124,12 +103,15 @@ class TestSimple(object):
     _lower_statement                        = StandardStatement("Lower Statement", [_lower_token, NewlineToken()])
     _number_statement                       = StandardStatement("Number Statement", [_number_token, NewlineToken()])
 
-    _statements                             = [_upper_statement, _lower_statement, _number_statement]
+    _statements                             = DynamicStatementInfo(
+        [_upper_statement, _lower_statement, _number_statement],
+        [],
+    )
 
     # ----------------------------------------------------------------------
     def test_MatchStandard(self):
         with CreateObserver() as observer:
-            results = observer.Execute(
+            results = Coroutine.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -145,15 +127,9 @@ class TestSimple(object):
                     self._statements,
                     observer,
                 ),
-            )
+            )[0]
 
             # Verify the results
-            assert len(results) == 4
-            assert results[0] == True
-            assert results[1] == True
-            assert results[2] == True
-            results = results[3]
-
             assert results.Parent is None
             assert len(results.Children) == 3
 
@@ -229,7 +205,7 @@ class TestSimple(object):
     # ----------------------------------------------------------------------
     def test_MatchReverse(self):
         with CreateObserver() as observer:
-            results = observer.Execute(
+            results = Coroutine.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -245,15 +221,9 @@ class TestSimple(object):
                     self._statements,
                     observer,
                 ),
-            )
+            )[0]
 
             # Verify the results
-            assert len(results) == 4
-            assert results[0] == True
-            assert results[1] == True
-            assert results[2] == True
-            results = results[3]
-
             assert results.Parent is None
             assert len(results.Children) == 3
 
@@ -329,7 +299,7 @@ class TestSimple(object):
     # ----------------------------------------------------------------------
     def test_MatchSame(self):
         with CreateObserver() as observer:
-            results = observer.Execute(
+            results = Coroutine.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -345,15 +315,9 @@ class TestSimple(object):
                     self._statements,
                     observer,
                 ),
-            )
+            )[0]
 
             # Verify the results
-            assert len(results) == 4
-            assert results[0] == True
-            assert results[1] == True
-            assert results[2] == True
-            results = results[3]
-
             assert results.Parent is None
             assert len(results.Children) == 3
 
@@ -430,11 +394,11 @@ class TestSimple(object):
     def test_EarlyTermination(self):
         with CreateObserver() as observer:
             observer.mock.side_effect = [
-                Observer.OnStatementCompleteFlag.Continue,
-                Observer.OnStatementCompleteFlag.Terminate,
+                Coroutine.Status.Continue,
+                Coroutine.Status.Terminate,
             ]
 
-            results = observer.Execute(
+            results = Coroutine.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -450,68 +414,63 @@ class TestSimple(object):
                     self._statements,
                     observer,
                 ),
-            )
-
-            # Verify the results
-            assert len(results) == 4
-            assert results[0] == True
-            assert results[1] == True
-            assert results[2] == False
-            assert results[3] is None
+            )[0]
 
             # Verify the callback
             assert observer.mock.call_count == 2
 
             # Note that we can't compare the 2nd arg, as we don't have easy access to the Node
             # to compare it with
-            assert observer.mock.call_args_list[0][0][0] == self._number_statement
-            assert observer.mock.call_args_list[0][0][2].Line == 1
+            assert observer.mock.call_args_list[0][0][0].Type == self._number_statement
+            assert observer.mock.call_args_list[0][0][1].Line == 1
+            assert observer.mock.call_args_list[0][0][1].Column == 1
+            assert observer.mock.call_args_list[0][0][2].Line == 2
             assert observer.mock.call_args_list[0][0][2].Column == 1
-            assert observer.mock.call_args_list[0][0][3].Line == 2
-            assert observer.mock.call_args_list[0][0][3].Column == 1
 
-            assert observer.mock.call_args_list[1][0][0] == self._number_statement
-            assert observer.mock.call_args_list[1][0][2].Line == 2
+            assert observer.mock.call_args_list[1][0][0].Type == self._number_statement
+            assert observer.mock.call_args_list[1][0][1].Line == 2
+            assert observer.mock.call_args_list[1][0][1].Column == 1
+            assert observer.mock.call_args_list[1][0][2].Line == 3
             assert observer.mock.call_args_list[1][0][2].Column == 1
-            assert observer.mock.call_args_list[1][0][3].Line == 3
-            assert observer.mock.call_args_list[1][0][3].Column == 1
 
     # ----------------------------------------------------------------------
+    # BugBug: Need more of these tests to ensure that the information is being combined correctly
     def test_Yield(self):
         with CreateObserver() as observer:
             observer.mock.side_effect = [
-                Observer.OnStatementCompleteFlag.Yield,
-                Observer.OnStatementCompleteFlag.Yield,
-                Observer.OnStatementCompleteFlag.Continue,
+                Coroutine.Status.Yield,
+                Coroutine.Status.Yield,
+                Coroutine.Status.Continue,
             ]
 
-            results = observer.Execute(
-                Parse(
-                    NormalizedIterator(
-                        Normalize(
-                            textwrap.dedent(
-                                """\
-                                1
-                                22
-                                333
-                                """,
-                            ),
+            iterator = Parse(
+                NormalizedIterator(
+                    Normalize(
+                        textwrap.dedent(
+                            """\
+                            1
+                            22
+                            333
+                            """,
                         ),
                     ),
-                    self._statements,
-                    observer,
                 ),
+                self._statements,
+                observer,
             )
 
-            # Verify the results
-            assert len(results) == 6
-            assert results[0] == True
-            assert results[1] == True
-            assert results[2] == True
-            assert results[3] == True
-            assert results[4] == True
-            results = results[5]
+            next(iterator)
+            iterator.send(DynamicStatementInfo([], []))
 
+            next(iterator)
+            iterator.send(DynamicStatementInfo([], []))
+
+            try:
+                next(iterator)
+            except StopIteration as ex:
+                results = ex.value
+
+            # Verify the results
             assert results.Parent is None
             assert len(results.Children) == 3
 
@@ -600,12 +559,15 @@ class TestIndentation(object):
         ],
     )
 
-    _statements                             = [ _statement ]
+    _statements                             = DynamicStatementInfo(
+        [ _statement ],
+        [],
+    )
 
     # ----------------------------------------------------------------------
     def test_Match(self):
         with CreateObserver() as observer:
-            results = observer.Execute(
+            results = Coroutine.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -620,13 +582,9 @@ class TestIndentation(object):
                     self._statements,
                     observer,
                 ),
-            )
+            )[0]
 
             # Verify the results
-            assert len(results) == 2
-            assert results[0] == True
-            results = results[1]
-
             assert results.Parent is None
             assert len(results.Children) == 1
 
@@ -701,8 +659,8 @@ class TestNewStatements(object):
     _upper_statement                        = StandardStatement("Upper Statement", [_upper_token])
     _lower_statement                        = StandardStatement("Lower Statement", [_lower_token, NewlineToken()])
 
-    _statements                             = [_upper_statement]
-    _new_statements                         = [_lower_statement]
+    _statements                             = DynamicStatementInfo([_upper_statement], [])
+    _new_statements                         = DynamicStatementInfo([_lower_statement], [])
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
@@ -711,7 +669,7 @@ class TestNewStatements(object):
             # error will be generated when attempting to parse the lowercase
             # token.
             with pytest.raises(SyntaxInvalidError) as ex:
-                results = observer.Execute(
+                results = Coroutine.Execute(
                     Parse(
                         NormalizedIterator(
                             Normalize(
@@ -725,7 +683,7 @@ class TestNewStatements(object):
                         self._statements,
                         observer,
                     ),
-                )
+                )[0]
 
             ex = ex.value
 
@@ -733,17 +691,20 @@ class TestNewStatements(object):
             assert ex.Line == 1
             assert ex.Column == 4
             assert str(ex) == "The syntax is not recognized"
-            assert not ex.PotentialStatements
+
+            assert len(ex.PotentialStatements) == 1
+            assert self._upper_statement in ex.PotentialStatements
+            assert ex.PotentialStatements[self._upper_statement] == []
 
     # ----------------------------------------------------------------------
     def test_Match(self):
         with CreateObserver() as observer:
             observer.mock.side_effect = [
                 self._new_statements,
-                Observer.OnStatementCompleteFlag.Continue,
+                Coroutine.Status.Continue,
             ]
 
-            results = observer.Execute(
+            results = Coroutine.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -757,14 +718,9 @@ class TestNewStatements(object):
                     self._statements,
                     observer,
                 ),
-            )
+            )[0]
 
             # Verify the results
-            assert len(results) == 3
-            assert results[0] == True
-            assert results[1] == True
-            results = results[2]
-
             assert results.Parent is None
             assert len(results.Children) == 2
 
@@ -817,22 +773,22 @@ class TestNewScopedStatements(object):
     _indent_statement                       = StandardStatement("Indent Statement", [IndentToken()])
     _dedent_statement                       = StandardStatement("Dedent Statement", [DedentToken()])
 
-    _statements                             = [_upper_statement, _newline_statement, _indent_statement, _dedent_statement]
-    _new_statements                         = [_lower_statement]
+    _statements                             = DynamicStatementInfo([_upper_statement, _newline_statement, _indent_statement, _dedent_statement], [])
+    _new_statements                         = DynamicStatementInfo([_lower_statement], [])
 
     # ----------------------------------------------------------------------
     def test_Match(self):
         with CreateObserver() as observer:
             observer.mock.side_effect = [
-                Observer.OnStatementCompleteFlag.Continue,                  # ONE
-                Observer.OnStatementCompleteFlag.Continue,                  # Newline
+                Coroutine.Status.Continue,                  # ONE
+                Coroutine.Status.Continue,                  # Newline
                 self._new_statements,                                       # Indent
-                Observer.OnStatementCompleteFlag.Continue,                  # two
-                Observer.OnStatementCompleteFlag.Continue,                  # Newline
-                Observer.OnStatementCompleteFlag.Continue,                  # Dedent
+                Coroutine.Status.Continue,                  # two
+                Coroutine.Status.Continue,                  # Newline
+                Coroutine.Status.Continue,                  # Dedent
             ]
 
-            results = observer.Execute(
+            results = Coroutine.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -847,18 +803,9 @@ class TestNewScopedStatements(object):
                     self._statements,
                     observer,
                 ),
-            )
+            )[0]
 
             # Verify the results
-            assert len(results) == 7
-            assert results[0] == True
-            assert results[1] == True
-            assert results[2] == True
-            assert results[3] == True
-            assert results[4] == True
-            assert results[5] == True
-            results = results[6]
-
             assert results.Parent is None
             assert len(results.Children) == 6
 
@@ -952,16 +899,16 @@ class TestNewScopedStatements(object):
     def test_NoMatch(self):
         with CreateObserver() as observer:
             observer.mock.side_effect = [
-                Observer.OnStatementCompleteFlag.Continue,                  # ONE
-                Observer.OnStatementCompleteFlag.Continue,                  # Newline
-                self._new_statements,                                       # Indent
-                Observer.OnStatementCompleteFlag.Continue,                  # two
-                Observer.OnStatementCompleteFlag.Continue,                  # Newline
-                Observer.OnStatementCompleteFlag.Continue,                  # Dedent
+                Coroutine.Status.Continue,                  # ONE
+                Coroutine.Status.Continue,                  # Newline
+                self._new_statements,                       # Indent
+                Coroutine.Status.Continue,                  # two
+                Coroutine.Status.Continue,                  # Newline
+                Coroutine.Status.Continue,                  # Dedent
             ]
 
             with pytest.raises(SyntaxInvalidError) as ex:
-                results = observer.Execute(
+                results = Coroutine.Execute(
                     Parse(
                         NormalizedIterator(
                             Normalize(
@@ -978,7 +925,7 @@ class TestNewScopedStatements(object):
                         self._statements,
                         observer,
                     ),
-                )
+                )[0]
 
             ex = ex.value
 
@@ -986,8 +933,17 @@ class TestNewScopedStatements(object):
             assert ex.Line == 4
             assert ex.Column == 1
             assert str(ex) == "The syntax is not recognized"
-            assert not ex.PotentialStatements
 
+            assert len(ex.PotentialStatements) == 4
+
+            assert self._upper_statement in ex.PotentialStatements
+            assert ex.PotentialStatements[self._upper_statement] == []
+            assert self._newline_statement in ex.PotentialStatements
+            assert ex.PotentialStatements[self._newline_statement] == []
+            assert self._indent_statement in ex.PotentialStatements
+            assert ex.PotentialStatements[self._indent_statement] == []
+            assert self._dedent_statement in ex.PotentialStatements
+            assert ex.PotentialStatements[self._dedent_statement] == []
 
 # ----------------------------------------------------------------------
 class TestEmbeddedStatements(object):
@@ -999,12 +955,12 @@ class TestEmbeddedStatements(object):
     _uul_statement                          = StandardStatement("UUL", [_upper_token, _upper_lower_statement])
     _lul_statement                          = StandardStatement("LUL", [_lower_token, _upper_lower_statement])
 
-    _statements                             = [_uul_statement, _lul_statement]
+    _statements                             = DynamicStatementInfo([_uul_statement, _lul_statement], [])
 
     # ----------------------------------------------------------------------
     def test_Match(self):
         with CreateObserver() as observer:
-            results = observer.Execute(
+            results = Coroutine.Execute(
                 Parse(
                     NormalizedIterator(
                         Normalize(
@@ -1019,14 +975,9 @@ class TestEmbeddedStatements(object):
                     self._statements,
                     observer,
                 ),
-            )
+            )[0]
 
             # Verify the results
-            assert len(results) == 3
-            assert results[0] == True
-            assert results[1] == True
-            results = results[2]
-
             assert results.Parent is None
             assert len(results.Children) == 2
 
@@ -1123,7 +1074,7 @@ class TestNoMatchError(object):
     _upper_statement                        = StandardStatement("Upper Number", [_upper_token, _number_token])
     _lower_statement                        = StandardStatement("Upper Lower", [_upper_token, _lower_token])
 
-    _statements                             = [_upper_statement, _lower_statement]
+    _statements                             = DynamicStatementInfo([_upper_statement, _lower_statement], [])
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
@@ -1154,59 +1105,12 @@ class TestNoMatchError(object):
 
             assert len(ex.PotentialStatements) == 2
 
-            assert len(ex.PotentialStatements[self._upper_statement].Results) == 1
-            assert ex.PotentialStatements[self._upper_statement].Results[0].Token == self._upper_token
-            assert ex.PotentialStatements[self._upper_statement].Results[0].Iter.Line == 1
-            assert ex.PotentialStatements[self._upper_statement].Results[0].Iter.Column == 4
+            assert len(ex.PotentialStatements[self._upper_statement]) == 1
+            assert ex.PotentialStatements[self._upper_statement][0].Token == self._upper_token
+            assert ex.PotentialStatements[self._upper_statement][0].Iter.Line == 1
+            assert ex.PotentialStatements[self._upper_statement][0].Iter.Column == 4
 
-            assert len(ex.PotentialStatements[self._lower_statement].Results) == 1
-            assert ex.PotentialStatements[self._lower_statement].Results[0].Token == self._upper_token
-            assert ex.PotentialStatements[self._lower_statement].Results[0].Iter.Line == 1
-            assert ex.PotentialStatements[self._lower_statement].Results[0].Iter.Column == 4
-
-# ----------------------------------------------------------------------
-class TestAmbiguousError(object):
-    _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
-    _upper_statement1                       = StandardStatement("Upper1", [_upper_token])
-    _upper_statement2                       = StandardStatement("Upper2", [_upper_token])
-
-    _statements                             = [_upper_statement1, _upper_statement2]
-
-    # ----------------------------------------------------------------------
-    def test_NoMatch(self):
-        with CreateObserver() as observer:
-            with pytest.raises(SyntaxAmbiguousError) as ex:
-                list(
-                    Parse(
-                        NormalizedIterator(
-                            Normalize(
-                                textwrap.dedent(
-                                    """\
-                                    ONE
-                                    """,
-                                ),
-                            ),
-                        ),
-                        self._statements,
-                        observer,
-                    ),
-                )
-
-            ex = ex.value
-
-            # Validate
-            assert ex.Line == 1
-            assert ex.Column == 1
-            assert str(ex) == "The syntax is ambiguous"
-
-            assert len(ex.PotentialStatements) == 2
-
-            assert len(ex.PotentialStatements[self._upper_statement1].Results) == 1
-            assert ex.PotentialStatements[self._upper_statement1].Results[0].Token == self._upper_token
-            assert ex.PotentialStatements[self._upper_statement1].Results[0].Iter.Line == 1
-            assert ex.PotentialStatements[self._upper_statement1].Results[0].Iter.Column == 4
-
-            assert len(ex.PotentialStatements[self._upper_statement2].Results) == 1
-            assert ex.PotentialStatements[self._upper_statement2].Results[0].Token == self._upper_token
-            assert ex.PotentialStatements[self._upper_statement2].Results[0].Iter.Line == 1
-            assert ex.PotentialStatements[self._upper_statement2].Results[0].Iter.Column == 4
+            assert len(ex.PotentialStatements[self._lower_statement]) == 1
+            assert ex.PotentialStatements[self._lower_statement][0].Token == self._upper_token
+            assert ex.PotentialStatements[self._lower_statement][0].Iter.Line == 1
+            assert ex.PotentialStatements[self._lower_statement][0].Iter.Column == 4

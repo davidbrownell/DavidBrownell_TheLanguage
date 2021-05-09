@@ -31,12 +31,15 @@ from rop import read_only_properties
 import CommonEnvironment
 from CommonEnvironment import Interface
 
+from CommonEnvironmentEx.Package import InitRelativeImports
+
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-from NormalizedIterator import NormalizedIterator
+with InitRelativeImports():
+    from .NormalizedIterator import NormalizedIterator
 
 # ----------------------------------------------------------------------
 class Token(Interface.Interface):

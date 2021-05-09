@@ -3,7 +3,7 @@
 # |  Statement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-04-13 20:54:39
+# |      2021-05-04 14:17:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,38 +13,60 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Statement-related functionality"""
+"""Contains utilities that parse statements"""
 
 import os
 
-from typing import List, Optional, Tuple, Union
+from enum import auto, Enum
+from typing import cast, Generator, Iterable, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
-from rop import read_only_properties
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-from NormalizedIterator import NormalizedIterator
+with InitRelativeImports():
+    from . import Coroutine
+    from .NormalizedIterator import NormalizedIterator
 
-# <No name...> pylint: disable=E0611
-from Token import (
-    DedentToken,
-    IndentToken,
-    NewlineToken,
-    PushIgnoreWhitespaceControlToken,
-    PopIgnoreWhitespaceControlToken,
-    Token,
-)
+    from .Token import Token
+
+
+# ----------------------------------------------------------------------
+class DynamicStatements(Enum):
+    """\
+    Token that can be used in statements as a placeholder that is populated dynamically at runtime with statements of the corresponding type.
+
+    Example:
+        [
+            some_keyword_token,
+            newline_token,
+            indent_token,
+            DynamicStatements.Statements,
+            dedent_token,
+        ]
+    """
+
+    Statements                              = auto()    # Statements that do not generate a result
+    Expressions                             = auto()    # Statements that generate a result
+
 
 # ----------------------------------------------------------------------
 class Statement(Interface.Interface):
-    """Abstract base class for objects that identify tokens"""
+    # ----------------------------------------------------------------------
+    ParseResultsType                        = List[
+        Union[
+            "Statement.TokenParseResultItem",
+            "Statement.StatementParseResultItem",
+        ],
+    ]
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -59,16 +81,8 @@ class Statement(Interface.Interface):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class StatementParseResultItem(object):
-        StatementItem: "Statement"
+        Statement: Union["Statement", DynamicStatements]
         Results: "Statement.ParseResultsType"
-
-    # ----------------------------------------------------------------------
-    ParseResultsType                        = List[
-        Union[
-            TokenParseResultItem,
-            StatementParseResultItem,
-        ],
-    ]
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -84,6 +98,15 @@ class Statement(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
+        def GetDynamicStatements(
+            value: DynamicStatements,
+        ) -> List["Statement"]:
+            """Returns all currently available dynamic statements based on the current scope"""
+            raise Exception("Abstract method")
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
         def OnIndent():
             raise Exception("Abstract method")
 
@@ -94,272 +117,125 @@ class Statement(Interface.Interface):
             raise Exception("Abstract method")
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def ParseMultipleCoroutine(
+        cls,
+        statements: Iterable["Statement"],
+        normalized_iter: NormalizedIterator,
+        observer: Observer,
+    ) -> Generator[
+        None,
+        Coroutine.Status,
+        Optional["Statement.ParseResult"],
+    ]:
+        iterators = [
+            (statement_index, statement, statement.ParseCoroutine(normalized_iter.Clone(), observer))
+            for statement_index, statement in enumerate(statements)
+        ]
+
+        results: List[Optional[Tuple[Statement, Statement.ParseResult]]] = [None] * len(iterators)
+        status = Coroutine.Status.Continue
+
+        while True:
+            # Process all of the remaining iterators
+            iterator_index = 0
+            while iterator_index < len(iterators):
+                statement_index, statement, iterator = iterators[iterator_index]
+
+                try:
+                    next(iterator)
+                    iterator.send(status)
+
+                    iterator_index += 1
+
+                except StopIteration as ex:
+                    result = ex.value
+
+                    if result is not None:
+                        assert results[statement_index] is None, results[statement_index]
+                        results[statement_index] = (statement, result)
+
+                    iterators.pop(iterator_index)
+
+            if not iterators:
+                break
+
+            # Yield one or more times
+            while True:
+                this_status = yield
+
+                if this_status == Coroutine.Status.Yield:
+                    continue
+
+                if this_status == Coroutine.Status.Terminate:
+                    status = this_status
+
+                break
+
+        if status == Coroutine.Status.Terminate:
+            return None
+
+        results = cast(List[Tuple[Statement, Statement.ParseResult]], results)
+
+        # Stable sort according to the criteria:
+        #   - Success
+        #   - Longest matched content
+
+        sort_data = [
+            (
+                index,
+                1 if result.Success else 0,
+                result.Iter.Offset,
+            )
+            for index, (_, result) in enumerate(results)
+        ]
+
+        sort_data.sort(
+            key=lambda value: value[1:],
+            reverse=True,
+        )
+
+        statement, result = results[sort_data[0][0]]
+
+        if result.Success:
+            return Statement.ParseResult(
+                True,
+                [
+                    Statement.StatementParseResultItem(
+                        statement,
+                        result.Results,
+                    ),
+                ],
+                result.Iter,
+            )
+
+        return_results = []
+        max_iter = None
+
+        for statement, result in results:
+            return_results.append(Statement.StatementParseResultItem(statement, result.Results))
+
+            if max_iter is None or result.Iter.Offset > max_iter.Offset:
+                max_iter = result.Iter
+
+        return Statement.ParseResult(False, return_results, max_iter)
+
+    # ----------------------------------------------------------------------
     @Interface.abstractproperty
     def Name(self):
-        """Name of the statement"""
+        """Returns the Name of the derived Statement"""
         raise Exception("Abstract property")
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def Parse(
+    def ParseCoroutine(
         normalized_iter: NormalizedIterator,
         observer: Observer,
-    ) -> "ParseResult":
+    ) -> Generator[
+        None,
+        Coroutine.Status,
+        Optional["Statement.ParseResult"],
+    ]:
+        """Coroutine that parses the provided content"""
         raise Exception("Abstract method")
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _ExtractWhitespace(
-        normalized_iter: NormalizedIterator,
-    ) -> Optional[Tuple[int, int]]:
-        """Consumes any whitespace located at the current offset"""
-
-        if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart:
-            if (
-                not normalized_iter.LineInfo.HasNewIndent()
-                and not normalized_iter.LineInfo.HasNewDedents()
-            ):
-                normalized_iter.SkipPrefix()
-
-        else:
-            start = normalized_iter.Offset
-
-            while (
-                normalized_iter.Offset < normalized_iter.LineInfo.OffsetEnd
-                and normalized_iter.Content[normalized_iter.Offset].isspace()
-                and normalized_iter.Content[normalized_iter.Offset] != "\n"
-            ):
-                normalized_iter.Advance(1)
-
-            if normalized_iter.Offset != start:
-                return start, normalized_iter.Offset
-
-        return None
-
-# ----------------------------------------------------------------------
-@read_only_properties("Items")
-class StandardStatement(Statement):
-    """Statement type that parses tokens"""
-
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        name: str,
-        items: List[Union[Statement, Token]]
-    ):
-        assert name
-        assert items
-
-        # Ensure that all control tokens are balanced properly
-        control_token_check = {}
-
-        for item_index, item in enumerate(items):
-            if isinstance(item, Token) and item.IsControlToken:
-                # Whitespace cannot come before the push token
-                if isinstance(item, PushIgnoreWhitespaceControlToken):
-                    assert item_index == 0 or not isinstance(items[item_index - 1], (NewlineToken, IndentToken, DedentToken))
-
-                # Whitespace cannot come after the pop token
-                if isinstance(item, PopIgnoreWhitespaceControlToken):
-                    assert item_index == len(items) - 1 or not isinstance(items[item_index + 1], (NewlineToken, IndentToken, DedentToken))
-
-                # Ensure matching tokens
-                if item.ClosingToken is not None:
-                    control_token_check.setdefault(item.ClosingToken, []).append(item)
-                    continue
-
-                if item.OpeningToken is not None:
-                    assert isinstance(item, item.OpeningToken.ClosingToken), item
-
-                    key = type(item)
-
-                    assert key in control_token_check, item
-                    assert control_token_check[key]
-
-                    control_token_check[key].pop()
-
-                    if not control_token_check[key]:
-                        del control_token_check[key]
-
-        assert not control_token_check
-
-        self._name                          = name
-        self.Items                          = items
-
-    # ----------------------------------------------------------------------
-    @property
-    @Interface.override
-    def Name(self):
-        return self._name
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Parse(self, normalized_iter, observer):
-        normalized_iter = normalized_iter.Clone()
-
-        results = []
-        ignore_whitespace_ctr = 0
-
-        eat_indent_token = IndentToken()
-        eat_dedent_token = DedentToken()
-        eat_newline_token = NewlineToken()
-
-        # ----------------------------------------------------------------------
-        def EatWhitespaceTokens() -> bool:
-            nonlocal normalized_iter
-
-            if not ignore_whitespace_ctr:
-                return False
-
-            result = eat_indent_token.Match(normalized_iter)
-            if result:
-                assert not isinstance(result, list), result
-
-                results.append(
-                    Statement.TokenParseResultItem(
-                        eat_indent_token,
-                        None,
-                        result,
-                        normalized_iter.Clone(),
-                        IsIgnored=True,
-                    ),
-                )
-
-                return True
-
-            result = eat_dedent_token.Match(normalized_iter)
-            if result:
-                assert isinstance(result, list), result
-
-                for res in result:
-                    results.append(
-                        Statement.TokenParseResultItem(
-                            eat_dedent_token,
-                            None,
-                            res,
-                            normalized_iter.Clone(),
-                            IsIgnored=True,
-                        ),
-                    )
-
-                return True
-
-            # A potential newline may have potential whitespace
-            potential_iter = normalized_iter.Clone()
-            potetnial_whitespace = self._ExtractWhitespace(potential_iter)
-
-            result = eat_newline_token.Match(potential_iter)
-
-            if result:
-                assert not isinstance(result, list), result
-
-                results.append(
-                    Statement.TokenParseResultItem(
-                        eat_newline_token,
-                        potetnial_whitespace,
-                        result,
-                        potential_iter.Clone(),
-                        IsIgnored=True,
-                    ),
-                )
-
-                normalized_iter = potential_iter
-
-                return True
-
-            return False
-
-        # ----------------------------------------------------------------------
-
-        success = True
-        item_index = 0
-
-        while item_index < len(self.Items):
-            if normalized_iter.AtEnd():
-                success = False
-                break
-
-            if EatWhitespaceTokens():
-                continue
-
-            item = self.Items[item_index]
-
-            # Statement
-            if isinstance(item, Statement):
-                result = item.Parse(normalized_iter, observer)
-
-                # Copy any matching contents, even if the call wasn't successful
-                if result.Results:
-                    results.append(Statement.StatementParseResultItem(item, result.Results))
-
-                    normalized_iter = result.Iter
-
-                if not result.Success:
-                    success = False
-                    break
-
-            # Token
-            elif isinstance(item, Token):
-                if isinstance(item, PushIgnoreWhitespaceControlToken):
-                    ignore_whitespace_ctr += 1
-
-                elif isinstance(item, PopIgnoreWhitespaceControlToken):
-                    assert ignore_whitespace_ctr
-                    ignore_whitespace_ctr -= 1
-
-                elif item.IsControlToken:
-                    # This is a control token that we don't recognize; skip it.
-                    pass
-
-                else:
-                    # We only want to consume the whitespace if there is a match that follows
-                    potential_iter = normalized_iter.Clone()
-                    potential_whitespace = self._ExtractWhitespace(potential_iter)
-
-                    result = item.Match(potential_iter)
-                    if result is None:
-                        success = False
-                        break
-
-                    if isinstance(item, IndentToken):
-                        observer.OnIndent()
-                    elif isinstance(item, DedentToken):
-                        observer.OnDedent()
-
-                    if isinstance(result, list):
-                        assert not potential_whitespace
-
-                        for res in result:
-                            results.append(
-                                Statement.TokenParseResultItem(
-                                    item,
-                                    potential_whitespace,
-                                    res,
-                                    potential_iter.Clone(),
-                                    IsIgnored=False,
-                                ),
-                            )
-                    else:
-                        results.append(
-                            Statement.TokenParseResultItem(
-                                item,
-                                potential_whitespace,
-                                result,
-                                potential_iter.Clone(),
-                                IsIgnored=False,
-                            ),
-                        )
-
-                    normalized_iter = potential_iter
-
-            else:
-                assert False, item
-
-            item_index += 1
-
-        return Statement.ParseResult(success, results, normalized_iter)

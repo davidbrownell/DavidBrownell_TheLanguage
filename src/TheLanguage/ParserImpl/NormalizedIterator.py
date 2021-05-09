@@ -21,12 +21,15 @@ from rop import read_only_properties
 
 import CommonEnvironment
 
+from CommonEnvironmentEx.Package import InitRelativeImports
+
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-from Normalize import LineInfo, NormalizedContent
+with InitRelativeImports():
+    from .Normalize import LineInfo, NormalizedContent
 
 # ----------------------------------------------------------------------
 @read_only_properties(

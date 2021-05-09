@@ -22,16 +22,15 @@ import textwrap
 import pytest
 
 import CommonEnvironment
-from CommonEnvironment.CallOnExit import CallOnExit
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-sys.path.insert(0, os.path.join(_script_dir, ".."))
-with CallOnExit(lambda: sys.path.pop(0)):
-    from Normalize import *
+with InitRelativeImports():
+    from ..Normalize import *
 
 # ----------------------------------------------------------------------
 class TestLineInfo(object):

@@ -25,12 +25,15 @@ from dataclasses import dataclass
 import CommonEnvironment
 from CommonEnvironment import Interface
 
+from CommonEnvironmentEx.Package import InitRelativeImports
+
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-from Error import Error
+with InitRelativeImports():
+    from .Error import Error
 
 # ----------------------------------------------------------------------
 # |
