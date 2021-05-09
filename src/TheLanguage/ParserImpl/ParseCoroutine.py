@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ParseGenerator.py
+# |  ParseCoroutine.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-04-20 07:35:27
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains utilities that support Parsing"""
+"""Functionality that supports the dynamic addition of statements at various scopes"""
 
 import os
 
@@ -38,6 +38,7 @@ with InitRelativeImports():
     from .NormalizedIterator import NormalizedIterator
     from .Statement import DynamicStatements, Statement
     from .Token import Token
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -65,15 +66,8 @@ class SyntaxInvalidError(_SyntaxError):
 
 
 # ----------------------------------------------------------------------
-class SyntaxAmbiguousError(_SyntaxError):
-    """Exception thrown when there are multiple potential matches (we should rarely see this exception in practice, as it is a symptom of problematic grammar design)"""
-
-    MessageTemplate                         = Interface.DerivedProperty("The syntax is ambiguous")
-
-
-# ----------------------------------------------------------------------
 class InvalidDynamicTraversalError(Error):
-    """Exception thrown when dyanmic statements that prohibit parent traversal are applied over other dynamic statements"""
+    """Exception thrown when dynamic statements that prohibit parent traversal are applied over other dynamic statements"""
 
     ExistingDynamicStatements: List[NormalizedIterator]
 
@@ -178,7 +172,7 @@ class Observer(Interface.Interface):
 
 
 # ----------------------------------------------------------------------
-def Parse(
+def ParseCoroutine(
     normalized_iter: NormalizedIterator,
     initial_statement_info: DynamicStatementInfo,
     observer: Observer,
@@ -204,7 +198,9 @@ def Parse(
             )
 
             while True:
-                next(iterator)
+                result = next(iterator)
+                if result is not None:
+                    BugBug = 10
 
         except StopIteration as ex:
             result = ex.value

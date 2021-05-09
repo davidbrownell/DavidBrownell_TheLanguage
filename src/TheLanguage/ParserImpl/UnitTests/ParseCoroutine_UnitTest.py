@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ParseGenerator_UnitTest.py
+# |  ParseCoroutine_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-04-24 14:23:43
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for ParseGenerator"""
+"""Unit test for ParseCoroutine"""
 
 import os
 import re
@@ -38,7 +38,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Normalize import *
     from ..NormalizedIterator import NormalizedIterator
-    from ..ParseGenerator import *
+    from ..ParseCoroutine import *
     from ..StandardStatement import StandardStatement
 
     from ..Token import (
@@ -112,7 +112,7 @@ class TestSimple(object):
     def test_MatchStandard(self):
         with CreateObserver() as observer:
             results = Coroutine.Execute(
-                Parse(
+                ParseCoroutine(
                     NormalizedIterator(
                         Normalize(
                             textwrap.dedent(
@@ -206,7 +206,7 @@ class TestSimple(object):
     def test_MatchReverse(self):
         with CreateObserver() as observer:
             results = Coroutine.Execute(
-                Parse(
+                ParseCoroutine(
                     NormalizedIterator(
                         Normalize(
                             textwrap.dedent(
@@ -300,7 +300,7 @@ class TestSimple(object):
     def test_MatchSame(self):
         with CreateObserver() as observer:
             results = Coroutine.Execute(
-                Parse(
+                ParseCoroutine(
                     NormalizedIterator(
                         Normalize(
                             textwrap.dedent(
@@ -399,7 +399,7 @@ class TestSimple(object):
             ]
 
             results = Coroutine.Execute(
-                Parse(
+                ParseCoroutine(
                     NormalizedIterator(
                         Normalize(
                             textwrap.dedent(
@@ -443,7 +443,7 @@ class TestSimple(object):
                 Coroutine.Status.Continue,
             ]
 
-            iterator = Parse(
+            iterator = ParseCoroutine(
                 NormalizedIterator(
                     Normalize(
                         textwrap.dedent(
@@ -568,7 +568,7 @@ class TestIndentation(object):
     def test_Match(self):
         with CreateObserver() as observer:
             results = Coroutine.Execute(
-                Parse(
+                ParseCoroutine(
                     NormalizedIterator(
                         Normalize(
                             textwrap.dedent(
@@ -670,7 +670,7 @@ class TestNewStatements(object):
             # token.
             with pytest.raises(SyntaxInvalidError) as ex:
                 results = Coroutine.Execute(
-                    Parse(
+                    ParseCoroutine(
                         NormalizedIterator(
                             Normalize(
                                 textwrap.dedent(
@@ -705,7 +705,7 @@ class TestNewStatements(object):
             ]
 
             results = Coroutine.Execute(
-                Parse(
+                ParseCoroutine(
                     NormalizedIterator(
                         Normalize(
                             textwrap.dedent(
@@ -780,16 +780,16 @@ class TestNewScopedStatements(object):
     def test_Match(self):
         with CreateObserver() as observer:
             observer.mock.side_effect = [
-                Coroutine.Status.Continue,                  # ONE
-                Coroutine.Status.Continue,                  # Newline
-                self._new_statements,                                       # Indent
-                Coroutine.Status.Continue,                  # two
-                Coroutine.Status.Continue,                  # Newline
-                Coroutine.Status.Continue,                  # Dedent
+                Coroutine.Status.Continue,  # ONE
+                Coroutine.Status.Continue,  # Newline
+                self._new_statements,       # Indent
+                Coroutine.Status.Continue,  # two
+                Coroutine.Status.Continue,  # Newline
+                Coroutine.Status.Continue,  # Dedent
             ]
 
             results = Coroutine.Execute(
-                Parse(
+                ParseCoroutine(
                     NormalizedIterator(
                         Normalize(
                             textwrap.dedent(
@@ -909,7 +909,7 @@ class TestNewScopedStatements(object):
 
             with pytest.raises(SyntaxInvalidError) as ex:
                 results = Coroutine.Execute(
-                    Parse(
+                    ParseCoroutine(
                         NormalizedIterator(
                             Normalize(
                                 textwrap.dedent(
@@ -961,7 +961,7 @@ class TestEmbeddedStatements(object):
     def test_Match(self):
         with CreateObserver() as observer:
             results = Coroutine.Execute(
-                Parse(
+                ParseCoroutine(
                     NormalizedIterator(
                         Normalize(
                             textwrap.dedent(
@@ -1081,7 +1081,7 @@ class TestNoMatchError(object):
         with CreateObserver() as observer:
             with pytest.raises(SyntaxInvalidError) as ex:
                 list(
-                    Parse(
+                    ParseCoroutine(
                         NormalizedIterator(
                             Normalize(
                                 textwrap.dedent(
