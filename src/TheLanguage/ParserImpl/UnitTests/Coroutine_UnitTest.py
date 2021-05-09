@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Error.py
+# |  Coroutine_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-04-09 20:25:53
+# |      2021-05-05 19:07:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,34 +13,37 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Base class for errors"""
+"""Unit tests for Coroutine.py"""
 
 import os
 
-from dataclasses import dataclass
-
 import CommonEnvironment
-from CommonEnvironment import Interface
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from ..Coroutine import *
+
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class Error(Exception, Interface.Interface):
-    """Error for all Parse-related errors"""
+def test_Status():
+    assert {val.name for val in Status} == set(["Continue", "Terminate", "Yield"])
 
-    Line: int
-    Column: int
+# ----------------------------------------------------------------------
+def test_Execute():
+    # ----------------------------------------------------------------------
+    def Generator():
+        yield 1
+        yield 2
+        return 3
 
     # ----------------------------------------------------------------------
-    @Interface.abstractproperty
-    def MessageTemplate(self):
-        """Template used when generating the exception string"""
-        raise Exception("Abstract property")
 
-    # ----------------------------------------------------------------------
-    def __str__(self):
-        return self.MessageTemplate.format(**self.__dict__)
+    result, prefixes = Execute(Generator())
+
+    assert result == 3
+    assert prefixes == [1, 2]

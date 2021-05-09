@@ -16,42 +16,57 @@
 """Contains various token objects"""
 
 import os
-import re
 
-from typing import List, Match, NamedTuple, Optional, Pattern, Tuple, Union
+from typing import (
+    List,
+    Match as TypingMatch,
+    Optional,
+    Pattern,
+    Union,
+)
+
+from dataclasses import dataclass
+from rop import read_only_properties
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-from NormalizedIterator import NormalizedIterator
+with InitRelativeImports():
+    from .NormalizedIterator import NormalizedIterator
 
 # ----------------------------------------------------------------------
 class Token(Interface.Interface):
     """Base class for various Token types"""
 
     # ----------------------------------------------------------------------
-    class NewlineMatch(NamedTuple):
-        start: int
-        end: int
+    @dataclass(frozen=True)
+    class NewlineMatch(object):
+        Start: int
+        End: int
 
     # ----------------------------------------------------------------------
-    class IndentMatch(NamedTuple):
-        start: int
-        end: int
-        value: int
+    @dataclass(frozen=True)
+    class IndentMatch(object):
+        Start: int
+        End: int
+        Value: int
 
     # ----------------------------------------------------------------------
-    class DedentMatch(NamedTuple):
+    @dataclass(frozen=True)
+    class DedentMatch(object):
         pass
 
     # ----------------------------------------------------------------------
-    class RegexMatch(NamedTuple):
-        match: Match
+    @dataclass(frozen=True)
+    class RegexMatch(object):
+        Match: TypingMatch
 
     # ----------------------------------------------------------------------
     MatchType                               = Union[
@@ -89,6 +104,7 @@ class Token(Interface.Interface):
 
 # ----------------------------------------------------------------------
 @Interface.staticderived
+@read_only_properties("CaptureMany")
 class NewlineToken(Token):
     """Token that matches 1 or more newlines (depending on `capture_many`)"""
 
@@ -98,17 +114,13 @@ class NewlineToken(Token):
         capture_many=True,
     ):
         self._name                          = "Newline{}".format("+" if capture_many else "")
-        self._capture_many                  = capture_many
+        self.CaptureMany                    = capture_many
 
     # ----------------------------------------------------------------------
     @property
     @Interface.override
     def Name(self):
         return self._name
-
-    @property
-    def CaptureMany(self):
-        return self._capture_many
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -123,7 +135,7 @@ class NewlineToken(Token):
 
             normalized_iter.Advance(0 if normalized_iter.AtTrailingDedents() else 1)
 
-            if self._capture_many:
+            if self.CaptureMany:
                 while normalized_iter.IsBlankLine():
                     normalized_iter.SkipLine()
 
@@ -186,6 +198,7 @@ class DedentToken(Token):
 
 
 # ----------------------------------------------------------------------
+@read_only_properties("Regex", "IsMultiline")
 class RegexToken(Token):
     """Token that matches content based on the provided regular expression"""
 
@@ -199,8 +212,9 @@ class RegexToken(Token):
         assert name
 
         self._name                          = name
-        self._regex                         = regex
-        self._is_multiline                  = is_multiline
+
+        self.Regex                          = regex
+        self.IsMultiline                    = is_multiline
 
     # ----------------------------------------------------------------------
     @property
@@ -214,14 +228,14 @@ class RegexToken(Token):
         if not normalized_iter.HasConsumedDedents():
             return None
 
-        match = self._regex.match(
+        match = self.Regex.match(
             normalized_iter.Content,
             pos=normalized_iter.Offset,
-            endpos=normalized_iter.ContentLen if self._is_multiline else normalized_iter.LineInfo.EndPos,
+            endpos=normalized_iter.ContentLen if self.IsMultiline else normalized_iter.LineInfo.EndPos,
         )
 
         if match:
-            if self._is_multiline:
+            if self.IsMultiline:
                 # The match may span multiple lines, so we have to be intentional about how we advance.
                 to_advance = match.end() - match.start()
 

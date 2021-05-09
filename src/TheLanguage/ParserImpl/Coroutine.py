@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Error.py
+# |  Coroutine.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-04-09 20:25:53
+# |      2021-05-05 18:24:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Base class for errors"""
+"""Utilities that help when working with coroutines"""
 
 import os
 
-from dataclasses import dataclass
+from enum import auto, Enum
+from typing import Any, Iterator, List, Tuple
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
@@ -28,19 +28,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class Error(Exception, Interface.Interface):
-    """Error for all Parse-related errors"""
+class Status(Enum):
+    """Information used to control the execution of a coroutine"""
 
-    Line: int
-    Column: int
+    Terminate                               = auto()
+    Continue                                = auto()
+    Yield                                   = auto()
 
-    # ----------------------------------------------------------------------
-    @Interface.abstractproperty
-    def MessageTemplate(self):
-        """Template used when generating the exception string"""
-        raise Exception("Abstract property")
+# ----------------------------------------------------------------------
+def Execute(
+    iterator: Iterator,
+) -> Tuple[Any, List[Any]]:
+    results = []
 
-    # ----------------------------------------------------------------------
-    def __str__(self):
-        return self.MessageTemplate.format(**self.__dict__)
+    try:
+        while True:
+            results.append(next(iterator))
+    except StopIteration as ex:
+        return ex.value, results
