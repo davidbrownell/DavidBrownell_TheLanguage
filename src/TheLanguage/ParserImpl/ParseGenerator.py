@@ -15,79 +15,91 @@
 # ----------------------------------------------------------------------
 """Contains utilities that support Parsing"""
 
-from collections import OrderedDict
-import itertools
 import os
 
-from concurrent.futures import ThreadPoolExecutor
-from typing import Callable, List, Optional, Tuple, Union
+from collections import OrderedDict
+from typing import Dict, Generator, List, Optional, Tuple, Union
+
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-from Error import Error                                 # <Unable to import> pylint: disable=E0401
-from NormalizedIterator import NormalizedIterator
-from Statement import Statement
-from Token import Token                                 # <No name in module> pylint: disable=E0611
+with InitRelativeImports():
+    from . import Coroutine
+    from .Error import Error
+    from .NormalizedIterator import NormalizedIterator
+    from .Statement import DynamicStatements, Statement
+    from .Token import Token
 
 # ----------------------------------------------------------------------
-class _SyntaxException(Error):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        statements,
-        line,
-        column,
-    ):
-        super(_SyntaxException, self).__init__(line, column)
+@dataclass(frozen=True)
+class _SyntaxError(Error):
+    """Base class for all exceptions thrown by this module"""
 
+    PotentialStatements: Dict[Statement, Statement.ParseResultsType]        = field(init=False)
+    parse_result_items: InitVar[List[Statement.StatementParseResultItem]]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, parse_result_items):
         potentials = OrderedDict()
 
-        for statement, result in statements:
-            if result.results:
-                potentials[statement] = result
+        for parse_result_item in parse_result_items:
+            potentials[parse_result_item.Statement] = parse_result_item.Results
 
-        self.Potentials                     = potentials
+        object.__setattr__(self, "PotentialStatements", potentials)
 
 
 # ----------------------------------------------------------------------
-class SyntaxErrorException(_SyntaxException):
+class SyntaxInvalidError(_SyntaxError):
+    """Exception thrown when there are no statement matches"""
+
     MessageTemplate                         = Interface.DerivedProperty("The syntax is not recognized")
 
 
 # ----------------------------------------------------------------------
-class SyntaxAmbiguousException(_SyntaxException):
+class SyntaxAmbiguousError(_SyntaxError):
+    """Exception thrown when there are multiple potential matches (we should rarely see this exception in practice, as it is a symptom of problematic grammar design)"""
+
     MessageTemplate                         = Interface.DerivedProperty("The syntax is ambiguous")
 
 
 # ----------------------------------------------------------------------
-class _ParseResultBase(object):
-    """Base class for entities returned when parsed"""
+class InvalidDynamicTraversalError(Error):
+    """Exception thrown when dyanmic statements that prohibit parent traversal are applied over other dynamic statements"""
 
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        result_type: Union[Statement, Token],
-    ):
-        self.Type                                       = result_type
-        self.Parent: Optional[_ParseResultBase]         = None
+    ExistingDynamicStatements: List[NormalizedIterator]
+
+    MessageTemplate                         = Interface.DerivedProperty("Dynamic statements that prohibit parent traversal should never be applied over other dynamic statements within the same lexical scope. You should make these dynamic statements the first ones applied in this lexical scope.")
 
 
 # ----------------------------------------------------------------------
-class _Node(_ParseResultBase):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        statement: Optional[Statement],
-    ):
-        super(_Node, self).__init__(statement)
+@dataclass(frozen=True)
+class _ParseResultBase(object):
+    """Base class for parsed AST entities"""
 
-        self.Children                       = []
+    Type: Union[Statement, Token]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        object.__setattr__(self, "Parent", None)        # This value will be set when _Create- functions are invoked
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class _Node(_ParseResultBase):
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        super(_Node, self).__post_init__()
+        object.__setattr__(self, "Children", [])        # This value will be populated when _Create- functions are invoked
 
 
 # ----------------------------------------------------------------------
@@ -99,6 +111,8 @@ class RootNode(_Node):
 
 # ----------------------------------------------------------------------
 class Node(_Node):
+    """AST results of a Statement"""
+
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -108,128 +122,235 @@ class Node(_Node):
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class Leaf(_ParseResultBase):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        token: Token,
-        whitespace: Optional[Tuple[int, int]],          # Whitespace immediately before the token
-        value: Token.MatchType,                         # Result of the call to Token.Match
-        normalized_iter: NormalizedIterator,            # NormalizedIterator after the token has been consumed
-        is_ignored: bool,                               # True if the result is whitespace while whitespace is being ignored
-    ):
-        super(Leaf, self).__init__(token)
+    """AST results of a Token"""
 
-        self.Whitespace                     = whitespace
-        self.Value                          = value
-        self.Iter                           = normalized_iter
-        self.IsIgnored                      = is_ignored
+    Whitespace: Optional[Tuple[int, int]]   # Whitespace immediately before the token
+    Value: Token.MatchType                  # Result of the call to Token.Match
+    Iter: NormalizedIterator                # NormalizedIterator after the token has been consumed
+    IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class DynamicStatementInfo(object):
+    statements: List[Statement]
+    expressions: List[Statement]
+    allow_parent_traversal: bool                        = True      # If False, prevent content from including values from higher-level scope
+
+    # ----------------------------------------------------------------------
+    def Clone(self):
+        return self.__class__(
+            list(self.statements),
+            list(self.expressions),
+            self.allow_parent_traversal,
+        )
+
+
+# ----------------------------------------------------------------------
+class Observer(Interface.Interface):
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnIndent():
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnDedent():
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnStatementComplete(
+        node: Node,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator
+    ) -> Union[
+        Coroutine.Status,
+        DynamicStatementInfo,
+    ]:
+        """Called on the completion of each statement"""
+        raise Exception("Abstract method")
 
 
 # ----------------------------------------------------------------------
 def Parse(
     normalized_iter: NormalizedIterator,
-    statements: List[Statement],
-    on_statement_complete: Callable[
-        [
-            Statement,                      # Matching statement
-            Node,                           # Result node
-            int,                            # Line number
-        ],
-        Optional[
-            Union[
-                Callable[[], None],
-                List[Statement],
-            ]
-        ]
-    ],
-    executor: ThreadPoolExecutor,
-) -> Node:
-    """Parses the provided content based on the provided statements"""
+    initial_statement_info: DynamicStatementInfo,
+    observer: Observer,
+) -> Generator[
+    Coroutine.Status,
+    Optional[DynamicStatementInfo],         # The dynamic statement info is required only when the coroutine generates 'yield'
+    Optional[RootNode],
+]:
+    """Manages complexities associated with statement/expression generation"""
 
     assert normalized_iter.Offset == 0, normalized_iter.Offset
 
-    statements = [statements]
-
-    # ----------------------------------------------------------------------
-    @Interface.staticderived
-    class Observer(Statement.Observer):
-        # ----------------------------------------------------------------------
-        @staticmethod
-        @Interface.override
-        def OnIndent():
-            statements.append([])
-
-        # ----------------------------------------------------------------------
-        @staticmethod
-        @Interface.override
-        def OnDedent():
-            assert statements
-            statements.pop()
-            assert len(statements) >= 1, statements
-
-    # ----------------------------------------------------------------------
+    statement_observer = _StatementObserver(initial_statement_info, observer)
 
     root = RootNode()
 
     while not normalized_iter.AtEnd():
-        futures = [
-            (
-                statement,
-                executor.submit(
-                    statement.Parse,
-                    normalized_iter.Clone(),
-                    Observer,
-                ),
+        try:
+            iterator = Statement.ParseMultipleCoroutine(
+                statement_observer.GetDynamicStatements(DynamicStatements.Statements),
+                normalized_iter,
+                statement_observer,
             )
-            for statement in itertools.chain(*statements)
-        ]
 
-        successes = []
-        failures = []
+            while True:
+                next(iterator)
 
-        for statement, future in futures:
-            result = future.result()
+        except StopIteration as ex:
+            result = ex.value
 
-            if result.success:
-                successes.append((statement, result))
-            else:
-                failures.append((statement, result))
+        if not result.Success:              # <Has no member> pylint: disable=E1101
+            raise SyntaxInvalidError(
+                normalized_iter.Line,
+                normalized_iter.Column,
+                result.Results,             # <Has no member> pylint: disable=E1101
+            )
 
-        if not successes:
-            raise SyntaxErrorException(failures, normalized_iter.Line, normalized_iter.Column)
+        prev_iter = normalized_iter
+        normalized_iter = result.Iter       # <Has no member> pylint: disable=E1101
 
-        if len(successes) > 1:
-            raise SyntaxAmbiguousException(successes, normalized_iter.Line, normalized_iter.Column)
+        assert len(result.Results) == 1, result.Results                     # <Has no member> pylint: disable=E1101
+        result = result.Results[0]                                          # <Has no member> pylint: disable=E1101
 
-        assert len(successes) == 1
-        statement, result = successes[0]
-
-        normalized_iter = result.iter
-
-        result = on_statement_complete(
-            statement,
-            _CreateNode(root, statement, result.results),
-            result.iter.Line,
+        result = observer.OnStatementComplete(
+            _CreateNode(root, result.Statement, result.Results),
+            prev_iter,
+            normalized_iter,
         )
 
-        if result is None:
+        if isinstance(result, DynamicStatementInfo):
+            statement_observer.AddDynamicStatementInfo(prev_iter, result)
+
+        elif result == Coroutine.Status.Continue:
             continue
 
-        if callable(result):
-            yield result
-        elif isinstance(result, list):
-            statements[-1].extend(result)
+        elif result == Coroutine.Status.Yield:
+            dynamic_info = yield Coroutine.Status.Yield
+            assert dynamic_info is not None
+
+            statement_observer.AddDynamicStatementInfo(prev_iter, dynamic_info)
+            yield Coroutine.Status.Continue
+
+        elif result == Coroutine.Status.Terminate:
+            return None
+
         else:
             assert False, result
 
     assert normalized_iter.AtEnd()
 
-    yield root
+    return root
 
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+@dataclass
+class _StatementObserver(Statement.Observer):
+    init_statement_info: InitVar[DynamicStatementInfo]
+
+    _observer: Observer
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, init_statement_info):
+        # <Attribute defined outside __init__> pylint: disable=W0201
+        self._all_statement_infos: List[
+            List[
+                Tuple[
+                    NormalizedIterator,
+                    DynamicStatementInfo,
+                ]
+            ]
+        ] = [
+            [ (None, init_statement_info.Clone()) ],
+        ]
+
+        self._cached_statements: List[Statement]        = []
+        self._cached_expressions: List[Statement]       = []
+
+        self._UpdateCache()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnIndent(self):
+        self._all_statement_infos.append([])
+
+        self._observer.OnIndent()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnDedent(self):
+        assert self._all_statement_infos
+        self._all_statement_infos.pop()
+        assert len(self._all_statement_infos) >= 1, self._all_statement_infos
+
+        self._UpdateCache()
+
+        self._observer.OnDedent()
+
+    # ----------------------------------------------------------------------
+    def AddDynamicStatementInfo(
+        self,
+        normalized_iter: NormalizedIterator,
+        info: DynamicStatementInfo,
+    ):
+        if not info.statements and not info.expressions:
+            return
+
+        if not info.allow_parent_traversal and self._all_statement_infos[-1]:
+            raise InvalidDynamicTraversalError(
+                normalized_iter.Line,
+                normalized_iter.Column,
+                [location for location, _ in self._all_statement_infos[-1]],
+            )
+
+        self._all_statement_infos[-1].append((normalized_iter, info))
+
+        self._UpdateCache()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def GetDynamicStatements(
+        self,
+        value: DynamicStatements,
+    ) -> List["Statement"]:
+        if value == DynamicStatements.Statements:
+            return self._cached_statements
+        elif value == DynamicStatements.Expressions:
+            return self._cached_expressions
+
+        assert False
+        return None
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _UpdateCache(self):
+        statements = []
+        expressions = []
+
+        for statement_infos in reversed(self._all_statement_infos):
+            for _, statement_info in reversed(statement_infos):
+                statements += statement_info.statements
+                expressions += statement_info.expressions
+
+            if statement_infos and not statement_infos[0][1].allow_parent_traversal:
+                break
+
+        self._cached_statements = statements            # <Attribute defined outside __init__> pylint: disable=W0201
+        self._cached_expressions = expressions          # <Attribute defined outside __init__> pylint: disable=W0201
+
+
 # ----------------------------------------------------------------------
 def _CreateNode(
     parent: Union[RootNode, Node],
@@ -240,14 +361,14 @@ def _CreateNode(
 
     node = Node(statement)
 
-    node.Parent = parent
+    object.__setattr__(node, "Parent", parent)
     parent.Children.append(node)
 
     for result in parse_results:
         if isinstance(result, Statement.TokenParseResultItem):
             _CreateLeaf(node, result)
         elif isinstance(result, Statement.StatementParseResultItem):
-            _CreateNode(node, result.statement, result.results)
+            _CreateNode(node, result.Statement, result.Results)
         else:
             assert False, result
 
@@ -262,14 +383,14 @@ def _CreateLeaf(
     """Converts a parse result item into a leaf"""
 
     leaf = Leaf(
-        result.token,
-        result.whitespace,
-        result.value,
-        result.iter,
-        result.is_ignored,
+        result.Token,
+        result.Whitespace,
+        result.Value,
+        result.Iter,
+        result.IsIgnored,
     )
 
-    leaf.Parent = parent
+    object.__setattr__(leaf, "Parent", parent)
     parent.Children.append(leaf)
 
     return leaf
