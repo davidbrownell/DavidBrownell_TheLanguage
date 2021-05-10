@@ -302,11 +302,11 @@ def test_Regex():
     assert token.Match(iter) is None
     iter.Advance(1)
 
-    assert token.Match(iter).match.group("value") == "bbb"
+    assert token.Match(iter).Match.group("value") == "bbb"
     iter.Advance(1)                         # Move past the space
-    assert token.Match(iter).match.group("value") == "bb"
+    assert token.Match(iter).Match.group("value") == "bb"
     iter.Advance(1)                         # Move past the space
-    assert token.Match(iter).match.group("value") == "b"
+    assert token.Match(iter).Match.group("value") == "b"
     iter.Advance(1)                         # Move past the space
 
     assert token.Match(iter) is None
@@ -344,9 +344,9 @@ def test_MultilineRegex():
     ).Match(iter)
 
     assert result is not None
-    assert result.match.group("content") == "\none\ntwo\n"
-    assert result.match.start() == 0
-    assert result.match.end() == 15
+    assert result.Match.group("content") == "\none\ntwo\n"
+    assert result.Match.start() == 0
+    assert result.Match.end() == 15
 
     assert iter.Offset == 15
 

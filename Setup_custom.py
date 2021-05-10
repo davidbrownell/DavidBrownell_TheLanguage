@@ -98,10 +98,10 @@ def GetDependencies():
         "Standard development and usage",
         [
             Dependency(
-                "0EAA1DCF22804F90AD9F5A3B85A5D706",
-                "Common_Environment",
+                "3C72E8CD41EB483A891F01DDA606B780",
+                "Common_EnvironmentEx",
                 "python36",
-                "https://github.com/davidbrownell/Common_Environment_v3.git",
+                "https://github.com/davidbrownell/Common_EnvironmentEx.git",
             ),
         ],
     )
