@@ -3,7 +3,7 @@
 # |  Statement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-04 14:17:44
+# |      2021-05-10 08:01:02
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains utilities that parse statements"""
+"""Contains the Statement and DynamicStatements items"""
 
 import os
 
+from concurrent.futures import Future
 from enum import auto, Enum
-from typing import cast, Generator, Iterable, List, Optional, Tuple, Union
+from typing import cast, Callable, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -33,16 +34,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Coroutine
     from .NormalizedIterator import NormalizedIterator
-
     from .Token import Token
 
 
 # ----------------------------------------------------------------------
 class DynamicStatements(Enum):
     """\
-    Token that can be used in statements as a placeholder that is populated dynamically at runtime with statements of the corresponding type.
+    Value that can be used in statements as a placeholder that will be populated dynamically at runtime with statements of the corresponding type.
 
     Example:
         [
@@ -60,13 +59,15 @@ class DynamicStatements(Enum):
 
 # ----------------------------------------------------------------------
 class Statement(Interface.Interface):
+    """Abstract base class for a type of statement"""
+
     # ----------------------------------------------------------------------
-    ParseResultsType                        = List[
-        Union[
-            "Statement.TokenParseResultItem",
-            "Statement.StatementParseResultItem",
-        ],
+    ParseResultItemType                     = Union[
+        "Statement.TokenParseResultItem",
+        "Statement.StatementParseResultItem",
     ]
+
+    ParseResultItemsType                    = List[ParseResultItemType]
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -82,13 +83,13 @@ class Statement(Interface.Interface):
     @dataclass(frozen=True)
     class StatementParseResultItem(object):
         Statement: Union["Statement", DynamicStatements]
-        Results: "Statement.ParseResultsType"
+        Results: "Statement.ParseResultItemsType"
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class ParseResult(object):
         Success: bool
-        Results: "Statement.ParseResultsType"
+        Results: "Statement.ParseResultItemsType"
         Iter: NormalizedIterator
 
     # ----------------------------------------------------------------------
@@ -98,84 +99,99 @@ class Statement(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
+        def Enqueue(
+            funcs: List[Callable[[], None]],
+        ) -> List[Future]:
+            """Enqueues the funcs for execution"""
+            raise Exception("Abstract method")  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
         def GetDynamicStatements(
             value: DynamicStatements,
         ) -> List["Statement"]:
             """Returns all currently available dynamic statements based on the current scope"""
-            raise Exception("Abstract method")
+            raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
         def OnIndent():
-            raise Exception("Abstract method")
+            raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
         def OnDedent():
-            raise Exception("Abstract method")
+            raise Exception("Abstract method")  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
+        def OnInternalStatement(
+            result: "Statement.StatementParseResultItem",
+            iter_before: NormalizedIterator,
+            iter_after: NormalizedIterator,
+        ) -> bool:                          # True to continue, False to terminate
+            """Invoked when an internal statement is successfully matched"""
+            raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @Interface.abstractproperty
+    def Name(self):
+        """Returns the name of the derived Statement object"""
+        raise Exception("Abstract property")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def Parse(
+        normalized_iter: NormalizedIterator,
+        observer: Observer,
+    ) -> Optional["Statement.ParseResult"]:
+        """Parses the provided content"""
+        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @classmethod
-    def ParseMultipleCoroutine(
+    def ParseMultiple(
         cls,
-        statements: Iterable["Statement"],
+        statements: List["Statement"],
         normalized_iter: NormalizedIterator,
         observer: Observer,
-    ) -> Generator[
-        None,
-        Coroutine.Status,
-        Optional["Statement.ParseResult"],
-    ]:
-        iterators = [
-            (statement_index, statement, statement.ParseCoroutine(normalized_iter.Clone(), observer))
-            for statement_index, statement in enumerate(statements)
-        ]
+    ) -> Optional["Statement.ParseResult"]:
+        """Simultaneously applies multiple statements at the provided location"""
 
-        results: List[Optional[Tuple[Statement, Statement.ParseResult]]] = [None] * len(iterators)
-        status = Coroutine.Status.Continue
+        if len(statements) == 1:
+            result = statements[0].Parse(normalized_iter.Clone(), observer)
 
-        while True:
-            # Process all of the remaining iterators
-            iterator_index = 0
-            while iterator_index < len(iterators):
-                statement_index, statement, iterator = iterators[iterator_index]
+            return Statement.ParseResult(
+                result.Success,
+                [
+                    Statement.StatementParseResultItem(
+                        statements[0],
+                        result.Results,
+                    ),
+                ],
+                result.Iter,
+            )
 
-                try:
-                    next(iterator)
-                    iterator.send(status)
+        futures = observer.Enqueue(
+            [
+                lambda statement=statement: statement.Parse(normalized_iter.Clone(), observer)
+                for statement in statements
+            ],
+        )
 
-                    iterator_index += 1
+        results = []
 
-                except StopIteration as ex:
-                    result = ex.value
+        for future in futures:
+            result = future.result()
+            if result is None:
+                return None
 
-                    if result is not None:
-                        assert results[statement_index] is None, results[statement_index]
-                        results[statement_index] = (statement, result)
-
-                    iterators.pop(iterator_index)
-
-            if not iterators:
-                break
-
-            # Yield one or more times
-            while True:
-                this_status = yield
-
-                if this_status == Coroutine.Status.Yield:
-                    continue
-
-                if this_status == Coroutine.Status.Terminate:
-                    status = this_status
-
-                break
-
-        if status == Coroutine.Status.Terminate:
-            return None
-
-        results = cast(List[Tuple[Statement, Statement.ParseResult]], results)
+            results.append(result)
 
         # Stable sort according to the criteria:
         #   - Success
@@ -187,7 +203,7 @@ class Statement(Interface.Interface):
                 1 if result.Success else 0,
                 result.Iter.Offset,
             )
-            for index, (_, result) in enumerate(results)
+            for index, result in enumerate(results)
         ]
 
         sort_data.sort(
@@ -195,47 +211,27 @@ class Statement(Interface.Interface):
             reverse=True,
         )
 
-        statement, result = results[sort_data[0][0]]
+        result = results[sort_data[0][0]]
 
         if result.Success:
             return Statement.ParseResult(
                 True,
                 [
                     Statement.StatementParseResultItem(
-                        statement,
+                        statements[sort_data[0][0]],
                         result.Results,
                     ),
                 ],
                 result.Iter,
             )
 
-        return_results = []
-        max_iter = None
+        return_results: "Statement.ParseResultItemsType" = []
+        max_iter: Optional[NormalizedIterator] = None
 
-        for statement, result in results:
+        for statement, result in zip(statements, results):
             return_results.append(Statement.StatementParseResultItem(statement, result.Results))
 
             if max_iter is None or result.Iter.Offset > max_iter.Offset:
                 max_iter = result.Iter
 
-        return Statement.ParseResult(False, return_results, max_iter)
-
-    # ----------------------------------------------------------------------
-    @Interface.abstractproperty
-    def Name(self):
-        """Returns the Name of the derived Statement"""
-        raise Exception("Abstract property")
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def ParseCoroutine(
-        normalized_iter: NormalizedIterator,
-        observer: Observer,
-    ) -> Generator[
-        None,
-        Coroutine.Status,
-        Optional["Statement.ParseResult"],
-    ]:
-        """Coroutine that parses the provided content"""
-        raise Exception("Abstract method")
+        return Statement.ParseResult(False, return_results, cast(NormalizedIterator, max_iter))
