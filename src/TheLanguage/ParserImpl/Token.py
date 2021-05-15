@@ -86,7 +86,7 @@ class Token(Interface.Interface):
     @Interface.abstractproperty
     def Name(self):
         """Name of the token"""
-        raise Exception("Abstract property")
+        raise Exception("Abstract property")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -95,7 +95,7 @@ class Token(Interface.Interface):
         normalized_iter: NormalizedIterator,
     ) -> Optional[Union["MatchType", List["MatchType"]]]:
         """Returns match information if applicable"""
-        raise Exception("Abstract method")
+        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):

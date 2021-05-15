@@ -39,7 +39,7 @@ class Error(Exception, Interface.Interface):
     @Interface.abstractproperty
     def MessageTemplate(self):
         """Template used when generating the exception string"""
-        raise Exception("Abstract property")
+        raise Exception("Abstract property")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     def __str__(self):

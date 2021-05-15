@@ -3,7 +3,7 @@
 # |  StandardStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-09 08:25:34
+# |      2021-05-10 09:02:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Standard statement processing"""
+"""Contains the StandardStatement object"""
 
 import os
 
-from typing import cast, Generator, Iterable, List, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple, Union
 
 from rop import read_only_properties
 
@@ -32,13 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Coroutine
     from .NormalizedIterator import NormalizedIterator
-
-    from .Statement import (
-        DynamicStatements,
-        Statement,
-    )
+    from .Statement import DynamicStatements, Statement
 
     from .Token import (
         DedentToken,
@@ -62,7 +57,6 @@ class StandardStatement(Statement):
                 Token,
                 Statement,
                 DynamicStatements,
-                List[Statement],
             ]
         ],
     ):
@@ -113,15 +107,11 @@ class StandardStatement(Statement):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ParseCoroutine(
+    def Parse(
         self,
         normalized_iter: NormalizedIterator,
         observer: Statement.Observer,
-    ) -> Generator[
-        None,
-        Coroutine.Status,
-        Optional[Statement.ParseResult],
-    ]:
+    ) -> Optional[Statement.ParseResult]:
         normalized_iter = normalized_iter.Clone()
 
         results = []
@@ -198,53 +188,52 @@ class StandardStatement(Statement):
 
                     normalized_iter = potential_iter
 
+            # Statements
             else:
                 if isinstance(item, Statement):
-                    iterator = item.ParseCoroutine(normalized_iter, observer)
+                    result = item.Parse(normalized_iter, observer)
+
+                    if (
+                        result is not None
+                        and result.Success
+                        and not observer.OnInternalStatement(
+                            Statement.StatementParseResultItem(item, result.Results),
+                            normalized_iter,
+                            result.Iter,
+                        )
+                    ):
+                        return None
 
                 elif isinstance(item, DynamicStatements):
-                    iterator = self.ParseMultipleCoroutine(
+                    result = self.ParseMultiple(
                         observer.GetDynamicStatements(item),
                         normalized_iter,
                         observer,
                     )
 
-                elif isinstance(item, list):
-                    iterator = self.ParseMultipleCoroutine(
-                        item,
-                        normalized_iter,
-                        observer,
-                    )
+                    if (
+                        result is not None
+                        and result.Success
+                    ):
+                        assert len(result.Results) == 1
+
+                        if not observer.OnInternalStatement(
+                            cast(Statement.StatementParseResultItem, result.Results[0]),
+                            normalized_iter,
+                            result.Iter,
+                        ):
+                            return None
 
                 else:
-                    assert False, item
+                    assert False, item  # pragma: no cover
 
-                try:
-                    while True:
-                        next(iterator)
+                if result is None:
+                    return None
 
-                        # Yield one or more times
-                        while True:
-                            status = yield
+                results.append(Statement.StatementParseResultItem(item, result.Results))
+                normalized_iter = result.Iter.Clone()
 
-                            if status == Coroutine.Status.Yield:
-                                continue
-
-                            if status == Coroutine.Status.Terminate:
-                                iterator.send(status)
-
-                            break
-
-                except StopIteration as ex:
-                    if ex.value is None:
-                        return None
-
-                    result: Statement.ParseResult = ex.value
-
-                results.append(Statement.StatementParseResultItem(item, result.Results))    # <Has no member> pylint: disable=E1101
-                normalized_iter = result.Iter.Clone()                                       # <Has no member> pylint: disable=E1101
-
-                if not result.Success:                                                      # <Has no member> pylint: disable=E1101
+                if not result.Success:
                     success = False
                     break
 
