@@ -165,6 +165,8 @@ class Statement(Interface.Interface):
 
         if len(statements) == 1:
             result = statements[0].Parse(normalized_iter.Clone(), observer)
+            if result is None:
+                return None
 
             return Statement.ParseResult(
                 result.Success,
