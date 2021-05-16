@@ -305,4 +305,4 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
     OpeningToken                            = PushIgnoreWhitespaceControlToken
 
 
-PushIgnoreWhitespaceControlToken.ClosingToken           = PopIgnoreWhitespaceControlToken
+PushIgnoreWhitespaceControlToken.ClosingToken           = PopIgnoreWhitespaceControlToken  # type: ignore

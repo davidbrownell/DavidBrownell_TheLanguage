@@ -107,6 +107,24 @@ class TestStandard(object):
         assert result.Results[0].Statement.Name == "1, True, 10"
 
     # ----------------------------------------------------------------------
+    def test_SecondMatchNoSort(self):
+        result = Statement.ParseMultiple(
+            [
+                MyStatement(0, True, 5),
+                MyStatement(1, True, 10),
+                MyStatement(2, False, 2),
+            ],
+            NormalizedIterator(Normalize("0123456789")),
+            self.mock,
+            sort_results=False,
+        )
+
+        assert result.Success
+        assert result.Iter.Offset == 5
+        assert len(result.Results) == 1
+        assert result.Results[0].Statement.Name == "0, True, 5"
+
+    # ----------------------------------------------------------------------
     def test_LastMatch(self):
         result = Statement.ParseMultiple(
             [

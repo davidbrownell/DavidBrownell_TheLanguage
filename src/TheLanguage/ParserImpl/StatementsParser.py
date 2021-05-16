@@ -129,7 +129,7 @@ def Parse(
     initial_statement_info: DynamicStatementInfo,
     normalized_iter: NormalizedIterator,
     observer: Observer,
-) -> Optional[List[Statement.ParseResult]]:
+) -> Optional[List[Statement.StatementParseResultItem]]:
     """Repeatedly matches statements for all of the iterator"""
 
     assert normalized_iter.Offset == 0, normalized_iter.Offset
