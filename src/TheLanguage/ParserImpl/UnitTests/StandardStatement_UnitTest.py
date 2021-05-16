@@ -19,6 +19,7 @@ import os
 import re
 import textwrap
 
+from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import Mock
 
 import pytest
@@ -34,7 +35,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Coroutine import Execute
     from ..StandardStatement import *
     from ..NormalizedIterator import NormalizedIterator
     from ..Normalize import Normalize
@@ -72,6 +72,16 @@ class TestErrors(object):
             StandardStatement("Multiple1", [PushIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken()])
 
 # ----------------------------------------------------------------------
+@pytest.fixture
+def execution_mock():
+    mock = Mock()
+
+    mock.executor = ThreadPoolExecutor()
+    mock.Enqueue = lambda funcs: [mock.executor.submit(func) for func in funcs]
+
+    return mock
+
+# ----------------------------------------------------------------------
 class TestSingleLine(object):
     _word_token                         = RegexToken("Word", re.compile(r"(?P<value>\S+)"))
     _statement                          = StandardStatement("Standard", [_word_token, _word_token, NewlineToken()])
@@ -82,18 +92,18 @@ class TestSingleLine(object):
         assert self._statement.Items == [self._word_token, self._word_token, NewlineToken()]
 
     # ----------------------------------------------------------------------
-    def test_SingleSpaceSep(self):
+    def test_SingleSpaceSep(self, execution_mock):
         iter = NormalizedIterator(Normalize("one two"))
 
         assert iter.Line == 1
         assert iter.Column == 1
         assert iter.Offset == 0
 
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(iter, mock))[0]
+        result = self._statement.Parse(iter, execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -133,12 +143,12 @@ class TestSingleLine(object):
         assert iter.Offset == 0
 
     # ----------------------------------------------------------------------
-    def test_MultipleSpaceSep(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("one   two")), mock))[0]
+    def test_MultipleSpaceSep(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("one   two")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -173,12 +183,12 @@ class TestSingleLine(object):
         assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_TabSep(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("one\ttwo")), mock))[0]
+    def test_TabSep(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("one\ttwo")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -213,12 +223,12 @@ class TestSingleLine(object):
         assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_MultipleTabSep(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("one\t\t\ttwo")), mock))[0]
+    def test_MultipleTabSep(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("one\t\t\ttwo")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -253,12 +263,12 @@ class TestSingleLine(object):
         assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_TrailingSpace(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("one two ")), mock))[0]
+    def test_TrailingSpace(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two ")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -293,12 +303,12 @@ class TestSingleLine(object):
         assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_MultipleTrailingSpace(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("one two   ")), mock))[0]
+    def test_MultipleTrailingSpace(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two   ")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -333,12 +343,12 @@ class TestSingleLine(object):
         assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_TrailingTab(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("one two\t")), mock))[0]
+    def test_TrailingTab(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two\t")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -373,12 +383,12 @@ class TestSingleLine(object):
         assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_MultipleTrailingTabs(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("one two\t\t\t\t")), mock))[0]
+    def test_MultipleTrailingTabs(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two\t\t\t\t")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -413,7 +423,7 @@ class TestSingleLine(object):
         assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_MultipleLines(self):
+    def test_MultipleLines(self, execution_mock):
         iter = NormalizedIterator(
             Normalize(
                 textwrap.dedent(
@@ -429,10 +439,8 @@ class TestSingleLine(object):
         assert iter.Column == 1
         assert iter.Offset == 0
 
-        mock = Mock()
-
         # First Line
-        result = Execute(self._statement.ParseCoroutine(iter, mock))[0]
+        result = self._statement.Parse(iter, execution_mock)
 
         assert result.Success
 
@@ -473,7 +481,7 @@ class TestSingleLine(object):
         iter = result.Iter
 
         # Second Line
-        result = Execute(self._statement.ParseCoroutine(iter, mock))[0]
+        result = self._statement.Parse(iter, execution_mock)
 
         assert result.Success
 
@@ -507,16 +515,17 @@ class TestSingleLine(object):
         assert result.Results[2].Iter.Column == 1
         assert result.Results[2].IsIgnored == False
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
     # ----------------------------------------------------------------------
-    def test_TrailingWhitespace(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("one two\n\n  \n    \n")), mock))[0]
+    def test_TrailingWhitespace(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("one two\n\n  \n    \n")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -551,18 +560,18 @@ class TestSingleLine(object):
         assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_NoMatch(self):
+    def test_NoMatch(self, execution_mock):
         iter = NormalizedIterator(Normalize("one two three"))
 
         assert iter.Line == 1
         assert iter.Column == 1
         assert iter.Offset == 0
 
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(iter, mock))[0]
+        result = self._statement.Parse(iter, execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success == False
 
@@ -612,10 +621,8 @@ class TestIndentAndDedent(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_Match(self):
-        mock = Mock()
-
-        result = Execute(self._statement.ParseCoroutine(
+    def test_Match(self, execution_mock):
+        result = self._statement.Parse(
             NormalizedIterator(
                 Normalize(
                     textwrap.dedent(
@@ -627,11 +634,12 @@ class TestIndentAndDedent(object):
                     ),
                 ),
             ),
-            mock,
-        ))[0]
+            execution_mock,
+        )
 
-        assert mock.OnIndent.call_count == 1
-        assert mock.OnDedent.call_count == 1
+        assert execution_mock.OnIndent.call_count == 1
+        assert execution_mock.OnDedent.call_count == 1
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
         assert result.Iter.Line == 4
@@ -706,10 +714,8 @@ class TestIndentAndDedent(object):
         assert result.Results[7].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_NoMatch(self):
-        mock = Mock()
-
-        result = Execute(self._statement.ParseCoroutine(
+    def test_NoMatch(self, execution_mock):
+        result = self._statement.Parse(
             NormalizedIterator(
                 Normalize(
                     textwrap.dedent(
@@ -721,13 +727,14 @@ class TestIndentAndDedent(object):
                     ),
                 ),
             ),
-            mock,
-        ))[0]
+            execution_mock,
+        )
 
         # The code stopped parsing after 'two', so only 1 indent was encountered and 0 dedents were
         # encountered
-        assert mock.OnIndent.call_count == 1
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 1
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success == False
         assert result.Iter.Line == 3
@@ -778,7 +785,7 @@ class TestIndentAndDedent(object):
         assert result.Results[4].IsIgnored == False
 
 # ----------------------------------------------------------------------
-def test_FinishEarly():
+def test_FinishEarly(execution_mock):
     word_token = RegexToken("Word", re.compile(r"(?P<value>\S+)"))
 
     statement = StandardStatement("FinishEarly", [word_token, NewlineToken(), word_token])
@@ -789,11 +796,11 @@ def test_FinishEarly():
     assert iter.Column == 1
     assert iter.Offset == 0
 
-    mock = Mock()
-    result = Execute(statement.ParseCoroutine(iter, mock))[0]
+    result = statement.Parse(iter, execution_mock)
 
-    assert mock.OnIndent.call_count == 0
-    assert mock.OnDedent.call_count == 0
+    assert execution_mock.OnIndent.call_count == 0
+    assert execution_mock.OnDedent.call_count == 0
+    assert execution_mock.OnInternalStatement.call_count == 0
 
     assert result.Success == False
 
@@ -848,10 +855,8 @@ class TestIgnoreWhitespace(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_MatchNoExtra(self):
-        mock = Mock()
-
-        result = Execute(self._statement.ParseCoroutine(
+    def test_MatchNoExtra(self, execution_mock):
+        result = self._statement.Parse(
             NormalizedIterator(
                 Normalize(
                     textwrap.dedent(
@@ -870,11 +875,12 @@ class TestIgnoreWhitespace(object):
                     ),
                 ),
             ),
-            mock,
-        ))[0]
+            execution_mock,
+        )
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success
 
@@ -1057,7 +1063,7 @@ class TestIgnoreWhitespace(object):
         assert result.Results[19].IsIgnored == False
 
 # ----------------------------------------------------------------------
-def test_IgnoreControlTokens():
+def test_IgnoreControlTokens(execution_mock):
     # ----------------------------------------------------------------------
     @Interface.staticderived
     class MyControlToken(ControlTokenBase):
@@ -1065,21 +1071,20 @@ def test_IgnoreControlTokens():
 
     # ----------------------------------------------------------------------
 
-    mock = Mock()
-
     control_token = MyControlToken()
     regex_token = RegexToken("test", re.compile("test"))
 
-    result = Execute(StandardStatement(
+    result = StandardStatement(
         "IgnoreControlTokens",
         [
             control_token,
             regex_token,
         ],
-    ).ParseCoroutine(NormalizedIterator(Normalize("test")), mock))[0]
+    ).Parse(NormalizedIterator(Normalize("test")), execution_mock)
 
-    assert mock.OnIndent.call_count == 0
-    assert mock.OnDedent.call_count == 0
+    assert execution_mock.OnIndent.call_count == 0
+    assert execution_mock.OnDedent.call_count == 0
+    assert execution_mock.OnInternalStatement.call_count == 0
 
     assert result.Success
 
@@ -1114,12 +1119,15 @@ class TestEmbeddedStatements(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_Match(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("( one two )")), mock))[0]
+    def test_Match(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("( one two )")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 1
+        assert execution_mock.OnInternalStatement.call_args_list[0][0][0].Statement == self._inner_statement
+        assert execution_mock.OnInternalStatement.call_args_list[0][0][1].Offset == 1
+        assert execution_mock.OnInternalStatement.call_args_list[0][0][2].Offset == 9
 
         assert result.Success
 
@@ -1166,12 +1174,15 @@ class TestEmbeddedStatements(object):
         assert result.Results[2].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_NoMatchAllInner(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("( one two")), mock))[0]
+    def test_NoMatchAllInner(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("( one two")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 1
+        assert execution_mock.OnInternalStatement.call_args_list[0][0][0].Statement == self._inner_statement
+        assert execution_mock.OnInternalStatement.call_args_list[0][0][1].Offset == 1
+        assert execution_mock.OnInternalStatement.call_args_list[0][0][2].Offset == 9
 
         assert result.Success == False
 
@@ -1210,12 +1221,12 @@ class TestEmbeddedStatements(object):
         assert result.Results[1].Results[1].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_NoMatchPartialInner(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("( one ")), mock))[0]
+    def test_NoMatchPartialInner(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("( one ")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success == False
 
@@ -1246,12 +1257,12 @@ class TestEmbeddedStatements(object):
         assert result.Results[1].Results[0].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_NoMatchFirstOnly(self):
-        mock = Mock()
-        result = Execute(self._statement.ParseCoroutine(NormalizedIterator(Normalize("( ")), mock))[0]
+    def test_NoMatchFirstOnly(self, execution_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("( ")), execution_mock)
 
-        assert mock.OnIndent.call_count == 0
-        assert mock.OnDedent.call_count == 0
+        assert execution_mock.OnIndent.call_count == 0
+        assert execution_mock.OnDedent.call_count == 0
+        assert execution_mock.OnInternalStatement.call_count == 0
 
         assert result.Success == False
 
@@ -1289,28 +1300,47 @@ class TestDynamicStatements(object):
         ],
     )
 
-    _mock                                   = Mock()
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @pytest.fixture
+    def modified_execution_mock(execution_mock):
+        execution_mock.GetDynamicStatements.side_effect = lambda value: [TestDynamicStatements._word_statement, TestDynamicStatements._number_statement] if value == DynamicStatements.Statements else [TestDynamicStatements._number_statement]
+        execution_mock.OnInternalStatement = Mock(return_value=True)
 
-    _mock.GetDynamicStatements.side_effect  = lambda value: [TestDynamicStatements._word_statement, TestDynamicStatements._number_statement] if value == DynamicStatements.Statements else [TestDynamicStatements._number_statement]
+        return execution_mock
 
     # ----------------------------------------------------------------------
-    def test_Match(self):
-        result = Execute(
-            self._statement.ParseCoroutine(
-                NormalizedIterator(
-                    Normalize(
-                        textwrap.dedent(
-                            """\
-                            word1 word2
-                            123
-                            456
-                            """,
-                        ),
+    def test_Match(self, modified_execution_mock):
+        result = self._statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        word1 word2
+                        123
+                        456
+                        """,
                     ),
                 ),
-                self._mock,
             ),
-        )[0]
+            modified_execution_mock,
+        )
+
+        assert modified_execution_mock.OnIndent.call_count == 0
+        assert modified_execution_mock.OnDedent.call_count == 0
+        assert modified_execution_mock.OnInternalStatement.call_count == 3
+
+        assert modified_execution_mock.OnInternalStatement.call_args_list[0][0][0].Statement == self._word_statement
+        assert modified_execution_mock.OnInternalStatement.call_args_list[0][0][1].Offset == 0
+        assert modified_execution_mock.OnInternalStatement.call_args_list[0][0][2].Offset == 12
+
+        assert modified_execution_mock.OnInternalStatement.call_args_list[1][0][0].Statement == self._number_statement
+        assert modified_execution_mock.OnInternalStatement.call_args_list[1][0][1].Offset == 12
+        assert modified_execution_mock.OnInternalStatement.call_args_list[1][0][2].Offset == 16
+
+        assert modified_execution_mock.OnInternalStatement.call_args_list[2][0][0].Statement == self._number_statement
+        assert modified_execution_mock.OnInternalStatement.call_args_list[2][0][1].Offset == 16
+        assert modified_execution_mock.OnInternalStatement.call_args_list[2][0][2].Offset == 20
 
         assert result.Success
         assert result.Iter.Line == 4
@@ -1393,23 +1423,21 @@ class TestDynamicStatements(object):
         assert result.Results[2].Results[0].Results[1].IsIgnored == False
 
     # ----------------------------------------------------------------------
-    def test_NoMatch(self):
-        result = Execute(
-            self._statement.ParseCoroutine(
-                NormalizedIterator(
-                    Normalize(
-                        textwrap.dedent(
-                            """\
-                            word1 word2
-                            123
-                            word3 word4
-                            """,
-                        ),
+    def test_NoMatch(self, modified_execution_mock):
+        result = self._statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        word1 word2
+                        123
+                        word3 word4
+                        """,
                     ),
                 ),
-                self._mock,
             ),
-        )[0]
+            modified_execution_mock,
+        )
 
         assert result.Success == False
         assert result.Iter.Line == 3
@@ -1476,159 +1504,3 @@ class TestDynamicStatements(object):
         assert result.Results[2].Results[0].Statement == self._number_statement
 
         assert result.Results[2].Results[0].Results == []
-
-# ----------------------------------------------------------------------
-class TestListStatements(object):
-    _word_token                             = RegexToken("Word", re.compile(r"(?P<value>[a-z]+)"))
-    _number_token                           = RegexToken("Number", re.compile(r"(?P<value>\d+)"))
-
-    _word_statement                         = StandardStatement("Word StandardStatement", [_word_token])
-    _number_statement                       = StandardStatement("Number StandardStatement", [_number_token])
-    _newline_statment                       = StandardStatement("Newline StandardStatement", [NewlineToken()])
-
-    _statement                              = StandardStatement(
-        "Logical Or StandardStatement",
-        [
-            [
-                _word_statement,
-                _number_statement,
-            ],
-            _newline_statment,
-        ],
-    )
-
-    # ----------------------------------------------------------------------
-    def test_MatchWord(self):
-        mock = Mock()
-
-        result = Execute(
-            self._statement.ParseCoroutine(
-                NormalizedIterator(
-                    Normalize(
-                        textwrap.dedent(
-                            """\
-                            word
-                            """,
-                        ),
-                    ),
-                ),
-                mock,
-            ),
-        )[0]
-
-        assert result.Success
-        assert result.Iter.Line == 2
-        assert result.Iter.Column == 1
-        assert result.Iter.AtEnd()
-
-        assert len(result.Results) == 2
-
-        assert isinstance(result.Results[0].Statement, list)
-
-        assert len(result.Results[0].Results) == 1
-        assert result.Results[0].Results[0].Statement == self._word_statement
-
-        assert len(result.Results[0].Results[0].Results) == 1
-        assert result.Results[0].Results[0].Results[0].Token == self._word_token
-        assert result.Results[0].Results[0].Results[0].Value.Match.group("value") == "word"
-        assert result.Results[0].Results[0].Results[0].Whitespace is None
-        assert result.Results[0].Results[0].Results[0].Iter.Line == 1
-        assert result.Results[0].Results[0].Results[0].Iter.Column == 5
-        assert result.Results[0].Results[0].Results[0].Iter.AtEnd() == False
-
-        assert result.Results[1].Statement == self._newline_statment
-
-        assert len(result.Results[1].Results) == 1
-
-        assert result.Results[1].Results[0].Token == NewlineToken()
-        assert result.Results[1].Results[0].Whitespace is None
-        assert result.Results[1].Results[0].Value == Token.NewlineMatch(4, 5)
-        assert result.Results[1].Results[0].Iter.Line == 2
-        assert result.Results[1].Results[0].Iter.Column == 1
-        assert result.Results[1].Results[0].Iter.AtEnd()
-
-    # ----------------------------------------------------------------------
-    def test_MatchNumber(self):
-        mock = Mock()
-
-        result = Execute(
-            self._statement.ParseCoroutine(
-                NormalizedIterator(
-                    Normalize(
-                        textwrap.dedent(
-                            """\
-                            12345678
-                            """,
-                        ),
-                    ),
-                ),
-                mock,
-            ),
-        )[0]
-
-        assert result.Success
-        assert result.Iter.Line == 2
-        assert result.Iter.Column == 1
-        assert result.Iter.AtEnd()
-
-        assert len(result.Results) == 2
-
-        assert isinstance(result.Results[0].Statement, list)
-
-        assert len(result.Results[0].Results) == 1
-        assert result.Results[0].Results[0].Statement == self._number_statement
-
-        assert len(result.Results[0].Results[0].Results) == 1
-        assert result.Results[0].Results[0].Results[0].Token == self._number_token
-        assert result.Results[0].Results[0].Results[0].Value.Match.group("value") == "12345678"
-        assert result.Results[0].Results[0].Results[0].Whitespace is None
-        assert result.Results[0].Results[0].Results[0].Iter.Line == 1
-        assert result.Results[0].Results[0].Results[0].Iter.Column == 9
-        assert result.Results[0].Results[0].Results[0].Iter.AtEnd() == False
-
-        assert result.Results[1].Statement == self._newline_statment
-
-        assert len(result.Results[1].Results) == 1
-
-        assert result.Results[1].Results[0].Token == NewlineToken()
-        assert result.Results[1].Results[0].Whitespace is None
-        assert result.Results[1].Results[0].Value == Token.NewlineMatch(8, 9)
-        assert result.Results[1].Results[0].Iter.Line == 2
-        assert result.Results[1].Results[0].Iter.Column == 1
-        assert result.Results[1].Results[0].Iter.AtEnd()
-
-    # ----------------------------------------------------------------------
-    def test_NoMatch(self):
-        mock = Mock()
-
-        result = Execute(
-            self._statement.ParseCoroutine(
-                NormalizedIterator(
-                    Normalize(
-                        textwrap.dedent(
-                            """\
-                            NO_MATCH
-                            """,
-                        ),
-                    ),
-                ),
-                mock,
-            ),
-        )[0]
-
-        assert result.Success == False
-        assert result.Iter.Line == 1
-        assert result.Iter.Column == 1
-        assert result.Iter.AtEnd() == False
-
-        assert len(result.Results) == 1
-
-        assert isinstance(result.Results[0].Statement, list)
-
-        assert len(result.Results[0].Results) == 2
-
-        assert result.Results[0].Results[0].Statement == self._word_statement
-        assert result.Results[0].Results[0].Results == []
-
-        assert result.Results[0].Results[1].Statement == self._number_statement
-        assert result.Results[0].Results[1].Results == []
