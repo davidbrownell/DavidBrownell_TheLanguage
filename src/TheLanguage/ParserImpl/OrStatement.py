@@ -51,9 +51,7 @@ class OrStatement(Statement):
     def __init__(
         self,
         name: str,
-        items: List[
-            Statement
-        ],
+        items: List[Statement],
     ):
         assert name
         assert items
