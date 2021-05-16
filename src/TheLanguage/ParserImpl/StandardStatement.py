@@ -36,6 +36,7 @@ with InitRelativeImports():
     from .Statement import DynamicStatements, Statement
 
     from .Token import (
+        ControlTokenBase,
         DedentToken,
         IndentToken,
         NewlineToken,
@@ -48,6 +49,8 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @read_only_properties("Items")
 class StandardStatement(Statement):
+    """Statement made up of Tokens, nested Statements, and/or requests for DynamicStatements"""
+
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -68,6 +71,8 @@ class StandardStatement(Statement):
 
         for item_index, item in enumerate(items):
             if isinstance(item, Token) and item.IsControlToken:
+                item = cast(ControlTokenBase, item)
+
                 # Whitespace cannot come before the push token
                 if isinstance(item, PushIgnoreWhitespaceControlToken):
                     assert item_index == 0 or not isinstance(items[item_index - 1], (NewlineToken, IndentToken, DedentToken))
@@ -82,7 +87,7 @@ class StandardStatement(Statement):
                     continue
 
                 if item.OpeningToken is not None:
-                    assert isinstance(item, item.OpeningToken.ClosingToken), item
+                    assert isinstance(item, item.OpeningToken.ClosingToken), item  # type: ignore
 
                     key = type(item)
 
