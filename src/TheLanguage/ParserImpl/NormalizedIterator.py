@@ -144,7 +144,7 @@ class NormalizedIterator(object):
         return info.EndPos == info.StartPos
 
     # ----------------------------------------------------------------------
-    def SkipLine(self) -> "NormalizedIterator":
+    def SkipLine(self):
         info = self.LineInfo
 
         self._offset = info.OffsetEnd
@@ -152,7 +152,7 @@ class NormalizedIterator(object):
         return self.Advance(1)
 
     # ----------------------------------------------------------------------
-    def SkipPrefix(self) -> "NormalizedIterator":
+    def SkipPrefix(self):
         offset = self.Offset
         info = self.LineInfo
 
@@ -165,7 +165,7 @@ class NormalizedIterator(object):
         return self.Advance(delta)
 
     # ----------------------------------------------------------------------
-    def SkipSuffix(self) -> "NormalizedIterator":
+    def SkipSuffix(self):
         offset = self.Offset
         info = self.LineInfo
 
@@ -181,7 +181,7 @@ class NormalizedIterator(object):
     def Advance(
         self,
         delta: int,
-    ) -> "NormalizedIterator":
+    ):
         info = self.LineInfo
         offset = self.Offset
 
@@ -210,7 +210,7 @@ class NormalizedIterator(object):
         return self
 
     # ----------------------------------------------------------------------
-    def Clone(self) -> "NormalizedIterator":
+    def Clone(self):
         # Dynamically created the NormalizedContent object
         result = self.__class__(
             NormalizedContent(

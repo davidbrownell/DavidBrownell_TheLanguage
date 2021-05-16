@@ -21,6 +21,7 @@ import textwrap
 
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
+from typing import cast
 from unittest.mock import Mock
 
 import pytest

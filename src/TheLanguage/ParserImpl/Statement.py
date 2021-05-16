@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .NormalizedIterator import NormalizedIterator
-    from .Token import Token
+    from .Token import Token as TokenClass
 
 
 # ----------------------------------------------------------------------
@@ -72,18 +72,18 @@ class Statement(Interface.Interface):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class TokenParseResultItem(object):
-        Token: Token
+        Token: TokenClass
 
         Whitespace: Optional[Tuple[int, int]]           # Whitespace immediately before the token
-        Value: Token.MatchType                          # Result of the call to Token.Match
+        Value: TokenClass.MatchType                     # Result of the call to Token.Match
         Iter: NormalizedIterator                        # NormalizedIterator after the token has been consumed
         IsIgnored: bool                                 # True if the result is whitespace while whitespace is being ignored
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class StatementParseResultItem(object):
-        Statement: Union["Statement", DynamicStatements]
-        Results: "Statement.ParseResultItemsType"
+        Statement: Union["StatementType", DynamicStatements]
+        Results: "StatementType.ParseResultItemsType"
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -160,6 +160,9 @@ class Statement(Interface.Interface):
         statements: List["Statement"],
         normalized_iter: NormalizedIterator,
         observer: Observer,
+        sort_results=True,                              # True to ensure that results are sorted to ensure the best possible match
+                                                        # (regardless of statement order). False will return the first statement
+                                                        # matched.
     ) -> Optional["Statement.ParseResult"]:
         """Simultaneously applies multiple statements at the provided location"""
 
@@ -199,28 +202,45 @@ class Statement(Interface.Interface):
         #   - Success
         #   - Longest matched content
 
-        sort_data = [
-            (
-                index,
-                1 if result.Success else 0,
-                result.Iter.Offset,
+        if sort_results:
+            sort_data = [
+                (
+                    index,
+                    1 if result.Success else 0,
+                    result.Iter.Offset,
+                )
+                for index, result in enumerate(results)
+            ]
+
+            sort_data.sort(
+                key=lambda value: value[1:],
+                reverse=True,
             )
-            for index, result in enumerate(results)
-        ]
 
-        sort_data.sort(
-            key=lambda value: value[1:],
-            reverse=True,
-        )
+            result = results[sort_data[0][0]]
+            statement = statements[sort_data[0][0]]
 
-        result = results[sort_data[0][0]]
+        else:
+            result = None
+            statement = None
+
+            for potential_result_index, potential_result in enumerate(results):
+                if potential_result.Success:
+                    result = potential_result
+                    statement = statements[potential_result_index]
+
+                    break
+
+            if result is None:
+                result = results[0]
+                statement = statements[0]
 
         if result.Success:
             return Statement.ParseResult(
                 True,
                 [
                     Statement.StatementParseResultItem(
-                        statements[sort_data[0][0]],
+                        cast(Statement, statement),
                         result.Results,
                     ),
                 ],
@@ -237,3 +257,7 @@ class Statement(Interface.Interface):
                 max_iter = result.Iter
 
         return Statement.ParseResult(False, return_results, cast(NormalizedIterator, max_iter))
+
+
+# ----------------------------------------------------------------------
+StatementType                               = Statement

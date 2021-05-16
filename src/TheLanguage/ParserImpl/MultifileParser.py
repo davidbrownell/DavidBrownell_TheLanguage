@@ -264,7 +264,7 @@ def Parse(
                     root = RootNode()
 
                     for result in results:
-                        _CreateNode(root, result.Statement, result.Results)
+                        _CreateNode(root, cast(Statement, result.Statement), result.Results)
 
                     # Get the source info
                     source_info = observer.ExtractDynamicStatementInfo(fully_qualified_name, root)
@@ -381,13 +381,13 @@ def _CreateNode(
     node = Node(statement)
 
     object.__setattr__(node, "Parent", parent)
-    parent.Children.append(node)
+    parent.Children.append(node)  # type: ignore
 
     for result in parse_results:
         if isinstance(result, Statement.TokenParseResultItem):
             _CreateLeaf(node, result)
         elif isinstance(result, Statement.StatementParseResultItem):
-            _CreateNode(node, result.Statement, result.Results)
+            _CreateNode(node, cast(Statement, result.Statement), result.Results)
         else:
             assert False, result
 
@@ -410,6 +410,6 @@ def _CreateLeaf(
     )
 
     object.__setattr__(leaf, "Parent", parent)
-    parent.Children.append(leaf)
+    parent.Children.append(leaf)  # type: ignore
 
     return leaf
