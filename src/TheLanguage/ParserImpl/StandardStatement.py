@@ -60,6 +60,7 @@ class StandardStatement(Statement):
                 Token,
                 Statement,
                 DynamicStatements,
+                List[Statement],            # Or
             ]
         ],
     ):
@@ -209,12 +210,19 @@ class StandardStatement(Statement):
                     ):
                         return None
 
-                elif isinstance(item, DynamicStatements):
-                    result = self.ParseMultiple(
-                        observer.GetDynamicStatements(item),
-                        normalized_iter,
-                        observer,
-                    )
+                else:
+                    if isinstance(item, DynamicStatements):
+                        result = self.ParseMultiple(
+                            observer.GetDynamicStatements(item),
+                            normalized_iter,
+                            observer,
+                        )
+
+                    elif isinstance(item, list):
+                        result = self.ParseMultiple(item, normalized_iter, observer)
+
+                    else:
+                        assert False, item  # pragma: no cover
 
                     if (
                         result is not None
@@ -228,9 +236,6 @@ class StandardStatement(Statement):
                             result.Iter,
                         ):
                             return None
-
-                else:
-                    assert False, item  # pragma: no cover
 
                 if result is None:
                     return None

@@ -1504,3 +1504,136 @@ class TestDynamicStatements(object):
         assert result.Results[2].Results[0].Statement == self._number_statement
 
         assert result.Results[2].Results[0].Results == []
+
+# ----------------------------------------------------------------------
+class TestOrStatements(object):
+    _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
+    _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
+    _upper_token                            = RegexToken("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
+
+    _number_statement                       = StandardStatement("Number Statement", [_number_token, NewlineToken()])
+    _lower_statement                        = StandardStatement("Lower Statement", [_lower_token])
+    _upper_statement                        = StandardStatement("Upper Statement", [_upper_token])
+
+    _or_statement                           = StandardStatement(
+        "Or Statement",
+        [
+            _number_statement,
+            [_lower_statement, _upper_statement],
+            NewlineToken(),
+        ],
+    )
+
+    # ----------------------------------------------------------------------
+    def test_Lower(self, execution_mock):
+        result = self._or_statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        123
+                        lower
+                        """,
+                    ),
+                ),
+            ),
+            execution_mock,
+        )
+
+        assert result.Success
+        assert result.Iter.Line == 3
+        assert result.Iter.Column == 1
+
+        assert len(result.Results) == 3
+
+        assert result.Results[0].Statement == self._number_statement
+
+        assert len(result.Results[0].Results) == 2
+        assert result.Results[0].Results[0].Value.Match.group("value") == "123"
+        assert result.Results[0].Results[1].Value == Token.NewlineMatch(3, 4)
+
+        assert result.Results[1].Statement == [self._lower_statement, self._upper_statement]
+
+        assert len(result.Results[1].Results) == 1
+        assert result.Results[1].Results[0].Statement == self._lower_statement
+
+        assert len(result.Results[1].Results[0].Results) == 1
+        assert result.Results[1].Results[0].Results[0].Value.Match.group("value") == "lower"
+
+        assert result.Results[2].Value == Token.NewlineMatch(9, 10)
+
+    # ----------------------------------------------------------------------
+    def test_Upper(self, execution_mock):
+        result = self._or_statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        123
+                        UPPER
+                        """,
+                    ),
+                ),
+            ),
+            execution_mock,
+        )
+
+        assert result.Success
+        assert result.Iter.Line == 3
+        assert result.Iter.Column == 1
+
+        assert len(result.Results) == 3
+
+        assert result.Results[0].Statement == self._number_statement
+
+        assert len(result.Results[0].Results) == 2
+        assert result.Results[0].Results[0].Value.Match.group("value") == "123"
+        assert result.Results[0].Results[1].Value == Token.NewlineMatch(3, 4)
+
+        assert result.Results[1].Statement == [self._lower_statement, self._upper_statement]
+
+        assert len(result.Results[1].Results) == 1
+        assert result.Results[1].Results[0].Statement == self._upper_statement
+
+        assert len(result.Results[1].Results[0].Results) == 1
+        assert result.Results[1].Results[0].Results[0].Value.Match.group("value") == "UPPER"
+
+        assert result.Results[2].Value == Token.NewlineMatch(9, 10)
+
+    # ----------------------------------------------------------------------
+    def test_NoMatch(self, execution_mock):
+        result = self._or_statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        123
+                        456789
+                        """,
+                    ),
+                ),
+            ),
+            execution_mock,
+        )
+
+        assert result.Success == False
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
+
+        assert len(result.Results) == 2
+
+        assert result.Results[0].Statement == self._number_statement
+
+        assert len(result.Results[0].Results) == 2
+        assert result.Results[0].Results[0].Value.Match.group("value") == "123"
+        assert result.Results[0].Results[1].Value == Token.NewlineMatch(3, 4)
+
+        assert result.Results[1].Statement == [self._lower_statement, self._upper_statement]
+
+        assert len(result.Results[1].Results) == 2
+
+        assert result.Results[1].Results[0].Statement == self._lower_statement
+        assert result.Results[1].Results[0].Results == []
+
+        assert result.Results[1].Results[1].Statement == self._upper_statement
+        assert result.Results[1].Results[1].Results == []
