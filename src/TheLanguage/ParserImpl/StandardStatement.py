@@ -54,16 +54,15 @@ class StandardStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        name: str,
         items: List[
             Union[
                 Token,
                 Statement,
                 DynamicStatements,
+                List[Statement],            # Or
             ]
         ],
     ):
-        assert name
         assert items
 
         # Ensure that all control tokens are balanced properly
@@ -101,14 +100,7 @@ class StandardStatement(Statement):
 
         assert not control_token_check
 
-        self._name                          = name
         self.Items                          = items
-
-    # ----------------------------------------------------------------------
-    @property
-    @Interface.override
-    def Name(self):
-        return self._name
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -209,12 +201,19 @@ class StandardStatement(Statement):
                     ):
                         return None
 
-                elif isinstance(item, DynamicStatements):
-                    result = self.ParseMultiple(
-                        observer.GetDynamicStatements(item),
-                        normalized_iter,
-                        observer,
-                    )
+                else:
+                    if isinstance(item, DynamicStatements):
+                        result = self.ParseMultiple(
+                            observer.GetDynamicStatements(item),
+                            normalized_iter,
+                            observer,
+                        )
+
+                    elif isinstance(item, list):
+                        result = self.ParseMultiple(item, normalized_iter, observer)
+
+                    else:
+                        assert False, item  # pragma: no cover
 
                     if (
                         result is not None
@@ -228,9 +227,6 @@ class StandardStatement(Statement):
                             result.Iter,
                         ):
                             return None
-
-                else:
-                    assert False, item  # pragma: no cover
 
                 if result is None:
                     return None
@@ -344,3 +340,21 @@ class StandardStatement(Statement):
             ]
 
         return None
+
+
+# ----------------------------------------------------------------------
+class NamedStandardStatement(StandardStatement):
+    """StandardStatement with a name"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, name, items):
+        super(StandardStatement, self).__init__(items)
+
+        assert name
+
+        self._name                          = name
+
+    # ----------------------------------------------------------------------
+    @property
+    def Name(self):
+        return self._name
