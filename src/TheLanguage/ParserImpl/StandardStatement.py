@@ -54,7 +54,6 @@ class StandardStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        name: str,
         items: List[
             Union[
                 Token,
@@ -64,7 +63,6 @@ class StandardStatement(Statement):
             ]
         ],
     ):
-        assert name
         assert items
 
         # Ensure that all control tokens are balanced properly
@@ -102,14 +100,7 @@ class StandardStatement(Statement):
 
         assert not control_token_check
 
-        self._name                          = name
         self.Items                          = items
-
-    # ----------------------------------------------------------------------
-    @property
-    @Interface.override
-    def Name(self):
-        return self._name
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -349,3 +340,21 @@ class StandardStatement(Statement):
             ]
 
         return None
+
+
+# ----------------------------------------------------------------------
+class NamedStandardStatement(StandardStatement):
+    """StandardStatement with a name"""
+
+    # ----------------------------------------------------------------------
+    def __init__(self, name, items):
+        super(StandardStatement, self).__init__(items)
+
+        assert name
+
+        self._name                          = name
+
+    # ----------------------------------------------------------------------
+    @property
+    def Name(self):
+        return self._name

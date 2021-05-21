@@ -20,6 +20,8 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import Mock
 
+from rop import read_only_properties
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -38,6 +40,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+@read_only_properties("Name")
 class MyStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(
@@ -50,13 +53,7 @@ class MyStatement(Statement):
         self._matches                       = matches
         self._extent                        = extent
 
-        self._name                          = "{}, {}, {}".format(self._index, self._matches, self._extent)
-
-    # ----------------------------------------------------------------------
-    @property
-    @Interface.override
-    def Name(self):
-        return self._name
+        self.Name                           = "{}, {}, {}".format(self._index, self._matches, self._extent)
 
     # ----------------------------------------------------------------------
     @Interface.override

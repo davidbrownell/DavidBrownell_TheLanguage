@@ -50,10 +50,9 @@ with InitRelativeImports():
 class TestProperties(object):
     # ----------------------------------------------------------------------
     @staticmethod
-    def CreateStatement(name, min_matches, max_matches):
+    def CreateStatement(min_matches, max_matches):
         return RepeatStatement(
-            name,
-            StandardStatement("Standard", [RegexToken("Word", re.compile(r"(?P<value>\S+)")), NewlineToken()]),
+            StandardStatement([RegexToken("Word", re.compile(r"(?P<value>\S+)")), NewlineToken()]),
             min_matches,
             max_matches,
         )
@@ -61,20 +60,16 @@ class TestProperties(object):
     # ----------------------------------------------------------------------
     def test_InvalidCreation(self):
         with pytest.raises(AssertionError):
-            self.CreateStatement(None, 1, 2)
+            RepeatStatement(None, 1, 2)
         with pytest.raises(AssertionError):
-            RepeatStatement("Name", None, 1, 2)
+            self.CreateStatement(-1, 2)
         with pytest.raises(AssertionError):
-            self.CreateStatement("Name", -1, 2)
-        with pytest.raises(AssertionError):
-            self.CreateStatement("Name", 10, 5)
+            self.CreateStatement(10, 5)
 
     # ----------------------------------------------------------------------
     def test_Optional(self):
-        statement = self.CreateStatement("Optional", 0, 1)
+        statement = self.CreateStatement(0, 1)
 
-        assert statement.Name == "Optional"
-        assert statement.Statement.Name == "Standard"
         assert statement.IsOptional
         assert statement.IsOneOrMore == False
         assert statement.IsZeroOrMore == False
@@ -82,10 +77,8 @@ class TestProperties(object):
 
     # ----------------------------------------------------------------------
     def test_OneOrMore(self):
-        statement = self.CreateStatement("OneOrMore", 1, None)
+        statement = self.CreateStatement(1, None)
 
-        assert statement.Name == "OneOrMore"
-        assert statement.Statement.Name == "Standard"
         assert statement.IsOptional == False
         assert statement.IsOneOrMore
         assert statement.IsZeroOrMore == False
@@ -93,10 +86,8 @@ class TestProperties(object):
 
     # ----------------------------------------------------------------------
     def test_ZeroOrMore(self):
-        statement = self.CreateStatement("ZeroOrMore", 0, None)
+        statement = self.CreateStatement(0, None)
 
-        assert statement.Name == "ZeroOrMore"
-        assert statement.Statement.Name == "Standard"
         assert statement.IsOptional == False
         assert statement.IsOneOrMore == False
         assert statement.IsZeroOrMore
@@ -104,10 +95,8 @@ class TestProperties(object):
 
     # ----------------------------------------------------------------------
     def test_Collection(self):
-        statement = self.CreateStatement("Collection", 1, 10)
+        statement = self.CreateStatement(1, 10)
 
-        assert statement.Name == "Collection"
-        assert statement.Statement.Name == "Standard"
         assert statement.IsOptional == False
         assert statement.IsOneOrMore == False
         assert statement.IsZeroOrMore == False
@@ -117,12 +106,12 @@ class TestProperties(object):
 # ----------------------------------------------------------------------
 class TestStandard(object):
     _word_token                             = RegexToken("Word Token", re.compile(r"(?P<value>[a-z]+)"))
-    _word_statement                         = StandardStatement("Word Statement", [_word_token, NewlineToken()])
+    _word_statement                         = StandardStatement([_word_token, NewlineToken()])
 
-    _optional_statement                     = RepeatStatement("Optional", _word_statement, 0, 1)
-    _one_or_more_statement                  = RepeatStatement("One Or More", _word_statement, 1, None)
-    _zero_or_more_statement                 = RepeatStatement("Zero Or More", _word_statement, 0, None)
-    _collection_statement                   = RepeatStatement("Collection", _word_statement, 2, 2)
+    _optional_statement                     = RepeatStatement(_word_statement, 0, 1)
+    _one_or_more_statement                  = RepeatStatement(_word_statement, 1, None)
+    _zero_or_more_statement                 = RepeatStatement(_word_statement, 0, None)
+    _collection_statement                   = RepeatStatement(_word_statement, 2, 2)
 
     # ----------------------------------------------------------------------
     @staticmethod

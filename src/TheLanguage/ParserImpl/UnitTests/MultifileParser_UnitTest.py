@@ -84,13 +84,12 @@ class TestStandard(object):
     _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
 
-    _include_statement                      = StandardStatement("Include Statement", [_include_token, _lower_token, NewlineToken()])
-    _upper_statement                        = StandardStatement("Upper Statement", [_upper_token, NewlineToken()])
-    _lower_statement                        = StandardStatement("Lower Statement", [_lower_token, NewlineToken()])
-    _number_statement                       = StandardStatement("Number Statement", [_number_token, NewlineToken()])
+    _include_statement                      = StandardStatement([_include_token, _lower_token, NewlineToken()])
+    _upper_statement                        = StandardStatement([_upper_token, NewlineToken()])
+    _lower_statement                        = StandardStatement([_lower_token, NewlineToken()])
+    _number_statement                       = StandardStatement([_number_token, NewlineToken()])
 
     _new_scope_statement                    = StandardStatement(
-        "New Scope Statement",
         [
             _upper_token,
             RegexToken("Colon Token", re.compile(r":")),
@@ -102,7 +101,7 @@ class TestStandard(object):
         ],
     )
 
-    _dynamic_number_statement               = StandardStatement("Dynamic Number Statement", [_number_token, _number_token, _number_token, NewlineToken()])
+    _dynamic_number_statement               = StandardStatement([_number_token, _number_token, _number_token, NewlineToken()])
 
     _statements                             = DynamicStatementInfo(
         [_include_statement, _upper_statement, _lower_statement, _number_statement, _new_scope_statement],

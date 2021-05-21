@@ -138,12 +138,6 @@ class Statement(Interface.Interface):
             raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    @Interface.abstractproperty
-    def Name(self):
-        """Returns the name of the derived Statement object"""
-        raise Exception("Abstract property")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
     def Parse(
