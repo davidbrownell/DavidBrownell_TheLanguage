@@ -45,31 +45,31 @@ class TestErrors(object):
     # ----------------------------------------------------------------------
     def test_InvalidName(self):
         with pytest.raises(AssertionError):
-            StandardStatement("", [NewlineToken()])
+            NamedStandardStatement("", [NewlineToken()])
 
     # ----------------------------------------------------------------------
     def test_InvalidItems(self):
         with pytest.raises(AssertionError):
-            StandardStatement("Invaild", [])
+            StandardStatement([])
 
     # ----------------------------------------------------------------------
     def test_MissingClosingToken(self):
         with pytest.raises(AssertionError):
-            StandardStatement("Single", [PushIgnoreWhitespaceControlToken()])
+            StandardStatement([PushIgnoreWhitespaceControlToken()])
 
         with pytest.raises(AssertionError):
-            StandardStatement("Multiple1", [PushIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken(), PushIgnoreWhitespaceControlToken()])
+            StandardStatement([PushIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken(), PushIgnoreWhitespaceControlToken()])
 
         with pytest.raises(AssertionError):
-            StandardStatement("Multiple2", [PushIgnoreWhitespaceControlToken(), PushIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken()])
+            StandardStatement([PushIgnoreWhitespaceControlToken(), PushIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken()])
 
     # ----------------------------------------------------------------------
     def test_MissingOpeningToken(self):
         with pytest.raises(AssertionError):
-            StandardStatement("Single", [PopIgnoreWhitespaceControlToken()])
+            StandardStatement([PopIgnoreWhitespaceControlToken()])
 
         with pytest.raises(AssertionError):
-            StandardStatement("Multiple1", [PushIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken()])
+            StandardStatement([PushIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken(), PopIgnoreWhitespaceControlToken()])
 
 # ----------------------------------------------------------------------
 @pytest.fixture
@@ -84,7 +84,7 @@ def execution_mock():
 # ----------------------------------------------------------------------
 class TestSingleLine(object):
     _word_token                         = RegexToken("Word", re.compile(r"(?P<value>\S+)"))
-    _statement                          = StandardStatement("Standard", [_word_token, _word_token, NewlineToken()])
+    _statement                          = NamedStandardStatement("Standard", [_word_token, _word_token, NewlineToken()])
 
     # ----------------------------------------------------------------------
     def test_Properties(self):
@@ -607,7 +607,6 @@ class TestIndentAndDedent(object):
     _word_token                         = RegexToken("Word", re.compile(r"(?P<value>\S+)"))
 
     _statement                          = StandardStatement(
-        "IndentAndDednet",
         [
             _word_token,
             NewlineToken(),
@@ -788,7 +787,7 @@ class TestIndentAndDedent(object):
 def test_FinishEarly(execution_mock):
     word_token = RegexToken("Word", re.compile(r"(?P<value>\S+)"))
 
-    statement = StandardStatement("FinishEarly", [word_token, NewlineToken(), word_token])
+    statement = StandardStatement([word_token, NewlineToken(), word_token])
 
     iter = NormalizedIterator(Normalize("one"))
 
@@ -838,7 +837,6 @@ class TestIgnoreWhitespace(object):
     _rpar_token                             = RegexToken("rpar", re.compile(r"\)"))
 
     _statement                              = StandardStatement(
-        "IndentAndDednet",
         [
             _word_token,
             _lpar_token,
@@ -1075,7 +1073,6 @@ def test_IgnoreControlTokens(execution_mock):
     regex_token = RegexToken("test", re.compile("test"))
 
     result = StandardStatement(
-        "IgnoreControlTokens",
         [
             control_token,
             regex_token,
@@ -1108,9 +1105,8 @@ class TestEmbeddedStatements(object):
     _lpar_token                             = RegexToken("lpar", re.compile(r"(?P<value>\()"))
     _rpar_token                             = RegexToken("rpar", re.compile(r"(?P<value>\))"))
 
-    _inner_statement                        = StandardStatement("Inner", [_word_token, _word_token])
+    _inner_statement                        = StandardStatement([_word_token, _word_token])
     _statement                              = StandardStatement(
-        "Outer",
         [
             _lpar_token,
             _inner_statement,
@@ -1288,11 +1284,10 @@ class TestDynamicStatements(object):
     _word_token                             = RegexToken("Word", re.compile(r"(?P<value>\S+)"))
     _number_token                           = RegexToken("Number", re.compile(r"(?P<value>\d+)"))
 
-    _word_statement                         = StandardStatement("Word StandardStatement", [_word_token, _word_token, NewlineToken()])
-    _number_statement                       = StandardStatement("Number StandardStatement", [_number_token, NewlineToken()])
+    _word_statement                         = StandardStatement([_word_token, _word_token, NewlineToken()])
+    _number_statement                       = StandardStatement([_number_token, NewlineToken()])
 
     _statement                              = StandardStatement(
-        "Dynamic",
         [
             DynamicStatements.Statements,
             DynamicStatements.Statements,
@@ -1504,3 +1499,135 @@ class TestDynamicStatements(object):
         assert result.Results[2].Results[0].Statement == self._number_statement
 
         assert result.Results[2].Results[0].Results == []
+
+# ----------------------------------------------------------------------
+class TestOrStatements(object):
+    _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
+    _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
+    _upper_token                            = RegexToken("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
+
+    _number_statement                       = StandardStatement([_number_token, NewlineToken()])
+    _lower_statement                        = StandardStatement([_lower_token])
+    _upper_statement                        = StandardStatement([_upper_token])
+
+    _or_statement                           = StandardStatement(
+        [
+            _number_statement,
+            [_lower_statement, _upper_statement],
+            NewlineToken(),
+        ],
+    )
+
+    # ----------------------------------------------------------------------
+    def test_Lower(self, execution_mock):
+        result = self._or_statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        123
+                        lower
+                        """,
+                    ),
+                ),
+            ),
+            execution_mock,
+        )
+
+        assert result.Success
+        assert result.Iter.Line == 3
+        assert result.Iter.Column == 1
+
+        assert len(result.Results) == 3
+
+        assert result.Results[0].Statement == self._number_statement
+
+        assert len(result.Results[0].Results) == 2
+        assert result.Results[0].Results[0].Value.Match.group("value") == "123"
+        assert result.Results[0].Results[1].Value == Token.NewlineMatch(3, 4)
+
+        assert result.Results[1].Statement == [self._lower_statement, self._upper_statement]
+
+        assert len(result.Results[1].Results) == 1
+        assert result.Results[1].Results[0].Statement == self._lower_statement
+
+        assert len(result.Results[1].Results[0].Results) == 1
+        assert result.Results[1].Results[0].Results[0].Value.Match.group("value") == "lower"
+
+        assert result.Results[2].Value == Token.NewlineMatch(9, 10)
+
+    # ----------------------------------------------------------------------
+    def test_Upper(self, execution_mock):
+        result = self._or_statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        123
+                        UPPER
+                        """,
+                    ),
+                ),
+            ),
+            execution_mock,
+        )
+
+        assert result.Success
+        assert result.Iter.Line == 3
+        assert result.Iter.Column == 1
+
+        assert len(result.Results) == 3
+
+        assert result.Results[0].Statement == self._number_statement
+
+        assert len(result.Results[0].Results) == 2
+        assert result.Results[0].Results[0].Value.Match.group("value") == "123"
+        assert result.Results[0].Results[1].Value == Token.NewlineMatch(3, 4)
+
+        assert result.Results[1].Statement == [self._lower_statement, self._upper_statement]
+
+        assert len(result.Results[1].Results) == 1
+        assert result.Results[1].Results[0].Statement == self._upper_statement
+
+        assert len(result.Results[1].Results[0].Results) == 1
+        assert result.Results[1].Results[0].Results[0].Value.Match.group("value") == "UPPER"
+
+        assert result.Results[2].Value == Token.NewlineMatch(9, 10)
+
+    # ----------------------------------------------------------------------
+    def test_NoMatch(self, execution_mock):
+        result = self._or_statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        123
+                        456789
+                        """,
+                    ),
+                ),
+            ),
+            execution_mock,
+        )
+
+        assert result.Success == False
+        assert result.Iter.Line == 2
+        assert result.Iter.Column == 1
+
+        assert len(result.Results) == 2
+
+        assert result.Results[0].Statement == self._number_statement
+
+        assert len(result.Results[0].Results) == 2
+        assert result.Results[0].Results[0].Value.Match.group("value") == "123"
+        assert result.Results[0].Results[1].Value == Token.NewlineMatch(3, 4)
+
+        assert result.Results[1].Statement == [self._lower_statement, self._upper_statement]
+
+        assert len(result.Results[1].Results) == 2
+
+        assert result.Results[1].Results[0].Statement == self._lower_statement
+        assert result.Results[1].Results[0].Results == []
+
+        assert result.Results[1].Results[1].Statement == self._upper_statement
+        assert result.Results[1].Results[1].Results == []

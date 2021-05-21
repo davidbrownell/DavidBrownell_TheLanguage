@@ -50,10 +50,10 @@ class TestStandard(object):
     _short_token                            = RegexToken("Short Token", re.compile(r"(?P<value>[a-z]{3})"))
     _long_token                             = RegexToken("Long Token", re.compile(r"(?P<value>[a-z]{7})"))
 
-    _short_statement                        = StandardStatement("Short Statement", [_short_token])
-    _long_statement                         = StandardStatement("Long Statement", [_long_token])
+    _short_statement                        = StandardStatement([_short_token])
+    _long_statement                         = StandardStatement([_long_token])
 
-    _or_statement                           = OrStatement("Or Statement", [_short_statement, _long_statement])
+    _or_statement                           = OrStatement([_short_statement, _long_statement])
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -68,7 +68,6 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_Properties(self):
-        assert self._or_statement.Name == "Or Statement"
         assert self._or_statement.Items == [self._short_statement, self._long_statement]
 
     # ----------------------------------------------------------------------
