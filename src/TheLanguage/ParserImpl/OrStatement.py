@@ -50,20 +50,11 @@ class OrStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        name: str,
         items: List[Statement],
     ):
-        assert name
         assert items
 
-        self._name                          = name
         self.Items                          = items
-
-    # ----------------------------------------------------------------------
-    @property
-    @Interface.override
-    def Name(self):
-        return self._name
 
     # ----------------------------------------------------------------------
     @Interface.override

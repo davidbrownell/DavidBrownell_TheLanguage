@@ -48,27 +48,19 @@ class RepeatStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        name: str,
         statement: Statement,
         min_matches: int,
         max_matches: Optional[int],
     ):
-        assert name
         assert statement
         assert min_matches >= 0, min_matches
         assert max_matches is None or (max_matches >= min_matches), (min_matches, max_matches)
 
-        self._name                          = name
         self.Statement                      = statement
         self.MinMatches                     = min_matches
         self.MaxMatches                     = max_matches
 
     # ----------------------------------------------------------------------
-    @property
-    @Interface.override
-    def Name(self):
-        return self._name
-
     @property
     def IsOptional(self):
         return self.MinMatches == 0 and self.MaxMatches == 1
