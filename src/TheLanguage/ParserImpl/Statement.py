@@ -117,13 +117,19 @@ class Statement(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        def OnIndent():
+        def OnIndent(
+            statement: "Statement",
+            results: "Statement.ParseResultItemsType",
+        ):
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        def OnDedent():
+        def OnDedent(
+            statement: "Statement",
+            results: "Statement.ParseResultItemsType",
+        ):
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
