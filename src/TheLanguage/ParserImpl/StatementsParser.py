@@ -48,11 +48,16 @@ class DynamicStatementInfo(object):
     allow_parent_traversal: bool            = True      # If False, prevent content from including values from higher-level scope
 
     # ----------------------------------------------------------------------
-    def Clone(self):
+    def Clone(
+        self,
+        updated_statements=None,
+        updated_expressions=None,
+        updated_allow_parent_traversal=None,
+    ):
         return self.__class__(
-            list(self.statements),
-            list(self.expressions),
-            self.allow_parent_traversal,
+            updated_statements if updated_statements is not None else list(self.statements),
+            updated_expressions if updated_expressions is not None else list(self.expressions),
+            updated_allow_parent_traversal if updated_allow_parent_traversal is not None else self.allow_parent_traversal,
         )
 
 
@@ -100,13 +105,19 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnIndent():
+    def OnIndent(
+        statement: Statement,
+        results: Statement.ParseResultItemsType,
+    ) -> Optional[DynamicStatementInfo]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnDedent():
+    def OnDedent(
+        statement: Statement,
+        results: Statement.ParseResultItemsType,
+    ):
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -146,8 +157,8 @@ def Parse(
 
         if not result.Success:
             raise SyntaxInvalidError(
-                normalized_iter.Line,
-                normalized_iter.Column,
+                result.Iter.Line,
+                result.Iter.Column,
                 result.Results,
             )
 
@@ -224,20 +235,25 @@ class _StatementObserver(Statement.Observer):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnIndent(self):
+    def OnIndent(self, statement, results):
         self._all_statement_infos.append([])
-        self._observer.OnIndent()
+
+        this_result = self._observer.OnIndent(statement, results)
+        if isinstance(this_result, DynamicStatementInfo):
+            self.AddDynamicStatementInfo(results[-1].Iter, this_result)
+
+        return None
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnDedent(self):
+    def OnDedent(self, statement, results):
         assert self._all_statement_infos
         self._all_statement_infos.pop()
         assert len(self._all_statement_infos) >= 1, self._all_statement_infos
 
         self._UpdateCache()
 
-        self._observer.OnDedent()
+        self._observer.OnDedent(statement, results)
 
     # ----------------------------------------------------------------------
     @Interface.override

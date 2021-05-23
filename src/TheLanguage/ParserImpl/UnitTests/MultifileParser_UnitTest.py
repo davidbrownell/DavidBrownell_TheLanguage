@@ -170,6 +170,8 @@ class TestStandard(object):
                 @Interface.override
                 def OnIndent(
                     fully_qualified_name: str,
+                    statement: Statement,
+                    results: Statement.ParseResultItemsType,
                 ):
                     pass
 
@@ -178,6 +180,8 @@ class TestStandard(object):
                 @Interface.override
                 def OnDedent(
                     fully_qualified_name: str,
+                    statement: Statement,
+                    results: Statement.ParseResultItemsType,
                 ):
                     pass
 
@@ -904,7 +908,7 @@ class TestStandard(object):
 
             assert str(results) == "The syntax is not recognized"
             assert results.Line == 1
-            assert results.Column == 1
+            assert results.Column == 2
             assert results.FullyQualifiedName == "one"
 
     # ----------------------------------------------------------------------
@@ -1111,7 +1115,7 @@ class TestStandard(object):
             assert len(results) == 1
 
             assert results[0].Line == 4
-            assert results[0].Column == 1
+            assert results[0].Column == 2
             assert str(results[0]) == "The syntax is not recognized"
 
             assert len(results[0].PotentialStatements) == 5
