@@ -125,18 +125,13 @@ class Observer(MultifileParserObserver):
     def __init__(
         self,
         observer: MultifileParserObserver,
-        syntaxes: Optional[
-            Dict[
-                SemVer,                     # Syntax Name
-                DynamicStatementInfo,       # Syntax Info
-            ]
+        syntaxes: Dict[
+            SemVer,                     # Syntax Name
+            DynamicStatementInfo,       # Syntax Info
         ],
     ):
         assert observer
         assert syntaxes
-
-        if syntaxes is None:
-            syntaxes = self.LoadSyntaxes()
 
         max_ver = None
         updated_syntaxes = {}
@@ -214,8 +209,3 @@ class Observer(MultifileParserObserver):
     @Interface.override
     def OnStatementComplete(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
         return self._observer.OnStatementComplete(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def LoadSyntaxes() -> Dict[SemVer, DynamicStatementInfo]:
-        return {} # BugBug
