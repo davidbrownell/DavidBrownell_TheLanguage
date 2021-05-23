@@ -221,22 +221,22 @@ def Parse(
     # TODO: Check for import cycles
     def Execute(fully_qualified_name) -> DynamicStatementInfo:
         with thread_info_lock:
-            if fully_qualified_name not in thread_info.source_lookup:
+            if fully_qualified_name not in thread_info.source_lookup:       # <Value doesn't support membership test> pylint: disable=E1135
                 should_execute = True
                 wait_event = None
 
-                thread_info.source_lookup[fully_qualified_name] = None
+                thread_info.source_lookup[fully_qualified_name] = None      # <Value doesn't support item assignment> pylint: disable=E1137
                 thread_info.pending_ctr += 1
 
             else:
-                source_info = thread_info.source_lookup[fully_qualified_name]
+                source_info = thread_info.source_lookup[fully_qualified_name]                       # <Value is unscriptable> pylint: disable=E1136
                 if source_info is not None:
                     return source_info.SourceInfo
 
                 should_execute = False
                 wait_event = threading.Event()
 
-                thread_info.source_pending.setdefault(fully_qualified_name, []).append(wait_event)
+                thread_info.source_pending.setdefault(fully_qualified_name, []).append(wait_event)  # <Has no member> pylint: disable=E1101
 
         if should_execute:
             # ----------------------------------------------------------------------
@@ -273,10 +273,10 @@ def Parse(
 
                     # Commit the results
                     with thread_info_lock:
-                        assert thread_info.source_lookup[fully_qualified_name] is None
-                        thread_info.source_lookup[fully_qualified_name] = SourceInfo(root, source_info)
+                        assert thread_info.source_lookup[fully_qualified_name] is None                      # <Value is unscriptable> pylint: disable=E1136
+                        thread_info.source_lookup[fully_qualified_name] = SourceInfo(root, source_info)     # <Does not support item assignment> pylint: disable=E1137
 
-                        for event in thread_info.source_pending.pop(fully_qualified_name, []):
+                        for event in thread_info.source_pending.pop(fully_qualified_name, []):      # <Has no member> pylint: disable=E1101
                             event.set()
 
                 except Exception as ex:
@@ -287,13 +287,13 @@ def Parse(
                     object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
 
                     with thread_info_lock:
-                        thread_info.errors.append(ex)
+                        thread_info.errors.append(ex)   # <Has no member> pylint: disable=E1101
 
         elif wait_event:
             wait_event.wait()
 
         with thread_info_lock:
-            return thread_info.source_lookup[fully_qualified_name].SourceInfo
+            return thread_info.source_lookup[fully_qualified_name].SourceInfo  # <Value is unscriptable> pylint: disable=E1136
 
     # ----------------------------------------------------------------------
 
@@ -311,7 +311,7 @@ def Parse(
     if thread_info.errors:
         return thread_info.errors
 
-    return {fqn: si.Node for fqn, si in thread_info.source_lookup.items()}
+    return {fqn: si.Node for fqn, si in thread_info.source_lookup.items()}  # <Has no member> pylint: disable=E1101
 
 
 # ----------------------------------------------------------------------
