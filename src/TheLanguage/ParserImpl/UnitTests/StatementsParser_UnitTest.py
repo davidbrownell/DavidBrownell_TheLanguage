@@ -81,13 +81,13 @@ def CreateObserver():
             # ----------------------------------------------------------------------
             @staticmethod
             @Interface.override
-            def OnIndent():
+            def OnIndent(statement, results):
                 pass
 
             # ----------------------------------------------------------------------
             @staticmethod
             @Interface.override
-            def OnDedent():
+            def OnDedent(statement, results):
                 pass
 
             # ----------------------------------------------------------------------
@@ -903,7 +903,7 @@ class TestNoMatchError(object):
 
             # Validate
             assert ex.Line == 1
-            assert ex.Column == 1
+            assert ex.Column == 4
             assert str(ex) == "The syntax is not recognized"
 
             assert len(ex.PotentialStatements) == 2
