@@ -155,9 +155,9 @@ class StandardStatement(Statement):
                         break
 
                     if isinstance(item, IndentToken):
-                        observer.OnIndent()
+                        observer.OnIndent(self, results)
                     elif isinstance(item, DedentToken):
-                        observer.OnDedent()
+                        observer.OnDedent(self, results)
 
                     if isinstance(result, list):
                         assert not potential_whitespace

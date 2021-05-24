@@ -89,7 +89,6 @@ class RepeatStatement(Statement):
         while True:
             result = self.Statement.Parse(normalized_iter, observer)
             if not result.Success:
-                success = False
                 break
 
             results.append(
