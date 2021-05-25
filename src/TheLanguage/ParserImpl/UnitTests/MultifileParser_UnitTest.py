@@ -135,7 +135,7 @@ class TestStandard(object):
                 def VerifyCallArgs(self, index, statement, node, before_line, before_col, after_line, after_col):
                     callback_args = self.mock.call_args_list[index][0]
 
-                    assert callback_args[0].Statement == statement
+                    assert callback_args[0].Type == statement
                     assert callback_args[1].Line == before_line
                     assert callback_args[1].Column == before_col
                     assert callback_args[2].Line == after_line
@@ -190,17 +190,17 @@ class TestStandard(object):
                 def OnStatementComplete(
                     self,
                     fully_qualified_name,
-                    result,
+                    node,
                     iter_before,
                     iter_after,
                 ):
-                    if result.Statement == cls._include_statement:
-                        assert len(result.Results) == 3
+                    if node.Type == cls._include_statement:
+                        assert len(node.Children) == 3
+                        value = node.Children[1].Value.Match.group("value")
 
-                        value = result.Results[1].Value.Match.group("value")
                         return Observer.ImportInfo(value, value if value in cls._content_dict else None)
 
-                    return self.mock(result, iter_before, iter_after)
+                    return self.mock(node, iter_before, iter_after)
 
             # ----------------------------------------------------------------------
 
