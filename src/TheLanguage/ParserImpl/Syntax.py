@@ -126,8 +126,8 @@ class Observer(MultifileParserObserver):
         self,
         observer: MultifileParserObserver,
         syntaxes: Dict[
-            SemVer,                     # Syntax Name
-            DynamicStatementInfo,       # Syntax Info
+            SemVer,                         # Syntax Name
+            DynamicStatementInfo,           # Syntax Info
         ],
     ):
         assert observer
