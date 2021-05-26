@@ -52,16 +52,25 @@ class StandardStatement(Statement):
     """Statement made up of Tokens, nested Statements, and/or requests for DynamicStatements"""
 
     # ----------------------------------------------------------------------
+    ItemType                                = Union[
+        Token,
+        Statement,
+        DynamicStatements,
+        List[Statement],                    # Or
+    ]
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(
+        cls,
+        *items: ItemType,
+    ):
+        return cls(list(items))
+
+    # ----------------------------------------------------------------------
     def __init__(
         self,
-        items: List[
-            Union[
-                Token,
-                Statement,
-                DynamicStatements,
-                List[Statement],            # Or
-            ]
-        ],
+        items: List[ItemType],
     ):
         assert items
 
@@ -347,7 +356,20 @@ class NamedStandardStatement(StandardStatement):
     """StandardStatement with a name"""
 
     # ----------------------------------------------------------------------
-    def __init__(self, name, items):
+    @classmethod
+    def Create(
+        cls,
+        name: str,
+        *items: StandardStatement.ItemType,
+    ):
+        return cls(name, list(items))
+
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        name: str,
+        items: List[StandardStatement.ItemType],
+    ):
         super(StandardStatement, self).__init__(items)
 
         assert name

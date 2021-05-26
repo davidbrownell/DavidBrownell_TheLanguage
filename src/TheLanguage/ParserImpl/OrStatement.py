@@ -48,6 +48,14 @@ class OrStatement(Statement):
     """
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def Create(
+        cls,
+        *items: Statement,
+    ):
+        return cls(list(items))
+
+    # ----------------------------------------------------------------------
     def __init__(
         self,
         items: List[Statement],
