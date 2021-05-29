@@ -21,7 +21,6 @@ import re
 from typing import Dict, Optional
 
 from dataclasses import dataclass
-from rop import read_only_properties
 from semantic_version import Version as SemVer
 
 import CommonEnvironment
@@ -37,9 +36,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Error import Error
     from .MultifileParser import Observer as MultifileParserObserver
-    from .RepeatStatement import RepeatStatement
-    from .StandardStatement import NamedStandardStatement, StandardStatement
-    from .Statement import DynamicStatements, Statement
+    from .StatementEx import DynamicStatements, StatementEx
     from .StatementsParser import DynamicStatementInfo
 
     from .Token import (
@@ -67,30 +64,21 @@ _simple_semantic_version_regex              = re.compile(r"(?P<major>0|[1-9]\d*)
 # Statement to explicitly set the version of the syntax used to parse the block. This
 # is useful to make code written according to an older syntax version available along side
 # code written according to the current syntax version.
-SetSyntaxStatement                          = NamedStandardStatement(
+
+# __with __syntax=1.0:
+#     ...
+#
+SetSyntaxStatement                          = StatementEx(
     "Set Syntax Statement",
-    [
-        # __with __syntax=1.0:
-        #     ...
-        #
-        RegexToken("__with", re.compile(r"(?P<value>__with)")),
-        RegexToken("__syntax", re.compile(r"(?P<value>__syntax)")),
-        RegexToken("<assign>", re.compile(r"(?P<value>=)")),
-        RegexToken("semantic version", _simple_semantic_version_regex),
-        RegexToken(":", re.compile(r"(?P<value>:)")),
-        NewlineToken(),
-        IndentToken(),
-        RepeatStatement(
-            StandardStatement(
-                [
-                    DynamicStatements.Statements,
-                ],
-            ),
-            1,
-            None,
-        ),
-        DedentToken(),
-    ],
+    RegexToken("__with", re.compile(r"(?P<value>__with)")),
+    RegexToken("__syntax", re.compile(r"(?P<value>__syntax)")),
+    RegexToken("<assign>", re.compile(r"(?P<value>=)")),
+    RegexToken("semantic version", _simple_semantic_version_regex),
+    RegexToken(":", re.compile(r"(?P<value>:)")),
+    NewlineToken(),
+    IndentToken(),
+    (DynamicStatements.Statements, 1, None),
+    DedentToken(),
 )
 
 def _GenerateSetSyntaxStatementContentFromResult(node):
@@ -98,7 +86,7 @@ def _GenerateSetSyntaxStatementContentFromResult(node):
 
     # Repeat Statement
     for child in node.Children[7].Children:
-        assert isinstance(child.Type, StandardStatement), child
+        assert isinstance(child.Type, StatementEx), child
         assert len(child.Children) == 1, child.Children
 
         child = child.Children[0]
@@ -113,11 +101,6 @@ SetSyntaxStatement.GenerateContentFromResult            = _GenerateSetSyntaxStat
 
 
 # ----------------------------------------------------------------------
-@read_only_properties(
-    "_observer",
-    "DefaultVersion",
-    "Syntaxes",
-)
 class Observer(MultifileParserObserver):
     """Processes syntax-related statements; all other statements are processed by the provided observer"""
 
@@ -174,8 +157,8 @@ class Observer(MultifileParserObserver):
     def OnIndent(
         self,
         fully_qualified_name: str,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        statement: StatementEx,
+        results: StatementEx.ParseResultItemsType,
     ) -> Optional[DynamicStatementInfo]:
         if statement == SetSyntaxStatement:
             assert len(results) >= 4, len(results)

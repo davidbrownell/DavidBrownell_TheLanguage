@@ -40,6 +40,9 @@ with InitRelativeImports():
     from ..Normalize import Normalize
     from ..Token import *
 
+
+# BugBug: Test ignore_whitespace
+
 # ----------------------------------------------------------------------
 class TestErrors(object):
     # ----------------------------------------------------------------------

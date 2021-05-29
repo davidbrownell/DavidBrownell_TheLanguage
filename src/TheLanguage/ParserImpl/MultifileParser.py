@@ -16,6 +16,7 @@
 """Contains functionality that parses multiple files"""
 
 import os
+import textwrap
 import threading
 import traceback
 
@@ -27,6 +28,7 @@ from dataclasses import dataclass, field
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
+from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -39,8 +41,7 @@ with InitRelativeImports():
     from .Error import Error
     from .Normalize import Normalize
     from .NormalizedIterator import NormalizedIterator
-    from .StandardStatement import StandardStatement
-    from .Statement import Statement
+    from .StatementEx import StatementEx
 
     from .StatementsParser import (
         DynamicStatementInfo,
@@ -64,11 +65,18 @@ class UnknownSourceError(Error):
 class _ParseResultBase(object):
     """Base class for parsed AST entities"""
 
-    Type: Union[Optional[Statement], Token]
+    Type: Union[Optional[StatementEx], Token]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         object.__setattr__(self, "Parent", None)
+
+    # ----------------------------------------------------------------------
+    def __str__(self) -> str:
+        if self.Type is None:
+            return "<None>"
+
+        return StatementEx.ItemTypeToString(self.Type)
 
 
 # ----------------------------------------------------------------------
@@ -81,6 +89,25 @@ class _Node(_ParseResultBase):
     def __post_init__(self):
         super(_Node, self).__post_init__()
         object.__setattr__(self, "Children", [])
+
+    # ----------------------------------------------------------------------
+    def __str__(self) -> str:
+        children = [str(child) for child in getattr(self, "Children", [])]
+        if not children:
+            children.append("<No children>")
+
+        return textwrap.dedent(
+            """\
+            {name}
+                {children}
+            """,
+        ).format(
+            name=super(_Node, self).__str__(),
+            children=StringHelpers.LeftJustify(
+                "\n".join(children),
+                4,
+            ).rstrip(),
+        )
 
 
 # ----------------------------------------------------------------------
@@ -98,7 +125,7 @@ class Node(_Node):
     # <Useless super delegation> pylint: disable=W0235
     def __init__(
         self,
-        statement: Statement,
+        statement: StatementEx,
     ):
         super(Node, self).__init__(statement)
 
@@ -112,6 +139,15 @@ class Leaf(_ParseResultBase):
     Value: Token.MatchType                  # Result of the call to Token.Match
     Iter: NormalizedIterator                # NormalizedIterator after the token has been consumed
     IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
+
+    # ----------------------------------------------------------------------
+    def __str__(self):
+        return "{} <<{}>> [{}, {}]".format(
+            super(Leaf, self).__str__(),
+            str(self.Value),
+            self.Iter.Line,
+            self.Iter.Column,
+        )
 
 
 # ----------------------------------------------------------------------
@@ -155,8 +191,8 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     def OnIndent(
         fully_qualified_name: str,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        statement: StatementEx,
+        results: StatementEx.ParseResultItemsType,
     ) -> Optional[DynamicStatementInfo]:
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -165,8 +201,8 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     def OnDedent(
         fully_qualified_name: str,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        statement: StatementEx,
+        results: StatementEx.ParseResultItemsType,
     ):
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -192,10 +228,15 @@ def Parse(
     fully_qualified_names: List[str],
     initial_statement_info: DynamicStatementInfo,
     observer: Observer,
+
+    # True to execute all statements within a single thread
+    single_threaded=False,
 ) -> Union[
     Dict[str, RootNode],
     List[Exception],
 ]:
+    single_threaded = True # BugBug
+
     # ----------------------------------------------------------------------
     @dataclass
     class SourceInfo(object):
@@ -258,6 +299,7 @@ def Parse(
                         initial_statement_info,
                         NormalizedIterator(Normalize(observer.LoadContent(fully_qualified_name))),
                         _StatementsObserver(fully_qualified_name, observer, Execute),
+                        single_threaded=single_threaded,
                     )
 
                     # The nodes have already been created, but we need to finalize the parent/child
@@ -296,19 +338,15 @@ def Parse(
     # ----------------------------------------------------------------------
     def UpdateRelationships(
         parent: Union[RootNode, Node],
-        results: Statement.ParseResultItemsType,
+        results: StatementEx.ParseResultItemsType,
     ):
         for result in results:
-            if not isinstance(result, Statement.StatementParseResultItem):
+            if not isinstance(result, StatementEx.StatementParseResultItem):
                 continue
 
             # The node attribute was set when the statement was completed
             node = getattr(result, "_node", None)
             if node is None:
-                # If here, we are likely looking at a dynamic-, or-, or repeat-statement.
-                # In any case, it's node hierarchy will have already been established.
-                assert not isinstance(result.Statement, StandardStatement), result
-
                 continue
 
             assert node is not None
@@ -325,12 +363,17 @@ def Parse(
 
     # ----------------------------------------------------------------------
 
-    observer.Enqueue(
-        [
-            cast(Callable[[], None], lambda fqn=fqn: Execute(fqn))
-            for fqn in fully_qualified_names
-        ],
-    )
+    if single_threaded:
+        for fqn in fully_qualified_names:
+            Execute(fqn)
+
+    else:
+        observer.Enqueue(
+            [
+                cast(Callable[[], None], lambda fqn=fqn: Execute(fqn))
+                for fqn in fully_qualified_names
+            ],
+        )
 
     is_complete.wait()
 
@@ -363,8 +406,8 @@ class _StatementsObserver(StatementsObserver):
     @Interface.override
     def OnIndent(
         self,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        statement: StatementEx,
+        results: StatementEx.ParseResultItemsType,
     ) -> Optional[DynamicStatementInfo]:
         return self._observer.OnIndent(self._fully_qualified_name, statement, results)
 
@@ -372,8 +415,8 @@ class _StatementsObserver(StatementsObserver):
     @Interface.override
     def OnDedent(
         self,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        statement: StatementEx,
+        results: StatementEx.ParseResultItemsType,
     ):
         return self._observer.OnDedent(self._fully_qualified_name, statement, results)
 
@@ -381,7 +424,7 @@ class _StatementsObserver(StatementsObserver):
     @Interface.override
     def OnStatementComplete(
         self,
-        result: Statement.StatementParseResultItem,
+        result: StatementEx.StatementParseResultItem,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Union[
@@ -389,7 +432,7 @@ class _StatementsObserver(StatementsObserver):
         DynamicStatementInfo,               # DynamicStatementInfo generated by the statement (if necessary)
     ]:
         node = _CreateNode(
-            cast(Statement, result.Statement),
+            cast(StatementEx, result.Statement),
             result.Results,
             parent=None,
         )
@@ -419,8 +462,8 @@ class _StatementsObserver(StatementsObserver):
 
 # ----------------------------------------------------------------------
 def _CreateNode(
-    statement: Statement,
-    parse_results: Statement.ParseResultItemsType,
+    statement: StatementEx,
+    parse_results: StatementEx.ParseResultItemsType,
     parent: Optional[Union[RootNode, Node]],
 ) -> Node:
     """Converts a parse result into a node"""
@@ -432,10 +475,10 @@ def _CreateNode(
         parent.Children.append(node)  # type: ignore
 
     for result in parse_results:
-        if isinstance(result, Statement.TokenParseResultItem):
+        if isinstance(result, StatementEx.TokenParseResultItem):
             _CreateLeaf(result, node)
-        elif isinstance(result, Statement.StatementParseResultItem):
-            _CreateNode(cast(Statement, result.Statement), result.Results, node)
+        elif isinstance(result, StatementEx.StatementParseResultItem):
+            _CreateNode(cast(StatementEx, result.Statement), result.Results, node)
         else:
             assert False, result
 
@@ -444,7 +487,7 @@ def _CreateNode(
 
 # ----------------------------------------------------------------------
 def _CreateLeaf(
-    result: Statement.TokenParseResultItem,
+    result: StatementEx.TokenParseResultItem,
     parent: Node,
 ) -> Leaf:
     """Converts a parse result item into a leaf"""

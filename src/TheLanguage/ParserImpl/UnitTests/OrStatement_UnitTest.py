@@ -68,7 +68,7 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_Properties(self):
-        assert self._or_statement.Items == [self._short_statement, self._long_statement]
+        assert self._or_statement.Statements == [self._short_statement, self._long_statement]
 
     # ----------------------------------------------------------------------
     def test_Match(self, execution_mock):

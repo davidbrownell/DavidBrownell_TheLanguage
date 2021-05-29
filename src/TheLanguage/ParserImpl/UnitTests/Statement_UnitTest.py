@@ -20,8 +20,6 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import Mock
 
-from rop import read_only_properties
-
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -39,8 +37,12 @@ with InitRelativeImports():
     from ..Token import *
 
 
+# BugBug: Test name
+#   Valid
+#   assertion
+# BugBug: Test ignore_whitespace
+
 # ----------------------------------------------------------------------
-@read_only_properties("Name")
 class MyStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(

@@ -17,8 +17,6 @@
 
 import os
 
-from rop import read_only_properties
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -32,11 +30,6 @@ with InitRelativeImports():
     from .Normalize import LineInfo, NormalizedContent
 
 # ----------------------------------------------------------------------
-@read_only_properties(
-    "Content",
-    "ContentLen",
-    "LineInfos",
-)
 class NormalizedIterator(object):
     """Object used to iterate through content generated via a call to `Normalize`"""
 
