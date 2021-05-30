@@ -35,15 +35,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Error import Error
     from .NormalizedIterator import NormalizedIterator
-    from .StatementEx import DynamicStatements, StatementEx
+    from .Statement import DynamicStatements, Statement
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class DynamicStatementInfo(object):
     """Contains statements that have dynamically been added to the active scope"""
 
-    statements: List[StatementEx]
-    expressions: List[StatementEx]
+    statements: List[Statement]
+    expressions: List[Statement]
     allow_parent_traversal: bool            = True      # If False, prevent content from including values from higher-level scope
 
     # ----------------------------------------------------------------------
@@ -75,8 +75,8 @@ class InvalidDynamicTraversalError(Error):
 class SyntaxInvalidError(Error):
     """Exception thrown when no matching statements were found"""
 
-    PotentialStatements: Dict[StatementEx, StatementEx.ParseResultItemsType]    = field(init=False)
-    parse_result_items: InitVar[StatementEx.ParseResultItemsType]
+    PotentialStatements: Dict[Statement, Statement.ParseResultItemsType]    = field(init=False)
+    parse_result_items: InitVar[Statement.ParseResultItemsType]
 
     MessageTemplate                         = Interface.DerivedProperty("The syntax is not recognized")
 
@@ -109,8 +109,8 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     def OnIndent(
-        statement: StatementEx,
-        results: StatementEx.ParseResultItemsType,
+        statement: Statement,
+        results: Statement.ParseResultItemsType,
     ) -> Optional[DynamicStatementInfo]:
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -118,8 +118,8 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     def OnDedent(
-        statement: StatementEx,
-        results: StatementEx.ParseResultItemsType,
+        statement: Statement,
+        results: Statement.ParseResultItemsType,
     ):
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -127,7 +127,7 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     def OnStatementComplete(
-        result: StatementEx.StatementParseResultItem,
+        result: Statement.StatementParseResultItem,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Union[
@@ -146,7 +146,7 @@ def Parse(
 
     # True to execute all statements within a single thread
     single_threaded=False,
-) -> Optional[List[StatementEx.StatementParseResultItem]]:
+) -> Optional[List[Statement.StatementParseResultItem]]:
     """Repeatedly matches statements for all of the iterator"""
 
     assert normalized_iter.Offset == 0, normalized_iter.Offset
@@ -155,7 +155,7 @@ def Parse(
     results = []
 
     while not normalized_iter.AtEnd():
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             statement_observer.GetDynamicStatements(DynamicStatements.Statements),
             normalized_iter,
             statement_observer,
@@ -188,7 +188,7 @@ def Parse(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 @dataclass
-class _StatementObserver(StatementEx.Observer):
+class _StatementObserver(Statement.Observer):
     init_statement_info: InitVar[DynamicStatementInfo]
 
     _observer: Observer
@@ -207,8 +207,8 @@ class _StatementObserver(StatementEx.Observer):
             [ (None, init_statement_info.Clone()) ],
         ]
 
-        self._cached_statements: List[StatementEx]      = []
-        self._cached_expressions: List[StatementEx]     = []
+        self._cached_statements: List[Statement]        = []
+        self._cached_expressions: List[Statement]       = []
 
         self._UpdateCache()
 
@@ -225,7 +225,7 @@ class _StatementObserver(StatementEx.Observer):
     def GetDynamicStatements(
         self,
         value: DynamicStatements,
-    ) -> List[StatementEx]:
+    ) -> List[Statement]:
         if value == DynamicStatements.Statements:
             return self._cached_statements
         elif value == DynamicStatements.Expressions:
@@ -262,7 +262,7 @@ class _StatementObserver(StatementEx.Observer):
     @Interface.override
     def OnInternalStatement(
         self,
-        result: StatementEx.StatementParseResultItem,
+        result: Statement.StatementParseResultItem,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> bool:

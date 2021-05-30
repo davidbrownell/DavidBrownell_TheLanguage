@@ -38,7 +38,7 @@ with InitRelativeImports():
     from ..StatementsParser import *
     from ..Normalize import Normalize
     from ..NormalizedIterator import NormalizedIterator
-    from ..StatementEx import StatementEx
+    from ..Statement import Statement
 
     from ..Token import (
         DedentToken,
@@ -102,9 +102,9 @@ class TestSimple(object):
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number", re.compile(r"(?P<value>[0-9]+)"))
 
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token, NewlineToken())
-    _lower_statement                        = StatementEx("Lower Statement", _lower_token, NewlineToken())
-    _number_statement                       = StatementEx("Number Statement", _number_token, NewlineToken())
+    _upper_statement                        = Statement("Upper Statement", _upper_token, NewlineToken())
+    _lower_statement                        = Statement("Lower Statement", _lower_token, NewlineToken())
+    _number_statement                       = Statement("Number Statement", _number_token, NewlineToken())
 
     _statements                             = DynamicStatementInfo(
         [_upper_statement, _lower_statement, _number_statement],
@@ -334,7 +334,7 @@ class TestSimple(object):
 # ----------------------------------------------------------------------
 class TestIndentation(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
-    _statement                              = StatementEx(
+    _statement                              = Statement(
         "Statement",
         _upper_token,
         NewlineToken(),
@@ -395,8 +395,8 @@ class TestNewStatements(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
 
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token)
-    _lower_statement                        = StatementEx("Lower Statement", _lower_token, NewlineToken())
+    _upper_statement                        = Statement("Upper Statement", _upper_token)
+    _lower_statement                        = Statement("Lower Statement", _lower_token, NewlineToken())
 
     _statements                             = DynamicStatementInfo([_upper_statement], [])
     _new_statements                         = DynamicStatementInfo([_lower_statement], [])
@@ -489,12 +489,12 @@ class TestNewScopedStatements(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
 
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token)
-    _lower_statement                        = StatementEx("Lower Statement", _lower_token)
+    _upper_statement                        = Statement("Upper Statement", _upper_token)
+    _lower_statement                        = Statement("Lower Statement", _lower_token)
 
-    _newline_statement                      = StatementEx("Newline Statement", NewlineToken())
-    _indent_statement                       = StatementEx("Indent Statement", IndentToken())
-    _dedent_statement                       = StatementEx("Dedent Statement", DedentToken())
+    _newline_statement                      = Statement("Newline Statement", NewlineToken())
+    _indent_statement                       = Statement("Indent Statement", IndentToken())
+    _dedent_statement                       = Statement("Dedent Statement", DedentToken())
 
     _statements                             = DynamicStatementInfo([_upper_statement, _newline_statement, _indent_statement, _dedent_statement], [])
     _new_statements                         = DynamicStatementInfo([_lower_statement], [])
@@ -665,10 +665,10 @@ class TestEmbeddedStatements(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
 
-    _upper_lower_statement                  = StatementEx("Upper Lower Statement", _upper_token, _lower_token, NewlineToken())
+    _upper_lower_statement                  = Statement("Upper Lower Statement", _upper_token, _lower_token, NewlineToken())
 
-    _uul_statement                          = StatementEx("uul", _upper_token, _upper_lower_statement)
-    _lul_statement                          = StatementEx("lul", _lower_token, _upper_lower_statement)
+    _uul_statement                          = Statement("uul", _upper_token, _upper_lower_statement)
+    _lul_statement                          = Statement("lul", _lower_token, _upper_lower_statement)
 
     _statements                             = DynamicStatementInfo([_uul_statement, _lul_statement], [])
 
@@ -731,8 +731,8 @@ class TestNoMatchError(object):
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number", re.compile(r"(?P<value>[0-9]+)"))
 
-    _upper_statement                        = StatementEx("Upper", _upper_token, _number_token)
-    _lower_statement                        = StatementEx("Lower", _upper_token, _lower_token)
+    _upper_statement                        = Statement("Upper", _upper_token, _number_token)
+    _lower_statement                        = Statement("Lower", _upper_token, _lower_token)
 
     _statements                             = DynamicStatementInfo([_upper_statement, _lower_statement], [])
 
@@ -789,9 +789,9 @@ class TestVariedLengthMatches(object):
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number", re.compile(r"(?P<value>[0-9]+)"))
 
-    _upper_statement                        = StatementEx("Upper", _upper_token, NewlineToken())
-    _lower_statement                        = StatementEx("Lower", _lower_token, _lower_token, NewlineToken())
-    _number_statement                       = StatementEx("Number", _number_token, _number_token, _number_token, NewlineToken())
+    _upper_statement                        = Statement("Upper", _upper_token, NewlineToken())
+    _lower_statement                        = Statement("Lower", _lower_token, _lower_token, NewlineToken())
+    _number_statement                       = Statement("Number", _number_token, _number_token, _number_token, NewlineToken())
 
     _statements                             = DynamicStatementInfo(
         [_upper_statement, _lower_statement, _number_statement],
@@ -858,7 +858,7 @@ def test_EmptyDynamicStatementInfo():
 
         results = Parse(
             DynamicStatementInfo(
-                [StatementEx("Newline", NewlineToken())],
+                [Statement("Newline", NewlineToken())],
                 [],
             ),
             NormalizedIterator(
@@ -888,10 +888,10 @@ class TestPreventParentTraversal(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
 
-    _upper_statement                        = StatementEx("Upper", _upper_token, NewlineToken())
-    _lower_statement                        = StatementEx("Lower", _lower_token, NewlineToken())
-    _indent_statement                       = StatementEx("Indent", IndentToken())
-    _dedent_statement                       = StatementEx("Dedent", DedentToken())
+    _upper_statement                        = Statement("Upper", _upper_token, NewlineToken())
+    _lower_statement                        = Statement("Lower", _lower_token, NewlineToken())
+    _indent_statement                       = Statement("Indent", IndentToken())
+    _dedent_statement                       = Statement("Dedent", DedentToken())
 
     _statements                             = DynamicStatementInfo(
         [_upper_statement, _indent_statement, _dedent_statement],
@@ -1022,13 +1022,13 @@ class TestPreventParentTraversal(object):
 def test_InvalidDynamicTraversalError():
     with CreateObserver() as observer:
         observer.mock.side_effect = [
-            DynamicStatementInfo([StatementEx("Newline", NewlineToken())], [], False),
+            DynamicStatementInfo([Statement("Newline", NewlineToken())], [], False),
         ]
 
         with pytest.raises(InvalidDynamicTraversalError) as ex:
             Parse(
                 DynamicStatementInfo(
-                    [StatementEx("Newline", NewlineToken())],
+                    [Statement("Newline", NewlineToken())],
                     [],
                 ),
                 NormalizedIterator(

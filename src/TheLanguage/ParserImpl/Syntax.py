@@ -36,7 +36,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Error import Error
     from .MultifileParser import Observer as MultifileParserObserver
-    from .StatementEx import DynamicStatements, StatementEx
+    from .Statement import DynamicStatements, Statement
     from .StatementsParser import DynamicStatementInfo
 
     from .Token import (
@@ -68,7 +68,7 @@ _simple_semantic_version_regex              = re.compile(r"(?P<major>0|[1-9]\d*)
 # __with_syntax=1.0:
 #     ...
 #
-SetSyntaxStatement                          = StatementEx(
+SetSyntaxStatement                          = Statement(
     "Set Syntax Statement",
     RegexToken("__with_syntax", re.compile(r"(?P<value>__with_syntax)")),
     RegexToken("=", re.compile(r"(?P<value>=)")),
@@ -76,7 +76,7 @@ SetSyntaxStatement                          = StatementEx(
     RegexToken(":", re.compile(r"(?P<value>:)")),
     NewlineToken(),
     IndentToken(),
-    (StatementEx("Dynamic Statement", DynamicStatements.Statements), 1, None),
+    (Statement("Dynamic Statement", DynamicStatements.Statements), 1, None),
     DedentToken(),
 )
 
@@ -138,8 +138,8 @@ class Observer(MultifileParserObserver):
     def OnIndent(
         self,
         fully_qualified_name: str,
-        statement: StatementEx,
-        results: StatementEx.ParseResultItemsType,
+        statement: Statement,
+        results: Statement.ParseResultItemsType,
     ) -> Optional[DynamicStatementInfo]:
         if statement == SetSyntaxStatement:
             assert len(results) >= 3, len(results)

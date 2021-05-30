@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  StatementEx_UnitTest.py
+# |  Statement_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-05-29 16:39:02
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for StatementEx.py"""
+"""Unit test for Statement.py"""
 
 import os
 import re
@@ -36,7 +36,7 @@ with InitRelativeImports():
     from ..Normalize import Normalize
     from ..NormalizedIterator import NormalizedIterator
 
-    from ..StatementEx import *
+    from ..Statement import *
 
     from ..Token import (
         NewlineToken,
@@ -58,7 +58,7 @@ def parse_mock():
 
 # ----------------------------------------------------------------------
 def test_Properties():
-    statement = StatementEx("My Statement", DynamicStatements.Statements, DynamicStatements.Expressions)
+    statement = Statement("My Statement", DynamicStatements.Statements, DynamicStatements.Expressions)
 
     assert statement.Name == "My Statement"
     assert statement.Items == [DynamicStatements.Statements, DynamicStatements.Expressions]
@@ -66,28 +66,28 @@ def test_Properties():
 # ----------------------------------------------------------------------
 def test_PropertyErrors():
     with pytest.raises(AssertionError):
-        StatementEx("", DynamicStatements.Statements)
+        Statement("", DynamicStatements.Statements)
 
     with pytest.raises(AssertionError):
-        StatementEx("My Statement")
+        Statement("My Statement")
 
 # ----------------------------------------------------------------------
 def test_InitErrors():
     with pytest.raises(AssertionError):
-        StatementEx("Statement", (StatementEx("Inner", DynamicStatements.Statements), -1, 10))
+        Statement("Statement", (Statement("Inner", DynamicStatements.Statements), -1, 10))
 
     with pytest.raises(AssertionError):
-        StatementEx("Statement", (StatementEx("Inner", DynamicStatements.Statements), 5, 1))
+        Statement("Statement", (Statement("Inner", DynamicStatements.Statements), 5, 1))
 
     with pytest.raises(AssertionError):
-        StatementEx(
+        Statement(
             "Statement",
             NewlineToken(),
             PushIgnoreWhitespaceControlToken(),
         )
 
     with pytest.raises(AssertionError):
-        StatementEx(
+        Statement(
             "Statement",
             PushIgnoreWhitespaceControlToken(),
             PopIgnoreWhitespaceControlToken(),
@@ -95,13 +95,13 @@ def test_InitErrors():
         )
 
     with pytest.raises(AssertionError):
-        StatementEx(
+        Statement(
             "Statement",
             PushIgnoreWhitespaceControlToken(),
         )
 
     with pytest.raises(AssertionError):
-        StatementEx(
+        Statement(
             "Statement",
             PopIgnoreWhitespaceControlToken(),
         )
@@ -109,7 +109,7 @@ def test_InitErrors():
 # ----------------------------------------------------------------------
 class TestParseSimple(object):
     _word_token                             = RegexToken("Word Token", re.compile(r"(?P<value>\S+)"))
-    _statement                              = StatementEx("Standard", _word_token, _word_token, NewlineToken())
+    _statement                              = Statement("Standard", _word_token, _word_token, NewlineToken())
 
     # ----------------------------------------------------------------------
     def test_SingleSpaceSep(self, parse_mock):
@@ -430,7 +430,7 @@ class TestParseSimple(object):
 class TestParseIndentAndDedent(object):
     _word_token                             = RegexToken("Word", re.compile(r"(?P<value>\S+)"))
 
-    _statement                              = StatementEx(
+    _statement                              = Statement(
         "Statement",
         _word_token,
         NewlineToken(),
@@ -527,7 +527,7 @@ class TestParseIndentAndDedent(object):
 def test_FinishEarly(parse_mock):
     word_token = RegexToken("Word", re.compile(r"(?P<value>\S+)"))
 
-    statement = StatementEx("Statement", word_token, NewlineToken(), word_token)
+    statement = Statement("Statement", word_token, NewlineToken(), word_token)
 
     iter = NormalizedIterator(Normalize("one"))
 
@@ -565,7 +565,7 @@ class TestIgnoreWhitespace(object):
     _lpar_token                             = RegexToken("lpar", re.compile(r"\("))
     _rpar_token                             = RegexToken("rpar", re.compile(r"\)"))
 
-    _statement                              = StatementEx(
+    _statement                              = Statement(
         "Statement",
         _word_token,
         _lpar_token,
@@ -652,7 +652,7 @@ def test_IgnoreControlTokens(parse_mock):
     control_token = MyControlToken()
     regex_token = RegexToken("test", re.compile("test"))
 
-    result = StatementEx(
+    result = Statement(
         "Statement",
         control_token,
         regex_token,
@@ -680,8 +680,8 @@ class TestEmbeddedStatements(object):
     _lpar_token                             = RegexToken("lpar", re.compile(r"(?P<value>\()"))
     _rpar_token                             = RegexToken("rpar", re.compile(r"(?P<value>\))"))
 
-    _inner_statement                        = StatementEx("inner", _word_token, _word_token)
-    _statement                              = StatementEx(
+    _inner_statement                        = Statement("inner", _word_token, _word_token)
+    _statement                              = Statement(
         "Statement",
         _lpar_token,
         _inner_statement,
@@ -790,10 +790,10 @@ class TestDynamicStatements(object):
     _word_token                             = RegexToken("Word Token", re.compile(r"(?P<value>\S+)"))
     _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>\d+)"))
 
-    _word_statement                         = StatementEx("Word Statement", _word_token, _word_token, NewlineToken())
-    _number_statement                       = StatementEx("Number Statement", _number_token, NewlineToken())
+    _word_statement                         = Statement("Word Statement", _word_token, _word_token, NewlineToken())
+    _number_statement                       = Statement("Number Statement", _number_token, NewlineToken())
 
-    _statement                              = StatementEx(
+    _statement                              = Statement(
         "Statement",
         DynamicStatements.Statements,
         DynamicStatements.Statements,
@@ -916,11 +916,11 @@ class TestDynamicStatements(object):
 class TestParseMultiple(object):
     # ----------------------------------------------------------------------
     def test_FirstMatch(self, parse_mock):
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
-                StatementEx("1", RegexToken("1t", re.compile("1234"))),
-                StatementEx("2", RegexToken("2t", re.compile("5678"))),
-                StatementEx("3", RegexToken("3t", re.compile("9"))),
+                Statement("1", RegexToken("1t", re.compile("1234"))),
+                Statement("2", RegexToken("2t", re.compile("5678"))),
+                Statement("3", RegexToken("3t", re.compile("9"))),
             ],
             NormalizedIterator(Normalize("1234")),
             parse_mock,
@@ -938,11 +938,11 @@ class TestParseMultiple(object):
 
     # ----------------------------------------------------------------------
     def test_SecondMatch(self, parse_mock):
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
-                StatementEx("1", RegexToken("1t", re.compile("1234"))),
-                StatementEx("2", RegexToken("2t", re.compile("123456"))),
-                StatementEx("3", RegexToken("3t", re.compile("9"))),
+                Statement("1", RegexToken("1t", re.compile("1234"))),
+                Statement("2", RegexToken("2t", re.compile("123456"))),
+                Statement("3", RegexToken("3t", re.compile("9"))),
             ],
             NormalizedIterator(Normalize("123456")),
             parse_mock,
@@ -960,11 +960,11 @@ class TestParseMultiple(object):
 
     # ----------------------------------------------------------------------
     def test_SecondMatchNoSort(self, parse_mock):
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
-                StatementEx("1", RegexToken("1t", re.compile("1234"))),
-                StatementEx("2", RegexToken("2t", re.compile("123456"))),
-                StatementEx("3", RegexToken("3t", re.compile("9"))),
+                Statement("1", RegexToken("1t", re.compile("1234"))),
+                Statement("2", RegexToken("2t", re.compile("123456"))),
+                Statement("3", RegexToken("3t", re.compile("9"))),
             ],
             NormalizedIterator(Normalize("123456")),
             parse_mock,
@@ -983,11 +983,11 @@ class TestParseMultiple(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, parse_mock):
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
-                StatementEx("1", RegexToken("1t", re.compile("1234"))),
-                StatementEx("2", RegexToken("2t", re.compile("123456"))),
-                StatementEx("3", RegexToken("3t", re.compile("9"))),
+                Statement("1", RegexToken("1t", re.compile("1234"))),
+                Statement("2", RegexToken("2t", re.compile("123456"))),
+                Statement("3", RegexToken("3t", re.compile("9"))),
             ],
             NormalizedIterator(Normalize("_____")),
             parse_mock,
@@ -1009,11 +1009,11 @@ class TestParseMultiple(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatchNoSort(self, parse_mock):
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
-                StatementEx("1", RegexToken("1t", re.compile("1234"))),
-                StatementEx("2", RegexToken("2t", re.compile("123456"))),
-                StatementEx("3", RegexToken("3t", re.compile("9"))),
+                Statement("1", RegexToken("1t", re.compile("1234"))),
+                Statement("2", RegexToken("2t", re.compile("123456"))),
+                Statement("3", RegexToken("3t", re.compile("9"))),
             ],
             NormalizedIterator(Normalize("_____")),
             parse_mock,
@@ -1036,11 +1036,11 @@ class TestParseMultiple(object):
 
     # ----------------------------------------------------------------------
     def test_Cancellation(self, parse_mock):
-        statement_mock = Mock(spec=StatementEx)
+        statement_mock = Mock(spec=Statement)
         statement_mock.Name = "Early Termination"
         statement_mock.Parse = Mock(return_value=None)
 
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
                 statement_mock,
             ],
@@ -1052,9 +1052,9 @@ class TestParseMultiple(object):
 
     # ----------------------------------------------------------------------
     def test_SingleStatementOptimization(self, parse_mock):
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
-                StatementEx(
+                Statement(
                     "Statement",
                     RegexToken("Token", re.compile("1234")),
                 ),
@@ -1075,11 +1075,11 @@ class TestParseMultiple(object):
 
     # ----------------------------------------------------------------------
     def test_SingleThreaded(self, parse_mock):
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
-                StatementEx("1", RegexToken("1t", re.compile("1234"))),
-                StatementEx("2", RegexToken("2t", re.compile("123456"))),
-                StatementEx("3", RegexToken("3t", re.compile("9"))),
+                Statement("1", RegexToken("1t", re.compile("1234"))),
+                Statement("2", RegexToken("2t", re.compile("123456"))),
+                Statement("3", RegexToken("3t", re.compile("9"))),
             ],
             NormalizedIterator(Normalize("123456")),
             parse_mock,
@@ -1098,11 +1098,11 @@ class TestParseMultiple(object):
 
     # ----------------------------------------------------------------------
     def test_IgnoreWhitespaceNoMatch(self, parse_mock):
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
-                StatementEx("1", RegexToken("1t", re.compile("1234"))),
-                StatementEx("2", RegexToken("2t", re.compile("123456"))),
-                StatementEx("3", RegexToken("3t", re.compile("9"))),
+                Statement("1", RegexToken("1t", re.compile("1234"))),
+                Statement("2", RegexToken("2t", re.compile("123456"))),
+                Statement("3", RegexToken("3t", re.compile("9"))),
             ],
             NormalizedIterator(Normalize("  123456\n")),
             parse_mock,
@@ -1124,11 +1124,11 @@ class TestParseMultiple(object):
 
     # ----------------------------------------------------------------------
     def test_IgnoreWhitespaceMatch(self, parse_mock):
-        result = StatementEx.ParseMultiple(
+        result = Statement.ParseMultiple(
             [
-                StatementEx("1", RegexToken("1t", re.compile("1234"))),
-                StatementEx("2", RegexToken("2t", re.compile("123456"))),
-                StatementEx("3", RegexToken("3t", re.compile("9"))),
+                Statement("1", RegexToken("1t", re.compile("1234"))),
+                Statement("2", RegexToken("2t", re.compile("123456"))),
+                Statement("3", RegexToken("3t", re.compile("9"))),
             ],
             NormalizedIterator(Normalize("  123456\n")),
             parse_mock,
@@ -1148,7 +1148,7 @@ class TestParseMultiple(object):
 
 # ----------------------------------------------------------------------
 def test_ParseResultStrNoResults():
-    assert str(StatementEx.ParseResult(True, [], NormalizedIterator(Normalize("1234")))) == textwrap.dedent(
+    assert str(Statement.ParseResult(True, [], NormalizedIterator(Normalize("1234")))) == textwrap.dedent(
         """\
         True
         0
@@ -1160,9 +1160,9 @@ def test_ParseResultStrNoResults():
 def test_OnInternalStatementTermination(parse_mock):
     parse_mock.OnInternalStatement = Mock(return_value=False)
 
-    result = StatementEx(
+    result = Statement(
         "Statement",
-        StatementEx("Inner", NewlineToken()),
+        Statement("Inner", NewlineToken()),
     ).Parse(
         NormalizedIterator(Normalize("\n\n\n")),
         parse_mock,
@@ -1176,11 +1176,11 @@ class TestRepeat(object):
     _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>\d+)"))
     _upper_token                            = RegexToken("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
 
-    _word_statement                         = StatementEx("Word Statement", _word_token, NewlineToken())
-    _number_statement                       = StatementEx("Number Statement", _number_token, NewlineToken())
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token, NewlineToken())
+    _word_statement                         = Statement("Word Statement", _word_token, NewlineToken())
+    _number_statement                       = Statement("Number Statement", _number_token, NewlineToken())
+    _upper_statement                        = Statement("Upper Statement", _upper_token, NewlineToken())
 
-    _statement                              = StatementEx(
+    _statement                              = Statement(
         "Statement",
         (_word_statement, 0, None),
         (_number_statement, 1, None),
@@ -1501,11 +1501,11 @@ class TestOr(object):
     _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>\d+)"))
     _upper_token                            = RegexToken("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
 
-    _word_statement                         = StatementEx("Word Statement", _word_token, NewlineToken())
-    _number_statement                       = StatementEx("Number Statement", _number_token, NewlineToken())
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token, NewlineToken())
+    _word_statement                         = Statement("Word Statement", _word_token, NewlineToken())
+    _number_statement                       = Statement("Number Statement", _number_token, NewlineToken())
+    _upper_statement                        = Statement("Upper Statement", _upper_token, NewlineToken())
 
-    _statement                              = StatementEx(
+    _statement                              = Statement(
         "Statement",
         [_word_statement, _number_statement, _upper_statement],
     )

@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..MultifileParser import Parse
-    from ..StatementEx import StatementEx
+    from ..Statement import Statement
     from ..StatementsParser import DynamicStatementInfo
     from ..Syntax import *
 
@@ -47,9 +47,9 @@ class TestStandard(object):
     _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
 
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token, NewlineToken())
-    _lower_statement                        = StatementEx("Lower Statement", _lower_token, NewlineToken())
-    _number_statement                       = StatementEx("Number Statement", _number_token, NewlineToken())
+    _upper_statement                        = Statement("Upper Statement", _upper_token, NewlineToken())
+    _lower_statement                        = Statement("Lower Statement", _lower_token, NewlineToken())
+    _number_statement                       = Statement("Number Statement", _number_token, NewlineToken())
 
     _syntaxes                               = {
         SemVer("1.0.0") : DynamicStatementInfo([_upper_statement, _lower_statement], []),

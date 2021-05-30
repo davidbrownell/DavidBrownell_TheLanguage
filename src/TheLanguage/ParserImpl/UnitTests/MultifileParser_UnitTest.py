@@ -40,7 +40,7 @@ with InitRelativeImports():
     from ..MultifileParser import *
     from ..Normalize import Normalize
     from ..NormalizedIterator import NormalizedIterator
-    from ..StatementEx import DynamicStatements, StatementEx
+    from ..Statement import DynamicStatements, Statement
     from ..StatementsParser import SyntaxInvalidError
 
     from ..Token import (
@@ -83,12 +83,12 @@ class TestStandard(object):
     _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
 
-    _include_statement                      = StatementEx("Include", _include_token, _lower_token, NewlineToken())
-    _upper_statement                        = StatementEx("Upper", _upper_token, NewlineToken())
-    _lower_statement                        = StatementEx("Lower", _lower_token, NewlineToken())
-    _number_statement                       = StatementEx("Number", _number_token, NewlineToken())
+    _include_statement                      = Statement("Include", _include_token, _lower_token, NewlineToken())
+    _upper_statement                        = Statement("Upper", _upper_token, NewlineToken())
+    _lower_statement                        = Statement("Lower", _lower_token, NewlineToken())
+    _number_statement                       = Statement("Number", _number_token, NewlineToken())
 
-    _new_scope_statement                    = StatementEx(
+    _new_scope_statement                    = Statement(
         "New Scope",
         _upper_token,
         RegexToken("Colon Token", re.compile(r":")),
@@ -99,7 +99,7 @@ class TestStandard(object):
         DedentToken(),
     )
 
-    _dynamic_number_statement               = StatementEx("Dynamic Number", _number_token, _number_token, _number_token, NewlineToken())
+    _dynamic_number_statement               = Statement("Dynamic Number", _number_token, _number_token, _number_token, NewlineToken())
 
     _statements                             = DynamicStatementInfo(
         [_include_statement, _upper_statement, _lower_statement, _number_statement, _new_scope_statement],
@@ -168,8 +168,8 @@ class TestStandard(object):
                 @Interface.override
                 def OnIndent(
                     fully_qualified_name: str,
-                    statement: StatementEx,
-                    results: StatementEx.ParseResultItemsType,
+                    statement: Statement,
+                    results: Statement.ParseResultItemsType,
                 ):
                     pass
 
@@ -178,8 +178,8 @@ class TestStandard(object):
                 @Interface.override
                 def OnDedent(
                     fully_qualified_name: str,
-                    statement: StatementEx,
-                    results: StatementEx.ParseResultItemsType,
+                    statement: Statement,
+                    results: Statement.ParseResultItemsType,
                 ):
                     pass
 
@@ -814,7 +814,7 @@ class TestStandard(object):
 
 # ----------------------------------------------------------------------
 def test_NodeStrNoChildren():
-    node = Node(StatementEx("Statement", NewlineToken()))
+    node = Node(Statement("Statement", NewlineToken()))
 
     assert str(node) == textwrap.dedent(
         """\

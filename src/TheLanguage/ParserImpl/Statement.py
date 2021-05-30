@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  StatementEx.py
+# |  Statement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-05-27 22:06:35
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the StatementEx object"""
+"""Contains the Statement object"""
 
 import os
 import textwrap
@@ -69,7 +69,7 @@ class DynamicStatements(Enum):
 
 
 # ----------------------------------------------------------------------
-class StatementEx(object):
+class Statement(object):
     """Statement made of of Tokens, nested Statements, requests for Dynamic Statements, etc."""
 
     # ----------------------------------------------------------------------
@@ -79,7 +79,7 @@ class StatementEx(object):
     # ----------------------------------------------------------------------
     ItemType                                = Union[
         TokenClass,
-        "StatementEx",
+        "Statement",
         DynamicStatements,
         List["ItemType"],                   # Or
         Tuple["ItemType", int, int],        # Repeat: (Type, Min, Max)
@@ -103,7 +103,7 @@ class StatementEx(object):
         @Interface.abstractmethod
         def GetDynamicStatements(
             value: DynamicStatements,
-        ) -> List["StatementEx"]:
+        ) -> List["Statement"]:
             """Returns all currently available dynamic statements based on the current scope"""
             raise Exception("Abstract method")  # pragma: no cover
 
@@ -111,8 +111,8 @@ class StatementEx(object):
         @staticmethod
         @Interface.abstractmethod
         def OnIndent(
-            statement: "StatementEx",
-            results: "StatementEx.ParseResultItemsType",
+            statement: "Statement",
+            results: "Statement.ParseResultItemsType",
         ):
             raise Exception("Abstract method")  # pragma: no cover
 
@@ -120,8 +120,8 @@ class StatementEx(object):
         @staticmethod
         @Interface.abstractmethod
         def OnDedent(
-            statement: "StatementEx",
-            results: "StatementEx.ParseResultItemsType",
+            statement: "Statement",
+            results: "Statement.ParseResultItemsType",
         ):
             raise Exception("Abstract method")  # pragma: no cover
 
@@ -129,7 +129,7 @@ class StatementEx(object):
         @staticmethod
         @Interface.abstractmethod
         def OnInternalStatement(
-            result: "StatementEx.StatementParseResultItem",
+            result: "Statement.StatementParseResultItem",
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
         ) -> bool:                          # True to continue, False to terminate
@@ -142,8 +142,8 @@ class StatementEx(object):
     # |
     # ----------------------------------------------------------------------
     ParseResultItemType                     = Union[
-        "StatementEx.TokenParseResultItem",
-        "StatementEx.StatementParseResultItem",
+        "Statement.TokenParseResultItem",
+        "Statement.StatementParseResultItem",
     ]
 
     ParseResultItemsType                    = List[ParseResultItemType]
@@ -161,7 +161,7 @@ class StatementEx(object):
         # ----------------------------------------------------------------------
         def __str__(self) -> str:
             return "{typ} <<{value}>> ws:{ws}{ignored} [{line}, {column}]".format(
-                typ=StatementEx.ItemTypeToString(self.Token),
+                typ=Statement.ItemTypeToString(self.Token),
                 value=str(self.Value),
                 ws="None" if self.Whitespace is None else "({}, {})".format(self.Whitespace[0], self.Whitespace[1]),
                 ignored=" !Ignored!" if self.IsIgnored else "",
@@ -173,8 +173,8 @@ class StatementEx(object):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class StatementParseResultItem(object):
-        Statement: Union["StatementEx", DynamicStatements]
-        Results: "StatementEx.ParseResultItemsType"
+        Statement: Union["Statement", DynamicStatements]
+        Results: "Statement.ParseResultItemsType"
 
         # ----------------------------------------------------------------------
         def __str__(self) -> str:
@@ -188,7 +188,7 @@ class StatementEx(object):
                     {results}
                 """,
             ).format(
-                name=StatementEx.ItemTypeToString(self.Statement),
+                name=Statement.ItemTypeToString(self.Statement),
                 results=StringHelpers.LeftJustify(
                     "\n".join(results),
                     4,
@@ -199,7 +199,7 @@ class StatementEx(object):
     @dataclass(frozen=True)
     class ParseResult(object):
         Success: bool
-        Results: "StatementEx.ParseResultItemsType"
+        Results: "Statement.ParseResultItemsType"
         Iter: NormalizedIterator
 
         # ----------------------------------------------------------------------
@@ -284,7 +284,7 @@ class StatementEx(object):
     def Parse(
         self,
         normalized_iter: NormalizedIterator,
-        observer: "StatementEx.Observer",
+        observer: "Statement.Observer",
 
         # True to ignore whitespace tokens (the results will still be returned,
         # they will not participate in statement matching)
@@ -292,7 +292,7 @@ class StatementEx(object):
 
         # True to execute all statements within a single thread
         single_threaded=False,
-    ) -> Optional["StatementEx.ParseResult"]:
+    ) -> Optional["Statement.ParseResult"]:
         """Parses the provided content"""
 
         parser = self._Parser(
@@ -326,9 +326,9 @@ class StatementEx(object):
     @classmethod
     def ParseMultiple(
         cls,
-        statements: List["StatementEx"],
+        statements: List["Statement"],
         normalized_iter: NormalizedIterator,
-        observer: "StatementEx.Observer",
+        observer: "Statement.Observer",
         ignore_whitespace=False,
 
         # True to ensure that results are sorted to find the best possible match
@@ -338,14 +338,14 @@ class StatementEx(object):
 
         # True to execute all statements within a single thread
         single_threaded=False,
-    ) -> Optional["StatementEx.ParseResult"]:
+    ) -> Optional["Statement.ParseResult"]:
         """Simultaneously applies multiple statements at the provided location"""
 
         use_futures = not single_threaded and len(statements) != 1
 
         # ----------------------------------------------------------------------
         def Impl(statement):
-            parser = StatementEx._Parser(
+            parser = Statement._Parser(
                 statement,
                 normalized_iter.Clone(),
                 observer,
@@ -357,7 +357,7 @@ class StatementEx(object):
             if success is None:
                 return None
 
-            return StatementEx.ParseResult(success, parser.results, parser.normalized_iter)
+            return Statement.ParseResult(success, parser.results, parser.normalized_iter)
 
         # ----------------------------------------------------------------------
 
@@ -422,10 +422,10 @@ class StatementEx(object):
                 result = results[0]
 
         if result.Success:
-            return StatementEx.ParseResult(
+            return Statement.ParseResult(
                 True,
                 [
-                    StatementEx.StatementParseResultItem(
+                    Statement.StatementParseResultItem(
                         statements,
                         result.Results,
                     ),
@@ -433,7 +433,7 @@ class StatementEx(object):
                 result.Iter,
             )
 
-        return_results: StatementEx.ParseResultItemsType = []
+        return_results: Statement.ParseResultItemsType = []
         max_iter: Optional[NormalizedIterator] = None
 
         for result in results:
@@ -442,10 +442,10 @@ class StatementEx(object):
             if max_iter is None or result.Iter.Offset > max_iter.Offset:
                 max_iter = result.Iter
 
-        return StatementEx.ParseResult(
+        return Statement.ParseResult(
             False,
             [
-                StatementEx.StatementParseResultItem(
+                Statement.StatementParseResultItem(
                     statements,
                     return_results,
                 ),
@@ -457,7 +457,7 @@ class StatementEx(object):
     @classmethod
     def ItemTypeToString(
         cls,
-        item: "StatementEx.ItemType",
+        item: "Statement.ItemType",
     ) -> str:
         if isinstance(item, TokenClass):
             return item.Name
@@ -490,9 +490,9 @@ class StatementEx(object):
         # ----------------------------------------------------------------------
         def __init__(
             self,
-            statement: "StatementEx",
+            statement: "Statement",
             normalized_iter: NormalizedIterator,
-            observer: "StatementEx.Observer",
+            observer: "Statement.Observer",
             ignore_whitespace: bool,
             single_threaded: bool,
         ):
@@ -507,7 +507,7 @@ class StatementEx(object):
         # ----------------------------------------------------------------------
         def ParseItem(
             self,
-            item: "StatementEx.ItemType",
+            item: "Statement.ItemType",
         ) -> Optional[bool]:
             """Parses an individual item"""
 
@@ -551,7 +551,7 @@ class StatementEx(object):
                         assert not potential_whitespace
 
                         self.results += [
-                            StatementEx.TokenParseResultItem(
+                            Statement.TokenParseResultItem(
                                 item,
                                 potential_whitespace,
                                 res,
@@ -562,7 +562,7 @@ class StatementEx(object):
                         ]
                     else:
                         self.results.append(
-                            StatementEx.TokenParseResultItem(
+                            Statement.TokenParseResultItem(
                                 item,
                                 potential_whitespace,
                                 result,
@@ -579,7 +579,7 @@ class StatementEx(object):
             statement_parse_result_item = None
 
             if isinstance(item, DynamicStatements):
-                result = StatementEx.ParseMultiple(
+                result = Statement.ParseMultiple(
                     self._observer.GetDynamicStatements(item),
                     self.normalized_iter,
                     self._observer,
@@ -587,7 +587,7 @@ class StatementEx(object):
                     single_threaded=self._single_threaded,
                 )
 
-            elif isinstance(item, StatementEx):
+            elif isinstance(item, Statement):
                 result = item.Parse(
                     self.normalized_iter,
                     self._observer,
@@ -599,7 +599,7 @@ class StatementEx(object):
                     result is not None
                     and result.Success
                     and not self._observer.OnInternalStatement(
-                        StatementEx.StatementParseResultItem(
+                        Statement.StatementParseResultItem(
                             item,
                             result.Results,
                         ),
@@ -635,7 +635,7 @@ class StatementEx(object):
                             return None
 
             elif isinstance(item, list):
-                result = StatementEx.ParseMultiple(
+                result = Statement.ParseMultiple(
                     item,
                     self.normalized_iter,
                     self._observer,
@@ -645,7 +645,7 @@ class StatementEx(object):
                 )
 
                 statement_parse_result_item = result.Results[0]
-                assert isinstance(statement_parse_result_item, StatementEx.StatementParseResultItem)
+                assert isinstance(statement_parse_result_item, Statement.StatementParseResultItem)
 
                 if (
                     result is not None
@@ -667,7 +667,7 @@ class StatementEx(object):
                 return None
 
             if statement_parse_result_item is None:
-                statement_parse_result_item = StatementEx.StatementParseResultItem(
+                statement_parse_result_item = Statement.StatementParseResultItem(
                     item,
                     result.Results,
                 )
@@ -689,7 +689,7 @@ class StatementEx(object):
         def _EatWhitespaceToken(
             cls,
             normalized_iter: NormalizedIterator,
-        ) -> Optional[List["StatementEx.TokenParseResultItem"]]:
+        ) -> Optional[List["Statement.TokenParseResultItem"]]:
             """Eats any whitespace token when requested"""
 
             normalized_iter = normalized_iter.Clone()
@@ -699,7 +699,7 @@ class StatementEx(object):
                 assert not isinstance(result, list), result
 
                 return [
-                    StatementEx.TokenParseResultItem(
+                    Statement.TokenParseResultItem(
                         cls._indent_token,
                         None,
                         result,
@@ -713,7 +713,7 @@ class StatementEx(object):
                 assert isinstance(result, list), result
 
                 return [
-                    StatementEx.TokenParseResultItem(
+                    Statement.TokenParseResultItem(
                         cls._dedent_token,
                         None,
                         res,
@@ -732,7 +732,7 @@ class StatementEx(object):
                 assert not isinstance(result, list), result
 
                 return [
-                    StatementEx.TokenParseResultItem(
+                    Statement.TokenParseResultItem(
                         cls._newline_token,
                         potential_whitespace,
                         result,
@@ -775,20 +775,20 @@ class StatementEx(object):
         # ----------------------------------------------------------------------
         @staticmethod
         def _ParseRepeat(
-            statement: "StatementEx",
+            statement: "Statement",
             normalized_iter: NormalizedIterator,
-            observer: "StatementEx.Observer",
+            observer: "Statement.Observer",
             min_matches: int,
             max_matches: int,
             ignore_whitespace=False,
             single_threaded=False,
-        ) -> Optional["StatementEx.ParseResult"]:
+        ) -> Optional["Statement.ParseResult"]:
             """Matches N times"""
 
             assert min_matches >= 0, min_matches
             assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
 
-            results: List[StatementEx.StatementParseResultItem] = []
+            results: List[Statement.StatementParseResultItem] = []
 
             while True:
                 result = statement.Parse(
@@ -801,7 +801,7 @@ class StatementEx(object):
                     break
 
                 results.append(
-                    StatementEx.StatementParseResultItem(statement, result.Results),
+                    Statement.StatementParseResultItem(statement, result.Results),
                 )
 
                 normalized_iter = result.Iter.Clone()
@@ -820,8 +820,8 @@ class StatementEx(object):
                     )
                 )
 
-            return StatementEx.ParseResult(
+            return Statement.ParseResult(
                 success,
-                cast(StatementEx.ParseResultItemsType, results),
+                cast(Statement.ParseResultItemsType, results),
                 normalized_iter,
             )

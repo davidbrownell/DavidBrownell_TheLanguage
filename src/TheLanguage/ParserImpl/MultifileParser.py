@@ -41,7 +41,7 @@ with InitRelativeImports():
     from .Error import Error
     from .Normalize import Normalize
     from .NormalizedIterator import NormalizedIterator
-    from .StatementEx import StatementEx
+    from .Statement import Statement
 
     from .StatementsParser import (
         DynamicStatementInfo,
@@ -65,7 +65,7 @@ class UnknownSourceError(Error):
 class _ParseResultBase(object):
     """Base class for parsed AST entities"""
 
-    Type: Union[Optional[StatementEx], Token]
+    Type: Union[Optional[Statement], Token]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -76,7 +76,7 @@ class _ParseResultBase(object):
         if self.Type is None:
             return "<Root>" if isinstance(self, RootNode) else "<None>"
 
-        return StatementEx.ItemTypeToString(self.Type)
+        return Statement.ItemTypeToString(self.Type)
 
 
 # ----------------------------------------------------------------------
@@ -125,7 +125,7 @@ class Node(_Node):
     # <Useless super delegation> pylint: disable=W0235
     def __init__(
         self,
-        statement: StatementEx,
+        statement: Statement,
     ):
         super(Node, self).__init__(statement)
 
@@ -191,8 +191,8 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     def OnIndent(
         fully_qualified_name: str,
-        statement: StatementEx,
-        results: StatementEx.ParseResultItemsType,
+        statement: Statement,
+        results: Statement.ParseResultItemsType,
     ) -> Optional[DynamicStatementInfo]:
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -201,8 +201,8 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     def OnDedent(
         fully_qualified_name: str,
-        statement: StatementEx,
-        results: StatementEx.ParseResultItemsType,
+        statement: Statement,
+        results: Statement.ParseResultItemsType,
     ):
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -377,8 +377,8 @@ class _StatementsObserver(StatementsObserver):
     @Interface.override
     def OnIndent(
         self,
-        statement: StatementEx,
-        results: StatementEx.ParseResultItemsType,
+        statement: Statement,
+        results: Statement.ParseResultItemsType,
     ) -> Optional[DynamicStatementInfo]:
         return self._observer.OnIndent(self._fully_qualified_name, statement, results)
 
@@ -386,8 +386,8 @@ class _StatementsObserver(StatementsObserver):
     @Interface.override
     def OnDedent(
         self,
-        statement: StatementEx,
-        results: StatementEx.ParseResultItemsType,
+        statement: Statement,
+        results: Statement.ParseResultItemsType,
     ):
         return self._observer.OnDedent(self._fully_qualified_name, statement, results)
 
@@ -395,7 +395,7 @@ class _StatementsObserver(StatementsObserver):
     @Interface.override
     def OnStatementComplete(
         self,
-        result: StatementEx.StatementParseResultItem,
+        result: Statement.StatementParseResultItem,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Union[
@@ -405,7 +405,7 @@ class _StatementsObserver(StatementsObserver):
         this_result = self._observer.OnStatementComplete(
             self._fully_qualified_name,
             _CreateNode(
-                cast(StatementEx, result.Statement),
+                cast(Statement, result.Statement),
                 result.Results,
                 parent=None,
             ),
@@ -428,8 +428,8 @@ class _StatementsObserver(StatementsObserver):
 
 # ----------------------------------------------------------------------
 def _CreateNode(
-    statement: StatementEx,
-    parse_results: StatementEx.ParseResultItemsType,
+    statement: Statement,
+    parse_results: Statement.ParseResultItemsType,
     parent: Optional[Union[RootNode, Node]],
 ) -> Node:
     """Converts a parse result into a node"""
@@ -441,10 +441,10 @@ def _CreateNode(
         parent.Children.append(node)  # type: ignore
 
     for result in parse_results:
-        if isinstance(result, StatementEx.TokenParseResultItem):
+        if isinstance(result, Statement.TokenParseResultItem):
             _CreateLeaf(result, node)
-        elif isinstance(result, StatementEx.StatementParseResultItem):
-            _CreateNode(cast(StatementEx, result.Statement), result.Results, node)
+        elif isinstance(result, Statement.StatementParseResultItem):
+            _CreateNode(cast(Statement, result.Statement), result.Results, node)
         else:
             assert False, result  # pragma: no cover
 
@@ -453,7 +453,7 @@ def _CreateNode(
 
 # ----------------------------------------------------------------------
 def _CreateLeaf(
-    result: StatementEx.TokenParseResultItem,
+    result: Statement.TokenParseResultItem,
     parent: Node,
 ) -> Leaf:
     """Converts a parse result item into a leaf"""
