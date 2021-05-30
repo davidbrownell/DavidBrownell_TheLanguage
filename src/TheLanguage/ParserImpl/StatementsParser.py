@@ -19,7 +19,7 @@ import os
 
 from collections import OrderedDict
 from concurrent.futures import Future
-from typing import cast, Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
@@ -36,7 +36,6 @@ with InitRelativeImports():
     from .Error import Error
     from .NormalizedIterator import NormalizedIterator
     from .Statement import DynamicStatements, Statement
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -86,7 +85,11 @@ class SyntaxInvalidError(Error):
         potentials = OrderedDict()
 
         for parse_result_item in parse_result_items:
-            potentials[parse_result_item.Statement] = parse_result_item.Results
+            key = parse_result_item.Statement
+            if isinstance(key, list):
+                key = tuple(key)
+
+            potentials[key] = parse_result_item.Results
 
         object.__setattr__(self, "PotentialStatements", potentials)
 
@@ -140,6 +143,9 @@ def Parse(
     initial_statement_info: DynamicStatementInfo,
     normalized_iter: NormalizedIterator,
     observer: Observer,
+
+    # True to execute all statements within a single thread
+    single_threaded=False,
 ) -> Optional[List[Statement.StatementParseResultItem]]:
     """Repeatedly matches statements for all of the iterator"""
 
@@ -153,7 +159,11 @@ def Parse(
             statement_observer.GetDynamicStatements(DynamicStatements.Statements),
             normalized_iter,
             statement_observer,
+            single_threaded=single_threaded,
         )
+
+        if result is None:
+            return None
 
         if not result.Success:
             raise SyntaxInvalidError(
@@ -162,20 +172,12 @@ def Parse(
                 result.Results,
             )
 
-        prev_iter = normalized_iter
         normalized_iter = result.Iter
 
         assert len(result.Results) == 1, result.Results
         result = result.Results[0]
 
         results.append(result)
-
-        if not statement_observer.OnInternalStatement(
-            cast(Statement.StatementParseResultItem, result),
-            prev_iter,
-            normalized_iter,
-        ):
-            return None
 
     assert normalized_iter.AtEnd()
 
@@ -223,7 +225,7 @@ class _StatementObserver(Statement.Observer):
     def GetDynamicStatements(
         self,
         value: DynamicStatements,
-    ) -> List["Statement"]:
+    ) -> List[Statement]:
         if value == DynamicStatements.Statements:
             return self._cached_statements
         elif value == DynamicStatements.Expressions:
@@ -231,7 +233,8 @@ class _StatementObserver(Statement.Observer):
         else:
             assert False, value  # pragma: no cover
 
-        return []
+        # Make the linter happy
+        return []  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @Interface.override
