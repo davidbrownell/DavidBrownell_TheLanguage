@@ -16,6 +16,7 @@
 """Contains the StatementEx object"""
 
 import os
+import textwrap
 
 from concurrent.futures import Future
 from enum import auto, Enum
@@ -159,7 +160,14 @@ class StatementEx(object):
 
         # ----------------------------------------------------------------------
         def __str__(self) -> str:
-            return self.Token.Name
+            return "{} <<{}>> ws:{} [{}, {}]".format(
+                StatementEx.ItemTypeToString(self.Token),
+                str(self.Value),
+                "None" if self.Whitespace is None else "({}, {})".format(self.Whitespace[0], self.Whitespace[1]),
+                self.Iter.Line,
+                self.Iter.Column,
+            )
+
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -169,13 +177,7 @@ class StatementEx(object):
 
         # ----------------------------------------------------------------------
         def __str__(self) -> str:
-            # BugBug
-            import sys
-            StatementEx = sys.modules["TheLanguage.ParserImpl.StatementEx"]
-            StatementEx = getattr(StatementEx, "StatementEx")
-            # BugBug: End
-
-            results = [str(result) for result in self.Results]
+            results = [str(result).rstrip() for result in self.Results]
             if not results:
                 results.append("<No results>")
 
@@ -201,7 +203,7 @@ class StatementEx(object):
 
         # ----------------------------------------------------------------------
         def __str__(self) -> str:
-            results = [str(result) for result in self.Results]
+            results = [str(result).rstrip() for result in self.Results]
             if not results:
                 results.append("<No results>")
 
@@ -217,7 +219,7 @@ class StatementEx(object):
                 results=StringHelpers.LeftJustify(
                     "\n".join(results),
                     4,
-                ).rstrip(),
+                ),
             )
 
     # ----------------------------------------------------------------------
@@ -275,7 +277,7 @@ class StatementEx(object):
         assert not control_token_check
 
         self.Name                           = name
-        self.Items                          = items
+        self.Items                          = list(items)
 
     # ----------------------------------------------------------------------
     def Parse(
@@ -304,7 +306,7 @@ class StatementEx(object):
         success = True
 
         while item_index < len(self.Items):
-            if normalized_iter.AtEnd():
+            if parser.normalized_iter.AtEnd():
                 success = False
                 break
 
@@ -336,26 +338,7 @@ class StatementEx(object):
         """Simultaneously applies multiple statements at the provided location"""
 
         if len(statements) == 1:
-            result = statements[0].Parse(
-                normalized_iter.Clone(),
-                observer,
-                ignore_whitespace=ignore_whitespace,
-                single_threaded=single_threaded,
-            )
-
-            if result is None:
-                return None
-
-            return StatementEx.ParseResult(
-                result.Success,
-                [
-                    StatementEx.StatementParseResultItem(
-                        statements[0],
-                        result.Results,
-                    ),
-                ],
-                result.Iter,
-            )
+            single_threaded = True
 
         # ----------------------------------------------------------------------
         def Impl(statement):
@@ -384,14 +367,7 @@ class StatementEx(object):
                 ],
             )
 
-            results = []
-
-            for future in futures:
-                result = future.result()
-                if result is None:
-                    return None
-
-                results.append(result)
+            results = [future.result() for future in futures]
 
         if sort_results:
             # Stable sort according to the criteria:
@@ -417,10 +393,9 @@ class StatementEx(object):
         else:
             result = None
 
-            for potential_result_index, potential_result in enumerate(results):
+            for potential_result in results:
                 if potential_result.Success:
                     result = potential_result
-                    statement = statements[potential_result_index]
 
                     break
 
@@ -448,7 +423,16 @@ class StatementEx(object):
             if max_iter is None or result.Iter.Offset > max_iter.Offset:
                 max_iter = result.Iter
 
-        return StatementEx.ParseResult(False, return_results, cast(NormalizedIterator, max_iter))
+        return StatementEx.ParseResult(
+            False,
+            [
+                StatementEx.StatementParseResultItem(
+                    statements,
+                    return_results,
+                ),
+            ],
+            cast(NormalizedIterator, max_iter),
+        )
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -474,6 +458,9 @@ class StatementEx(object):
             )
         else:
             assert False, item  # pragma: no cover
+
+        # Make the linter happy
+        return ""  # pragma: no cover
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -572,7 +559,16 @@ class StatementEx(object):
             # Statements
             statement_parse_result_item = None
 
-            if isinstance(item, StatementEx):
+            if isinstance(item, DynamicStatements):
+                result = StatementEx.ParseMultiple(
+                    self._observer.GetDynamicStatements(item),
+                    self.normalized_iter,
+                    self._observer,
+                    ignore_whitespace=self._ignore_whitespace_ctr != 0,
+                    single_threaded=self._single_threaded,
+                )
+
+            elif isinstance(item, StatementEx):
                 result = item.Parse(
                     self.normalized_iter,
                     self._observer,
@@ -616,28 +612,18 @@ class StatementEx(object):
                         ):
                             return False
 
-            else:
-                if isinstance(item, DynamicStatements):
-                    result = StatementEx.ParseMultiple(
-                        self._observer.GetDynamicStatements(item),
-                        self.normalized_iter,
-                        self._observer,
-                        ignore_whitespace=self._ignore_whitespace_ctr != 0,
-                        single_threaded=self._single_threaded,
-                    )
+            elif isinstance(item, list):
+                result = StatementEx.ParseMultiple(
+                    item,
+                    self.normalized_iter,
+                    self._observer,
+                    ignore_whitespace=self._ignore_whitespace_ctr != 0,
+                    single_threaded=self._single_threaded,
+                    sort_results=False,
+                )
 
-                elif isinstance(item, list):
-                    result = StatementEx.ParseMultiple(
-                        item,
-                        self.normalized_iter,
-                        self._observer,
-                        ignore_whitespace=self._ignore_whitespace_ctr != 0,
-                        single_threaded=self._single_threaded,
-                        sort_results=False,
-                    )
-
-                else:
-                    assert False, item  # pragma: no cover
+                statement_parse_result_item = result.Results[0]
+                assert isinstance(statement_parse_result_item, StatementEx.StatementParseResultItem)
 
                 if (
                     result is not None
@@ -645,15 +631,15 @@ class StatementEx(object):
                 ):
                     assert len(result.Results) == 1
 
-                    statement_parse_result_item = result.Results[0]
-                    assert isinstance(statement_parse_result_item, StatementEx.StatementParseResultItem)
-
                     if not self._observer.OnInternalStatement(
                         statement_parse_result_item,
                         self.normalized_iter,
                         result.Iter,
                     ):
                         return False
+
+            else:
+                assert False, item  # pragma: no cover
 
             if result is None:
                 return False

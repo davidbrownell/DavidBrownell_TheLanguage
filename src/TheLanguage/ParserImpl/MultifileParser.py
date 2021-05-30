@@ -92,7 +92,7 @@ class _Node(_ParseResultBase):
 
     # ----------------------------------------------------------------------
     def __str__(self) -> str:
-        children = [str(child) for child in getattr(self, "Children", [])]
+        children = [str(child).rstrip() for child in getattr(self, "Children", [])]
         if not children:
             children.append("<No children>")
 
@@ -106,7 +106,7 @@ class _Node(_ParseResultBase):
             children=StringHelpers.LeftJustify(
                 "\n".join(children),
                 4,
-            ).rstrip(),
+            ),
         )
 
 
@@ -235,8 +235,6 @@ def Parse(
     Dict[str, RootNode],
     List[Exception],
 ]:
-    single_threaded = True # BugBug
-
     # ----------------------------------------------------------------------
     @dataclass
     class SourceInfo(object):

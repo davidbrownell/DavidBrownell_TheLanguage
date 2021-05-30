@@ -52,7 +52,7 @@ class Token(Interface.Interface):
 
         # ----------------------------------------------------------------------
         def __str__(self):
-            return "Newline: {}, {}".format(self.Start, self.End)
+            return "{}, {}".format(self.Start, self.End)
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -63,14 +63,14 @@ class Token(Interface.Interface):
 
         # ----------------------------------------------------------------------
         def __str__(self):
-            return "Indent: {}, {} - {}".format(self.Start, self.End, self.Value)
+            return "{}, {}, ({})".format(self.Start, self.End, self.Value)
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class DedentMatch(object):
         # ----------------------------------------------------------------------
         def __str__(self):
-            return "Dedent"
+            return ""
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
