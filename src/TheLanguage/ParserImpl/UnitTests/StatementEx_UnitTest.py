@@ -619,21 +619,21 @@ class TestIgnoreWhitespace(object):
             60
                 Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
                 lpar <<Regex: <_sre.SRE_Match object; span=(4, 5), match='('>>> ws:(3, 4) [1, 6]
-                Newline+ <<5, 8>> ws:None [4, 1]
-                Indent <<8, 12, (4)>> ws:None [4, 5]
+                Newline+ <<5, 8>> ws:None !Ignored! [4, 1]
+                Indent <<8, 12, (4)>> ws:None !Ignored! [4, 5]
                 Word <<Regex: <_sre.SRE_Match object; span=(12, 15), match='two'>>> ws:None [4, 8]
-                Newline+ <<15, 17>> ws:None [6, 1]
-                Indent <<17, 25, (8)>> ws:None [6, 9]
+                Newline+ <<15, 17>> ws:None !Ignored! [6, 1]
+                Indent <<17, 25, (8)>> ws:None !Ignored! [6, 9]
                 Word <<Regex: <_sre.SRE_Match object; span=(25, 30), match='three'>>> ws:None [6, 14]
-                Newline+ <<30, 31>> ws:None [7, 1]
-                Dedent <<>> ws:None [7, 5]
+                Newline+ <<30, 31>> ws:None !Ignored! [7, 1]
+                Dedent <<>> ws:None !Ignored! [7, 5]
                 Word <<Regex: <_sre.SRE_Match object; span=(35, 39), match='four'>>> ws:None [7, 9]
-                Newline+ <<39, 40>> ws:None [8, 1]
-                Indent <<40, 48, (8)>> ws:None [8, 9]
+                Newline+ <<39, 40>> ws:None !Ignored! [8, 1]
+                Indent <<40, 48, (8)>> ws:None !Ignored! [8, 9]
                 Word <<Regex: <_sre.SRE_Match object; span=(48, 52), match='five'>>> ws:None [8, 13]
-                Newline+ <<52, 54>> ws:None [10, 1]
-                Dedent <<>> ws:None [10, 1]
-                Dedent <<>> ws:None [10, 1]
+                Newline+ <<52, 54>> ws:None !Ignored! [10, 1]
+                Dedent <<>> ws:None !Ignored! [10, 1]
+                Dedent <<>> ws:None !Ignored! [10, 1]
                 rpar <<Regex: <_sre.SRE_Match object; span=(54, 55), match=')'>>> ws:None [10, 2]
                 Word <<Regex: <_sre.SRE_Match object; span=(56, 59), match='six'>>> ws:(55, 56) [10, 6]
                 Newline+ <<59, 60>> ws:None [11, 1]
@@ -1048,14 +1048,7 @@ class TestParseMultiple(object):
             parse_mock,
         )
 
-        assert str(result) == textwrap.dedent(
-            """\
-            False
-            0
-                Or: [Early Termination]
-                    <No results>
-            """,
-        )
+        assert result is None
 
     # ----------------------------------------------------------------------
     def test_SingleStatementOptimization(self, parse_mock):
@@ -1147,7 +1140,7 @@ class TestParseMultiple(object):
             True
             8
                 Or: [1, 2, 3]
-                    Indent <<0, 2, (2)>> ws:None [1, 3]
+                    Indent <<0, 2, (2)>> ws:None !Ignored! [1, 3]
                     2
                         2t <<Regex: <_sre.SRE_Match object; span=(2, 8), match='123456'>>> ws:None [1, 9]
             """,
@@ -1175,13 +1168,7 @@ def test_OnInternalStatementTermination(parse_mock):
         parse_mock,
     )
 
-    assert str(result) == textwrap.dedent(
-        """\
-        False
-        0
-            <No results>
-        """,
-    )
+    assert result is None
 
 # ----------------------------------------------------------------------
 class TestRepeat(object):
@@ -1487,47 +1474,26 @@ class TestRepeat(object):
             side_effect=[True, True, True, True, False],
         )
 
-        assert str(
-            self._statement.Parse(
-                NormalizedIterator(
-                    Normalize(
-                        textwrap.dedent(
-                            """\
-                            worda
-                            wordb
-                            12
-                            3456
-                            wordc
-                            wordd
-                            worde
-                            """,
-                        ),
+        result = self._statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        worda
+                        wordb
+                        12
+                        3456
+                        wordc
+                        wordd
+                        worde
+                        """,
                     ),
                 ),
-                parse_mock,
             ),
-        ) == textwrap.dedent(
-            """\
-            False
-            20
-                Repeat: (Word Statement, 0, None)
-                    Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 6]
-                        Newline+ <<5, 6>> ws:None [2, 1]
-                    Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:None [2, 6]
-                        Newline+ <<11, 12>> ws:None [3, 1]
-                Repeat: (Number Statement, 1, None)
-                    Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(12, 14), match='12'>>> ws:None [3, 3]
-                        Newline+ <<14, 15>> ws:None [4, 1]
-                    Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(15, 19), match='3456'>>> ws:None [4, 5]
-                        Newline+ <<19, 20>> ws:None [5, 1]
-                Repeat: (Upper Statement, 0, 1)
-                    <No results>
-            """,
+            parse_mock,
         )
+
+        assert result is None
 
 # ----------------------------------------------------------------------
 class TestOr(object):
@@ -1603,10 +1569,6 @@ class TestOr(object):
     def test_EarlyTermination(self, parse_mock):
         parse_mock.OnInternalStatement = Mock(side_effect=[True, False])
 
-        assert str(self._statement.Parse(NormalizedIterator(Normalize("word")), parse_mock)) == textwrap.dedent(
-            """\
-            False
-            0
-                <No results>
-            """,
-        )
+        result = self._statement.Parse(NormalizedIterator(Normalize("word")), parse_mock)
+
+        assert result is None

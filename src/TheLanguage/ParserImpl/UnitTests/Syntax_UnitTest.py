@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..MultifileParser import Parse
-    from ..StandardStatement import StandardStatement
+    from ..StatementEx import StatementEx
     from ..StatementsParser import DynamicStatementInfo
     from ..Syntax import *
 
@@ -47,9 +47,9 @@ class TestStandard(object):
     _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
 
-    _upper_statement                        = NamedStandardStatement("Upper Statement", [_upper_token, NewlineToken()])
-    _lower_statement                        = NamedStandardStatement("Lower Statement", [_lower_token, NewlineToken()])
-    _number_statement                       = NamedStandardStatement("Number Statement", [_number_token, NewlineToken()])
+    _upper_statement                        = StatementEx("Upper Statement", _upper_token, NewlineToken())
+    _lower_statement                        = StatementEx("Lower Statement", _lower_token, NewlineToken())
+    _number_statement                       = StatementEx("Number Statement", _number_token, NewlineToken())
 
     _syntaxes                               = {
         SemVer("1.0.0") : DynamicStatementInfo([_upper_statement, _lower_statement], []),
@@ -104,11 +104,23 @@ class TestStandard(object):
             assert "one" in result
             result = result["one"]
 
-            assert len(result.Children) == 3
-
-            assert result.Children[0].Children[0].Value.Match.group("value") == "UPPER"
-            assert result.Children[1].Children[0].Value.Match.group("value") == "lower"
-            assert result.Children[2].Children[0].Value.Match.group("value") == "1234"
+            assert str(result) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                        Upper Statement
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='UPPER'>>> [1, 6]
+                            Newline+ <<5, 6>> [2, 1]
+                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                        Lower Statement
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='lower'>>> [2, 6]
+                            Newline+ <<11, 12>> [3, 1]
+                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                        Number Statement
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(12, 16), match='1234'>>> [3, 5]
+                            Newline+ <<16, 17>> [4, 1]
+                """,
+            )
 
     # ----------------------------------------------------------------------
     def test_V1_NoError(self):
@@ -120,11 +132,11 @@ class TestStandard(object):
                     alower
                     1234
 
-                    __with __syntax=1.0:
+                    __with_syntax=1.0:
                         BUPPER
                         blower
 
-                    __with __syntax=1.0.0:
+                    __with_syntax=1.0.0:
                         clower
 
                     456789
@@ -138,26 +150,65 @@ class TestStandard(object):
             assert "one" in result
             result = result["one"]
 
-            assert len(result.Children) == 6
-
-            assert result.Children[0].Children[0].Value.Match.group("value") == "AUPPER"
-            assert result.Children[1].Children[0].Value.Match.group("value") == "alower"
-            assert result.Children[2].Children[0].Value.Match.group("value") == "1234"
-
-            assert result.Children[3].Type == SetSyntaxStatement
-            children = list(SetSyntaxStatement.GenerateContentFromResult(result.Children[3]))
-
-            assert len(children) == 2
-            assert children[0].Children[0].Value.Match.group("value") == "BUPPER"
-            assert children[1].Children[0].Value.Match.group("value") == "blower"
-
-            assert result.Children[4].Type == SetSyntaxStatement
-            children = list(SetSyntaxStatement.GenerateContentFromResult(result.Children[4]))
-
-            assert len(children) == 1
-            assert children[0].Children[0].Value.Match.group("value") == "clower"
-
-            assert result.Children[5].Children[0].Value.Match.group("value") == "456789"
+            assert str(result) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                        Upper Statement
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 6), match='AUPPER'>>> [1, 7]
+                            Newline+ <<6, 7>> [2, 1]
+                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                        Lower Statement
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(7, 13), match='alower'>>> [2, 7]
+                            Newline+ <<13, 14>> [3, 1]
+                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                        Number Statement
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(14, 18), match='1234'>>> [3, 5]
+                            Newline+ <<18, 20>> [5, 1]
+                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                        Set Syntax Statement
+                            __with_syntax <<Regex: <_sre.SRE_Match object; span=(20, 33), match='__with_syntax'>>> [5, 14]
+                            = <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> [5, 15]
+                            <semantic_version> <<Regex: <_sre.SRE_Match object; span=(34, 37), match='1.0'>>> [5, 18]
+                            : <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> [5, 19]
+                            Newline+ <<38, 39>> [6, 1]
+                            Indent <<39, 43, (4)>> [6, 5]
+                            Repeat: (Dynamic Statement, 1, None)
+                                Dynamic Statement
+                                    DynamicStatements.Statements
+                                        Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                            Upper Statement
+                                                Upper Token <<Regex: <_sre.SRE_Match object; span=(43, 49), match='BUPPER'>>> [6, 11]
+                                                Newline+ <<49, 50>> [7, 1]
+                                Dynamic Statement
+                                    DynamicStatements.Statements
+                                        Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                            Lower Statement
+                                                Lower Token <<Regex: <_sre.SRE_Match object; span=(54, 60), match='blower'>>> [7, 11]
+                                                Newline+ <<60, 62>> [9, 1]
+                            Dedent <<>> [9, 1]
+                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                        Set Syntax Statement
+                            __with_syntax <<Regex: <_sre.SRE_Match object; span=(62, 75), match='__with_syntax'>>> [9, 14]
+                            = <<Regex: <_sre.SRE_Match object; span=(75, 76), match='='>>> [9, 15]
+                            <semantic_version> <<Regex: <_sre.SRE_Match object; span=(76, 81), match='1.0.0'>>> [9, 20]
+                            : <<Regex: <_sre.SRE_Match object; span=(81, 82), match=':'>>> [9, 21]
+                            Newline+ <<82, 83>> [10, 1]
+                            Indent <<83, 87, (4)>> [10, 5]
+                            Repeat: (Dynamic Statement, 1, None)
+                                Dynamic Statement
+                                    DynamicStatements.Statements
+                                        Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                            Lower Statement
+                                                Lower Token <<Regex: <_sre.SRE_Match object; span=(87, 93), match='clower'>>> [10, 11]
+                                                Newline+ <<93, 95>> [12, 1]
+                            Dedent <<>> [12, 1]
+                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                        Number Statement
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(95, 101), match='456789'>>> [12, 7]
+                            Newline+ <<101, 102>> [13, 1]
+                """,
+            )
 
     # ----------------------------------------------------------------------
     def test_V1_Error(self):
@@ -169,7 +220,7 @@ class TestStandard(object):
                     alower
                     1234
 
-                    __with __syntax=1.0:
+                    __with_syntax=1.0:
                         BUPPER
                         blower
                         1235
@@ -187,22 +238,58 @@ class TestStandard(object):
             assert result.Line == 8
             assert result.Column == 1
 
-            assert len(result.PotentialStatements) == 4
+            assert len(result.PotentialStatements) == 1
+            key = tuple(observer.Syntaxes[observer.DefaultVersion].statements)
+            assert key in result.PotentialStatements
 
-            assert result.PotentialStatements[self._upper_statement] == []
-            assert result.PotentialStatements[self._lower_statement] == []
-            assert result.PotentialStatements[self._number_statement] == []
+            potentials = result.PotentialStatements[key]
+            assert len(potentials) == 4
 
-            set_syntax_results = result.PotentialStatements[SetSyntaxStatement]
+            assert str(potentials[0]) == textwrap.dedent(
+                """\
+                Set Syntax Statement
+                    __with_syntax <<Regex: <_sre.SRE_Match object; span=(20, 33), match='__with_syntax'>>> ws:None [5, 14]
+                    = <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> ws:None [5, 15]
+                    <semantic_version> <<Regex: <_sre.SRE_Match object; span=(34, 37), match='1.0'>>> ws:None [5, 18]
+                    : <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> ws:None [5, 19]
+                    Newline+ <<38, 39>> ws:None [6, 1]
+                    Indent <<39, 43, (4)>> ws:None [6, 5]
+                    Repeat: (Dynamic Statement, 1, None)
+                        Dynamic Statement
+                            DynamicStatements.Statements
+                                Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                    Upper Statement
+                                        Upper Token <<Regex: <_sre.SRE_Match object; span=(43, 49), match='BUPPER'>>> ws:None [6, 11]
+                                        Newline+ <<49, 50>> ws:None [7, 1]
+                        Dynamic Statement
+                            DynamicStatements.Statements
+                                Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                    Lower Statement
+                                        Lower Token <<Regex: <_sre.SRE_Match object; span=(54, 60), match='blower'>>> ws:None [7, 11]
+                                        Newline+ <<60, 61>> ws:None [8, 1]
+                """,
+            )
 
-            assert len(set_syntax_results) == 8
-            set_syntax_results = set_syntax_results[-1]
+            assert str(potentials[1]) == textwrap.dedent(
+                """\
+                Upper Statement
+                    <No results>
+                """,
+            )
 
-            assert isinstance(set_syntax_results.Statement, RepeatStatement)
-            assert len(set_syntax_results.Results) == 2
+            assert str(potentials[2]) == textwrap.dedent(
+                """\
+                Lower Statement
+                    <No results>
+                """,
+            )
 
-            assert set_syntax_results.Results[0].Results[0].Results[0].Results[0].Value.Match.group("value") == "BUPPER"
-            assert set_syntax_results.Results[1].Results[0].Results[0].Results[0].Value.Match.group("value") == "blower"
+            assert str(potentials[3]) == textwrap.dedent(
+                """\
+                Number Statement
+                    <No results>
+                """,
+            )
 
     # ----------------------------------------------------------------------
     def test_InvalidVersion1(self):
@@ -210,7 +297,7 @@ class TestStandard(object):
             {
                 "one" : textwrap.dedent(
                     """\
-                    __with __syntax=4.5.6:
+                    __with_syntax=4.5.6:
                         UPPER
                     """,
                 ),
@@ -224,7 +311,7 @@ class TestStandard(object):
             assert str(result) == "The syntax version '4.5.6' is not valid"
             assert result.FullyQualifiedName == "one"
             assert result.Line == 1
-            assert result.Column == 17
+            assert result.Column == 15
 
     # ----------------------------------------------------------------------
     def test_InvalidVersion2(self):
@@ -232,7 +319,7 @@ class TestStandard(object):
             {
                 "one" : textwrap.dedent(
                     """\
-                    __with __syntax = 4.5:
+                    __with_syntax = 4.5:
                         UPPER
                     """,
                 ),
@@ -246,4 +333,4 @@ class TestStandard(object):
             assert str(result) == "The syntax version '4.5.0' is not valid"
             assert result.FullyQualifiedName == "one"
             assert result.Line == 1
-            assert result.Column == 19
+            assert result.Column == 17

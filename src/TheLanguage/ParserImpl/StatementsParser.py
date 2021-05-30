@@ -19,7 +19,7 @@ import os
 
 from collections import OrderedDict
 from concurrent.futures import Future
-from typing import cast, Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
@@ -85,7 +85,11 @@ class SyntaxInvalidError(Error):
         potentials = OrderedDict()
 
         for parse_result_item in parse_result_items:
-            potentials[parse_result_item.Statement] = parse_result_item.Results
+            key = parse_result_item.Statement
+            if isinstance(key, list):
+                key = tuple(key)
+
+            potentials[key] = parse_result_item.Results
 
         object.__setattr__(self, "PotentialStatements", potentials)
 
@@ -158,6 +162,9 @@ def Parse(
             single_threaded=single_threaded,
         )
 
+        if result is None:
+            return None
+
         if not result.Success:
             raise SyntaxInvalidError(
                 result.Iter.Line,
@@ -165,20 +172,12 @@ def Parse(
                 result.Results,
             )
 
-        prev_iter = normalized_iter
         normalized_iter = result.Iter
 
         assert len(result.Results) == 1, result.Results
         result = result.Results[0]
 
         results.append(result)
-
-        if not statement_observer.OnInternalStatement(
-            cast(StatementEx.StatementParseResultItem, result),
-            prev_iter,
-            normalized_iter,
-        ):
-            return None
 
     assert normalized_iter.AtEnd()
 
@@ -234,7 +233,8 @@ class _StatementObserver(StatementEx.Observer):
         else:
             assert False, value  # pragma: no cover
 
-        return []
+        # Make the linter happy
+        return []  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @Interface.override

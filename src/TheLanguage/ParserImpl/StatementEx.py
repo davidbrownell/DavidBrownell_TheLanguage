@@ -20,7 +20,7 @@ import textwrap
 
 from concurrent.futures import Future
 from enum import auto, Enum
-from typing import cast, Callable, List, Optional, Tuple, Union
+from typing import Any, cast, Callable, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -160,12 +160,13 @@ class StatementEx(object):
 
         # ----------------------------------------------------------------------
         def __str__(self) -> str:
-            return "{} <<{}>> ws:{} [{}, {}]".format(
-                StatementEx.ItemTypeToString(self.Token),
-                str(self.Value),
-                "None" if self.Whitespace is None else "({}, {})".format(self.Whitespace[0], self.Whitespace[1]),
-                self.Iter.Line,
-                self.Iter.Column,
+            return "{typ} <<{value}>> ws:{ws}{ignored} [{line}, {column}]".format(
+                typ=StatementEx.ItemTypeToString(self.Token),
+                value=str(self.Value),
+                ws="None" if self.Whitespace is None else "({}, {})".format(self.Whitespace[0], self.Whitespace[1]),
+                ignored=" !Ignored!" if self.IsIgnored else "",
+                line=self.Iter.Line,
+                column=self.Iter.Column,
             )
 
 
@@ -311,6 +312,9 @@ class StatementEx(object):
                 break
 
             success = parser.ParseItem(self.Items[item_index])
+            if success is None:
+                return None
+
             if not success:
                 break
 
@@ -337,8 +341,7 @@ class StatementEx(object):
     ) -> Optional["StatementEx.ParseResult"]:
         """Simultaneously applies multiple statements at the provided location"""
 
-        if len(statements) == 1:
-            single_threaded = True
+        use_futures = not single_threaded and len(statements) != 1
 
         # ----------------------------------------------------------------------
         def Impl(statement):
@@ -351,15 +354,14 @@ class StatementEx(object):
             )
 
             success = parser.ParseItem(statement)
+            if success is None:
+                return None
 
             return StatementEx.ParseResult(success, parser.results, parser.normalized_iter)
 
         # ----------------------------------------------------------------------
 
-        if single_threaded:
-            results = [Impl(statement) for statement in statements]
-
-        else:
+        if use_futures:
             futures = observer.Enqueue(
                 [
                     lambda statement=statement: Impl(statement)
@@ -367,7 +369,24 @@ class StatementEx(object):
                 ],
             )
 
-            results = [future.result() for future in futures]
+            results = []
+
+            for future in futures:
+                result = future.result()
+                if result is None:
+                    return None
+
+                results.append(result)
+
+        else:
+            results = []
+
+            for statement in statements:
+                result = Impl(statement)
+                if result is None:
+                    return None
+
+                results.append(result)
 
         if sort_results:
             # Stable sort according to the criteria:
@@ -489,7 +508,7 @@ class StatementEx(object):
         def ParseItem(
             self,
             item: "StatementEx.ItemType",
-        ) -> bool:
+        ) -> Optional[bool]:
             """Parses an individual item"""
 
             if self._ignore_whitespace_ctr:
@@ -580,12 +599,15 @@ class StatementEx(object):
                     result is not None
                     and result.Success
                     and not self._observer.OnInternalStatement(
-                        StatementEx.StatementParseResultItem(item, result.Results),
+                        StatementEx.StatementParseResultItem(
+                            item,
+                            result.Results,
+                        ),
                         self.normalized_iter,
                         result.Iter,
                     )
                 ):
-                    return False
+                    return None
 
             elif isinstance(item, tuple):
                 statement, min_matches, max_matches = item
@@ -610,7 +632,7 @@ class StatementEx(object):
                             self.normalized_iter,
                             result.Iter
                         ):
-                            return False
+                            return None
 
             elif isinstance(item, list):
                 result = StatementEx.ParseMultiple(
@@ -636,13 +658,13 @@ class StatementEx(object):
                         self.normalized_iter,
                         result.Iter,
                     ):
-                        return False
+                        return None
 
             else:
                 assert False, item  # pragma: no cover
 
             if result is None:
-                return False
+                return None
 
             if statement_parse_result_item is None:
                 statement_parse_result_item = StatementEx.StatementParseResultItem(
@@ -779,10 +801,7 @@ class StatementEx(object):
                     break
 
                 results.append(
-                    StatementEx.StatementParseResultItem(
-                        statement,
-                        result.Results,
-                    ),
+                    StatementEx.StatementParseResultItem(statement, result.Results),
                 )
 
                 normalized_iter = result.Iter.Clone()
