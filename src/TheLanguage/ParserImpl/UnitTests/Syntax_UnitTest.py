@@ -107,15 +107,15 @@ class TestStandard(object):
             assert str(result) == textwrap.dedent(
                 """\
                 <Root>
-                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                    Or: [Set Syntax, Upper Statement, Lower Statement, Number Statement]
                         Upper Statement
                             Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='UPPER'>>> [1, 6]
                             Newline+ <<5, 6>> [2, 1]
-                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                    Or: [Set Syntax, Upper Statement, Lower Statement, Number Statement]
                         Lower Statement
                             Lower Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='lower'>>> [2, 6]
                             Newline+ <<11, 12>> [3, 1]
-                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                    Or: [Set Syntax, Upper Statement, Lower Statement, Number Statement]
                         Number Statement
                             Number Token <<Regex: <_sre.SRE_Match object; span=(12, 16), match='1234'>>> [3, 5]
                             Newline+ <<16, 17>> [4, 1]
@@ -153,57 +153,57 @@ class TestStandard(object):
             assert str(result) == textwrap.dedent(
                 """\
                 <Root>
-                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                    Or: [Set Syntax, Upper Statement, Lower Statement, Number Statement]
                         Upper Statement
                             Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 6), match='AUPPER'>>> [1, 7]
                             Newline+ <<6, 7>> [2, 1]
-                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                    Or: [Set Syntax, Upper Statement, Lower Statement, Number Statement]
                         Lower Statement
                             Lower Token <<Regex: <_sre.SRE_Match object; span=(7, 13), match='alower'>>> [2, 7]
                             Newline+ <<13, 14>> [3, 1]
-                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                    Or: [Set Syntax, Upper Statement, Lower Statement, Number Statement]
                         Number Statement
                             Number Token <<Regex: <_sre.SRE_Match object; span=(14, 18), match='1234'>>> [3, 5]
                             Newline+ <<18, 20>> [5, 1]
-                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
-                        Set Syntax Statement
-                            __with_syntax <<Regex: <_sre.SRE_Match object; span=(20, 33), match='__with_syntax'>>> [5, 14]
-                            = <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> [5, 15]
+                    Or: [Set Syntax, Upper Statement, Lower Statement, Number Statement]
+                        Set Syntax
+                            '__with_syntax' <<Regex: <_sre.SRE_Match object; span=(20, 33), match='__with_syntax'>>> [5, 14]
+                            '=' <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> [5, 15]
                             <semantic_version> <<Regex: <_sre.SRE_Match object; span=(34, 37), match='1.0'>>> [5, 18]
-                            : <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> [5, 19]
+                            ':' <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> [5, 19]
                             Newline+ <<38, 39>> [6, 1]
                             Indent <<39, 43, (4)>> [6, 5]
-                            Repeat: (Dynamic Statement, 1, None)
-                                Dynamic Statement
+                            Repeat: (Dynamic, 1, None)
+                                Dynamic
                                     DynamicStatements.Statements
-                                        Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                        Or: [Set Syntax, Upper Statement, Lower Statement]
                                             Upper Statement
                                                 Upper Token <<Regex: <_sre.SRE_Match object; span=(43, 49), match='BUPPER'>>> [6, 11]
                                                 Newline+ <<49, 50>> [7, 1]
-                                Dynamic Statement
+                                Dynamic
                                     DynamicStatements.Statements
-                                        Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                        Or: [Set Syntax, Upper Statement, Lower Statement]
                                             Lower Statement
                                                 Lower Token <<Regex: <_sre.SRE_Match object; span=(54, 60), match='blower'>>> [7, 11]
                                                 Newline+ <<60, 62>> [9, 1]
                             Dedent <<>> [9, 1]
-                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
-                        Set Syntax Statement
-                            __with_syntax <<Regex: <_sre.SRE_Match object; span=(62, 75), match='__with_syntax'>>> [9, 14]
-                            = <<Regex: <_sre.SRE_Match object; span=(75, 76), match='='>>> [9, 15]
+                    Or: [Set Syntax, Upper Statement, Lower Statement, Number Statement]
+                        Set Syntax
+                            '__with_syntax' <<Regex: <_sre.SRE_Match object; span=(62, 75), match='__with_syntax'>>> [9, 14]
+                            '=' <<Regex: <_sre.SRE_Match object; span=(75, 76), match='='>>> [9, 15]
                             <semantic_version> <<Regex: <_sre.SRE_Match object; span=(76, 81), match='1.0.0'>>> [9, 20]
-                            : <<Regex: <_sre.SRE_Match object; span=(81, 82), match=':'>>> [9, 21]
+                            ':' <<Regex: <_sre.SRE_Match object; span=(81, 82), match=':'>>> [9, 21]
                             Newline+ <<82, 83>> [10, 1]
                             Indent <<83, 87, (4)>> [10, 5]
-                            Repeat: (Dynamic Statement, 1, None)
-                                Dynamic Statement
+                            Repeat: (Dynamic, 1, None)
+                                Dynamic
                                     DynamicStatements.Statements
-                                        Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                        Or: [Set Syntax, Upper Statement, Lower Statement]
                                             Lower Statement
                                                 Lower Token <<Regex: <_sre.SRE_Match object; span=(87, 93), match='clower'>>> [10, 11]
                                                 Newline+ <<93, 95>> [12, 1]
                             Dedent <<>> [12, 1]
-                    Or: [Set Syntax Statement, Upper Statement, Lower Statement, Number Statement]
+                    Or: [Set Syntax, Upper Statement, Lower Statement, Number Statement]
                         Number Statement
                             Number Token <<Regex: <_sre.SRE_Match object; span=(95, 101), match='456789'>>> [12, 7]
                             Newline+ <<101, 102>> [13, 1]
@@ -247,23 +247,23 @@ class TestStandard(object):
 
             assert str(potentials[0]) == textwrap.dedent(
                 """\
-                Set Syntax Statement
-                    __with_syntax <<Regex: <_sre.SRE_Match object; span=(20, 33), match='__with_syntax'>>> ws:None [5, 14]
-                    = <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> ws:None [5, 15]
+                Set Syntax
+                    '__with_syntax' <<Regex: <_sre.SRE_Match object; span=(20, 33), match='__with_syntax'>>> ws:None [5, 14]
+                    '=' <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> ws:None [5, 15]
                     <semantic_version> <<Regex: <_sre.SRE_Match object; span=(34, 37), match='1.0'>>> ws:None [5, 18]
-                    : <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> ws:None [5, 19]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> ws:None [5, 19]
                     Newline+ <<38, 39>> ws:None [6, 1]
                     Indent <<39, 43, (4)>> ws:None [6, 5]
-                    Repeat: (Dynamic Statement, 1, None)
-                        Dynamic Statement
+                    Repeat: (Dynamic, 1, None)
+                        Dynamic
                             DynamicStatements.Statements
-                                Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                Or: [Set Syntax, Upper Statement, Lower Statement]
                                     Upper Statement
                                         Upper Token <<Regex: <_sre.SRE_Match object; span=(43, 49), match='BUPPER'>>> ws:None [6, 11]
                                         Newline+ <<49, 50>> ws:None [7, 1]
-                        Dynamic Statement
+                        Dynamic
                             DynamicStatements.Statements
-                                Or: [Set Syntax Statement, Upper Statement, Lower Statement]
+                                Or: [Set Syntax, Upper Statement, Lower Statement]
                                     Lower Statement
                                         Lower Token <<Regex: <_sre.SRE_Match object; span=(54, 60), match='blower'>>> ws:None [7, 11]
                                         Newline+ <<60, 61>> ws:None [8, 1]

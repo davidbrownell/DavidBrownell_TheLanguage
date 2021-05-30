@@ -69,14 +69,14 @@ _simple_semantic_version_regex              = re.compile(r"(?P<major>0|[1-9]\d*)
 #     ...
 #
 SetSyntaxStatement                          = Statement(
-    "Set Syntax Statement",
-    RegexToken("__with_syntax", re.compile(r"(?P<value>__with_syntax)")),
-    RegexToken("=", re.compile(r"(?P<value>=)")),
+    "Set Syntax",
+    RegexToken("'__with_syntax'", re.compile(r"(?P<value>__with_syntax)")),
+    RegexToken("'='", re.compile(r"(?P<value>=)")),
     RegexToken("<semantic_version>", _simple_semantic_version_regex),
-    RegexToken(":", re.compile(r"(?P<value>:)")),
+    RegexToken("':'", re.compile(r"(?P<value>:)")),
     NewlineToken(),
     IndentToken(),
-    (Statement("Dynamic Statement", DynamicStatements.Statements), 1, None),
+    (Statement("Dynamic", DynamicStatements.Statements), 1, None),
     DedentToken(),
 )
 
