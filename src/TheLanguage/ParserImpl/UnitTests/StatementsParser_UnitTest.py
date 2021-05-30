@@ -38,14 +38,13 @@ with InitRelativeImports():
     from ..StatementsParser import *
     from ..Normalize import Normalize
     from ..NormalizedIterator import NormalizedIterator
-    from ..StandardStatement import StandardStatement
+    from ..Statement import Statement
 
     from ..Token import (
         DedentToken,
         IndentToken,
         NewlineToken,
         RegexToken,
-        Token,
     )
 
 
@@ -57,9 +56,7 @@ def CreateObserver():
         class MyObserver(Observer):
             # ----------------------------------------------------------------------
             def __init__(self):
-                self.mock = Mock(
-                    return_value=(True, None),
-                )
+                self.mock = Mock()
 
             # ----------------------------------------------------------------------
             def VerifyCallArgs(self, index, statement, results, before_line, before_col, after_line, after_col):
@@ -105,9 +102,9 @@ class TestSimple(object):
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number", re.compile(r"(?P<value>[0-9]+)"))
 
-    _upper_statement                        = StandardStatement([_upper_token, NewlineToken()])
-    _lower_statement                        = StandardStatement([_lower_token, NewlineToken()])
-    _number_statement                       = StandardStatement([_number_token, NewlineToken()])
+    _upper_statement                        = Statement("Upper Statement", _upper_token, NewlineToken())
+    _lower_statement                        = Statement("Lower Statement", _lower_token, NewlineToken())
+    _number_statement                       = Statement("Number Statement", _number_token, NewlineToken())
 
     _statements                             = DynamicStatementInfo(
         [_upper_statement, _lower_statement, _number_statement],
@@ -137,63 +134,41 @@ class TestSimple(object):
             assert len(results) == 3
 
             # Line 1
-            assert results[0].Statement == self._upper_statement
-            assert len(results[0].Results) == 2
-
-            assert results[0].Results[0].Token == self._upper_token
-            assert results[0].Results[0].Value.Match.group("value") == "ONE"
-            assert results[0].Results[0].Whitespace is None
-            assert results[0].Results[0].Iter.Line == 1
-            assert results[0].Results[0].Iter.Column == 4
-
-            assert results[0].Results[1].Token == NewlineToken()
-            assert results[0].Results[1].Value == Token.NewlineMatch(3, 4)
-            assert results[0].Results[1].Whitespace is None
-            assert results[0].Results[1].Iter.Line == 2
-            assert results[0].Results[1].Iter.Column == 1
+            assert str(results[0]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Lower Statement, Number Statement]
+                    Upper Statement
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                        Newline+ <<3, 4>> ws:None [2, 1]
+                """,
+            )
 
             # Line 2
-            assert results[1].Statement == self._lower_statement
-
-            assert len(results[1].Results) == 2
-
-            assert results[1].Results[0].Token == self._lower_token
-            assert results[1].Results[0].Value.Match.group("value") == "two"
-            assert results[1].Results[0].Whitespace is None
-            assert results[1].Results[0].Iter.Line == 2
-            assert results[1].Results[0].Iter.Column == 4
-
-            assert results[1].Results[1].Token == NewlineToken()
-            assert results[1].Results[1].Value == Token.NewlineMatch(7, 8)
-            assert results[1].Results[1].Whitespace is None
-            assert results[1].Results[1].Iter.Line == 3
-            assert results[1].Results[1].Iter.Column == 1
+            assert str(results[1]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Lower Statement, Number Statement]
+                    Lower Statement
+                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 4]
+                        Newline+ <<7, 8>> ws:None [3, 1]
+                """,
+            )
 
             # Line 3
-            assert results[2].Statement == self._number_statement
-
-            assert len(results[2].Results) == 2
-
-            assert results[2].Results[0].Token == self._number_token
-            assert results[2].Results[0].Value.Match.group("value") == "33333"
-            assert results[2].Results[0].Whitespace is None
-            assert results[2].Results[0].Iter.Line == 3
-            assert results[2].Results[0].Iter.Column == 6
-
-            assert results[2].Results[1].Token == NewlineToken()
-            assert results[2].Results[1].Value == Token.NewlineMatch(13, 14)
-            assert results[2].Results[1].Whitespace is None
-            assert results[2].Results[1].Iter.Line == 4
-            assert results[2].Results[1].Iter.Column == 1
-
-            assert results[2].Results[1].Iter.AtEnd()
+            assert str(results[2]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Lower Statement, Number Statement]
+                    Number Statement
+                        Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 6]
+                        Newline+ <<13, 14>> ws:None [4, 1]
+                """,
+            )
 
             # Verify the callback
             assert observer.mock.call_count == 3
 
-            observer.VerifyCallArgs(0, self._upper_statement, results[0], 1, 1, 2, 1)
-            observer.VerifyCallArgs(1, self._lower_statement, results[1], 2, 1, 3, 1)
-            observer.VerifyCallArgs(2, self._number_statement, results[2], 3, 1, 4, 1)
+            observer.VerifyCallArgs(0, self._upper_statement, results[0].Results[0], 1, 1, 2, 1)
+            observer.VerifyCallArgs(1, self._lower_statement, results[1].Results[0], 2, 1, 3, 1)
+            observer.VerifyCallArgs(2, self._number_statement, results[2].Results[0], 3, 1, 4, 1)
 
     # ----------------------------------------------------------------------
     def test_MatchReverse(self):
@@ -218,64 +193,41 @@ class TestSimple(object):
             assert len(results) == 3
 
             # Line 1
-            assert results[0].Statement == self._number_statement
-
-            assert len(results[0].Results) == 2
-
-            assert results[0].Results[0].Token == self._number_token
-            assert results[0].Results[0].Value.Match.group("value") == "33"
-            assert results[0].Results[0].Whitespace is None
-            assert results[0].Results[0].Iter.Line == 1
-            assert results[0].Results[0].Iter.Column == 3
-
-            assert results[0].Results[1].Token == NewlineToken()
-            assert results[0].Results[1].Value == Token.NewlineMatch(2, 3)
-            assert results[0].Results[1].Whitespace is None
-            assert results[0].Results[1].Iter.Line == 2
-            assert results[0].Results[1].Iter.Column == 1
+            assert str(results[0]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Lower Statement, Number Statement]
+                    Number Statement
+                        Number <<Regex: <_sre.SRE_Match object; span=(0, 2), match='33'>>> ws:None [1, 3]
+                        Newline+ <<2, 3>> ws:None [2, 1]
+                """,
+            )
 
             # Line 2
-            assert results[1].Statement == self._lower_statement
-
-            assert len(results[1].Results) == 2
-
-            assert results[1].Results[0].Token == self._lower_token
-            assert results[1].Results[0].Value.Match.group("value") == "twoooooooo"
-            assert results[1].Results[0].Whitespace is None
-            assert results[1].Results[0].Iter.Line == 2
-            assert results[1].Results[0].Iter.Column == 11
-
-            assert results[1].Results[1].Token == NewlineToken()
-            assert results[1].Results[1].Value == Token.NewlineMatch(13, 14)
-            assert results[1].Results[1].Whitespace is None
-            assert results[1].Results[1].Iter.Line == 3
-            assert results[1].Results[1].Iter.Column == 1
+            assert str(results[1]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Lower Statement, Number Statement]
+                    Lower Statement
+                        Lower <<Regex: <_sre.SRE_Match object; span=(3, 13), match='twoooooooo'>>> ws:None [2, 11]
+                        Newline+ <<13, 14>> ws:None [3, 1]
+                """,
+            )
 
             # Line 3
-            assert results[2].Statement == self._upper_statement
-
-            assert len(results[2].Results) == 2
-
-            assert results[2].Results[0].Token == self._upper_token
-            assert results[2].Results[0].Value.Match.group("value") == "ONE"
-            assert results[2].Results[0].Whitespace is None
-            assert results[2].Results[0].Iter.Line == 3
-            assert results[2].Results[0].Iter.Column == 4
-
-            assert results[2].Results[1].Token == NewlineToken()
-            assert results[2].Results[1].Value == Token.NewlineMatch(17, 18)
-            assert results[2].Results[1].Whitespace is None
-            assert results[2].Results[1].Iter.Line == 4
-            assert results[2].Results[1].Iter.Column == 1
-
-            assert results[2].Results[1].Iter.AtEnd()
+            assert str(results[2]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Lower Statement, Number Statement]
+                    Upper Statement
+                        Upper <<Regex: <_sre.SRE_Match object; span=(14, 17), match='ONE'>>> ws:None [3, 4]
+                        Newline+ <<17, 18>> ws:None [4, 1]
+                """,
+            )
 
             # Verify the callback
             assert observer.mock.call_count == 3
 
-            observer.VerifyCallArgs(0, self._number_statement, results[0], 1, 1, 2, 1)
-            observer.VerifyCallArgs(1, self._lower_statement, results[1], 2, 1, 3, 1)
-            observer.VerifyCallArgs(2, self._upper_statement, results[2],  3, 1, 4, 1)
+            observer.VerifyCallArgs(0, self._number_statement, results[0].Results[0], 1, 1, 2, 1)
+            observer.VerifyCallArgs(1, self._lower_statement, results[1].Results[0], 2, 1, 3, 1)
+            observer.VerifyCallArgs(2, self._upper_statement, results[2].Results[0],  3, 1, 4, 1)
 
     # ----------------------------------------------------------------------
     def test_MatchSame(self):
@@ -300,64 +252,41 @@ class TestSimple(object):
             assert len(results) == 3
 
             # Line 1
-            assert results[0].Statement == self._number_statement
-
-            assert len(results[0].Results) == 2
-
-            assert results[0].Results[0].Token == self._number_token
-            assert results[0].Results[0].Value.Match.group("value") == "1"
-            assert results[0].Results[0].Whitespace is None
-            assert results[0].Results[0].Iter.Line == 1
-            assert results[0].Results[0].Iter.Column == 2
-
-            assert results[0].Results[1].Token == NewlineToken()
-            assert results[0].Results[1].Value == Token.NewlineMatch(1, 2)
-            assert results[0].Results[1].Whitespace is None
-            assert results[0].Results[1].Iter.Line == 2
-            assert results[0].Results[1].Iter.Column == 1
+            assert str(results[0]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Lower Statement, Number Statement]
+                    Number Statement
+                        Number <<Regex: <_sre.SRE_Match object; span=(0, 1), match='1'>>> ws:None [1, 2]
+                        Newline+ <<1, 2>> ws:None [2, 1]
+                """,
+            )
 
             # Line 2
-            assert results[1].Statement == self._number_statement
-
-            assert len(results[1].Results) == 2
-
-            assert results[1].Results[0].Token == self._number_token
-            assert results[1].Results[0].Value.Match.group("value") == "22"
-            assert results[1].Results[0].Whitespace is None
-            assert results[1].Results[0].Iter.Line == 2
-            assert results[1].Results[0].Iter.Column == 3
-
-            assert results[1].Results[1].Token == NewlineToken()
-            assert results[1].Results[1].Value == Token.NewlineMatch(4, 5)
-            assert results[1].Results[1].Whitespace is None
-            assert results[1].Results[1].Iter.Line == 3
-            assert results[1].Results[1].Iter.Column == 1
+            assert str(results[1]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Lower Statement, Number Statement]
+                    Number Statement
+                        Number <<Regex: <_sre.SRE_Match object; span=(2, 4), match='22'>>> ws:None [2, 3]
+                        Newline+ <<4, 5>> ws:None [3, 1]
+                """,
+            )
 
             # Line 3
-            assert results[2].Statement == self._number_statement
-
-            assert len(results[2].Results) == 2
-
-            assert results[2].Results[0].Token == self._number_token
-            assert results[2].Results[0].Value.Match.group("value") == "333"
-            assert results[2].Results[0].Whitespace is None
-            assert results[2].Results[0].Iter.Line == 3
-            assert results[2].Results[0].Iter.Column == 4
-
-            assert results[2].Results[1].Token == NewlineToken()
-            assert results[2].Results[1].Value == Token.NewlineMatch(8, 9)
-            assert results[2].Results[1].Whitespace is None
-            assert results[2].Results[1].Iter.Line == 4
-            assert results[2].Results[1].Iter.Column == 1
-
-            assert results[2].Results[1].Iter.AtEnd()
+            assert str(results[2]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Lower Statement, Number Statement]
+                    Number Statement
+                        Number <<Regex: <_sre.SRE_Match object; span=(5, 8), match='333'>>> ws:None [3, 4]
+                        Newline+ <<8, 9>> ws:None [4, 1]
+                """,
+            )
 
             # Verify the callback
             assert observer.mock.call_count == 3
 
-            observer.VerifyCallArgs(0, self._number_statement, results[0], 1, 1, 2, 1)
-            observer.VerifyCallArgs(1, self._number_statement, results[1], 2, 1, 3, 1)
-            observer.VerifyCallArgs(2, self._number_statement, results[2], 3, 1, 4, 1)
+            observer.VerifyCallArgs(0, self._number_statement, results[0].Results[0], 1, 1, 2, 1)
+            observer.VerifyCallArgs(1, self._number_statement, results[1].Results[0], 2, 1, 3, 1)
+            observer.VerifyCallArgs(2, self._number_statement, results[2].Results[0], 3, 1, 4, 1)
 
     # ----------------------------------------------------------------------
     def test_EarlyTermination(self):
@@ -383,6 +312,8 @@ class TestSimple(object):
                 observer,
             )
 
+            assert results is None
+
             # Verify the callback
             assert observer.mock.call_count == 2
 
@@ -403,16 +334,15 @@ class TestSimple(object):
 # ----------------------------------------------------------------------
 class TestIndentation(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
-    _statement                              = StandardStatement(
-        [
-            _upper_token,
-            NewlineToken(),
-            IndentToken(),
-            _upper_token,
-            _upper_token,
-            NewlineToken(),
-            DedentToken(),
-        ],
+    _statement                              = Statement(
+        "Statement",
+        _upper_token,
+        NewlineToken(),
+        IndentToken(),
+        _upper_token,
+        _upper_token,
+        NewlineToken(),
+        DedentToken(),
     )
 
     _statements                             = DynamicStatementInfo(
@@ -441,68 +371,32 @@ class TestIndentation(object):
             # Verify the results
             assert len(results) == 1
 
-            assert results[0].Statement == self._statement
-
-            assert len(results[0].Results) == 7
-
-            # Line 1
-            assert results[0].Results[0].Token == self._upper_token
-            assert results[0].Results[0].Value.Match.group("value") == "ONE"
-            assert results[0].Results[0].Whitespace is None
-            assert results[0].Results[0].Iter.Line == 1
-            assert results[0].Results[0].Iter.Column == 4
-
-            assert results[0].Results[1].Token == NewlineToken()
-            assert results[0].Results[1].Value == Token.NewlineMatch(3, 4)
-            assert results[0].Results[1].Whitespace is None
-            assert results[0].Results[1].Iter.Line == 2
-            assert results[0].Results[1].Iter.Column == 1
-
-            # Line 2
-            assert results[0].Results[2].Token == IndentToken()
-            assert results[0].Results[2].Value == Token.IndentMatch(4, 8, 4)
-            assert results[0].Results[2].Whitespace is None
-            assert results[0].Results[2].Iter.Line == 2
-            assert results[0].Results[2].Iter.Column == 5
-
-            assert results[0].Results[3].Token == self._upper_token
-            assert results[0].Results[3].Value.Match.group("value") == "TWO"
-            assert results[0].Results[3].Whitespace is None
-            assert results[0].Results[3].Iter.Line == 2
-            assert results[0].Results[3].Iter.Column == 8
-
-            assert results[0].Results[4].Token == self._upper_token
-            assert results[0].Results[4].Value.Match.group("value") == "THREE"
-            assert results[0].Results[4].Whitespace == (11, 16)
-            assert results[0].Results[4].Iter.Line == 2
-            assert results[0].Results[4].Iter.Column == 18
-
-            assert results[0].Results[5].Token == NewlineToken()
-            assert results[0].Results[5].Value == Token.NewlineMatch(21, 22)
-            assert results[0].Results[5].Whitespace is None
-            assert results[0].Results[5].Iter.Line == 3
-            assert results[0].Results[5].Iter.Column == 1
-
-            assert results[0].Results[6].Token == DedentToken()
-            assert results[0].Results[6].Value == Token.DedentMatch()
-            assert results[0].Results[6].Whitespace is None
-            assert results[0].Results[6].Iter.Line == 3
-            assert results[0].Results[6].Iter.Column == 1
-
-            assert results[0].Results[6].Iter.AtEnd()
+            assert str(results[0]) == textwrap.dedent(
+                """\
+                Or: [Statement]
+                    Statement
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                        Newline+ <<3, 4>> ws:None [2, 1]
+                        Indent <<4, 8, (4)>> ws:None [2, 5]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(8, 11), match='TWO'>>> ws:None [2, 8]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(16, 21), match='THREE'>>> ws:(11, 16) [2, 18]
+                        Newline+ <<21, 22>> ws:None [3, 1]
+                        Dedent <<>> ws:None [3, 1]
+                """,
+            )
 
             # Verify the Callbacks
             assert observer.mock.call_count == 1
 
-            observer.VerifyCallArgs(0, self._statement, results[0], 1, 1, 3, 1)
+            observer.VerifyCallArgs(0, self._statement, results[0].Results[0], 1, 1, 3, 1)
 
 # ----------------------------------------------------------------------
 class TestNewStatements(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
 
-    _upper_statement                        = StandardStatement([_upper_token])
-    _lower_statement                        = StandardStatement([_lower_token, NewlineToken()])
+    _upper_statement                        = Statement("Upper Statement", _upper_token)
+    _lower_statement                        = Statement("Lower Statement", _lower_token, NewlineToken())
 
     _statements                             = DynamicStatementInfo([_upper_statement], [])
     _new_statements                         = DynamicStatementInfo([_lower_statement], [])
@@ -536,8 +430,11 @@ class TestNewStatements(object):
             assert str(ex) == "The syntax is not recognized"
 
             assert len(ex.PotentialStatements) == 1
-            assert self._upper_statement in ex.PotentialStatements
-            assert ex.PotentialStatements[self._upper_statement] == []
+            key = tuple(self._statements.statements)
+            assert key in ex.PotentialStatements
+
+            assert len(ex.PotentialStatements[key]) == 1
+            assert ex.PotentialStatements[key][0].Results == []
 
     # ----------------------------------------------------------------------
     def test_Match(self):
@@ -564,49 +461,40 @@ class TestNewStatements(object):
             # Verify the results
             assert len(results) == 2
 
-            assert results[0].Statement == self._upper_statement
+            assert str(results[0]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement]
+                    Upper Statement
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                """,
+            )
 
-            assert len(results[0].Results) == 1
-
-            assert results[0].Results[0].Token == self._upper_token
-            assert results[0].Results[0].Value.Match.group("value") == "ONE"
-            assert results[0].Results[0].Whitespace is None
-            assert results[0].Results[0].Iter.Line == 1
-            assert results[0].Results[0].Iter.Column == 4
-
-            assert results[1].Statement == self._lower_statement
-
-            assert len(results[1].Results) == 2
-
-            assert results[1].Results[0].Token == self._lower_token
-            assert results[1].Results[0].Value.Match.group("value") == "two"
-            assert results[1].Results[0].Whitespace == (3, 4)
-            assert results[1].Results[0].Iter.Line == 1
-            assert results[1].Results[0].Iter.Column == 8
-
-            assert results[1].Results[1].Token == NewlineToken()
-            assert results[1].Results[1].Value == Token.NewlineMatch(7, 8)
-            assert results[1].Results[1].Whitespace is None
-            assert results[1].Results[1].Iter.Line == 2
-            assert results[1].Results[1].Iter.Column == 1
+            assert str(results[1]) == textwrap.dedent(
+                """\
+                Or: [Lower Statement, Upper Statement]
+                    Lower Statement
+                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
+                        Newline+ <<7, 8>> ws:None [2, 1]
+                """,
+            )
 
             # Verify the callbacks
             assert observer.mock.call_count == 2
 
-            observer.VerifyCallArgs(0, self._upper_statement, results[0], 1, 1, 1, 4)
-            observer.VerifyCallArgs(1, self._lower_statement, results[1], 1, 4, 2, 1)
+            observer.VerifyCallArgs(0, self._upper_statement, results[0].Results[0], 1, 1, 1, 4)
+            observer.VerifyCallArgs(1, self._lower_statement, results[1].Results[0], 1, 4, 2, 1)
 
 # ----------------------------------------------------------------------
 class TestNewScopedStatements(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
 
-    _upper_statement                        = StandardStatement([_upper_token])
-    _lower_statement                        = StandardStatement([_lower_token])
+    _upper_statement                        = Statement("Upper Statement", _upper_token)
+    _lower_statement                        = Statement("Lower Statement", _lower_token)
 
-    _newline_statement                      = StandardStatement([NewlineToken()])
-    _indent_statement                       = StandardStatement([IndentToken()])
-    _dedent_statement                       = StandardStatement([DedentToken()])
+    _newline_statement                      = Statement("Newline Statement", NewlineToken())
+    _indent_statement                       = Statement("Indent Statement", IndentToken())
+    _dedent_statement                       = Statement("Dedent Statement", DedentToken())
 
     _statements                             = DynamicStatementInfo([_upper_statement, _newline_statement, _indent_statement, _dedent_statement], [])
     _new_statements                         = DynamicStatementInfo([_lower_statement], [])
@@ -641,79 +529,63 @@ class TestNewScopedStatements(object):
             # Verify the results
             assert len(results) == 6
 
-            # Line 1
-            assert results[0].Statement == self._upper_statement
+            assert str(results[0]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
+                    Upper Statement
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                """,
+            )
 
-            assert len(results[0].Results) == 1
+            assert str(results[1]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
+                    Newline Statement
+                        Newline+ <<3, 4>> ws:None [2, 1]
+                """,
+            )
 
-            assert results[0].Results[0].Token == self._upper_token
-            assert results[0].Results[0].Value.Match.group("value") == "ONE"
-            assert results[0].Results[0].Whitespace is None
-            assert results[0].Results[0].Iter.Line == 1
-            assert results[0].Results[0].Iter.Column == 4
+            assert str(results[2]) == textwrap.dedent(
+                """\
+                Or: [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
+                    Indent Statement
+                        Indent <<4, 8, (4)>> ws:None [2, 5]
+                """,
+            )
 
-            assert results[1].Statement == self._newline_statement
+            assert str(results[3]) == textwrap.dedent(
+                """\
+                Or: [Lower Statement, Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
+                    Lower Statement
+                        Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 8]
+                """,
+            )
 
-            assert len(results[1].Results) == 1
+            assert str(results[4]) == textwrap.dedent(
+                """\
+                Or: [Lower Statement, Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
+                    Newline Statement
+                        Newline+ <<11, 12>> ws:None [3, 1]
+                """,
+            )
 
-            assert results[1].Results[0].Token == NewlineToken()
-            assert results[1].Results[0].Value == Token.NewlineMatch(3, 4)
-            assert results[1].Results[0].Whitespace is None
-            assert results[1].Results[0].Iter.Line == 2
-            assert results[1].Results[0].Iter.Column == 1
-
-            # Line 2
-            assert results[2].Statement == self._indent_statement
-
-            assert len(results[2].Results) == 1
-
-            assert results[2].Results[0].Token == IndentToken()
-            assert results[2].Results[0].Value == Token.IndentMatch(4, 8, 4)
-            assert results[2].Results[0].Whitespace is None
-            assert results[2].Results[0].Iter.Line == 2
-            assert results[2].Results[0].Iter.Column == 5
-
-            assert results[3].Statement == self._lower_statement
-
-            assert len(results[3].Results) == 1
-
-            assert results[3].Results[0].Token == self._lower_token
-            assert results[3].Results[0].Value.Match.group("value") == "two"
-            assert results[3].Results[0].Whitespace is None
-            assert results[3].Results[0].Iter.Line == 2
-            assert results[3].Results[0].Iter.Column == 8
-
-            assert results[4].Statement == self._newline_statement
-
-            assert len(results[4].Results) == 1
-
-            assert results[4].Results[0].Token == NewlineToken()
-            assert results[4].Results[0].Value == Token.NewlineMatch(11, 12)
-            assert results[4].Results[0].Whitespace is None
-            assert results[4].Results[0].Iter.Line == 3
-            assert results[4].Results[0].Iter.Column == 1
-
-            assert results[5].Statement == self._dedent_statement
-
-            assert len(results[5].Results) == 1
-
-            assert results[5].Results[0].Token == DedentToken()
-            assert results[5].Results[0].Value == Token.DedentMatch()
-            assert results[5].Results[0].Whitespace is None
-            assert results[5].Results[0].Iter.Line == 3
-            assert results[5].Results[0].Iter.Column == 1
-
-            assert results[5].Results[0].Iter.AtEnd()
+            assert str(results[5]) == textwrap.dedent(
+                """\
+                Or: [Lower Statement, Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
+                    Dedent Statement
+                        Dedent <<>> ws:None [3, 1]
+                """,
+            )
 
             # Verify the callbacks
             assert observer.mock.call_count == 6
 
-            observer.VerifyCallArgs(0, self._upper_statement, results[0], 1, 1, 1, 4)
-            observer.VerifyCallArgs(1, self._newline_statement, results[1], 1, 4, 2, 1)
-            observer.VerifyCallArgs(2, self._indent_statement, results[2], 2, 1, 2, 5)
-            observer.VerifyCallArgs(3, self._lower_statement, results[3], 2, 5, 2, 8)
-            observer.VerifyCallArgs(4, self._newline_statement, results[4], 2, 8, 3, 1)
-            observer.VerifyCallArgs(5, self._dedent_statement, results[5], 3, 1, 3, 1)
+            observer.VerifyCallArgs(0, self._upper_statement, results[0].Results[0], 1, 1, 1, 4)
+            observer.VerifyCallArgs(1, self._newline_statement, results[1].Results[0], 1, 4, 2, 1)
+            observer.VerifyCallArgs(2, self._indent_statement, results[2].Results[0], 2, 1, 2, 5)
+            observer.VerifyCallArgs(3, self._lower_statement, results[3].Results[0], 2, 5, 2, 8)
+            observer.VerifyCallArgs(4, self._newline_statement, results[4].Results[0], 2, 8, 3, 1)
+            observer.VerifyCallArgs(5, self._dedent_statement, results[5].Results[0], 3, 1, 3, 1)
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self):
@@ -752,26 +624,51 @@ class TestNewScopedStatements(object):
             assert ex.Column == 1
             assert str(ex) == "The syntax is not recognized"
 
-            assert len(ex.PotentialStatements) == 4
+            assert len(ex.PotentialStatements) == 1
+            key = tuple(self._statements.statements)
+            assert key in ex.PotentialStatements
 
-            assert self._upper_statement in ex.PotentialStatements
-            assert ex.PotentialStatements[self._upper_statement] == []
-            assert self._newline_statement in ex.PotentialStatements
-            assert ex.PotentialStatements[self._newline_statement] == []
-            assert self._indent_statement in ex.PotentialStatements
-            assert ex.PotentialStatements[self._indent_statement] == []
-            assert self._dedent_statement in ex.PotentialStatements
-            assert ex.PotentialStatements[self._dedent_statement] == []
+            potentials = ex.PotentialStatements[key]
+
+            assert len(potentials) == 4
+
+            assert str(potentials[0]) == textwrap.dedent(
+                """\
+                Upper Statement
+                    <No results>
+                """,
+            )
+
+            assert str(potentials[1]) == textwrap.dedent(
+                """\
+                Newline Statement
+                    <No results>
+                """,
+            )
+
+            assert str(potentials[2]) == textwrap.dedent(
+                """\
+                Indent Statement
+                    <No results>
+                """,
+            )
+
+            assert str(potentials[3]) == textwrap.dedent(
+                """\
+                Dedent Statement
+                    <No results>
+                """,
+            )
 
 # ----------------------------------------------------------------------
 class TestEmbeddedStatements(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
-    _lower_token                            = RegexToken("Upper", re.compile(r"(?P<value>[a-z]+)"))
+    _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
 
-    _upper_lower_statement                  = StandardStatement([_upper_token, _lower_token, NewlineToken()])
+    _upper_lower_statement                  = Statement("Upper Lower Statement", _upper_token, _lower_token, NewlineToken())
 
-    _uul_statement                          = StandardStatement([_upper_token, _upper_lower_statement])
-    _lul_statement                          = StandardStatement([_lower_token, _upper_lower_statement])
+    _uul_statement                          = Statement("uul", _upper_token, _upper_lower_statement)
+    _lul_statement                          = Statement("lul", _lower_token, _upper_lower_statement)
 
     _statements                             = DynamicStatementInfo([_uul_statement, _lul_statement], [])
 
@@ -796,79 +693,37 @@ class TestEmbeddedStatements(object):
             # Verify the results
             assert len(results) == 2
 
-            # Line 1
-            assert results[0].Statement == self._uul_statement
+            assert str(results[0]) == textwrap.dedent(
+                """\
+                Or: [uul, lul]
+                    uul
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                        Upper Lower Statement
+                            Upper <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:(3, 4) [1, 8]
+                            Lower <<Regex: <_sre.SRE_Match object; span=(9, 14), match='three'>>> ws:(7, 9) [1, 15]
+                            Newline+ <<14, 15>> ws:None [2, 1]
+                """,
+            )
 
-            assert len(results[0].Results) == 2
-
-            assert results[0].Results[0].Token == self._upper_token
-            assert results[0].Results[0].Value.Match.group("value") == "ONE"
-            assert results[0].Results[0].Whitespace is None
-            assert results[0].Results[0].Iter.Line == 1
-            assert results[0].Results[0].Iter.Column == 4
-
-            assert results[0].Results[1].Statement == self._upper_lower_statement
-
-            assert len(results[0].Results[1].Results) == 3
-
-            assert results[0].Results[1].Results[0].Token == self._upper_token
-            assert results[0].Results[1].Results[0].Value.Match.group("value") == "TWO"
-            assert results[0].Results[1].Results[0].Whitespace == (3, 4)
-            assert results[0].Results[1].Results[0].Iter.Line == 1
-            assert results[0].Results[1].Results[0].Iter.Column == 8
-
-            assert results[0].Results[1].Results[1].Token == self._lower_token
-            assert results[0].Results[1].Results[1].Value.Match.group("value") == "three"
-            assert results[0].Results[1].Results[1].Whitespace == (7, 9)
-            assert results[0].Results[1].Results[1].Iter.Line == 1
-            assert results[0].Results[1].Results[1].Iter.Column == 15
-
-            assert results[0].Results[1].Results[2].Token == NewlineToken()
-            assert results[0].Results[1].Results[2].Value == Token.NewlineMatch(14, 15)
-            assert results[0].Results[1].Results[2].Whitespace is None
-            assert results[0].Results[1].Results[2].Iter.Line == 2
-            assert results[0].Results[1].Results[2].Iter.Column == 1
-
-            # Line 2
-            assert results[1].Statement == self._lul_statement
-
-            assert len(results[1].Results) == 2
-
-            assert results[1].Results[0].Token == self._lower_token
-            assert results[1].Results[0].Value.Match.group("value") == "four"
-            assert results[1].Results[0].Whitespace is None
-            assert results[1].Results[0].Iter.Line == 2
-            assert results[1].Results[0].Iter.Column == 5
-
-            assert results[1].Results[1].Statement == self._upper_lower_statement
-
-            assert len(results[1].Results[1].Results) == 3
-
-            assert results[1].Results[1].Results[0].Token == self._upper_token
-            assert results[1].Results[1].Results[0].Value.Match.group("value") == "FIVE"
-            assert results[1].Results[1].Results[0].Whitespace == (19, 23)
-            assert results[1].Results[1].Results[0].Iter.Line == 2
-            assert results[1].Results[1].Results[0].Iter.Column == 13
-
-            assert results[1].Results[1].Results[1].Token == self._lower_token
-            assert results[1].Results[1].Results[1].Value.Match.group("value") == "six"
-            assert results[1].Results[1].Results[1].Whitespace == (27, 28)
-            assert results[1].Results[1].Results[1].Iter.Line == 2
-            assert results[1].Results[1].Results[1].Iter.Column == 17
-
-            assert results[1].Results[1].Results[2].Token == NewlineToken()
-            assert results[1].Results[1].Results[2].Value == Token.NewlineMatch(31, 32)
-            assert results[1].Results[1].Results[2].Whitespace is None
-            assert results[1].Results[1].Results[2].Iter.Line == 3
-            assert results[1].Results[1].Results[2].Iter.Column == 1
+            assert str(results[1]) == textwrap.dedent(
+                """\
+                Or: [uul, lul]
+                    lul
+                        Lower <<Regex: <_sre.SRE_Match object; span=(15, 19), match='four'>>> ws:None [2, 5]
+                        Upper Lower Statement
+                            Upper <<Regex: <_sre.SRE_Match object; span=(23, 27), match='FIVE'>>> ws:(19, 23) [2, 13]
+                            Lower <<Regex: <_sre.SRE_Match object; span=(28, 31), match='six'>>> ws:(27, 28) [2, 17]
+                            Newline+ <<31, 32>> ws:None [3, 1]
+                """,
+            )
 
             # Verify the callbacks
             assert observer.mock.call_count == 4
 
-            observer.VerifyCallArgs(0, self._upper_lower_statement, results[0].Results[1], 1, 4, 2, 1)
-            observer.VerifyCallArgs(1, self._uul_statement, results[0], 1, 1, 2, 1)
-            observer.VerifyCallArgs(2, self._upper_lower_statement, results[1].Results[1], 2, 5, 3, 1)
-            observer.VerifyCallArgs(3, self._lul_statement, results[1], 2, 1, 3, 1)
+            observer.VerifyCallArgs(0, self._upper_lower_statement, results[0].Results[0].Results[1], 1, 4, 2, 1)
+            observer.VerifyCallArgs(1, self._uul_statement, results[0].Results[0], 1, 1, 2, 1)
+            observer.VerifyCallArgs(2, self._upper_lower_statement, results[1].Results[0].Results[1], 2, 5, 3, 1)
+            observer.VerifyCallArgs(3, self._lul_statement, results[1].Results[0], 2, 1, 3, 1)
 
 # ----------------------------------------------------------------------
 class TestNoMatchError(object):
@@ -876,8 +731,8 @@ class TestNoMatchError(object):
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number", re.compile(r"(?P<value>[0-9]+)"))
 
-    _upper_statement                        = StandardStatement([_upper_token, _number_token])
-    _lower_statement                        = StandardStatement([_upper_token, _lower_token])
+    _upper_statement                        = Statement("Upper", _upper_token, _number_token)
+    _lower_statement                        = Statement("Lower", _upper_token, _lower_token)
 
     _statements                             = DynamicStatementInfo([_upper_statement, _lower_statement], [])
 
@@ -906,17 +761,27 @@ class TestNoMatchError(object):
             assert ex.Column == 4
             assert str(ex) == "The syntax is not recognized"
 
-            assert len(ex.PotentialStatements) == 2
+            assert len(ex.PotentialStatements) == 1
+            key = tuple(self._statements.statements)
+            assert key in ex.PotentialStatements
 
-            assert len(ex.PotentialStatements[self._upper_statement]) == 1
-            assert ex.PotentialStatements[self._upper_statement][0].Token == self._upper_token
-            assert ex.PotentialStatements[self._upper_statement][0].Iter.Line == 1
-            assert ex.PotentialStatements[self._upper_statement][0].Iter.Column == 4
+            potentials = ex.PotentialStatements[key]
 
-            assert len(ex.PotentialStatements[self._lower_statement]) == 1
-            assert ex.PotentialStatements[self._lower_statement][0].Token == self._upper_token
-            assert ex.PotentialStatements[self._lower_statement][0].Iter.Line == 1
-            assert ex.PotentialStatements[self._lower_statement][0].Iter.Column == 4
+            assert len(potentials) == 2
+
+            assert str(potentials[0]) == textwrap.dedent(
+                """\
+                Upper
+                    Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                """,
+            )
+
+            assert str(potentials[1]) == textwrap.dedent(
+                """\
+                Lower
+                    Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                """,
+            )
 
 # ----------------------------------------------------------------------
 class TestVariedLengthMatches(object):
@@ -924,9 +789,9 @@ class TestVariedLengthMatches(object):
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number", re.compile(r"(?P<value>[0-9]+)"))
 
-    _upper_statement                        = StandardStatement([_upper_token, NewlineToken()])
-    _lower_statement                        = StandardStatement([_lower_token, _lower_token, NewlineToken()])
-    _number_statement                       = StandardStatement([_number_token, _number_token, _number_token, NewlineToken()])
+    _upper_statement                        = Statement("Upper", _upper_token, NewlineToken())
+    _lower_statement                        = Statement("Lower", _lower_token, _lower_token, NewlineToken())
+    _number_statement                       = Statement("Number", _number_token, _number_token, _number_token, NewlineToken())
 
     _statements                             = DynamicStatementInfo(
         [_upper_statement, _lower_statement, _number_statement],
@@ -954,32 +819,38 @@ class TestVariedLengthMatches(object):
 
             assert len(results) == 3
 
-            # Line 1
-            assert results[0].Statement == self._lower_statement
+            assert str(results[0]) == textwrap.dedent(
+                """\
+                Or: [Upper, Lower, Number]
+                    Lower
+                        Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
+                        Newline+ <<7, 8>> ws:None [2, 1]
+                """,
+            )
 
-            assert len(results[0].Results) == 3
-            assert results[0].Results[0].Value.Match.group("value") == "one"
-            assert results[0].Results[1].Value.Match.group("value") == "two"
-            assert results[0].Results[2].Value == Token.NewlineMatch(7, 8)
+            assert str(results[1]) == textwrap.dedent(
+                """\
+                Or: [Upper, Lower, Number]
+                    Number
+                        Number <<Regex: <_sre.SRE_Match object; span=(8, 9), match='1'>>> ws:None [2, 2]
+                        Number <<Regex: <_sre.SRE_Match object; span=(10, 11), match='2'>>> ws:(9, 10) [2, 4]
+                        Number <<Regex: <_sre.SRE_Match object; span=(12, 13), match='3'>>> ws:(11, 12) [2, 6]
+                        Newline+ <<13, 14>> ws:None [3, 1]
+                """,
+            )
 
-            # Line 2
-            assert results[1].Statement == self._number_statement
-
-            assert len(results[1].Results) == 4
-            assert results[1].Results[0].Value.Match.group("value") == "1"
-            assert results[1].Results[1].Value.Match.group("value") == "2"
-            assert results[1].Results[2].Value.Match.group("value") == "3"
-            assert results[1].Results[3].Value == Token.NewlineMatch(13, 14)
-
-            # Line 3
-            assert results[2].Statement == self._upper_statement
-
-            assert len(results[2].Results) == 2
-            assert results[2].Results[0].Value.Match.group("value") == "WORD"
-            assert results[2].Results[1].Value == Token.NewlineMatch(18, 19)
+            assert str(results[2]) == textwrap.dedent(
+                """\
+                Or: [Upper, Lower, Number]
+                    Upper
+                        Upper <<Regex: <_sre.SRE_Match object; span=(14, 18), match='WORD'>>> ws:None [3, 5]
+                        Newline+ <<18, 19>> ws:None [4, 1]
+                """,
+            )
 
 # ----------------------------------------------------------------------
-class TestEmptyDynamicStatementInfo(object):
+def test_EmptyDynamicStatementInfo():
     with CreateObserver() as observer:
         observer.mock.side_effect = [
             DynamicStatementInfo([], []),
@@ -987,7 +858,7 @@ class TestEmptyDynamicStatementInfo(object):
 
         results = Parse(
             DynamicStatementInfo(
-                [StandardStatement([NewlineToken()])],
+                [Statement("Newline", NewlineToken())],
                 [],
             ),
             NormalizedIterator(
@@ -1003,18 +874,24 @@ class TestEmptyDynamicStatementInfo(object):
         )
 
         assert len(results) == 1
-        assert len(results[0].Results) == 1
-        assert results[0].Results[0].Value == Token.NewlineMatch(0, 1)
+
+        assert str(results[0]) == textwrap.dedent(
+            """\
+            Or: [Newline]
+                Newline
+                    Newline+ <<0, 1>> ws:None [2, 1]
+            """,
+        )
 
 # ----------------------------------------------------------------------
 class TestPreventParentTraversal(object):
     _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
     _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
 
-    _upper_statement                        = StandardStatement([_upper_token, NewlineToken()])
-    _lower_statement                        = StandardStatement([_lower_token, NewlineToken()])
-    _indent_statement                       = StandardStatement([IndentToken()])
-    _dedent_statement                       = StandardStatement([DedentToken()])
+    _upper_statement                        = Statement("Upper", _upper_token, NewlineToken())
+    _lower_statement                        = Statement("Lower", _lower_token, NewlineToken())
+    _indent_statement                       = Statement("Indent", IndentToken())
+    _dedent_statement                       = Statement("Dedent", DedentToken())
 
     _statements                             = DynamicStatementInfo(
         [_upper_statement, _indent_statement, _dedent_statement],
@@ -1052,45 +929,57 @@ class TestPreventParentTraversal(object):
 
             assert len(results) == 6
 
-            # Line 1
-            assert results[0].Statement == self._upper_statement
+            assert str(results[0]) == textwrap.dedent(
+                """\
+                Or: [Upper, Indent, Dedent]
+                    Upper
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                        Newline+ <<3, 4>> ws:None [2, 1]
+                """,
+            )
 
-            assert len(results[0].Results) == 2
-            assert results[0].Results[0].Value.Match.group("value") == "ONE"
-            assert results[0].Results[1].Value == Token.NewlineMatch(3, 4)
+            assert str(results[1]) == textwrap.dedent(
+                """\
+                Or: [Upper, Indent, Dedent]
+                    Indent
+                        Indent <<4, 8, (4)>> ws:None [2, 5]
+                """,
+            )
 
-            # Indent
-            assert results[1].Statement == self._indent_statement
+            assert str(results[2]) == textwrap.dedent(
+                """\
+                Or: [Lower, Dedent]
+                    Lower
+                        Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 8]
+                        Newline+ <<11, 12>> ws:None [3, 1]
+                """,
+            )
 
-            assert len(results[1].Results) == 1
-            assert results[1].Results[0].Value == Token.IndentMatch(4, 8, 4)
+            assert str(results[3]) == textwrap.dedent(
+                """\
+                Or: [Lower, Dedent]
+                    Lower
+                        Lower <<Regex: <_sre.SRE_Match object; span=(16, 21), match='three'>>> ws:None [3, 10]
+                        Newline+ <<21, 22>> ws:None [4, 1]
+                """,
+            )
 
-            # Line 2
-            assert results[2].Statement == self._lower_statement
+            assert str(results[4]) == textwrap.dedent(
+                """\
+                Or: [Lower, Dedent]
+                    Lower
+                        Lower <<Regex: <_sre.SRE_Match object; span=(26, 30), match='four'>>> ws:None [4, 9]
+                        Newline+ <<30, 31>> ws:None [5, 1]
+                """,
+            )
 
-            assert len(results[2].Results) == 2
-            assert results[2].Results[0].Value.Match.group("value") == "two"
-            assert results[2].Results[1].Value == Token.NewlineMatch(11, 12)
-
-            # Line 3
-            assert results[3].Statement == self._lower_statement
-
-            assert len(results[3].Results) == 2
-            assert results[3].Results[0].Value.Match.group("value") == "three"
-            assert results[3].Results[1].Value == Token.NewlineMatch(21, 22)
-
-            # Line 4
-            assert results[4].Statement == self._lower_statement
-
-            assert len(results[4].Results) == 2
-            assert results[4].Results[0].Value.Match.group("value") == "four"
-            assert results[4].Results[1].Value == Token.NewlineMatch(30, 31)
-
-            # Dedent
-            assert results[5].Statement == self._dedent_statement
-
-            assert len(results[5].Results) == 1
-            assert results[5].Results[0].Value == Token.DedentMatch()
+            assert str(results[5]) == textwrap.dedent(
+                """\
+                Or: [Lower, Dedent]
+                    Dedent
+                        Dedent <<>> ws:None [5, 1]
+                """,
+            )
 
     # ----------------------------------------------------------------------
     def test_Error(self):
@@ -1133,13 +1022,13 @@ class TestPreventParentTraversal(object):
 def test_InvalidDynamicTraversalError():
     with CreateObserver() as observer:
         observer.mock.side_effect = [
-            DynamicStatementInfo([StandardStatement([NewlineToken()])], [], False),
+            DynamicStatementInfo([Statement("Newline", NewlineToken())], [], False),
         ]
 
         with pytest.raises(InvalidDynamicTraversalError) as ex:
             Parse(
                 DynamicStatementInfo(
-                    [StandardStatement([NewlineToken()])],
+                    [Statement("Newline", NewlineToken())],
                     [],
                 ),
                 NormalizedIterator(

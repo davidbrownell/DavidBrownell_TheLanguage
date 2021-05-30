@@ -16,6 +16,7 @@
 """Contains functionality that parses multiple files"""
 
 import os
+import textwrap
 import threading
 import traceback
 
@@ -27,6 +28,7 @@ from dataclasses import dataclass, field
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
+from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -39,7 +41,6 @@ with InitRelativeImports():
     from .Error import Error
     from .Normalize import Normalize
     from .NormalizedIterator import NormalizedIterator
-    from .StandardStatement import StandardStatement
     from .Statement import Statement
 
     from .StatementsParser import (
@@ -70,6 +71,13 @@ class _ParseResultBase(object):
     def __post_init__(self):
         object.__setattr__(self, "Parent", None)
 
+    # ----------------------------------------------------------------------
+    def __str__(self) -> str:
+        if self.Type is None:
+            return "<Root>" if isinstance(self, RootNode) else "<None>"
+
+        return Statement.ItemTypeToString(self.Type)
+
 
 # ----------------------------------------------------------------------
 class _Node(_ParseResultBase):
@@ -81,6 +89,25 @@ class _Node(_ParseResultBase):
     def __post_init__(self):
         super(_Node, self).__post_init__()
         object.__setattr__(self, "Children", [])
+
+    # ----------------------------------------------------------------------
+    def __str__(self) -> str:
+        children = [str(child).rstrip() for child in getattr(self, "Children", [])]
+        if not children:
+            children.append("<No children>")
+
+        return textwrap.dedent(
+            """\
+            {name}
+                {children}
+            """,
+        ).format(
+            name=super(_Node, self).__str__(),
+            children=StringHelpers.LeftJustify(
+                "\n".join(children),
+                4,
+            ),
+        )
 
 
 # ----------------------------------------------------------------------
@@ -112,6 +139,15 @@ class Leaf(_ParseResultBase):
     Value: Token.MatchType                  # Result of the call to Token.Match
     Iter: NormalizedIterator                # NormalizedIterator after the token has been consumed
     IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
+
+    # ----------------------------------------------------------------------
+    def __str__(self):
+        return "{} <<{}>> [{}, {}]".format(
+            super(Leaf, self).__str__(),
+            str(self.Value),
+            self.Iter.Line,
+            self.Iter.Column,
+        )
 
 
 # ----------------------------------------------------------------------
@@ -192,6 +228,9 @@ def Parse(
     fully_qualified_names: List[str],
     initial_statement_info: DynamicStatementInfo,
     observer: Observer,
+
+    # True to execute all statements within a single thread
+    single_threaded=False,
 ) -> Union[
     Dict[str, RootNode],
     List[Exception],
@@ -258,13 +297,15 @@ def Parse(
                         initial_statement_info,
                         NormalizedIterator(Normalize(observer.LoadContent(fully_qualified_name))),
                         _StatementsObserver(fully_qualified_name, observer, Execute),
+                        single_threaded=single_threaded,
                     )
 
                     # The nodes have already been created, but we need to finalize the parent/child
                     # relationships.
                     root = RootNode()
 
-                    UpdateRelationships(root, results)
+                    for result in results:
+                        _CreateNode(result.Statement, result.Results, root)
 
                     # Get the source info
                     source_info = observer.ExtractDynamicStatementInfo(fully_qualified_name, root)
@@ -293,44 +334,17 @@ def Parse(
         with thread_info_lock:
             return thread_info.source_lookup[fully_qualified_name].SourceInfo  # <Value is unscriptable> pylint: disable=E1136
 
-    # ----------------------------------------------------------------------
-    def UpdateRelationships(
-        parent: Union[RootNode, Node],
-        results: Statement.ParseResultItemsType,
-    ):
-        for result in results:
-            if not isinstance(result, Statement.StatementParseResultItem):
-                continue
+    if single_threaded:
+        for fqn in fully_qualified_names:
+            Execute(fqn)
 
-            # The node attribute was set when the statement was completed
-            node = getattr(result, "_node", None)
-            if node is None:
-                # If here, we are likely looking at a dynamic-, or-, or repeat-statement.
-                # In any case, it's node hierarchy will have already been established.
-                assert not isinstance(result.Statement, StandardStatement), result
-
-                continue
-
-            assert node is not None
-
-            if node.Parent:
-                assert node.Parent == parent
-            else:
-                object.__setattr__(node, "Parent", parent)
-                parent.Children.append(node)
-
-            children_results = getattr(result, "Results", None)
-            if children_results:
-                UpdateRelationships(node, children_results)
-
-    # ----------------------------------------------------------------------
-
-    observer.Enqueue(
-        [
-            cast(Callable[[], None], lambda fqn=fqn: Execute(fqn))
-            for fqn in fully_qualified_names
-        ],
-    )
+    else:
+        observer.Enqueue(
+            [
+                cast(Callable[[], None], lambda fqn=fqn: Execute(fqn))
+                for fqn in fully_qualified_names
+            ],
+        )
 
     is_complete.wait()
 
@@ -388,18 +402,13 @@ class _StatementsObserver(StatementsObserver):
         bool,                               # True to continue processing, False to terminate
         DynamicStatementInfo,               # DynamicStatementInfo generated by the statement (if necessary)
     ]:
-        node = _CreateNode(
-            cast(Statement, result.Statement),
-            result.Results,
-            parent=None,
-        )
-
-        # Associate the node with the result so that we can retrieve it later
-        object.__setattr__(result, "_node", node)
-
         this_result = self._observer.OnStatementComplete(
             self._fully_qualified_name,
-            node,
+            _CreateNode(
+                cast(Statement, result.Statement),
+                result.Results,
+                parent=None,
+            ),
             iter_before,
             iter_after,
         )
@@ -437,7 +446,7 @@ def _CreateNode(
         elif isinstance(result, Statement.StatementParseResultItem):
             _CreateNode(cast(Statement, result.Statement), result.Results, node)
         else:
-            assert False, result
+            assert False, result  # pragma: no cover
 
     return node
 

@@ -150,9 +150,7 @@ def Normalize(
 
     # ----------------------------------------------------------------------
 
-    assert content
-
-    if content[-1] != "\n":
+    if not content or content[-1] != "\n":
         content += "\n"
 
     len_content = len(content)

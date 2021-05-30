@@ -40,8 +40,7 @@ with InitRelativeImports():
     from ..MultifileParser import *
     from ..Normalize import Normalize
     from ..NormalizedIterator import NormalizedIterator
-    from ..StandardStatement import StandardStatement
-    from ..Statement import DynamicStatements
+    from ..Statement import DynamicStatements, Statement
     from ..StatementsParser import SyntaxInvalidError
 
     from ..Token import (
@@ -84,24 +83,23 @@ class TestStandard(object):
     _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
 
-    _include_statement                      = StandardStatement([_include_token, _lower_token, NewlineToken()])
-    _upper_statement                        = StandardStatement([_upper_token, NewlineToken()])
-    _lower_statement                        = StandardStatement([_lower_token, NewlineToken()])
-    _number_statement                       = StandardStatement([_number_token, NewlineToken()])
+    _include_statement                      = Statement("Include", _include_token, _lower_token, NewlineToken())
+    _upper_statement                        = Statement("Upper", _upper_token, NewlineToken())
+    _lower_statement                        = Statement("Lower", _lower_token, NewlineToken())
+    _number_statement                       = Statement("Number", _number_token, NewlineToken())
 
-    _new_scope_statement                    = StandardStatement(
-        [
-            _upper_token,
-            RegexToken("Colon Token", re.compile(r":")),
-            NewlineToken(),
-            IndentToken(),
-            DynamicStatements.Statements,
-            DynamicStatements.Statements,
-            DedentToken(),
-        ],
+    _new_scope_statement                    = Statement(
+        "New Scope",
+        _upper_token,
+        RegexToken("Colon Token", re.compile(r":")),
+        NewlineToken(),
+        IndentToken(),
+        DynamicStatements.Statements,
+        DynamicStatements.Statements,
+        DedentToken(),
     )
 
-    _dynamic_number_statement               = StandardStatement([_number_token, _number_token, _number_token, NewlineToken()])
+    _dynamic_number_statement               = Statement("Dynamic Number", _number_token, _number_token, _number_token, NewlineToken())
 
     _statements                             = DynamicStatementInfo(
         [_include_statement, _upper_statement, _lower_statement, _number_statement, _new_scope_statement],
@@ -231,71 +229,23 @@ class TestStandard(object):
             assert "one" in results
             results = results["one"]
 
-            assert results.Parent is None
-            assert results.Type is None
-            assert len(results.Children) == 3
-
-            # Line 1
-            assert results.Children[0].Parent == results
-            assert results.Children[0].Type == self._lower_statement
-
-            assert len(results.Children[0].Children) == 2
-
-            assert results.Children[0].Children[0].Parent == results.Children[0]
-            assert results.Children[0].Children[0].Type == self._lower_token
-            assert results.Children[0].Children[0].Value.Match.group("value") == "one"
-            assert results.Children[0].Children[0].Whitespace is None
-            assert results.Children[0].Children[0].Iter.Line == 1
-            assert results.Children[0].Children[0].Iter.Column == 4
-
-            assert results.Children[0].Children[1].Parent == results.Children[0]
-            assert results.Children[0].Children[1].Type == NewlineToken()
-            assert results.Children[0].Children[1].Value == Token.NewlineMatch(3, 4)
-            assert results.Children[0].Children[1].Whitespace is None
-            assert results.Children[0].Children[1].Iter.Line == 2
-            assert results.Children[0].Children[1].Iter.Column == 1
-
-            # Line 2
-            assert results.Children[1].Parent == results
-            assert results.Children[1].Type == self._upper_statement
-
-            assert len(results.Children[1].Children) == 2
-
-            assert results.Children[1].Children[0].Parent == results.Children[1]
-            assert results.Children[1].Children[0].Type == self._upper_token
-            assert results.Children[1].Children[0].Value.Match.group("value") == "TWO"
-            assert results.Children[1].Children[0].Whitespace is None
-            assert results.Children[1].Children[0].Iter.Line == 2
-            assert results.Children[1].Children[0].Iter.Column == 4
-
-            assert results.Children[1].Children[1].Parent == results.Children[1]
-            assert results.Children[1].Children[1].Type == NewlineToken()
-            assert results.Children[1].Children[1].Value == Token.NewlineMatch(7, 8)
-            assert results.Children[1].Children[1].Whitespace is None
-            assert results.Children[1].Children[1].Iter.Line == 3
-            assert results.Children[1].Children[1].Iter.Column == 1
-
-            # Line 3
-            assert results.Children[2].Parent == results
-            assert results.Children[2].Type == self._number_statement
-
-            assert len(results.Children[2].Children) == 2
-
-            assert results.Children[2].Children[0].Parent == results.Children[2]
-            assert results.Children[2].Children[0].Type == self._number_token
-            assert results.Children[2].Children[0].Value.Match.group("value") == "3"
-            assert results.Children[2].Children[0].Whitespace is None
-            assert results.Children[2].Children[0].Iter.Line == 3
-            assert results.Children[2].Children[0].Iter.Column == 2
-
-            assert results.Children[2].Children[1].Parent == results.Children[2]
-            assert results.Children[2].Children[1].Type == NewlineToken()
-            assert results.Children[2].Children[1].Value == Token.NewlineMatch(9, 10)
-            assert results.Children[2].Children[1].Whitespace is None
-            assert results.Children[2].Children[1].Iter.Line == 4
-            assert results.Children[2].Children[1].Iter.Column == 1
-
-            assert results.Children[2].Children[1].Iter.AtEnd()
+            assert str(results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Lower
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> [1, 4]
+                            Newline+ <<3, 4>> [2, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Upper
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> [2, 4]
+                            Newline+ <<7, 8>> [3, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match='3'>>> [3, 2]
+                            Newline+ <<9, 10>> [4, 1]
+                """,
+            )
 
             # Verify the callbacks
             assert observer.mock.call_count == 3
@@ -332,167 +282,49 @@ class TestStandard(object):
 
             one_results = all_results["one"]
 
-            assert one_results.Parent is None
-            assert one_results.Type is None
-            assert len(one_results.Children) == 4
-
-            # Line 1
-            assert one_results.Children[0].Parent == one_results
-            assert one_results.Children[0].Type == self._lower_statement
-
-            assert len(one_results.Children[0].Children) == 2
-
-            assert one_results.Children[0].Children[0].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[0].Type == self._lower_token
-            assert one_results.Children[0].Children[0].Value.Match.group("value") == "one"
-            assert one_results.Children[0].Children[0].Whitespace is None
-            assert one_results.Children[0].Children[0].Iter.Line == 1
-            assert one_results.Children[0].Children[0].Iter.Column == 4
-
-            assert one_results.Children[0].Children[1].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[1].Type == NewlineToken()
-            assert one_results.Children[0].Children[1].Value == Token.NewlineMatch(3, 4)
-            assert one_results.Children[0].Children[1].Whitespace is None
-            assert one_results.Children[0].Children[1].Iter.Line == 2
-            assert one_results.Children[0].Children[1].Iter.Column == 1
-
-            # Line 2
-            assert one_results.Children[1].Parent == one_results
-            assert one_results.Children[1].Type == self._upper_statement
-
-            assert len(one_results.Children[1].Children) == 2
-
-            assert one_results.Children[1].Children[0].Parent == one_results.Children[1]
-            assert one_results.Children[1].Children[0].Type == self._upper_token
-            assert one_results.Children[1].Children[0].Value.Match.group("value") == "TWO"
-            assert one_results.Children[1].Children[0].Whitespace is None
-            assert one_results.Children[1].Children[0].Iter.Line == 2
-            assert one_results.Children[1].Children[0].Iter.Column == 4
-
-            assert one_results.Children[1].Children[1].Parent == one_results.Children[1]
-            assert one_results.Children[1].Children[1].Type == NewlineToken()
-            assert one_results.Children[1].Children[1].Value == Token.NewlineMatch(7, 8)
-            assert one_results.Children[1].Children[1].Whitespace is None
-            assert one_results.Children[1].Children[1].Iter.Line == 3
-            assert one_results.Children[1].Children[1].Iter.Column == 1
-
-            # Line 3
-            assert one_results.Children[2].Parent == one_results
-            assert one_results.Children[2].Type == self._include_statement
-
-            assert len(one_results.Children[2].Children) == 3
-
-            assert one_results.Children[2].Children[0].Parent == one_results.Children[2]
-            assert one_results.Children[2].Children[0].Type == self._include_token
-            assert one_results.Children[2].Children[0].Value.Match.group("value") == "include"
-            assert one_results.Children[2].Children[0].Whitespace is None
-            assert one_results.Children[2].Children[0].Iter.Line == 3
-            assert one_results.Children[2].Children[0].Iter.Column == 8
-
-            assert one_results.Children[2].Children[1].Parent == one_results.Children[2]
-            assert one_results.Children[2].Children[1].Type == self._lower_token
-            assert one_results.Children[2].Children[1].Value.Match.group("value") == "number"
-            assert one_results.Children[2].Children[1].Whitespace == (15, 16)
-            assert one_results.Children[2].Children[1].Iter.Line == 3
-            assert one_results.Children[2].Children[1].Iter.Column == 15
-
-            assert one_results.Children[2].Children[2].Parent == one_results.Children[2]
-            assert one_results.Children[2].Children[2].Type == NewlineToken()
-            assert one_results.Children[2].Children[2].Value == Token.NewlineMatch(22, 23)
-            assert one_results.Children[2].Children[2].Whitespace is None
-            assert one_results.Children[2].Children[2].Iter.Line == 4
-            assert one_results.Children[2].Children[2].Iter.Column == 1
-
-            # Line 4
-            assert one_results.Children[3].Parent == one_results
-            assert one_results.Children[3].Type == self._number_statement
-
-            assert len(one_results.Children[3].Children) == 2
-
-            assert one_results.Children[3].Children[0].Parent == one_results.Children[3]
-            assert one_results.Children[3].Children[0].Type == self._number_token
-            assert one_results.Children[3].Children[0].Value.Match.group("value") == "3"
-            assert one_results.Children[3].Children[0].Whitespace is None
-            assert one_results.Children[3].Children[0].Iter.Line == 4
-            assert one_results.Children[3].Children[0].Iter.Column == 2
-
-            assert one_results.Children[3].Children[1].Parent == one_results.Children[3]
-            assert one_results.Children[3].Children[1].Type == NewlineToken()
-            assert one_results.Children[3].Children[1].Value == Token.NewlineMatch(24, 25)
-            assert one_results.Children[3].Children[1].Whitespace is None
-            assert one_results.Children[3].Children[1].Iter.Line == 5
-            assert one_results.Children[3].Children[1].Iter.Column == 1
-
-            assert one_results.Children[3].Children[1].Iter.AtEnd()
+            assert str(one_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Lower
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> [1, 4]
+                            Newline+ <<3, 4>> [2, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Upper
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> [2, 4]
+                            Newline+ <<7, 8>> [3, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Include
+                            Include Token <<Regex: <_sre.SRE_Match object; span=(8, 15), match='include'>>> [3, 8]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(16, 22), match='number'>>> [3, 15]
+                            Newline+ <<22, 23>> [4, 1]
+                    Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(23, 24), match='3'>>> [4, 2]
+                            Newline+ <<24, 25>> [5, 1]
+                """,
+            )
 
             # Verify the other
             number_results = all_results["number"]
 
-            assert number_results.Parent is None
-            assert number_results.Type is None
-            assert len(number_results.Children) == 3
-
-            # Line 1
-            assert number_results.Children[0].Parent == number_results
-            assert number_results.Children[0].Type == self._number_statement
-
-            assert len(number_results.Children[0].Children) == 2
-
-            assert number_results.Children[0].Children[0].Parent == number_results.Children[0]
-            assert number_results.Children[0].Children[0].Type == self._number_token
-            assert number_results.Children[0].Children[0].Value.Match.group("value") == "4"
-            assert number_results.Children[0].Children[0].Whitespace is None
-            assert number_results.Children[0].Children[0].Iter.Line == 1
-            assert number_results.Children[0].Children[0].Iter.Column == 2
-
-            assert number_results.Children[0].Children[1].Parent == number_results.Children[0]
-            assert number_results.Children[0].Children[1].Type == NewlineToken()
-            assert number_results.Children[0].Children[1].Value == Token.NewlineMatch(1, 2)
-            assert number_results.Children[0].Children[1].Whitespace is None
-            assert number_results.Children[0].Children[1].Iter.Line == 2
-            assert number_results.Children[0].Children[1].Iter.Column == 1
-
-            # Line 2
-            assert number_results.Children[1].Parent == number_results
-            assert number_results.Children[1].Type == self._number_statement
-
-            assert len(number_results.Children[1].Children) == 2
-
-            assert number_results.Children[1].Children[0].Parent == number_results.Children[1]
-            assert number_results.Children[1].Children[0].Type == self._number_token
-            assert number_results.Children[1].Children[0].Value.Match.group("value") == "5"
-            assert number_results.Children[1].Children[0].Whitespace is None
-            assert number_results.Children[1].Children[0].Iter.Line == 2
-            assert number_results.Children[1].Children[0].Iter.Column == 2
-
-            assert number_results.Children[1].Children[1].Parent == number_results.Children[1]
-            assert number_results.Children[1].Children[1].Type == NewlineToken()
-            assert number_results.Children[1].Children[1].Value == Token.NewlineMatch(3, 4)
-            assert number_results.Children[1].Children[1].Whitespace is None
-            assert number_results.Children[1].Children[1].Iter.Line == 3
-            assert number_results.Children[1].Children[1].Iter.Column == 1
-
-            # Line 3
-            assert number_results.Children[2].Parent == number_results
-            assert number_results.Children[2].Type == self._number_statement
-
-            assert len(number_results.Children[2].Children) == 2
-
-            assert number_results.Children[2].Children[0].Parent == number_results.Children[2]
-            assert number_results.Children[2].Children[0].Type == self._number_token
-            assert number_results.Children[2].Children[0].Value.Match.group("value") == "6"
-            assert number_results.Children[2].Children[0].Whitespace is None
-            assert number_results.Children[2].Children[0].Iter.Line == 3
-            assert number_results.Children[2].Children[0].Iter.Column == 2
-
-            assert number_results.Children[2].Children[1].Parent == number_results.Children[2]
-            assert number_results.Children[2].Children[1].Type == NewlineToken()
-            assert number_results.Children[2].Children[1].Value == Token.NewlineMatch(5, 6)
-            assert number_results.Children[2].Children[1].Whitespace is None
-            assert number_results.Children[2].Children[1].Iter.Line == 4
-            assert number_results.Children[2].Children[1].Iter.Column == 1
-
-            assert number_results.Children[2].Children[1].Iter.AtEnd()
+            assert str(number_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> [1, 2]
+                            Newline+ <<1, 2>> [2, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> [2, 2]
+                            Newline+ <<3, 4>> [3, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> [3, 2]
+                            Newline+ <<5, 6>> [4, 1]
+                """,
+            )
 
             # Verify the callbacks
             assert observer.mock.call_count == 6
@@ -612,263 +444,75 @@ class TestStandard(object):
             # one
             one_results = results["one"]
 
-            assert one_results.Parent is None
-            assert one_results.Type is None
-            assert len(one_results.Children) == 4
-
-            # Line 1
-            assert one_results.Children[0].Parent == one_results
-            assert one_results.Children[0].Type == self._lower_statement
-
-            assert len(one_results.Children[0].Children) == 2
-
-            assert one_results.Children[0].Children[0].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[0].Type == self._lower_token
-            assert one_results.Children[0].Children[0].Value.Match.group("value") == "one"
-            assert one_results.Children[0].Children[0].Whitespace is None
-            assert one_results.Children[0].Children[0].Iter.Line == 1
-            assert one_results.Children[0].Children[0].Iter.Column == 4
-
-            assert one_results.Children[0].Children[1].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[1].Type == NewlineToken()
-            assert one_results.Children[0].Children[1].Value == Token.NewlineMatch(3, 4)
-            assert one_results.Children[0].Children[1].Whitespace is None
-            assert one_results.Children[0].Children[1].Iter.Line == 2
-            assert one_results.Children[0].Children[1].Iter.Column == 1
-
-            # Line 2
-            assert one_results.Children[1].Parent == one_results
-            assert one_results.Children[1].Type == self._upper_statement
-
-            assert len(one_results.Children[1].Children) == 2
-
-            assert one_results.Children[1].Children[0].Parent == one_results.Children[1]
-            assert one_results.Children[1].Children[0].Type == self._upper_token
-            assert one_results.Children[1].Children[0].Value.Match.group("value") == "TWO"
-            assert one_results.Children[1].Children[0].Whitespace is None
-            assert one_results.Children[1].Children[0].Iter.Line == 2
-            assert one_results.Children[1].Children[0].Iter.Column == 4
-
-            assert one_results.Children[1].Children[1].Parent == one_results.Children[1]
-            assert one_results.Children[1].Children[1].Type == NewlineToken()
-            assert one_results.Children[1].Children[1].Value == Token.NewlineMatch(7, 8)
-            assert one_results.Children[1].Children[1].Whitespace is None
-            assert one_results.Children[1].Children[1].Iter.Line == 3
-            assert one_results.Children[1].Children[1].Iter.Column == 1
-
-            # Line 3
-            assert one_results.Children[2].Parent == one_results
-            assert one_results.Children[2].Type == self._include_statement
-
-            assert len(one_results.Children[2].Children) == 3
-
-            assert one_results.Children[2].Children[0].Parent == one_results.Children[2]
-            assert one_results.Children[2].Children[0].Type == self._include_token
-            assert one_results.Children[2].Children[0].Value.Match.group("value") == "include"
-            assert one_results.Children[2].Children[0].Whitespace is None
-            assert one_results.Children[2].Children[0].Iter.Line == 3
-            assert one_results.Children[2].Children[0].Iter.Column == 8
-
-            assert one_results.Children[2].Children[1].Parent == one_results.Children[2]
-            assert one_results.Children[2].Children[1].Type == self._lower_token
-            assert one_results.Children[2].Children[1].Value.Match.group("value") == "number"
-            assert one_results.Children[2].Children[1].Whitespace == (15, 16)
-            assert one_results.Children[2].Children[1].Iter.Line == 3
-            assert one_results.Children[2].Children[1].Iter.Column == 15
-
-            assert one_results.Children[2].Children[2].Parent == one_results.Children[2]
-            assert one_results.Children[2].Children[2].Type == NewlineToken()
-            assert one_results.Children[2].Children[2].Value == Token.NewlineMatch(22, 23)
-            assert one_results.Children[2].Children[2].Whitespace is None
-            assert one_results.Children[2].Children[2].Iter.Line == 4
-            assert one_results.Children[2].Children[2].Iter.Column == 1
-
-            # Line 4
-            assert one_results.Children[3].Parent == one_results
-            assert one_results.Children[3].Type == self._number_statement
-
-            assert len(one_results.Children[3].Children) == 2
-
-            assert one_results.Children[3].Children[0].Parent == one_results.Children[3]
-            assert one_results.Children[3].Children[0].Type == self._number_token
-            assert one_results.Children[3].Children[0].Value.Match.group("value") == "3"
-            assert one_results.Children[3].Children[0].Whitespace is None
-            assert one_results.Children[3].Children[0].Iter.Line == 4
-            assert one_results.Children[3].Children[0].Iter.Column == 2
-
-            assert one_results.Children[3].Children[1].Parent == one_results.Children[3]
-            assert one_results.Children[3].Children[1].Type == NewlineToken()
-            assert one_results.Children[3].Children[1].Value == Token.NewlineMatch(24, 25)
-            assert one_results.Children[3].Children[1].Whitespace is None
-            assert one_results.Children[3].Children[1].Iter.Line == 5
-            assert one_results.Children[3].Children[1].Iter.Column == 1
-
-            assert one_results.Children[3].Children[1].Iter.AtEnd()
+            assert str(one_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Lower
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> [1, 4]
+                            Newline+ <<3, 4>> [2, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Upper
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> [2, 4]
+                            Newline+ <<7, 8>> [3, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Include
+                            Include Token <<Regex: <_sre.SRE_Match object; span=(8, 15), match='include'>>> [3, 8]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(16, 22), match='number'>>> [3, 15]
+                            Newline+ <<22, 23>> [4, 1]
+                    Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(23, 24), match='3'>>> [4, 2]
+                            Newline+ <<24, 25>> [5, 1]
+                """,
+            )
 
             # two
             two_results = results["two"]
 
-            assert two_results.Parent is None
-            assert two_results.Type is None
-            assert len(two_results.Children) == 4
-
-            # Line 1
-            assert two_results.Children[0].Parent == two_results
-            assert two_results.Children[0].Type == self._lower_statement
-
-            assert len(two_results.Children[0].Children) == 2
-
-            assert two_results.Children[0].Children[0].Parent == two_results.Children[0]
-            assert two_results.Children[0].Children[0].Type == self._lower_token
-            assert two_results.Children[0].Children[0].Value.Match.group("value") == "aaa"
-            assert two_results.Children[0].Children[0].Whitespace is None
-            assert two_results.Children[0].Children[0].Iter.Line == 1
-            assert two_results.Children[0].Children[0].Iter.Column == 4
-
-            assert two_results.Children[0].Children[1].Parent == two_results.Children[0]
-            assert two_results.Children[0].Children[1].Type == NewlineToken()
-            assert two_results.Children[0].Children[1].Value == Token.NewlineMatch(3, 4)
-            assert two_results.Children[0].Children[1].Whitespace is None
-            assert two_results.Children[0].Children[1].Iter.Line == 2
-            assert two_results.Children[0].Children[1].Iter.Column == 1
-
-            # Line 2
-            assert two_results.Children[1].Parent == two_results
-            assert two_results.Children[1].Type == self._upper_statement
-
-            assert len(two_results.Children[1].Children) == 2
-
-            assert two_results.Children[1].Children[0].Parent == two_results.Children[1]
-            assert two_results.Children[1].Children[0].Type == self._upper_token
-            assert two_results.Children[1].Children[0].Value.Match.group("value") == "BBBB"
-            assert two_results.Children[1].Children[0].Whitespace is None
-            assert two_results.Children[1].Children[0].Iter.Line == 2
-            assert two_results.Children[1].Children[0].Iter.Column == 5
-
-            assert two_results.Children[1].Children[1].Parent == two_results.Children[1]
-            assert two_results.Children[1].Children[1].Type == NewlineToken()
-            assert two_results.Children[1].Children[1].Value == Token.NewlineMatch(8, 9)
-            assert two_results.Children[1].Children[1].Whitespace is None
-            assert two_results.Children[1].Children[1].Iter.Line == 3
-            assert two_results.Children[1].Children[1].Iter.Column == 1
-
-            # Line 3
-            assert two_results.Children[2].Parent == two_results
-            assert two_results.Children[2].Type == self._include_statement
-
-            assert len(two_results.Children[2].Children) == 3
-
-            assert two_results.Children[2].Children[0].Parent == two_results.Children[2]
-            assert two_results.Children[2].Children[0].Type == self._include_token
-            assert two_results.Children[2].Children[0].Value.Match.group("value") == "include"
-            assert two_results.Children[2].Children[0].Whitespace is None
-            assert two_results.Children[2].Children[0].Iter.Line == 3
-            assert two_results.Children[2].Children[0].Iter.Column == 8
-
-            assert two_results.Children[2].Children[1].Parent == two_results.Children[2]
-            assert two_results.Children[2].Children[1].Type == self._lower_token
-            assert two_results.Children[2].Children[1].Value.Match.group("value") == "number"
-            assert two_results.Children[2].Children[1].Whitespace == (16, 17)
-            assert two_results.Children[2].Children[1].Iter.Line == 3
-            assert two_results.Children[2].Children[1].Iter.Column == 15
-
-            assert two_results.Children[2].Children[2].Parent == two_results.Children[2]
-            assert two_results.Children[2].Children[2].Type == NewlineToken()
-            assert two_results.Children[2].Children[2].Value == Token.NewlineMatch(23, 24)
-            assert two_results.Children[2].Children[2].Whitespace is None
-            assert two_results.Children[2].Children[2].Iter.Line == 4
-            assert two_results.Children[2].Children[2].Iter.Column == 1
-
-            # Line 4
-            assert two_results.Children[3].Parent == two_results
-            assert two_results.Children[3].Type == self._lower_statement
-
-            assert len(two_results.Children[3].Children) == 2
-
-            assert two_results.Children[3].Children[0].Parent == two_results.Children[3]
-            assert two_results.Children[3].Children[0].Type == self._lower_token
-            assert two_results.Children[3].Children[0].Value.Match.group("value") == "cccccc"
-            assert two_results.Children[3].Children[0].Whitespace is None
-            assert two_results.Children[3].Children[0].Iter.Line == 4
-            assert two_results.Children[3].Children[0].Iter.Column == 7
-
-            assert two_results.Children[3].Children[1].Parent == two_results.Children[3]
-            assert two_results.Children[3].Children[1].Type == NewlineToken()
-            assert two_results.Children[3].Children[1].Value == Token.NewlineMatch(30, 31)
-            assert two_results.Children[3].Children[1].Whitespace is None
-            assert two_results.Children[3].Children[1].Iter.Line == 5
-            assert two_results.Children[3].Children[1].Iter.Column == 1
-
-            assert two_results.Children[3].Children[1].Iter.AtEnd()
+            assert str(two_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Lower
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='aaa'>>> [1, 4]
+                            Newline+ <<3, 4>> [2, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Upper
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 8), match='BBBB'>>> [2, 5]
+                            Newline+ <<8, 9>> [3, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Include
+                            Include Token <<Regex: <_sre.SRE_Match object; span=(9, 16), match='include'>>> [3, 8]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(17, 23), match='number'>>> [3, 15]
+                            Newline+ <<23, 24>> [4, 1]
+                    Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                        Lower
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(24, 30), match='cccccc'>>> [4, 7]
+                            Newline+ <<30, 31>> [5, 1]
+                """,
+            )
 
             # number
             number_results = results["number"]
 
-            assert number_results.Parent is None
-            assert number_results.Type is None
-            assert len(number_results.Children) == 3
-
-            # Line 1
-            assert number_results.Children[0].Parent == number_results
-            assert number_results.Children[0].Type == self._number_statement
-
-            assert len(number_results.Children[0].Children) == 2
-
-            assert number_results.Children[0].Children[0].Parent == number_results.Children[0]
-            assert number_results.Children[0].Children[0].Type == self._number_token
-            assert number_results.Children[0].Children[0].Value.Match.group("value") == "4"
-            assert number_results.Children[0].Children[0].Whitespace is None
-            assert number_results.Children[0].Children[0].Iter.Line == 1
-            assert number_results.Children[0].Children[0].Iter.Column == 2
-
-            assert number_results.Children[0].Children[1].Parent == number_results.Children[0]
-            assert number_results.Children[0].Children[1].Type == NewlineToken()
-            assert number_results.Children[0].Children[1].Value == Token.NewlineMatch(1, 2)
-            assert number_results.Children[0].Children[1].Whitespace is None
-            assert number_results.Children[0].Children[1].Iter.Line == 2
-            assert number_results.Children[0].Children[1].Iter.Column == 1
-
-            # Line 2
-            assert number_results.Children[1].Parent == number_results
-            assert number_results.Children[1].Type == self._number_statement
-
-            assert len(number_results.Children[1].Children) == 2
-
-            assert number_results.Children[1].Children[0].Parent == number_results.Children[1]
-            assert number_results.Children[1].Children[0].Type == self._number_token
-            assert number_results.Children[1].Children[0].Value.Match.group("value") == "5"
-            assert number_results.Children[1].Children[0].Whitespace is None
-            assert number_results.Children[1].Children[0].Iter.Line == 2
-            assert number_results.Children[1].Children[0].Iter.Column == 2
-
-            assert number_results.Children[1].Children[1].Parent == number_results.Children[1]
-            assert number_results.Children[1].Children[1].Type == NewlineToken()
-            assert number_results.Children[1].Children[1].Value == Token.NewlineMatch(3, 4)
-            assert number_results.Children[1].Children[1].Whitespace is None
-            assert number_results.Children[1].Children[1].Iter.Line == 3
-            assert number_results.Children[1].Children[1].Iter.Column == 1
-
-            # Line 3
-            assert number_results.Children[2].Parent == number_results
-            assert number_results.Children[2].Type == self._number_statement
-
-            assert len(number_results.Children[2].Children) == 2
-
-            assert number_results.Children[2].Children[0].Parent == number_results.Children[2]
-            assert number_results.Children[2].Children[0].Type == self._number_token
-            assert number_results.Children[2].Children[0].Value.Match.group("value") == "6"
-            assert number_results.Children[2].Children[0].Whitespace is None
-            assert number_results.Children[2].Children[0].Iter.Line == 3
-            assert number_results.Children[2].Children[0].Iter.Column == 2
-
-            assert number_results.Children[2].Children[1].Parent == number_results.Children[2]
-            assert number_results.Children[2].Children[1].Type == NewlineToken()
-            assert number_results.Children[2].Children[1].Value == Token.NewlineMatch(5, 6)
-            assert number_results.Children[2].Children[1].Whitespace is None
-            assert number_results.Children[2].Children[1].Iter.Line == 4
-            assert number_results.Children[2].Children[1].Iter.Column == 1
-
-            assert number_results.Children[2].Children[1].Iter.AtEnd()
+            assert str(number_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> [1, 2]
+                            Newline+ <<1, 2>> [2, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> [2, 2]
+                            Newline+ <<3, 4>> [3, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> [3, 2]
+                            Newline+ <<5, 6>> [4, 1]
+                """,
+            )
 
             # Verify the callbacks
             assert observer.mock.call_count == 9
@@ -936,68 +580,22 @@ class TestStandard(object):
 
             one_results = results["one"]
 
-            assert one_results.Parent is None
-            assert one_results.Type is None
-            assert len(one_results.Children) == 2
-
-            assert one_results.Children[0].Parent == one_results
-            assert one_results.Children[0].Type == self._include_statement
-
-            assert len(one_results.Children[0].Children) == 3
-
-            assert one_results.Children[0].Children[0].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[0].Type == self._include_token
-            assert one_results.Children[0].Children[0].Value.Match.group("value") == "include"
-            assert one_results.Children[0].Children[0].Whitespace is None
-            assert one_results.Children[0].Children[0].Iter.Line == 1
-            assert one_results.Children[0].Children[0].Iter.Column == 8
-
-            assert one_results.Children[0].Children[1].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[1].Type == self._lower_token
-            assert one_results.Children[0].Children[1].Value.Match.group("value") == "number"
-            assert one_results.Children[0].Children[1].Whitespace == (7, 8)
-            assert one_results.Children[0].Children[1].Iter.Line == 1
-            assert one_results.Children[0].Children[1].Iter.Column == 15
-
-            assert one_results.Children[0].Children[2].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[2].Type == NewlineToken()
-            assert one_results.Children[0].Children[2].Value == Token.NewlineMatch(14, 15)
-            assert one_results.Children[0].Children[2].Whitespace is None
-            assert one_results.Children[0].Children[2].Iter.Line == 2
-            assert one_results.Children[0].Children[2].Iter.Column == 1
-
-            assert one_results.Children[1].Parent == one_results
-            assert one_results.Children[1].Type == self._dynamic_number_statement
-
-            assert len(one_results.Children[1].Children) == 4
-
-            assert one_results.Children[1].Children[0].Parent == one_results.Children[1]
-            assert one_results.Children[1].Children[0].Type == self._number_token
-            assert one_results.Children[1].Children[0].Value.Match.group("value") == "4"
-            assert one_results.Children[1].Children[0].Whitespace is None
-            assert one_results.Children[1].Children[0].Iter.Line == 2
-            assert one_results.Children[1].Children[0].Iter.Column == 2
-
-            assert one_results.Children[1].Children[1].Parent == one_results.Children[1]
-            assert one_results.Children[1].Children[1].Type == self._number_token
-            assert one_results.Children[1].Children[1].Value.Match.group("value") == "5"
-            assert one_results.Children[1].Children[1].Whitespace == (16, 17)
-            assert one_results.Children[1].Children[1].Iter.Line == 2
-            assert one_results.Children[1].Children[1].Iter.Column == 4
-
-            assert one_results.Children[1].Children[2].Parent == one_results.Children[1]
-            assert one_results.Children[1].Children[2].Type == self._number_token
-            assert one_results.Children[1].Children[2].Value.Match.group("value") == "6"
-            assert one_results.Children[1].Children[2].Whitespace == (18, 19)
-            assert one_results.Children[1].Children[2].Iter.Line == 2
-            assert one_results.Children[1].Children[2].Iter.Column == 6
-
-            assert one_results.Children[1].Children[3].Parent == one_results.Children[1]
-            assert one_results.Children[1].Children[3].Type == NewlineToken()
-            assert one_results.Children[1].Children[3].Value == Token.NewlineMatch(20, 21)
-            assert one_results.Children[1].Children[3].Whitespace is None
-            assert one_results.Children[1].Children[3].Iter.Line == 3
-            assert one_results.Children[1].Children[3].Iter.Column == 1
+            assert str(one_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Include
+                            Include Token <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> [1, 8]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(8, 14), match='number'>>> [1, 15]
+                            Newline+ <<14, 15>> [2, 1]
+                    Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                        Dynamic Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(15, 16), match='4'>>> [2, 2]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(17, 18), match='5'>>> [2, 4]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(19, 20), match='6'>>> [2, 6]
+                            Newline+ <<20, 21>> [3, 1]
+                """,
+            )
 
     # ----------------------------------------------------------------------
     def test_InsertedStatementsScoped(self):
@@ -1025,71 +623,124 @@ class TestStandard(object):
 
             one_results = results["one"]
 
-            assert one_results.Parent is None
-            assert one_results.Type is None
-            assert len(one_results.Children) == 1
+            assert str(one_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        New Scope
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> [1, 9]
+                            Colon Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> [1, 10]
+                            Newline+ <<9, 10>> [2, 1]
+                            Indent <<10, 14, (4)>> [2, 5]
+                            DynamicStatements.Statements
+                                Or: [Include, Upper, Lower, Number, New Scope]
+                                    Include
+                                        Include Token <<Regex: <_sre.SRE_Match object; span=(14, 21), match='include'>>> [2, 12]
+                                        Lower Token <<Regex: <_sre.SRE_Match object; span=(22, 28), match='number'>>> [2, 19]
+                                        Newline+ <<28, 29>> [3, 1]
+                            DynamicStatements.Statements
+                                Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                                    Dynamic Number
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(33, 34), match='4'>>> [3, 6]
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(35, 36), match='5'>>> [3, 8]
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(37, 38), match='6'>>> [3, 10]
+                                        Newline+ <<38, 39>> [4, 1]
+                            Dedent <<>> [4, 1]
+                """,
+            )
 
-            assert one_results.Children[0].Parent == one_results
-            assert one_results.Children[0].Type == self._new_scope_statement
+            number_results = results["number"]
 
-            assert len(one_results.Children[0].Children) == 7
+            assert str(number_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> [1, 2]
+                            Newline+ <<1, 2>> [2, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> [2, 2]
+                            Newline+ <<3, 4>> [3, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> [3, 2]
+                            Newline+ <<5, 6>> [4, 1]
+                """,
+            )
 
-            assert one_results.Children[0].Children[0].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[0].Type == self._upper_token
-            assert one_results.Children[0].Children[0].Value.Match.group("value") == "NEWSCOPE"
-            assert one_results.Children[0].Children[0].Whitespace is None
-            assert one_results.Children[0].Children[0].Iter.Line == 1
-            assert one_results.Children[0].Children[0].Iter.Column == 9
+    # ----------------------------------------------------------------------
+    def test_InsertedStatementsScopedSingleThreaded(self):
+        with self.CreateObserver(
+            {
+                "one" : textwrap.dedent(
+                    """\
+                    NEWSCOPE:
+                        include number
+                        4 5 6
+                    """,
+                ),
+            },
+            num_threads=10,
+        ) as observer:
+            results = Parse(
+                ["one"],
+                self._statements,
+                observer,
+                single_threaded=True,
+            )
 
-            assert one_results.Children[0].Children[1].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[1].Type.Name == "Colon Token"
-            assert one_results.Children[0].Children[1].Whitespace is None
-            assert one_results.Children[0].Children[1].Iter.Line == 1
-            assert one_results.Children[0].Children[1].Iter.Column == 10
+            assert len(results) == 2
+            assert "one" in results
+            assert "number" in results
 
-            assert one_results.Children[0].Children[2].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[2].Type == NewlineToken()
-            assert one_results.Children[0].Children[2].Value == Token.NewlineMatch(9, 10)
-            assert one_results.Children[0].Children[2].Whitespace is None
-            assert one_results.Children[0].Children[2].Iter.Line == 2
-            assert one_results.Children[0].Children[2].Iter.Column == 1
+            one_results = results["one"]
 
-            assert one_results.Children[0].Children[3].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[3].Type == IndentToken()
-            assert one_results.Children[0].Children[3].Value == Token.IndentMatch(10, 14, 4)
-            assert one_results.Children[0].Children[3].Whitespace is None
-            assert one_results.Children[0].Children[3].Iter.Line == 2
-            assert one_results.Children[0].Children[3].Iter.Column == 5
+            assert str(one_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        New Scope
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> [1, 9]
+                            Colon Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> [1, 10]
+                            Newline+ <<9, 10>> [2, 1]
+                            Indent <<10, 14, (4)>> [2, 5]
+                            DynamicStatements.Statements
+                                Or: [Include, Upper, Lower, Number, New Scope]
+                                    Include
+                                        Include Token <<Regex: <_sre.SRE_Match object; span=(14, 21), match='include'>>> [2, 12]
+                                        Lower Token <<Regex: <_sre.SRE_Match object; span=(22, 28), match='number'>>> [2, 19]
+                                        Newline+ <<28, 29>> [3, 1]
+                            DynamicStatements.Statements
+                                Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                                    Dynamic Number
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(33, 34), match='4'>>> [3, 6]
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(35, 36), match='5'>>> [3, 8]
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(37, 38), match='6'>>> [3, 10]
+                                        Newline+ <<38, 39>> [4, 1]
+                            Dedent <<>> [4, 1]
+                """,
+            )
 
-            assert one_results.Children[0].Children[4].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[4].Type == DynamicStatements.Statements
+            number_results = results["number"]
 
-            assert len(one_results.Children[0].Children[4].Children) == 1
-
-            assert one_results.Children[0].Children[4].Children[0].Parent == one_results.Children[0].Children[4]
-            assert one_results.Children[0].Children[4].Children[0].Type == self._include_statement
-
-            assert len(one_results.Children[0].Children[4].Children[0].Children) == 3
-
-            assert one_results.Children[0].Children[4].Children[0].Children[0].Type == self._include_token
-            assert one_results.Children[0].Children[4].Children[0].Children[1].Value.Match.group("value") == "number"
-            assert one_results.Children[0].Children[4].Children[0].Children[2].Type == NewlineToken()
-
-            assert one_results.Children[0].Children[5].Parent == one_results.Children[0]
-            assert one_results.Children[0].Children[5].Type == DynamicStatements.Statements
-
-            assert len(one_results.Children[0].Children[5].Children) == 1
-
-            assert one_results.Children[0].Children[5].Children[0].Type == self._dynamic_number_statement
-
-            assert len(one_results.Children[0].Children[5].Children[0].Children) == 4
-
-            assert one_results.Children[0].Children[5].Children[0].Children[0].Value.Match.group("value") == "4"
-            assert one_results.Children[0].Children[5].Children[0].Children[1].Value.Match.group("value") == "5"
-            assert one_results.Children[0].Children[5].Children[0].Children[2].Value.Match.group("value") == "6"
-            assert one_results.Children[0].Children[5].Children[0].Children[3].Type == NewlineToken()
-
-            assert one_results.Children[0].Children[6].Type == DedentToken()
+            assert str(number_results) == textwrap.dedent(
+                """\
+                <Root>
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> [1, 2]
+                            Newline+ <<1, 2>> [2, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> [2, 2]
+                            Newline+ <<3, 4>> [3, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope]
+                        Number
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> [3, 2]
+                            Newline+ <<5, 6>> [4, 1]
+                """,
+            )
 
     # ----------------------------------------------------------------------
     def test_InsertedStatementsAfterScope(self):
@@ -1118,16 +769,58 @@ class TestStandard(object):
             assert results[0].Column == 2
             assert str(results[0]) == "The syntax is not recognized"
 
-            assert len(results[0].PotentialStatements) == 5
-            assert results[0].PotentialStatements[self._include_statement] == []
-            assert results[0].PotentialStatements[self._upper_statement] == []
-            assert results[0].PotentialStatements[self._lower_statement] == []
-            assert results[0].PotentialStatements[self._new_scope_statement] == []
+            assert len(results[0].PotentialStatements) == 1
+            key = tuple(self._statements.statements)
+            assert key in results[0].PotentialStatements
 
-            assert len(results[0].PotentialStatements[self._number_statement]) == 1
-            assert results[0].PotentialStatements[self._number_statement][0].Token == self._number_token
-            assert results[0].PotentialStatements[self._number_statement][0].Iter.Line == 4
-            assert results[0].PotentialStatements[self._number_statement][0].Iter.Column == 2
+            potentials = results[0].PotentialStatements[key]
 
+            assert len(potentials) == 5
+
+            assert str(potentials[0]) == textwrap.dedent(
+                """\
+                Include
+                    <No results>
+                """,
+            )
+
+            assert str(potentials[1]) == textwrap.dedent(
+                """\
+                Upper
+                    <No results>
+                """,
+            )
+
+            assert str(potentials[2]) == textwrap.dedent(
+                """\
+                Lower
+                    <No results>
+                """,
+            )
+
+            assert str(potentials[3]) == textwrap.dedent(
+                """\
+                Number
+                    Number Token <<Regex: <_sre.SRE_Match object; span=(39, 40), match='7'>>> ws:None [4, 2]
+                """,
+            )
+
+            assert str(potentials[4]) == textwrap.dedent(
+                """\
+                New Scope
+                    <No results>
+                """,
+            )
+
+# ----------------------------------------------------------------------
+def test_NodeStrNoChildren():
+    node = Node(Statement("Statement", NewlineToken()))
+
+    assert str(node) == textwrap.dedent(
+        """\
+        Statement
+            <No children>
+        """,
+    )
 
 # TODO: Circular dependencies

@@ -21,7 +21,6 @@ import re
 from typing import Dict, Optional
 
 from dataclasses import dataclass
-from rop import read_only_properties
 from semantic_version import Version as SemVer
 
 import CommonEnvironment
@@ -37,8 +36,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Error import Error
     from .MultifileParser import Observer as MultifileParserObserver
-    from .RepeatStatement import RepeatStatement
-    from .StandardStatement import NamedStandardStatement, StandardStatement
     from .Statement import DynamicStatements, Statement
     from .StatementsParser import DynamicStatementInfo
 
@@ -67,57 +64,24 @@ _simple_semantic_version_regex              = re.compile(r"(?P<major>0|[1-9]\d*)
 # Statement to explicitly set the version of the syntax used to parse the block. This
 # is useful to make code written according to an older syntax version available along side
 # code written according to the current syntax version.
-SetSyntaxStatement                          = NamedStandardStatement(
+
+# __with_syntax=1.0:
+#     ...
+#
+SetSyntaxStatement                          = Statement(
     "Set Syntax Statement",
-    [
-        # __with __syntax=1.0:
-        #     ...
-        #
-        RegexToken("__with", re.compile(r"(?P<value>__with)")),
-        RegexToken("__syntax", re.compile(r"(?P<value>__syntax)")),
-        RegexToken("<assign>", re.compile(r"(?P<value>=)")),
-        RegexToken("semantic version", _simple_semantic_version_regex),
-        RegexToken(":", re.compile(r"(?P<value>:)")),
-        NewlineToken(),
-        IndentToken(),
-        RepeatStatement(
-            StandardStatement(
-                [
-                    DynamicStatements.Statements,
-                ],
-            ),
-            1,
-            None,
-        ),
-        DedentToken(),
-    ],
+    RegexToken("__with_syntax", re.compile(r"(?P<value>__with_syntax)")),
+    RegexToken("=", re.compile(r"(?P<value>=)")),
+    RegexToken("<semantic_version>", _simple_semantic_version_regex),
+    RegexToken(":", re.compile(r"(?P<value>:)")),
+    NewlineToken(),
+    IndentToken(),
+    (Statement("Dynamic Statement", DynamicStatements.Statements), 1, None),
+    DedentToken(),
 )
-
-def _GenerateSetSyntaxStatementContentFromResult(node):
-    assert len(node.Children) == 9
-
-    # Repeat Statement
-    for child in node.Children[7].Children:
-        assert isinstance(child.Type, StandardStatement), child
-        assert len(child.Children) == 1, child.Children
-
-        child = child.Children[0]
-
-        assert child.Type == DynamicStatements.Statements
-        assert len(child.Children) == 1, child.Children
-
-        yield child.Children[0]
-
-
-SetSyntaxStatement.GenerateContentFromResult            = _GenerateSetSyntaxStatementContentFromResult
 
 
 # ----------------------------------------------------------------------
-@read_only_properties(
-    "_observer",
-    "DefaultVersion",
-    "Syntaxes",
-)
 class Observer(MultifileParserObserver):
     """Processes syntax-related statements; all other statements are processed by the provided observer"""
 
@@ -178,10 +142,10 @@ class Observer(MultifileParserObserver):
         results: Statement.ParseResultItemsType,
     ) -> Optional[DynamicStatementInfo]:
         if statement == SetSyntaxStatement:
-            assert len(results) >= 4, len(results)
-            assert results[3].Token.Name == "semantic version"
+            assert len(results) >= 3, len(results)
+            assert results[2].Token.Name == "<semantic_version>"
 
-            regex_match = results[3].Value.Match
+            regex_match = results[2].Value.Match
             semver_string = "{}.{}.{}".format(
                 regex_match.group("major"),
                 regex_match.group("minor"),
@@ -191,8 +155,8 @@ class Observer(MultifileParserObserver):
             statement_info = self.Syntaxes.get(SemVer(semver_string), None)
             if statement_info is None:
                 raise SyntaxInvalidVersionError(
-                    results[3].Iter.Line,
-                    results[2].Iter.Column + ((results[3].Whitespace[1] - results[3].Whitespace[0]) if results[3].Whitespace else 0),
+                    results[2].Iter.Line,
+                    results[1].Iter.Column + ((results[2].Whitespace[1] - results[2].Whitespace[0]) if results[2].Whitespace else 0),
                     semver_string,
                 )
 
