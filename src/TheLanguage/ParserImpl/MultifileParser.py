@@ -142,11 +142,13 @@ class Leaf(_ParseResultBase):
 
     # ----------------------------------------------------------------------
     def __str__(self):
-        return "{} <<{}>> [{}, {}]".format(
-            super(Leaf, self).__str__(),
-            str(self.Value),
-            self.Iter.Line,
-            self.Iter.Column,
+        return "{typ} <<{value}>> ws:{ws}{ignored} [{line}, {column}]".format(
+            typ=super(Leaf, self).__str__(),
+            value=str(self.Value),
+            ws="None" if self.Whitespace is None else "({}, {})".format(self.Whitespace[0], self.Whitespace[1]),
+            ignored=" !Ignored!" if self.IsIgnored else "",
+            line=self.Iter.Line,
+            column=self.Iter.Column,
         )
 
 
