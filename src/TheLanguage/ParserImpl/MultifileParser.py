@@ -21,7 +21,7 @@ import threading
 import traceback
 
 from concurrent.futures import Future
-from typing import cast, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, cast, Callable, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -295,10 +295,12 @@ def Parse(
 
             with CallOnExit(OnExit):
                 try:
+                    statement_observer = _StatementsObserver(fully_qualified_name, observer, Execute)
+
                     results = StatementsParse(
                         initial_statement_info,
                         NormalizedIterator(Normalize(observer.LoadContent(fully_qualified_name))),
-                        _StatementsObserver(fully_qualified_name, observer, Execute),
+                        statement_observer,
                         single_threaded=single_threaded,
                     )
 
@@ -307,7 +309,7 @@ def Parse(
                     root = RootNode()
 
                     for result in results:
-                        _CreateNode(result.Statement, result.Results, root)
+                        statement_observer.CreateNode(result.Statement, result.Results, root)
 
                     # Get the source info
                     source_info = observer.ExtractDynamicStatementInfo(fully_qualified_name, root)
@@ -367,6 +369,12 @@ class _StatementsObserver(StatementsObserver):
     _observer: Observer
     _enqueue_content_func: Callable[[str], DynamicStatementInfo]
 
+    # Preserve cached nodes so that we don't have to continually recreate them.
+    # This is also beneficial, as some statements will add context data to the
+    # node when processing it.
+    node_cache: Dict[Any, Node]             = field(default_factory=dict)
+    _node_cache_lock                        = threading.Lock()
+
     # ----------------------------------------------------------------------
     @Interface.override
     def Enqueue(
@@ -406,7 +414,7 @@ class _StatementsObserver(StatementsObserver):
     ]:
         this_result = self._observer.OnStatementComplete(
             self._fully_qualified_name,
-            _CreateNode(
+            self.CreateNode(
                 cast(Statement, result.Statement),
                 result.Results,
                 parent=None,
@@ -427,48 +435,69 @@ class _StatementsObserver(StatementsObserver):
 
         return this_result
 
+    # ----------------------------------------------------------------------
+    def CreateNode(
+        self,
+        statement: Statement,
+        parse_results: Statement.ParseResultItemsType,
+        parent: Optional[Union[RootNode, Node]],
+    ) -> Node:
+        """Converts a parse result into a node"""
 
-# ----------------------------------------------------------------------
-def _CreateNode(
-    statement: Statement,
-    parse_results: Statement.ParseResultItemsType,
-    parent: Optional[Union[RootNode, Node]],
-) -> Node:
-    """Converts a parse result into a node"""
+        node = None
+        was_cached = False
 
-    node = Node(statement)
+        # Look for the cached value
+        key = tuple([id(statement)] + [id(result) for result in parse_results])
+        if key:
+            with self._node_cache_lock:
+                potential_node = self.node_cache.get(key, None)
+                if potential_node is not None:
+                    node = potential_node
+                    was_cached = True
 
-    if parent is not None:
-        object.__setattr__(node, "Parent", parent)
-        parent.Children.append(node)  # type: ignore
+        if node is None:
+            node = Node(statement)
 
-    for result in parse_results:
-        if isinstance(result, Statement.TokenParseResultItem):
-            _CreateLeaf(result, node)
-        elif isinstance(result, Statement.StatementParseResultItem):
-            _CreateNode(cast(Statement, result.Statement), result.Results, node)
-        else:
-            assert False, result  # pragma: no cover
+        if parent is not None:
+            object.__setattr__(node, "Parent", parent)
+            parent.Children.append(node)  # type: ignore
 
-    return node
+        if not was_cached:
+            for result in parse_results:
+                if isinstance(result, Statement.TokenParseResultItem):
+                    self._CreateLeaf(result, node)
+                elif isinstance(result, Statement.StatementParseResultItem):
+                    self.CreateNode(cast(Statement, result.Statement), result.Results, node)
+                else:
+                    assert False, result  # pragma: no cover
 
+            # Cache the node
+            if key:
+                with self._node_cache_lock:
+                    self.node_cache[key] = node
 
-# ----------------------------------------------------------------------
-def _CreateLeaf(
-    result: Statement.TokenParseResultItem,
-    parent: Node,
-) -> Leaf:
-    """Converts a parse result item into a leaf"""
+        return node
 
-    leaf = Leaf(
-        result.Token,
-        result.Whitespace,
-        result.Value,
-        result.Iter,
-        result.IsIgnored,
-    )
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _CreateLeaf(
+        result: Statement.TokenParseResultItem,
+        parent: Node,
+    ) -> Leaf:
+        """Converts a parse result item into a leaf"""
 
-    object.__setattr__(leaf, "Parent", parent)
-    parent.Children.append(leaf)  # type: ignore
+        leaf = Leaf(
+            result.Token,
+            result.Whitespace,
+            result.Value,
+            result.Iter,
+            result.IsIgnored,
+        )
 
-    return leaf
+        object.__setattr__(leaf, "Parent", parent)
+        parent.Children.append(leaf)  # type: ignore
+
+        return leaf
