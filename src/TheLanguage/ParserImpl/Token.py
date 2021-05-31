@@ -26,7 +26,6 @@ from typing import (
 )
 
 from dataclasses import dataclass
-from rop import read_only_properties
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -51,6 +50,10 @@ class Token(Interface.Interface):
         Start: int
         End: int
 
+        # ----------------------------------------------------------------------
+        def __str__(self):
+            return "{}, {}".format(self.Start, self.End)
+
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class IndentMatch(object):
@@ -58,15 +61,25 @@ class Token(Interface.Interface):
         End: int
         Value: int
 
+        # ----------------------------------------------------------------------
+        def __str__(self):
+            return "{}, {}, ({})".format(self.Start, self.End, self.Value)
+
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class DedentMatch(object):
-        pass
+        # ----------------------------------------------------------------------
+        def __str__(self):
+            return ""
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class RegexMatch(object):
         Match: TypingMatch
+
+        # ----------------------------------------------------------------------
+        def __str__(self):
+            return "Regex: {}".format(str(self.Match))
 
     # ----------------------------------------------------------------------
     MatchType                               = Union[
@@ -103,8 +116,6 @@ class Token(Interface.Interface):
 
 
 # ----------------------------------------------------------------------
-@Interface.staticderived
-@read_only_properties("CaptureMany")
 class NewlineToken(Token):
     """Token that matches 1 or more newlines (depending on `capture_many`)"""
 
@@ -198,7 +209,6 @@ class DedentToken(Token):
 
 
 # ----------------------------------------------------------------------
-@read_only_properties("Regex", "IsMultiline")
 class RegexToken(Token):
     """Token that matches content based on the provided regular expression"""
 
