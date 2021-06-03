@@ -1126,12 +1126,15 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_RelativePathError(self):
+        # Create a realtive path that is greater than the number of directories in the current path
+        dots = "." * (_script_dir.count(os.path.sep) + 5)
+
         content = {
             self._filename : textwrap.dedent(
                 """\
-                from ................. import file1
+                from {} import file1
                 """,
-            ),
+            ).format(dots),
         }
 
         with Patcher(content):
@@ -1144,8 +1147,8 @@ class TestStandard(object):
             assert len(result) == 1
             result = result[0]
 
-            assert str(result) == "The relative path '.................' is not valid with the origin '{}'".format(_script_dir)
+            assert str(result) == "The relative path '{}' is not valid with the origin '{}'".format(dots, _script_dir)
             assert result.Line == 1
-            assert result.Column == 23
-            assert result.SourceName == "................."
+            assert result.Column == 6 + len(dots)
+            assert result.SourceName == dots
             assert result.OriginName == _script_dir
