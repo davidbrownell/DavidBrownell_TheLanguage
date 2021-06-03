@@ -64,6 +64,8 @@ class InvalidRelativePathError(UnknownSourceError):
 
 
 # ----------------------------------------------------------------------
+# TODO: Both of these values need to be validated to ensure that they adhere to naming conventions
+_import_source_token                        = RegexToken("<source>", re.compile(r"(?P<value>[a-zA-Z\.][a-zA-Z0-9\._]*)"))
 _import_name_token                          = RegexToken("<name>", re.compile(r"(?P<value>[a-zA-Z0-9_]+)"))
 
 
@@ -124,7 +126,7 @@ class ImportStatement(ImportGrammarStatement):
             Statement(
                 "Import",
                 RegexToken("'from'", re.compile("from")),
-                RegexToken("<source>", re.compile(r"(?P<value>[a-zA-Z\.][a-zA-Z0-9\._]*)")),
+                _import_source_token,
                 RegexToken("'import'", re.compile("import")),
                 [
                     # '(' <content_items_statement> ')'
