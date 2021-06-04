@@ -426,6 +426,13 @@ class TestParseSimple(object):
         assert iter.Column == 1
         assert iter.Offset == 0
 
+    # ----------------------------------------------------------------------
+    def test_Clone(self):
+        statement = self._statement.Clone()
+
+        assert statement.Name == self._statement.Name
+        assert statement.Items == self._statement.Items
+
 # ----------------------------------------------------------------------
 class TestParseIndentAndDedent(object):
     _word_token                             = RegexToken("Word", re.compile(r"(?P<value>\S+)"))
@@ -1494,6 +1501,149 @@ class TestRepeat(object):
         )
 
         assert result is None
+
+# ----------------------------------------------------------------------
+class TestRepeatToken(object):
+    _word_token                             = RegexToken("Word Token", re.compile(r"(?P<value>[a-z]+)"))
+    _word_statement                         = Statement(
+        "Statement",
+        (_word_token, 0, 3),
+    )
+
+    # ----------------------------------------------------------------------
+    def test_MaxItems(self, parse_mock):
+        result = self._word_statement.Parse(NormalizedIterator(Normalize("one two three")), parse_mock)
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            13
+                Repeat: (Word Token, 0, 3)
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='three'>>> ws:(7, 8) [1, 14]
+            """,
+        )
+
+    # ----------------------------------------------------------------------
+    def test_NoItems(self, parse_mock):
+        result = self._word_statement.Parse(NormalizedIterator(Normalize("")), parse_mock)
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            0
+                Repeat: (Word Token, 0, 3)
+                    <No results>
+            """,
+        )
+
+class TestRepeatSimilarStatements(object):
+    _word_token                             = RegexToken("Word Token", re.compile(r"(?P<value>[a-z]+)"))
+    _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>\d+)"))
+
+    # Ensure that the first statement doesn't eat the word so that it isn't available to the
+    # second statement.
+    _statement                              = Statement(
+        "Statement",
+        (Statement("Word & Number", _word_token, _number_token), 0, None),
+        (_word_token, 0, 1),
+    )
+
+    # ----------------------------------------------------------------------
+    def test_LargeMatch(self, parse_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("word 123")), parse_mock)
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            8
+                Repeat: (Word & Number, 0, None)
+                    Word & Number
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 5]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(5, 8), match='123'>>> ws:(4, 5) [1, 9]
+                Repeat: (Word Token, 0, 1)
+                    <No results>
+            """,
+        )
+
+    # ----------------------------------------------------------------------
+    def test_IgnoreWhitespace(self, parse_mock):
+        statement = self._statement.Clone()
+
+        statement.Items.insert(0, PushIgnoreWhitespaceControlToken())
+        statement.Items.append(PopIgnoreWhitespaceControlToken())
+
+        result = statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        one 1
+                            two 2
+                                three 3
+
+                            four 4
+                                        five 5
+                        six
+                        """,
+                    ),
+                ),
+            ),
+            parse_mock,
+        )
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            71
+                Repeat: (Word & Number, 0, None)
+                    Word & Number
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='1'>>> ws:(3, 4) [1, 6]
+                    Newline+ <<5, 6>> ws:None !Ignored! [2, 1]
+                    Indent <<6, 10, (4)>> ws:None !Ignored! [2, 5]
+                    Word & Number
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(10, 13), match='two'>>> ws:None [2, 8]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(14, 15), match='2'>>> ws:(13, 14) [2, 10]
+                    Newline+ <<15, 16>> ws:None !Ignored! [3, 1]
+                    Indent <<16, 24, (8)>> ws:None !Ignored! [3, 9]
+                    Word & Number
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(24, 29), match='three'>>> ws:None [3, 14]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(30, 31), match='3'>>> ws:(29, 30) [3, 16]
+                    Newline+ <<31, 33>> ws:None !Ignored! [5, 1]
+                    Dedent <<>> ws:None !Ignored! [5, 5]
+                    Word & Number
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(37, 41), match='four'>>> ws:None [5, 9]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(42, 43), match='4'>>> ws:(41, 42) [5, 11]
+                    Newline+ <<43, 44>> ws:None !Ignored! [6, 1]
+                    Indent <<44, 60, (16)>> ws:None !Ignored! [6, 17]
+                    Word & Number
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(60, 64), match='five'>>> ws:None [6, 21]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(65, 66), match='5'>>> ws:(64, 65) [6, 23]
+                Newline+ <<66, 67>> ws:None !Ignored! [7, 1]
+                Dedent <<>> ws:None !Ignored! [7, 1]
+                Dedent <<>> ws:None !Ignored! [7, 1]
+                Repeat: (Word Token, 0, 1)
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(67, 70), match='six'>>> ws:None [7, 4]
+                Newline+ <<70, 71>> ws:None !Ignored! [8, 1]
+            """,
+        )
+
+    # ----------------------------------------------------------------------
+    def test_SmallMatch(self, parse_mock):
+        result = self._statement.Parse(NormalizedIterator(Normalize("word")), parse_mock)
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            4
+                Repeat: (Word & Number, 0, None)
+                    <No results>
+                Repeat: (Word Token, 0, 1)
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 5]
+            """,
+        )
 
 # ----------------------------------------------------------------------
 class TestOr(object):

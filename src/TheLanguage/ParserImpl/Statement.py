@@ -281,6 +281,10 @@ class Statement(object):
         self.Items                          = list(items)
 
     # ----------------------------------------------------------------------
+    def Clone(self):
+        return Statement(self.Name, *self.Items)
+
+    # ----------------------------------------------------------------------
     def Parse(
         self,
         normalized_iter: NormalizedIterator,
@@ -326,7 +330,7 @@ class Statement(object):
     @classmethod
     def ParseMultiple(
         cls,
-        statements: List["Statement"],
+        statements: List["Statement.ItemType"],
         normalized_iter: NormalizedIterator,
         observer: "Statement.Observer",
         ignore_whitespace=False,
@@ -345,7 +349,7 @@ class Statement(object):
 
         # ----------------------------------------------------------------------
         def Impl(statement):
-            parser = Statement._Parser(
+            parser = cls._Parser(
                 statement,
                 normalized_iter.Clone(),
                 observer,
@@ -490,7 +494,7 @@ class Statement(object):
         # ----------------------------------------------------------------------
         def __init__(
             self,
-            statement: "Statement",
+            statement: "Statement.ItemType",
             normalized_iter: NormalizedIterator,
             observer: "Statement.Observer",
             ignore_whitespace: bool,
@@ -498,11 +502,47 @@ class Statement(object):
         ):
             self._statement                 = statement
             self._observer                  = observer
-            self._ignore_whitespace_ctr     = 1 if ignore_whitespace else 0
             self._single_threaded           = single_threaded
+            self._ignore_whitespace_ctr     = 1 if ignore_whitespace else 0
 
             self.normalized_iter            = normalized_iter
             self.results                    = []
+
+        # ----------------------------------------------------------------------
+        def CreateSnapshot(self) -> Any:
+            """Returns information that can be used to restore the parser to a specific state"""
+
+            return (
+                id(self),
+                self.normalized_iter.Clone(),
+                len(self.results),
+                self._ignore_whitespace_ctr,
+            )
+
+        # ----------------------------------------------------------------------
+        def RestoreSnapshot(
+            self,
+            snapshot_data: Any,
+        ):
+            """Restores the parser to the specified state"""
+
+            (
+                self_id,
+                iter,
+                len_results,
+                ignore_whitespace_ctr,
+            ) = snapshot_data
+
+            assert self_id == id(self)
+            assert iter.Offset <= self.normalized_iter.Offset
+            assert len_results <= len(self.results)
+            assert ignore_whitespace_ctr <= self._ignore_whitespace_ctr
+
+            self.normalized_iter = iter
+            self._ignore_whitespace_ctr = ignore_whitespace_ctr
+
+            if len(self.results) != len_results:
+                del self.results[len_results - len(self.results):]
 
         # ----------------------------------------------------------------------
         def ParseItem(
@@ -534,6 +574,9 @@ class Statement(object):
                     pass
 
                 else:
+                    if self.normalized_iter.AtEnd():
+                        return False
+
                     # We only want to consume whitespace if there is a match that follows it
                     potential_iter = self.normalized_iter.Clone()
                     potential_whitespace = self._ExtractWhitespace(potential_iter)
@@ -627,10 +670,13 @@ class Statement(object):
                     and result.Success
                 ):
                     for repeated_result in result.Results:
-                        if not self._observer.OnInternalStatement(
-                            repeated_result,
-                            self.normalized_iter,
-                            result.Iter
+                        if (
+                            isinstance(repeated_result, Statement.StatementParseResultItem)
+                            and not self._observer.OnInternalStatement(
+                                repeated_result,
+                                self.normalized_iter,
+                                result.Iter
+                            )
                         ):
                             return None
 
@@ -692,6 +738,9 @@ class Statement(object):
         ) -> Optional[List["Statement.TokenParseResultItem"]]:
             """Eats any whitespace token when requested"""
 
+            if normalized_iter.AtEnd():
+                return None
+
             normalized_iter = normalized_iter.Clone()
 
             result = cls._indent_token.Match(normalized_iter)
@@ -750,6 +799,9 @@ class Statement(object):
         ) -> Optional[Tuple[int, int]]:
             """Consumes any whitespace located at the current offset"""
 
+            if normalized_iter.AtEnd():
+                return None
+
             if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart:
                 if (
                     not normalized_iter.LineInfo.HasNewIndent()
@@ -773,9 +825,10 @@ class Statement(object):
             return None
 
         # ----------------------------------------------------------------------
-        @staticmethod
+        @classmethod
         def _ParseRepeat(
-            statement: "Statement",
+            cls,
+            statement: "Statement.ItemType",
             normalized_iter: NormalizedIterator,
             observer: "Statement.Observer",
             min_matches: int,
@@ -788,40 +841,41 @@ class Statement(object):
             assert min_matches >= 0, min_matches
             assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
 
-            results: List[Statement.StatementParseResultItem] = []
+            parser = cls(
+                statement,
+                normalized_iter,
+                observer,
+                ignore_whitespace=ignore_whitespace,
+                single_threaded=single_threaded,
+            )
 
             while True:
-                result = statement.Parse(
-                    normalized_iter,
-                    observer,
-                    ignore_whitespace=ignore_whitespace,
-                    single_threaded=single_threaded,
-                )
-                if not result.Success:
+                # Prepare to restore the parser to the original state if we were not
+                # able to parse the content. This will given subsequent statements that
+                # ability to consume the content.
+                snapshot_data = parser.CreateSnapshot()
+
+                result = parser.ParseItem(statement)
+                if result is None:
+                    return None
+
+                if not result:
+                    parser.RestoreSnapshot(snapshot_data)
                     break
 
-                results.append(
-                    Statement.StatementParseResultItem(statement, result.Results),
-                )
-
-                normalized_iter = result.Iter.Clone()
-
-                if max_matches is not None and len(results) == max_matches:
+                if max_matches is not None and len(parser.results) == max_matches:
                     break
 
-            if min_matches == 0 and max_matches == 1:
-                success = len(results) <= 1
-            else:
-                success = (
-                    len(results) >= min_matches
-                    and (
-                        max_matches is None
-                        or len(results) == max_matches
-                    )
+            success = (
+                len(parser.results) >= min_matches
+                and (
+                    max_matches is None
+                    or len(parser.results) <= max_matches
                 )
+            )
 
             return Statement.ParseResult(
                 success,
-                cast(Statement.ParseResultItemsType, results),
-                normalized_iter,
+                parser.results,
+                parser.normalized_iter,
             )
