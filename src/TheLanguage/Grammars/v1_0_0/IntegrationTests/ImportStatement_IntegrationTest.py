@@ -131,7 +131,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(14, 19), match='file1'>>> ws:(13, 14) [1, 20]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -150,7 +150,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(43, 48), match='File1'>>> ws:(42, 43) [2, 29]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -166,7 +166,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(66, 71), match='file2'>>> ws:(65, 66) [4, 22]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -185,7 +185,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(97, 102), match='File2'>>> ws:(96, 97) [5, 31]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -201,7 +201,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(124, 129), match='file3'>>> ws:(123, 124) [7, 26]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -220,7 +220,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(159, 164), match='File3'>>> ws:(158, 159) [8, 35]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -236,7 +236,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(189, 194), match='file4'>>> ws:(188, 189) [10, 29]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -255,7 +255,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(227, 232), match='File4'>>> ws:(226, 227) [11, 38]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -363,7 +363,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(19, 23), match='obj1'>>> ws:(18, 19) [1, 24]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -382,7 +382,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(51, 55), match='Obj1'>>> ws:(50, 51) [2, 32]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -398,7 +398,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(78, 82), match='obj2'>>> ws:(77, 78) [4, 26]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -417,7 +417,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(112, 116), match='Obj2'>>> ws:(111, 112) [5, 34]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -433,7 +433,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(144, 148), match='obj3'>>> ws:(143, 144) [7, 31]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -452,7 +452,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(183, 187), match='Obj3'>>> ws:(182, 183) [8, 39]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -468,7 +468,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(218, 222), match='obj4'>>> ws:(217, 218) [10, 34]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -487,7 +487,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(260, 264), match='Obj4'>>> ws:(259, 260) [11, 42]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -595,7 +595,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(18, 22), match='obj1'>>> ws:(17, 18) [1, 23]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -614,7 +614,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(49, 53), match='Obj1'>>> ws:(48, 49) [2, 31]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -630,7 +630,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(73, 77), match='obj2'>>> ws:(72, 73) [4, 23]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -649,7 +649,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(104, 108), match='Obj2'>>> ws:(103, 104) [5, 31]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -665,7 +665,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(128, 132), match='obj3'>>> ws:(127, 128) [7, 23]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -684,7 +684,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(159, 163), match='Obj3'>>> ws:(158, 159) [8, 31]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -700,7 +700,7 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(193, 197), match='obj4'>>> ws:(192, 193) [10, 33]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -719,7 +719,7 @@ class TestStandard(object):
                                             <name> <<Regex: <_sre.SRE_Match object; span=(234, 238), match='Obj4'>>> ws:(233, 234) [11, 41]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -831,7 +831,7 @@ class TestStandard(object):
                                             ',' <<Regex: <_sre.SRE_Match object; span=(50, 51), match=','>>> ws:None [1, 52]
                                             Or: [Renamed, <name>]
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(52, 56), match='obj4'>>> ws:(51, 52) [1, 57]
-                                    Repeat: (Comma, 0, 1)
+                                    Repeat: (',', 0, 1)
                                         <No children>
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
@@ -900,7 +900,7 @@ class TestStandard(object):
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [1, 25]
                                                 Or: [Renamed, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(25, 29), match='obj2'>>> ws:(24, 25) [1, 30]
-                                        Repeat: (Comma, 0, 1)
+                                        Repeat: (',', 0, 1)
                                             <No children>
                                     ')' <<Regex: <_sre.SRE_Match object; span=(29, 30), match=')'>>> ws:None [1, 31]
                     Or: [Set Syntax, Import, Vertical Whitespace]
@@ -937,7 +937,7 @@ class TestStandard(object):
                                         Newline+ <<96, 97>> ws:None !Ignored! [8, 1]
                                         Dedent <<>> ws:None !Ignored! [8, 1]
                                         Dedent <<>> ws:None !Ignored! [8, 1]
-                                        Repeat: (Comma, 0, 1)
+                                        Repeat: (',', 0, 1)
                                             <No children>
                                     ')' <<Regex: <_sre.SRE_Match object; span=(97, 98), match=')'>>> ws:None [8, 2]
                     Or: [Set Syntax, Import, Vertical Whitespace]
@@ -1013,9 +1013,8 @@ class TestStandard(object):
                                         <name> <<Regex: <_sre.SRE_Match object; span=(14, 19), match='file1'>>> ws:(13, 14) [1, 20]
                                     Repeat: (Comma and Statement, 0, None)
                                         <No children>
-                                    Repeat: (Comma, 0, 1)
-                                        Comma
-                                            ',' <<Regex: <_sre.SRE_Match object; span=(19, 20), match=','>>> ws:None [1, 21]
+                                    Repeat: (',', 0, 1)
+                                        ',' <<Regex: <_sre.SRE_Match object; span=(19, 20), match=','>>> ws:None [1, 21]
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<20, 21>> ws:None [2, 1]
@@ -1033,9 +1032,8 @@ class TestStandard(object):
                                             ',' <<Regex: <_sre.SRE_Match object; span=(46, 47), match=','>>> ws:None [2, 27]
                                             Or: [Renamed, <name>]
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(48, 52), match='obj2'>>> ws:(47, 48) [2, 32]
-                                    Repeat: (Comma, 0, 1)
-                                        Comma
-                                            ',' <<Regex: <_sre.SRE_Match object; span=(52, 53), match=','>>> ws:None [2, 33]
+                                    Repeat: (',', 0, 1)
+                                        ',' <<Regex: <_sre.SRE_Match object; span=(52, 53), match=','>>> ws:None [2, 33]
                     Or: [Set Syntax, Import, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<53, 55>> ws:None [4, 1]
@@ -1057,9 +1055,8 @@ class TestStandard(object):
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(95, 99), match='Obj3'>>> ws:(94, 95) [5, 17]
                                         Repeat: (Comma and Statement, 0, None)
                                             <No children>
-                                        Repeat: (Comma, 0, 1)
-                                            Comma
-                                                ',' <<Regex: <_sre.SRE_Match object; span=(99, 100), match=','>>> ws:None [5, 18]
+                                        Repeat: (',', 0, 1)
+                                            ',' <<Regex: <_sre.SRE_Match object; span=(99, 100), match=','>>> ws:None [5, 18]
                                     Newline+ <<100, 101>> ws:None !Ignored! [6, 1]
                                     Dedent <<>> ws:None !Ignored! [6, 1]
                                     ')' <<Regex: <_sre.SRE_Match object; span=(101, 102), match=')'>>> ws:None [6, 2]
@@ -1084,9 +1081,8 @@ class TestStandard(object):
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(143, 144), match=','>>> ws:None [9, 10]
                                                 Or: [Renamed, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(145, 149), match='obj5'>>> ws:(144, 145) [9, 15]
-                                        Repeat: (Comma, 0, 1)
-                                            Comma
-                                                ',' <<Regex: <_sre.SRE_Match object; span=(149, 150), match=','>>> ws:None [9, 16]
+                                        Repeat: (',', 0, 1)
+                                            ',' <<Regex: <_sre.SRE_Match object; span=(149, 150), match=','>>> ws:None [9, 16]
                                     Newline+ <<150, 151>> ws:None !Ignored! [10, 1]
                                     Dedent <<>> ws:None !Ignored! [10, 1]
                                     ')' <<Regex: <_sre.SRE_Match object; span=(151, 152), match=')'>>> ws:None [10, 2]

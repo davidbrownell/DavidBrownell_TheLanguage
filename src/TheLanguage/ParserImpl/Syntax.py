@@ -76,7 +76,7 @@ SetSyntaxStatement                          = Statement(
     RegexToken("':'", re.compile(r"(?P<value>:)")),
     NewlineToken(),
     IndentToken(),
-    (Statement("Dynamic", DynamicStatements.Statements), 1, None),
+    (DynamicStatements.Statements, 1, None),
     DedentToken(),
 )
 
