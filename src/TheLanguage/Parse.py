@@ -131,6 +131,7 @@ def Parse(
         fully_qualified_names,
         syntax_observer.Syntaxes[syntax_observer.DefaultVersion],
         syntax_observer,
+        single_threaded=max_num_threads == 1,
     )
 
 

@@ -96,14 +96,7 @@ _import_content_items_statement             = Statement(
         0,
         None,
     ),
-    (
-        Statement(
-            "Comma",
-            Tokens.CommaToken,
-        ),
-        0,
-        1,
-    ),
+    (Tokens.CommaToken, 0, 1),
 )
 
 
