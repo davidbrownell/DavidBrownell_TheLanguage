@@ -95,6 +95,9 @@ class Token(Interface.Interface):
     # the lexing and parsing passes into 1 pass.
     IsControlToken                          = False
 
+    # True if the token should always be ignored (good for comments)
+    IsAlwaysIgnored                         = False
+
     # ----------------------------------------------------------------------
     @Interface.abstractproperty
     def Name(self):
@@ -136,7 +139,6 @@ class NewlineToken(Token):
     # ----------------------------------------------------------------------
     @Interface.override
     def Match(self, normalized_iter):
-
         if (
             normalized_iter.Offset == normalized_iter.LineInfo.OffsetEnd
             and normalized_iter.HasConsumedDedents()
@@ -218,6 +220,7 @@ class RegexToken(Token):
         name: str,
         regex: Pattern,
         is_multiline: Optional[bool]=False,
+        is_always_ignored: Optional[bool]=False,
     ):
         assert name
 
@@ -225,6 +228,7 @@ class RegexToken(Token):
 
         self.Regex                          = regex
         self.IsMultiline                    = is_multiline
+        self.IsAlwaysIgnored                = is_always_ignored
 
     # ----------------------------------------------------------------------
     @property
@@ -301,6 +305,7 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
 
     Name                                    = Interface.DerivedProperty("PushIgnoreWhitespaceControl")
     ClosingToken                            = "PopIgnoreWhitespaceControlToken" # Set below
+
 
 # ----------------------------------------------------------------------
 @Interface.staticderived

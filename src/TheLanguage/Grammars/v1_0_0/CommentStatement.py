@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Statements.py
+# |  CommentStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-23 19:38:05
+# |      2021-06-05 17:03:13
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains statements used in this grammar version"""
+"""Contains a statement that processes and ignores comments"""
 
 import os
 
@@ -27,21 +27,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CommentStatement import CommentStatement
-    from .ImportStatement import ImportStatement
-    from . import StringStatements
-    from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
+    from ..GrammarStatement import GrammarStatement
+
+    from ...ParserImpl.Statement import Statement
+
 
 # ----------------------------------------------------------------------
-Statements                                  = [
-    # Statements
-    ImportStatement(".TheLanguage"), # TODO: Fix this once there is a known value
-    CommentStatement(),
-    VerticalWhitespaceStatement(),
+class CommentStatement(GrammarStatement):
+    """Eats single-line comments"""
 
-    # Declarations
-    StringStatements.TripleStringStatement(),
-    StringStatements.TripleFormatStringStatement(),
-    StringStatements.SimpleStringStatement(),
-    StringStatements.SimpleFormatStringStatement(),
-]
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        super(CommentStatement, self).__init__(
+            GrammarStatement.Type.Statement,
+            Statement("Comment", Statement.CommentToken),
+        )

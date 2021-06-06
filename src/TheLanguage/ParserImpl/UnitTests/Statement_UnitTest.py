@@ -1722,3 +1722,227 @@ class TestOr(object):
         result = self._statement.Parse(NormalizedIterator(Normalize("word")), parse_mock)
 
         assert result is None
+
+# ----------------------------------------------------------------------
+class TestComments(object):
+    _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
+    _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
+    _number_token                           = RegexToken("Number", re.compile(r"(?P<value>[0-9]+)"))
+
+    _lower_line_statement                   = Statement("Lower Line", _lower_token, NewlineToken())
+    _upper_line_statement                   = Statement("Upper Line", _upper_token, NewlineToken())
+    _number_line_statement                  = Statement("Number Line", _number_token, NewlineToken())
+
+    _multiline_statement                    = Statement(
+        "Multiline",
+        (
+            Statement(
+                "Repeat",
+                _lower_line_statement,
+                _upper_line_statement,
+                _number_line_statement,
+            ),
+            1,
+            None,
+        ),
+    )
+
+    _indent_statement                       = Statement(
+        "Indent",
+        _lower_token,
+        RegexToken("Colon", re.compile(":")),
+        NewlineToken(),
+        IndentToken(),
+        _upper_line_statement,
+        _number_line_statement,
+        DedentToken(),
+    )
+
+    # ----------------------------------------------------------------------
+    def test_Multiline(self, parse_mock):
+        result = self._multiline_statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        one # Comment 1
+                        TWO
+                        3
+                        four
+                        FIVE                # Comment 5
+                        66
+                        seven
+                        EIGHT
+                        999    # Comment 9
+                        ten     # Comment 10
+                        ELEVEN  # Comment 11
+                        12      # Comment 12
+                        """,
+                    ),
+                ),
+            ),
+            parse_mock,
+        )
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            156
+                Repeat: (Repeat, 1, None)
+                    Repeat
+                        Lower Line
+                            Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(4, 15), match='# Comment 1'>>> ws:(3, 4) !Ignored! [1, 16]
+                            Newline+ <<15, 16>> ws:None [2, 1]
+                        Upper Line
+                            Upper <<Regex: <_sre.SRE_Match object; span=(16, 19), match='TWO'>>> ws:None [2, 4]
+                            Newline+ <<19, 20>> ws:None [3, 1]
+                        Number Line
+                            Number <<Regex: <_sre.SRE_Match object; span=(20, 21), match='3'>>> ws:None [3, 2]
+                            Newline+ <<21, 22>> ws:None [4, 1]
+                    Repeat
+                        Lower Line
+                            Lower <<Regex: <_sre.SRE_Match object; span=(22, 26), match='four'>>> ws:None [4, 5]
+                            Newline+ <<26, 27>> ws:None [5, 1]
+                        Upper Line
+                            Upper <<Regex: <_sre.SRE_Match object; span=(27, 31), match='FIVE'>>> ws:None [5, 5]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(47, 58), match='# Comment 5'>>> ws:(31, 47) !Ignored! [5, 32]
+                            Newline+ <<58, 59>> ws:None [6, 1]
+                        Number Line
+                            Number <<Regex: <_sre.SRE_Match object; span=(59, 61), match='66'>>> ws:None [6, 3]
+                            Newline+ <<61, 62>> ws:None [7, 1]
+                    Repeat
+                        Lower Line
+                            Lower <<Regex: <_sre.SRE_Match object; span=(62, 67), match='seven'>>> ws:None [7, 6]
+                            Newline+ <<67, 68>> ws:None [8, 1]
+                        Upper Line
+                            Upper <<Regex: <_sre.SRE_Match object; span=(68, 73), match='EIGHT'>>> ws:None [8, 6]
+                            Newline+ <<73, 74>> ws:None [9, 1]
+                        Number Line
+                            Number <<Regex: <_sre.SRE_Match object; span=(74, 77), match='999'>>> ws:None [9, 4]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(81, 92), match='# Comment 9'>>> ws:(77, 81) !Ignored! [9, 19]
+                            Newline+ <<92, 93>> ws:None [10, 1]
+                    Repeat
+                        Lower Line
+                            Lower <<Regex: <_sre.SRE_Match object; span=(93, 96), match='ten'>>> ws:None [10, 4]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(101, 113), match='# Comment 10'>>> ws:(96, 101) !Ignored! [10, 21]
+                            Newline+ <<113, 114>> ws:None [11, 1]
+                        Upper Line
+                            Upper <<Regex: <_sre.SRE_Match object; span=(114, 120), match='ELEVEN'>>> ws:None [11, 7]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(122, 134), match='# Comment 11'>>> ws:(120, 122) !Ignored! [11, 21]
+                            Newline+ <<134, 135>> ws:None [12, 1]
+                        Number Line
+                            Number <<Regex: <_sre.SRE_Match object; span=(135, 137), match='12'>>> ws:None [12, 3]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(143, 155), match='# Comment 12'>>> ws:(137, 143) !Ignored! [12, 21]
+                            Newline+ <<155, 156>> ws:None [13, 1]
+            """,
+        )
+
+    # ----------------------------------------------------------------------
+    def test_Indent(self, parse_mock):
+        iterator = NormalizedIterator(
+            Normalize(
+                textwrap.dedent(
+                    """\
+                    one:  # Comment 1
+                        TWO
+                        3
+                    four:
+                        FIVE # Comment 5
+                        66
+                    seven:
+                        EIGHT
+                        999                 # Comment 9
+                    ten:            # Comment 10
+                        ELEVEN      # Comment 11
+                        12          # Comment 12
+                    """,
+                ),
+            ),
+        )
+
+        result = self._indent_statement.Parse(iterator, parse_mock)
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            32
+                Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
+                Colon <<Regex: <_sre.SRE_Match object; span=(3, 4), match=':'>>> ws:None [1, 5]
+                Comment <<Regex: <_sre.SRE_Match object; span=(6, 17), match='# Comment 1'>>> ws:(4, 6) !Ignored! [1, 18]
+                Newline+ <<17, 18>> ws:None [2, 1]
+                Indent <<18, 22, (4)>> ws:None [2, 5]
+                Upper Line
+                    Upper <<Regex: <_sre.SRE_Match object; span=(22, 25), match='TWO'>>> ws:None [2, 8]
+                    Newline+ <<25, 26>> ws:None [3, 1]
+                Number Line
+                    Number <<Regex: <_sre.SRE_Match object; span=(30, 31), match='3'>>> ws:None [3, 6]
+                    Newline+ <<31, 32>> ws:None [4, 1]
+                Dedent <<>> ws:None [4, 1]
+            """,
+        )
+        iterator = result.Iter
+
+        result = self._indent_statement.Parse(iterator, parse_mock)
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            66
+                Lower <<Regex: <_sre.SRE_Match object; span=(32, 36), match='four'>>> ws:None [4, 5]
+                Colon <<Regex: <_sre.SRE_Match object; span=(36, 37), match=':'>>> ws:None [4, 6]
+                Newline+ <<37, 38>> ws:None [5, 1]
+                Indent <<38, 42, (4)>> ws:None [5, 5]
+                Upper Line
+                    Upper <<Regex: <_sre.SRE_Match object; span=(42, 46), match='FIVE'>>> ws:None [5, 9]
+                    Comment <<Regex: <_sre.SRE_Match object; span=(47, 58), match='# Comment 5'>>> ws:(46, 47) !Ignored! [5, 21]
+                    Newline+ <<58, 59>> ws:None [6, 1]
+                Number Line
+                    Number <<Regex: <_sre.SRE_Match object; span=(63, 65), match='66'>>> ws:None [6, 7]
+                    Newline+ <<65, 66>> ws:None [7, 1]
+                Dedent <<>> ws:None [7, 1]
+            """,
+        )
+        iterator = result.Iter
+
+        result = self._indent_statement.Parse(iterator, parse_mock)
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            119
+                Lower <<Regex: <_sre.SRE_Match object; span=(66, 71), match='seven'>>> ws:None [7, 6]
+                Colon <<Regex: <_sre.SRE_Match object; span=(71, 72), match=':'>>> ws:None [7, 7]
+                Newline+ <<72, 73>> ws:None [8, 1]
+                Indent <<73, 77, (4)>> ws:None [8, 5]
+                Upper Line
+                    Upper <<Regex: <_sre.SRE_Match object; span=(77, 82), match='EIGHT'>>> ws:None [8, 10]
+                    Newline+ <<82, 83>> ws:None [9, 1]
+                Number Line
+                    Number <<Regex: <_sre.SRE_Match object; span=(87, 90), match='999'>>> ws:None [9, 8]
+                    Comment <<Regex: <_sre.SRE_Match object; span=(107, 118), match='# Comment 9'>>> ws:(90, 107) !Ignored! [9, 36]
+                    Newline+ <<118, 119>> ws:None [10, 1]
+                Dedent <<>> ws:None [10, 1]
+            """,
+        )
+        iterator = result.Iter
+
+        result = self._indent_statement.Parse(iterator, parse_mock)
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            206
+                Lower <<Regex: <_sre.SRE_Match object; span=(119, 122), match='ten'>>> ws:None [10, 4]
+                Colon <<Regex: <_sre.SRE_Match object; span=(122, 123), match=':'>>> ws:None [10, 5]
+                Comment <<Regex: <_sre.SRE_Match object; span=(135, 147), match='# Comment 10'>>> ws:(123, 135) !Ignored! [10, 29]
+                Newline+ <<147, 148>> ws:None [11, 1]
+                Indent <<148, 152, (4)>> ws:None [11, 5]
+                Upper Line
+                    Upper <<Regex: <_sre.SRE_Match object; span=(152, 158), match='ELEVEN'>>> ws:None [11, 11]
+                    Comment <<Regex: <_sre.SRE_Match object; span=(164, 176), match='# Comment 11'>>> ws:(158, 164) !Ignored! [11, 29]
+                    Newline+ <<176, 177>> ws:None [12, 1]
+                Number Line
+                    Number <<Regex: <_sre.SRE_Match object; span=(181, 183), match='12'>>> ws:None [12, 7]
+                    Comment <<Regex: <_sre.SRE_Match object; span=(193, 205), match='# Comment 12'>>> ws:(183, 193) !Ignored! [12, 29]
+                    Newline+ <<205, 206>> ws:None [13, 1]
+                Dedent <<>> ws:None [13, 1]
+            """,
+        )
+        iterator = result.Iter

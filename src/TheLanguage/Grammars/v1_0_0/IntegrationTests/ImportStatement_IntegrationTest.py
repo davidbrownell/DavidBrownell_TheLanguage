@@ -120,7 +120,7 @@ class TestStandard(object):
             assert str(result) == textwrap.dedent(
                 """\
                 <Root>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(0, 4), match='from'>>> ws:None [1, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(5, 6), match='.'>>> ws:(4, 5) [1, 7]
@@ -133,10 +133,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<19, 20>> ws:None [2, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(20, 24), match='from'>>> ws:None [2, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(25, 26), match='.'>>> ws:(24, 25) [2, 7]
@@ -152,10 +152,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<48, 50>> ws:None [4, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(50, 54), match='from'>>> ws:None [4, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(55, 58), match='...'>>> ws:(54, 55) [4, 9]
@@ -168,10 +168,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<71, 72>> ws:None [5, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(72, 76), match='from'>>> ws:None [5, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(77, 80), match='...'>>> ws:(76, 77) [5, 9]
@@ -187,10 +187,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<102, 104>> ws:None [7, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(104, 108), match='from'>>> ws:None [7, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(109, 116), match='...dir1'>>> ws:(108, 109) [7, 13]
@@ -203,10 +203,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<129, 130>> ws:None [8, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(130, 134), match='from'>>> ws:None [8, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(135, 142), match='...dir1'>>> ws:(134, 135) [8, 13]
@@ -222,10 +222,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<164, 166>> ws:None [10, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(166, 170), match='from'>>> ws:None [10, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(171, 181), match='.dir2.dir3'>>> ws:(170, 171) [10, 16]
@@ -238,10 +238,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<194, 195>> ws:None [11, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(195, 199), match='from'>>> ws:None [11, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(200, 210), match='.dir2.dir3'>>> ws:(199, 200) [11, 16]
@@ -257,7 +257,7 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<232, 233>> ws:None [12, 1]
                 """,
@@ -352,7 +352,7 @@ class TestStandard(object):
             assert str(result) == textwrap.dedent(
                 """\
                 <Root>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(0, 4), match='from'>>> ws:None [1, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(5, 11), match='.file1'>>> ws:(4, 5) [1, 12]
@@ -365,10 +365,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<23, 24>> ws:None [2, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(24, 28), match='from'>>> ws:None [2, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(29, 35), match='.file1'>>> ws:(28, 29) [2, 12]
@@ -384,10 +384,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<55, 57>> ws:None [4, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(57, 61), match='from'>>> ws:None [4, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(62, 70), match='...file2'>>> ws:(61, 62) [4, 14]
@@ -400,10 +400,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<82, 83>> ws:None [5, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(83, 87), match='from'>>> ws:None [5, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(88, 96), match='...file2'>>> ws:(87, 88) [5, 14]
@@ -419,10 +419,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<116, 118>> ws:None [7, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(118, 122), match='from'>>> ws:None [7, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(123, 136), match='...dir1.file3'>>> ws:(122, 123) [7, 19]
@@ -435,10 +435,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<148, 149>> ws:None [8, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(149, 153), match='from'>>> ws:None [8, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(154, 167), match='...dir1.file3'>>> ws:(153, 154) [8, 19]
@@ -454,10 +454,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<187, 189>> ws:None [10, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(189, 193), match='from'>>> ws:None [10, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(194, 210), match='.dir2.dir3.file4'>>> ws:(193, 194) [10, 22]
@@ -470,10 +470,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<222, 223>> ws:None [11, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(223, 227), match='from'>>> ws:None [11, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(228, 244), match='.dir2.dir3.file4'>>> ws:(227, 228) [11, 22]
@@ -489,7 +489,7 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<264, 265>> ws:None [12, 1]
                 """,
@@ -584,7 +584,7 @@ class TestStandard(object):
             assert str(result) == textwrap.dedent(
                 """\
                 <Root>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(0, 4), match='from'>>> ws:None [1, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(5, 10), match='File1'>>> ws:(4, 5) [1, 11]
@@ -597,10 +597,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<22, 23>> ws:None [2, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(23, 27), match='from'>>> ws:None [2, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(28, 33), match='File1'>>> ws:(27, 28) [2, 11]
@@ -616,10 +616,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<53, 55>> ws:None [4, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(55, 59), match='from'>>> ws:None [4, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(60, 65), match='File2'>>> ws:(59, 60) [4, 11]
@@ -632,10 +632,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<77, 78>> ws:None [5, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(78, 82), match='from'>>> ws:None [5, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(83, 88), match='File2'>>> ws:(82, 83) [5, 11]
@@ -651,10 +651,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<108, 110>> ws:None [7, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(110, 114), match='from'>>> ws:None [7, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(115, 120), match='File3'>>> ws:(114, 115) [7, 11]
@@ -667,10 +667,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<132, 133>> ws:None [8, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(133, 137), match='from'>>> ws:None [8, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(138, 143), match='File3'>>> ws:(137, 138) [8, 11]
@@ -686,10 +686,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<163, 165>> ws:None [10, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(165, 169), match='from'>>> ws:None [10, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(170, 185), match='Dir1.Dir2.File4'>>> ws:(169, 170) [10, 21]
@@ -702,10 +702,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<197, 198>> ws:None [11, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(198, 202), match='from'>>> ws:None [11, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(203, 218), match='Dir1.Dir2.File4'>>> ws:(202, 203) [11, 21]
@@ -721,7 +721,7 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<238, 239>> ws:None [12, 1]
                 """,
@@ -803,7 +803,7 @@ class TestStandard(object):
             assert str(result) == textwrap.dedent(
                 """\
                 <Root>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(0, 4), match='from'>>> ws:None [1, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(5, 10), match='File1'>>> ws:(4, 5) [1, 11]
@@ -833,7 +833,7 @@ class TestStandard(object):
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(52, 56), match='obj4'>>> ws:(51, 52) [1, 57]
                                     Repeat: (',', 0, 1)
                                         <No children>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<56, 57>> ws:None [2, 1]
                 """,
@@ -884,7 +884,7 @@ class TestStandard(object):
             assert str(result) == textwrap.dedent(
                 """\
                 <Root>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(0, 4), match='from'>>> ws:None [1, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(5, 10), match='File1'>>> ws:(4, 5) [1, 11]
@@ -903,10 +903,10 @@ class TestStandard(object):
                                         Repeat: (',', 0, 1)
                                             <No children>
                                     ')' <<Regex: <_sre.SRE_Match object; span=(29, 30), match=')'>>> ws:None [1, 31]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<30, 32>> ws:None [3, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(32, 36), match='from'>>> ws:None [3, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(37, 45), match='...file2'>>> ws:(36, 37) [3, 14]
@@ -940,7 +940,7 @@ class TestStandard(object):
                                         Repeat: (',', 0, 1)
                                             <No children>
                                     ')' <<Regex: <_sre.SRE_Match object; span=(97, 98), match=')'>>> ws:None [8, 2]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<98, 99>> ws:None [9, 1]
                 """,
@@ -1002,7 +1002,7 @@ class TestStandard(object):
             assert str(result) == textwrap.dedent(
                 """\
                 <Root>
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(0, 4), match='from'>>> ws:None [1, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(5, 6), match='.'>>> ws:(4, 5) [1, 7]
@@ -1015,10 +1015,10 @@ class TestStandard(object):
                                         <No children>
                                     Repeat: (',', 0, 1)
                                         ',' <<Regex: <_sre.SRE_Match object; span=(19, 20), match=','>>> ws:None [1, 21]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<20, 21>> ws:None [2, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(21, 25), match='from'>>> ws:None [2, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(26, 34), match='...file2'>>> ws:(25, 26) [2, 14]
@@ -1034,10 +1034,10 @@ class TestStandard(object):
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(48, 52), match='obj2'>>> ws:(47, 48) [2, 32]
                                     Repeat: (',', 0, 1)
                                         ',' <<Regex: <_sre.SRE_Match object; span=(52, 53), match=','>>> ws:None [2, 33]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<53, 55>> ws:None [4, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(55, 59), match='from'>>> ws:None [4, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(60, 73), match='...dir1.file3'>>> ws:(59, 60) [4, 19]
@@ -1060,10 +1060,10 @@ class TestStandard(object):
                                     Newline+ <<100, 101>> ws:None !Ignored! [6, 1]
                                     Dedent <<>> ws:None !Ignored! [6, 1]
                                     ')' <<Regex: <_sre.SRE_Match object; span=(101, 102), match=')'>>> ws:None [6, 2]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<102, 104>> ws:None [8, 1]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Import
                             'from' <<Regex: <_sre.SRE_Match object; span=(104, 108), match='from'>>> ws:None [8, 5]
                             <source> <<Regex: <_sre.SRE_Match object; span=(109, 125), match='.dir2.dir3.file4'>>> ws:(108, 109) [8, 22]
@@ -1086,7 +1086,7 @@ class TestStandard(object):
                                     Newline+ <<150, 151>> ws:None !Ignored! [10, 1]
                                     Dedent <<>> ws:None !Ignored! [10, 1]
                                     ')' <<Regex: <_sre.SRE_Match object; span=(151, 152), match=')'>>> ws:None [10, 2]
-                    Or: [Set Syntax, Import, Vertical Whitespace]
+                    Or: [Set Syntax, Import, Comment, Vertical Whitespace]
                         Vertical Whitespace
                             Newline+ <<152, 153>> ws:None [11, 1]
                 """,
