@@ -16,6 +16,7 @@
 """Contains the Statement object"""
 
 import os
+import re
 import textwrap
 
 from concurrent.futures import Future
@@ -45,6 +46,7 @@ with InitRelativeImports():
         NewlineToken,
         PushIgnoreWhitespaceControlToken,
         PopIgnoreWhitespaceControlToken,
+        RegexToken,
         Token as TokenClass,
     )
 
@@ -103,7 +105,7 @@ class Statement(object):
         @Interface.abstractmethod
         def GetDynamicStatements(
             value: DynamicStatements,
-        ) -> List["Statement"]:
+        ) -> List["Statement.ItemType"]:
             """Returns all currently available dynamic statements based on the current scope"""
             raise Exception("Abstract method")  # pragma: no cover
 
@@ -111,7 +113,7 @@ class Statement(object):
         @staticmethod
         @Interface.abstractmethod
         def OnIndent(
-            statement: "Statement",
+            statement: "Statement.ItemType",
             results: "Statement.ParseResultItemsType",
         ):
             raise Exception("Abstract method")  # pragma: no cover
@@ -120,7 +122,7 @@ class Statement(object):
         @staticmethod
         @Interface.abstractmethod
         def OnDedent(
-            statement: "Statement",
+            statement: "Statement.ItemType",
             results: "Statement.ParseResultItemsType",
         ):
             raise Exception("Abstract method")  # pragma: no cover
@@ -168,7 +170,6 @@ class Statement(object):
                 line=self.Iter.Line,
                 column=self.Iter.Column,
             )
-
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -222,6 +223,30 @@ class Statement(object):
                     4,
                 ),
             )
+
+    # ----------------------------------------------------------------------
+    # Note that defining this value here within a Statement isn't ideal,
+    # as it represents the first instantiation of a grammar-specific rule
+    # outside of whitespace as a specifier of lexical scope. However, the
+    # alternative is that either every statement is instantiated with a
+    # comment token (which will always be the same for a grammar), or we
+    # introduce functionality to dynamically create Statement-like classes
+    # (with embedded knowledge of what a comment looks like) and then use
+    # that class to instantiate Statement objects. None of these approaches
+    # are ideal.
+
+    CommentToken                            = RegexToken(
+        "Comment",
+        re.compile(
+            textwrap.dedent(
+                r"""(?P<value>(?#
+                    Prefix                  )\#(?#
+                    Content                 )[^\n]*(?#
+                ))""",
+            ),
+        ),
+        is_always_ignored=True,
+    )
 
     # ----------------------------------------------------------------------
     # |
@@ -551,6 +576,7 @@ class Statement(object):
         ) -> Optional[bool]:
             """Parses an individual item"""
 
+            # Extract any whitespace prefix (if necessary)
             if self._ignore_whitespace_ctr:
                 while True:
                     whitespace_results = self._EatWhitespaceToken(self.normalized_iter)
@@ -560,168 +586,43 @@ class Statement(object):
                     self.results += whitespace_results
                     self.normalized_iter = self.results[-1].Iter.Clone()
 
-            # Token
+            # Extract the content
             if isinstance(item, TokenClass):
-                if isinstance(item, PushIgnoreWhitespaceControlToken):
-                    self._ignore_whitespace_ctr += 1
+                result = self._ParseTokenItem(item)
+            else:
+                statement_parse_result_item = None
 
-                elif isinstance(item, PopIgnoreWhitespaceControlToken):
-                    assert self._ignore_whitespace_ctr
-                    self._ignore_whitespace_ctr -= 1
-
-                elif item.IsControlToken:
-                    # This is a control token that we don't recognize; skip it
-                    pass
-
+                if isinstance(item, Statement):
+                    result = self._ParseStatementItem(item)
+                elif isinstance(item, DynamicStatements):
+                    result = self._ParseDynamicStatementItem(item)
+                elif isinstance(item, tuple):
+                    result = self._ParseRepeatItem(item)
+                elif isinstance(item, list):
+                    result = self._ParseOrItem(item)
+                    if result is not None:
+                        result, statement_parse_result_item = result
                 else:
-                    if self.normalized_iter.AtEnd():
-                        return False
+                    assert False, item  # pragma: no cover
 
-                    # We only want to consume whitespace if there is a match that follows it
-                    potential_iter = self.normalized_iter.Clone()
-                    potential_whitespace = self._ExtractWhitespace(potential_iter)
-
-                    result = item.Match(potential_iter)
-                    if result is None:
-                        return False
-
-                    if isinstance(item, IndentToken):
-                        self._observer.OnIndent(self._statement, self.results)
-                    elif isinstance(item, DedentToken):
-                        self._observer.OnDedent(self._statement, self.results)
-
-                    if isinstance(result, list):
-                        assert not potential_whitespace
-
-                        self.results += [
-                            Statement.TokenParseResultItem(
-                                item,
-                                potential_whitespace,
-                                res,
-                                potential_iter.Clone(),
-                                IsIgnored=False,
-                            )
-                            for res in result
-                        ]
-                    else:
-                        self.results.append(
-                            Statement.TokenParseResultItem(
-                                item,
-                                potential_whitespace,
-                                result,
-                                potential_iter.Clone(),
-                                IsIgnored=False,
-                            ),
-                        )
-
-                    self.normalized_iter = potential_iter
-
-                return True
-
-            # Statements
-            statement_parse_result_item = None
-
-            if isinstance(item, DynamicStatements):
-                result = Statement.ParseMultiple(
-                    self._observer.GetDynamicStatements(item),
-                    self.normalized_iter,
-                    self._observer,
-                    ignore_whitespace=self._ignore_whitespace_ctr != 0,
-                    single_threaded=self._single_threaded,
-                )
-
-            elif isinstance(item, Statement):
-                result = item.Parse(
-                    self.normalized_iter,
-                    self._observer,
-                    ignore_whitespace=self._ignore_whitespace_ctr != 0,
-                    single_threaded=self._single_threaded,
-                )
-
-                if (
-                    result is not None
-                    and result.Success
-                    and not self._observer.OnInternalStatement(
-                        Statement.StatementParseResultItem(
-                            item,
-                            result.Results,
-                        ),
-                        self.normalized_iter,
-                        result.Iter,
-                    )
-                ):
+                if result is None:
                     return None
 
-            elif isinstance(item, tuple):
-                statement, min_matches, max_matches = item
+                if statement_parse_result_item is None:
+                    statement_parse_result_item = Statement.StatementParseResultItem(
+                        item,
+                        result.Results,
+                    )
 
-                result = self._ParseRepeat(
-                    statement,
-                    self.normalized_iter,
-                    self._observer,
-                    min_matches,
-                    max_matches,
-                    ignore_whitespace=self._ignore_whitespace_ctr != 0,
-                    single_threaded=self._single_threaded,
-                )
+                self.results.append(statement_parse_result_item)
+                self.normalized_iter = result.Iter.Clone()
 
-                if (
-                    result is not None
-                    and result.Success
-                ):
-                    for repeated_result in result.Results:
-                        if (
-                            isinstance(repeated_result, Statement.StatementParseResultItem)
-                            and not self._observer.OnInternalStatement(
-                                repeated_result,
-                                self.normalized_iter,
-                                result.Iter
-                            )
-                        ):
-                            return None
+                result = result.Success
 
-            elif isinstance(item, list):
-                result = Statement.ParseMultiple(
-                    item,
-                    self.normalized_iter,
-                    self._observer,
-                    ignore_whitespace=self._ignore_whitespace_ctr != 0,
-                    single_threaded=self._single_threaded,
-                    sort_results=False,
-                )
+            # Extract comment tokens (if any)
+            self._ParsePotentialCommentItem()
 
-                statement_parse_result_item = result.Results[0]
-                assert isinstance(statement_parse_result_item, Statement.StatementParseResultItem)
-
-                if (
-                    result is not None
-                    and result.Success
-                ):
-                    assert len(result.Results) == 1
-
-                    if not self._observer.OnInternalStatement(
-                        statement_parse_result_item,
-                        self.normalized_iter,
-                        result.Iter,
-                    ):
-                        return None
-
-            else:
-                assert False, item  # pragma: no cover
-
-            if result is None:
-                return None
-
-            if statement_parse_result_item is None:
-                statement_parse_result_item = Statement.StatementParseResultItem(
-                    item,
-                    result.Results,
-                )
-
-            self.results.append(statement_parse_result_item)
-            self.normalized_iter = result.Iter.Clone()
-
-            return result.Success
+            return result
 
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
@@ -729,6 +630,235 @@ class Statement(object):
         _indent_token                           = IndentToken()
         _dedent_token                           = DedentToken()
         _newline_token                          = NewlineToken()
+
+        # ----------------------------------------------------------------------
+        def _ParseTokenItem(
+            self,
+            token: TokenClass,
+        ) -> Optional[bool]:
+            if isinstance(token, PushIgnoreWhitespaceControlToken):
+                self._ignore_whitespace_ctr += 1
+
+            elif isinstance(token, PopIgnoreWhitespaceControlToken):
+                assert self._ignore_whitespace_ctr
+                self._ignore_whitespace_ctr -= 1
+
+            elif token.IsControlToken:
+                # This is a control token that we don't recognize; skip it
+                pass
+
+            else:
+                if self.normalized_iter.AtEnd():
+                    return False
+
+                # We only want to consume whitespace if there is a match that follows it
+                potential_iter = self.normalized_iter.Clone()
+                potential_whitespace = self._ExtractWhitespace(potential_iter)
+
+                result = token.Match(potential_iter)
+                if result is None:
+                    return False
+
+                if isinstance(token, IndentToken):
+                    self._observer.OnIndent(self._statement, self.results)
+                elif isinstance(token, DedentToken):
+                    self._observer.OnDedent(self._statement, self.results)
+
+                if isinstance(result, list):
+                    assert not potential_whitespace
+
+                    self.results += [
+                        Statement.TokenParseResultItem(
+                            token,
+                            potential_whitespace,
+                            res,
+                            potential_iter.Clone(),
+                            IsIgnored=token.IsAlwaysIgnored,
+                        )
+                        for res in result
+                    ]
+                else:
+                    self.results.append(
+                        Statement.TokenParseResultItem(
+                            token,
+                            potential_whitespace,
+                            result,
+                            potential_iter.Clone(),
+                            IsIgnored=token.IsAlwaysIgnored,
+                        ),
+                    )
+
+                self.normalized_iter = potential_iter
+
+            return True
+
+        # ----------------------------------------------------------------------
+        def _ParsePotentialCommentItem(self):
+            if self.normalized_iter.AtEnd():
+                return
+
+            # We only want to consume whitespace if there is a match that follows
+            potential_iter = self.normalized_iter.Clone()
+            potential_whitespace = self._ExtractWhitespace(potential_iter)
+
+            result = Statement.CommentToken.Match(potential_iter)
+            if result is None:
+                return
+
+            self.results.append(
+                Statement.TokenParseResultItem(
+                    Statement.CommentToken,
+                    potential_whitespace,
+                    result,
+                    potential_iter.Clone(),
+                    IsIgnored=Statement.CommentToken.IsAlwaysIgnored,
+                ),
+            )
+
+            self.normalized_iter = potential_iter
+
+        # ----------------------------------------------------------------------
+        def _ParseStatementItem(
+            self,
+            item: "Statement",
+        ) -> Optional["Statement.ParseResult"]:
+            result = item.Parse(
+                self.normalized_iter,
+                self._observer,
+                ignore_whitespace=self._ignore_whitespace_ctr != 0,
+                single_threaded=self._single_threaded,
+            )
+
+            if (
+                result is not None
+                and result.Success
+                and not self._observer.OnInternalStatement(
+                    Statement.StatementParseResultItem(
+                        item,
+                        result.Results,
+                    ),
+                    self.normalized_iter,
+                    result.Iter,
+                )
+            ):
+                result = None
+
+            return result
+
+        # ----------------------------------------------------------------------
+        def _ParseDynamicStatementItem(
+            self,
+            item: DynamicStatements,
+        ) -> Optional["Statement.ParseResult"]:
+            return Statement.ParseMultiple(
+                self._observer.GetDynamicStatements(item),
+                self.normalized_iter,
+                self._observer,
+                ignore_whitespace=self._ignore_whitespace_ctr != 0,
+                single_threaded=self._single_threaded,
+            )
+
+        # ----------------------------------------------------------------------
+        def _ParseRepeatItem(
+            self,
+            item: Tuple["Statement.ItemType", int, int],
+        ) -> Optional["Statement.ParseResult"]:
+            statement, min_matches, max_matches = item
+
+            assert min_matches >= 0, min_matches
+            assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
+
+            parser = type(self)(
+                statement,
+                self.normalized_iter,
+                self._observer,
+                ignore_whitespace=self._ignore_whitespace_ctr != 0,
+                single_threaded=self._single_threaded,
+            )
+
+            while True:
+                # Prepare to restore the parser to the original state if we were not
+                # able to parse the content. This will given subsequent statements that
+                # ability to consume the content.
+                snapshot_data = parser.CreateSnapshot()
+
+                result = parser.ParseItem(statement)
+                if result is None:
+                    return None
+
+                if not result:
+                    parser.RestoreSnapshot(snapshot_data)
+                    break
+
+                if max_matches is not None and len(parser.results) == max_matches:
+                    break
+
+            success = (
+                len(parser.results) >= min_matches
+                and (
+                    max_matches is None
+                    or len(parser.results) <= max_matches
+                )
+            )
+
+            result = Statement.ParseResult(
+                success,
+                parser.results,
+                parser.normalized_iter,
+            )
+
+            if (
+                result is not None
+                and result.Success
+                and result.Results
+                and isinstance(result.Results[0], Statement.StatementParseResultItem)
+            ):
+                for repeated_result in result.Results:
+                    if not self._observer.OnInternalStatement(
+                        repeated_result,
+                        self.normalized_iter,
+                        result.Iter,
+                    ):
+                        result = None
+                        break
+
+            return result
+
+        # ----------------------------------------------------------------------
+        def _ParseOrItem(
+            self,
+            item: list,
+        ) -> Optional[
+                Tuple[
+                    "Statement.ParseResult",
+                    "Statement.StatementParseResultItem",
+                ]
+        ]:
+            result = Statement.ParseMultiple(
+                item,
+                self.normalized_iter,
+                self._observer,
+                ignore_whitespace=self._ignore_whitespace_ctr != 0,
+                single_threaded=self._single_threaded,
+                sort_results=False,
+            )
+
+            assert len(result.Results) == 1
+            statement_parse_result_item = result.Results[0]
+
+            if (
+                result is not None
+                and result.Success
+                and isinstance(statement_parse_result_item, Statement.StatementParseResultItem)
+                and not self._observer.OnInternalStatement(
+                    statement_parse_result_item,
+                    self.normalized_iter,
+                    result.Iter,
+                )
+            ):
+                return None
+
+            return result, statement_parse_result_item
 
         # ----------------------------------------------------------------------
         @classmethod
@@ -823,59 +953,3 @@ class Statement(object):
                     return start, normalized_iter.Offset
 
             return None
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def _ParseRepeat(
-            cls,
-            statement: "Statement.ItemType",
-            normalized_iter: NormalizedIterator,
-            observer: "Statement.Observer",
-            min_matches: int,
-            max_matches: int,
-            ignore_whitespace=False,
-            single_threaded=False,
-        ) -> Optional["Statement.ParseResult"]:
-            """Matches N times"""
-
-            assert min_matches >= 0, min_matches
-            assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
-
-            parser = cls(
-                statement,
-                normalized_iter,
-                observer,
-                ignore_whitespace=ignore_whitespace,
-                single_threaded=single_threaded,
-            )
-
-            while True:
-                # Prepare to restore the parser to the original state if we were not
-                # able to parse the content. This will given subsequent statements that
-                # ability to consume the content.
-                snapshot_data = parser.CreateSnapshot()
-
-                result = parser.ParseItem(statement)
-                if result is None:
-                    return None
-
-                if not result:
-                    parser.RestoreSnapshot(snapshot_data)
-                    break
-
-                if max_matches is not None and len(parser.results) == max_matches:
-                    break
-
-            success = (
-                len(parser.results) >= min_matches
-                and (
-                    max_matches is None
-                    or len(parser.results) <= max_matches
-                )
-            )
-
-            return Statement.ParseResult(
-                success,
-                parser.results,
-                parser.normalized_iter,
-            )

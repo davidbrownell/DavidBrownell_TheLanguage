@@ -108,20 +108,6 @@ ParameterNameToken                          = RegexToken(
 
 
 # ----------------------------------------------------------------------
-CommentToken                                = RegexToken(
-    "Comment",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-                Prefix                      )\#(?#
-                Content                     )[^\n]*(?#
-            ))""",
-        ),
-    ),
-)
-
-
-# ----------------------------------------------------------------------
 CommaToken                                  = RegexToken("','", re.compile(","))
 LParenToken                                 = RegexToken("'('", re.compile(r"\("))
 RParenToken                                 = RegexToken("')'", re.compile(r"\)"))
