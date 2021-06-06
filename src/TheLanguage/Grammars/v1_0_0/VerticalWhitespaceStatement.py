@@ -16,7 +16,6 @@
 """Contains a statement that eats vertical whitespace"""
 
 import os
-import re
 
 import CommonEnvironment
 
