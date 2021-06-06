@@ -85,7 +85,35 @@ class Statement(object):
         DynamicStatements,
         List["ItemType"],                   # Or
         Tuple["ItemType", int, int],        # Repeat: (Type, Min, Max)
+        "NamedItem",                        # Defined below
     ]
+
+    # ----------------------------------------------------------------------
+    class NamedItem(object):
+        """\
+        Provides a name for a statement item, rather than the default.
+
+        This can be especially useful with or statements, as the default name
+        enumerates each element (which can get pretty verbose with any sufficiently
+        large grammar.
+        """
+
+        # ----------------------------------------------------------------------
+        def __init__(
+            self,
+            name: str,
+            item: Union[
+                "Statement",
+                DynamicStatements,
+                List["ItemType"],
+                Tuple["ItemType", int, int],
+            ],
+        ):
+            assert name
+            assert item
+
+            self.Name                       = name
+            self.Item                       = item
 
     # ----------------------------------------------------------------------
     class Observer(Interface.Interface):
@@ -227,10 +255,10 @@ class Statement(object):
     # ----------------------------------------------------------------------
     # Note that defining this value here within a Statement isn't ideal,
     # as it represents the first instantiation of a grammar-specific rule
-    # outside of whitespace as a specifier of lexical scope. However, the
-    # alternative is that either every statement is instantiated with a
-    # comment token (which will always be the same for a grammar), or we
-    # introduce functionality to dynamically create Statement-like classes
+    # at this level (outside of whitespace as a specifier of lexical scope).
+    # However, the alternative is that either every statement is instantiated
+    # with a comment token (which will always be the same for a grammar), or
+    # we introduce functionality to dynamically create Statement-like classes
     # (with embedded knowledge of what a comment looks like) and then use
     # that class to instantiate Statement objects. None of these approaches
     # are ideal.
@@ -488,7 +516,9 @@ class Statement(object):
         cls,
         item: "Statement.ItemType",
     ) -> str:
-        if isinstance(item, TokenClass):
+        if isinstance(item, cls.NamedItem):
+            return item.Name
+        elif isinstance(item, TokenClass):
             return item.Name
         elif isinstance(item, cls):
             return item.Name
@@ -590,7 +620,11 @@ class Statement(object):
             if isinstance(item, TokenClass):
                 result = self._ParseTokenItem(item)
             else:
-                statement_parse_result_item = None
+                original_item = item
+                if isinstance(item, Statement.NamedItem):
+                    item = item.Item
+
+                extract_results_from_result_func = lambda result: result.Results
 
                 if isinstance(item, Statement):
                     result = self._ParseStatementItem(item)
@@ -601,18 +635,20 @@ class Statement(object):
                 elif isinstance(item, list):
                     result = self._ParseOrItem(item)
                     if result is not None:
-                        result, statement_parse_result_item = result
+                        assert len(result.Results) == 1
+                        assert isinstance(result.Results[0], Statement.StatementParseResultItem)
+
+                        extract_results_from_result_func = lambda result: result.Results[0].Results
                 else:
                     assert False, item  # pragma: no cover
 
                 if result is None:
                     return None
 
-                if statement_parse_result_item is None:
-                    statement_parse_result_item = Statement.StatementParseResultItem(
-                        item,
-                        result.Results,
-                    )
+                statement_parse_result_item = Statement.StatementParseResultItem(
+                    original_item,
+                    extract_results_from_result_func(result),
+                )
 
                 self.results.append(statement_parse_result_item)
                 self.normalized_iter = result.Iter.Clone()
@@ -815,7 +851,7 @@ class Statement(object):
             ):
                 for repeated_result in result.Results:
                     if not self._observer.OnInternalStatement(
-                        repeated_result,
+                        cast(Statement.StatementParseResultItem, repeated_result),
                         self.normalized_iter,
                         result.Iter,
                     ):
@@ -828,12 +864,7 @@ class Statement(object):
         def _ParseOrItem(
             self,
             item: list,
-        ) -> Optional[
-                Tuple[
-                    "Statement.ParseResult",
-                    "Statement.StatementParseResultItem",
-                ]
-        ]:
+        ) -> Optional["Statement.ParseResult"]:
             result = Statement.ParseMultiple(
                 item,
                 self.normalized_iter,
@@ -844,21 +875,20 @@ class Statement(object):
             )
 
             assert len(result.Results) == 1
-            statement_parse_result_item = result.Results[0]
 
             if (
                 result is not None
                 and result.Success
-                and isinstance(statement_parse_result_item, Statement.StatementParseResultItem)
+                and isinstance(result.Results[0], Statement.StatementParseResultItem)
                 and not self._observer.OnInternalStatement(
-                    statement_parse_result_item,
+                    result.Results[0],
                     self.normalized_iter,
                     result.Iter,
                 )
             ):
-                return None
+                result = None
 
-            return result, statement_parse_result_item
+            return result
 
         # ----------------------------------------------------------------------
         @classmethod
