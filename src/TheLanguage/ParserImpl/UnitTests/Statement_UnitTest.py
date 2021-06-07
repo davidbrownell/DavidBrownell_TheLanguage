@@ -1946,3 +1946,72 @@ class TestComments(object):
             """,
         )
         iterator = result.Iter
+
+# ----------------------------------------------------------------------
+class TestNamedStatementItem(object):
+    _lower_token                            = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
+    _upper_token                            = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
+    _number_token                           = RegexToken("Number", re.compile(r"(?P<value>[0-9]+)"))
+
+    _lower_line_statement                   = Statement("Lower Line", _lower_token, NewlineToken())
+    _upper_line_statement                   = Statement("Upper Line", _upper_token, NewlineToken())
+    _number_line_statement                  = Statement("Number Line", _number_token, NewlineToken())
+
+    _statement                              = Statement(
+        "Statement",
+        (
+            Statement(
+                "Internal",
+                Statement.NamedItem(
+                    "__or_replacement__",
+                    [
+                        _lower_line_statement,
+                        _upper_line_statement,
+                        _number_line_statement,
+                    ],
+                ),
+            ),
+            1,
+            None,
+        ),
+    )
+
+    # ----------------------------------------------------------------------
+    def test_Standard(self, parse_mock):
+        result = self._statement.Parse(
+            NormalizedIterator(
+                Normalize(
+                    textwrap.dedent(
+                        """\
+                        lower
+                        UPPER
+                        123
+                        """,
+                    ),
+                ),
+            ),
+            parse_mock,
+        )
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            16
+                Repeat: (Internal, 1, None)
+                    Internal
+                        __or_replacement__
+                            Lower Line
+                                Lower <<Regex: <_sre.SRE_Match object; span=(0, 5), match='lower'>>> ws:None [1, 6]
+                                Newline+ <<5, 6>> ws:None [2, 1]
+                    Internal
+                        __or_replacement__
+                            Upper Line
+                                Upper <<Regex: <_sre.SRE_Match object; span=(6, 11), match='UPPER'>>> ws:None [2, 6]
+                                Newline+ <<11, 12>> ws:None [3, 1]
+                    Internal
+                        __or_replacement__
+                            Number Line
+                                Number <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [3, 4]
+                                Newline+ <<15, 16>> ws:None [4, 1]
+            """,
+        )
