@@ -37,6 +37,7 @@ with InitRelativeImports():
     from .NormalizedIterator import NormalizedIterator
     from .Statement import DynamicStatements, Statement
 
+
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class DynamicStatementInfo(object):
@@ -45,6 +46,7 @@ class DynamicStatementInfo(object):
     statements: List[Statement]
     expressions: List[Statement]
     allow_parent_traversal: bool            = True      # If False, prevent content from including values from higher-level scope
+    name: Optional[str]                     = None
 
     # ----------------------------------------------------------------------
     def Clone(
@@ -52,11 +54,13 @@ class DynamicStatementInfo(object):
         updated_statements=None,
         updated_expressions=None,
         updated_allow_parent_traversal=None,
+        updated_name=None,
     ):
         return self.__class__(
             updated_statements if updated_statements is not None else list(self.statements),
             updated_expressions if updated_expressions is not None else list(self.expressions),
             updated_allow_parent_traversal if updated_allow_parent_traversal is not None else self.allow_parent_traversal,
+            name=updated_name if updated_name is not None else self.name,
         )
 
 
@@ -86,6 +90,10 @@ class SyntaxInvalidError(Error):
 
         for parse_result_item in parse_result_items:
             key = parse_result_item.Statement
+
+            if isinstance(key, Statement.NamedItem):
+                key = key.Item
+
             if isinstance(key, list):
                 key = tuple(key)
 
@@ -187,16 +195,14 @@ def Parse(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-@dataclass
 class _StatementObserver(Statement.Observer):
-    init_statement_info: InitVar[DynamicStatementInfo]
-
-    _observer: Observer
-
     # ----------------------------------------------------------------------
-    def __post_init__(self, init_statement_info):
-        # <Attribute defined outside __init__> pylint: disable=W0201
-        self._all_statement_infos: List[
+    def __init__(
+        self,
+        init_statement_info: InitVar[DynamicStatementInfo],
+        observer: Observer,
+    ):
+        all_statement_infos: List[
             List[
                 Tuple[
                     Optional[NormalizedIterator],
@@ -207,8 +213,11 @@ class _StatementObserver(Statement.Observer):
             [ (None, init_statement_info.Clone()) ],
         ]
 
-        self._cached_statements: List[Statement]        = []
-        self._cached_expressions: List[Statement]       = []
+        self._observer                      = observer
+        self._all_statement_infos           = all_statement_infos
+
+        self._cached_statements: Union[Statement.NamedItem, List[Statement]]    = []
+        self._cached_expressions: Union[Statement.NamedItem, List[Statement]]   = []
 
         self._UpdateCache()
 
@@ -243,7 +252,7 @@ class _StatementObserver(Statement.Observer):
 
         this_result = self._observer.OnIndent(statement, results)
         if isinstance(this_result, DynamicStatementInfo):
-            self.AddDynamicStatementInfo(results[-1].Iter, this_result)
+            self.AddDynamicStatementInfo(results[-1].IterAfter, this_result)
 
         return None
 
@@ -299,15 +308,39 @@ class _StatementObserver(Statement.Observer):
     # ----------------------------------------------------------------------
     def _UpdateCache(self):
         statements = []
+        statement_names = []
+
         expressions = []
+        expression_names = []
 
         for statement_infos in reversed(self._all_statement_infos):
             for _, statement_info in reversed(statement_infos):
-                statements += statement_info.statements
-                expressions += statement_info.expressions
+                if statement_info.statements:
+                    statements += statement_info.statements
+                    statement_names.append(
+                        statement_info.name or Statement.ItemTypeToString(statement_info.statements),
+                    )
+
+                if statement_info.expressions:
+                    expressions += statement_info.expressions
+                    expression_names.append(
+                        statement_info.name or Statement.ItemTypeToString(statement_info.expressions),
+                    )
 
             if statement_infos and not statement_infos[0][1].allow_parent_traversal:
                 break
 
-        self._cached_statements = statements            # <Attribute defined outside __init__> pylint: disable=W0201
-        self._cached_expressions = expressions          # <Attribute defined outside __init__> pylint: disable=W0201
+        # In the code above, we reversed the list so that statements added later (or nearer)
+        # to the code would be matched before statements defined further away. However when
+        # displaying the content names, we want the names to be the order in which they were
+        # defined.
+        if statement_names:
+            statement_names = " / ".join(reversed(statement_names))
+            statements = Statement.NamedItem(statement_names, statements)
+
+        if expression_names:
+            expression_names = " / ".join(reversed(expression_names))
+            expressions = Statement.NamedItem(expression_names, expressions)
+
+        self._cached_statements = statements
+        self._cached_expressions = expressions

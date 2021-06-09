@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Statements.py
+# |  AllStatements.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-23 19:38:05
+# |      2021-06-06 08:32:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains statements used in this grammar version"""
+"""Contains statements used in this grammar"""
 
 import os
 
@@ -29,19 +29,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .CommentStatement import CommentStatement
     from .ImportStatement import ImportStatement
-    from . import StringStatements
     from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
+
 
 # ----------------------------------------------------------------------
 Statements                                  = [
     # Statements
-    ImportStatement(".TheLanguage"), # TODO: Fix this once there is a known value
+    ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized
+
     CommentStatement(),
     VerticalWhitespaceStatement(),
 
-    # Declarations
-    StringStatements.TripleStringStatement(),
-    StringStatements.TripleFormatStringStatement(),
-    StringStatements.SimpleStringStatement(),
-    StringStatements.SimpleFormatStringStatement(),
+    # Expressions
 ]
