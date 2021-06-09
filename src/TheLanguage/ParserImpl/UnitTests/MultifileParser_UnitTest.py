@@ -232,16 +232,16 @@ class TestStandard(object):
                 <Root>
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Lower
-                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                            Newline+ <<3, 4>> ws:None [2, 1]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Upper
-                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:None [2, 4]
-                            Newline+ <<7, 8>> ws:None [3, 1]
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:None [2, 1 -> 2, 4]
+                            Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match='3'>>> ws:None [3, 2]
-                            Newline+ <<9, 10>> ws:None [4, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match='3'>>> ws:None [3, 1 -> 3, 2]
+                            Newline+ <<9, 10>> ws:None [3, 2 -> 4, 1]
                 """,
             )
 
@@ -285,21 +285,21 @@ class TestStandard(object):
                 <Root>
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Lower
-                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                            Newline+ <<3, 4>> ws:None [2, 1]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Upper
-                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:None [2, 4]
-                            Newline+ <<7, 8>> ws:None [3, 1]
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:None [2, 1 -> 2, 4]
+                            Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Include
-                            Include Token <<Regex: <_sre.SRE_Match object; span=(8, 15), match='include'>>> ws:None [3, 8]
-                            Lower Token <<Regex: <_sre.SRE_Match object; span=(16, 22), match='number'>>> ws:(15, 16) [3, 15]
-                            Newline+ <<22, 23>> ws:None [4, 1]
-                    Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                            Include Token <<Regex: <_sre.SRE_Match object; span=(8, 15), match='include'>>> ws:None [3, 1 -> 3, 8]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(16, 22), match='number'>>> ws:(15, 16) [3, 9 -> 3, 15]
+                            Newline+ <<22, 23>> ws:None [3, 15 -> 4, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope] / Or: [Dynamic Number]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(23, 24), match='3'>>> ws:None [4, 2]
-                            Newline+ <<24, 25>> ws:None [5, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(23, 24), match='3'>>> ws:None [4, 1 -> 4, 2]
+                            Newline+ <<24, 25>> ws:None [4, 2 -> 5, 1]
                 """,
             )
 
@@ -311,16 +311,16 @@ class TestStandard(object):
                 <Root>
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> ws:None [1, 2]
-                            Newline+ <<1, 2>> ws:None [2, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> ws:None [1, 1 -> 1, 2]
+                            Newline+ <<1, 2>> ws:None [1, 2 -> 2, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> ws:None [2, 2]
-                            Newline+ <<3, 4>> ws:None [3, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> ws:None [2, 1 -> 2, 2]
+                            Newline+ <<3, 4>> ws:None [2, 2 -> 3, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> ws:None [3, 2]
-                            Newline+ <<5, 6>> ws:None [4, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> ws:None [3, 1 -> 3, 2]
+                            Newline+ <<5, 6>> ws:None [3, 2 -> 4, 1]
                 """,
             )
 
@@ -447,21 +447,21 @@ class TestStandard(object):
                 <Root>
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Lower
-                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                            Newline+ <<3, 4>> ws:None [2, 1]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Upper
-                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:None [2, 4]
-                            Newline+ <<7, 8>> ws:None [3, 1]
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:None [2, 1 -> 2, 4]
+                            Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Include
-                            Include Token <<Regex: <_sre.SRE_Match object; span=(8, 15), match='include'>>> ws:None [3, 8]
-                            Lower Token <<Regex: <_sre.SRE_Match object; span=(16, 22), match='number'>>> ws:(15, 16) [3, 15]
-                            Newline+ <<22, 23>> ws:None [4, 1]
-                    Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                            Include Token <<Regex: <_sre.SRE_Match object; span=(8, 15), match='include'>>> ws:None [3, 1 -> 3, 8]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(16, 22), match='number'>>> ws:(15, 16) [3, 9 -> 3, 15]
+                            Newline+ <<22, 23>> ws:None [3, 15 -> 4, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope] / Or: [Dynamic Number]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(23, 24), match='3'>>> ws:None [4, 2]
-                            Newline+ <<24, 25>> ws:None [5, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(23, 24), match='3'>>> ws:None [4, 1 -> 4, 2]
+                            Newline+ <<24, 25>> ws:None [4, 2 -> 5, 1]
                 """,
             )
 
@@ -473,21 +473,21 @@ class TestStandard(object):
                 <Root>
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Lower
-                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='aaa'>>> ws:None [1, 4]
-                            Newline+ <<3, 4>> ws:None [2, 1]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='aaa'>>> ws:None [1, 1 -> 1, 4]
+                            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Upper
-                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 8), match='BBBB'>>> ws:None [2, 5]
-                            Newline+ <<8, 9>> ws:None [3, 1]
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 8), match='BBBB'>>> ws:None [2, 1 -> 2, 5]
+                            Newline+ <<8, 9>> ws:None [2, 5 -> 3, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Include
-                            Include Token <<Regex: <_sre.SRE_Match object; span=(9, 16), match='include'>>> ws:None [3, 8]
-                            Lower Token <<Regex: <_sre.SRE_Match object; span=(17, 23), match='number'>>> ws:(16, 17) [3, 15]
-                            Newline+ <<23, 24>> ws:None [4, 1]
-                    Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                            Include Token <<Regex: <_sre.SRE_Match object; span=(9, 16), match='include'>>> ws:None [3, 1 -> 3, 8]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(17, 23), match='number'>>> ws:(16, 17) [3, 9 -> 3, 15]
+                            Newline+ <<23, 24>> ws:None [3, 15 -> 4, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope] / Or: [Dynamic Number]
                         Lower
-                            Lower Token <<Regex: <_sre.SRE_Match object; span=(24, 30), match='cccccc'>>> ws:None [4, 7]
-                            Newline+ <<30, 31>> ws:None [5, 1]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(24, 30), match='cccccc'>>> ws:None [4, 1 -> 4, 7]
+                            Newline+ <<30, 31>> ws:None [4, 7 -> 5, 1]
                 """,
             )
 
@@ -499,16 +499,16 @@ class TestStandard(object):
                 <Root>
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> ws:None [1, 2]
-                            Newline+ <<1, 2>> ws:None [2, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> ws:None [1, 1 -> 1, 2]
+                            Newline+ <<1, 2>> ws:None [1, 2 -> 2, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> ws:None [2, 2]
-                            Newline+ <<3, 4>> ws:None [3, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> ws:None [2, 1 -> 2, 2]
+                            Newline+ <<3, 4>> ws:None [2, 2 -> 3, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> ws:None [3, 2]
-                            Newline+ <<5, 6>> ws:None [4, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> ws:None [3, 1 -> 3, 2]
+                            Newline+ <<5, 6>> ws:None [3, 2 -> 4, 1]
                 """,
             )
 
@@ -583,92 +583,20 @@ class TestStandard(object):
                 <Root>
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Include
-                            Include Token <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 8]
-                            Lower Token <<Regex: <_sre.SRE_Match object; span=(8, 14), match='number'>>> ws:(7, 8) [1, 15]
-                            Newline+ <<14, 15>> ws:None [2, 1]
-                    Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                            Include Token <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(8, 14), match='number'>>> ws:(7, 8) [1, 9 -> 1, 15]
+                            Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
+                    Or: [Include, Upper, Lower, Number, New Scope] / Or: [Dynamic Number]
                         Dynamic Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(15, 16), match='4'>>> ws:None [2, 2]
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(17, 18), match='5'>>> ws:(16, 17) [2, 4]
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(19, 20), match='6'>>> ws:(18, 19) [2, 6]
-                            Newline+ <<20, 21>> ws:None [3, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(15, 16), match='4'>>> ws:None [2, 1 -> 2, 2]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(17, 18), match='5'>>> ws:(16, 17) [2, 3 -> 2, 4]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(19, 20), match='6'>>> ws:(18, 19) [2, 5 -> 2, 6]
+                            Newline+ <<20, 21>> ws:None [2, 6 -> 3, 1]
                 """,
             )
 
     # ----------------------------------------------------------------------
     def test_InsertedStatementsScoped(self):
-        with self.CreateObserver(
-            {
-                "one" : textwrap.dedent(
-                    """\
-                    NEWSCOPE:
-                        include number
-                        4 5 6
-                    """,
-                ),
-            },
-            num_threads=10,
-        ) as observer:
-            results = Parse(
-                ["one"],
-                self._statements,
-                observer,
-            )
-
-            assert len(results) == 2
-            assert "one" in results
-            assert "number" in results
-
-            one_results = results["one"]
-
-            assert str(one_results) == textwrap.dedent(
-                """\
-                <Root>
-                    Or: [Include, Upper, Lower, Number, New Scope]
-                        New Scope
-                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> ws:None [1, 9]
-                            Colon Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 10]
-                            Newline+ <<9, 10>> ws:None [2, 1]
-                            Indent <<10, 14, (4)>> ws:None [2, 5]
-                            DynamicStatements.Statements
-                                Or: [Include, Upper, Lower, Number, New Scope]
-                                    Include
-                                        Include Token <<Regex: <_sre.SRE_Match object; span=(14, 21), match='include'>>> ws:None [2, 12]
-                                        Lower Token <<Regex: <_sre.SRE_Match object; span=(22, 28), match='number'>>> ws:(21, 22) [2, 19]
-                                        Newline+ <<28, 29>> ws:None [3, 1]
-                            DynamicStatements.Statements
-                                Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
-                                    Dynamic Number
-                                        Number Token <<Regex: <_sre.SRE_Match object; span=(33, 34), match='4'>>> ws:None [3, 6]
-                                        Number Token <<Regex: <_sre.SRE_Match object; span=(35, 36), match='5'>>> ws:(34, 35) [3, 8]
-                                        Number Token <<Regex: <_sre.SRE_Match object; span=(37, 38), match='6'>>> ws:(36, 37) [3, 10]
-                                        Newline+ <<38, 39>> ws:None [4, 1]
-                            Dedent <<>> ws:None [4, 1]
-                """,
-            )
-
-            number_results = results["number"]
-
-            assert str(number_results) == textwrap.dedent(
-                """\
-                <Root>
-                    Or: [Include, Upper, Lower, Number, New Scope]
-                        Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> ws:None [1, 2]
-                            Newline+ <<1, 2>> ws:None [2, 1]
-                    Or: [Include, Upper, Lower, Number, New Scope]
-                        Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> ws:None [2, 2]
-                            Newline+ <<3, 4>> ws:None [3, 1]
-                    Or: [Include, Upper, Lower, Number, New Scope]
-                        Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> ws:None [3, 2]
-                            Newline+ <<5, 6>> ws:None [4, 1]
-                """,
-            )
-
-    # ----------------------------------------------------------------------
-    def test_InsertedStatementsScopedSingleThreaded(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -699,24 +627,24 @@ class TestStandard(object):
                 <Root>
                     Or: [Include, Upper, Lower, Number, New Scope]
                         New Scope
-                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> ws:None [1, 9]
-                            Colon Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 10]
-                            Newline+ <<9, 10>> ws:None [2, 1]
-                            Indent <<10, 14, (4)>> ws:None [2, 5]
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> ws:None [1, 1 -> 1, 9]
+                            Colon Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
+                            Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
+                            Indent <<10, 14, (4)>> ws:None [2, 1 -> 2, 5]
                             DynamicStatements.Statements
                                 Or: [Include, Upper, Lower, Number, New Scope]
                                     Include
-                                        Include Token <<Regex: <_sre.SRE_Match object; span=(14, 21), match='include'>>> ws:None [2, 12]
-                                        Lower Token <<Regex: <_sre.SRE_Match object; span=(22, 28), match='number'>>> ws:(21, 22) [2, 19]
-                                        Newline+ <<28, 29>> ws:None [3, 1]
+                                        Include Token <<Regex: <_sre.SRE_Match object; span=(14, 21), match='include'>>> ws:None [2, 5 -> 2, 12]
+                                        Lower Token <<Regex: <_sre.SRE_Match object; span=(22, 28), match='number'>>> ws:(21, 22) [2, 13 -> 2, 19]
+                                        Newline+ <<28, 29>> ws:None [2, 19 -> 3, 1]
                             DynamicStatements.Statements
-                                Or: [Dynamic Number, Include, Upper, Lower, Number, New Scope]
+                                Or: [Include, Upper, Lower, Number, New Scope] / Or: [Dynamic Number]
                                     Dynamic Number
-                                        Number Token <<Regex: <_sre.SRE_Match object; span=(33, 34), match='4'>>> ws:None [3, 6]
-                                        Number Token <<Regex: <_sre.SRE_Match object; span=(35, 36), match='5'>>> ws:(34, 35) [3, 8]
-                                        Number Token <<Regex: <_sre.SRE_Match object; span=(37, 38), match='6'>>> ws:(36, 37) [3, 10]
-                                        Newline+ <<38, 39>> ws:None [4, 1]
-                            Dedent <<>> ws:None [4, 1]
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(33, 34), match='4'>>> ws:None [3, 5 -> 3, 6]
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(35, 36), match='5'>>> ws:(34, 35) [3, 7 -> 3, 8]
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(37, 38), match='6'>>> ws:(36, 37) [3, 9 -> 3, 10]
+                                        Newline+ <<38, 39>> ws:None [3, 10 -> 4, 1]
+                            Dedent <<>> ws:None [4, 1 -> 4, 1]
                 """,
             )
 
@@ -727,16 +655,16 @@ class TestStandard(object):
                 <Root>
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> ws:None [1, 2]
-                            Newline+ <<1, 2>> ws:None [2, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(0, 1), match='4'>>> ws:None [1, 1 -> 1, 2]
+                            Newline+ <<1, 2>> ws:None [1, 2 -> 2, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> ws:None [2, 2]
-                            Newline+ <<3, 4>> ws:None [3, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(2, 3), match='5'>>> ws:None [2, 1 -> 2, 2]
+                            Newline+ <<3, 4>> ws:None [2, 2 -> 3, 1]
                     Or: [Include, Upper, Lower, Number, New Scope]
                         Number
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> ws:None [3, 2]
-                            Newline+ <<5, 6>> ws:None [4, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='6'>>> ws:None [3, 1 -> 3, 2]
+                            Newline+ <<5, 6>> ws:None [3, 2 -> 4, 1]
                 """,
             )
 
@@ -799,7 +727,7 @@ class TestStandard(object):
             assert str(potentials[3]) == textwrap.dedent(
                 """\
                 Number
-                    Number Token <<Regex: <_sre.SRE_Match object; span=(39, 40), match='7'>>> ws:None [4, 2]
+                    Number Token <<Regex: <_sre.SRE_Match object; span=(39, 40), match='7'>>> ws:None [4, 1 -> 4, 2]
                 """,
             )
 

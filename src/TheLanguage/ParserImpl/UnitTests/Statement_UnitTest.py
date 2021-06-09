@@ -133,9 +133,9 @@ class TestParseSimple(object):
             """\
             True
             8
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                Newline+ <<7, 8>> ws:None [2, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                Newline+ <<7, 8>> ws:None [1, 8 -> 2, 1]
             """,
         )
 
@@ -163,9 +163,9 @@ class TestParseSimple(object):
             """\
             True
             13
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(9, 12), match='two'>>> ws:(3, 9) [1, 13]
-                Newline+ <<12, 13>> ws:None [2, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(9, 12), match='two'>>> ws:(3, 9) [1, 10 -> 1, 13]
+                Newline+ <<12, 13>> ws:None [1, 13 -> 2, 1]
             """,
         )
 
@@ -188,9 +188,9 @@ class TestParseSimple(object):
             """\
             True
             8
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                Newline+ <<7, 8>> ws:None [2, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                Newline+ <<7, 8>> ws:None [1, 8 -> 2, 1]
             """,
         )
 
@@ -213,9 +213,9 @@ class TestParseSimple(object):
             """\
             True
             9
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(5, 8), match='two'>>> ws:(3, 5) [1, 9]
-                Newline+ <<8, 9>> ws:None [2, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(5, 8), match='two'>>> ws:(3, 5) [1, 6 -> 1, 9]
+                Newline+ <<8, 9>> ws:None [1, 9 -> 2, 1]
             """,
         )
 
@@ -238,9 +238,9 @@ class TestParseSimple(object):
             """\
             True
             9
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                Newline+ <<8, 9>> ws:(7, 8) [2, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                Newline+ <<8, 9>> ws:(7, 8) [1, 9 -> 2, 1]
             """,
         )
 
@@ -263,9 +263,9 @@ class TestParseSimple(object):
             """\
             True
             12
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                Newline+ <<11, 12>> ws:(7, 11) [2, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                Newline+ <<11, 12>> ws:(7, 11) [1, 12 -> 2, 1]
             """,
         )
 
@@ -288,9 +288,9 @@ class TestParseSimple(object):
             """\
             True
             9
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                Newline+ <<8, 9>> ws:(7, 8) [2, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                Newline+ <<8, 9>> ws:(7, 8) [1, 9 -> 2, 1]
             """,
         )
 
@@ -313,9 +313,9 @@ class TestParseSimple(object):
             """\
             True
             11
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                Newline+ <<10, 11>> ws:(7, 10) [2, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                Newline+ <<10, 11>> ws:(7, 10) [1, 11 -> 2, 1]
             """,
         )
 
@@ -347,9 +347,9 @@ class TestParseSimple(object):
             """\
             True
             8
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                Newline+ <<7, 8>> ws:None [2, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                Newline+ <<7, 8>> ws:None [1, 8 -> 2, 1]
             """,
         )
 
@@ -366,9 +366,9 @@ class TestParseSimple(object):
             """\
             True
             19
-                Word Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='three'>>> ws:None [2, 6]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(14, 18), match='four'>>> ws:(13, 14) [2, 11]
-                Newline+ <<18, 19>> ws:None [3, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='three'>>> ws:None [2, 1 -> 2, 6]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(14, 18), match='four'>>> ws:(13, 14) [2, 7 -> 2, 11]
+                Newline+ <<18, 19>> ws:None [2, 11 -> 3, 1]
             """,
         )
 
@@ -388,9 +388,9 @@ class TestParseSimple(object):
             """\
             True
             17
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                Newline+ <<7, 17>> ws:None [5, 1]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                Newline+ <<7, 17>> ws:None [1, 8 -> 5, 1]
             """,
         )
 
@@ -412,8 +412,8 @@ class TestParseSimple(object):
             """\
             False
             7
-                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
             """,
         )
 
@@ -479,14 +479,14 @@ class TestParseIndentAndDedent(object):
             """\
             True
             22
-                Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Newline+ <<3, 4>> ws:None [2, 1]
-                Indent <<4, 8, (4)>> ws:None [2, 5]
-                Word <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 8]
-                Newline+ <<11, 12>> ws:None [3, 1]
-                Word <<Regex: <_sre.SRE_Match object; span=(16, 21), match='three'>>> ws:None [3, 10]
-                Newline+ <<21, 22>> ws:None [4, 1]
-                Dedent <<>> ws:None [4, 1]
+                Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
+                Word <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
+                Newline+ <<11, 12>> ws:None [2, 8 -> 3, 1]
+                Word <<Regex: <_sre.SRE_Match object; span=(16, 21), match='three'>>> ws:None [3, 5 -> 3, 10]
+                Newline+ <<21, 22>> ws:None [3, 10 -> 4, 1]
+                Dedent <<>> ws:None [4, 1 -> 4, 1]
             """,
         )
 
@@ -522,11 +522,11 @@ class TestParseIndentAndDedent(object):
             """\
             False
             12
-                Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Newline+ <<3, 4>> ws:None [2, 1]
-                Indent <<4, 8, (4)>> ws:None [2, 5]
-                Word <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 8]
-                Newline+ <<11, 12>> ws:None [3, 1]
+                Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
+                Word <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
+                Newline+ <<11, 12>> ws:None [2, 8 -> 3, 1]
             """,
         )
 
@@ -556,8 +556,8 @@ def test_FinishEarly(parse_mock):
         """\
         False
         4
-            Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-            Newline+ <<3, 4>> ws:None [2, 1]
+            Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
         """,
     )
 
@@ -624,26 +624,26 @@ class TestIgnoreWhitespace(object):
             """\
             True
             60
-                Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                lpar <<Regex: <_sre.SRE_Match object; span=(4, 5), match='('>>> ws:(3, 4) [1, 6]
-                Newline+ <<5, 8>> ws:None !Ignored! [4, 1]
-                Indent <<8, 12, (4)>> ws:None !Ignored! [4, 5]
-                Word <<Regex: <_sre.SRE_Match object; span=(12, 15), match='two'>>> ws:None [4, 8]
-                Newline+ <<15, 17>> ws:None !Ignored! [6, 1]
-                Indent <<17, 25, (8)>> ws:None !Ignored! [6, 9]
-                Word <<Regex: <_sre.SRE_Match object; span=(25, 30), match='three'>>> ws:None [6, 14]
-                Newline+ <<30, 31>> ws:None !Ignored! [7, 1]
-                Dedent <<>> ws:None !Ignored! [7, 5]
-                Word <<Regex: <_sre.SRE_Match object; span=(35, 39), match='four'>>> ws:None [7, 9]
-                Newline+ <<39, 40>> ws:None !Ignored! [8, 1]
-                Indent <<40, 48, (8)>> ws:None !Ignored! [8, 9]
-                Word <<Regex: <_sre.SRE_Match object; span=(48, 52), match='five'>>> ws:None [8, 13]
-                Newline+ <<52, 54>> ws:None !Ignored! [10, 1]
-                Dedent <<>> ws:None !Ignored! [10, 1]
-                Dedent <<>> ws:None !Ignored! [10, 1]
-                rpar <<Regex: <_sre.SRE_Match object; span=(54, 55), match=')'>>> ws:None [10, 2]
-                Word <<Regex: <_sre.SRE_Match object; span=(56, 59), match='six'>>> ws:(55, 56) [10, 6]
-                Newline+ <<59, 60>> ws:None [11, 1]
+                Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                lpar <<Regex: <_sre.SRE_Match object; span=(4, 5), match='('>>> ws:(3, 4) [1, 5 -> 1, 6]
+                Newline+ <<5, 8>> ws:None !Ignored! [1, 6 -> 4, 1]
+                Indent <<8, 12, (4)>> ws:None !Ignored! [4, 1 -> 4, 5]
+                Word <<Regex: <_sre.SRE_Match object; span=(12, 15), match='two'>>> ws:None [4, 5 -> 4, 8]
+                Newline+ <<15, 17>> ws:None !Ignored! [4, 8 -> 6, 1]
+                Indent <<17, 25, (8)>> ws:None !Ignored! [6, 1 -> 6, 9]
+                Word <<Regex: <_sre.SRE_Match object; span=(25, 30), match='three'>>> ws:None [6, 9 -> 6, 14]
+                Newline+ <<30, 31>> ws:None !Ignored! [6, 14 -> 7, 1]
+                Dedent <<>> ws:None !Ignored! [7, 1 -> 7, 5]
+                Word <<Regex: <_sre.SRE_Match object; span=(35, 39), match='four'>>> ws:None [7, 5 -> 7, 9]
+                Newline+ <<39, 40>> ws:None !Ignored! [7, 9 -> 8, 1]
+                Indent <<40, 48, (8)>> ws:None !Ignored! [8, 1 -> 8, 9]
+                Word <<Regex: <_sre.SRE_Match object; span=(48, 52), match='five'>>> ws:None [8, 9 -> 8, 13]
+                Newline+ <<52, 54>> ws:None !Ignored! [8, 13 -> 10, 1]
+                Dedent <<>> ws:None !Ignored! [10, 1 -> 10, 1]
+                Dedent <<>> ws:None !Ignored! [10, 1 -> 10, 1]
+                rpar <<Regex: <_sre.SRE_Match object; span=(54, 55), match=')'>>> ws:None [10, 1 -> 10, 2]
+                Word <<Regex: <_sre.SRE_Match object; span=(56, 59), match='six'>>> ws:(55, 56) [10, 3 -> 10, 6]
+                Newline+ <<59, 60>> ws:None [10, 6 -> 11, 1]
             """,
         )
 
@@ -677,7 +677,7 @@ def test_IgnoreControlTokens(parse_mock):
         """\
         True
         4
-            test <<Regex: <_sre.SRE_Match object; span=(0, 4), match='test'>>> ws:None [1, 5]
+            test <<Regex: <_sre.SRE_Match object; span=(0, 4), match='test'>>> ws:None [1, 1 -> 1, 5]
         """,
     )
 
@@ -714,11 +714,11 @@ class TestEmbeddedStatements(object):
             """\
             True
             11
-                lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 2]
+                lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 1 -> 1, 2]
                 inner
-                    Word <<Regex: <_sre.SRE_Match object; span=(2, 5), match='one'>>> ws:(1, 2) [1, 6]
-                    Word <<Regex: <_sre.SRE_Match object; span=(6, 9), match='two'>>> ws:(5, 6) [1, 10]
-                rpar <<Regex: <_sre.SRE_Match object; span=(10, 11), match=')'>>> ws:(9, 10) [1, 12]
+                    Word <<Regex: <_sre.SRE_Match object; span=(2, 5), match='one'>>> ws:(1, 2) [1, 3 -> 1, 6]
+                    Word <<Regex: <_sre.SRE_Match object; span=(6, 9), match='two'>>> ws:(5, 6) [1, 7 -> 1, 10]
+                rpar <<Regex: <_sre.SRE_Match object; span=(10, 11), match=')'>>> ws:(9, 10) [1, 11 -> 1, 12]
             """,
         )
 
@@ -741,10 +741,10 @@ class TestEmbeddedStatements(object):
             """\
             False
             9
-                lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 2]
+                lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 1 -> 1, 2]
                 inner
-                    Word <<Regex: <_sre.SRE_Match object; span=(2, 5), match='one'>>> ws:(1, 2) [1, 6]
-                    Word <<Regex: <_sre.SRE_Match object; span=(6, 9), match='two'>>> ws:(5, 6) [1, 10]
+                    Word <<Regex: <_sre.SRE_Match object; span=(2, 5), match='one'>>> ws:(1, 2) [1, 3 -> 1, 6]
+                    Word <<Regex: <_sre.SRE_Match object; span=(6, 9), match='two'>>> ws:(5, 6) [1, 7 -> 1, 10]
             """,
         )
 
@@ -764,9 +764,9 @@ class TestEmbeddedStatements(object):
             """\
             False
             5
-                lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 2]
+                lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 1 -> 1, 2]
                 inner
-                    Word <<Regex: <_sre.SRE_Match object; span=(2, 5), match='one'>>> ws:(1, 2) [1, 6]
+                    Word <<Regex: <_sre.SRE_Match object; span=(2, 5), match='one'>>> ws:(1, 2) [1, 3 -> 1, 6]
             """,
         )
 
@@ -786,7 +786,7 @@ class TestEmbeddedStatements(object):
             """\
             False
             1
-                lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 2]
+                lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 1 -> 1, 2]
                 inner
                     <No results>
             """,
@@ -860,19 +860,19 @@ class TestDynamicStatements(object):
                 DynamicStatements.Statements
                     Or: [Word Statement, Number Statement]
                         Word Statement
-                            Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='word1'>>> ws:None [1, 6]
-                            Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='word2'>>> ws:(5, 6) [1, 12]
-                            Newline+ <<11, 12>> ws:None [2, 1]
+                            Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='word1'>>> ws:None [1, 1 -> 1, 6]
+                            Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='word2'>>> ws:(5, 6) [1, 7 -> 1, 12]
+                            Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
                 DynamicStatements.Statements
                     Or: [Word Statement, Number Statement]
                         Number Statement
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 4]
-                            Newline+ <<15, 16>> ws:None [3, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
+                            Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
                 DynamicStatements.Expressions
                     Or: [Number Statement]
                         Number Statement
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(16, 19), match='456'>>> ws:None [3, 4]
-                            Newline+ <<19, 20>> ws:None [4, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(16, 19), match='456'>>> ws:None [3, 1 -> 3, 4]
+                            Newline+ <<19, 20>> ws:None [3, 4 -> 4, 1]
             """,
         )
 
@@ -904,14 +904,14 @@ class TestDynamicStatements(object):
                 DynamicStatements.Statements
                     Or: [Word Statement, Number Statement]
                         Word Statement
-                            Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='word1'>>> ws:None [1, 6]
-                            Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='word2'>>> ws:(5, 6) [1, 12]
-                            Newline+ <<11, 12>> ws:None [2, 1]
+                            Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='word1'>>> ws:None [1, 1 -> 1, 6]
+                            Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='word2'>>> ws:(5, 6) [1, 7 -> 1, 12]
+                            Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
                 DynamicStatements.Statements
                     Or: [Word Statement, Number Statement]
                         Number Statement
-                            Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 4]
-                            Newline+ <<15, 16>> ws:None [3, 1]
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
+                            Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
                 DynamicStatements.Expressions
                     Or: [Number Statement]
                         Number Statement
@@ -939,7 +939,7 @@ class TestParseMultiple(object):
             4
                 Or: [1, 2, 3]
                     1
-                        1t <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 5]
+                        1t <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
@@ -961,7 +961,7 @@ class TestParseMultiple(object):
             6
                 Or: [1, 2, 3]
                     2
-                        2t <<Regex: <_sre.SRE_Match object; span=(0, 6), match='123456'>>> ws:None [1, 7]
+                        2t <<Regex: <_sre.SRE_Match object; span=(0, 6), match='123456'>>> ws:None [1, 1 -> 1, 7]
             """,
         )
 
@@ -984,7 +984,7 @@ class TestParseMultiple(object):
             4
                 Or: [1, 2, 3]
                     1
-                        1t <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 5]
+                        1t <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
@@ -1076,7 +1076,7 @@ class TestParseMultiple(object):
             4
                 Or: [Statement]
                     Statement
-                        Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 5]
+                        Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
@@ -1099,7 +1099,7 @@ class TestParseMultiple(object):
             6
                 Or: [1, 2, 3]
                     2
-                        2t <<Regex: <_sre.SRE_Match object; span=(0, 6), match='123456'>>> ws:None [1, 7]
+                        2t <<Regex: <_sre.SRE_Match object; span=(0, 6), match='123456'>>> ws:None [1, 1 -> 1, 7]
             """,
         )
 
@@ -1147,9 +1147,9 @@ class TestParseMultiple(object):
             True
             8
                 Or: [1, 2, 3]
-                    Indent <<0, 2, (2)>> ws:None !Ignored! [1, 3]
+                    Indent <<0, 2, (2)>> ws:None !Ignored! [1, 1 -> 1, 3]
                     2
-                        2t <<Regex: <_sre.SRE_Match object; span=(2, 8), match='123456'>>> ws:None [1, 9]
+                        2t <<Regex: <_sre.SRE_Match object; span=(2, 8), match='123456'>>> ws:None [1, 3 -> 1, 9]
             """,
         )
 
@@ -1223,32 +1223,32 @@ class TestRepeat(object):
             44
                 Repeat: (Word Statement, 0, None)
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 6]
-                        Newline+ <<5, 6>> ws:None [2, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
+                        Newline+ <<5, 6>> ws:None [1, 6 -> 2, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:None [2, 6]
-                        Newline+ <<11, 12>> ws:None [3, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:None [2, 1 -> 2, 6]
+                        Newline+ <<11, 12>> ws:None [2, 6 -> 3, 1]
                 Repeat: (Number Statement, 1, None)
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(12, 14), match='12'>>> ws:None [3, 3]
-                        Newline+ <<14, 15>> ws:None [4, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(12, 14), match='12'>>> ws:None [3, 1 -> 3, 3]
+                        Newline+ <<14, 15>> ws:None [3, 3 -> 4, 1]
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(15, 19), match='3456'>>> ws:None [4, 5]
-                        Newline+ <<19, 20>> ws:None [5, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(15, 19), match='3456'>>> ws:None [4, 1 -> 4, 5]
+                        Newline+ <<19, 20>> ws:None [4, 5 -> 5, 1]
                 Repeat: (Upper Statement, 0, 1)
                     Upper Statement
-                        Upper Token <<Regex: <_sre.SRE_Match object; span=(20, 25), match='UPPER'>>> ws:None [5, 6]
-                        Newline+ <<25, 26>> ws:None [6, 1]
+                        Upper Token <<Regex: <_sre.SRE_Match object; span=(20, 25), match='UPPER'>>> ws:None [5, 1 -> 5, 6]
+                        Newline+ <<25, 26>> ws:None [5, 6 -> 6, 1]
                 Repeat: (Word Statement, 1, None)
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(26, 31), match='wordc'>>> ws:None [6, 6]
-                        Newline+ <<31, 32>> ws:None [7, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(26, 31), match='wordc'>>> ws:None [6, 1 -> 6, 6]
+                        Newline+ <<31, 32>> ws:None [6, 6 -> 7, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(32, 37), match='wordd'>>> ws:None [7, 6]
-                        Newline+ <<37, 38>> ws:None [8, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(32, 37), match='wordd'>>> ws:None [7, 1 -> 7, 6]
+                        Newline+ <<37, 38>> ws:None [7, 6 -> 8, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(38, 43), match='worde'>>> ws:None [8, 6]
-                        Newline+ <<43, 44>> ws:None [9, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(38, 43), match='worde'>>> ws:None [8, 1 -> 8, 6]
+                        Newline+ <<43, 44>> ws:None [8, 6 -> 9, 1]
             """,
         )
 
@@ -1280,25 +1280,25 @@ class TestRepeat(object):
                     <No results>
                 Repeat: (Number Statement, 1, None)
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(0, 2), match='12'>>> ws:None [1, 3]
-                        Newline+ <<2, 3>> ws:None [2, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(0, 2), match='12'>>> ws:None [1, 1 -> 1, 3]
+                        Newline+ <<2, 3>> ws:None [1, 3 -> 2, 1]
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(3, 7), match='3456'>>> ws:None [2, 5]
-                        Newline+ <<7, 8>> ws:None [3, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(3, 7), match='3456'>>> ws:None [2, 1 -> 2, 5]
+                        Newline+ <<7, 8>> ws:None [2, 5 -> 3, 1]
                 Repeat: (Upper Statement, 0, 1)
                     Upper Statement
-                        Upper Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='UPPER'>>> ws:None [3, 6]
-                        Newline+ <<13, 14>> ws:None [4, 1]
+                        Upper Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='UPPER'>>> ws:None [3, 1 -> 3, 6]
+                        Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
                 Repeat: (Word Statement, 1, None)
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(14, 19), match='wordc'>>> ws:None [4, 6]
-                        Newline+ <<19, 20>> ws:None [5, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(14, 19), match='wordc'>>> ws:None [4, 1 -> 4, 6]
+                        Newline+ <<19, 20>> ws:None [4, 6 -> 5, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(20, 25), match='wordd'>>> ws:None [5, 6]
-                        Newline+ <<25, 26>> ws:None [6, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(20, 25), match='wordd'>>> ws:None [5, 1 -> 5, 6]
+                        Newline+ <<25, 26>> ws:None [5, 6 -> 6, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(26, 31), match='worde'>>> ws:None [6, 6]
-                        Newline+ <<31, 32>> ws:None [7, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(26, 31), match='worde'>>> ws:None [6, 1 -> 6, 6]
+                        Newline+ <<31, 32>> ws:None [6, 6 -> 7, 1]
             """,
         )
 
@@ -1328,27 +1328,27 @@ class TestRepeat(object):
             32
                 Repeat: (Word Statement, 0, None)
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 6]
-                        Newline+ <<5, 6>> ws:None [2, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
+                        Newline+ <<5, 6>> ws:None [1, 6 -> 2, 1]
                 Repeat: (Number Statement, 1, None)
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(6, 8), match='12'>>> ws:None [2, 3]
-                        Newline+ <<8, 9>> ws:None [3, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(6, 8), match='12'>>> ws:None [2, 1 -> 2, 3]
+                        Newline+ <<8, 9>> ws:None [2, 3 -> 3, 1]
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(9, 13), match='3456'>>> ws:None [3, 5]
-                        Newline+ <<13, 14>> ws:None [4, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(9, 13), match='3456'>>> ws:None [3, 1 -> 3, 5]
+                        Newline+ <<13, 14>> ws:None [3, 5 -> 4, 1]
                 Repeat: (Upper Statement, 0, 1)
                     <No results>
                 Repeat: (Word Statement, 1, None)
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(14, 19), match='wordc'>>> ws:None [4, 6]
-                        Newline+ <<19, 20>> ws:None [5, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(14, 19), match='wordc'>>> ws:None [4, 1 -> 4, 6]
+                        Newline+ <<19, 20>> ws:None [4, 6 -> 5, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(20, 25), match='wordd'>>> ws:None [5, 6]
-                        Newline+ <<25, 26>> ws:None [6, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(20, 25), match='wordd'>>> ws:None [5, 1 -> 5, 6]
+                        Newline+ <<25, 26>> ws:None [5, 6 -> 6, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(26, 31), match='worde'>>> ws:None [6, 6]
-                        Newline+ <<31, 32>> ws:None [7, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(26, 31), match='worde'>>> ws:None [6, 1 -> 6, 6]
+                        Newline+ <<31, 32>> ws:None [6, 6 -> 7, 1]
             """,
         )
 
@@ -1379,23 +1379,23 @@ class TestRepeat(object):
                     <No results>
                 Repeat: (Number Statement, 1, None)
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(0, 2), match='12'>>> ws:None [1, 3]
-                        Newline+ <<2, 3>> ws:None [2, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(0, 2), match='12'>>> ws:None [1, 1 -> 1, 3]
+                        Newline+ <<2, 3>> ws:None [1, 3 -> 2, 1]
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(3, 7), match='3456'>>> ws:None [2, 5]
-                        Newline+ <<7, 8>> ws:None [3, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(3, 7), match='3456'>>> ws:None [2, 1 -> 2, 5]
+                        Newline+ <<7, 8>> ws:None [2, 5 -> 3, 1]
                 Repeat: (Upper Statement, 0, 1)
                     <No results>
                 Repeat: (Word Statement, 1, None)
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='wordc'>>> ws:None [3, 6]
-                        Newline+ <<13, 14>> ws:None [4, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='wordc'>>> ws:None [3, 1 -> 3, 6]
+                        Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(14, 19), match='wordd'>>> ws:None [4, 6]
-                        Newline+ <<19, 20>> ws:None [5, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(14, 19), match='wordd'>>> ws:None [4, 1 -> 4, 6]
+                        Newline+ <<19, 20>> ws:None [4, 6 -> 5, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(20, 25), match='worde'>>> ws:None [5, 6]
-                        Newline+ <<25, 26>> ws:None [6, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(20, 25), match='worde'>>> ws:None [5, 1 -> 5, 6]
+                        Newline+ <<25, 26>> ws:None [5, 6 -> 6, 1]
             """,
         )
 
@@ -1425,11 +1425,11 @@ class TestRepeat(object):
             12
                 Repeat: (Word Statement, 0, None)
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 6]
-                        Newline+ <<5, 6>> ws:None [2, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
+                        Newline+ <<5, 6>> ws:None [1, 6 -> 2, 1]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:None [2, 6]
-                        Newline+ <<11, 12>> ws:None [3, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:None [2, 1 -> 2, 6]
+                        Newline+ <<11, 12>> ws:None [2, 6 -> 3, 1]
                 Repeat: (Number Statement, 1, None)
                     <No results>
             """,
@@ -1461,15 +1461,15 @@ class TestRepeat(object):
                     <No results>
                 Repeat: (Number Statement, 1, None)
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(0, 2), match='12'>>> ws:None [1, 3]
-                        Newline+ <<2, 3>> ws:None [2, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(0, 2), match='12'>>> ws:None [1, 1 -> 1, 3]
+                        Newline+ <<2, 3>> ws:None [1, 3 -> 2, 1]
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(3, 7), match='3456'>>> ws:None [2, 5]
-                        Newline+ <<7, 8>> ws:None [3, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(3, 7), match='3456'>>> ws:None [2, 1 -> 2, 5]
+                        Newline+ <<7, 8>> ws:None [2, 5 -> 3, 1]
                 Repeat: (Upper Statement, 0, 1)
                     Upper Statement
-                        Upper Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='UPPER'>>> ws:None [3, 6]
-                        Newline+ <<13, 14>> ws:None [4, 1]
+                        Upper Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='UPPER'>>> ws:None [3, 1 -> 3, 6]
+                        Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
                 Repeat: (Word Statement, 1, None)
                     <No results>
             """,
@@ -1519,9 +1519,9 @@ class TestRepeatToken(object):
             True
             13
                 Repeat: (Word Token, 0, 3)
-                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                    Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                    Word Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='three'>>> ws:(7, 8) [1, 14]
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(8, 13), match='three'>>> ws:(7, 8) [1, 9 -> 1, 14]
             """,
         )
 
@@ -1560,8 +1560,8 @@ class TestRepeatSimilarStatements(object):
             8
                 Repeat: (Word & Number, 0, None)
                     Word & Number
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 5]
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(5, 8), match='123'>>> ws:(4, 5) [1, 9]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(5, 8), match='123'>>> ws:(4, 5) [1, 6 -> 1, 9]
                 Repeat: (Word Token, 0, 1)
                     <No results>
             """,
@@ -1599,34 +1599,34 @@ class TestRepeatSimilarStatements(object):
             71
                 Repeat: (Word & Number, 0, None)
                     Word & Number
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='1'>>> ws:(3, 4) [1, 6]
-                    Newline+ <<5, 6>> ws:None !Ignored! [2, 1]
-                    Indent <<6, 10, (4)>> ws:None !Ignored! [2, 5]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='1'>>> ws:(3, 4) [1, 5 -> 1, 6]
+                    Newline+ <<5, 6>> ws:None !Ignored! [1, 6 -> 2, 1]
+                    Indent <<6, 10, (4)>> ws:None !Ignored! [2, 1 -> 2, 5]
                     Word & Number
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(10, 13), match='two'>>> ws:None [2, 8]
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(14, 15), match='2'>>> ws:(13, 14) [2, 10]
-                    Newline+ <<15, 16>> ws:None !Ignored! [3, 1]
-                    Indent <<16, 24, (8)>> ws:None !Ignored! [3, 9]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(10, 13), match='two'>>> ws:None [2, 5 -> 2, 8]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(14, 15), match='2'>>> ws:(13, 14) [2, 9 -> 2, 10]
+                    Newline+ <<15, 16>> ws:None !Ignored! [2, 10 -> 3, 1]
+                    Indent <<16, 24, (8)>> ws:None !Ignored! [3, 1 -> 3, 9]
                     Word & Number
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(24, 29), match='three'>>> ws:None [3, 14]
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(30, 31), match='3'>>> ws:(29, 30) [3, 16]
-                    Newline+ <<31, 33>> ws:None !Ignored! [5, 1]
-                    Dedent <<>> ws:None !Ignored! [5, 5]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(24, 29), match='three'>>> ws:None [3, 9 -> 3, 14]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(30, 31), match='3'>>> ws:(29, 30) [3, 15 -> 3, 16]
+                    Newline+ <<31, 33>> ws:None !Ignored! [3, 16 -> 5, 1]
+                    Dedent <<>> ws:None !Ignored! [5, 1 -> 5, 5]
                     Word & Number
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(37, 41), match='four'>>> ws:None [5, 9]
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(42, 43), match='4'>>> ws:(41, 42) [5, 11]
-                    Newline+ <<43, 44>> ws:None !Ignored! [6, 1]
-                    Indent <<44, 60, (16)>> ws:None !Ignored! [6, 17]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(37, 41), match='four'>>> ws:None [5, 5 -> 5, 9]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(42, 43), match='4'>>> ws:(41, 42) [5, 10 -> 5, 11]
+                    Newline+ <<43, 44>> ws:None !Ignored! [5, 11 -> 6, 1]
+                    Indent <<44, 60, (16)>> ws:None !Ignored! [6, 1 -> 6, 17]
                     Word & Number
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(60, 64), match='five'>>> ws:None [6, 21]
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(65, 66), match='5'>>> ws:(64, 65) [6, 23]
-                Newline+ <<66, 67>> ws:None !Ignored! [7, 1]
-                Dedent <<>> ws:None !Ignored! [7, 1]
-                Dedent <<>> ws:None !Ignored! [7, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(60, 64), match='five'>>> ws:None [6, 17 -> 6, 21]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(65, 66), match='5'>>> ws:(64, 65) [6, 22 -> 6, 23]
+                Newline+ <<66, 67>> ws:None !Ignored! [6, 23 -> 7, 1]
+                Dedent <<>> ws:None !Ignored! [7, 1 -> 7, 1]
+                Dedent <<>> ws:None !Ignored! [7, 1 -> 7, 1]
                 Repeat: (Word Token, 0, 1)
-                    Word Token <<Regex: <_sre.SRE_Match object; span=(67, 70), match='six'>>> ws:None [7, 4]
-                Newline+ <<70, 71>> ws:None !Ignored! [8, 1]
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(67, 70), match='six'>>> ws:None [7, 1 -> 7, 4]
+                Newline+ <<70, 71>> ws:None !Ignored! [7, 4 -> 8, 1]
             """,
         )
 
@@ -1641,7 +1641,7 @@ class TestRepeatSimilarStatements(object):
                 Repeat: (Word & Number, 0, None)
                     <No results>
                 Repeat: (Word Token, 0, 1)
-                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 5]
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
@@ -1668,8 +1668,8 @@ class TestOr(object):
             5
                 Or: [Word Statement, Number Statement, Upper Statement]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 5]
-                        Newline+ <<4, 5>> ws:None [2, 1]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+                        Newline+ <<4, 5>> ws:None [1, 5 -> 2, 1]
             """,
         )
 
@@ -1681,8 +1681,8 @@ class TestOr(object):
             9
                 Or: [Word Statement, Number Statement, Upper Statement]
                     Number Statement
-                        Number Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='12345678'>>> ws:None [1, 9]
-                        Newline+ <<8, 9>> ws:None [2, 1]
+                        Number Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='12345678'>>> ws:None [1, 1 -> 1, 9]
+                        Newline+ <<8, 9>> ws:None [1, 9 -> 2, 1]
             """,
         )
 
@@ -1694,8 +1694,8 @@ class TestOr(object):
             3
                 Or: [Word Statement, Number Statement, Upper Statement]
                     Upper Statement
-                        Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 2), match='UP'>>> ws:None [1, 3]
-                        Newline+ <<2, 3>> ws:None [2, 1]
+                        Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 2), match='UP'>>> ws:None [1, 1 -> 1, 3]
+                        Newline+ <<2, 3>> ws:None [1, 3 -> 2, 1]
             """,
         )
 
@@ -1707,7 +1707,7 @@ class TestOr(object):
             4
                 Or: [Word Statement, Number Statement, Upper Statement]
                     Word Statement
-                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='this'>>> ws:None [1, 5]
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='this'>>> ws:None [1, 1 -> 1, 5]
                     Number Statement
                         <No results>
                     Upper Statement
@@ -1791,50 +1791,50 @@ class TestComments(object):
                 Repeat: (Repeat, 1, None)
                     Repeat
                         Lower Line
-                            Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                            Comment <<Regex: <_sre.SRE_Match object; span=(4, 15), match='# Comment 1'>>> ws:(3, 4) !Ignored! [1, 16]
-                            Newline+ <<15, 16>> ws:None [2, 1]
+                            Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(4, 15), match='# Comment 1'>>> ws:(3, 4) !Ignored! [1, 5 -> 1, 16]
+                            Newline+ <<15, 16>> ws:None [1, 16 -> 2, 1]
                         Upper Line
-                            Upper <<Regex: <_sre.SRE_Match object; span=(16, 19), match='TWO'>>> ws:None [2, 4]
-                            Newline+ <<19, 20>> ws:None [3, 1]
+                            Upper <<Regex: <_sre.SRE_Match object; span=(16, 19), match='TWO'>>> ws:None [2, 1 -> 2, 4]
+                            Newline+ <<19, 20>> ws:None [2, 4 -> 3, 1]
                         Number Line
-                            Number <<Regex: <_sre.SRE_Match object; span=(20, 21), match='3'>>> ws:None [3, 2]
-                            Newline+ <<21, 22>> ws:None [4, 1]
+                            Number <<Regex: <_sre.SRE_Match object; span=(20, 21), match='3'>>> ws:None [3, 1 -> 3, 2]
+                            Newline+ <<21, 22>> ws:None [3, 2 -> 4, 1]
                     Repeat
                         Lower Line
-                            Lower <<Regex: <_sre.SRE_Match object; span=(22, 26), match='four'>>> ws:None [4, 5]
-                            Newline+ <<26, 27>> ws:None [5, 1]
+                            Lower <<Regex: <_sre.SRE_Match object; span=(22, 26), match='four'>>> ws:None [4, 1 -> 4, 5]
+                            Newline+ <<26, 27>> ws:None [4, 5 -> 5, 1]
                         Upper Line
-                            Upper <<Regex: <_sre.SRE_Match object; span=(27, 31), match='FIVE'>>> ws:None [5, 5]
-                            Comment <<Regex: <_sre.SRE_Match object; span=(47, 58), match='# Comment 5'>>> ws:(31, 47) !Ignored! [5, 32]
-                            Newline+ <<58, 59>> ws:None [6, 1]
+                            Upper <<Regex: <_sre.SRE_Match object; span=(27, 31), match='FIVE'>>> ws:None [5, 1 -> 5, 5]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(47, 58), match='# Comment 5'>>> ws:(31, 47) !Ignored! [5, 21 -> 5, 32]
+                            Newline+ <<58, 59>> ws:None [5, 32 -> 6, 1]
                         Number Line
-                            Number <<Regex: <_sre.SRE_Match object; span=(59, 61), match='66'>>> ws:None [6, 3]
-                            Newline+ <<61, 62>> ws:None [7, 1]
+                            Number <<Regex: <_sre.SRE_Match object; span=(59, 61), match='66'>>> ws:None [6, 1 -> 6, 3]
+                            Newline+ <<61, 62>> ws:None [6, 3 -> 7, 1]
                     Repeat
                         Lower Line
-                            Lower <<Regex: <_sre.SRE_Match object; span=(62, 67), match='seven'>>> ws:None [7, 6]
-                            Newline+ <<67, 68>> ws:None [8, 1]
+                            Lower <<Regex: <_sre.SRE_Match object; span=(62, 67), match='seven'>>> ws:None [7, 1 -> 7, 6]
+                            Newline+ <<67, 68>> ws:None [7, 6 -> 8, 1]
                         Upper Line
-                            Upper <<Regex: <_sre.SRE_Match object; span=(68, 73), match='EIGHT'>>> ws:None [8, 6]
-                            Newline+ <<73, 74>> ws:None [9, 1]
+                            Upper <<Regex: <_sre.SRE_Match object; span=(68, 73), match='EIGHT'>>> ws:None [8, 1 -> 8, 6]
+                            Newline+ <<73, 74>> ws:None [8, 6 -> 9, 1]
                         Number Line
-                            Number <<Regex: <_sre.SRE_Match object; span=(74, 77), match='999'>>> ws:None [9, 4]
-                            Comment <<Regex: <_sre.SRE_Match object; span=(81, 92), match='# Comment 9'>>> ws:(77, 81) !Ignored! [9, 19]
-                            Newline+ <<92, 93>> ws:None [10, 1]
+                            Number <<Regex: <_sre.SRE_Match object; span=(74, 77), match='999'>>> ws:None [9, 1 -> 9, 4]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(81, 92), match='# Comment 9'>>> ws:(77, 81) !Ignored! [9, 8 -> 9, 19]
+                            Newline+ <<92, 93>> ws:None [9, 19 -> 10, 1]
                     Repeat
                         Lower Line
-                            Lower <<Regex: <_sre.SRE_Match object; span=(93, 96), match='ten'>>> ws:None [10, 4]
-                            Comment <<Regex: <_sre.SRE_Match object; span=(101, 113), match='# Comment 10'>>> ws:(96, 101) !Ignored! [10, 21]
-                            Newline+ <<113, 114>> ws:None [11, 1]
+                            Lower <<Regex: <_sre.SRE_Match object; span=(93, 96), match='ten'>>> ws:None [10, 1 -> 10, 4]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(101, 113), match='# Comment 10'>>> ws:(96, 101) !Ignored! [10, 9 -> 10, 21]
+                            Newline+ <<113, 114>> ws:None [10, 21 -> 11, 1]
                         Upper Line
-                            Upper <<Regex: <_sre.SRE_Match object; span=(114, 120), match='ELEVEN'>>> ws:None [11, 7]
-                            Comment <<Regex: <_sre.SRE_Match object; span=(122, 134), match='# Comment 11'>>> ws:(120, 122) !Ignored! [11, 21]
-                            Newline+ <<134, 135>> ws:None [12, 1]
+                            Upper <<Regex: <_sre.SRE_Match object; span=(114, 120), match='ELEVEN'>>> ws:None [11, 1 -> 11, 7]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(122, 134), match='# Comment 11'>>> ws:(120, 122) !Ignored! [11, 9 -> 11, 21]
+                            Newline+ <<134, 135>> ws:None [11, 21 -> 12, 1]
                         Number Line
-                            Number <<Regex: <_sre.SRE_Match object; span=(135, 137), match='12'>>> ws:None [12, 3]
-                            Comment <<Regex: <_sre.SRE_Match object; span=(143, 155), match='# Comment 12'>>> ws:(137, 143) !Ignored! [12, 21]
-                            Newline+ <<155, 156>> ws:None [13, 1]
+                            Number <<Regex: <_sre.SRE_Match object; span=(135, 137), match='12'>>> ws:None [12, 1 -> 12, 3]
+                            Comment <<Regex: <_sre.SRE_Match object; span=(143, 155), match='# Comment 12'>>> ws:(137, 143) !Ignored! [12, 9 -> 12, 21]
+                            Newline+ <<155, 156>> ws:None [12, 21 -> 13, 1]
             """,
         )
 
@@ -1866,18 +1866,18 @@ class TestComments(object):
             """\
             True
             32
-                Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                Colon <<Regex: <_sre.SRE_Match object; span=(3, 4), match=':'>>> ws:None [1, 5]
-                Comment <<Regex: <_sre.SRE_Match object; span=(6, 17), match='# Comment 1'>>> ws:(4, 6) !Ignored! [1, 18]
-                Newline+ <<17, 18>> ws:None [2, 1]
-                Indent <<18, 22, (4)>> ws:None [2, 5]
+                Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                Colon <<Regex: <_sre.SRE_Match object; span=(3, 4), match=':'>>> ws:None [1, 4 -> 1, 5]
+                Comment <<Regex: <_sre.SRE_Match object; span=(6, 17), match='# Comment 1'>>> ws:(4, 6) !Ignored! [1, 7 -> 1, 18]
+                Newline+ <<17, 18>> ws:None [1, 18 -> 2, 1]
+                Indent <<18, 22, (4)>> ws:None [2, 1 -> 2, 5]
                 Upper Line
-                    Upper <<Regex: <_sre.SRE_Match object; span=(22, 25), match='TWO'>>> ws:None [2, 8]
-                    Newline+ <<25, 26>> ws:None [3, 1]
+                    Upper <<Regex: <_sre.SRE_Match object; span=(22, 25), match='TWO'>>> ws:None [2, 5 -> 2, 8]
+                    Newline+ <<25, 26>> ws:None [2, 8 -> 3, 1]
                 Number Line
-                    Number <<Regex: <_sre.SRE_Match object; span=(30, 31), match='3'>>> ws:None [3, 6]
-                    Newline+ <<31, 32>> ws:None [4, 1]
-                Dedent <<>> ws:None [4, 1]
+                    Number <<Regex: <_sre.SRE_Match object; span=(30, 31), match='3'>>> ws:None [3, 5 -> 3, 6]
+                    Newline+ <<31, 32>> ws:None [3, 6 -> 4, 1]
+                Dedent <<>> ws:None [4, 1 -> 4, 1]
             """,
         )
         iterator = result.Iter
@@ -1887,18 +1887,18 @@ class TestComments(object):
             """\
             True
             66
-                Lower <<Regex: <_sre.SRE_Match object; span=(32, 36), match='four'>>> ws:None [4, 5]
-                Colon <<Regex: <_sre.SRE_Match object; span=(36, 37), match=':'>>> ws:None [4, 6]
-                Newline+ <<37, 38>> ws:None [5, 1]
-                Indent <<38, 42, (4)>> ws:None [5, 5]
+                Lower <<Regex: <_sre.SRE_Match object; span=(32, 36), match='four'>>> ws:None [4, 1 -> 4, 5]
+                Colon <<Regex: <_sre.SRE_Match object; span=(36, 37), match=':'>>> ws:None [4, 5 -> 4, 6]
+                Newline+ <<37, 38>> ws:None [4, 6 -> 5, 1]
+                Indent <<38, 42, (4)>> ws:None [5, 1 -> 5, 5]
                 Upper Line
-                    Upper <<Regex: <_sre.SRE_Match object; span=(42, 46), match='FIVE'>>> ws:None [5, 9]
-                    Comment <<Regex: <_sre.SRE_Match object; span=(47, 58), match='# Comment 5'>>> ws:(46, 47) !Ignored! [5, 21]
-                    Newline+ <<58, 59>> ws:None [6, 1]
+                    Upper <<Regex: <_sre.SRE_Match object; span=(42, 46), match='FIVE'>>> ws:None [5, 5 -> 5, 9]
+                    Comment <<Regex: <_sre.SRE_Match object; span=(47, 58), match='# Comment 5'>>> ws:(46, 47) !Ignored! [5, 10 -> 5, 21]
+                    Newline+ <<58, 59>> ws:None [5, 21 -> 6, 1]
                 Number Line
-                    Number <<Regex: <_sre.SRE_Match object; span=(63, 65), match='66'>>> ws:None [6, 7]
-                    Newline+ <<65, 66>> ws:None [7, 1]
-                Dedent <<>> ws:None [7, 1]
+                    Number <<Regex: <_sre.SRE_Match object; span=(63, 65), match='66'>>> ws:None [6, 5 -> 6, 7]
+                    Newline+ <<65, 66>> ws:None [6, 7 -> 7, 1]
+                Dedent <<>> ws:None [7, 1 -> 7, 1]
             """,
         )
         iterator = result.Iter
@@ -1908,18 +1908,18 @@ class TestComments(object):
             """\
             True
             119
-                Lower <<Regex: <_sre.SRE_Match object; span=(66, 71), match='seven'>>> ws:None [7, 6]
-                Colon <<Regex: <_sre.SRE_Match object; span=(71, 72), match=':'>>> ws:None [7, 7]
-                Newline+ <<72, 73>> ws:None [8, 1]
-                Indent <<73, 77, (4)>> ws:None [8, 5]
+                Lower <<Regex: <_sre.SRE_Match object; span=(66, 71), match='seven'>>> ws:None [7, 1 -> 7, 6]
+                Colon <<Regex: <_sre.SRE_Match object; span=(71, 72), match=':'>>> ws:None [7, 6 -> 7, 7]
+                Newline+ <<72, 73>> ws:None [7, 7 -> 8, 1]
+                Indent <<73, 77, (4)>> ws:None [8, 1 -> 8, 5]
                 Upper Line
-                    Upper <<Regex: <_sre.SRE_Match object; span=(77, 82), match='EIGHT'>>> ws:None [8, 10]
-                    Newline+ <<82, 83>> ws:None [9, 1]
+                    Upper <<Regex: <_sre.SRE_Match object; span=(77, 82), match='EIGHT'>>> ws:None [8, 5 -> 8, 10]
+                    Newline+ <<82, 83>> ws:None [8, 10 -> 9, 1]
                 Number Line
-                    Number <<Regex: <_sre.SRE_Match object; span=(87, 90), match='999'>>> ws:None [9, 8]
-                    Comment <<Regex: <_sre.SRE_Match object; span=(107, 118), match='# Comment 9'>>> ws:(90, 107) !Ignored! [9, 36]
-                    Newline+ <<118, 119>> ws:None [10, 1]
-                Dedent <<>> ws:None [10, 1]
+                    Number <<Regex: <_sre.SRE_Match object; span=(87, 90), match='999'>>> ws:None [9, 5 -> 9, 8]
+                    Comment <<Regex: <_sre.SRE_Match object; span=(107, 118), match='# Comment 9'>>> ws:(90, 107) !Ignored! [9, 25 -> 9, 36]
+                    Newline+ <<118, 119>> ws:None [9, 36 -> 10, 1]
+                Dedent <<>> ws:None [10, 1 -> 10, 1]
             """,
         )
         iterator = result.Iter
@@ -1929,20 +1929,20 @@ class TestComments(object):
             """\
             True
             206
-                Lower <<Regex: <_sre.SRE_Match object; span=(119, 122), match='ten'>>> ws:None [10, 4]
-                Colon <<Regex: <_sre.SRE_Match object; span=(122, 123), match=':'>>> ws:None [10, 5]
-                Comment <<Regex: <_sre.SRE_Match object; span=(135, 147), match='# Comment 10'>>> ws:(123, 135) !Ignored! [10, 29]
-                Newline+ <<147, 148>> ws:None [11, 1]
-                Indent <<148, 152, (4)>> ws:None [11, 5]
+                Lower <<Regex: <_sre.SRE_Match object; span=(119, 122), match='ten'>>> ws:None [10, 1 -> 10, 4]
+                Colon <<Regex: <_sre.SRE_Match object; span=(122, 123), match=':'>>> ws:None [10, 4 -> 10, 5]
+                Comment <<Regex: <_sre.SRE_Match object; span=(135, 147), match='# Comment 10'>>> ws:(123, 135) !Ignored! [10, 17 -> 10, 29]
+                Newline+ <<147, 148>> ws:None [10, 29 -> 11, 1]
+                Indent <<148, 152, (4)>> ws:None [11, 1 -> 11, 5]
                 Upper Line
-                    Upper <<Regex: <_sre.SRE_Match object; span=(152, 158), match='ELEVEN'>>> ws:None [11, 11]
-                    Comment <<Regex: <_sre.SRE_Match object; span=(164, 176), match='# Comment 11'>>> ws:(158, 164) !Ignored! [11, 29]
-                    Newline+ <<176, 177>> ws:None [12, 1]
+                    Upper <<Regex: <_sre.SRE_Match object; span=(152, 158), match='ELEVEN'>>> ws:None [11, 5 -> 11, 11]
+                    Comment <<Regex: <_sre.SRE_Match object; span=(164, 176), match='# Comment 11'>>> ws:(158, 164) !Ignored! [11, 17 -> 11, 29]
+                    Newline+ <<176, 177>> ws:None [11, 29 -> 12, 1]
                 Number Line
-                    Number <<Regex: <_sre.SRE_Match object; span=(181, 183), match='12'>>> ws:None [12, 7]
-                    Comment <<Regex: <_sre.SRE_Match object; span=(193, 205), match='# Comment 12'>>> ws:(183, 193) !Ignored! [12, 29]
-                    Newline+ <<205, 206>> ws:None [13, 1]
-                Dedent <<>> ws:None [13, 1]
+                    Number <<Regex: <_sre.SRE_Match object; span=(181, 183), match='12'>>> ws:None [12, 5 -> 12, 7]
+                    Comment <<Regex: <_sre.SRE_Match object; span=(193, 205), match='# Comment 12'>>> ws:(183, 193) !Ignored! [12, 17 -> 12, 29]
+                    Newline+ <<205, 206>> ws:None [12, 29 -> 13, 1]
+                Dedent <<>> ws:None [13, 1 -> 13, 1]
             """,
         )
         iterator = result.Iter
@@ -2001,17 +2001,17 @@ class TestNamedStatementItem(object):
                     Internal
                         __or_replacement__
                             Lower Line
-                                Lower <<Regex: <_sre.SRE_Match object; span=(0, 5), match='lower'>>> ws:None [1, 6]
-                                Newline+ <<5, 6>> ws:None [2, 1]
+                                Lower <<Regex: <_sre.SRE_Match object; span=(0, 5), match='lower'>>> ws:None [1, 1 -> 1, 6]
+                                Newline+ <<5, 6>> ws:None [1, 6 -> 2, 1]
                     Internal
                         __or_replacement__
                             Upper Line
-                                Upper <<Regex: <_sre.SRE_Match object; span=(6, 11), match='UPPER'>>> ws:None [2, 6]
-                                Newline+ <<11, 12>> ws:None [3, 1]
+                                Upper <<Regex: <_sre.SRE_Match object; span=(6, 11), match='UPPER'>>> ws:None [2, 1 -> 2, 6]
+                                Newline+ <<11, 12>> ws:None [2, 6 -> 3, 1]
                     Internal
                         __or_replacement__
                             Number Line
-                                Number <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [3, 4]
-                                Newline+ <<15, 16>> ws:None [4, 1]
+                                Number <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [3, 1 -> 3, 4]
+                                Newline+ <<15, 16>> ws:None [3, 4 -> 4, 1]
             """,
         )

@@ -112,6 +112,7 @@ class Observer(MultifileParserObserver):
             updated_syntaxes[semver] = statement_info.Clone(
                 updated_statements=updated_statements,
                 updated_allow_parent_traversal=False,
+                updated_name="{} Grammar".format(semver),
             )
 
         self._observer                      = observer
@@ -155,8 +156,8 @@ class Observer(MultifileParserObserver):
             statement_info = self.Syntaxes.get(SemVer(semver_string), None)
             if statement_info is None:
                 raise SyntaxInvalidVersionError(
-                    results[2].Iter.Line,
-                    results[1].Iter.Column + ((results[2].Whitespace[1] - results[2].Whitespace[0]) if results[2].Whitespace else 0),
+                    results[2].IterBefore.Line,
+                    results[2].IterBefore.Column,
                     semver_string,
                 )
 
