@@ -138,8 +138,8 @@ class TestSimple(object):
                 """\
                 Or: [Upper Statement, Lower Statement, Number Statement]
                     Upper Statement
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
-                        Newline+ <<3, 4>> ws:None [2, 1]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
                 """,
             )
 
@@ -148,8 +148,8 @@ class TestSimple(object):
                 """\
                 Or: [Upper Statement, Lower Statement, Number Statement]
                     Lower Statement
-                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 4]
-                        Newline+ <<7, 8>> ws:None [3, 1]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
+                        Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
                 """,
             )
 
@@ -158,8 +158,8 @@ class TestSimple(object):
                 """\
                 Or: [Upper Statement, Lower Statement, Number Statement]
                     Number Statement
-                        Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 6]
-                        Newline+ <<13, 14>> ws:None [4, 1]
+                        Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
+                        Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
                 """,
             )
 
@@ -197,8 +197,8 @@ class TestSimple(object):
                 """\
                 Or: [Upper Statement, Lower Statement, Number Statement]
                     Number Statement
-                        Number <<Regex: <_sre.SRE_Match object; span=(0, 2), match='33'>>> ws:None [1, 3]
-                        Newline+ <<2, 3>> ws:None [2, 1]
+                        Number <<Regex: <_sre.SRE_Match object; span=(0, 2), match='33'>>> ws:None [1, 1 -> 1, 3]
+                        Newline+ <<2, 3>> ws:None [1, 3 -> 2, 1]
                 """,
             )
 
@@ -207,8 +207,8 @@ class TestSimple(object):
                 """\
                 Or: [Upper Statement, Lower Statement, Number Statement]
                     Lower Statement
-                        Lower <<Regex: <_sre.SRE_Match object; span=(3, 13), match='twoooooooo'>>> ws:None [2, 11]
-                        Newline+ <<13, 14>> ws:None [3, 1]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(3, 13), match='twoooooooo'>>> ws:None [2, 1 -> 2, 11]
+                        Newline+ <<13, 14>> ws:None [2, 11 -> 3, 1]
                 """,
             )
 
@@ -217,8 +217,8 @@ class TestSimple(object):
                 """\
                 Or: [Upper Statement, Lower Statement, Number Statement]
                     Upper Statement
-                        Upper <<Regex: <_sre.SRE_Match object; span=(14, 17), match='ONE'>>> ws:None [3, 4]
-                        Newline+ <<17, 18>> ws:None [4, 1]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(14, 17), match='ONE'>>> ws:None [3, 1 -> 3, 4]
+                        Newline+ <<17, 18>> ws:None [3, 4 -> 4, 1]
                 """,
             )
 
@@ -256,8 +256,8 @@ class TestSimple(object):
                 """\
                 Or: [Upper Statement, Lower Statement, Number Statement]
                     Number Statement
-                        Number <<Regex: <_sre.SRE_Match object; span=(0, 1), match='1'>>> ws:None [1, 2]
-                        Newline+ <<1, 2>> ws:None [2, 1]
+                        Number <<Regex: <_sre.SRE_Match object; span=(0, 1), match='1'>>> ws:None [1, 1 -> 1, 2]
+                        Newline+ <<1, 2>> ws:None [1, 2 -> 2, 1]
                 """,
             )
 
@@ -266,8 +266,8 @@ class TestSimple(object):
                 """\
                 Or: [Upper Statement, Lower Statement, Number Statement]
                     Number Statement
-                        Number <<Regex: <_sre.SRE_Match object; span=(2, 4), match='22'>>> ws:None [2, 3]
-                        Newline+ <<4, 5>> ws:None [3, 1]
+                        Number <<Regex: <_sre.SRE_Match object; span=(2, 4), match='22'>>> ws:None [2, 1 -> 2, 3]
+                        Newline+ <<4, 5>> ws:None [2, 3 -> 3, 1]
                 """,
             )
 
@@ -276,8 +276,8 @@ class TestSimple(object):
                 """\
                 Or: [Upper Statement, Lower Statement, Number Statement]
                     Number Statement
-                        Number <<Regex: <_sre.SRE_Match object; span=(5, 8), match='333'>>> ws:None [3, 4]
-                        Newline+ <<8, 9>> ws:None [4, 1]
+                        Number <<Regex: <_sre.SRE_Match object; span=(5, 8), match='333'>>> ws:None [3, 1 -> 3, 4]
+                        Newline+ <<8, 9>> ws:None [3, 4 -> 4, 1]
                 """,
             )
 
@@ -375,13 +375,13 @@ class TestIndentation(object):
                 """\
                 Or: [Statement]
                     Statement
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
-                        Newline+ <<3, 4>> ws:None [2, 1]
-                        Indent <<4, 8, (4)>> ws:None [2, 5]
-                        Upper <<Regex: <_sre.SRE_Match object; span=(8, 11), match='TWO'>>> ws:None [2, 8]
-                        Upper <<Regex: <_sre.SRE_Match object; span=(16, 21), match='THREE'>>> ws:(11, 16) [2, 18]
-                        Newline+ <<21, 22>> ws:None [3, 1]
-                        Dedent <<>> ws:None [3, 1]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                        Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(8, 11), match='TWO'>>> ws:None [2, 5 -> 2, 8]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(16, 21), match='THREE'>>> ws:(11, 16) [2, 13 -> 2, 18]
+                        Newline+ <<21, 22>> ws:None [2, 18 -> 3, 1]
+                        Dedent <<>> ws:None [3, 1 -> 3, 1]
                 """,
             )
 
@@ -465,16 +465,16 @@ class TestNewStatements(object):
                 """\
                 Or: [Upper Statement]
                     Upper Statement
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
                 """,
             )
 
             assert str(results[1]) == textwrap.dedent(
                 """\
-                Or: [Lower Statement, Upper Statement]
+                Or: [Upper Statement] / Or: [Lower Statement]
                     Lower Statement
-                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                        Newline+ <<7, 8>> ws:None [2, 1]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                        Newline+ <<7, 8>> ws:None [1, 8 -> 2, 1]
                 """,
             )
 
@@ -533,7 +533,7 @@ class TestNewScopedStatements(object):
                 """\
                 Or: [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
                     Upper Statement
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
                 """,
             )
 
@@ -541,7 +541,7 @@ class TestNewScopedStatements(object):
                 """\
                 Or: [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
                     Newline Statement
-                        Newline+ <<3, 4>> ws:None [2, 1]
+                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
                 """,
             )
 
@@ -549,31 +549,31 @@ class TestNewScopedStatements(object):
                 """\
                 Or: [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
                     Indent Statement
-                        Indent <<4, 8, (4)>> ws:None [2, 5]
+                        Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
                 """,
             )
 
             assert str(results[3]) == textwrap.dedent(
                 """\
-                Or: [Lower Statement, Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
+                Or: [Upper Statement, Newline Statement, Indent Statement, Dedent Statement] / Or: [Lower Statement]
                     Lower Statement
-                        Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 8]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
                 """,
             )
 
             assert str(results[4]) == textwrap.dedent(
                 """\
-                Or: [Lower Statement, Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
+                Or: [Upper Statement, Newline Statement, Indent Statement, Dedent Statement] / Or: [Lower Statement]
                     Newline Statement
-                        Newline+ <<11, 12>> ws:None [3, 1]
+                        Newline+ <<11, 12>> ws:None [2, 8 -> 3, 1]
                 """,
             )
 
             assert str(results[5]) == textwrap.dedent(
                 """\
-                Or: [Lower Statement, Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
+                Or: [Upper Statement, Newline Statement, Indent Statement, Dedent Statement] / Or: [Lower Statement]
                     Dedent Statement
-                        Dedent <<>> ws:None [3, 1]
+                        Dedent <<>> ws:None [3, 1 -> 3, 1]
                 """,
             )
 
@@ -697,11 +697,11 @@ class TestEmbeddedStatements(object):
                 """\
                 Or: [uul, lul]
                     uul
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
                         Upper Lower Statement
-                            Upper <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:(3, 4) [1, 8]
-                            Lower <<Regex: <_sre.SRE_Match object; span=(9, 14), match='three'>>> ws:(7, 9) [1, 15]
-                            Newline+ <<14, 15>> ws:None [2, 1]
+                            Upper <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                            Lower <<Regex: <_sre.SRE_Match object; span=(9, 14), match='three'>>> ws:(7, 9) [1, 10 -> 1, 15]
+                            Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
                 """,
             )
 
@@ -709,11 +709,11 @@ class TestEmbeddedStatements(object):
                 """\
                 Or: [uul, lul]
                     lul
-                        Lower <<Regex: <_sre.SRE_Match object; span=(15, 19), match='four'>>> ws:None [2, 5]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(15, 19), match='four'>>> ws:None [2, 1 -> 2, 5]
                         Upper Lower Statement
-                            Upper <<Regex: <_sre.SRE_Match object; span=(23, 27), match='FIVE'>>> ws:(19, 23) [2, 13]
-                            Lower <<Regex: <_sre.SRE_Match object; span=(28, 31), match='six'>>> ws:(27, 28) [2, 17]
-                            Newline+ <<31, 32>> ws:None [3, 1]
+                            Upper <<Regex: <_sre.SRE_Match object; span=(23, 27), match='FIVE'>>> ws:(19, 23) [2, 9 -> 2, 13]
+                            Lower <<Regex: <_sre.SRE_Match object; span=(28, 31), match='six'>>> ws:(27, 28) [2, 14 -> 2, 17]
+                            Newline+ <<31, 32>> ws:None [2, 17 -> 3, 1]
                 """,
             )
 
@@ -772,14 +772,14 @@ class TestNoMatchError(object):
             assert str(potentials[0]) == textwrap.dedent(
                 """\
                 Upper
-                    Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                    Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
                 """,
             )
 
             assert str(potentials[1]) == textwrap.dedent(
                 """\
                 Lower
-                    Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
+                    Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
                 """,
             )
 
@@ -823,9 +823,9 @@ class TestVariedLengthMatches(object):
                 """\
                 Or: [Upper, Lower, Number]
                     Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 4]
-                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 8]
-                        Newline+ <<7, 8>> ws:None [2, 1]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                        Newline+ <<7, 8>> ws:None [1, 8 -> 2, 1]
                 """,
             )
 
@@ -833,10 +833,10 @@ class TestVariedLengthMatches(object):
                 """\
                 Or: [Upper, Lower, Number]
                     Number
-                        Number <<Regex: <_sre.SRE_Match object; span=(8, 9), match='1'>>> ws:None [2, 2]
-                        Number <<Regex: <_sre.SRE_Match object; span=(10, 11), match='2'>>> ws:(9, 10) [2, 4]
-                        Number <<Regex: <_sre.SRE_Match object; span=(12, 13), match='3'>>> ws:(11, 12) [2, 6]
-                        Newline+ <<13, 14>> ws:None [3, 1]
+                        Number <<Regex: <_sre.SRE_Match object; span=(8, 9), match='1'>>> ws:None [2, 1 -> 2, 2]
+                        Number <<Regex: <_sre.SRE_Match object; span=(10, 11), match='2'>>> ws:(9, 10) [2, 3 -> 2, 4]
+                        Number <<Regex: <_sre.SRE_Match object; span=(12, 13), match='3'>>> ws:(11, 12) [2, 5 -> 2, 6]
+                        Newline+ <<13, 14>> ws:None [2, 6 -> 3, 1]
                 """,
             )
 
@@ -844,8 +844,8 @@ class TestVariedLengthMatches(object):
                 """\
                 Or: [Upper, Lower, Number]
                     Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(14, 18), match='WORD'>>> ws:None [3, 5]
-                        Newline+ <<18, 19>> ws:None [4, 1]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(14, 18), match='WORD'>>> ws:None [3, 1 -> 3, 5]
+                        Newline+ <<18, 19>> ws:None [3, 5 -> 4, 1]
                 """,
             )
 
@@ -879,7 +879,7 @@ def test_EmptyDynamicStatementInfo():
             """\
             Or: [Newline]
                 Newline
-                    Newline+ <<0, 1>> ws:None [2, 1]
+                    Newline+ <<0, 1>> ws:None [1, 1 -> 2, 1]
             """,
         )
 
@@ -933,8 +933,8 @@ class TestPreventParentTraversal(object):
                 """\
                 Or: [Upper, Indent, Dedent]
                     Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 4]
-                        Newline+ <<3, 4>> ws:None [2, 1]
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
                 """,
             )
 
@@ -942,7 +942,7 @@ class TestPreventParentTraversal(object):
                 """\
                 Or: [Upper, Indent, Dedent]
                     Indent
-                        Indent <<4, 8, (4)>> ws:None [2, 5]
+                        Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
                 """,
             )
 
@@ -950,8 +950,8 @@ class TestPreventParentTraversal(object):
                 """\
                 Or: [Lower, Dedent]
                     Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 8]
-                        Newline+ <<11, 12>> ws:None [3, 1]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
+                        Newline+ <<11, 12>> ws:None [2, 8 -> 3, 1]
                 """,
             )
 
@@ -959,8 +959,8 @@ class TestPreventParentTraversal(object):
                 """\
                 Or: [Lower, Dedent]
                     Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(16, 21), match='three'>>> ws:None [3, 10]
-                        Newline+ <<21, 22>> ws:None [4, 1]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(16, 21), match='three'>>> ws:None [3, 5 -> 3, 10]
+                        Newline+ <<21, 22>> ws:None [3, 10 -> 4, 1]
                 """,
             )
 
@@ -968,8 +968,8 @@ class TestPreventParentTraversal(object):
                 """\
                 Or: [Lower, Dedent]
                     Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(26, 30), match='four'>>> ws:None [4, 9]
-                        Newline+ <<30, 31>> ws:None [5, 1]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(26, 30), match='four'>>> ws:None [4, 5 -> 4, 9]
+                        Newline+ <<30, 31>> ws:None [4, 9 -> 5, 1]
                 """,
             )
 
@@ -977,7 +977,7 @@ class TestPreventParentTraversal(object):
                 """\
                 Or: [Lower, Dedent]
                     Dedent
-                        Dedent <<>> ws:None [5, 1]
+                        Dedent <<>> ws:None [5, 1 -> 5, 1]
                 """,
             )
 

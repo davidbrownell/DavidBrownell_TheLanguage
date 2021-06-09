@@ -185,18 +185,21 @@ class Statement(object):
 
         Whitespace: Optional[Tuple[int, int]]           # Whitespace immediately before the token
         Value: TokenClass.MatchType                     # Result of the call to Token.Match
-        Iter: NormalizedIterator                        # NormalizedIterator after the token has been consumed
+        IterBefore: NormalizedIterator                  # NormalizedIterator before the token has been consumed
+        IterAfter: NormalizedIterator                   # NormalizedIterator after the token has been consumed
         IsIgnored: bool                                 # True if the result is whitespace while whitespace is being ignored
 
         # ----------------------------------------------------------------------
         def __str__(self) -> str:
-            return "{typ} <<{value}>> ws:{ws}{ignored} [{line}, {column}]".format(
+            return "{typ} <<{value}>> ws:{ws}{ignored} [{line_before}, {column_before} -> {line_after}, {column_after}]".format(
                 typ=Statement.ItemTypeToString(self.Token),
                 value=str(self.Value),
                 ws="None" if self.Whitespace is None else "({}, {})".format(self.Whitespace[0], self.Whitespace[1]),
                 ignored=" !Ignored!" if self.IsIgnored else "",
-                line=self.Iter.Line,
-                column=self.Iter.Column,
+                line_before=self.IterBefore.Line,
+                column_before=self.IterBefore.Column,
+                line_after=self.IterAfter.Line,
+                column_after=self.IterAfter.Column,
             )
 
     # ----------------------------------------------------------------------
@@ -398,6 +401,10 @@ class Statement(object):
     ) -> Optional["Statement.ParseResult"]:
         """Simultaneously applies multiple statements at the provided location"""
 
+        original_statements = statements
+        if isinstance(original_statements, Statement.NamedItem):
+            statements = original_statements.Item
+
         use_futures = not single_threaded and len(statements) != 1
 
         # ----------------------------------------------------------------------
@@ -483,7 +490,7 @@ class Statement(object):
                 True,
                 [
                     Statement.StatementParseResultItem(
-                        statements,
+                        original_statements,
                         result.Results,
                     ),
                 ],
@@ -503,7 +510,7 @@ class Statement(object):
             False,
             [
                 Statement.StatementParseResultItem(
-                    statements,
+                    original_statements,
                     return_results,
                 ),
             ],
@@ -614,7 +621,7 @@ class Statement(object):
                         break
 
                     self.results += whitespace_results
-                    self.normalized_iter = self.results[-1].Iter.Clone()
+                    self.normalized_iter = self.results[-1].IterAfter.Clone()
 
             # Extract the content
             if isinstance(item, TokenClass):
@@ -690,6 +697,7 @@ class Statement(object):
                 # We only want to consume whitespace if there is a match that follows it
                 potential_iter = self.normalized_iter.Clone()
                 potential_whitespace = self._ExtractWhitespace(potential_iter)
+                potential_iter_begin = potential_iter.Clone()
 
                 result = token.Match(potential_iter)
                 if result is None:
@@ -708,6 +716,7 @@ class Statement(object):
                             token,
                             potential_whitespace,
                             res,
+                            potential_iter_begin,
                             potential_iter.Clone(),
                             IsIgnored=token.IsAlwaysIgnored,
                         )
@@ -719,6 +728,7 @@ class Statement(object):
                             token,
                             potential_whitespace,
                             result,
+                            potential_iter_begin,
                             potential_iter.Clone(),
                             IsIgnored=token.IsAlwaysIgnored,
                         ),
@@ -736,6 +746,7 @@ class Statement(object):
             # We only want to consume whitespace if there is a match that follows
             potential_iter = self.normalized_iter.Clone()
             potential_whitespace = self._ExtractWhitespace(potential_iter)
+            potential_iter_begin = potential_iter.Clone()
 
             result = Statement.CommentToken.Match(potential_iter)
             if result is None:
@@ -746,6 +757,7 @@ class Statement(object):
                     Statement.CommentToken,
                     potential_whitespace,
                     result,
+                    potential_iter_begin,
                     potential_iter.Clone(),
                     IsIgnored=Statement.CommentToken.IsAlwaysIgnored,
                 ),
@@ -901,6 +913,7 @@ class Statement(object):
             if normalized_iter.AtEnd():
                 return None
 
+            normalized_iter_begin = normalized_iter.Clone()
             normalized_iter = normalized_iter.Clone()
 
             result = cls._indent_token.Match(normalized_iter)
@@ -912,6 +925,7 @@ class Statement(object):
                         cls._indent_token,
                         None,
                         result,
+                        normalized_iter_begin,
                         normalized_iter,
                         IsIgnored=True,
                     ),
@@ -926,15 +940,32 @@ class Statement(object):
                         cls._dedent_token,
                         None,
                         res,
+                        normalized_iter_begin,
                         normalized_iter.Clone(),
                         IsIgnored=True,
                     )
                     for res in result
                 ]
 
-            # A potential newline may have potential whitespace
+            # A potential comment or newline may have potential whitespace
             potential_iter = normalized_iter.Clone()
             potential_whitespace = cls._ExtractWhitespace(potential_iter)
+            potential_iter_begin = potential_iter.Clone()
+
+            result = Statement.CommentToken.Match(potential_iter)
+            if result is not None:
+                assert not isinstance(result, list), result
+
+                return [
+                    Statement.TokenParseResultItem(
+                        Statement.CommentToken,
+                        potential_whitespace,
+                        result,
+                        potential_iter_begin,
+                        potential_iter,
+                        IsIgnored=True,
+                    ),
+                ]
 
             result = cls._newline_token.Match(potential_iter)
             if result is not None:
@@ -945,6 +976,7 @@ class Statement(object):
                         cls._newline_token,
                         potential_whitespace,
                         result,
+                        potential_iter_begin,
                         potential_iter,
                         IsIgnored=True,
                     ),
