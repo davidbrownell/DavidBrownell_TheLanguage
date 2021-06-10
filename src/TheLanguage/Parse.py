@@ -40,8 +40,9 @@ with InitRelativeImports():
     from .Grammars.GrammarStatement import GrammarStatement, ImportGrammarStatement
 
     from .ParserImpl.MultifileParser import (
-        Observer as MultifileObserver,
+        Leaf,
         Node,
+        Observer as MultifileObserver,
         Parse as MultifileParse,
         RootNode,
     )
@@ -118,7 +119,20 @@ def Parse(
     fully_qualified_names: List[str],
     source_roots: List[str],
     max_num_threads: Optional[int]=None,
-):
+) -> Union[
+    Dict[str, RootNode],
+    List[Exception],
+]:
+    """\
+    Return AST(s) for the given names.
+
+    This information can be used to completely regenerate the original source. This is valuable for
+    writing things like source formatting tools, but contains extraneous data that can make parsing
+    more difficult (for example, comments and vertical whitespace).
+
+    The `Prune` function should be used before invoking additional functionality.
+    """
+
     syntax_observer = SyntaxObserver(
         _Observer(
             source_roots,
@@ -133,6 +147,28 @@ def Parse(
         syntax_observer,
         single_threaded=max_num_threads == 1,
     )
+
+
+# ----------------------------------------------------------------------
+def Prune(
+    roots: Dict[str, RootNode],
+    max_num_threads: Optional[int]=None,
+):
+    """Removes Leaf nodes that have been explicitly ignored for easier parsing"""
+
+    use_futures = max_num_threads != 1 and len(roots) != 1
+
+    if use_futures:
+        with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
+            futures = [
+                executor.submit(lambda k=k, v=v: _PruneItem(k, v))
+                for k, v in roots.items()
+            ]
+
+            [future.result() for future in futures]
+    else:
+        for k, v in roots.items():
+            _PruneItem(k, v)
 
 
 # ----------------------------------------------------------------------
@@ -228,11 +264,52 @@ class _Observer(MultifileObserver):
         except TypeError:
             grammar_statement = None
 
-        if isinstance(grammar_statement, ImportGrammarStatement):
-            return grammar_statement.ProcessImportStatement(
-                self._source_roots,
-                fully_qualified_name,
-                node,
-            )
+        if grammar_statement is not None:
+            if isinstance(grammar_statement, ImportGrammarStatement):
+                return grammar_statement.ProcessImportStatement(
+                    self._source_roots,
+                    fully_qualified_name,
+                    node,
+                )
 
         return not self._is_cancelled
+
+
+# ----------------------------------------------------------------------
+def _PruneItem(
+    fully_qualified_name: str,
+    root: RootNode,
+):
+    for child in root.Children:
+        _PruneItemImpl(child)
+
+
+# ----------------------------------------------------------------------
+def _PruneItemImpl(
+    node: Node,
+):
+    child_index = 0
+
+    while child_index < len(node.Children):
+        child = node.Children[child_index]
+
+        should_delete = False
+
+        if isinstance(child, Node):
+            _PruneItemImpl(child)
+
+            if not child.Children:
+                should_delete = True
+
+        elif isinstance(child, Leaf):
+            if child.IsIgnored:
+                should_delete = True
+
+        else:
+            assert False, child  # pragma: no cover
+
+        if not should_delete:
+            child_index += 1
+            continue
+
+        del node.Children[child_index]

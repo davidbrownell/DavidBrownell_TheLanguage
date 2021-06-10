@@ -137,18 +137,21 @@ class Leaf(_ParseResultBase):
 
     Whitespace: Optional[Tuple[int, int]]   # Whitespace immediately before the token
     Value: Token.MatchType                  # Result of the call to Token.Match
-    Iter: NormalizedIterator                # NormalizedIterator after the token has been consumed
+    IterBefore: NormalizedIterator          # NormalizedIterator before the token
+    IterAfter: NormalizedIterator           # NormalizedIterator after the token has been consumed
     IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
 
     # ----------------------------------------------------------------------
     def __str__(self):
-        return "{typ} <<{value}>> ws:{ws}{ignored} [{line}, {column}]".format(
+        return "{typ} <<{value}>> ws:{ws}{ignored} [{line_before}, {column_before} -> {line_after}, {column_after}]".format(
             typ=super(Leaf, self).__str__(),
             value=str(self.Value),
-            ws="None" if self.Whitespace is None else "({}, {})".format(self.Whitespace[0], self.Whitespace[1]),
+            ws="None" if self.Whitespace is None else "({}, {})".format(*self.Whitespace),
             ignored=" !Ignored!" if self.IsIgnored else "",
-            line=self.Iter.Line,
-            column=self.Iter.Column,
+            line_before=self.IterBefore.Line,
+            column_before=self.IterBefore.Column,
+            line_after=self.IterAfter.Line,
+            column_after=self.IterAfter.Column,
         )
 
 
@@ -493,7 +496,8 @@ class _StatementsObserver(StatementsObserver):
             result.Token,
             result.Whitespace,
             result.Value,
-            result.Iter,
+            result.IterBefore,
+            result.IterAfter,
             result.IsIgnored,
         )
 

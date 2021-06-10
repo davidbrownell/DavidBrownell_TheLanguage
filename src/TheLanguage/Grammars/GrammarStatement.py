@@ -36,7 +36,7 @@ with InitRelativeImports():
         Node,
     )
 
-    from ..ParserImpl.Statement import Statement
+    from ..ParserImpl.Statement import DynamicStatements, Statement
 
 
 # ----------------------------------------------------------------------
@@ -58,6 +58,15 @@ class GrammarStatement(Interface.Interface):
     ):
         self.TypeValue                      = type_value
         self.Statement                      = statement
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def ValidateNodeSyntax(
+        node: Node,
+    ):
+        """Opportunity to validate the syntax of a node; this method is invoked during calls to Parser.py:Validate"""
+        return
 
     # ----------------------------------------------------------------------
     @staticmethod

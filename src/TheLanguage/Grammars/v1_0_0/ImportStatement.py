@@ -3,7 +3,7 @@
 # |  ImportStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-23 16:34:03
+# |      2021-06-06 08:39:25
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains statements that import code"""
+"""Contains statements that import code from other modules"""
 
 import os
-import re
 
 from collections import OrderedDict
-from typing import cast, List, Tuple
+from typing import Callable, cast, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -34,74 +33,56 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Tokens
+    from . import CommonStatements
+    from . import CommonTokens
 
     from ..GrammarStatement import ImportGrammarStatement
+
+    from ...ParserImpl.Error import Error
 
     from ...ParserImpl.MultifileParser import (
         Leaf,
         Node,
         Observer as MultifileParserObserver,
-        UnknownSourceError,
+        UnknownSourceError
     )
 
     from ...ParserImpl.Statement import Statement
-
-    from ...ParserImpl.Token import (
-        PopIgnoreWhitespaceControlToken,
-        PushIgnoreWhitespaceControlToken,
-        RegexToken,
-        Token,
-    )
+    from ...ParserImpl.Token import RegexToken
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidRelativePathError(UnknownSourceError):
     OriginName: str
+    LineEnd: int
+    ColumnEnd: int
 
-    MessageTemplate                         = Interface.DerivedProperty("The relative path '{SourceName}' is not valid with the origin '{OriginName}'")
+    MessageTemplate                         = Interface.DerivedProperty("The relative path '{SourceName}' is not valid for the origin '{OriginName}'")
 
 
 # ----------------------------------------------------------------------
-# TODO: Both of these values need to be validated to ensure that they adhere to naming conventions
-_import_source_token                        = RegexToken("<source>", re.compile(r"(?P<value>[a-zA-Z\.][a-zA-Z0-9\._]*)"))
-_import_name_token                          = RegexToken("<name>", re.compile(r"(?P<value>[a-zA-Z0-9_]+)"))
+@dataclass(frozen=True)
+class InvalidModuleNameError(Error):
+    ModuleName: str
+
+    MessageTemplate                         = Interface.DerivedProperty("'{ModuleName}' is not valid module name")
 
 
-_import_content_item_statement              = [
-    # <import_name> as <new_import_name>
-    Statement(
-        "Renamed",
-        _import_name_token,
-        RegexToken("'as'", re.compile("as")),
-        _import_name_token,
-    ),
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidModuleExportNameError(Error):
+    ExportName: str
 
-    # <import_name>
-    _import_name_token,
-]
+    MessageTemplate                         = Interface.DerivedProperty("'{ExportName}' is not a valid module export name")
 
 
-# <content_item_statement> (',' <content_item_statement>)+ ','?
-_import_content_items_statement             = Statement(
-    "Items",
-    _import_content_item_statement,
-    (
-        Statement(
-            "Comma and Statement",
-            Tokens.CommaToken,
-            _import_content_item_statement,
-        ),
-        0,
-        None,
-    ),
-    (Tokens.CommaToken, 0, 1),
-)
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidModuleExportPrivateNameError(Error):
+    ExportName: str
 
-
-del _import_content_item_statement
-del _import_name_token
+    MessageTemplate                         = Interface.DerivedProperty("'{ExportName}' is private and may not be imported")
 
 
 # ----------------------------------------------------------------------
@@ -115,28 +96,61 @@ class ImportStatement(ImportGrammarStatement):
     ):
         assert file_extensions
 
+        content_item_statement = [
+            # <name> as <name>
+            Statement(
+                "Renamed",
+                CommonTokens.NameToken,
+                CommonTokens.AsToken,
+                CommonTokens.NameToken,
+            ),
+
+            # <name>
+            CommonTokens.NameToken,
+        ]
+
+        # <item_statement> (',' <item_statement>)* ','?
+        content_items_statement = Statement(
+            "Items",
+            content_item_statement,
+            (
+                Statement(
+                    "Comma and Statement",
+                    CommonTokens.CommaToken,
+                    content_item_statement,
+                ),
+                0,
+                None,
+            ),
+            (CommonTokens.CommaToken, 0, 1),
+        )
+
         super(ImportStatement, self).__init__(
+            # 'from' <name> 'import' ...
             Statement(
                 "Import",
-                RegexToken("'from'", re.compile("from")),
-                _import_source_token,
-                RegexToken("'import'", re.compile("import")),
+                CommonTokens.FromToken,
+                CommonTokens.NameToken,
+                CommonTokens.ImportToken,
                 [
-                    # '(' <content_items_statement> ')'
+                    # '(' <items_statement> ')'
                     Statement(
                         "Grouped Items",
-                        Tokens.LParenToken,
-                        PushIgnoreWhitespaceControlToken(),
-                        _import_content_items_statement,
-                        PopIgnoreWhitespaceControlToken(),
-                        Tokens.RParenToken,
+                        CommonTokens.LParenToken,
+                        CommonTokens.PushIgnoreWhitespaceControlToken(),
+                        content_items_statement,
+                        CommonTokens.PopIgnoreWhitespaceControlToken(),
+                        CommonTokens.RParenToken,
                     ),
-                    _import_content_items_statement,
+
+                    # <items_statement>
+                    content_items_statement,
                 ],
             ),
         )
 
-        self.FileExtensions                 = list(file_extensions)
+        self.FileExtensions                 = file_extensions
+        self._content_items_statement       = content_items_statement
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -157,7 +171,8 @@ class ImportStatement(ImportGrammarStatement):
             original_source_parts = original_source.split(".")
 
         if not original_source_parts[0]:
-            # If here, original_source started with a '.'
+            # If here, the source started with a dot and we are looking at a path relative to
+            # the fully qualified name
             source_root = os.path.realpath(os.path.dirname(fully_qualified_name))
             original_source_parts.pop(0)
 
@@ -165,10 +180,12 @@ class ImportStatement(ImportGrammarStatement):
                 potential_source_root = os.path.dirname(source_root)
                 if potential_source_root == source_root:
                     raise InvalidRelativePathError(
-                        node.Children[1].Iter.Line,
-                        node.Children[1].Iter.Column,
+                        node.Children[1].IterBefore.Line,
+                        node.Children[1].IterBefore.Column,
                         original_source,
                         os.path.dirname(fully_qualified_name),
+                        node.Children[1].IterAfter.Line,
+                        node.Children[1].IterAfter.Column,
                     )
 
                 source_root = potential_source_root
@@ -182,12 +199,12 @@ class ImportStatement(ImportGrammarStatement):
         assert len(import_result.Children) == 1
         import_result = import_result.Children[0]
 
-        if import_result.Type == _import_content_items_statement:
+        if import_result.Type == self._content_items_statement:
             import_items = self._ProcessContentItems(import_result)
 
         elif import_result.Type.Name == "Grouped Items":
             for child in import_result.Children:
-                if child.Type == _import_content_items_statement:
+                if child.Type == self._content_items_statement:
                     import_items = self._ProcessContentItems(child)
                     break
 
@@ -197,18 +214,18 @@ class ImportStatement(ImportGrammarStatement):
         # At this point, we don't know if the source points to a directory or
         # a filename. We are in one of these scenarios:
         #
-        #   A) N import items, source is a filename, import items are objects
-        #   B) 1 import item, source is a filename, import item is object
-        #   C) 1 import item, source is a directory, import item is a filename
+        #   A) N import items, source is filename; import items are members of the module
+        #   B) 1 import item, source is filename; import item is a member of the module
+        #   C) 1 import item, source is a directory; import item is a filename
 
         # ----------------------------------------------------------------------
         def FindSource(
-            is_valid_func,
-            root_suffix=None,
-        ):
+            is_valid_root_func: Callable[[str], bool],
+            root_suffix: Optional[str]=None,
+        ) -> Optional[str]:
             for source_root in source_roots:
                 root = os.path.join(source_root, *original_source_parts)
-                if not is_valid_func(root):
+                if not is_valid_root_func(root):
                     continue
 
                 if root_suffix:
@@ -233,9 +250,61 @@ class ImportStatement(ImportGrammarStatement):
                 root_suffix=next(iter(import_items.keys())),
             )
 
-        if source_filename is not None:
-            node.source_filename = source_filename
-            node.import_items = import_items
+        if source_filename is None:
+            return MultifileParserObserver.ImportInfo(original_source, None)
+
+        # Validate the source filename
+        module_name = os.path.splitext(os.path.basename(source_filename))[0]
+
+        if CommonStatements.MatchRegexStatement(
+            module_name,
+            CommonStatements.ModuleNameStatement,
+        ) == CommonStatements.MatchRegexStatementResult.NoMatch:
+            pass # BugBug raise InvalidModuleNameError(
+            pass # BugBug     1, 1, # BugBug
+            pass # BugBug     module_name,
+            pass # BugBug )
+
+        # Validate the import items if we aren't in scenario C
+        if len(import_items) != 1 or module_name not in import_items:
+            for k, v in import_items.items():
+                validate_items = [k]
+
+                if v != k:
+                    validate_items.append(v)
+
+                results = []
+
+                for validate_item in validate_items:
+                    result = CommonStatements.MatchRegexStatement(
+                        validate_item,
+                        CommonStatements.ClassNameStatement,
+                        CommonStatements.FunctionNameStatement,
+                        CommonStatements.VariableNameStatement,
+                    )
+
+                    if result == CommonStatements.MatchRegexStatementResult.NoMatch:
+                        pass # BugBug raise InvalidModuleExportNameError(
+                        pass # BugBug     1, 1, # BugBug
+                        pass # BugBug     validate_item,
+                        pass # BugBug )
+
+                    results.append(result)
+
+                # We should never attempt to import a private member
+                if results[0] == CommonStatements.MatchRegexStatementResult.Private:
+                    raise InvalidModuleExportPrivateNameError(
+                        1, 1, # BugBug
+                        validate_items[0],
+                    )
+
+                # BugBug: We should never attempt to import a protected member
+                # outside of the current directory
+
+
+        # Cache these values for later so we don't need to reparse the content
+        node.source_filename = source_filename
+        node.import_items = import_items
 
         return MultifileParserObserver.ImportInfo(original_source, source_filename)
 
@@ -246,17 +315,12 @@ class ImportStatement(ImportGrammarStatement):
     def _ProcessContentItems(
         cls,
         node: Node,
-    ):
+    ) -> Dict[str, str]:
         # Get the nodes (and ignore the leaves)
-        nodes = []
-
-        for child in node.Children:
-            if isinstance(child, Node):
-                nodes.append(child)
-
+        nodes = [child for child in node.Children if isinstance(child, Node)]
         assert len(nodes) == 3, nodes
 
-        # Extract the import items from the ndoes
+        # Extract the import items
         import_items = OrderedDict()
 
         key, value = cls._ProcessContentItem(nodes[0])
@@ -264,11 +328,13 @@ class ImportStatement(ImportGrammarStatement):
 
         for child in nodes[1].Children:
             for child_node in child.Children:
-                if isinstance(child_node, Node):
-                    key, value = cls._ProcessContentItem(child_node)
-                    import_items[key] = value
+                if not isinstance(child_node, Node):
+                    continue
 
-                    break
+                key, value = cls._ProcessContentItem(child_node)
+                import_items[key] = value
+
+                break
 
         return import_items
 
@@ -281,14 +347,15 @@ class ImportStatement(ImportGrammarStatement):
         node = node.Children[0]
 
         if isinstance(node.Type, Statement):
-            assert len(node.Children) == 3, node
+            leaves = [cast(Leaf, child) for child in node.Children if isinstance(child, Leaf) and not child.IsIgnored]
+            assert len(leaves) == 3, leaves
 
             return (
-                cast(Leaf, node.Children[0]).Value.Match.group("value"),
-                cast(Leaf, node.Children[2]).Value.Match.group("value"),
+                leaves[0].Value.Match.group("value"),
+                leaves[2].Value.Match.group("value"),
             )
 
-        elif isinstance(node.Type, Token):
+        elif isinstance(node.Type, RegexToken):
             result = cast(Leaf, node).Value.Match.group("value")
 
             return result, result
