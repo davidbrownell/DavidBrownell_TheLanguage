@@ -27,10 +27,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GrammarStatement import GrammarStatement
-
-    from ...ParserImpl.Statement import Statement
-    from ...ParserImpl.Token import NewlineToken
+    from .CommonTokens import NewlineToken
+    from ..GrammarStatement import GrammarStatement, Statement
 
 
 # ----------------------------------------------------------------------
@@ -41,5 +39,10 @@ class VerticalWhitespaceStatement(GrammarStatement):
     def __init__(self):
         super(VerticalWhitespaceStatement, self).__init__(
             GrammarStatement.Type.Statement,
-            Statement("Vertical Whitespace", NewlineToken()),
+            Statement(
+                "Vertical Whitespace",
+                NewlineToken(
+                    is_always_ignored=True,
+                ),
+            ),
         )

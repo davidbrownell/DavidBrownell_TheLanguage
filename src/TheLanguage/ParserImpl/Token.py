@@ -126,9 +126,11 @@ class NewlineToken(Token):
     def __init__(
         self,
         capture_many=True,
+        is_always_ignored=False,
     ):
         self._name                          = "Newline{}".format("+" if capture_many else "")
         self.CaptureMany                    = capture_many
+        self.IsAlwaysIgnored                = is_always_ignored
 
     # ----------------------------------------------------------------------
     @property

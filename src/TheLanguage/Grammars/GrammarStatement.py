@@ -17,8 +17,10 @@
 
 import os
 
-from enum import auto, Enum
-from typing import List
+from enum import auto, Flag
+from typing import List, Optional
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,12 +33,32 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..ParserImpl.Error import Error
+
     from ..ParserImpl.MultifileParser import (
-        Observer as MultifileParserObserver,
+        Leaf,                               # This is here as a convenience for files that import this one; please do not remove
         Node,
+        Observer as MultifileParserObserver,
     )
 
-    from ..ParserImpl.Statement import DynamicStatements, Statement
+    from ..ParserImpl.Statement import (
+        DynamicStatements,                  # This is here as a convenience for files that import this one; please do not remove
+        Statement,
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class ValidationError(Error):
+    """Extend the `Error` base class to Include starting line and column attributes"""
+
+    LineEnd: int
+    ColumnEnd: int
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Line <= self.LineEnd
+        assert self.Line != self.LineEnd or self.Column <= self.ColumnEnd
 
 
 # ----------------------------------------------------------------------
@@ -44,11 +66,12 @@ class GrammarStatement(Interface.Interface):
     """An individual statement within a grammar"""
 
     # ----------------------------------------------------------------------
-    class Type(Enum):
+    class Type(Flag):
         """A Statement will be one of these types"""
 
         Statement                           = auto()
         Expression                          = auto()
+        Hybrid                              = Statement | Expression
 
     # ----------------------------------------------------------------------
     def __init__(
@@ -64,7 +87,7 @@ class GrammarStatement(Interface.Interface):
     @Interface.extensionmethod
     def ValidateNodeSyntax(
         node: Node,
-    ):
+    ) -> Optional[bool]:                    # False to prevent child traversal
         """Opportunity to validate the syntax of a node; this method is invoked during calls to Parser.py:Validate"""
         return
 
@@ -73,7 +96,7 @@ class GrammarStatement(Interface.Interface):
     @Interface.extensionmethod
     def Lower(
         node: Node,
-    ):
+    ) -> Optional[bool]:                    # False to prevent child traversal
         """Opportunity to lower the node associated with the statement (if necessary)"""
         return
 

@@ -21,7 +21,7 @@ import sys
 
 from collections import OrderedDict
 from concurrent.futures import Future, ThreadPoolExecutor
-from typing import Callable, Dict, List, Optional, Union
+from typing import cast, Callable, Dict, List, Optional, Union
 
 from semantic_version import Version as SemVer
 
@@ -87,6 +87,9 @@ def _LoadDyanmicStatementsFromFile(
             if grammar_statement.TypeValue == GrammarStatement.Type.Statement:
                 statements.append(grammar_statement.Statement)
             elif grammar_statement.TypeValue == GrammarStatement.Type.Expression:
+                expressions.append(grammar_statement.Statement)
+            elif grammar_statement.TypeValue == GrammarStatement.Type.Hybrid:
+                statements.append(grammar_statement.Statement)
                 expressions.append(grammar_statement.Statement)
             else:
                 assert False, grammar_statement.TypeValue  # pragma: no cover
@@ -156,19 +159,25 @@ def Prune(
 ):
     """Removes Leaf nodes that have been explicitly ignored for easier parsing"""
 
-    use_futures = max_num_threads != 1 and len(roots) != 1
+    _Execute(
+        lambda fqn, node: _Prune(node),
+        roots,
+        max_num_threads=max_num_threads,
+    )
 
-    if use_futures:
-        with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
-            futures = [
-                executor.submit(lambda k=k, v=v: _PruneItem(k, v))
-                for k, v in roots.items()
-            ]
 
-            [future.result() for future in futures]
-    else:
-        for k, v in roots.items():
-            _PruneItem(k, v)
+# ----------------------------------------------------------------------
+def Validate(
+    roots: Dict[str, RootNode],
+    max_num_threads: Optional[int]=None,
+):
+    """Invokes functionality to validate a node and its children in isolation"""
+
+    _Execute(
+        _ValidateRoot,
+        roots,
+        max_num_threads=max_num_threads,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -276,17 +285,34 @@ class _Observer(MultifileObserver):
 
 
 # ----------------------------------------------------------------------
-def _PruneItem(
-    fully_qualified_name: str,
-    root: RootNode,
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+def _Execute(
+    func: Callable[[str, RootNode], None],
+    roots: Dict[str, RootNode],
+    max_num_threads: Optional[int]=None,
 ):
-    for child in root.Children:
-        _PruneItemImpl(child)
+    use_futures = max_num_threads != 1 and len(roots) != 1
+
+    if use_futures:
+        with ThreadPoolExecutor(
+            max_workers=max_num_threads,
+        ) as executor:
+            futures = [
+                executor.submit(lambda k=k, v=v: func(k, v))
+                for k, v in roots.items()
+            ]
+
+            [future.result() for future in futures]
+            return
+
+    for k, v in roots.items():
+        func(k, v)
 
 
 # ----------------------------------------------------------------------
-def _PruneItemImpl(
-    node: Node,
+def _Prune(
+    node: Union[RootNode, Node],
 ):
     child_index = 0
 
@@ -296,7 +322,7 @@ def _PruneItemImpl(
         should_delete = False
 
         if isinstance(child, Node):
-            _PruneItemImpl(child)
+            _Prune(child)
 
             if not child.Children:
                 should_delete = True
@@ -313,3 +339,34 @@ def _PruneItemImpl(
             continue
 
         del node.Children[child_index]
+
+
+# ----------------------------------------------------------------------
+def _ValidateRoot(
+    fully_qualified_name: str,
+    root: RootNode,
+):
+    try:
+        for child in root.Children:
+            _ValidateNode(child)
+
+    except Exception as ex:
+        if not hasattr(ex, "FullyQualifiedName"):
+            object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
+
+        raise
+
+
+# ----------------------------------------------------------------------
+def _ValidateNode(
+    node: Union[Node, Leaf],
+):
+    if isinstance(node.Type, Statement):
+        grammar_statement = StatementLookup.get(cast(Statement, node.Type), None)
+        if grammar_statement:
+            result = grammar_statement.ValidateNodeSyntax(node)
+            if isinstance(result, bool) and not result:
+                return
+
+    for child in getattr(node, "Children", []):
+        _ValidateNode(child)
