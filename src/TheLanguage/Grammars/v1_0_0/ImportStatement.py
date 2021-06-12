@@ -33,23 +33,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import CommonStatements
     from . import CommonTokens
 
-    from ..GrammarStatement import ImportGrammarStatement
-
-    from ...ParserImpl.Error import Error
-
-    from ...ParserImpl.MultifileParser import (
+    from ..GrammarStatement import (
+        ImportGrammarStatement,
         Leaf,
+        MultifileParserObserver,
         Node,
-        Observer as MultifileParserObserver,
-        UnknownSourceError
+        Statement,
     )
 
-    from ...ParserImpl.Statement import Statement
-    from ...ParserImpl.Token import RegexToken
+    from ...ParserImpl.MultifileParser import UnknownSourceError
 
+# TODO: Clean this file up once there are a couple of statements defined so that
+#       each are consistent with emerging best practices.
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -59,30 +56,6 @@ class InvalidRelativePathError(UnknownSourceError):
     ColumnEnd: int
 
     MessageTemplate                         = Interface.DerivedProperty("The relative path '{SourceName}' is not valid for the origin '{OriginName}'")
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidModuleNameError(Error):
-    ModuleName: str
-
-    MessageTemplate                         = Interface.DerivedProperty("'{ModuleName}' is not valid module name")
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidModuleExportNameError(Error):
-    ExportName: str
-
-    MessageTemplate                         = Interface.DerivedProperty("'{ExportName}' is not a valid module export name")
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidModuleExportPrivateNameError(Error):
-    ExportName: str
-
-    MessageTemplate                         = Interface.DerivedProperty("'{ExportName}' is private and may not be imported")
 
 
 # ----------------------------------------------------------------------
@@ -161,8 +134,11 @@ class ImportStatement(ImportGrammarStatement):
         node: Node,
     ) -> MultifileParserObserver.ImportInfo:
 
-        # Calculate the source
-        original_source = node.Children[1].Value.Match.group("value")
+        working_dir = os.path.dirname(fully_qualified_name)
+
+        # Calculate the
+        source_leaf = node.Children[1]
+        original_source = source_leaf.Value.Match.group("value")
 
         # The logic with all dots is slightly different from the standard logic
         if all(c if c == "." else None for c in original_source):
@@ -173,19 +149,19 @@ class ImportStatement(ImportGrammarStatement):
         if not original_source_parts[0]:
             # If here, the source started with a dot and we are looking at a path relative to
             # the fully qualified name
-            source_root = os.path.realpath(os.path.dirname(fully_qualified_name))
+            source_root = os.path.realpath(working_dir)
             original_source_parts.pop(0)
 
             while original_source_parts and not original_source_parts[0]:
                 potential_source_root = os.path.dirname(source_root)
                 if potential_source_root == source_root:
                     raise InvalidRelativePathError(
-                        node.Children[1].IterBefore.Line,
-                        node.Children[1].IterBefore.Column,
+                        source_leaf.IterBefore.Line,
+                        source_leaf.IterBefore.Column,
                         original_source,
-                        os.path.dirname(fully_qualified_name),
-                        node.Children[1].IterAfter.Line,
-                        node.Children[1].IterAfter.Column,
+                        working_dir,
+                        source_leaf.IterAfter.Line,
+                        source_leaf.IterAfter.Column,
                     )
 
                 source_root = potential_source_root
@@ -200,23 +176,23 @@ class ImportStatement(ImportGrammarStatement):
         import_result = import_result.Children[0]
 
         if import_result.Type == self._content_items_statement:
-            import_items = self._ProcessContentItems(import_result)
+            import_items, import_items_lookup = self._ProcessContentItems(import_result)
 
         elif import_result.Type.Name == "Grouped Items":
             for child in import_result.Children:
                 if child.Type == self._content_items_statement:
-                    import_items = self._ProcessContentItems(child)
+                    import_items, import_items_lookup = self._ProcessContentItems(child)
                     break
 
         else:
             assert False, import_result  # pragma: no cover
 
         # At this point, we don't know if the source points to a directory or
-        # a filename. We are in one of these scenarios:
+        # a module name. We are in one of these scenarios:
         #
-        #   A) N import items, source is filename; import items are members of the module
-        #   B) 1 import item, source is filename; import item is a member of the module
-        #   C) 1 import item, source is a directory; import item is a filename
+        #   A) N import items, source is module name; import items are members of the module
+        #   B) 1 import item, source is module name; import item is a member of the module
+        #   C) 1 import item, source is a directory; import item is a module name
 
         # ----------------------------------------------------------------------
         def FindSource(
@@ -245,66 +221,20 @@ class ImportStatement(ImportGrammarStatement):
 
         # Check for scenario C (if necessary)
         if source_filename is None and len(import_items) == 1:
+            potential_module_name = next(iter(import_items.keys()))
+
             source_filename = FindSource(
                 os.path.isdir,
-                root_suffix=next(iter(import_items.keys())),
+                root_suffix=potential_module_name,
             )
 
         if source_filename is None:
             return MultifileParserObserver.ImportInfo(original_source, None)
 
-        # Validate the source filename
-        module_name = os.path.splitext(os.path.basename(source_filename))[0]
-
-        if CommonStatements.MatchRegexStatement(
-            module_name,
-            CommonStatements.ModuleNameStatement,
-        ) == CommonStatements.MatchRegexStatementResult.NoMatch:
-            pass # BugBug raise InvalidModuleNameError(
-            pass # BugBug     1, 1, # BugBug
-            pass # BugBug     module_name,
-            pass # BugBug )
-
-        # Validate the import items if we aren't in scenario C
-        if len(import_items) != 1 or module_name not in import_items:
-            for k, v in import_items.items():
-                validate_items = [k]
-
-                if v != k:
-                    validate_items.append(v)
-
-                results = []
-
-                for validate_item in validate_items:
-                    result = CommonStatements.MatchRegexStatement(
-                        validate_item,
-                        CommonStatements.ClassNameStatement,
-                        CommonStatements.FunctionNameStatement,
-                        CommonStatements.VariableNameStatement,
-                    )
-
-                    if result == CommonStatements.MatchRegexStatementResult.NoMatch:
-                        pass # BugBug raise InvalidModuleExportNameError(
-                        pass # BugBug     1, 1, # BugBug
-                        pass # BugBug     validate_item,
-                        pass # BugBug )
-
-                    results.append(result)
-
-                # We should never attempt to import a private member
-                if results[0] == CommonStatements.MatchRegexStatementResult.Private:
-                    raise InvalidModuleExportPrivateNameError(
-                        1, 1, # BugBug
-                        validate_items[0],
-                    )
-
-                # BugBug: We should never attempt to import a protected member
-                # outside of the current directory
-
-
         # Cache these values for later so we don't need to reparse the content
         node.source_filename = source_filename
         node.import_items = import_items
+        node.import_items_lookup = import_items_lookup
 
         return MultifileParserObserver.ImportInfo(original_source, source_filename)
 
@@ -315,34 +245,54 @@ class ImportStatement(ImportGrammarStatement):
     def _ProcessContentItems(
         cls,
         node: Node,
-    ) -> Dict[str, str]:
+    ) -> Tuple[
+            Dict[str, str],                 # Map of values
+            Dict[int, Leaf],                # Map of strings to tokens
+        ]:
         # Get the nodes (and ignore the leaves)
         nodes = [child for child in node.Children if isinstance(child, Node)]
         assert len(nodes) == 3, nodes
 
         # Extract the import items
         import_items = OrderedDict()
+        leaf_lookup = {}
 
-        key, value = cls._ProcessContentItem(nodes[0])
+        (
+            key,
+            key_leaf,
+            value,
+            value_leaf,
+        ) = cls._ProcessContentItem(nodes[0])
+
         import_items[key] = value
+        leaf_lookup[id(key)] = key_leaf
+        leaf_lookup[id(value)] = value_leaf
 
         for child in nodes[1].Children:
             for child_node in child.Children:
                 if not isinstance(child_node, Node):
                     continue
 
-                key, value = cls._ProcessContentItem(child_node)
+                (
+                    key,
+                    key_leaf,
+                    value,
+                    value_leaf,
+                ) = cls._ProcessContentItem(child_node)
+
                 import_items[key] = value
+                leaf_lookup[id(key)] = key_leaf
+                leaf_lookup[id(value)] = value_leaf
 
                 break
 
-        return import_items
+        return import_items, leaf_lookup
 
     # ----------------------------------------------------------------------
     @staticmethod
     def _ProcessContentItem(
         node: Node,
-    ) -> Tuple[str, str]:
+    ) -> Tuple[str, Leaf, str, Leaf]:
         assert len(node.Children) == 1, node
         node = node.Children[0]
 
@@ -352,16 +302,15 @@ class ImportStatement(ImportGrammarStatement):
 
             return (
                 leaves[0].Value.Match.group("value"),
+                leaves[0],
                 leaves[2].Value.Match.group("value"),
+                leaves[2],
             )
 
-        elif isinstance(node.Type, RegexToken):
+        elif isinstance(node.Type, CommonTokens.RegexToken):
             result = cast(Leaf, node).Value.Match.group("value")
 
-            return result, result
+            return (result, node, result, node)
 
         else:
             assert False, node.Type  # pragma: no cover
-
-        # We will never get here, but need to make the linter happy
-        return "", ""  # pragma: no cover
