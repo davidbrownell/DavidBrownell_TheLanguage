@@ -17,7 +17,6 @@
 
 import os
 import re
-import textwrap
 
 import CommonEnvironment
 
@@ -30,6 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ...ParserImpl.Token import (
+        NewlineToken,                       # Included as a convenience for other modules; do not remove
         PopIgnoreWhitespaceControlToken,    # Included as a convenience for other modules; do not remove
         PushIgnoreWhitespaceControlToken,   # Included as a convenience for other modules; do not remove
         RegexToken,
@@ -37,7 +37,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-NameToken                                   = RegexToken("<name>", re.compile(r"(?P<value>[A-Za-z0-9_\.]+\??)"))
+NameToken                                   = RegexToken("<name>", re.compile(r"(?P<value>\*?[A-Za-z0-9_\.]+(?:\.\.\.)?\??)"))
 UnderscoreToken                             = RegexToken("'_'", re.compile(r"_"))
 
 ColonToken                                  = RegexToken("':'", re.compile(r":"))
@@ -63,7 +63,7 @@ AsToken                                     = RegexToken("'as'", re.compile("as"
 # immutable:    val        view
 #
 # variables:    var, val, view
-# parameters:   isolated, shared
+# parameters:   isolated, shared, immutable
 # methods:      mutable/mut, immutable/const
 
 VarToken                                    = RegexToken("'var'", re.compile(r"var"))

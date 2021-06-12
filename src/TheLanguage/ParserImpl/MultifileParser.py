@@ -82,10 +82,6 @@ class _ParseResultBase(object):
 # ----------------------------------------------------------------------
 class _Node(_ParseResultBase):
     # ----------------------------------------------------------------------
-    def __init__(self, *args, **kwargs):
-        super(_Node, self).__init__(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
     def __post_init__(self):
         super(_Node, self).__post_init__()
         object.__setattr__(self, "Children", [])
@@ -108,6 +104,25 @@ class _Node(_ParseResultBase):
                 4,
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @property
+    def IterBefore(self):
+        node = self
+
+        while isinstance(node, _Node):
+            node = node.Children[0]         # <Has no member> pylint: disable=E1101
+
+        return cast(Leaf, node).IterBefore
+
+    @property
+    def IterAfter(self):
+        node = self
+
+        while isinstance(node, _Node):
+            node = node.Children[-1]        # <Has no member> pylint: disable=E1101
+
+        return cast(Leaf, node).IterAfter
 
 
 # ----------------------------------------------------------------------
@@ -454,7 +469,7 @@ class _StatementsObserver(StatementsObserver):
         key = tuple([id(statement)] + [id(result) for result in parse_results])
         if key:
             with self._node_cache_lock:
-                potential_node = self.node_cache.get(key, None)
+                potential_node = self.node_cache.get(key, None)             # <Has no member> pylint: disable=E1101
                 if potential_node is not None:
                     node = potential_node
                     was_cached = True
@@ -478,7 +493,7 @@ class _StatementsObserver(StatementsObserver):
             # Cache the node
             if key:
                 with self._node_cache_lock:
-                    self.node_cache[key] = node
+                    self.node_cache[key] = node         # <Does not support item assignment> pylint: disable=E1137
 
         return node
 
