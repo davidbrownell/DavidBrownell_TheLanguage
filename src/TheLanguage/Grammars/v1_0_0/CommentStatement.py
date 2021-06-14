@@ -27,9 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GrammarStatement import GrammarStatement
-
-    from ...ParserImpl.Statement import Statement
+    from ..GrammarStatement import GrammarStatement, Statement
 
 
 # ----------------------------------------------------------------------

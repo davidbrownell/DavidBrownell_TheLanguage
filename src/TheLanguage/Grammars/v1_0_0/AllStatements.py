@@ -28,7 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .CommentStatement import CommentStatement
+    from .FuncInvocationStatement import FuncInvocationStatement
     from .ImportStatement import ImportStatement
+    # TODO: from .VarDeclarationStatement import VarDeclarationStatement
     from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
 
 
@@ -36,9 +38,13 @@ with InitRelativeImports():
 Statements                                  = [
     # Statements
     ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized
+    # TODO: VarDeclarationStatement(),
 
     CommentStatement(),
     VerticalWhitespaceStatement(),
+
+    # Hybrid
+    FuncInvocationStatement(),
 
     # Expressions
 ]
