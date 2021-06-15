@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VerticalWhitespaceStatement.py
+# |  All.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-26 07:43:18
+# |      2021-06-06 08:32:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VerticalWhitespaceStatement object"""
+"""Contains statements used in this grammar"""
 
 import os
 
@@ -27,22 +27,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common import Tokens as CommonTokens
-    from ..GrammarStatement import GrammarStatement, Statement
+    from .CommentStatement import CommentStatement
+    from .FuncDeclarationStatement import FuncDeclarationStatement
+    from .PassStatement import PassStatement
+    from .VariableNameExpression import VariableNameExpression
+    from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
 
 
 # ----------------------------------------------------------------------
-class VerticalWhitespaceStatement(GrammarStatement):
-    """Eats vertical whitespace"""
+Statements                                  = [
+    # Statements
+    FuncDeclarationStatement(),
 
-    # ----------------------------------------------------------------------
-    def __init__(self):
-        super(VerticalWhitespaceStatement, self).__init__(
-            GrammarStatement.Type.Statement,
-            Statement(
-                "Vertical Whitespace",
-                CommonTokens.NewlineToken(
-                    is_always_ignored=True,
-                ),
-            ),
-        )
+    # BugBug ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized
+    # BugBug VarDeclarationStatement(),
+    # BugBug
+    PassStatement(),
+    CommentStatement(),
+    VerticalWhitespaceStatement(),
+
+    # BugBug # Hybrid
+    # BugBug FuncInvocationStatement(),
+
+    # Expressions
+    VariableNameExpression(),
+]

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  AllStatements.py
+# |  PassStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-06 08:32:04
+# |      2021-06-13 15:18:08
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains statements used in this grammar"""
+"""Contains the PassStatement object"""
 
 import os
 
@@ -27,24 +27,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CommentStatement import CommentStatement
-    from .FuncInvocationStatement import FuncInvocationStatement
-    from .ImportStatement import ImportStatement
-    from .VarDeclarationStatement import VarDeclarationStatement
-    from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
+    from .Common import Tokens as CommonTokens
+    from ..GrammarStatement import GrammarStatement, Statement
 
 
 # ----------------------------------------------------------------------
-Statements                                  = [
-    # Statements
-    ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized
-    VarDeclarationStatement(),
+class PassStatement(GrammarStatement):
+    """'pass'"""
 
-    CommentStatement(),
-    VerticalWhitespaceStatement(),
-
-    # Hybrid
-    FuncInvocationStatement(),
-
-    # Expressions
-]
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        super(PassStatement, self).__init__(
+            GrammarStatement.Type.Statement,
+            Statement("Pass", CommonTokens.Pass),
+        )

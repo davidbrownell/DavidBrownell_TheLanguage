@@ -15,7 +15,6 @@
 #               key: d, e
 #               any: f
 #       )
-#   Variable assignment
 #   scoped ref syntax (can be similar to with statements?)
 
 
