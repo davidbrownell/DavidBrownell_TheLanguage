@@ -281,80 +281,99 @@ def Parse(
     # ----------------------------------------------------------------------
     # TODO: Check for import cycles
     def Execute(fully_qualified_name) -> DynamicStatementInfo:
-        with thread_info_lock:
-            if fully_qualified_name not in thread_info.source_lookup:       # <Value doesn't support membership test> pylint: disable=E1135
-                should_execute = True
-                wait_event = None
+        final_result = None
 
-                thread_info.source_lookup[fully_qualified_name] = None      # <Value doesn't support item assignment> pylint: disable=E1137
-                thread_info.pending_ctr += 1
+        # ----------------------------------------------------------------------
+        def OnExit():
+            nonlocal final_result
 
-            else:
-                source_info = thread_info.source_lookup[fully_qualified_name]                       # <Value is unscriptable> pylint: disable=E1136
-                if source_info is not None:
-                    return source_info.SourceInfo
+            with thread_info_lock:
+                final_result = thread_info.source_lookup.get(fully_qualified_name, None)
+                if final_result is None:
+                    del thread_info.source_lookup[fully_qualified_name]
 
-                should_execute = False
-                wait_event = threading.Event()
+                    final_result = SourceInfo(None, DynamicStatementInfo([], []))
 
-                thread_info.source_pending.setdefault(fully_qualified_name, []).append(wait_event)  # <Has no member> pylint: disable=E1101
+                for event in thread_info.source_pending.pop(fully_qualified_name, []):
+                    event.set()
 
-        if should_execute:
-            # ----------------------------------------------------------------------
-            def OnExit():
-                with thread_info_lock:
-                    assert thread_info.pending_ctr
-                    thread_info.pending_ctr -= 1
+        # ----------------------------------------------------------------------
 
-                    if thread_info.pending_ctr == 0:
-                        is_complete.set()
+        with CallOnExit(OnExit):
+            with thread_info_lock:
+                if fully_qualified_name not in thread_info.source_lookup:       # <Value doesn't support membership test> pylint: disable=E1135
+                    should_execute = True
+                    wait_event = None
 
-            # ----------------------------------------------------------------------
+                    thread_info.source_lookup[fully_qualified_name] = None      # <Value doesn't support item assignment> pylint: disable=E1137
+                    thread_info.pending_ctr += 1
 
-            with CallOnExit(OnExit):
-                try:
-                    statement_observer = _StatementsObserver(fully_qualified_name, observer, Execute)
+                else:
+                    source_info = thread_info.source_lookup[fully_qualified_name]                       # <Value is unscriptable> pylint: disable=E1136
+                    if source_info is not None:
+                        return source_info.SourceInfo
 
-                    results = StatementsParse(
-                        initial_statement_info,
-                        NormalizedIterator(Normalize(observer.LoadContent(fully_qualified_name))),
-                        statement_observer,
-                        single_threaded=single_threaded,
-                    )
+                    should_execute = False
+                    wait_event = threading.Event()
 
-                    # The nodes have already been created, but we need to finalize the parent/child
-                    # relationships.
-                    root = RootNode()
+                    thread_info.source_pending.setdefault(fully_qualified_name, []).append(wait_event)  # <Has no member> pylint: disable=E1101
 
-                    for result in results:
-                        statement_observer.CreateNode(result.Statement, result.Results, root)
-
-                    # Get the source info
-                    source_info = observer.ExtractDynamicStatementInfo(fully_qualified_name, root)
-
-                    # Commit the results
+            if should_execute:
+                # ----------------------------------------------------------------------
+                def OnExecuteExit():
                     with thread_info_lock:
-                        assert thread_info.source_lookup[fully_qualified_name] is None                      # <Value is unscriptable> pylint: disable=E1136
-                        thread_info.source_lookup[fully_qualified_name] = SourceInfo(root, source_info)     # <Does not support item assignment> pylint: disable=E1137
+                        assert thread_info.pending_ctr
+                        thread_info.pending_ctr -= 1
 
-                        for event in thread_info.source_pending.pop(fully_qualified_name, []):      # <Has no member> pylint: disable=E1101
-                            event.set()
+                        if thread_info.pending_ctr == 0:
+                            is_complete.set()
 
-                except Exception as ex:
-                    assert not hasattr(ex, "Traceback")
-                    object.__setattr__(ex, "Traceback", traceback.format_exc())
+                # ----------------------------------------------------------------------
 
-                    assert not hasattr(ex, "FullyQualifiedName")
-                    object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
+                with CallOnExit(OnExecuteExit):
+                    try:
+                        statement_observer = _StatementsObserver(fully_qualified_name, observer, Execute)
 
-                    with thread_info_lock:
-                        thread_info.errors.append(ex)   # <Has no member> pylint: disable=E1101
+                        content = observer.LoadContent(fully_qualified_name)
 
-        elif wait_event:
-            wait_event.wait()
+                        results = StatementsParse(
+                            initial_statement_info,
+                            NormalizedIterator(Normalize(content)),
+                            statement_observer,
+                            single_threaded=single_threaded,
+                        )
 
-        with thread_info_lock:
-            return thread_info.source_lookup[fully_qualified_name].SourceInfo  # <Value is unscriptable> pylint: disable=E1136
+                        # The nodes have already been created, but we need to finalize the parent/child
+                        # relationships.
+                        root = RootNode()
+
+                        for result in results:
+                            statement_observer.CreateNode(result.Statement, result.Results, root)
+
+                        # Get the source info
+                        source_info = observer.ExtractDynamicStatementInfo(fully_qualified_name, root)
+
+                        # Commit the results
+                        with thread_info_lock:
+                            assert thread_info.source_lookup[fully_qualified_name] is None                      # <Value is unscriptable> pylint: disable=E1136
+                            thread_info.source_lookup[fully_qualified_name] = SourceInfo(root, source_info)     # <Does not support item assignment> pylint: disable=E1137
+
+                    except Exception as ex:
+                        assert not hasattr(ex, "Traceback")
+                        object.__setattr__(ex, "Traceback", traceback.format_exc())
+
+                        assert not hasattr(ex, "FullyQualifiedName")
+                        object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
+
+                        with thread_info_lock:
+                            thread_info.errors.append(ex)   # <Has no member> pylint: disable=E1101
+
+            elif wait_event:
+                wait_event.wait()
+
+        return final_result.SourceInfo
+
+    # ----------------------------------------------------------------------
 
     if single_threaded:
         for fqn in fully_qualified_names:
@@ -381,17 +400,23 @@ def Parse(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
 class _StatementsObserver(StatementsObserver):
-    _fully_qualified_name: str
-    _observer: Observer
-    _enqueue_content_func: Callable[[str], DynamicStatementInfo]
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        fully_qualified_name: str,
+        observer: Observer,
+        enqueue_content_func: Callable[[str], DynamicStatementInfo],
+    ):
+        self._fully_qualified_name          = fully_qualified_name
+        self._observer                      = observer
+        self._enqueue_content_func          = enqueue_content_func
 
-    # Preserve cached nodes so that we don't have to continually recreate them.
-    # This is also beneficial, as some statements will add context data to the
-    # node when processing it.
-    node_cache: Dict[Any, Node]             = field(default_factory=dict)
-    _node_cache_lock                        = threading.Lock()
+        # Preserve cached nodes so that we don't have to continually recreate them.
+        # This is also beneficial, as some statements will add context data to the
+        # node when processing it.
+        self.node_cache: Dict[Any, Node]    = {}
+        self._node_cache_lock               = threading.Lock()
 
     # ----------------------------------------------------------------------
     @Interface.override
