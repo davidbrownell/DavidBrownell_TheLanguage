@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ....Parse import Parse, Prune, Validate
-
+    from ....ParserImpl.StatementsParser import SyntaxInvalidError
 
 # ----------------------------------------------------------------------
 class PatchAndExecuteFlag(Flag):
@@ -88,7 +88,7 @@ def PatchAndExecute(
             if isinstance(result, list):
                 assert len(result) == 1, result
 
-                if debug_string_on_exception:
+                if debug_string_on_exception and isinstance(result[0], SyntaxInvalidError):
                     print(
                         textwrap.dedent(
                             """\

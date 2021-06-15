@@ -1,4 +1,5 @@
 # TODO:
+#   export keyword for functions
 #   Function type
 #   Tuple
 #   Variant/Union
@@ -9,12 +10,6 @@
 #       var variant = Func() as (String | None)
 #       var string = Func()
 #
-#   Function Definition
-#       func Func(
-#               pos: a, b, c
-#               key: d, e
-#               any: f
-#       )
 #   scoped ref syntax (can be similar to with statements?)
 
 
