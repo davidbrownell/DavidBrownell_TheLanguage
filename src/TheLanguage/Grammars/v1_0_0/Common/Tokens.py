@@ -44,7 +44,7 @@ Indent                                      = IndentToken()
 PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
-Name                                        = RegexToken("<name>", re.compile(r"(?P<value>[A-Za-z0-9_\.]+)"))
+Name                                        = RegexToken("<name>", re.compile(r"(?P<value>[A-Za-z_][A-Za-z_0-9\.]*)"))
 Equal                                       = RegexToken("'='", re.compile(r"\="))
 Colon                                       = RegexToken("':'", re.compile(r":"))
 Comma                                       = RegexToken("','", re.compile(r","))

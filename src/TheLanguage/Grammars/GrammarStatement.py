@@ -56,6 +56,19 @@ class ValidationError(Error):
     ColumnEnd: int
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def FromNode(
+        cls,
+        node: Node,
+    ):
+        return cls(
+            node.IterBefore.Line,
+            node.IterBefore.Column,
+            node.IterAfter.Line,
+            node.IterAfter.Column,
+        )
+
+    # ----------------------------------------------------------------------
     def __post_init__(self):
         assert self.Line <= self.LineEnd
         assert self.Line != self.LineEnd or self.Column <= self.ColumnEnd

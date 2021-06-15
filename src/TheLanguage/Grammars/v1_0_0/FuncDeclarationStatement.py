@@ -49,7 +49,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class PositionalArgumentAfterDefaultValueArgumentError(ValidationError):
+class PositionalParameterAfterDefaultValueParameterError(ValidationError):
     MessageTemplate                         = Interface.DerivedProperty("Positional parameters may not appear after a parameter with a default value has been defined")
 
 
@@ -238,21 +238,18 @@ class FuncDeclarationStatement(GrammarStatement):
         node: Node,
     ):
         assert len(node.Children) > 4
-        parameters = cls._GetParameters(node.Children[3])
-
-        # Save this value for later
-        node.parameters = parameters
+        node.parameters = cls._GetParameters(node.Children[3])
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class _ParameterInfo(object):
+        Parameter: Node
         Type: str
         TypeModifier: CommonTokens.RegexToken
         Name: str
         DefaultValue: Optional[Node]
-        NameNode: Node
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -291,6 +288,8 @@ class FuncDeclarationStatement(GrammarStatement):
         else:
             assert False, node  # pragma: no cover
 
+        # Ensure that all parameters after the first with a default value
+        # also have a default value.
         encountered_default = False
 
         for parameter_info in itertools.chain(
@@ -301,13 +300,8 @@ class FuncDeclarationStatement(GrammarStatement):
             if parameter_info.DefaultValue:
                 encountered_default = True
             elif encountered_default:
-                # We shouldn't see parameters with out default values after we have seen any
-                # with default values.
-                raise PositionalArgumentAfterDefaultValueArgumentError(
-                    parameter_info.NameNode.IterBefore.Line,
-                    parameter_info.NameNode.IterBefore.Column,
-                    parameter_info.NameNode.IterAfter.Line,
-                    parameter_info.NameNode.IterAfter.Column,
+                raise PositionalParameterAfterDefaultValueParameterError.FromNode(
+                    parameter_info.Parameter,
                 )
 
         return result
@@ -356,30 +350,15 @@ class FuncDeclarationStatement(GrammarStatement):
                     and not positional_or_keyword_parameters
                     and not keyword_parameters
                 ):
-                    raise InvalidTraditionalPositionalDelimiterError(
-                        parameter.IterBefore.Line,
-                        parameter.IterBefore.Column,
-                        parameter.IterAfter.Line,
-                        parameter.IterAfter.Column,
-                    )
+                    raise InvalidTraditionalPositionalDelimiterError.FromNode(parameter)
 
                 # We shouldn't see this if we have already seen a keyword delimiter
                 if encountered_keyword_delimiter:
-                    raise InvalidTraditionalDelimiterOrderError(
-                        parameter.IterBefore.Line,
-                        parameter.IterBefore.Column,
-                        parameter.IterAfter.Line,
-                        parameter.IterAfter.Column,
-                    )
+                    raise InvalidTraditionalDelimiterOrderError.FromNode(parameter)
 
                 # We shouldn't see this delimiter more than once
                 if encountered_positional_delimiter:
-                    raise InvalidTraditionalDuplicatePositionalDelimiterError(
-                        parameter.IterBefore.Line,
-                        parameter.IterBefore.Column,
-                        parameter.IterAfter.Line,
-                        parameter.IterAfter.Column,
-                    )
+                    raise InvalidTraditionalDuplicatePositionalDelimiterError.FromNode(parameter)
 
                 assert not positional_parameters
                 positional_parameters = positional_or_keyword_parameters
@@ -390,21 +369,11 @@ class FuncDeclarationStatement(GrammarStatement):
             elif parameter.Type == CommonTokens.FunctionParameterKeywordDelimiter:
                 # We shouldn't see this delimiter as the last parameter
                 if is_last_parameter:
-                    raise InvalidTraditionalKeywordDelimiterError(
-                        parameter.IterBefore.Line,
-                        parameter.IterBefore.Column,
-                        parameter.IterAfter.Line,
-                        parameter.IterAfter.Column,
-                    )
+                    raise InvalidTraditionalKeywordDelimiterError.FromNode(parameter)
 
                 # We shouldn't see this delimiter more than once
                 if encountered_keyword_delimiter:
-                    raise InvalidTraditionalDuplicateKeywordDelimiterError(
-                        parameter.IterBefore.Line,
-                        parameter.IterBefore.Column,
-                        parameter.IterAfter.Line,
-                        parameter.IterAfter.Column,
-                    )
+                    raise InvalidTraditionalDuplicateKeywordDelimiterError.FromNode(parameter)
 
                 encountered_keyword_delimiter = True
                 state = State.Keyword
@@ -495,12 +464,7 @@ class FuncDeclarationStatement(GrammarStatement):
                 assert False, the_type  # pragma: no cover
 
             if has_error:
-                raise InvalidNewStyleParameterGroupOrderingError(
-                    the_type.IterBefore.Line,
-                    the_type.IterBefore.Column,
-                    the_type.IterAfter.Line,
-                    the_type.IterAfter.Column,
-                )
+                raise InvalidNewStyleParameterGroupOrderingError.FromNode(the_type)
 
             # Get the parameters
             parameters_list.append(cls._CreateParameterInfo(child.Children[2]))
@@ -533,7 +497,7 @@ class FuncDeclarationStatement(GrammarStatement):
     ) -> "FuncDeclarationStatement._ParameterInfo":
         assert len(node.Children) == 2
 
-        type_info = CommonStatements.GetTypeInfo(node.Children[0])
+        type_info = CommonStatements.TypeInfo.FromNode(node.Children[0])
 
         # Move beyond the Or statement
         assert len(node.Children[1].Children) == 1
@@ -548,12 +512,12 @@ class FuncDeclarationStatement(GrammarStatement):
             assert len(node.Children) == 3
 
             name_node = node.Children[0]
-            default_value = node.Children[2]
+            default_value = CommonStatements.ExtractDynamicExpressionsNode(node.Children[2])
 
         return cls._ParameterInfo(
+            node,
             type_info.Name,
             type_info.Modifier,
             name_node.Value.Match.group("value"),
             default_value,
-            name_node,
         )
