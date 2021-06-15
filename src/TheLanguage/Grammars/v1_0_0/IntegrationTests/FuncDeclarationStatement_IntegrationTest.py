@@ -2338,9 +2338,9 @@ def test_Defaults():
     )
 
 # ----------------------------------------------------------------------
-def test_PositionalArgumentAfterDefaultValueArgumentError():
+def test_PositionalParameterAfterDefaultValueParameterError():
     # Traditional
-    with pytest.raises(PositionalArgumentAfterDefaultValueArgumentError) as ex:
+    with pytest.raises(PositionalParameterAfterDefaultValueParameterError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2359,7 +2359,7 @@ def test_PositionalArgumentAfterDefaultValueArgumentError():
     assert ex.ColumnEnd == 55
 
     # New style
-    with pytest.raises(PositionalArgumentAfterDefaultValueArgumentError) as ex:
+    with pytest.raises(PositionalParameterAfterDefaultValueParameterError) as ex:
         Execute(
             textwrap.dedent(
                 """\

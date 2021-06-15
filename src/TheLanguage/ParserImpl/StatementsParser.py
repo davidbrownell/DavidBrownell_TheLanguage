@@ -16,6 +16,7 @@
 """Contains functionality that parses multiple statements"""
 
 import os
+import textwrap
 
 from collections import OrderedDict
 from concurrent.futures import Future
@@ -24,6 +25,7 @@ from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -100,6 +102,33 @@ class SyntaxInvalidError(Error):
             potentials[key] = parse_result_item.Results
 
         object.__setattr__(self, "PotentialStatements", potentials)
+
+    # ----------------------------------------------------------------------
+    def DebugString(self):
+        content = []
+
+        for parse_results in self.PotentialStatements.values():
+            for parse_result in parse_results:
+                if not getattr(parse_result, "Results", True):
+                    continue
+
+                # If here, we are looking at a token or something with results
+                content.append(str(parse_result))
+
+        return textwrap.dedent(
+            """\
+            {msg} [{line}, {column}]
+
+            Partial Matches:
+                {partial}
+
+            """,
+        ).format(
+            msg=str(self),
+            line=self.Line,
+            column=self.Column,
+            partial="<None>" if not content else StringHelpers.LeftJustify("\n".join(content).rstrip(), 4),
+        )
 
 
 # ----------------------------------------------------------------------
