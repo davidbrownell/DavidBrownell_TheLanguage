@@ -591,20 +591,20 @@ class Statement(object):
             (
                 self_id,
                 iter,
-                len_results,
+                num_results,
                 ignore_whitespace_ctr,
             ) = snapshot_data
 
             assert self_id == id(self)
             assert iter.Offset <= self.normalized_iter.Offset
-            assert len_results <= len(self.results)
+            assert num_results <= len(self.results)
             assert ignore_whitespace_ctr <= self._ignore_whitespace_ctr
 
             self.normalized_iter = iter
             self._ignore_whitespace_ctr = ignore_whitespace_ctr
 
-            if len(self.results) != len_results:
-                del self.results[len_results - len(self.results):]
+            if len(self.results) != num_results:
+                del self.results[num_results - len(self.results):]
 
         # ----------------------------------------------------------------------
         def ParseItem(
@@ -824,6 +824,21 @@ class Statement(object):
                 single_threaded=self._single_threaded,
             )
 
+            # ----------------------------------------------------------------------
+            def CountResults():
+                # Do not count ignored tokens when determining the number of results
+                num_results = 0
+
+                for result in parser.results:
+                    if isinstance(result, Statement.TokenParseResultItem) and result.IsIgnored:
+                        continue
+
+                    num_results += 1
+
+                return num_results
+
+            # ----------------------------------------------------------------------
+
             while True:
                 # Prepare to restore the parser to the original state if we were not
                 # able to parse the content. This will given subsequent statements that
@@ -838,14 +853,16 @@ class Statement(object):
                     parser.RestoreSnapshot(snapshot_data)
                     break
 
-                if max_matches is not None and len(parser.results) == max_matches:
+                if max_matches is not None and CountResults() == max_matches:
                     break
 
+            num_results = CountResults()
+
             success = (
-                len(parser.results) >= min_matches
+                num_results >= min_matches
                 and (
                     max_matches is None
-                    or len(parser.results) <= max_matches
+                    or num_results <= max_matches
                 )
             )
 
@@ -859,13 +876,15 @@ class Statement(object):
                 result is not None
                 and result.Success
                 and result.Results
-                and isinstance(result.Results[0], Statement.StatementParseResultItem)
             ):
                 for repeated_result in result.Results:
-                    if not self._observer.OnInternalStatement(
-                        cast(Statement.StatementParseResultItem, repeated_result),
-                        self.normalized_iter,
-                        result.Iter,
+                    if (
+                        isinstance(repeated_result, Statement.StatementParseResultItem)
+                        and not self._observer.OnInternalStatement(
+                            cast(Statement.StatementParseResultItem, repeated_result),
+                            self.normalized_iter,
+                            result.Iter,
+                        )
                     ):
                         result = None
                         break
