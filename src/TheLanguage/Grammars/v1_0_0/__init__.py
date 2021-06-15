@@ -1,7 +1,6 @@
 # TODO:
 #   export keyword for functions
 #   Function type
-#   Tuple
 #   Variant/Union
 #       String Func():
 #           return "Hi"
@@ -30,7 +29,7 @@
 #   dunder methods
 #   type aliases
 #   Enumerations
-
+#   None
 
 #   Class library
 #       String

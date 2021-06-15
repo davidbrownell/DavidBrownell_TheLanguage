@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableDeclarationStatement.py
+# |  TupleExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-15 14:27:21
+# |      2021-06-15 14:49:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableDeclarationStatement object"""
+"""Contains the TupleExpression object"""
 
 import os
 
@@ -37,33 +37,32 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class VariableDeclarationStatement(GrammarStatement):
+class TupleExpression(GrammarStatement):
     """\
-    Declares a variable.
+    Creates a Tuple.
 
-    <name> = <expression>
-    (<name>, <name>) = <expression>
+    '(' <content> ')'
     """
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(VariableDeclarationStatement, self).__init__(
-            GrammarStatement.Type.Statement,
+        super(TupleExpression, self).__init__(
+            GrammarStatement.Type.Expression,
             Statement(
-                "Variable Declaration",
+                "Tuple Expression",
                 [
-                    # Tuple support (multiple elements):
-                    #   '(' <name> (',' <name>)+ ','? ')'
+                    # Multiple elements
+                    #   '(' <expr> (',' <expr>)+ ','? ')'
                     Statement(
-                        "Tuple (Multiple)",
+                        "Multiple",
                         CommonTokens.LParen,
                         CommonTokens.PushIgnoreWhitespaceControl,
-                        CommonTokens.Name,
+                        DynamicStatements.Expressions,
                         (
                             Statement(
-                                "Comma and Name",
+                                "Comma and Expression",
                                 CommonTokens.Comma,
-                                CommonTokens.Name,
+                                DynamicStatements.Expressions,
                             ),
                             1,
                             None,
@@ -73,25 +72,20 @@ class VariableDeclarationStatement(GrammarStatement):
                         CommonTokens.RParen,
                     ),
 
-                    # Tuple support (single element):
-                    #   '(' <name> ',' ')'
+                    # Single element
+                    #   '(' <expr> ',' ')'
                     #
                     #   Note that for single element tuples, the comma is required
                     #   to differentiate it from a grouping construct.
                     Statement(
-                        "Tuple (Single)",
+                        "Single",
                         CommonTokens.LParen,
                         CommonTokens.PushIgnoreWhitespaceControl,
-                        CommonTokens.Name,
+                        DynamicStatements.Expressions,
                         CommonTokens.Comma,
                         CommonTokens.PopIgnoreWhitespaceControl,
                         CommonTokens.RParen,
                     ),
-
-                    # Standard declaration
-                    CommonTokens.Name,
                 ],
-                CommonTokens.Equal,
-                DynamicStatements.Expressions,
             ),
         )
