@@ -32,6 +32,7 @@ with InitRelativeImports():
     from .FuncInvocationHybrid import FuncInvocationHybrid
     from .ImportStatement import ImportStatement
     from .PassStatement import PassStatement
+    from .VariableDeclarationStatement import VariableDeclarationStatement
     from .VariableNameExpression import VariableNameExpression
     from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
 
@@ -41,6 +42,7 @@ Statements                                  = [
     # Statements
     ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized
     FuncDeclarationStatement(),
+    VariableDeclarationStatement(),
 
     PassStatement(),
     CommentStatement(),
