@@ -39,12 +39,13 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+# |  General
 Dedent                                      = DedentToken()
 Indent                                      = IndentToken()
 PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
-Name                                        = RegexToken("<name>", re.compile(r"(?P<value>[A-Za-z_][A-Za-z_0-9\.]*)"))
+Name                                        = RegexToken("<name>", re.compile(r"(?P<value>[A-Za-z_\.][A-Za-z_\.0-9]*)"))
 Equal                                       = RegexToken("'='", re.compile(r"\="))
 Colon                                       = RegexToken("':'", re.compile(r":"))
 Comma                                       = RegexToken("','", re.compile(r","))
@@ -52,7 +53,8 @@ Comma                                       = RegexToken("','", re.compile(r",")
 LParen                                      = RegexToken("'('", re.compile(r"\("))
 RParen                                      = RegexToken("')'", re.compile(r"\)"))
 
-Pass                                        = RegexToken("'pass'", re.compile(r"pass"))
+# ----------------------------------------------------------------------
+# |  FunctionDeclarationStatement
 
 # Traditional Parameters
 FunctionParameterPositionalDelimiter        = RegexToken("'/'", re.compile(r"/"))
@@ -69,6 +71,19 @@ AllNewStyleParameters                       = [
     FunctionParameterAny,
     FunctionParameterKeyword,
 ]
+
+# ----------------------------------------------------------------------
+# |  ImportStatement
+From                                        = RegexToken("'from'", re.compile("from"))
+Import                                      = RegexToken("'import'", re.compile("import"))
+As                                          = RegexToken("'as'", re.compile("as"))
+
+# ----------------------------------------------------------------------
+# |  PassStatement
+Pass                                        = RegexToken("'pass'", re.compile(r"pass"))
+
+# ----------------------------------------------------------------------
+# |  VariableDeclarationStatement
 
 #             isolated    shared
 #             --------    ------

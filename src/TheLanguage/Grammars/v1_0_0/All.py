@@ -30,6 +30,7 @@ with InitRelativeImports():
     from .CommentStatement import CommentStatement
     from .FuncDeclarationStatement import FuncDeclarationStatement
     from .FuncInvocationHybrid import FuncInvocationHybrid
+    from .ImportStatement import ImportStatement
     from .PassStatement import PassStatement
     from .VariableNameExpression import VariableNameExpression
     from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
@@ -38,10 +39,8 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 Statements                                  = [
     # Statements
+    ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized
     FuncDeclarationStatement(),
-
-    # BugBug ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized
-    # BugBug VarDeclarationStatement(),
 
     PassStatement(),
     CommentStatement(),

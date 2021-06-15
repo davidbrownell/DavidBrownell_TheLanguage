@@ -138,7 +138,8 @@ class FuncInvocationHybrid(GrammarStatement):
             # arguments.
             return []
 
-        # Move beyond the Optional node
+        # Drill into the Optional statement
+        assert isinstance(node.Type, tuple)
         assert len(node.Children) == 1
         node = node.Children[0]
 
@@ -177,7 +178,8 @@ class FuncInvocationHybrid(GrammarStatement):
         cls,
         node: Node,
     ) -> "FuncInvocationHybrid._ArgumentInfo":
-        # Drill beyond the Or Statement
+        # Drill into the Or Statement
+        assert isinstance(node.Type, list)
         assert len(node.Children) == 1
         node = node.Children[0]
 
