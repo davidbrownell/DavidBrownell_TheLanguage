@@ -16,6 +16,7 @@
 """Common helper for automted tests in this directory"""
 
 import os
+import textwrap
 
 from enum import auto, Flag
 from io import StringIO
@@ -54,6 +55,7 @@ def PatchAndExecute(
     source_roots: List[str],
     flag=PatchAndExecuteFlag.Parse,
     max_num_threads: Optional[int]=None,
+    debug_string_on_exception=True,
 ):
     """Patches file system methods invoked by systems under tests and replaces them so that they simulate files via the file content provided"""
 
@@ -85,6 +87,24 @@ def PatchAndExecute(
 
             if isinstance(result, list):
                 assert len(result) == 1, result
+
+                if debug_string_on_exception:
+                    print(
+                        textwrap.dedent(
+                            """\
+
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+                            {}
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+
+                            """,
+                        ).format(result[0].DebugString()),
+                    )
+
                 raise result[0]
 
             assert len(result) == len(simulated_file_content)

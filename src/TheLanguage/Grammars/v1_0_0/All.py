@@ -29,6 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .CommentStatement import CommentStatement
     from .FuncDeclarationStatement import FuncDeclarationStatement
+    from .FuncInvocationHybrid import FuncInvocationHybrid
     from .PassStatement import PassStatement
     from .VariableNameExpression import VariableNameExpression
     from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
@@ -41,13 +42,13 @@ Statements                                  = [
 
     # BugBug ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized
     # BugBug VarDeclarationStatement(),
-    # BugBug
+
     PassStatement(),
     CommentStatement(),
     VerticalWhitespaceStatement(),
 
-    # BugBug # Hybrid
-    # BugBug FuncInvocationStatement(),
+    # Hybrid
+    FuncInvocationHybrid(),
 
     # Expressions
     VariableNameExpression(),

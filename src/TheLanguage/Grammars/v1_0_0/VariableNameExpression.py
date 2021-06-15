@@ -39,8 +39,5 @@ class VariableNameExpression(GrammarStatement):
     def __init__(self):
         super(VariableNameExpression, self).__init__(
             GrammarStatement.Type.Expression,
-            Statement(
-                "Variable Name",
-                CommonTokens.Name,
-            ),
+            Statement("Variable Name", CommonTokens.Name),
         )
