@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncInvocationHybrid_IntegrationTest.py
+# |  FuncInvocationStatements_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-06-15 00:30:04
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for FuncInvocationHybrid.py"""
+"""Automated test for FuncInvocationStatements.py"""
 
 import os
 import textwrap
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from . import Execute
-    from ..FuncInvocationHybrid import *
+    from ..FuncInvocationStatements import *
 
 
 # ----------------------------------------------------------------------

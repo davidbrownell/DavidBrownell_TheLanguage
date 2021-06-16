@@ -29,10 +29,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .CommentStatement import CommentStatement
     from .FuncDeclarationStatement import FuncDeclarationStatement
-    from .FuncInvocationHybrid import FuncInvocationHybrid
+    from .FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
     from .ImportStatement import ImportStatement
     from .PassStatement import PassStatement
-    from .TupleExpression import TupleExpression
+    from .TupleStatements import TupleExpression, TupleVariableDeclarationStatement
     from .VariableDeclarationStatement import VariableDeclarationStatement
     from .VariableNameExpression import VariableNameExpression
     from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
@@ -42,17 +42,17 @@ with InitRelativeImports():
 Statements                                  = [
     # Statements
     FuncDeclarationStatement(),
+    FuncInvocationStatement(),
     ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized
+    TupleVariableDeclarationStatement(),
     VariableDeclarationStatement(),
 
     CommentStatement(),
     PassStatement(),
     VerticalWhitespaceStatement(),
 
-    # Hybrid
-    FuncInvocationHybrid(),
-
     # Expressions
+    FuncInvocationExpression(),
     TupleExpression(),
     VariableNameExpression(),
 ]

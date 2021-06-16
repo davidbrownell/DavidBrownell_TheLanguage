@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleExpression_IntegrationTest.py
+# |  TupleStatements_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-06-15 14:52:21
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for TupleExpression.py"""
+"""Automated tests for TupleStatements.py"""
 
 import os
 import textwrap
@@ -29,11 +29,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from . import Execute
-    from ..TupleExpression import TupleExpression
+    from ..TupleStatements import *
 
 
 # ----------------------------------------------------------------------
-def test_Single():
+def test_SingleExpression():
     assert Execute(
         textwrap.dedent(
             """\
@@ -49,8 +49,7 @@ def test_Single():
         <Root>
             1.0.0 Grammar
                 Variable Declaration
-                    Or: [Tuple (Multiple), Tuple (Single), <name>]
-                        <name> <<Regex: <_sre.SRE_Match object; span=(0, 11), match='assignment1'>>> ws:None [1, 1 -> 1, 12]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(0, 11), match='assignment1'>>> ws:None [1, 1 -> 1, 12]
                     '=' <<Regex: <_sre.SRE_Match object; span=(12, 13), match='='>>> ws:(11, 12) [1, 13 -> 1, 14]
                     DynamicStatements.Expressions
                         1.0.0 Grammar
@@ -66,8 +65,7 @@ def test_Single():
                                         ')' <<Regex: <_sre.SRE_Match object; span=(17, 18), match=')'>>> ws:None [1, 18 -> 1, 19]
             1.0.0 Grammar
                 Variable Declaration
-                    Or: [Tuple (Multiple), Tuple (Single), <name>]
-                        <name> <<Regex: <_sre.SRE_Match object; span=(19, 30), match='assignment2'>>> ws:None [2, 1 -> 2, 12]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(19, 30), match='assignment2'>>> ws:None [2, 1 -> 2, 12]
                     '=' <<Regex: <_sre.SRE_Match object; span=(31, 32), match='='>>> ws:(30, 31) [2, 13 -> 2, 14]
                     DynamicStatements.Expressions
                         1.0.0 Grammar
@@ -85,8 +83,7 @@ def test_Single():
                                         ')' <<Regex: <_sre.SRE_Match object; span=(41, 42), match=')'>>> ws:None [2, 23 -> 2, 24]
             1.0.0 Grammar
                 Variable Declaration
-                    Or: [Tuple (Multiple), Tuple (Single), <name>]
-                        <name> <<Regex: <_sre.SRE_Match object; span=(43, 54), match='assignment3'>>> ws:None [3, 1 -> 3, 12]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(43, 54), match='assignment3'>>> ws:None [3, 1 -> 3, 12]
                     '=' <<Regex: <_sre.SRE_Match object; span=(55, 56), match='='>>> ws:(54, 55) [3, 13 -> 3, 14]
                     DynamicStatements.Expressions
                         1.0.0 Grammar
@@ -112,7 +109,7 @@ def test_Single():
     )
 
 # ----------------------------------------------------------------------
-def test_Multiple():
+def test_MultipleExpression():
     assert Execute(
         textwrap.dedent(
             """\
@@ -135,8 +132,7 @@ def test_Multiple():
         <Root>
             1.0.0 Grammar
                 Variable Declaration
-                    Or: [Tuple (Multiple), Tuple (Single), <name>]
-                        <name> <<Regex: <_sre.SRE_Match object; span=(0, 11), match='assignment1'>>> ws:None [1, 1 -> 1, 12]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(0, 11), match='assignment1'>>> ws:None [1, 1 -> 1, 12]
                     '=' <<Regex: <_sre.SRE_Match object; span=(12, 13), match='='>>> ws:(11, 12) [1, 13 -> 1, 14]
                     DynamicStatements.Expressions
                         1.0.0 Grammar
@@ -164,8 +160,7 @@ def test_Multiple():
                                         ')' <<Regex: <_sre.SRE_Match object; span=(22, 23), match=')'>>> ws:None [1, 23 -> 1, 24]
             1.0.0 Grammar
                 Variable Declaration
-                    Or: [Tuple (Multiple), Tuple (Single), <name>]
-                        <name> <<Regex: <_sre.SRE_Match object; span=(24, 35), match='assignment2'>>> ws:None [2, 1 -> 2, 12]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(24, 35), match='assignment2'>>> ws:None [2, 1 -> 2, 12]
                     '=' <<Regex: <_sre.SRE_Match object; span=(36, 37), match='='>>> ws:(35, 36) [2, 13 -> 2, 14]
                     DynamicStatements.Expressions
                         1.0.0 Grammar
@@ -195,8 +190,7 @@ def test_Multiple():
                                         ')' <<Regex: <_sre.SRE_Match object; span=(48, 49), match=')'>>> ws:(47, 48) [2, 25 -> 2, 26]
             1.0.0 Grammar
                 Variable Declaration
-                    Or: [Tuple (Multiple), Tuple (Single), <name>]
-                        <name> <<Regex: <_sre.SRE_Match object; span=(50, 61), match='assignment3'>>> ws:None [3, 1 -> 3, 12]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(50, 61), match='assignment3'>>> ws:None [3, 1 -> 3, 12]
                     '=' <<Regex: <_sre.SRE_Match object; span=(62, 63), match='='>>> ws:(61, 62) [3, 13 -> 3, 14]
                     DynamicStatements.Expressions
                         1.0.0 Grammar
@@ -226,8 +220,7 @@ def test_Multiple():
                                         ')' <<Regex: <_sre.SRE_Match object; span=(87, 88), match=')'>>> ws:None [6, 1 -> 6, 2]
             1.0.0 Grammar
                 Variable Declaration
-                    Or: [Tuple (Multiple), Tuple (Single), <name>]
-                        <name> <<Regex: <_sre.SRE_Match object; span=(90, 101), match='assignment4'>>> ws:None [8, 1 -> 8, 12]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(90, 101), match='assignment4'>>> ws:None [8, 1 -> 8, 12]
                     '=' <<Regex: <_sre.SRE_Match object; span=(102, 103), match='='>>> ws:(101, 102) [8, 13 -> 8, 14]
                     DynamicStatements.Expressions
                         1.0.0 Grammar
@@ -271,5 +264,140 @@ def test_Multiple():
                                         Repeat: (',', 0, 1)
                                             ',' <<Regex: <_sre.SRE_Match object; span=(136, 137), match=','>>> ws:None [11, 6 -> 11, 7]
                                         ')' <<Regex: <_sre.SRE_Match object; span=(138, 139), match=')'>>> ws:None [12, 1 -> 12, 2]
+        """,
+    )
+
+# ----------------------------------------------------------------------
+def test_SingleAssignment():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            (a,) = line1
+            (
+                a
+                ,
+            ) = Func()
+            """,
+        ),
+    ) == textwrap.dedent(
+        """\
+        <Root>
+            1.0.0 Grammar
+                Tuple Variable Declaration
+                    Or: [Multiple, Single]
+                        Single
+                            '(' <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 1 -> 1, 2]
+                            <name> <<Regex: <_sre.SRE_Match object; span=(1, 2), match='a'>>> ws:None [1, 2 -> 1, 3]
+                            ',' <<Regex: <_sre.SRE_Match object; span=(2, 3), match=','>>> ws:None [1, 3 -> 1, 4]
+                            ')' <<Regex: <_sre.SRE_Match object; span=(3, 4), match=')'>>> ws:None [1, 4 -> 1, 5]
+                    '=' <<Regex: <_sre.SRE_Match object; span=(5, 6), match='='>>> ws:(4, 5) [1, 6 -> 1, 7]
+                    DynamicStatements.Expressions
+                        1.0.0 Grammar
+                            Variable Name
+                                <name> <<Regex: <_sre.SRE_Match object; span=(7, 12), match='line1'>>> ws:(6, 7) [1, 8 -> 1, 13]
+            1.0.0 Grammar
+                Tuple Variable Declaration
+                    Or: [Multiple, Single]
+                        Single
+                            '(' <<Regex: <_sre.SRE_Match object; span=(13, 14), match='('>>> ws:None [2, 1 -> 2, 2]
+                            <name> <<Regex: <_sre.SRE_Match object; span=(19, 20), match='a'>>> ws:None [3, 5 -> 3, 6]
+                            ',' <<Regex: <_sre.SRE_Match object; span=(25, 26), match=','>>> ws:None [4, 5 -> 4, 6]
+                            ')' <<Regex: <_sre.SRE_Match object; span=(27, 28), match=')'>>> ws:None [5, 1 -> 5, 2]
+                    '=' <<Regex: <_sre.SRE_Match object; span=(29, 30), match='='>>> ws:(28, 29) [5, 3 -> 5, 4]
+                    DynamicStatements.Expressions
+                        1.0.0 Grammar
+                            Function Invocation
+                                <name> <<Regex: <_sre.SRE_Match object; span=(31, 35), match='Func'>>> ws:(30, 31) [5, 5 -> 5, 9]
+                                '(' <<Regex: <_sre.SRE_Match object; span=(35, 36), match='('>>> ws:None [5, 9 -> 5, 10]
+                                ')' <<Regex: <_sre.SRE_Match object; span=(36, 37), match=')'>>> ws:None [5, 10 -> 5, 11]
+        """,
+    )
+
+# ----------------------------------------------------------------------
+def test_MultipleAssignment():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            (a, b) = line1
+            (a, b, c, d, ) = Func()
+
+            (a, b,
+                c, d,
+                    e,
+            ) = Another
+            """,
+        ),
+    ) == textwrap.dedent(
+        """\
+        <Root>
+            1.0.0 Grammar
+                Tuple Variable Declaration
+                    Or: [Multiple, Single]
+                        Multiple
+                            '(' <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 1 -> 1, 2]
+                            <name> <<Regex: <_sre.SRE_Match object; span=(1, 2), match='a'>>> ws:None [1, 2 -> 1, 3]
+                            Repeat: (Comma and Variable Declaration, 1, None)
+                                Comma and Variable Declaration
+                                    ',' <<Regex: <_sre.SRE_Match object; span=(2, 3), match=','>>> ws:None [1, 3 -> 1, 4]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(4, 5), match='b'>>> ws:(3, 4) [1, 5 -> 1, 6]
+                            ')' <<Regex: <_sre.SRE_Match object; span=(5, 6), match=')'>>> ws:None [1, 6 -> 1, 7]
+                    '=' <<Regex: <_sre.SRE_Match object; span=(7, 8), match='='>>> ws:(6, 7) [1, 8 -> 1, 9]
+                    DynamicStatements.Expressions
+                        1.0.0 Grammar
+                            Variable Name
+                                <name> <<Regex: <_sre.SRE_Match object; span=(9, 14), match='line1'>>> ws:(8, 9) [1, 10 -> 1, 15]
+            1.0.0 Grammar
+                Tuple Variable Declaration
+                    Or: [Multiple, Single]
+                        Multiple
+                            '(' <<Regex: <_sre.SRE_Match object; span=(15, 16), match='('>>> ws:None [2, 1 -> 2, 2]
+                            <name> <<Regex: <_sre.SRE_Match object; span=(16, 17), match='a'>>> ws:None [2, 2 -> 2, 3]
+                            Repeat: (Comma and Variable Declaration, 1, None)
+                                Comma and Variable Declaration
+                                    ',' <<Regex: <_sre.SRE_Match object; span=(17, 18), match=','>>> ws:None [2, 3 -> 2, 4]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(19, 20), match='b'>>> ws:(18, 19) [2, 5 -> 2, 6]
+                                Comma and Variable Declaration
+                                    ',' <<Regex: <_sre.SRE_Match object; span=(20, 21), match=','>>> ws:None [2, 6 -> 2, 7]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(22, 23), match='c'>>> ws:(21, 22) [2, 8 -> 2, 9]
+                                Comma and Variable Declaration
+                                    ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [2, 9 -> 2, 10]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(25, 26), match='d'>>> ws:(24, 25) [2, 11 -> 2, 12]
+                            Repeat: (',', 0, 1)
+                                ',' <<Regex: <_sre.SRE_Match object; span=(26, 27), match=','>>> ws:None [2, 12 -> 2, 13]
+                            ')' <<Regex: <_sre.SRE_Match object; span=(28, 29), match=')'>>> ws:(27, 28) [2, 14 -> 2, 15]
+                    '=' <<Regex: <_sre.SRE_Match object; span=(30, 31), match='='>>> ws:(29, 30) [2, 16 -> 2, 17]
+                    DynamicStatements.Expressions
+                        1.0.0 Grammar
+                            Function Invocation
+                                <name> <<Regex: <_sre.SRE_Match object; span=(32, 36), match='Func'>>> ws:(31, 32) [2, 18 -> 2, 22]
+                                '(' <<Regex: <_sre.SRE_Match object; span=(36, 37), match='('>>> ws:None [2, 22 -> 2, 23]
+                                ')' <<Regex: <_sre.SRE_Match object; span=(37, 38), match=')'>>> ws:None [2, 23 -> 2, 24]
+            1.0.0 Grammar
+                Tuple Variable Declaration
+                    Or: [Multiple, Single]
+                        Multiple
+                            '(' <<Regex: <_sre.SRE_Match object; span=(40, 41), match='('>>> ws:None [4, 1 -> 4, 2]
+                            <name> <<Regex: <_sre.SRE_Match object; span=(41, 42), match='a'>>> ws:None [4, 2 -> 4, 3]
+                            Repeat: (Comma and Variable Declaration, 1, None)
+                                Comma and Variable Declaration
+                                    ',' <<Regex: <_sre.SRE_Match object; span=(42, 43), match=','>>> ws:None [4, 3 -> 4, 4]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(44, 45), match='b'>>> ws:(43, 44) [4, 5 -> 4, 6]
+                                Comma and Variable Declaration
+                                    ',' <<Regex: <_sre.SRE_Match object; span=(45, 46), match=','>>> ws:None [4, 6 -> 4, 7]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(51, 52), match='c'>>> ws:None [5, 5 -> 5, 6]
+                                Comma and Variable Declaration
+                                    ',' <<Regex: <_sre.SRE_Match object; span=(52, 53), match=','>>> ws:None [5, 6 -> 5, 7]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(54, 55), match='d'>>> ws:(53, 54) [5, 8 -> 5, 9]
+                                Comma and Variable Declaration
+                                    ',' <<Regex: <_sre.SRE_Match object; span=(55, 56), match=','>>> ws:None [5, 9 -> 5, 10]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(65, 66), match='e'>>> ws:None [6, 9 -> 6, 10]
+                            Repeat: (',', 0, 1)
+                                ',' <<Regex: <_sre.SRE_Match object; span=(66, 67), match=','>>> ws:None [6, 10 -> 6, 11]
+                            ')' <<Regex: <_sre.SRE_Match object; span=(68, 69), match=')'>>> ws:None [7, 1 -> 7, 2]
+                    '=' <<Regex: <_sre.SRE_Match object; span=(70, 71), match='='>>> ws:(69, 70) [7, 3 -> 7, 4]
+                    DynamicStatements.Expressions
+                        1.0.0 Grammar
+                            Variable Name
+                                <name> <<Regex: <_sre.SRE_Match object; span=(72, 79), match='Another'>>> ws:(71, 72) [7, 5 -> 7, 12]
         """,
     )
