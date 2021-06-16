@@ -28,23 +28,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import PatchAndExecute, PatchAndExecuteFlag
+    from . import Execute
     from ..TupleExpression import TupleExpression
-
-
-# ----------------------------------------------------------------------
-def Execute(content: str) -> str:
-    result = PatchAndExecute(
-        {
-            "filename" : content,
-        },
-        ["filename"],
-        [],
-        flag=PatchAndExecuteFlag.Validate,
-        # max_num_threads=1,
-    )
-
-    return str(result["filename"])
 
 
 # ----------------------------------------------------------------------
