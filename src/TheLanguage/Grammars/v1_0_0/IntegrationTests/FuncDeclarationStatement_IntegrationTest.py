@@ -2525,3 +2525,49 @@ def test_InvalidTraditionalDuplicateKeywordDelimiterError():
     assert ex.LineEnd == 5
     assert ex.Column == 5
     assert ex.ColumnEnd == 6
+
+# ----------------------------------------------------------------------
+def test_Export():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            export string val Exported(int val a):
+                pass
+            """,
+        ),
+    ) == textwrap.dedent(
+        """\
+        <Root>
+            1.0.0 Grammar
+                Function Declaration
+                    Repeat: ('export', 0, 1)
+                        'export' <<Regex: <_sre.SRE_Match object; span=(0, 6), match='export'>>> ws:None [1, 1 -> 1, 7]
+                    Type
+                        <name> <<Regex: <_sre.SRE_Match object; span=(7, 13), match='string'>>> ws:(6, 7) [1, 8 -> 1, 14]
+                        Modifier
+                            'val' <<Regex: <_sre.SRE_Match object; span=(14, 17), match='val'>>> ws:(13, 14) [1, 15 -> 1, 18]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(18, 26), match='Exported'>>> ws:(17, 18) [1, 19 -> 1, 27]
+                    '(' <<Regex: <_sre.SRE_Match object; span=(26, 27), match='('>>> ws:None [1, 27 -> 1, 28]
+                    Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
+                        Or: [Repeat: (New Style, 1, 3), Traditional]
+                            Traditional
+                                Or: [Parameter, '/', '*']
+                                    Parameter
+                                        Type
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(27, 30), match='int'>>> ws:None [1, 28 -> 1, 31]
+                                            Modifier
+                                                'val' <<Regex: <_sre.SRE_Match object; span=(31, 34), match='val'>>> ws:(30, 31) [1, 32 -> 1, 35]
+                                        Or: [With Default, <name>]
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(35, 36), match='a'>>> ws:(34, 35) [1, 36 -> 1, 37]
+                    ')' <<Regex: <_sre.SRE_Match object; span=(36, 37), match=')'>>> ws:None [1, 37 -> 1, 38]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> ws:None [1, 38 -> 1, 39]
+                    Newline+ <<38, 39>> ws:None [1, 39 -> 2, 1]
+                    Indent <<39, 43, (4)>> ws:None [2, 1 -> 2, 5]
+                    Repeat: (DynamicStatements.Statements, 1, None)
+                        DynamicStatements.Statements
+                            1.0.0 Grammar
+                                Pass
+                                    'pass' <<Regex: <_sre.SRE_Match object; span=(43, 47), match='pass'>>> ws:None [2, 5 -> 2, 9]
+                    Dedent <<>> ws:None [3, 1 -> 3, 1]
+        """,
+    )

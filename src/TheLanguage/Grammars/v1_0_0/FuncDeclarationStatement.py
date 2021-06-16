@@ -148,6 +148,7 @@ class FuncDeclarationStatement(GrammarStatement):
             GrammarStatement.Type.Statement,
             Statement(
                 "Function Declaration",
+                (CommonTokens.Export, 0, 1),
                 CommonStatements.Type,
                 CommonTokens.Name,
                 CommonTokens.LParen,
@@ -237,8 +238,17 @@ class FuncDeclarationStatement(GrammarStatement):
         cls,
         node: Node,
     ):
-        assert len(node.Children) > 4
-        node.parameters = cls._GetParameters(node.Children[3])
+        # The export keyword may or may not appear, which will impact the parameter index
+        if (
+            isinstance(node.Children[0].Type, tuple)
+            and node.Children[0].Type[0] == CommonTokens.Export
+        ):
+            parameter_index = 4
+        else:
+            parameter_index = 3
+
+        assert len(node.Children) > parameter_index + 1
+        node.parameters = cls._GetParameters(node.Children[parameter_index])
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

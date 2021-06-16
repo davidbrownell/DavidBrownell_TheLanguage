@@ -74,9 +74,11 @@ AllNewStyleParameters                       = [
 
 # ----------------------------------------------------------------------
 # |  ImportStatement
-From                                        = RegexToken("'from'", re.compile("from"))
-Import                                      = RegexToken("'import'", re.compile("import"))
-As                                          = RegexToken("'as'", re.compile("as"))
+From                                        = RegexToken("'from'", re.compile(r"from"))
+Import                                      = RegexToken("'import'", re.compile(r"import"))
+As                                          = RegexToken("'as'", re.compile(r"as"))
+
+Export                                      = RegexToken("'export'", re.compile(r"export"))
 
 # ----------------------------------------------------------------------
 # |  PassStatement
