@@ -124,3 +124,20 @@ def PatchAndExecute(
             )
 
         return result
+
+
+# ----------------------------------------------------------------------
+def Execute(content: str) -> str:
+    """Runs PatchAndExecute and then returns the string result"""
+
+    result = PatchAndExecute(
+        {
+            "filename" : content,
+        },
+        ["filename"],
+        [],
+        flag=PatchAndExecuteFlag.Validate,
+        max_num_threads=1,
+    )
+
+    return str(result["filename"])
