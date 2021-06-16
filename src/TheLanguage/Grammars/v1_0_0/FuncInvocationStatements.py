@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncInvocationHybrid.py
+# |  FuncInvocationStatements.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-06-15 00:17:59
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncInvocationHybrid object"""
+"""Contains the FuncInvocationStatement and FuncInvocationExpression objects"""
 
 import os
 
@@ -52,7 +52,7 @@ class PositionalArgumentAfterKeywordArgumentError(ValidationError):
 
 
 # ----------------------------------------------------------------------
-class FuncInvocationHybrid(GrammarStatement):
+class _FuncInvocationBase(GrammarStatement):
     """\
     Invokes a function.
 
@@ -60,7 +60,10 @@ class FuncInvocationHybrid(GrammarStatement):
     """
 
     # ----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(
+        self,
+        grammar_statement_type: GrammarStatement.Type,
+    ):
         argument_statement = [
             # <name> = <rhs>
             Statement(
@@ -73,8 +76,8 @@ class FuncInvocationHybrid(GrammarStatement):
             DynamicStatements.Expressions,
         ]
 
-        super(FuncInvocationHybrid, self).__init__(
-            GrammarStatement.Type.Hybrid,
+        super(_FuncInvocationBase, self).__init__(
+            grammar_statement_type,
             Statement(
                 "Function Invocation",
                 CommonTokens.Name,
@@ -198,3 +201,17 @@ class FuncInvocationHybrid(GrammarStatement):
             None,
             None,
         )
+
+
+# ----------------------------------------------------------------------
+class FuncInvocationStatement(_FuncInvocationBase):
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        super(FuncInvocationStatement, self).__init__(GrammarStatement.Type.Statement)
+
+
+# ----------------------------------------------------------------------
+class FuncInvocationExpression(_FuncInvocationBase):
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        super(FuncInvocationExpression, self).__init__(GrammarStatement.Type.Expression)

@@ -41,8 +41,7 @@ class VariableDeclarationStatement(GrammarStatement):
     """\
     Declares a variable.
 
-    <name> = <expression>
-    (<name>, <name>) = <expression>
+    <name> = <expression>>
     """
 
     # ----------------------------------------------------------------------
@@ -51,46 +50,7 @@ class VariableDeclarationStatement(GrammarStatement):
             GrammarStatement.Type.Statement,
             Statement(
                 "Variable Declaration",
-                [
-                    # Tuple support (multiple elements):
-                    #   '(' <name> (',' <name>)+ ','? ')'
-                    Statement(
-                        "Tuple (Multiple)",
-                        CommonTokens.LParen,
-                        CommonTokens.PushIgnoreWhitespaceControl,
-                        CommonTokens.Name,
-                        (
-                            Statement(
-                                "Comma and Name",
-                                CommonTokens.Comma,
-                                CommonTokens.Name,
-                            ),
-                            1,
-                            None,
-                        ),
-                        (CommonTokens.Comma, 0, 1),
-                        CommonTokens.PopIgnoreWhitespaceControl,
-                        CommonTokens.RParen,
-                    ),
-
-                    # Tuple support (single element):
-                    #   '(' <name> ',' ')'
-                    #
-                    #   Note that for single element tuples, the comma is required
-                    #   to differentiate it from a grouping construct.
-                    Statement(
-                        "Tuple (Single)",
-                        CommonTokens.LParen,
-                        CommonTokens.PushIgnoreWhitespaceControl,
-                        CommonTokens.Name,
-                        CommonTokens.Comma,
-                        CommonTokens.PopIgnoreWhitespaceControl,
-                        CommonTokens.RParen,
-                    ),
-
-                    # Standard declaration
-                    CommonTokens.Name,
-                ],
+                CommonTokens.Name,
                 CommonTokens.Equal,
                 DynamicStatements.Expressions,
             ),
