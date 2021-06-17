@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VerticalWhitespaceStatement.py
+# |  PassStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-26 07:43:18
+# |      2021-06-15 17:09:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VerticalWhitespaceStatement object"""
+"""Automated test for PassStatement.py"""
 
 import os
+import textwrap
 
 import CommonEnvironment
 
@@ -27,22 +28,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common import Tokens as CommonTokens
-    from ..GrammarStatement import GrammarStatement, Statement
+    from . import Execute
+    from ..CommentStatement import *
 
 
 # ----------------------------------------------------------------------
-class VerticalWhitespaceStatement(GrammarStatement):
-    """Eats vertical whitespace"""
-
-    # ----------------------------------------------------------------------
-    def __init__(self):
-        super(VerticalWhitespaceStatement, self).__init__(
-            GrammarStatement.Type.Statement,
-            Statement(
-                "Vertical Whitespace",
-                CommonTokens.NewlineToken(
-                    is_always_ignored=True,
-                ),
-            ),
-        )
+def test_Standard():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            pass
+            """,
+        ),
+    ) == textwrap.dedent(
+        """\
+        <Root>
+            1.0.0 Grammar
+                Pass
+                    'pass' <<Regex: <_sre.SRE_Match object; span=(0, 4), match='pass'>>> ws:None [1, 1 -> 1, 5]
+        """,
+    )

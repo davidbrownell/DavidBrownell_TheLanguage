@@ -16,6 +16,7 @@
 """Common helper for automted tests in this directory"""
 
 import os
+import textwrap
 
 from enum import auto, Flag
 from io import StringIO
@@ -33,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ....Parse import Parse, Prune, Validate
-
+    from ....ParserImpl.StatementsParser import SyntaxInvalidError
 
 # ----------------------------------------------------------------------
 class PatchAndExecuteFlag(Flag):
@@ -54,6 +55,7 @@ def PatchAndExecute(
     source_roots: List[str],
     flag=PatchAndExecuteFlag.Parse,
     max_num_threads: Optional[int]=None,
+    debug_string_on_exception=True,
 ):
     """Patches file system methods invoked by systems under tests and replaces them so that they simulate files via the file content provided"""
 
@@ -85,6 +87,24 @@ def PatchAndExecute(
 
             if isinstance(result, list):
                 assert len(result) == 1, result
+
+                if debug_string_on_exception and isinstance(result[0], SyntaxInvalidError):
+                    print(
+                        textwrap.dedent(
+                            """\
+
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+                            {}
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+
+                            """,
+                        ).format(result[0].DebugString()),
+                    )
+
                 raise result[0]
 
             assert len(result) == len(simulated_file_content)
@@ -104,3 +124,20 @@ def PatchAndExecute(
             )
 
         return result
+
+
+# ----------------------------------------------------------------------
+def Execute(content: str) -> str:
+    """Runs PatchAndExecute and then returns the string result"""
+
+    result = PatchAndExecute(
+        {
+            "filename" : content,
+        },
+        ["filename"],
+        [],
+        flag=PatchAndExecuteFlag.Validate,
+        max_num_threads=1,
+    )
+
+    return str(result["filename"])

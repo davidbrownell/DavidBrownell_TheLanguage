@@ -107,7 +107,7 @@ def _LoadDyanmicStatementsFromFile(
 
 
 # ----------------------------------------------------------------------
-Grammars[SemVer("1.0.0")]                   = _LoadDyanmicStatementsFromFile(os.path.join(_script_dir, "Grammars", "v1_0_0", "AllStatements.py"))
+Grammars[SemVer("1.0.0")]                   = _LoadDyanmicStatementsFromFile(os.path.join(_script_dir, "Grammars", "v1_0_0", "All.py"))
 
 
 # ----------------------------------------------------------------------

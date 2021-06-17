@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VerticalWhitespaceStatement.py
+# |  VariableNameExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-26 07:43:18
+# |      2021-06-13 12:15:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VerticalWhitespaceStatement object"""
+"""Contains the VariableNameExpression object"""
 
 import os
 
@@ -32,17 +32,12 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class VerticalWhitespaceStatement(GrammarStatement):
-    """Eats vertical whitespace"""
+class VariableNameExpression(GrammarStatement):
+    """A variable name"""
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(VerticalWhitespaceStatement, self).__init__(
-            GrammarStatement.Type.Statement,
-            Statement(
-                "Vertical Whitespace",
-                CommonTokens.NewlineToken(
-                    is_always_ignored=True,
-                ),
-            ),
+        super(VariableNameExpression, self).__init__(
+            GrammarStatement.Type.Expression,
+            Statement("Variable Name", CommonTokens.Name),
         )

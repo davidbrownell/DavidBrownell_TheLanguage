@@ -17,7 +17,7 @@
 
 import os
 
-from enum import auto, Flag
+from enum import auto, Enum
 from typing import List, Optional
 
 from dataclasses import dataclass
@@ -56,6 +56,19 @@ class ValidationError(Error):
     ColumnEnd: int
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def FromNode(
+        cls,
+        node: Node,
+    ):
+        return cls(
+            node.IterBefore.Line,
+            node.IterBefore.Column,
+            node.IterAfter.Line,
+            node.IterAfter.Column,
+        )
+
+    # ----------------------------------------------------------------------
     def __post_init__(self):
         assert self.Line <= self.LineEnd
         assert self.Line != self.LineEnd or self.Column <= self.ColumnEnd
@@ -66,12 +79,11 @@ class GrammarStatement(Interface.Interface):
     """An individual statement within a grammar"""
 
     # ----------------------------------------------------------------------
-    class Type(Flag):
+    class Type(Enum):
         """A Statement will be one of these types"""
 
         Statement                           = auto()
         Expression                          = auto()
-        Hybrid                              = Statement | Expression
 
     # ----------------------------------------------------------------------
     def __init__(

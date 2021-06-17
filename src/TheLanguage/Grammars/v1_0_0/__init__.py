@@ -1,6 +1,6 @@
 # TODO:
+#   docstrings in function decl
 #   Function type
-#   Tuple
 #   Variant/Union
 #       String Func():
 #           return "Hi"
@@ -9,13 +9,6 @@
 #       var variant = Func() as (String | None)
 #       var string = Func()
 #
-#   Function Definition
-#       func Func(
-#               pos: a, b, c
-#               key: d, e
-#               any: f
-#       )
-#   Variable assignment
 #   scoped ref syntax (can be similar to with statements?)
 
 
@@ -36,7 +29,7 @@
 #   dunder methods
 #   type aliases
 #   Enumerations
-
+#   None
 
 #   Class library
 #       String
