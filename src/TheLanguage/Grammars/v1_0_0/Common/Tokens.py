@@ -61,9 +61,9 @@ FunctionParameterPositionalDelimiter        = RegexToken("'/'", re.compile(r"/")
 FunctionParameterKeywordDelimiter           = RegexToken("'*'", re.compile(r"\*"))
 
 # New Style Parameters
-FunctionParameterPositional                 = RegexToken("'pos'", re.compile(r"pos"))
-FunctionParameterAny                        = RegexToken("'any'", re.compile(r"any"))
-FunctionParameterKeyword                    = RegexToken("'key'", re.compile(r"key"))
+FunctionParameterPositional                 = RegexToken("'pos'", re.compile(r"pos\b"))
+FunctionParameterAny                        = RegexToken("'any'", re.compile(r"any\b"))
+FunctionParameterKeyword                    = RegexToken("'key'", re.compile(r"key\b"))
 
 # New Style Parameters must be grouped in this order
 AllNewStyleParameters                       = [
@@ -74,15 +74,15 @@ AllNewStyleParameters                       = [
 
 # ----------------------------------------------------------------------
 # |  ImportStatement
-From                                        = RegexToken("'from'", re.compile(r"from"))
-Import                                      = RegexToken("'import'", re.compile(r"import"))
-As                                          = RegexToken("'as'", re.compile(r"as"))
+From                                        = RegexToken("'from'", re.compile(r"from\b"))
+Import                                      = RegexToken("'import'", re.compile(r"import\b"))
+As                                          = RegexToken("'as'", re.compile(r"as\b"))
 
-Export                                      = RegexToken("'export'", re.compile(r"export"))
+Export                                      = RegexToken("'export'", re.compile(r"export\b"))
 
 # ----------------------------------------------------------------------
 # |  PassStatement
-Pass                                        = RegexToken("'pass'", re.compile(r"pass"))
+Pass                                        = RegexToken("'pass'", re.compile(r"pass\b"))
 
 # ----------------------------------------------------------------------
 # |  VariableDeclarationStatement
@@ -96,13 +96,13 @@ Pass                                        = RegexToken("'pass'", re.compile(r"
 # parameters:   isolated, shared, immutable
 # methods:      mutable/mut, immutable/const
 
-Var                                         = RegexToken("'var'", re.compile(r"var"))
-Ref                                         = RegexToken("'ref'", re.compile(r"ref"))
-Val                                         = RegexToken("'val'", re.compile(r"val"))
-View                                        = RegexToken("'view'", re.compile(r"view"))
+Var                                         = RegexToken("'var'", re.compile(r"var\b"))
+Ref                                         = RegexToken("'ref'", re.compile(r"ref\b"))
+Val                                         = RegexToken("'val'", re.compile(r"val\b"))
+View                                        = RegexToken("'view'", re.compile(r"view\b"))
 
-Isolated                                    = RegexToken("'isolated'", re.compile(r"isolated"))
-Shared                                      = RegexToken("'shared'", re.compile(r"shared"))
+Isolated                                    = RegexToken("'isolated'", re.compile(r"isolated\b"))
+Shared                                      = RegexToken("'shared'", re.compile(r"shared\b"))
 
-Mutable                                     = RegexToken("'mutable'", re.compile(r"mutable"))
-Immutable                                   = RegexToken("'immutable'", re.compile(r"immutable"))
+Mutable                                     = RegexToken("'mutable'", re.compile(r"mutable\b"))
+Immutable                                   = RegexToken("'immutable'", re.compile(r"immutable\b"))
