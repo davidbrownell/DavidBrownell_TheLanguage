@@ -50,8 +50,9 @@ def test_NoArgs():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='type'>>> ws:None [1, 1 -> 1, 5]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(5, 8), match='val'>>> ws:(4, 5) [1, 6 -> 1, 9]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(5, 8), match='val'>>> ws:(4, 5) [1, 6 -> 1, 9]
                     <name> <<Regex: <_sre.SRE_Match object; span=(9, 13), match='Func'>>> ws:(8, 9) [1, 10 -> 1, 14]
                     '(' <<Regex: <_sre.SRE_Match object; span=(13, 14), match='('>>> ws:None [1, 14 -> 1, 15]
                     ')' <<Regex: <_sre.SRE_Match object; span=(14, 15), match=')'>>> ws:None [1, 15 -> 1, 16]
@@ -84,8 +85,9 @@ def test_MultipleStatements():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='type'>>> ws:None [1, 1 -> 1, 5]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(5, 8), match='val'>>> ws:(4, 5) [1, 6 -> 1, 9]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(5, 8), match='val'>>> ws:(4, 5) [1, 6 -> 1, 9]
                     <name> <<Regex: <_sre.SRE_Match object; span=(9, 13), match='Func'>>> ws:(8, 9) [1, 10 -> 1, 14]
                     '(' <<Regex: <_sre.SRE_Match object; span=(13, 14), match='('>>> ws:None [1, 14 -> 1, 15]
                     ')' <<Regex: <_sre.SRE_Match object; span=(14, 15), match=')'>>> ws:None [1, 15 -> 1, 16]
@@ -126,8 +128,9 @@ def test_TraditionalSingleArg():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(20, 24), match='type'>>> ws:None [2, 1 -> 2, 5]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(25, 28), match='val'>>> ws:(24, 25) [2, 6 -> 2, 9]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(25, 28), match='val'>>> ws:(24, 25) [2, 6 -> 2, 9]
                     <name> <<Regex: <_sre.SRE_Match object; span=(29, 34), match='Func1'>>> ws:(28, 29) [2, 10 -> 2, 15]
                     '(' <<Regex: <_sre.SRE_Match object; span=(34, 35), match='('>>> ws:None [2, 15 -> 2, 16]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -137,8 +140,9 @@ def test_TraditionalSingleArg():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(35, 38), match='int'>>> ws:None [2, 16 -> 2, 19]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [2, 20 -> 2, 23]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [2, 20 -> 2, 23]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(43, 44), match='a'>>> ws:(42, 43) [2, 24 -> 2, 25]
                     ')' <<Regex: <_sre.SRE_Match object; span=(44, 45), match=')'>>> ws:None [2, 25 -> 2, 26]
@@ -155,8 +159,9 @@ def test_TraditionalSingleArg():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(74, 78), match='type'>>> ws:None [6, 1 -> 6, 5]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(79, 82), match='val'>>> ws:(78, 79) [6, 6 -> 6, 9]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(79, 82), match='val'>>> ws:(78, 79) [6, 6 -> 6, 9]
                     <name> <<Regex: <_sre.SRE_Match object; span=(83, 88), match='Func2'>>> ws:(82, 83) [6, 10 -> 6, 15]
                     '(' <<Regex: <_sre.SRE_Match object; span=(88, 89), match='('>>> ws:None [6, 15 -> 6, 16]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -166,8 +171,9 @@ def test_TraditionalSingleArg():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(89, 92), match='int'>>> ws:None [6, 16 -> 6, 19]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(93, 96), match='val'>>> ws:(92, 93) [6, 20 -> 6, 23]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(93, 96), match='val'>>> ws:(92, 93) [6, 20 -> 6, 23]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(97, 98), match='a'>>> ws:(96, 97) [6, 24 -> 6, 25]
                                 Repeat: (',', 0, 1)
@@ -215,8 +221,9 @@ def test_TraditionalMultiArgs():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(20, 26), match='string'>>> ws:None [2, 1 -> 2, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(27, 31), match='view'>>> ws:(26, 27) [2, 8 -> 2, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(27, 31), match='view'>>> ws:(26, 27) [2, 8 -> 2, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(32, 37), match='Func1'>>> ws:(31, 32) [2, 13 -> 2, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(37, 38), match='('>>> ws:None [2, 18 -> 2, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -226,8 +233,9 @@ def test_TraditionalMultiArgs():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(38, 41), match='int'>>> ws:None [2, 19 -> 2, 22]
-                                            Modifier
-                                                'var' <<Regex: <_sre.SRE_Match object; span=(42, 45), match='var'>>> ws:(41, 42) [2, 23 -> 2, 26]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'var' <<Regex: <_sre.SRE_Match object; span=(42, 45), match='var'>>> ws:(41, 42) [2, 23 -> 2, 26]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(46, 47), match='a'>>> ws:(45, 46) [2, 27 -> 2, 28]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -237,8 +245,9 @@ def test_TraditionalMultiArgs():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(49, 53), match='bool'>>> ws:(48, 49) [2, 30 -> 2, 34]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(54, 57), match='val'>>> ws:(53, 54) [2, 35 -> 2, 38]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(54, 57), match='val'>>> ws:(53, 54) [2, 35 -> 2, 38]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(58, 59), match='b'>>> ws:(57, 58) [2, 39 -> 2, 40]
                                     Comma and Parameter
@@ -247,8 +256,9 @@ def test_TraditionalMultiArgs():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(61, 65), match='char'>>> ws:(60, 61) [2, 42 -> 2, 46]
-                                                    Modifier
-                                                        'ref' <<Regex: <_sre.SRE_Match object; span=(66, 69), match='ref'>>> ws:(65, 66) [2, 47 -> 2, 50]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'ref' <<Regex: <_sre.SRE_Match object; span=(66, 69), match='ref'>>> ws:(65, 66) [2, 47 -> 2, 50]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(70, 71), match='c'>>> ws:(69, 70) [2, 51 -> 2, 52]
                                     Comma and Parameter
@@ -257,8 +267,9 @@ def test_TraditionalMultiArgs():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(73, 79), match='double'>>> ws:(72, 73) [2, 54 -> 2, 60]
-                                                    Modifier
-                                                        'view' <<Regex: <_sre.SRE_Match object; span=(80, 84), match='view'>>> ws:(79, 80) [2, 61 -> 2, 65]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'view' <<Regex: <_sre.SRE_Match object; span=(80, 84), match='view'>>> ws:(79, 80) [2, 61 -> 2, 65]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(85, 88), match='dee'>>> ws:(84, 85) [2, 66 -> 2, 69]
                     ')' <<Regex: <_sre.SRE_Match object; span=(88, 89), match=')'>>> ws:None [2, 69 -> 2, 70]
@@ -275,8 +286,9 @@ def test_TraditionalMultiArgs():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(118, 124), match='string'>>> ws:None [6, 1 -> 6, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(125, 129), match='view'>>> ws:(124, 125) [6, 8 -> 6, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(125, 129), match='view'>>> ws:(124, 125) [6, 8 -> 6, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(130, 135), match='Func2'>>> ws:(129, 130) [6, 13 -> 6, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(135, 136), match='('>>> ws:None [6, 18 -> 6, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -286,8 +298,9 @@ def test_TraditionalMultiArgs():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(136, 139), match='int'>>> ws:None [6, 19 -> 6, 22]
-                                            Modifier
-                                                'var' <<Regex: <_sre.SRE_Match object; span=(140, 143), match='var'>>> ws:(139, 140) [6, 23 -> 6, 26]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'var' <<Regex: <_sre.SRE_Match object; span=(140, 143), match='var'>>> ws:(139, 140) [6, 23 -> 6, 26]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(144, 145), match='a'>>> ws:(143, 144) [6, 27 -> 6, 28]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -297,8 +310,9 @@ def test_TraditionalMultiArgs():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(147, 151), match='bool'>>> ws:(146, 147) [6, 30 -> 6, 34]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(152, 155), match='val'>>> ws:(151, 152) [6, 35 -> 6, 38]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(152, 155), match='val'>>> ws:(151, 152) [6, 35 -> 6, 38]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(156, 157), match='b'>>> ws:(155, 156) [6, 39 -> 6, 40]
                                     Comma and Parameter
@@ -307,8 +321,9 @@ def test_TraditionalMultiArgs():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(159, 163), match='char'>>> ws:(158, 159) [6, 42 -> 6, 46]
-                                                    Modifier
-                                                        'ref' <<Regex: <_sre.SRE_Match object; span=(164, 167), match='ref'>>> ws:(163, 164) [6, 47 -> 6, 50]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'ref' <<Regex: <_sre.SRE_Match object; span=(164, 167), match='ref'>>> ws:(163, 164) [6, 47 -> 6, 50]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(168, 169), match='c'>>> ws:(167, 168) [6, 51 -> 6, 52]
                                     Comma and Parameter
@@ -317,8 +332,9 @@ def test_TraditionalMultiArgs():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(171, 177), match='double'>>> ws:(170, 171) [6, 54 -> 6, 60]
-                                                    Modifier
-                                                        'view' <<Regex: <_sre.SRE_Match object; span=(178, 182), match='view'>>> ws:(177, 178) [6, 61 -> 6, 65]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'view' <<Regex: <_sre.SRE_Match object; span=(178, 182), match='view'>>> ws:(177, 178) [6, 61 -> 6, 65]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(183, 186), match='dee'>>> ws:(182, 183) [6, 66 -> 6, 69]
                                 Repeat: (',', 0, 1)
@@ -337,8 +353,9 @@ def test_TraditionalMultiArgs():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(212, 218), match='string'>>> ws:None [10, 1 -> 10, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(219, 223), match='view'>>> ws:(218, 219) [10, 8 -> 10, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(219, 223), match='view'>>> ws:(218, 219) [10, 8 -> 10, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(224, 229), match='Func1'>>> ws:(223, 224) [10, 13 -> 10, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(229, 230), match='('>>> ws:None [10, 18 -> 10, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -348,8 +365,9 @@ def test_TraditionalMultiArgs():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(235, 238), match='int'>>> ws:None [11, 5 -> 11, 8]
-                                            Modifier
-                                                'var' <<Regex: <_sre.SRE_Match object; span=(239, 242), match='var'>>> ws:(238, 239) [11, 9 -> 11, 12]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'var' <<Regex: <_sre.SRE_Match object; span=(239, 242), match='var'>>> ws:(238, 239) [11, 9 -> 11, 12]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(243, 244), match='a'>>> ws:(242, 243) [11, 13 -> 11, 14]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -359,8 +377,9 @@ def test_TraditionalMultiArgs():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(250, 254), match='bool'>>> ws:None [12, 5 -> 12, 9]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(255, 258), match='val'>>> ws:(254, 255) [12, 10 -> 12, 13]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(255, 258), match='val'>>> ws:(254, 255) [12, 10 -> 12, 13]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(259, 260), match='b'>>> ws:(258, 259) [12, 14 -> 12, 15]
                                     Comma and Parameter
@@ -369,8 +388,9 @@ def test_TraditionalMultiArgs():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(270, 274), match='char'>>> ws:None [13, 9 -> 13, 13]
-                                                    Modifier
-                                                        'ref' <<Regex: <_sre.SRE_Match object; span=(275, 278), match='ref'>>> ws:(274, 275) [13, 14 -> 13, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'ref' <<Regex: <_sre.SRE_Match object; span=(275, 278), match='ref'>>> ws:(274, 275) [13, 14 -> 13, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(279, 280), match='c'>>> ws:(278, 279) [13, 18 -> 13, 19]
                                     Comma and Parameter
@@ -379,8 +399,9 @@ def test_TraditionalMultiArgs():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(286, 292), match='double'>>> ws:None [14, 5 -> 14, 11]
-                                                    Modifier
-                                                        'view' <<Regex: <_sre.SRE_Match object; span=(293, 297), match='view'>>> ws:(292, 293) [14, 12 -> 14, 16]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'view' <<Regex: <_sre.SRE_Match object; span=(293, 297), match='view'>>> ws:(292, 293) [14, 12 -> 14, 16]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(298, 301), match='dee'>>> ws:(297, 298) [14, 17 -> 14, 20]
                                 Repeat: (',', 0, 1)
@@ -414,8 +435,9 @@ def test_TraditionalWithDefaults():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='val'>>> ws:(6, 7) [1, 8 -> 1, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='val'>>> ws:(6, 7) [1, 8 -> 1, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(11, 15), match='Func'>>> ws:(10, 11) [1, 12 -> 1, 16]
                     '(' <<Regex: <_sre.SRE_Match object; span=(15, 16), match='('>>> ws:None [1, 16 -> 1, 17]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -425,8 +447,9 @@ def test_TraditionalWithDefaults():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(16, 19), match='int'>>> ws:None [1, 17 -> 1, 20]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(20, 24), match='view'>>> ws:(19, 20) [1, 21 -> 1, 25]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(20, 24), match='view'>>> ws:(19, 20) [1, 21 -> 1, 25]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(25, 26), match='a'>>> ws:(24, 25) [1, 26 -> 1, 27]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -436,8 +459,9 @@ def test_TraditionalWithDefaults():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(28, 32), match='bool'>>> ws:(27, 28) [1, 29 -> 1, 33]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(33, 36), match='var'>>> ws:(32, 33) [1, 34 -> 1, 37]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(33, 36), match='var'>>> ws:(32, 33) [1, 34 -> 1, 37]
                                                 Or: [With Default, <name>]
                                                     With Default
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(37, 40), match='bee'>>> ws:(36, 37) [1, 38 -> 1, 41]
@@ -478,8 +502,9 @@ def test_TraditionalWithPositional():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 3), match='int'>>> ws:None [1, 1 -> 1, 4]
-                        Modifier
-                            'var' <<Regex: <_sre.SRE_Match object; span=(4, 7), match='var'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'var' <<Regex: <_sre.SRE_Match object; span=(4, 7), match='var'>>> ws:(3, 4) [1, 5 -> 1, 8]
                     <name> <<Regex: <_sre.SRE_Match object; span=(8, 13), match='Func1'>>> ws:(7, 8) [1, 9 -> 1, 14]
                     '(' <<Regex: <_sre.SRE_Match object; span=(13, 14), match='('>>> ws:None [1, 14 -> 1, 15]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -489,8 +514,9 @@ def test_TraditionalWithPositional():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(14, 17), match='int'>>> ws:None [1, 15 -> 1, 18]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(18, 22), match='view'>>> ws:(17, 18) [1, 19 -> 1, 23]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(18, 22), match='view'>>> ws:(17, 18) [1, 19 -> 1, 23]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(23, 24), match='a'>>> ws:(22, 23) [1, 24 -> 1, 25]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -504,8 +530,9 @@ def test_TraditionalWithPositional():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(29, 33), match='bool'>>> ws:(28, 29) [1, 30 -> 1, 34]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(34, 37), match='var'>>> ws:(33, 34) [1, 35 -> 1, 38]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(34, 37), match='var'>>> ws:(33, 34) [1, 35 -> 1, 38]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(38, 39), match='b'>>> ws:(37, 38) [1, 39 -> 1, 40]
                     ')' <<Regex: <_sre.SRE_Match object; span=(39, 40), match=')'>>> ws:None [1, 40 -> 1, 41]
@@ -522,8 +549,9 @@ def test_TraditionalWithPositional():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(52, 55), match='int'>>> ws:None [4, 1 -> 4, 4]
-                        Modifier
-                            'var' <<Regex: <_sre.SRE_Match object; span=(56, 59), match='var'>>> ws:(55, 56) [4, 5 -> 4, 8]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'var' <<Regex: <_sre.SRE_Match object; span=(56, 59), match='var'>>> ws:(55, 56) [4, 5 -> 4, 8]
                     <name> <<Regex: <_sre.SRE_Match object; span=(60, 65), match='Func2'>>> ws:(59, 60) [4, 9 -> 4, 14]
                     '(' <<Regex: <_sre.SRE_Match object; span=(65, 66), match='('>>> ws:None [4, 14 -> 4, 15]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -533,8 +561,9 @@ def test_TraditionalWithPositional():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(66, 69), match='int'>>> ws:None [4, 15 -> 4, 18]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(70, 74), match='view'>>> ws:(69, 70) [4, 19 -> 4, 23]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(70, 74), match='view'>>> ws:(69, 70) [4, 19 -> 4, 23]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(75, 76), match='a'>>> ws:(74, 75) [4, 24 -> 4, 25]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -571,8 +600,9 @@ def test_TraditionalWithKeyword():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 3), match='int'>>> ws:None [1, 1 -> 1, 4]
-                        Modifier
-                            'var' <<Regex: <_sre.SRE_Match object; span=(4, 7), match='var'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'var' <<Regex: <_sre.SRE_Match object; span=(4, 7), match='var'>>> ws:(3, 4) [1, 5 -> 1, 8]
                     <name> <<Regex: <_sre.SRE_Match object; span=(8, 13), match='Func1'>>> ws:(7, 8) [1, 9 -> 1, 14]
                     '(' <<Regex: <_sre.SRE_Match object; span=(13, 14), match='('>>> ws:None [1, 14 -> 1, 15]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -582,8 +612,9 @@ def test_TraditionalWithKeyword():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(14, 17), match='int'>>> ws:None [1, 15 -> 1, 18]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(18, 22), match='view'>>> ws:(17, 18) [1, 19 -> 1, 23]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(18, 22), match='view'>>> ws:(17, 18) [1, 19 -> 1, 23]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(23, 24), match='a'>>> ws:(22, 23) [1, 24 -> 1, 25]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -597,8 +628,9 @@ def test_TraditionalWithKeyword():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(29, 33), match='bool'>>> ws:(28, 29) [1, 30 -> 1, 34]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(34, 37), match='var'>>> ws:(33, 34) [1, 35 -> 1, 38]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(34, 37), match='var'>>> ws:(33, 34) [1, 35 -> 1, 38]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(38, 39), match='b'>>> ws:(37, 38) [1, 39 -> 1, 40]
                     ')' <<Regex: <_sre.SRE_Match object; span=(39, 40), match=')'>>> ws:None [1, 40 -> 1, 41]
@@ -630,8 +662,9 @@ def test_TraditionalWithPositionalAndKeyword():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(7, 11), match='view'>>> ws:(6, 7) [1, 8 -> 1, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(7, 11), match='view'>>> ws:(6, 7) [1, 8 -> 1, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(12, 16), match='Func'>>> ws:(11, 12) [1, 13 -> 1, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(16, 17), match='('>>> ws:None [1, 17 -> 1, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -641,8 +674,9 @@ def test_TraditionalWithPositionalAndKeyword():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(17, 20), match='int'>>> ws:None [1, 18 -> 1, 21]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(21, 25), match='view'>>> ws:(20, 21) [1, 22 -> 1, 26]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(21, 25), match='view'>>> ws:(20, 21) [1, 22 -> 1, 26]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(26, 27), match='a'>>> ws:(25, 26) [1, 27 -> 1, 28]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -656,8 +690,9 @@ def test_TraditionalWithPositionalAndKeyword():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(32, 35), match='int'>>> ws:(31, 32) [1, 33 -> 1, 36]
-                                                    Modifier
-                                                        'view' <<Regex: <_sre.SRE_Match object; span=(36, 40), match='view'>>> ws:(35, 36) [1, 37 -> 1, 41]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'view' <<Regex: <_sre.SRE_Match object; span=(36, 40), match='view'>>> ws:(35, 36) [1, 37 -> 1, 41]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(41, 42), match='b'>>> ws:(40, 41) [1, 42 -> 1, 43]
                                     Comma and Parameter
@@ -670,8 +705,9 @@ def test_TraditionalWithPositionalAndKeyword():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(47, 50), match='int'>>> ws:(46, 47) [1, 48 -> 1, 51]
-                                                    Modifier
-                                                        'view' <<Regex: <_sre.SRE_Match object; span=(51, 55), match='view'>>> ws:(50, 51) [1, 52 -> 1, 56]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'view' <<Regex: <_sre.SRE_Match object; span=(51, 55), match='view'>>> ws:(50, 51) [1, 52 -> 1, 56]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(56, 57), match='c'>>> ws:(55, 56) [1, 57 -> 1, 58]
                     ')' <<Regex: <_sre.SRE_Match object; span=(57, 58), match=')'>>> ws:None [1, 58 -> 1, 59]
@@ -715,8 +751,9 @@ def test_NewPositional():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'ref' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='ref'>>> ws:(6, 7) [1, 8 -> 1, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'ref' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='ref'>>> ws:(6, 7) [1, 8 -> 1, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(11, 16), match='Func1'>>> ws:(10, 11) [1, 12 -> 1, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(16, 17), match='('>>> ws:None [1, 17 -> 1, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -729,8 +766,9 @@ def test_NewPositional():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(22, 25), match='int'>>> ws:(21, 22) [1, 23 -> 1, 26]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(26, 30), match='view'>>> ws:(25, 26) [1, 27 -> 1, 31]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(26, 30), match='view'>>> ws:(25, 26) [1, 27 -> 1, 31]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(31, 32), match='a'>>> ws:(30, 31) [1, 32 -> 1, 33]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -739,8 +777,9 @@ def test_NewPositional():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(34, 38), match='bool'>>> ws:(33, 34) [1, 35 -> 1, 39]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [1, 40 -> 1, 43]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [1, 40 -> 1, 43]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(43, 44), match='b'>>> ws:(42, 43) [1, 44 -> 1, 45]
                     ')' <<Regex: <_sre.SRE_Match object; span=(44, 45), match=')'>>> ws:None [1, 45 -> 1, 46]
@@ -757,8 +796,9 @@ def test_NewPositional():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(57, 63), match='string'>>> ws:None [4, 1 -> 4, 7]
-                        Modifier
-                            'ref' <<Regex: <_sre.SRE_Match object; span=(64, 67), match='ref'>>> ws:(63, 64) [4, 8 -> 4, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'ref' <<Regex: <_sre.SRE_Match object; span=(64, 67), match='ref'>>> ws:(63, 64) [4, 8 -> 4, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(68, 73), match='Func2'>>> ws:(67, 68) [4, 12 -> 4, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(73, 74), match='('>>> ws:None [4, 17 -> 4, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -771,8 +811,9 @@ def test_NewPositional():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(84, 87), match='int'>>> ws:(83, 84) [5, 10 -> 5, 13]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(88, 92), match='view'>>> ws:(87, 88) [5, 14 -> 5, 18]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(88, 92), match='view'>>> ws:(87, 88) [5, 14 -> 5, 18]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(93, 94), match='a'>>> ws:(92, 93) [5, 19 -> 5, 20]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -781,8 +822,9 @@ def test_NewPositional():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(96, 100), match='bool'>>> ws:(95, 96) [5, 22 -> 5, 26]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(101, 104), match='val'>>> ws:(100, 101) [5, 27 -> 5, 30]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(101, 104), match='val'>>> ws:(100, 101) [5, 27 -> 5, 30]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(105, 106), match='b'>>> ws:(104, 105) [5, 31 -> 5, 32]
                     ')' <<Regex: <_sre.SRE_Match object; span=(107, 108), match=')'>>> ws:None [6, 1 -> 6, 2]
@@ -799,8 +841,9 @@ def test_NewPositional():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(120, 126), match='string'>>> ws:None [9, 1 -> 9, 7]
-                        Modifier
-                            'ref' <<Regex: <_sre.SRE_Match object; span=(127, 130), match='ref'>>> ws:(126, 127) [9, 8 -> 9, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'ref' <<Regex: <_sre.SRE_Match object; span=(127, 130), match='ref'>>> ws:(126, 127) [9, 8 -> 9, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(131, 136), match='Func3'>>> ws:(130, 131) [9, 12 -> 9, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(136, 137), match='('>>> ws:None [9, 17 -> 9, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -813,8 +856,9 @@ def test_NewPositional():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(155, 158), match='int'>>> ws:None [11, 9 -> 11, 12]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(159, 163), match='view'>>> ws:(158, 159) [11, 13 -> 11, 17]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(159, 163), match='view'>>> ws:(158, 159) [11, 13 -> 11, 17]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(164, 165), match='a'>>> ws:(163, 164) [11, 18 -> 11, 19]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -823,8 +867,9 @@ def test_NewPositional():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(175, 179), match='bool'>>> ws:None [12, 9 -> 12, 13]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(180, 183), match='val'>>> ws:(179, 180) [12, 14 -> 12, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(180, 183), match='val'>>> ws:(179, 180) [12, 14 -> 12, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(184, 185), match='b'>>> ws:(183, 184) [12, 18 -> 12, 19]
                                     Repeat: (',', 0, 1)
@@ -870,8 +915,9 @@ def test_NewAny():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'ref' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='ref'>>> ws:(6, 7) [1, 8 -> 1, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'ref' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='ref'>>> ws:(6, 7) [1, 8 -> 1, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(11, 16), match='Func1'>>> ws:(10, 11) [1, 12 -> 1, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(16, 17), match='('>>> ws:None [1, 17 -> 1, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -884,8 +930,9 @@ def test_NewAny():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(22, 25), match='int'>>> ws:(21, 22) [1, 23 -> 1, 26]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(26, 30), match='view'>>> ws:(25, 26) [1, 27 -> 1, 31]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(26, 30), match='view'>>> ws:(25, 26) [1, 27 -> 1, 31]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(31, 32), match='a'>>> ws:(30, 31) [1, 32 -> 1, 33]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -894,8 +941,9 @@ def test_NewAny():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(34, 38), match='bool'>>> ws:(33, 34) [1, 35 -> 1, 39]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [1, 40 -> 1, 43]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [1, 40 -> 1, 43]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(43, 44), match='b'>>> ws:(42, 43) [1, 44 -> 1, 45]
                     ')' <<Regex: <_sre.SRE_Match object; span=(44, 45), match=')'>>> ws:None [1, 45 -> 1, 46]
@@ -912,8 +960,9 @@ def test_NewAny():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(57, 63), match='string'>>> ws:None [4, 1 -> 4, 7]
-                        Modifier
-                            'ref' <<Regex: <_sre.SRE_Match object; span=(64, 67), match='ref'>>> ws:(63, 64) [4, 8 -> 4, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'ref' <<Regex: <_sre.SRE_Match object; span=(64, 67), match='ref'>>> ws:(63, 64) [4, 8 -> 4, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(68, 73), match='Func2'>>> ws:(67, 68) [4, 12 -> 4, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(73, 74), match='('>>> ws:None [4, 17 -> 4, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -926,8 +975,9 @@ def test_NewAny():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(84, 87), match='int'>>> ws:(83, 84) [5, 10 -> 5, 13]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(88, 92), match='view'>>> ws:(87, 88) [5, 14 -> 5, 18]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(88, 92), match='view'>>> ws:(87, 88) [5, 14 -> 5, 18]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(93, 94), match='a'>>> ws:(92, 93) [5, 19 -> 5, 20]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -936,8 +986,9 @@ def test_NewAny():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(96, 100), match='bool'>>> ws:(95, 96) [5, 22 -> 5, 26]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(101, 104), match='val'>>> ws:(100, 101) [5, 27 -> 5, 30]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(101, 104), match='val'>>> ws:(100, 101) [5, 27 -> 5, 30]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(105, 106), match='b'>>> ws:(104, 105) [5, 31 -> 5, 32]
                     ')' <<Regex: <_sre.SRE_Match object; span=(107, 108), match=')'>>> ws:None [6, 1 -> 6, 2]
@@ -954,8 +1005,9 @@ def test_NewAny():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(120, 126), match='string'>>> ws:None [9, 1 -> 9, 7]
-                        Modifier
-                            'ref' <<Regex: <_sre.SRE_Match object; span=(127, 130), match='ref'>>> ws:(126, 127) [9, 8 -> 9, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'ref' <<Regex: <_sre.SRE_Match object; span=(127, 130), match='ref'>>> ws:(126, 127) [9, 8 -> 9, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(131, 136), match='Func3'>>> ws:(130, 131) [9, 12 -> 9, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(136, 137), match='('>>> ws:None [9, 17 -> 9, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -968,8 +1020,9 @@ def test_NewAny():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(155, 158), match='int'>>> ws:None [11, 9 -> 11, 12]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(159, 163), match='view'>>> ws:(158, 159) [11, 13 -> 11, 17]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(159, 163), match='view'>>> ws:(158, 159) [11, 13 -> 11, 17]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(164, 165), match='a'>>> ws:(163, 164) [11, 18 -> 11, 19]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -978,8 +1031,9 @@ def test_NewAny():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(175, 179), match='bool'>>> ws:None [12, 9 -> 12, 13]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(180, 183), match='val'>>> ws:(179, 180) [12, 14 -> 12, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(180, 183), match='val'>>> ws:(179, 180) [12, 14 -> 12, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(184, 185), match='b'>>> ws:(183, 184) [12, 18 -> 12, 19]
                                     Repeat: (',', 0, 1)
@@ -1025,8 +1079,9 @@ def test_NewKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'ref' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='ref'>>> ws:(6, 7) [1, 8 -> 1, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'ref' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='ref'>>> ws:(6, 7) [1, 8 -> 1, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(11, 16), match='Func1'>>> ws:(10, 11) [1, 12 -> 1, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(16, 17), match='('>>> ws:None [1, 17 -> 1, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1039,8 +1094,9 @@ def test_NewKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(22, 25), match='int'>>> ws:(21, 22) [1, 23 -> 1, 26]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(26, 30), match='view'>>> ws:(25, 26) [1, 27 -> 1, 31]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(26, 30), match='view'>>> ws:(25, 26) [1, 27 -> 1, 31]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(31, 32), match='a'>>> ws:(30, 31) [1, 32 -> 1, 33]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1049,8 +1105,9 @@ def test_NewKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(34, 38), match='bool'>>> ws:(33, 34) [1, 35 -> 1, 39]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [1, 40 -> 1, 43]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [1, 40 -> 1, 43]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(43, 44), match='b'>>> ws:(42, 43) [1, 44 -> 1, 45]
                     ')' <<Regex: <_sre.SRE_Match object; span=(44, 45), match=')'>>> ws:None [1, 45 -> 1, 46]
@@ -1067,8 +1124,9 @@ def test_NewKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(57, 63), match='string'>>> ws:None [4, 1 -> 4, 7]
-                        Modifier
-                            'ref' <<Regex: <_sre.SRE_Match object; span=(64, 67), match='ref'>>> ws:(63, 64) [4, 8 -> 4, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'ref' <<Regex: <_sre.SRE_Match object; span=(64, 67), match='ref'>>> ws:(63, 64) [4, 8 -> 4, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(68, 73), match='Func2'>>> ws:(67, 68) [4, 12 -> 4, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(73, 74), match='('>>> ws:None [4, 17 -> 4, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1081,8 +1139,9 @@ def test_NewKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(84, 87), match='int'>>> ws:(83, 84) [5, 10 -> 5, 13]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(88, 92), match='view'>>> ws:(87, 88) [5, 14 -> 5, 18]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(88, 92), match='view'>>> ws:(87, 88) [5, 14 -> 5, 18]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(93, 94), match='a'>>> ws:(92, 93) [5, 19 -> 5, 20]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1091,8 +1150,9 @@ def test_NewKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(96, 100), match='bool'>>> ws:(95, 96) [5, 22 -> 5, 26]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(101, 104), match='val'>>> ws:(100, 101) [5, 27 -> 5, 30]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(101, 104), match='val'>>> ws:(100, 101) [5, 27 -> 5, 30]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(105, 106), match='b'>>> ws:(104, 105) [5, 31 -> 5, 32]
                     ')' <<Regex: <_sre.SRE_Match object; span=(107, 108), match=')'>>> ws:None [6, 1 -> 6, 2]
@@ -1109,8 +1169,9 @@ def test_NewKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(120, 126), match='string'>>> ws:None [9, 1 -> 9, 7]
-                        Modifier
-                            'ref' <<Regex: <_sre.SRE_Match object; span=(127, 130), match='ref'>>> ws:(126, 127) [9, 8 -> 9, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'ref' <<Regex: <_sre.SRE_Match object; span=(127, 130), match='ref'>>> ws:(126, 127) [9, 8 -> 9, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(131, 136), match='Func3'>>> ws:(130, 131) [9, 12 -> 9, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(136, 137), match='('>>> ws:None [9, 17 -> 9, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1123,8 +1184,9 @@ def test_NewKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(155, 158), match='int'>>> ws:None [11, 9 -> 11, 12]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(159, 163), match='view'>>> ws:(158, 159) [11, 13 -> 11, 17]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(159, 163), match='view'>>> ws:(158, 159) [11, 13 -> 11, 17]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(164, 165), match='a'>>> ws:(163, 164) [11, 18 -> 11, 19]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1133,8 +1195,9 @@ def test_NewKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(175, 179), match='bool'>>> ws:None [12, 9 -> 12, 13]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(180, 183), match='val'>>> ws:(179, 180) [12, 14 -> 12, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(180, 183), match='val'>>> ws:(179, 180) [12, 14 -> 12, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(184, 185), match='b'>>> ws:(183, 184) [12, 18 -> 12, 19]
                                     Repeat: (',', 0, 1)
@@ -1183,8 +1246,9 @@ def test_NewPosAndAny():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(7, 11), match='view'>>> ws:(6, 7) [1, 8 -> 1, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(7, 11), match='view'>>> ws:(6, 7) [1, 8 -> 1, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(12, 17), match='Func1'>>> ws:(11, 12) [1, 13 -> 1, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(17, 18), match='('>>> ws:None [1, 18 -> 1, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1197,8 +1261,9 @@ def test_NewPosAndAny():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(23, 26), match='int'>>> ws:(22, 23) [1, 24 -> 1, 27]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(27, 30), match='val'>>> ws:(26, 27) [1, 28 -> 1, 31]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(27, 30), match='val'>>> ws:(26, 27) [1, 28 -> 1, 31]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(31, 32), match='a'>>> ws:(30, 31) [1, 32 -> 1, 33]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1207,8 +1272,9 @@ def test_NewPosAndAny():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(34, 38), match='bool'>>> ws:(33, 34) [1, 35 -> 1, 39]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='var'>>> ws:(38, 39) [1, 40 -> 1, 43]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='var'>>> ws:(38, 39) [1, 40 -> 1, 43]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(43, 44), match='b'>>> ws:(42, 43) [1, 44 -> 1, 45]
                                     Repeat: (',', 0, 1)
@@ -1220,8 +1286,9 @@ def test_NewPosAndAny():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(51, 55), match='char'>>> ws:(50, 51) [1, 52 -> 1, 56]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(56, 60), match='view'>>> ws:(55, 56) [1, 57 -> 1, 61]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(56, 60), match='view'>>> ws:(55, 56) [1, 57 -> 1, 61]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(61, 62), match='c'>>> ws:(60, 61) [1, 62 -> 1, 63]
                     ')' <<Regex: <_sre.SRE_Match object; span=(62, 63), match=')'>>> ws:None [1, 63 -> 1, 64]
@@ -1238,8 +1305,9 @@ def test_NewPosAndAny():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(75, 81), match='string'>>> ws:None [4, 1 -> 4, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(82, 86), match='view'>>> ws:(81, 82) [4, 8 -> 4, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(82, 86), match='view'>>> ws:(81, 82) [4, 8 -> 4, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(87, 92), match='Func2'>>> ws:(86, 87) [4, 13 -> 4, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(92, 93), match='('>>> ws:None [4, 18 -> 4, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1252,8 +1320,9 @@ def test_NewPosAndAny():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(103, 106), match='int'>>> ws:(102, 103) [5, 10 -> 5, 13]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(107, 110), match='val'>>> ws:(106, 107) [5, 14 -> 5, 17]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(107, 110), match='val'>>> ws:(106, 107) [5, 14 -> 5, 17]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(111, 112), match='a'>>> ws:(110, 111) [5, 18 -> 5, 19]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1262,8 +1331,9 @@ def test_NewPosAndAny():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(114, 118), match='bool'>>> ws:(113, 114) [5, 21 -> 5, 25]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(119, 122), match='var'>>> ws:(118, 119) [5, 26 -> 5, 29]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(119, 122), match='var'>>> ws:(118, 119) [5, 26 -> 5, 29]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(123, 124), match='b'>>> ws:(122, 123) [5, 30 -> 5, 31]
                                 New Style
@@ -1273,8 +1343,9 @@ def test_NewPosAndAny():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(134, 138), match='char'>>> ws:(133, 134) [6, 10 -> 6, 14]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(139, 143), match='view'>>> ws:(138, 139) [6, 15 -> 6, 19]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(139, 143), match='view'>>> ws:(138, 139) [6, 15 -> 6, 19]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(144, 145), match='c'>>> ws:(143, 144) [6, 20 -> 6, 21]
                     ')' <<Regex: <_sre.SRE_Match object; span=(146, 147), match=')'>>> ws:None [7, 1 -> 7, 2]
@@ -1291,8 +1362,9 @@ def test_NewPosAndAny():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(159, 165), match='string'>>> ws:None [10, 1 -> 10, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(166, 170), match='view'>>> ws:(165, 166) [10, 8 -> 10, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(166, 170), match='view'>>> ws:(165, 166) [10, 8 -> 10, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(171, 176), match='Func3'>>> ws:(170, 171) [10, 13 -> 10, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(176, 177), match='('>>> ws:None [10, 18 -> 10, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1305,8 +1377,9 @@ def test_NewPosAndAny():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(195, 198), match='int'>>> ws:None [12, 9 -> 12, 12]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(199, 202), match='val'>>> ws:(198, 199) [12, 13 -> 12, 16]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(199, 202), match='val'>>> ws:(198, 199) [12, 13 -> 12, 16]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(203, 204), match='a'>>> ws:(202, 203) [12, 17 -> 12, 18]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1315,8 +1388,9 @@ def test_NewPosAndAny():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(214, 218), match='bool'>>> ws:None [13, 9 -> 13, 13]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(219, 222), match='var'>>> ws:(218, 219) [13, 14 -> 13, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(219, 222), match='var'>>> ws:(218, 219) [13, 14 -> 13, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(223, 224), match='b'>>> ws:(222, 223) [13, 18 -> 13, 19]
                                     Repeat: (',', 0, 1)
@@ -1328,8 +1402,9 @@ def test_NewPosAndAny():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(243, 247), match='char'>>> ws:None [15, 9 -> 15, 13]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(248, 252), match='view'>>> ws:(247, 248) [15, 14 -> 15, 18]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(248, 252), match='view'>>> ws:(247, 248) [15, 14 -> 15, 18]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(253, 254), match='c'>>> ws:(252, 253) [15, 19 -> 15, 20]
                                     Repeat: (',', 0, 1)
@@ -1378,8 +1453,9 @@ def test_NewPosAndKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(7, 11), match='view'>>> ws:(6, 7) [1, 8 -> 1, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(7, 11), match='view'>>> ws:(6, 7) [1, 8 -> 1, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(12, 17), match='Func1'>>> ws:(11, 12) [1, 13 -> 1, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(17, 18), match='('>>> ws:None [1, 18 -> 1, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1392,8 +1468,9 @@ def test_NewPosAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(23, 26), match='int'>>> ws:(22, 23) [1, 24 -> 1, 27]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(27, 30), match='val'>>> ws:(26, 27) [1, 28 -> 1, 31]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(27, 30), match='val'>>> ws:(26, 27) [1, 28 -> 1, 31]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(31, 32), match='a'>>> ws:(30, 31) [1, 32 -> 1, 33]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1402,8 +1479,9 @@ def test_NewPosAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(34, 38), match='bool'>>> ws:(33, 34) [1, 35 -> 1, 39]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='var'>>> ws:(38, 39) [1, 40 -> 1, 43]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='var'>>> ws:(38, 39) [1, 40 -> 1, 43]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(43, 44), match='b'>>> ws:(42, 43) [1, 44 -> 1, 45]
                                     Repeat: (',', 0, 1)
@@ -1415,8 +1493,9 @@ def test_NewPosAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(51, 55), match='char'>>> ws:(50, 51) [1, 52 -> 1, 56]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(56, 60), match='view'>>> ws:(55, 56) [1, 57 -> 1, 61]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(56, 60), match='view'>>> ws:(55, 56) [1, 57 -> 1, 61]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(61, 62), match='c'>>> ws:(60, 61) [1, 62 -> 1, 63]
                     ')' <<Regex: <_sre.SRE_Match object; span=(62, 63), match=')'>>> ws:None [1, 63 -> 1, 64]
@@ -1433,8 +1512,9 @@ def test_NewPosAndKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(75, 81), match='string'>>> ws:None [4, 1 -> 4, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(82, 86), match='view'>>> ws:(81, 82) [4, 8 -> 4, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(82, 86), match='view'>>> ws:(81, 82) [4, 8 -> 4, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(87, 92), match='Func2'>>> ws:(86, 87) [4, 13 -> 4, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(92, 93), match='('>>> ws:None [4, 18 -> 4, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1447,8 +1527,9 @@ def test_NewPosAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(103, 106), match='int'>>> ws:(102, 103) [5, 10 -> 5, 13]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(107, 110), match='val'>>> ws:(106, 107) [5, 14 -> 5, 17]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(107, 110), match='val'>>> ws:(106, 107) [5, 14 -> 5, 17]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(111, 112), match='a'>>> ws:(110, 111) [5, 18 -> 5, 19]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1457,8 +1538,9 @@ def test_NewPosAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(114, 118), match='bool'>>> ws:(113, 114) [5, 21 -> 5, 25]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(119, 122), match='var'>>> ws:(118, 119) [5, 26 -> 5, 29]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(119, 122), match='var'>>> ws:(118, 119) [5, 26 -> 5, 29]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(123, 124), match='b'>>> ws:(122, 123) [5, 30 -> 5, 31]
                                 New Style
@@ -1468,8 +1550,9 @@ def test_NewPosAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(134, 138), match='char'>>> ws:(133, 134) [6, 10 -> 6, 14]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(139, 143), match='view'>>> ws:(138, 139) [6, 15 -> 6, 19]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(139, 143), match='view'>>> ws:(138, 139) [6, 15 -> 6, 19]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(144, 145), match='c'>>> ws:(143, 144) [6, 20 -> 6, 21]
                     ')' <<Regex: <_sre.SRE_Match object; span=(146, 147), match=')'>>> ws:None [7, 1 -> 7, 2]
@@ -1486,8 +1569,9 @@ def test_NewPosAndKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(159, 165), match='string'>>> ws:None [10, 1 -> 10, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(166, 170), match='view'>>> ws:(165, 166) [10, 8 -> 10, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(166, 170), match='view'>>> ws:(165, 166) [10, 8 -> 10, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(171, 176), match='Func3'>>> ws:(170, 171) [10, 13 -> 10, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(176, 177), match='('>>> ws:None [10, 18 -> 10, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1500,8 +1584,9 @@ def test_NewPosAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(195, 198), match='int'>>> ws:None [12, 9 -> 12, 12]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(199, 202), match='val'>>> ws:(198, 199) [12, 13 -> 12, 16]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(199, 202), match='val'>>> ws:(198, 199) [12, 13 -> 12, 16]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(203, 204), match='a'>>> ws:(202, 203) [12, 17 -> 12, 18]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1510,8 +1595,9 @@ def test_NewPosAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(214, 218), match='bool'>>> ws:None [13, 9 -> 13, 13]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(219, 222), match='var'>>> ws:(218, 219) [13, 14 -> 13, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(219, 222), match='var'>>> ws:(218, 219) [13, 14 -> 13, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(223, 224), match='b'>>> ws:(222, 223) [13, 18 -> 13, 19]
                                     Repeat: (',', 0, 1)
@@ -1523,8 +1609,9 @@ def test_NewPosAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(243, 247), match='char'>>> ws:None [15, 9 -> 15, 13]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(248, 252), match='view'>>> ws:(247, 248) [15, 14 -> 15, 18]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(248, 252), match='view'>>> ws:(247, 248) [15, 14 -> 15, 18]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(253, 254), match='c'>>> ws:(252, 253) [15, 19 -> 15, 20]
                                     Repeat: (',', 0, 1)
@@ -1573,8 +1660,9 @@ def test_NewAnyAndKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(7, 11), match='view'>>> ws:(6, 7) [1, 8 -> 1, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(7, 11), match='view'>>> ws:(6, 7) [1, 8 -> 1, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(12, 17), match='Func1'>>> ws:(11, 12) [1, 13 -> 1, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(17, 18), match='('>>> ws:None [1, 18 -> 1, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1587,8 +1675,9 @@ def test_NewAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(23, 26), match='int'>>> ws:(22, 23) [1, 24 -> 1, 27]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(27, 30), match='val'>>> ws:(26, 27) [1, 28 -> 1, 31]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(27, 30), match='val'>>> ws:(26, 27) [1, 28 -> 1, 31]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(31, 32), match='a'>>> ws:(30, 31) [1, 32 -> 1, 33]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1597,8 +1686,9 @@ def test_NewAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(34, 38), match='bool'>>> ws:(33, 34) [1, 35 -> 1, 39]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='var'>>> ws:(38, 39) [1, 40 -> 1, 43]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='var'>>> ws:(38, 39) [1, 40 -> 1, 43]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(43, 44), match='b'>>> ws:(42, 43) [1, 44 -> 1, 45]
                                     Repeat: (',', 0, 1)
@@ -1610,8 +1700,9 @@ def test_NewAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(51, 55), match='char'>>> ws:(50, 51) [1, 52 -> 1, 56]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(56, 60), match='view'>>> ws:(55, 56) [1, 57 -> 1, 61]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(56, 60), match='view'>>> ws:(55, 56) [1, 57 -> 1, 61]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(61, 62), match='c'>>> ws:(60, 61) [1, 62 -> 1, 63]
                     ')' <<Regex: <_sre.SRE_Match object; span=(62, 63), match=')'>>> ws:None [1, 63 -> 1, 64]
@@ -1628,8 +1719,9 @@ def test_NewAnyAndKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(75, 81), match='string'>>> ws:None [4, 1 -> 4, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(82, 86), match='view'>>> ws:(81, 82) [4, 8 -> 4, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(82, 86), match='view'>>> ws:(81, 82) [4, 8 -> 4, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(87, 92), match='Func2'>>> ws:(86, 87) [4, 13 -> 4, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(92, 93), match='('>>> ws:None [4, 18 -> 4, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1642,8 +1734,9 @@ def test_NewAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(103, 106), match='int'>>> ws:(102, 103) [5, 10 -> 5, 13]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(107, 110), match='val'>>> ws:(106, 107) [5, 14 -> 5, 17]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(107, 110), match='val'>>> ws:(106, 107) [5, 14 -> 5, 17]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(111, 112), match='a'>>> ws:(110, 111) [5, 18 -> 5, 19]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1652,8 +1745,9 @@ def test_NewAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(114, 118), match='bool'>>> ws:(113, 114) [5, 21 -> 5, 25]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(119, 122), match='var'>>> ws:(118, 119) [5, 26 -> 5, 29]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(119, 122), match='var'>>> ws:(118, 119) [5, 26 -> 5, 29]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(123, 124), match='b'>>> ws:(122, 123) [5, 30 -> 5, 31]
                                 New Style
@@ -1663,8 +1757,9 @@ def test_NewAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(134, 138), match='char'>>> ws:(133, 134) [6, 10 -> 6, 14]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(139, 143), match='view'>>> ws:(138, 139) [6, 15 -> 6, 19]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(139, 143), match='view'>>> ws:(138, 139) [6, 15 -> 6, 19]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(144, 145), match='c'>>> ws:(143, 144) [6, 20 -> 6, 21]
                     ')' <<Regex: <_sre.SRE_Match object; span=(146, 147), match=')'>>> ws:None [7, 1 -> 7, 2]
@@ -1681,8 +1776,9 @@ def test_NewAnyAndKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(159, 165), match='string'>>> ws:None [10, 1 -> 10, 7]
-                        Modifier
-                            'view' <<Regex: <_sre.SRE_Match object; span=(166, 170), match='view'>>> ws:(165, 166) [10, 8 -> 10, 12]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'view' <<Regex: <_sre.SRE_Match object; span=(166, 170), match='view'>>> ws:(165, 166) [10, 8 -> 10, 12]
                     <name> <<Regex: <_sre.SRE_Match object; span=(171, 176), match='Func3'>>> ws:(170, 171) [10, 13 -> 10, 18]
                     '(' <<Regex: <_sre.SRE_Match object; span=(176, 177), match='('>>> ws:None [10, 18 -> 10, 19]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1695,8 +1791,9 @@ def test_NewAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(195, 198), match='int'>>> ws:None [12, 9 -> 12, 12]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(199, 202), match='val'>>> ws:(198, 199) [12, 13 -> 12, 16]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(199, 202), match='val'>>> ws:(198, 199) [12, 13 -> 12, 16]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(203, 204), match='a'>>> ws:(202, 203) [12, 17 -> 12, 18]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1705,8 +1802,9 @@ def test_NewAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(214, 218), match='bool'>>> ws:None [13, 9 -> 13, 13]
-                                                    Modifier
-                                                        'var' <<Regex: <_sre.SRE_Match object; span=(219, 222), match='var'>>> ws:(218, 219) [13, 14 -> 13, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(219, 222), match='var'>>> ws:(218, 219) [13, 14 -> 13, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(223, 224), match='b'>>> ws:(222, 223) [13, 18 -> 13, 19]
                                     Repeat: (',', 0, 1)
@@ -1718,8 +1816,9 @@ def test_NewAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(243, 247), match='char'>>> ws:None [15, 9 -> 15, 13]
-                                            Modifier
-                                                'view' <<Regex: <_sre.SRE_Match object; span=(248, 252), match='view'>>> ws:(247, 248) [15, 14 -> 15, 18]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'view' <<Regex: <_sre.SRE_Match object; span=(248, 252), match='view'>>> ws:(247, 248) [15, 14 -> 15, 18]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(253, 254), match='c'>>> ws:(252, 253) [15, 19 -> 15, 20]
                                     Repeat: (',', 0, 1)
@@ -1774,8 +1873,9 @@ def test_NewPosAnyAndKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='val'>>> ws:(6, 7) [1, 8 -> 1, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='val'>>> ws:(6, 7) [1, 8 -> 1, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(11, 16), match='Func1'>>> ws:(10, 11) [1, 12 -> 1, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(16, 17), match='('>>> ws:None [1, 17 -> 1, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1788,8 +1888,9 @@ def test_NewPosAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(22, 25), match='int'>>> ws:(21, 22) [1, 23 -> 1, 26]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(26, 29), match='val'>>> ws:(25, 26) [1, 27 -> 1, 30]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(26, 29), match='val'>>> ws:(25, 26) [1, 27 -> 1, 30]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(30, 31), match='a'>>> ws:(29, 30) [1, 31 -> 1, 32]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1798,8 +1899,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(33, 37), match='bool'>>> ws:(32, 33) [1, 34 -> 1, 38]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(38, 41), match='val'>>> ws:(37, 38) [1, 39 -> 1, 42]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(38, 41), match='val'>>> ws:(37, 38) [1, 39 -> 1, 42]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(42, 43), match='b'>>> ws:(41, 42) [1, 43 -> 1, 44]
                                     Repeat: (',', 0, 1)
@@ -1811,8 +1913,9 @@ def test_NewPosAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(50, 54), match='char'>>> ws:(49, 50) [1, 51 -> 1, 55]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(55, 58), match='val'>>> ws:(54, 55) [1, 56 -> 1, 59]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(55, 58), match='val'>>> ws:(54, 55) [1, 56 -> 1, 59]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(59, 60), match='c'>>> ws:(58, 59) [1, 60 -> 1, 61]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1821,8 +1924,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(62, 68), match='double'>>> ws:(61, 62) [1, 63 -> 1, 69]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(69, 72), match='val'>>> ws:(68, 69) [1, 70 -> 1, 73]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(69, 72), match='val'>>> ws:(68, 69) [1, 70 -> 1, 73]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(73, 74), match='d'>>> ws:(72, 73) [1, 74 -> 1, 75]
                                         Comma and Parameter
@@ -1830,8 +1934,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(76, 80), match='enum'>>> ws:(75, 76) [1, 77 -> 1, 81]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(81, 84), match='val'>>> ws:(80, 81) [1, 82 -> 1, 85]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(81, 84), match='val'>>> ws:(80, 81) [1, 82 -> 1, 85]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(85, 86), match='e'>>> ws:(84, 85) [1, 86 -> 1, 87]
                                     Repeat: (',', 0, 1)
@@ -1843,8 +1948,9 @@ def test_NewPosAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(93, 98), match='float'>>> ws:(92, 93) [1, 94 -> 1, 99]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(99, 102), match='val'>>> ws:(98, 99) [1, 100 -> 1, 103]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(99, 102), match='val'>>> ws:(98, 99) [1, 100 -> 1, 103]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(103, 104), match='f'>>> ws:(102, 103) [1, 104 -> 1, 105]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1853,8 +1959,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(106, 110), match='good'>>> ws:(105, 106) [1, 107 -> 1, 111]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(111, 114), match='val'>>> ws:(110, 111) [1, 112 -> 1, 115]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(111, 114), match='val'>>> ws:(110, 111) [1, 112 -> 1, 115]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(115, 116), match='g'>>> ws:(114, 115) [1, 116 -> 1, 117]
                     ')' <<Regex: <_sre.SRE_Match object; span=(116, 117), match=')'>>> ws:None [1, 117 -> 1, 118]
@@ -1871,8 +1978,9 @@ def test_NewPosAnyAndKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(129, 135), match='string'>>> ws:None [4, 1 -> 4, 7]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(136, 139), match='val'>>> ws:(135, 136) [4, 8 -> 4, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(136, 139), match='val'>>> ws:(135, 136) [4, 8 -> 4, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(140, 145), match='Func2'>>> ws:(139, 140) [4, 12 -> 4, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(145, 146), match='('>>> ws:None [4, 17 -> 4, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1885,8 +1993,9 @@ def test_NewPosAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(156, 159), match='int'>>> ws:(155, 156) [5, 10 -> 5, 13]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(160, 163), match='val'>>> ws:(159, 160) [5, 14 -> 5, 17]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(160, 163), match='val'>>> ws:(159, 160) [5, 14 -> 5, 17]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(164, 165), match='a'>>> ws:(163, 164) [5, 18 -> 5, 19]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1895,8 +2004,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(167, 171), match='bool'>>> ws:(166, 167) [5, 21 -> 5, 25]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(172, 175), match='val'>>> ws:(171, 172) [5, 26 -> 5, 29]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(172, 175), match='val'>>> ws:(171, 172) [5, 26 -> 5, 29]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(176, 177), match='b'>>> ws:(175, 176) [5, 30 -> 5, 31]
                                     Repeat: (',', 0, 1)
@@ -1908,8 +2018,9 @@ def test_NewPosAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(188, 192), match='char'>>> ws:(187, 188) [6, 10 -> 6, 14]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(193, 196), match='val'>>> ws:(192, 193) [6, 15 -> 6, 18]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(193, 196), match='val'>>> ws:(192, 193) [6, 15 -> 6, 18]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(197, 198), match='c'>>> ws:(196, 197) [6, 19 -> 6, 20]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1918,8 +2029,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(200, 206), match='double'>>> ws:(199, 200) [6, 22 -> 6, 28]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(207, 210), match='val'>>> ws:(206, 207) [6, 29 -> 6, 32]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(207, 210), match='val'>>> ws:(206, 207) [6, 29 -> 6, 32]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(211, 212), match='d'>>> ws:(210, 211) [6, 33 -> 6, 34]
                                         Comma and Parameter
@@ -1927,8 +2039,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(214, 218), match='enum'>>> ws:(213, 214) [6, 36 -> 6, 40]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(219, 222), match='val'>>> ws:(218, 219) [6, 41 -> 6, 44]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(219, 222), match='val'>>> ws:(218, 219) [6, 41 -> 6, 44]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(223, 224), match='e'>>> ws:(222, 223) [6, 45 -> 6, 46]
                                     Repeat: (',', 0, 1)
@@ -1940,8 +2053,9 @@ def test_NewPosAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(235, 240), match='float'>>> ws:(234, 235) [7, 10 -> 7, 15]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(241, 244), match='val'>>> ws:(240, 241) [7, 16 -> 7, 19]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(241, 244), match='val'>>> ws:(240, 241) [7, 16 -> 7, 19]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(245, 246), match='f'>>> ws:(244, 245) [7, 20 -> 7, 21]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1950,8 +2064,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(248, 252), match='good'>>> ws:(247, 248) [7, 23 -> 7, 27]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(253, 256), match='val'>>> ws:(252, 253) [7, 28 -> 7, 31]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(253, 256), match='val'>>> ws:(252, 253) [7, 28 -> 7, 31]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(257, 258), match='g'>>> ws:(256, 257) [7, 32 -> 7, 33]
                                     Repeat: (',', 0, 1)
@@ -1970,8 +2085,9 @@ def test_NewPosAnyAndKey():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(273, 279), match='string'>>> ws:None [11, 1 -> 11, 7]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(280, 283), match='val'>>> ws:(279, 280) [11, 8 -> 11, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(280, 283), match='val'>>> ws:(279, 280) [11, 8 -> 11, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(284, 289), match='Func3'>>> ws:(283, 284) [11, 12 -> 11, 17]
                     '(' <<Regex: <_sre.SRE_Match object; span=(289, 290), match='('>>> ws:None [11, 17 -> 11, 18]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -1984,8 +2100,9 @@ def test_NewPosAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(308, 311), match='int'>>> ws:None [13, 9 -> 13, 12]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(312, 315), match='val'>>> ws:(311, 312) [13, 13 -> 13, 16]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(312, 315), match='val'>>> ws:(311, 312) [13, 13 -> 13, 16]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(316, 317), match='a'>>> ws:(315, 316) [13, 17 -> 13, 18]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -1994,8 +2111,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(327, 331), match='bool'>>> ws:None [14, 9 -> 14, 13]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(332, 335), match='val'>>> ws:(331, 332) [14, 14 -> 14, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(332, 335), match='val'>>> ws:(331, 332) [14, 14 -> 14, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(336, 337), match='b'>>> ws:(335, 336) [14, 18 -> 14, 19]
                                     Repeat: (',', 0, 1)
@@ -2007,8 +2125,9 @@ def test_NewPosAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(356, 360), match='char'>>> ws:None [16, 9 -> 16, 13]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(361, 364), match='val'>>> ws:(360, 361) [16, 14 -> 16, 17]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(361, 364), match='val'>>> ws:(360, 361) [16, 14 -> 16, 17]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(365, 366), match='c'>>> ws:(364, 365) [16, 18 -> 16, 19]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -2017,8 +2136,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(376, 382), match='double'>>> ws:None [17, 9 -> 17, 15]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(383, 386), match='val'>>> ws:(382, 383) [17, 16 -> 17, 19]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(383, 386), match='val'>>> ws:(382, 383) [17, 16 -> 17, 19]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(387, 388), match='d'>>> ws:(386, 387) [17, 20 -> 17, 21]
                                         Comma and Parameter
@@ -2026,8 +2146,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(398, 402), match='enum'>>> ws:None [18, 9 -> 18, 13]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(403, 406), match='val'>>> ws:(402, 403) [18, 14 -> 18, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(403, 406), match='val'>>> ws:(402, 403) [18, 14 -> 18, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(407, 408), match='e'>>> ws:(406, 407) [18, 18 -> 18, 19]
                                     Repeat: (',', 0, 1)
@@ -2039,8 +2160,9 @@ def test_NewPosAnyAndKey():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(427, 432), match='float'>>> ws:None [20, 9 -> 20, 14]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(433, 436), match='val'>>> ws:(432, 433) [20, 15 -> 20, 18]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(433, 436), match='val'>>> ws:(432, 433) [20, 15 -> 20, 18]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(437, 438), match='f'>>> ws:(436, 437) [20, 19 -> 20, 20]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -2049,8 +2171,9 @@ def test_NewPosAnyAndKey():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(448, 452), match='good'>>> ws:None [21, 9 -> 21, 13]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(453, 456), match='val'>>> ws:(452, 453) [21, 14 -> 21, 17]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(453, 456), match='val'>>> ws:(452, 453) [21, 14 -> 21, 17]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(457, 458), match='g'>>> ws:(456, 457) [21, 18 -> 21, 19]
                                     Repeat: (',', 0, 1)
@@ -2093,8 +2216,9 @@ def test_Defaults():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='val'>>> ws:(6, 7) [1, 8 -> 1, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='val'>>> ws:(6, 7) [1, 8 -> 1, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(11, 22), match='Traditional'>>> ws:(10, 11) [1, 12 -> 1, 23]
                     '(' <<Regex: <_sre.SRE_Match object; span=(22, 23), match='('>>> ws:None [1, 23 -> 1, 24]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -2104,8 +2228,9 @@ def test_Defaults():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(23, 26), match='int'>>> ws:None [1, 24 -> 1, 27]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(27, 30), match='val'>>> ws:(26, 27) [1, 28 -> 1, 31]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(27, 30), match='val'>>> ws:(26, 27) [1, 28 -> 1, 31]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(31, 32), match='a'>>> ws:(30, 31) [1, 32 -> 1, 33]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -2115,8 +2240,9 @@ def test_Defaults():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(34, 38), match='bool'>>> ws:(33, 34) [1, 35 -> 1, 39]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [1, 40 -> 1, 43]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(39, 42), match='val'>>> ws:(38, 39) [1, 40 -> 1, 43]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(43, 44), match='b'>>> ws:(42, 43) [1, 44 -> 1, 45]
                                     Comma and Parameter
@@ -2125,8 +2251,9 @@ def test_Defaults():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(46, 50), match='char'>>> ws:(45, 46) [1, 47 -> 1, 51]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(51, 54), match='val'>>> ws:(50, 51) [1, 52 -> 1, 55]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(51, 54), match='val'>>> ws:(50, 51) [1, 52 -> 1, 55]
                                                 Or: [With Default, <name>]
                                                     With Default
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(55, 56), match='c'>>> ws:(54, 55) [1, 56 -> 1, 57]
@@ -2141,8 +2268,9 @@ def test_Defaults():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(68, 74), match='double'>>> ws:(67, 68) [1, 69 -> 1, 75]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(75, 78), match='val'>>> ws:(74, 75) [1, 76 -> 1, 79]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(75, 78), match='val'>>> ws:(74, 75) [1, 76 -> 1, 79]
                                                 Or: [With Default, <name>]
                                                     With Default
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(79, 80), match='d'>>> ws:(78, 79) [1, 80 -> 1, 81]
@@ -2165,8 +2293,9 @@ def test_Defaults():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(103, 109), match='string'>>> ws:None [4, 1 -> 4, 7]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(110, 113), match='val'>>> ws:(109, 110) [4, 8 -> 4, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(110, 113), match='val'>>> ws:(109, 110) [4, 8 -> 4, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(114, 139), match='TraditionalWithDelimiters'>>> ws:(113, 114) [4, 12 -> 4, 37]
                     '(' <<Regex: <_sre.SRE_Match object; span=(139, 140), match='('>>> ws:None [4, 37 -> 4, 38]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -2176,8 +2305,9 @@ def test_Defaults():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(140, 143), match='int'>>> ws:None [4, 38 -> 4, 41]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(144, 147), match='val'>>> ws:(143, 144) [4, 42 -> 4, 45]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(144, 147), match='val'>>> ws:(143, 144) [4, 42 -> 4, 45]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(148, 149), match='a'>>> ws:(147, 148) [4, 46 -> 4, 47]
                                 Repeat: (Comma and Parameter, 0, None)
@@ -2191,8 +2321,9 @@ def test_Defaults():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(154, 158), match='bool'>>> ws:(153, 154) [4, 52 -> 4, 56]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(159, 162), match='val'>>> ws:(158, 159) [4, 57 -> 4, 60]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(159, 162), match='val'>>> ws:(158, 159) [4, 57 -> 4, 60]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(163, 164), match='b'>>> ws:(162, 163) [4, 61 -> 4, 62]
                                     Comma and Parameter
@@ -2205,8 +2336,9 @@ def test_Defaults():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(169, 173), match='char'>>> ws:(168, 169) [4, 67 -> 4, 71]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(174, 177), match='val'>>> ws:(173, 174) [4, 72 -> 4, 75]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(174, 177), match='val'>>> ws:(173, 174) [4, 72 -> 4, 75]
                                                 Or: [With Default, <name>]
                                                     With Default
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(178, 179), match='c'>>> ws:(177, 178) [4, 76 -> 4, 77]
@@ -2221,8 +2353,9 @@ def test_Defaults():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(191, 197), match='double'>>> ws:(190, 191) [4, 89 -> 4, 95]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(198, 201), match='val'>>> ws:(197, 198) [4, 96 -> 4, 99]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(198, 201), match='val'>>> ws:(197, 198) [4, 96 -> 4, 99]
                                                 Or: [With Default, <name>]
                                                     With Default
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(202, 203), match='d'>>> ws:(201, 202) [4, 100 -> 4, 101]
@@ -2245,8 +2378,9 @@ def test_Defaults():
                 Function Declaration
                     Type
                         <name> <<Regex: <_sre.SRE_Match object; span=(226, 232), match='string'>>> ws:None [7, 1 -> 7, 7]
-                        Modifier
-                            'val' <<Regex: <_sre.SRE_Match object; span=(233, 236), match='val'>>> ws:(232, 233) [7, 8 -> 7, 11]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(233, 236), match='val'>>> ws:(232, 233) [7, 8 -> 7, 11]
                     <name> <<Regex: <_sre.SRE_Match object; span=(237, 245), match='NewStyle'>>> ws:(236, 237) [7, 12 -> 7, 20]
                     '(' <<Regex: <_sre.SRE_Match object; span=(245, 246), match='('>>> ws:None [7, 20 -> 7, 21]
                     Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
@@ -2259,8 +2393,9 @@ def test_Defaults():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(256, 259), match='int'>>> ws:(255, 256) [8, 10 -> 8, 13]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(260, 263), match='val'>>> ws:(259, 260) [8, 14 -> 8, 17]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(260, 263), match='val'>>> ws:(259, 260) [8, 14 -> 8, 17]
                                         Or: [With Default, <name>]
                                             <name> <<Regex: <_sre.SRE_Match object; span=(264, 265), match='a'>>> ws:(263, 264) [8, 18 -> 8, 19]
                                     Repeat: (Comma and Parameter, 0, None)
@@ -2269,8 +2404,9 @@ def test_Defaults():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(267, 271), match='bool'>>> ws:(266, 267) [8, 21 -> 8, 25]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(272, 275), match='val'>>> ws:(271, 272) [8, 26 -> 8, 29]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(272, 275), match='val'>>> ws:(271, 272) [8, 26 -> 8, 29]
                                                 Or: [With Default, <name>]
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(276, 277), match='b'>>> ws:(275, 276) [8, 30 -> 8, 31]
                                     Repeat: (',', 0, 1)
@@ -2282,8 +2418,9 @@ def test_Defaults():
                                     Parameter
                                         Type
                                             <name> <<Regex: <_sre.SRE_Match object; span=(288, 292), match='char'>>> ws:(287, 288) [9, 10 -> 9, 14]
-                                            Modifier
-                                                'val' <<Regex: <_sre.SRE_Match object; span=(293, 296), match='val'>>> ws:(292, 293) [9, 15 -> 9, 18]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(293, 296), match='val'>>> ws:(292, 293) [9, 15 -> 9, 18]
                                         Or: [With Default, <name>]
                                             With Default
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(297, 298), match='c'>>> ws:(296, 297) [9, 19 -> 9, 20]
@@ -2298,8 +2435,9 @@ def test_Defaults():
                                             Parameter
                                                 Type
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(310, 316), match='double'>>> ws:(309, 310) [9, 32 -> 9, 38]
-                                                    Modifier
-                                                        'val' <<Regex: <_sre.SRE_Match object; span=(317, 320), match='val'>>> ws:(316, 317) [9, 39 -> 9, 42]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'val' <<Regex: <_sre.SRE_Match object; span=(317, 320), match='val'>>> ws:(316, 317) [9, 39 -> 9, 42]
                                                 Or: [With Default, <name>]
                                                     With Default
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(321, 322), match='d'>>> ws:(320, 321) [9, 43 -> 9, 44]
@@ -2525,3 +2663,91 @@ def test_InvalidTraditionalDuplicateKeywordDelimiterError():
     assert ex.LineEnd == 5
     assert ex.Column == 5
     assert ex.ColumnEnd == 6
+
+# ----------------------------------------------------------------------
+def test_Export():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            export string val Exported(int val a):
+                pass
+            """,
+        ),
+    ) == textwrap.dedent(
+        """\
+        <Root>
+            1.0.0 Grammar
+                Function Declaration
+                    Repeat: ('export', 0, 1)
+                        'export' <<Regex: <_sre.SRE_Match object; span=(0, 6), match='export'>>> ws:None [1, 1 -> 1, 7]
+                    Type
+                        <name> <<Regex: <_sre.SRE_Match object; span=(7, 13), match='string'>>> ws:(6, 7) [1, 8 -> 1, 14]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'val' <<Regex: <_sre.SRE_Match object; span=(14, 17), match='val'>>> ws:(13, 14) [1, 15 -> 1, 18]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(18, 26), match='Exported'>>> ws:(17, 18) [1, 19 -> 1, 27]
+                    '(' <<Regex: <_sre.SRE_Match object; span=(26, 27), match='('>>> ws:None [1, 27 -> 1, 28]
+                    Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
+                        Or: [Repeat: (New Style, 1, 3), Traditional]
+                            Traditional
+                                Or: [Parameter, '/', '*']
+                                    Parameter
+                                        Type
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(27, 30), match='int'>>> ws:None [1, 28 -> 1, 31]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'val' <<Regex: <_sre.SRE_Match object; span=(31, 34), match='val'>>> ws:(30, 31) [1, 32 -> 1, 35]
+                                        Or: [With Default, <name>]
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(35, 36), match='a'>>> ws:(34, 35) [1, 36 -> 1, 37]
+                    ')' <<Regex: <_sre.SRE_Match object; span=(36, 37), match=')'>>> ws:None [1, 37 -> 1, 38]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> ws:None [1, 38 -> 1, 39]
+                    Newline+ <<38, 39>> ws:None [1, 39 -> 2, 1]
+                    Indent <<39, 43, (4)>> ws:None [2, 1 -> 2, 5]
+                    Repeat: (DynamicStatements.Statements, 1, None)
+                        DynamicStatements.Statements
+                            1.0.0 Grammar
+                                Pass
+                                    'pass' <<Regex: <_sre.SRE_Match object; span=(43, 47), match='pass'>>> ws:None [2, 5 -> 2, 9]
+                    Dedent <<>> ws:None [3, 1 -> 3, 1]
+        """,
+    )
+
+# ----------------------------------------------------------------------
+def test_NoModifierInType():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            string Func(int value):
+                pass
+            """,
+        ),
+    ) == textwrap.dedent(
+        """\
+        <Root>
+            1.0.0 Grammar
+                Function Declaration
+                    Type
+                        <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(7, 11), match='Func'>>> ws:(6, 7) [1, 8 -> 1, 12]
+                    '(' <<Regex: <_sre.SRE_Match object; span=(11, 12), match='('>>> ws:None [1, 12 -> 1, 13]
+                    Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
+                        Or: [Repeat: (New Style, 1, 3), Traditional]
+                            Traditional
+                                Or: [Parameter, '/', '*']
+                                    Parameter
+                                        Type
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(12, 15), match='int'>>> ws:None [1, 13 -> 1, 16]
+                                        Or: [With Default, <name>]
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(16, 21), match='value'>>> ws:(15, 16) [1, 17 -> 1, 22]
+                    ')' <<Regex: <_sre.SRE_Match object; span=(21, 22), match=')'>>> ws:None [1, 22 -> 1, 23]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(22, 23), match=':'>>> ws:None [1, 23 -> 1, 24]
+                    Newline+ <<23, 24>> ws:None [1, 24 -> 2, 1]
+                    Indent <<24, 28, (4)>> ws:None [2, 1 -> 2, 5]
+                    Repeat: (DynamicStatements.Statements, 1, None)
+                        DynamicStatements.Statements
+                            1.0.0 Grammar
+                                Pass
+                                    'pass' <<Regex: <_sre.SRE_Match object; span=(28, 32), match='pass'>>> ws:None [2, 5 -> 2, 9]
+                    Dedent <<>> ws:None [3, 1 -> 3, 1]
+        """,
+    )

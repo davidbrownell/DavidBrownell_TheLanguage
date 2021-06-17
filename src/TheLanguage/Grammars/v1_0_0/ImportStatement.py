@@ -180,7 +180,7 @@ class ImportStatement(ImportGrammarStatement):
         # Get the items to import
         import_node = node.Children[3]
 
-        # Drill into the Or statement
+        # Drill into the Or node
         assert isinstance(import_node.Type, list)
         assert len(import_node.Children) == 1
         import_node = import_node.Children[0]
@@ -307,7 +307,7 @@ class ImportStatement(ImportGrammarStatement):
         node: Node,
     ) -> Tuple[str, Leaf, str, Leaf]:
 
-        # Drill into the Or Statement
+        # Drill into the Or node
         assert isinstance(node.Type, list)
         assert len(node.Children) == 1
         node = node.Children[0]

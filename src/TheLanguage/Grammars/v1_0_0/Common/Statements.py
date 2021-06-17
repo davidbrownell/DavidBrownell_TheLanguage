@@ -42,19 +42,25 @@ Type                                        = Statement(
     "Type",
     CommonTokens.Name,
     # TODO: Tempataes
-    Statement.NamedItem(
-        "Modifier",
-        [
-            # TODO: Not sure that all of these should be here
-            CommonTokens.Var,
-            CommonTokens.Ref,
-            CommonTokens.Val,
-            CommonTokens.View,
-            CommonTokens.Isolated,
-            CommonTokens.Shared,
-            CommonTokens.Immutable,
-            CommonTokens.Mutable,
-        ],
+
+    # The modifier is optional and will default to the first item in the list if not provided
+    (
+        Statement.NamedItem(
+            "Modifier",
+            [
+                # TODO: Not sure that all of these should be here
+                CommonTokens.Var,
+                CommonTokens.Ref,
+                CommonTokens.Val,
+                CommonTokens.View,
+                CommonTokens.Isolated,
+                CommonTokens.Shared,
+                CommonTokens.Immutable,
+                CommonTokens.Mutable,
+            ],
+        ),
+        0,
+        1,
     ),
 )
 
@@ -73,14 +79,40 @@ class TypeInfo(object):
         cls,
         node: Node,
     ):
-        assert len(node.Children) == 2
+        assert len(node.Children) >= 1
 
         name = node.Children[0].Value.Match.group("value")
 
-        # Drill into the Or statement (via the Modifier named item)
-        assert isinstance(node.Children[1].Type.Item, list)
-        assert len(node.Children[1].Children) == 1
-        modifier = node.Children[1].Children[0].Type
+        if (
+            len(node.Children) >= 2
+            and isinstance(node.Children[1].Type, tuple)
+            and node.Children[1].Type[0].Name == "Modifier"
+        ):
+            modifier_node = node.Children[1]
+
+            # Drill into the Optional node
+            assert isinstance(modifier_node.Type, tuple)
+            assert len(modifier_node.Children) == 1
+            modifier_node = modifier_node.Children[0]
+
+            # Drill into the Or node (via the Modifier named item)
+            assert isinstance(modifier_node.Type.Item, list)
+            assert len(modifier_node.Children) == 1
+            modifier = modifier_node.Children[0].Type
+        else:
+            # Drill into the Type statement
+            modifier = Type.Items[1]
+
+            # Drill into the Optional statement
+            assert isinstance(modifier, tuple)
+            modifier = modifier[0]
+
+            # Drill into the NamedItem statement
+            modifier = modifier.Item
+
+            # Select the first item in the list
+            assert isinstance(modifier, list)
+            modifier = modifier[0]
 
         return cls(name, modifier)
 
