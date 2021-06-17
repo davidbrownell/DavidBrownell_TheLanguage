@@ -17,6 +17,7 @@
 
 import itertools
 import os
+import textwrap
 
 from enum import auto, Enum
 from typing import List, Optional, Union
@@ -25,6 +26,7 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -36,6 +38,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Common import Tokens as CommonTokens
     from .Common import Statements as CommonStatements
+    from .Common import NamingConventions
 
     from ..GrammarStatement import (
         DynamicStatements,
@@ -45,6 +48,40 @@ with InitRelativeImports():
         Statement,
         ValidationError,
     )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidFunctionNameError(ValidationError):
+    FunctionName: str
+
+    MessageTemplate                         = Interface.DerivedProperty(
+        textwrap.dedent(
+            """\
+            '{{FunctionName}}' is not a valid function name.
+
+            Function names must:
+                {}
+            """,
+        ).format(
+            StringHelpers.LeftJustify("\n".join(NamingConventions.Function.Constraints).rstrip(), 4),
+        ),
+    )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def FromNode(
+        cls,
+        node: Node,
+        function_name: str,
+    ):
+        return cls(
+            node.IterBefore.Line,
+            node.IterBefore.Column,
+            node.IterAfter.Line,
+            node.IterAfter.Column,
+            function_name,
+        )
 
 
 # ----------------------------------------------------------------------
@@ -243,12 +280,26 @@ class FuncDeclarationStatement(GrammarStatement):
             isinstance(node.Children[0].Type, tuple)
             and node.Children[0].Type[0] == CommonTokens.Export
         ):
-            parameter_index = 4
+            parameter_offset = 1
         else:
-            parameter_index = 3
+            parameter_offset = 0
 
-        assert len(node.Children) > parameter_index + 1
-        node.parameters = cls._GetParameters(node.Children[parameter_index])
+        # Validate the function name
+        assert len(node.Children) > (2 + parameter_offset)
+
+        name_node = node.Children[1 + parameter_offset]
+        function_name = name_node.Value.Match.group("value")
+
+        if not NamingConventions.Function.Regex.match(function_name):
+            raise InvalidFunctionNameError.FromNode(name_node, function_name)
+
+        # Validate the parameters
+        assert len(node.Children) > (4 + parameter_offset)
+        parameters = cls._GetParameters(node.Children[3 + parameter_offset])
+
+        # Commit the values for later
+        node.function_name = function_name
+        node.parameters = parameters
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

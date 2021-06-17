@@ -20,6 +20,7 @@ import os
 from typing import List, Optional, Union
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,10 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Common import Tokens as CommonTokens
+    from .Common import NamingConventions
+    from .VariableDeclarationStatement import InvalidVariableNameError
 
     from ..GrammarStatement import (
         DynamicStatements,
         GrammarStatement,
+        Node,
         Statement,
     )
 
@@ -52,7 +56,7 @@ class _TupleBase(GrammarStatement):
         desc: str,
         grammar_statement_type: GrammarStatement.Type,
         content: Union[DynamicStatements, CommonTokens.RegexToken],
-        statement_items_suffix: Optional[List[Statement.ItemType]] =None,
+        *statement_items_suffix: Statement.ItemType,
     ):
         statement_items = [
             [
@@ -95,7 +99,7 @@ class _TupleBase(GrammarStatement):
         ]
 
         if statement_items_suffix:
-            statement_items += statement_items_suffix
+            statement_items += list(statement_items_suffix)
 
         super(_TupleBase, self).__init__(
             grammar_statement_type,
@@ -116,14 +120,51 @@ class TupleExpression(_TupleBase):
 
 # ----------------------------------------------------------------------
 class TupleVariableDeclarationStatement(_TupleBase):
+    """\
+    '(' <name> (',' <name>)* ',' ')' '=' ...
+    """
+
     # ----------------------------------------------------------------------
     def __init__(self):
         super(TupleVariableDeclarationStatement, self).__init__(
             "Variable Declaration",
             GrammarStatement.Type.Statement,
             CommonTokens.Name,
-            [
-                CommonTokens.Equal,
-                DynamicStatements.Expressions,
-            ],
+            CommonTokens.Equal,
+            DynamicStatements.Expressions,
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ValidateNodeSyntax(
+        cls,
+        node: Node,
+    ):
+        # Drill into the Or node
+        assert isinstance(node.Children[0].Type, list)
+        assert len(node.Children[0].Children) == 1
+        node = node.Children[0].Children[0]
+
+        if node.Type.Name == "Single":
+            assert len(node.Children) > 2
+            elements = [node.Children[1]]
+
+        elif node.Type.Name == "Multiple":
+            assert len(node.Children) > 3
+
+            elements = [node.Children[1]]
+
+            for child in node.Children[2].Children:
+                # First element is the comma, second is the value
+                assert len(child.Children) == 2
+                elements.append(child.Children[1])
+
+        else:
+            assert False, node  # pragma: no cover
+
+        for element in elements:
+            element_name = element.Value.Match.group("value")
+
+            if not NamingConventions.Variable.Regex.match(element_name):
+                raise InvalidVariableNameError.FromNode(element, element_name)

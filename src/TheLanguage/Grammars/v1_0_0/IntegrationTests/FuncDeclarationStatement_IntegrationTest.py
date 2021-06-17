@@ -2751,3 +2751,173 @@ def test_NoModifierInType():
                     Dedent <<>> ws:None [3, 1 -> 3, 1]
         """,
     )
+
+# ----------------------------------------------------------------------
+def test_ExoticNames():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            string var Func1?():
+                pass
+
+            string var Func2...():
+                pass
+
+            string var Func3...?():
+                pass
+            """,
+        ),
+    ) == textwrap.dedent(
+        """\
+        <Root>
+            1.0.0 Grammar
+                Function Declaration
+                    Type
+                        <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'var' <<Regex: <_sre.SRE_Match object; span=(7, 10), match='var'>>> ws:(6, 7) [1, 8 -> 1, 11]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(11, 17), match='Func1?'>>> ws:(10, 11) [1, 12 -> 1, 18]
+                    '(' <<Regex: <_sre.SRE_Match object; span=(17, 18), match='('>>> ws:None [1, 18 -> 1, 19]
+                    ')' <<Regex: <_sre.SRE_Match object; span=(18, 19), match=')'>>> ws:None [1, 19 -> 1, 20]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(19, 20), match=':'>>> ws:None [1, 20 -> 1, 21]
+                    Newline+ <<20, 21>> ws:None [1, 21 -> 2, 1]
+                    Indent <<21, 25, (4)>> ws:None [2, 1 -> 2, 5]
+                    Repeat: (DynamicStatements.Statements, 1, None)
+                        DynamicStatements.Statements
+                            1.0.0 Grammar
+                                Pass
+                                    'pass' <<Regex: <_sre.SRE_Match object; span=(25, 29), match='pass'>>> ws:None [2, 5 -> 2, 9]
+                    Dedent <<>> ws:None [4, 1 -> 4, 1]
+            1.0.0 Grammar
+                Function Declaration
+                    Type
+                        <name> <<Regex: <_sre.SRE_Match object; span=(31, 37), match='string'>>> ws:None [4, 1 -> 4, 7]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'var' <<Regex: <_sre.SRE_Match object; span=(38, 41), match='var'>>> ws:(37, 38) [4, 8 -> 4, 11]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(42, 50), match='Func2...'>>> ws:(41, 42) [4, 12 -> 4, 20]
+                    '(' <<Regex: <_sre.SRE_Match object; span=(50, 51), match='('>>> ws:None [4, 20 -> 4, 21]
+                    ')' <<Regex: <_sre.SRE_Match object; span=(51, 52), match=')'>>> ws:None [4, 21 -> 4, 22]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(52, 53), match=':'>>> ws:None [4, 22 -> 4, 23]
+                    Newline+ <<53, 54>> ws:None [4, 23 -> 5, 1]
+                    Indent <<54, 58, (4)>> ws:None [5, 1 -> 5, 5]
+                    Repeat: (DynamicStatements.Statements, 1, None)
+                        DynamicStatements.Statements
+                            1.0.0 Grammar
+                                Pass
+                                    'pass' <<Regex: <_sre.SRE_Match object; span=(58, 62), match='pass'>>> ws:None [5, 5 -> 5, 9]
+                    Dedent <<>> ws:None [7, 1 -> 7, 1]
+            1.0.0 Grammar
+                Function Declaration
+                    Type
+                        <name> <<Regex: <_sre.SRE_Match object; span=(64, 70), match='string'>>> ws:None [7, 1 -> 7, 7]
+                        Repeat: (Modifier, 0, 1)
+                            Modifier
+                                'var' <<Regex: <_sre.SRE_Match object; span=(71, 74), match='var'>>> ws:(70, 71) [7, 8 -> 7, 11]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(75, 84), match='Func3...?'>>> ws:(74, 75) [7, 12 -> 7, 21]
+                    '(' <<Regex: <_sre.SRE_Match object; span=(84, 85), match='('>>> ws:None [7, 21 -> 7, 22]
+                    ')' <<Regex: <_sre.SRE_Match object; span=(85, 86), match=')'>>> ws:None [7, 22 -> 7, 23]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(86, 87), match=':'>>> ws:None [7, 23 -> 7, 24]
+                    Newline+ <<87, 88>> ws:None [7, 24 -> 8, 1]
+                    Indent <<88, 92, (4)>> ws:None [8, 1 -> 8, 5]
+                    Repeat: (DynamicStatements.Statements, 1, None)
+                        DynamicStatements.Statements
+                            1.0.0 Grammar
+                                Pass
+                                    'pass' <<Regex: <_sre.SRE_Match object; span=(92, 96), match='pass'>>> ws:None [8, 5 -> 8, 9]
+                    Dedent <<>> ws:None [9, 1 -> 9, 1]
+        """,
+    )
+
+# ----------------------------------------------------------------------
+def test_InvalidName():
+    # Stats w/lowercase
+    with pytest.raises(InvalidFunctionNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                String func():
+                    pass
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == textwrap.dedent(
+        """\
+        'func' is not a valid function name.
+
+        Function names must:
+            Begin with an uppercase letter
+            Contain upper-, lower-, numeric-, or underscore-characters
+            Contain 2 or more characters
+        """,
+    )
+
+    assert ex.FunctionName == "func"
+    assert ex.Line == 1
+    assert ex.Column == 8
+    assert ex.LineEnd == 1
+    assert ex.ColumnEnd == 12
+
+    # Invalid char
+    with pytest.raises(InvalidFunctionNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                String f..d():
+                    pass
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == textwrap.dedent(
+        """\
+        'f..d' is not a valid function name.
+
+        Function names must:
+            Begin with an uppercase letter
+            Contain upper-, lower-, numeric-, or underscore-characters
+            Contain 2 or more characters
+        """,
+    )
+
+    assert ex.FunctionName == "f..d"
+    assert ex.Line == 1
+    assert ex.Column == 8
+    assert ex.LineEnd == 1
+    assert ex.ColumnEnd == 12
+
+    # Single char
+    with pytest.raises(InvalidFunctionNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                String f():
+                    pass
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == textwrap.dedent(
+        """\
+        'f' is not a valid function name.
+
+        Function names must:
+            Begin with an uppercase letter
+            Contain upper-, lower-, numeric-, or underscore-characters
+            Contain 2 or more characters
+        """,
+    )
+
+    assert ex.FunctionName == "f"
+    assert ex.Line == 1
+    assert ex.Column == 8
+    assert ex.LineEnd == 1
+    assert ex.ColumnEnd == 9

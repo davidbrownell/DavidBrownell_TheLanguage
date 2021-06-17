@@ -18,6 +18,8 @@
 import os
 import textwrap
 
+import pytest
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -106,3 +108,61 @@ def test_Standard():
                                 ')' <<Regex: <_sre.SRE_Match object; span=(74, 75), match=')'>>> ws:None [7, 1 -> 7, 2]
         """,
     )
+
+# ----------------------------------------------------------------------
+def test_InvalidNames():
+    # Invalid casing
+    with pytest.raises(InvalidVariableNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                Invalid = rhs
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == textwrap.dedent(
+        """\
+        'Invalid' is not a valid variable name.
+
+        Variable names must:
+            Begin with a lowercase letter
+            Contain upper-, lower-, numeric-, or underscore-characters
+        """,
+    )
+
+    assert ex.VariableName == "Invalid"
+    assert ex.Line == 1
+    assert ex.LineEnd == 1
+    assert ex.Column == 1
+    assert ex.ColumnEnd == 8
+
+    # Invalid chars
+    with pytest.raises(InvalidVariableNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                I..d = rhs
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == textwrap.dedent(
+        """\
+        'I..d' is not a valid variable name.
+
+        Variable names must:
+            Begin with a lowercase letter
+            Contain upper-, lower-, numeric-, or underscore-characters
+        """,
+    )
+
+    assert ex.VariableName == "I..d"
+    assert ex.Line == 1
+    assert ex.LineEnd == 1
+    assert ex.Column == 1
+    assert ex.ColumnEnd == 5
