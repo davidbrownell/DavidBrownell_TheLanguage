@@ -16,8 +16,13 @@
 """Contains the VariableDeclarationStatement object"""
 
 import os
+import textwrap
+
+from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
+from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,12 +33,49 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Common import Tokens as CommonTokens
+    from .Common import NamingConventions
 
     from ..GrammarStatement import (
         DynamicStatements,
         GrammarStatement,
+        Node,
         Statement,
+        ValidationError,
     )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidVariableNameError(ValidationError):
+    VariableName: str
+
+    MessageTemplate                         = Interface.DerivedProperty(
+        textwrap.dedent(
+            """\
+            '{{VariableName}}' is not a valid variable name.
+
+            Variable names must:
+                {}
+            """,
+        ).format(
+            StringHelpers.LeftJustify("\n".join(NamingConventions.Variable.Constraints).rstrip(), 4),
+        ),
+    )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def FromNode(
+        cls,
+        node: Node,
+        variable_name: str,
+    ):
+        return cls(
+            node.IterBefore.Line,
+            node.IterBefore.Column,
+            node.IterAfter.Line,
+            node.IterAfter.Column,
+            variable_name,
+        )
 
 
 # ----------------------------------------------------------------------
@@ -55,3 +97,19 @@ class VariableDeclarationStatement(GrammarStatement):
                 DynamicStatements.Expressions,
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ValidateNodeSyntax(
+        cls,
+        node: Node,
+    ):
+        # Validate the variable name
+        assert len(node.Children) > 1
+        name_node = node.Children[0]
+
+        variable_name = name_node.Value.Match.group("value")
+
+        if not NamingConventions.Variable.Regex.match(variable_name):
+            raise InvalidVariableNameError.FromNode(name_node, variable_name)

@@ -17,6 +17,7 @@
 
 import os
 import re
+import textwrap
 
 import CommonEnvironment
 
@@ -45,7 +46,19 @@ Indent                                      = IndentToken()
 PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
-Name                                        = RegexToken("<name>", re.compile(r"(?P<value>[A-Za-z_\.][A-Za-z_\.0-9]*)"))
+Name                                        = RegexToken(
+    "<name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+                Initial char [not a number]             )[A-Za-z_\.](?#
+                Alpha numeric, underscore, dot          )[A-Za-z_\.0-9]*(?#
+                [optional] Trailing ? for funcs         )\??(?#
+            ))""",
+        ),
+    ),
+)
+
 Equal                                       = RegexToken("'='", re.compile(r"\="))
 Colon                                       = RegexToken("':'", re.compile(r":"))
 Comma                                       = RegexToken("','", re.compile(r","))

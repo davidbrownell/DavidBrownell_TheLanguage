@@ -1,5 +1,5 @@
 # TODO:
-#   export keyword for functions
+#   docstrings in function decl
 #   Function type
 #   Variant/Union
 #       String Func():
