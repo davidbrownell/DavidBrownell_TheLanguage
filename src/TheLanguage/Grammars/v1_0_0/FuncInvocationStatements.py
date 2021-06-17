@@ -141,7 +141,7 @@ class _FuncInvocationBase(GrammarStatement):
             # arguments.
             return []
 
-        # Drill into the Optional statement
+        # Drill into the Optional node
         assert isinstance(node.Type, tuple)
         assert len(node.Children) == 1
         node = node.Children[0]
@@ -181,7 +181,7 @@ class _FuncInvocationBase(GrammarStatement):
         cls,
         node: Node,
     ) -> "FuncInvocationHybrid._ArgumentInfo":
-        # Drill into the Or Statement
+        # Drill into the Or node
         assert isinstance(node.Type, list)
         assert len(node.Children) == 1
         node = node.Children[0]

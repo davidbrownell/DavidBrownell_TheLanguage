@@ -148,6 +148,7 @@ class FuncDeclarationStatement(GrammarStatement):
             GrammarStatement.Type.Statement,
             Statement(
                 "Function Declaration",
+                (CommonTokens.Export, 0, 1),
                 CommonStatements.Type,
                 CommonTokens.Name,
                 CommonTokens.LParen,
@@ -237,8 +238,17 @@ class FuncDeclarationStatement(GrammarStatement):
         cls,
         node: Node,
     ):
-        assert len(node.Children) > 4
-        node.parameters = cls._GetParameters(node.Children[3])
+        # The export keyword may or may not appear, which will impact the parameter index
+        if (
+            isinstance(node.Children[0].Type, tuple)
+            and node.Children[0].Type[0] == CommonTokens.Export
+        ):
+            parameter_index = 4
+        else:
+            parameter_index = 3
+
+        assert len(node.Children) > parameter_index + 1
+        node.parameters = cls._GetParameters(node.Children[parameter_index])
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -270,12 +280,12 @@ class FuncDeclarationStatement(GrammarStatement):
             # parameters
             return cls._Parameters([], [], [])
 
-        # Drill into the Optional statement
+        # Drill into the Optional node
         assert isinstance(node.Type, tuple)
         assert len(node.Children) == 1
         node = node.Children[0]
 
-        # Drill into the Or statement
+        # Drill into the Or node
         assert isinstance(node.Type, list)
         assert len(node.Children) == 1
         node = node.Children[0]
@@ -416,7 +426,7 @@ class FuncDeclarationStatement(GrammarStatement):
                 assert len(child.Children) == 2
                 child = child.Children[1]
 
-                # Drill into the Or statement
+                # Drill into the Or node
                 assert isinstance(child.Type, list)
                 assert len(child.Children) == 1
                 child = child.Children[0]
@@ -447,7 +457,7 @@ class FuncDeclarationStatement(GrammarStatement):
             # Get the type
             the_type = child.Children[0]
 
-            # Drill into the Or statement
+            # Drill into the Or node
             assert isinstance(the_type.Type, list)
             assert len(the_type.Children) == 1
             the_type = the_type.Children[0]
@@ -501,10 +511,10 @@ class FuncDeclarationStatement(GrammarStatement):
 
         type_info = CommonStatements.TypeInfo.FromNode(node.Children[0])
 
-        # Drill into the Parameter statement
+        # Drill into the Parameter node
         node = node.Children[1]
 
-        # Drill into the Or statement
+        # Drill into the Or node
         assert isinstance(node.Type, list)
         assert len(node.Children) == 1
         node = node.Children[0]
