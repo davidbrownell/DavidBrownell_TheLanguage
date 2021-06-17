@@ -18,6 +18,8 @@
 import os
 import textwrap
 
+import pytest
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -401,3 +403,117 @@ def test_MultipleAssignment():
                                 <name> <<Regex: <_sre.SRE_Match object; span=(72, 79), match='Another'>>> ws:(71, 72) [7, 5 -> 7, 12]
         """,
     )
+
+# ----------------------------------------------------------------------
+def test_InvalidName():
+    # Uppercase, single element
+    with pytest.raises(InvalidVariableNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                (Invalid,) = func()
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == textwrap.dedent(
+        """\
+        'Invalid' is not a valid variable name.
+
+        Variable names must:
+            Begin with a lowercase letter
+            Contain upper-, lower-, numeric-, or underscore-characters
+        """,
+    )
+
+    assert ex.VariableName == "Invalid"
+    assert ex.Line == 1
+    assert ex.LineEnd == 1
+    assert ex.Column == 2
+    assert ex.ColumnEnd == 9
+
+    # Uppercase, multiple element
+    with pytest.raises(InvalidVariableNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                (a, b, Invalid,) = func()
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == textwrap.dedent(
+        """\
+        'Invalid' is not a valid variable name.
+
+        Variable names must:
+            Begin with a lowercase letter
+            Contain upper-, lower-, numeric-, or underscore-characters
+        """,
+    )
+
+    assert ex.VariableName == "Invalid"
+    assert ex.Line == 1
+    assert ex.LineEnd == 1
+    assert ex.Column == 8
+    assert ex.ColumnEnd == 15
+
+    # Invalid chars, single element
+    with pytest.raises(InvalidVariableNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                (I..d,) = func()
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == textwrap.dedent(
+        """\
+        'I..d' is not a valid variable name.
+
+        Variable names must:
+            Begin with a lowercase letter
+            Contain upper-, lower-, numeric-, or underscore-characters
+        """,
+    )
+
+    assert ex.VariableName == "I..d"
+    assert ex.Line == 1
+    assert ex.LineEnd == 1
+    assert ex.Column == 2
+    assert ex.ColumnEnd == 6
+
+    # Uppercase, multiple element
+    with pytest.raises(InvalidVariableNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                (a, b, I..d,) = func()
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == textwrap.dedent(
+        """\
+        'I..d' is not a valid variable name.
+
+        Variable names must:
+            Begin with a lowercase letter
+            Contain upper-, lower-, numeric-, or underscore-characters
+        """,
+    )
+
+    assert ex.VariableName == "I..d"
+    assert ex.Line == 1
+    assert ex.LineEnd == 1
+    assert ex.Column == 8
+    assert ex.ColumnEnd == 12
