@@ -62,21 +62,6 @@ class InvalidVariableNameError(ValidationError):
         ),
     )
 
-    # ----------------------------------------------------------------------
-    @classmethod
-    def FromNode(
-        cls,
-        node: Node,
-        variable_name: str,
-    ):
-        return cls(
-            node.IterBefore.Line,
-            node.IterBefore.Column,
-            node.IterAfter.Line,
-            node.IterAfter.Column,
-            variable_name,
-        )
-
 
 # ----------------------------------------------------------------------
 class VariableDeclarationStatement(GrammarStatement):

@@ -27,6 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .ClassDeclarationStatement import ClassDeclarationStatement
     from .CommentStatement import CommentStatement
     from .FuncDeclarationStatement import FuncDeclarationStatement
     from .FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
@@ -41,6 +42,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 Statements                                  = [
     # Statements
+    ClassDeclarationStatement(),
     FuncDeclarationStatement(),
     FuncInvocationStatement(),
     ImportStatement(".TheLanguage"),        # TODO: Update this when the name is finalized

@@ -109,10 +109,9 @@ class SyntaxInvalidError(Error):
 
         for parse_results in self.PotentialStatements.values():
             for parse_result in parse_results:
-                if not getattr(parse_result, "Results", True):
+                if not parse_result.HasResults():
                     continue
 
-                # If here, we are looking at a token or something with results
                 content.append(str(parse_result))
 
         return textwrap.dedent(

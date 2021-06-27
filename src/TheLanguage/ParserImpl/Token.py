@@ -16,9 +16,10 @@
 """Contains various token objects"""
 
 import os
+import re
 
+from collections import OrderedDict
 from typing import (
-    List,
     Match as TypingMatch,
     Optional,
     Pattern,
@@ -109,7 +110,7 @@ class Token(Interface.Interface):
     @Interface.abstractmethod
     def Match(
         normalized_iter: NormalizedIterator,
-    ) -> Optional[Union["MatchType", List["MatchType"]]]:
+    ) -> Optional["MatchType"]:
         """Returns match information if applicable"""
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -143,7 +144,7 @@ class NewlineToken(Token):
     def Match(self, normalized_iter):
         if (
             normalized_iter.Offset == normalized_iter.LineInfo.OffsetEnd
-            and normalized_iter.HasConsumedDedents()
+            and normalized_iter.HasConsumedAllDedents()
             and not normalized_iter.AtEnd()
         ):
             newline_start = normalized_iter.Offset
@@ -197,17 +198,17 @@ class DedentToken(Token):
     def Match(normalized_iter):
         if (
             normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
-            and not normalized_iter.HasConsumedDedents()
+            and not normalized_iter.HasConsumedAllDedents()
         ):
-            normalized_iter.ConsumeDedents()
-            normalized_iter.SkipPrefix()
+            normalized_iter.ConsumeDedent()
 
-            num_dedents = normalized_iter.LineInfo.NumDedents()
+            if normalized_iter.HasConsumedAllDedents():
+                normalized_iter.SkipPrefix()
 
-            if normalized_iter.AtTrailingDedents():
-                normalized_iter.Advance(0)
+                if normalized_iter.AtTrailingDedents():
+                    normalized_iter.Advance(0)
 
-            return [Token.DedentMatch()] * num_dedents
+            return Token.DedentMatch()
 
         return None
 
@@ -241,7 +242,7 @@ class RegexToken(Token):
     # ----------------------------------------------------------------------
     @Interface.override
     def Match(self, normalized_iter):
-        if not normalized_iter.HasConsumedDedents():
+        if not normalized_iter.HasConsumedAllDedents():
             return None
 
         match = self.Regex.match(
@@ -251,25 +252,86 @@ class RegexToken(Token):
         )
 
         if match:
+            match_length = match.end() - match.start()
+
             if self.IsMultiline:
-                # The match may span multiple lines, so we have to be intentional about how we advance.
-                to_advance = match.end() - match.start()
-
-                while to_advance:
-                    line_to_advance = min(to_advance, normalized_iter.LineInfo.OffsetEnd - normalized_iter.Offset)
-                    assert line_to_advance
-
-                    normalized_iter.Advance(line_to_advance)
-                    to_advance -= line_to_advance
-
-                    # Skip the newline (if necessary)
-                    if to_advance:
-                        normalized_iter.Advance(1)
-                        to_advance -= 1
+                _AdvanceMultiline(normalized_iter, match_length)
             else:
-                normalized_iter.Advance(match.end() - match.start())
+                normalized_iter.Advance(match_length)
 
             return Token.RegexMatch(match)
+
+        return None
+
+
+# ----------------------------------------------------------------------
+class MultilineRegexToken(Token):
+    """Matches lines until a regex delimiter is encountered"""
+
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        name: str,
+        *regex_delimiters: str,
+        regex_match_group_name="value",
+    ):
+        assert name
+        assert regex_delimiters
+
+        self._name                          = name
+        self._match_all_regex               = re.compile(r"(?P<{}>.+)".format(regex_match_group_name), re.DOTALL | re.MULTILINE)
+
+        self.RegexDelimiters                = list(regex_delimiters)
+
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.override
+    def Name(self):
+        return self._name
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Match(self, normalized_iter):
+        matches = []
+
+        for regex in self.RegexDelimiters:
+            match = regex.search(
+                normalized_iter.Content,
+                pos=normalized_iter.Offset,
+                endpos=normalized_iter.ContentLen,
+            )
+
+            if not match:
+                continue
+
+            match = self._match_all_regex.match(
+                normalized_iter.Content,
+                pos=normalized_iter.Offset,
+                endpos=match.start(),
+            )
+            assert match
+
+            matches.append(match)
+
+        if matches:
+            if len(matches) == 1:
+                shortest_match = matches[0]
+            else:
+                # Find the shortest match
+                shortest_match = None
+                shortest_match_length = None
+
+                for match in matches:
+                    match_length = match.end() - match.start()
+
+                    if shortest_match is None or match_length < shortest_match_length:
+                        shortest_match = match
+                        shortest_match_length = match_length
+
+            assert shortest_match
+
+            _AdvanceMultiline(normalized_iter, shortest_match.end() - normalized_iter.Offset)
+            return Token.RegexMatch(shortest_match)
 
         return None
 
@@ -323,3 +385,25 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
 
 
 PushIgnoreWhitespaceControlToken.ClosingToken           = PopIgnoreWhitespaceControlToken  # type: ignore
+
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+def _AdvanceMultiline(
+    normalized_iter: NormalizedIterator,
+    to_advance: int,
+):
+    # The match may span multiple lines, so we have to be intentional about how we advance.
+    while to_advance:
+        line_to_advance = min(to_advance, normalized_iter.LineInfo.OffsetEnd - normalized_iter.Offset)
+
+        # The amount to advance can be 0 if we are looking at a blank line
+        if line_to_advance:
+            normalized_iter.Advance(line_to_advance)
+            to_advance -= line_to_advance
+
+        # Skip the newline (if necessary)
+        if to_advance:
+            normalized_iter.Advance(1)
+            to_advance -= 1

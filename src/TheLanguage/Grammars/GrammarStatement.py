@@ -60,12 +60,14 @@ class ValidationError(Error):
     def FromNode(
         cls,
         node: Node,
+        *args,
     ):
         return cls(
             node.IterBefore.Line,
             node.IterBefore.Column,
             node.IterAfter.Line,
             node.IterAfter.Column,
+            *args,
         )
 
     # ----------------------------------------------------------------------

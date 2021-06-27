@@ -2509,8 +2509,8 @@ def test_PositionalParameterAfterDefaultValueParameterError():
     assert ex.ColumnEnd == 21
 
 # ----------------------------------------------------------------------
-def test_InvalidNewStyleParameterGroupOrderingError():
-    with pytest.raises(InvalidNewStyleParameterGroupOrderingError) as ex:
+def test_NewStyleParameterGroupOrderingError():
+    with pytest.raises(NewStyleParameterGroupOrderingError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2533,7 +2533,7 @@ def test_InvalidNewStyleParameterGroupOrderingError():
     assert ex.Column == 5
     assert ex.ColumnEnd == 8
 
-    with pytest.raises(InvalidNewStyleParameterGroupOrderingError) as ex:
+    with pytest.raises(NewStyleParameterGroupOrderingError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2559,8 +2559,8 @@ def test_InvalidNewStyleParameterGroupOrderingError():
     assert ex.ColumnEnd == 8
 
 # ----------------------------------------------------------------------
-def test_InvalidTraditionalDelimiterOrderError():
-    with pytest.raises(InvalidTraditionalDelimiterOrderError) as ex:
+def test_TraditionalDelimiterOrderError():
+    with pytest.raises(TraditionalDelimiterOrderError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2579,8 +2579,8 @@ def test_InvalidTraditionalDelimiterOrderError():
     assert ex.ColumnEnd == 44
 
 # ----------------------------------------------------------------------
-def test_InvalidTraditionalPositionalDelimiterError():
-    with pytest.raises(InvalidTraditionalPositionalDelimiterError) as ex:
+def test_TraditionalPositionalDelimiterError():
+    with pytest.raises(TraditionalPositionalDelimiterError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2599,8 +2599,8 @@ def test_InvalidTraditionalPositionalDelimiterError():
     assert ex.ColumnEnd == 18
 
 # ----------------------------------------------------------------------
-def test_InvalidTraditionalKeywordDelimiterError():
-    with pytest.raises(InvalidTraditionalKeywordDelimiterError) as ex:
+def test_TraditionalKeywordDelimiterError():
+    with pytest.raises(TraditionalKeywordDelimiterError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2619,8 +2619,8 @@ def test_InvalidTraditionalKeywordDelimiterError():
     assert ex.ColumnEnd == 29
 
 # ----------------------------------------------------------------------
-def test_InvalidTraditionalDuplicatePositionalDelimiterError():
-    with pytest.raises(InvalidTraditionalDuplicatePositionalDelimiterError) as ex:
+def test_TraditionalDuplicatePositionalDelimiterError():
+    with pytest.raises(TraditionalDuplicatePositionalDelimiterError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2639,8 +2639,8 @@ def test_InvalidTraditionalDuplicatePositionalDelimiterError():
     assert ex.ColumnEnd == 44
 
 # ----------------------------------------------------------------------
-def test_InvalidTraditionalDuplicateKeywordDelimiterError():
-    with pytest.raises(InvalidTraditionalDuplicateKeywordDelimiterError) as ex:
+def test_TraditionalDuplicateKeywordDelimiterError():
+    with pytest.raises(TraditionalDuplicateKeywordDelimiterError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2831,9 +2831,9 @@ def test_ExoticNames():
     )
 
 # ----------------------------------------------------------------------
-def test_InvalidName():
+def test_Name():
     # Stats w/lowercase
-    with pytest.raises(InvalidFunctionNameError) as ex:
+    with pytest.raises(FunctionNameError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2863,7 +2863,7 @@ def test_InvalidName():
     assert ex.ColumnEnd == 12
 
     # Invalid char
-    with pytest.raises(InvalidFunctionNameError) as ex:
+    with pytest.raises(FunctionNameError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2893,7 +2893,7 @@ def test_InvalidName():
     assert ex.ColumnEnd == 12
 
     # Single char
-    with pytest.raises(InvalidFunctionNameError) as ex:
+    with pytest.raises(FunctionNameError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -2921,3 +2921,160 @@ def test_InvalidName():
     assert ex.Column == 8
     assert ex.LineEnd == 1
     assert ex.ColumnEnd == 9
+
+# ----------------------------------------------------------------------
+def test_DocString():
+    assert Execute(
+        textwrap.dedent(
+            '''\
+            string Func1():
+                """
+                Test
+                """
+                pass
+
+            string Func2(int a):
+                """
+                More
+                Test
+                """
+                pass
+
+            string Func3(
+                int var a,
+                bool view b,
+                char var c,
+            ):
+                """
+                This is a test.
+                """
+
+                pass
+            ''',
+        ),
+    ) == textwrap.dedent(
+        r'''
+        <Root>
+            1.0.0 Grammar
+                Function Declaration
+                    Type
+                        <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='string'>>> ws:None [1, 1 -> 1, 7]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(7, 12), match='Func1'>>> ws:(6, 7) [1, 8 -> 1, 13]
+                    '(' <<Regex: <_sre.SRE_Match object; span=(12, 13), match='('>>> ws:None [1, 13 -> 1, 14]
+                    ')' <<Regex: <_sre.SRE_Match object; span=(13, 14), match=')'>>> ws:None [1, 14 -> 1, 15]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(14, 15), match=':'>>> ws:None [1, 15 -> 1, 16]
+                    Newline+ <<15, 16>> ws:None [1, 16 -> 2, 1]
+                    Indent <<16, 20, (4)>> ws:None [2, 1 -> 2, 5]
+                    Repeat: (<docstring>, 0, 1)
+                        <docstring> <<Regex: <_sre.SRE_Match object; span=(20, 40), match='"""\n    Test\n    """'>>> ws:None [2, 5 -> 4, 8]
+                    Repeat: (DynamicStatements.Statements, 1, None)
+                        DynamicStatements.Statements
+                            1.0.0 Grammar
+                                Pass
+                                    'pass' <<Regex: <_sre.SRE_Match object; span=(45, 49), match='pass'>>> ws:None [5, 5 -> 5, 9]
+                    Dedent <<>> ws:None [7, 1 -> 7, 1]
+            1.0.0 Grammar
+                Function Declaration
+                    Type
+                        <name> <<Regex: <_sre.SRE_Match object; span=(51, 57), match='string'>>> ws:None [7, 1 -> 7, 7]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(58, 63), match='Func2'>>> ws:(57, 58) [7, 8 -> 7, 13]
+                    '(' <<Regex: <_sre.SRE_Match object; span=(63, 64), match='('>>> ws:None [7, 13 -> 7, 14]
+                    Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
+                        Or: [Repeat: (New Style, 1, 3), Traditional]
+                            Traditional
+                                Or: [Parameter, '/', '*']
+                                    Parameter
+                                        Type
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(64, 67), match='int'>>> ws:None [7, 14 -> 7, 17]
+                                        Or: [With Default, <name>]
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(68, 69), match='a'>>> ws:(67, 68) [7, 18 -> 7, 19]
+                    ')' <<Regex: <_sre.SRE_Match object; span=(69, 70), match=')'>>> ws:None [7, 19 -> 7, 20]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(70, 71), match=':'>>> ws:None [7, 20 -> 7, 21]
+                    Newline+ <<71, 72>> ws:None [7, 21 -> 8, 1]
+                    Indent <<72, 76, (4)>> ws:None [8, 1 -> 8, 5]
+                    Repeat: (<docstring>, 0, 1)
+                        <docstring> <<Regex: <_sre.SRE_Match object; span=(76, 105), match='"""\n    More\n    Test\n    """'>>> ws:None [8, 5 -> 11, 8]
+                    Repeat: (DynamicStatements.Statements, 1, None)
+                        DynamicStatements.Statements
+                            1.0.0 Grammar
+                                Pass
+                                    'pass' <<Regex: <_sre.SRE_Match object; span=(110, 114), match='pass'>>> ws:None [12, 5 -> 12, 9]
+                    Dedent <<>> ws:None [14, 1 -> 14, 1]
+            1.0.0 Grammar
+                Function Declaration
+                    Type
+                        <name> <<Regex: <_sre.SRE_Match object; span=(116, 122), match='string'>>> ws:None [14, 1 -> 14, 7]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(123, 128), match='Func3'>>> ws:(122, 123) [14, 8 -> 14, 13]
+                    '(' <<Regex: <_sre.SRE_Match object; span=(128, 129), match='('>>> ws:None [14, 13 -> 14, 14]
+                    Repeat: (Or: [Repeat: (New Style, 1, 3), Traditional], 0, 1)
+                        Or: [Repeat: (New Style, 1, 3), Traditional]
+                            Traditional
+                                Or: [Parameter, '/', '*']
+                                    Parameter
+                                        Type
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(134, 137), match='int'>>> ws:None [15, 5 -> 15, 8]
+                                            Repeat: (Modifier, 0, 1)
+                                                Modifier
+                                                    'var' <<Regex: <_sre.SRE_Match object; span=(138, 141), match='var'>>> ws:(137, 138) [15, 9 -> 15, 12]
+                                        Or: [With Default, <name>]
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(142, 143), match='a'>>> ws:(141, 142) [15, 13 -> 15, 14]
+                                Repeat: (Comma and Parameter, 0, None)
+                                    Comma and Parameter
+                                        ',' <<Regex: <_sre.SRE_Match object; span=(143, 144), match=','>>> ws:None [15, 14 -> 15, 15]
+                                        Or: [Parameter, '/', '*']
+                                            Parameter
+                                                Type
+                                                    <name> <<Regex: <_sre.SRE_Match object; span=(149, 153), match='bool'>>> ws:None [16, 5 -> 16, 9]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'view' <<Regex: <_sre.SRE_Match object; span=(154, 158), match='view'>>> ws:(153, 154) [16, 10 -> 16, 14]
+                                                Or: [With Default, <name>]
+                                                    <name> <<Regex: <_sre.SRE_Match object; span=(159, 160), match='b'>>> ws:(158, 159) [16, 15 -> 16, 16]
+                                    Comma and Parameter
+                                        ',' <<Regex: <_sre.SRE_Match object; span=(160, 161), match=','>>> ws:None [16, 16 -> 16, 17]
+                                        Or: [Parameter, '/', '*']
+                                            Parameter
+                                                Type
+                                                    <name> <<Regex: <_sre.SRE_Match object; span=(166, 170), match='char'>>> ws:None [17, 5 -> 17, 9]
+                                                    Repeat: (Modifier, 0, 1)
+                                                        Modifier
+                                                            'var' <<Regex: <_sre.SRE_Match object; span=(171, 174), match='var'>>> ws:(170, 171) [17, 10 -> 17, 13]
+                                                Or: [With Default, <name>]
+                                                    <name> <<Regex: <_sre.SRE_Match object; span=(175, 176), match='c'>>> ws:(174, 175) [17, 14 -> 17, 15]
+                                Repeat: (',', 0, 1)
+                                    ',' <<Regex: <_sre.SRE_Match object; span=(176, 177), match=','>>> ws:None [17, 15 -> 17, 16]
+                    ')' <<Regex: <_sre.SRE_Match object; span=(178, 179), match=')'>>> ws:None [18, 1 -> 18, 2]
+                    ':' <<Regex: <_sre.SRE_Match object; span=(179, 180), match=':'>>> ws:None [18, 2 -> 18, 3]
+                    Newline+ <<180, 181>> ws:None [18, 3 -> 19, 1]
+                    Indent <<181, 185, (4)>> ws:None [19, 1 -> 19, 5]
+                    Repeat: (<docstring>, 0, 1)
+                        <docstring> <<Regex: <_sre.SRE_Match object; span=(185, 216), match='"""\n    This is a test.\n    """'>>> ws:None [19, 5 -> 21, 8]
+                    Repeat: (DynamicStatements.Statements, 1, None)
+                        DynamicStatements.Statements
+                            1.0.0 Grammar
+                                Pass
+                                    'pass' <<Regex: <_sre.SRE_Match object; span=(222, 226), match='pass'>>> ws:None [23, 5 -> 23, 9]
+                    Dedent <<>> ws:None [24, 1 -> 24, 1]
+        ''',
+    ).lstrip()
+
+# ----------------------------------------------------------------------
+def test_ErrorDefaultNames():
+    with pytest.raises(DuplicateParameterNameError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                int val Func(int val aaa, bool val b, char val aaa):
+                    pass
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "The parameter name 'aaa' has already been specified"
+    assert ex.ParameterName == "aaa"
+    assert ex.Line == 1
+    assert ex.LineEnd == 1
+    assert ex.Column == 48
+    assert ex.ColumnEnd == 51
