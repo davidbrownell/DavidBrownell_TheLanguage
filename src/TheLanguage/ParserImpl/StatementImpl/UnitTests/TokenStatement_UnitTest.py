@@ -329,9 +329,9 @@ class TestWords(object):
             if expected_text is not None:
                 assert result.Data.Value.Match.group("value") == expected_text
 
-            if result == self._indent_statement:
+            if expected_statement == self._indent_statement:
                 event_name = "OnIndent"
-            elif result == self._dedent_statement:
+            elif expected_statement == self._dedent_statement:
                 event_name = "OnDedent"
             else:
                 event_name = None
@@ -340,7 +340,7 @@ class TestWords(object):
                 num_events += 1
 
                 assert len(parse_mock.method_calls) == num_events
-                assert parse_mock.method_calls[-1] == (method_name, (result.Data,), {})
+                assert parse_mock.method_calls[-1] == (event_name, (result.Data,), {})
 
             iter = result.Iter
 
