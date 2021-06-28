@@ -33,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from . import CreateIterator, parse_mock
+
     from ..TokenStatement import *
 
     from ...Normalize import Normalize
@@ -45,17 +47,6 @@ with InitRelativeImports():
         RegexToken,
     )
 
-
-# ----------------------------------------------------------------------
-@pytest.fixture
-def parse_mock():
-    return Mock()
-
-# ----------------------------------------------------------------------
-def CreateIterator(
-    content: str,
-):
-    return NormalizedIterator(Normalize(content))
 
 # ----------------------------------------------------------------------
 class TestWords(object):

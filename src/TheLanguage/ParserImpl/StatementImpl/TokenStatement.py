@@ -37,6 +37,8 @@ with InitRelativeImports():
     from ..Token import (
         DedentToken,
         IndentToken,
+        NewlineToken,                       # Added here as a convenience, do not remove
+        RegexToken,                         # Added here as a convenience, do not remove
         Token as TokenClass,
     )
 

@@ -33,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from . import CreateIterator, parse_mock
+
     from ..Statement import *
 
     from ...Normalize import Normalize
@@ -67,16 +69,6 @@ def iterator(
     value="This is the content",
 ):
     return NormalizedIterator(Normalize(value))
-
-# ----------------------------------------------------------------------
-@pytest.fixture
-def parse_mock():
-    mock = Mock()
-
-    mock._executor = ThreadPoolExecutor()
-    mock.Enqueue = lambda funcs: [mock._executor.submit(func) for func in funcs]
-
-    return mock
 
 # ----------------------------------------------------------------------
 class TestStandard(object):
