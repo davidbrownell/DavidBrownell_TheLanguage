@@ -48,24 +48,33 @@ class TestStandard(object):
             """\
             True
             4
-                lower
-                    lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+                Or [lower]
+                    lower
+                        lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
-        assert len(parse_mock.method_calls) == 1
+        assert len(parse_mock.method_calls) == 2
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._lower_statement,
-            result.Data.Data,
+            result.Data.Data.Data,
+            0,
+            result.Iter.Offset,
+        )
+
+        OnInternalStatementEqual(
+            parse_mock.method_calls[1],
+            result.Data.Statement,
+            result.Data,
             0,
             result.Iter.Offset,
         )
 
         tokens = list(result.Data.EnumTokens())
 
-        assert tokens == [result.Data.Data,]
+        assert tokens == [result.Data.Data.Data,]
 
     # ----------------------------------------------------------------------
     def test_SingleNoMatch(self, parse_mock):
@@ -76,8 +85,9 @@ class TestStandard(object):
             """\
             False
             0
-                lower
-                    None
+                Or [lower]
+                    lower
+                        None
             """,
         )
 
@@ -96,21 +106,30 @@ class TestStandard(object):
             """\
             True
             4
-                number
-                    number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
+                Or [lower, number]
+                    number
+                        number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
-        assert len(parse_mock.method_calls) == 1
+        assert len(parse_mock.method_calls) == 2
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._number_statement,
-            result.Data.Data,
+            result.Data.Data.Data,
+            0,
+            result.Iter.Offset,
+        )
+
+        OnInternalStatementEqual(
+            parse_mock.method_calls[1],
+            result.Data.Statement,
+            result.Data,
             0,
             result.Iter.Offset,
         )
 
         tokens = list(result.Data.EnumTokens())
 
-        assert tokens == [result.Data.Data,]
+        assert tokens == [result.Data.Data.Data,]

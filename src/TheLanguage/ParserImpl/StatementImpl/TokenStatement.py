@@ -70,7 +70,7 @@ class TokenStatement(Statement):
     ]:
         # We only want to consume whitespace if there is a match that follows
         potential_iter = normalized_iter.Clone()
-        potential_whitespace = self._ExtractWhitespace(potential_iter)
+        potential_whitespace = self.ExtractWhitespace(potential_iter)
         potential_iter_begin = potential_iter.Clone()
 
         result = self.Token.Match(potential_iter)
@@ -94,12 +94,8 @@ class TokenStatement(Statement):
         return Statement.ParseResult(True, potential_iter, data)
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Private Methods
-    # |
-    # ----------------------------------------------------------------------
     @staticmethod
-    def _ExtractWhitespace(
+    def ExtractWhitespace(
         normalized_iter: Statement.NormalizedIterator,
     ) -> Optional[Tuple[int, int]]:
         """Consumes any whitespace located at the current offset"""

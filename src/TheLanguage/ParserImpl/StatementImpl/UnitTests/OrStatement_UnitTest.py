@@ -94,7 +94,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 1
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._lower_statement,
             result.Data.Data,
             0,
@@ -125,7 +125,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 1
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._upper_statement,
             result.Data.Data,
             0,
@@ -156,7 +156,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 1
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._number_statement,
             result.Data.Data,
             0,
@@ -192,7 +192,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 1
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._number_statement,
             result.Data.Data,
             0,
@@ -303,7 +303,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 2
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._lower_statement,
             result.Data.Data.Data,
             0,
@@ -311,7 +311,7 @@ class TestStandard(object):
         )
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[1][1],
+            parse_mock.method_calls[1],
             self._inner_nested_statement,
             result.Data.Data,
             0,
@@ -341,7 +341,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 1
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._upper_statement,
             result.Data.Data,
             0,
@@ -388,7 +388,7 @@ class TestSort(object):
         assert len(parse_mock.method_calls) == 1
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._long_statement,
             result.Data.Data,
             0,
@@ -412,7 +412,7 @@ class TestSort(object):
         assert len(parse_mock.method_calls) == 1
 
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._short_statement,
             result.Data.Data,
             0,

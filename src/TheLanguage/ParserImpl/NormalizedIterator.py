@@ -53,6 +53,16 @@ class NormalizedIterator(object):
         return self.__dict__ == other.__dict__
 
     # ----------------------------------------------------------------------
+    def __str__(self):
+        return "{offset} {content_len} {line_index} {last_consumed_dedent_line} {consumed_dedent_count}".format(
+            content_len=self.ContentLen,
+            line_index=self._line_info_index,
+            offset=self._offset,
+            last_consumed_dedent_line=self._last_consumed_dedent_line,
+            consumed_dedent_count=self._consumed_dedent_count,
+        )
+
+    # ----------------------------------------------------------------------
     def Clone(self):
         # Dynamically created the NormalizedContent object
         result = self.__class__(

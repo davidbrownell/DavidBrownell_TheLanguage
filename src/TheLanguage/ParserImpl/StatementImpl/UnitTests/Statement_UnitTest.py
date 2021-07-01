@@ -18,7 +18,6 @@
 import os
 import re
 
-from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import Mock
 
 import pytest
@@ -36,6 +35,7 @@ with InitRelativeImports():
     from . import CreateIterator, parse_mock
 
     from ..Statement import *
+    from ..TokenStatement import RegexToken, TokenStatement
 
     from ...Normalize import Normalize
     from ...NormalizedIterator import NormalizedIterator
@@ -259,6 +259,54 @@ class TestTokenParseResultData(object):
         )
 
         assert list(data.EnumTokens()) == [data.Data]
+
+# ----------------------------------------------------------------------
+class TestMultipleParseResultData(object):
+    _token                                  = RegexToken("My Word Token", re.compile(r"(?P<value>[a-zA-Z0-9]+)"))
+    _statement                              = TokenStatement(_token)
+    _iterator                               = CreateIterator("one two")
+
+    _data                                   = Statement.MultipleStandardParseResultData(
+        [
+            Statement.StandardParseResultData(
+                _statement,
+                Statement.TokenParseResultData(
+                    _token,
+                    None,
+                    _token.Regex.match("one"),
+                    _iterator,
+                    _iterator,
+                    False,
+                ),
+            ),
+            Statement.StandardParseResultData(
+                _statement,
+                Statement.TokenParseResultData(
+                    _token,
+                    None,
+                    _token.Regex.match("two"),
+                    _iterator,
+                    _iterator,
+                    False,
+                ),
+            ),
+        ],
+    )
+
+    # ----------------------------------------------------------------------
+    def test_String(self):
+        assert str(self._data) == textwrap.dedent(
+            """\
+            My Word Token
+                My Word Token <<<_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 1]
+            My Word Token
+                My Word Token <<<_sre.SRE_Match object; span=(0, 3), match='two'>>> ws:None [1, 1 -> 1, 1]
+            """,
+        )
+
+    # ----------------------------------------------------------------------
+    def test_NumTokens(self):
+        assert list(self._data.EnumTokens()) == [self._data.DataItems[0].Data, self._data.DataItems[1].Data]
 
 # ----------------------------------------------------------------------
 def test_Parse(iterator, parse_mock):

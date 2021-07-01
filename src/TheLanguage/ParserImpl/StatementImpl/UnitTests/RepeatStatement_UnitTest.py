@@ -50,6 +50,7 @@ class TestStandard(object):
 
     _or_statement                           = OrStatement(_word_statement, _newline_statement)
     _statement                              = RepeatStatement(_or_statement, 2, 4)
+    _exact_statement                        = RepeatStatement(_or_statement, 4, 4)
 
     # ----------------------------------------------------------------------
     def test_MatchSingleLine(self, parse_mock):
@@ -80,7 +81,7 @@ class TestStandard(object):
 
         # one
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._word_statement,
             result.Data.DataItems[0].Data,
             0,
@@ -89,7 +90,7 @@ class TestStandard(object):
 
         # Or Statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[1][1],
+            parse_mock.method_calls[1],
             self._or_statement,
             result.Data.DataItems[0],
             0,
@@ -98,7 +99,7 @@ class TestStandard(object):
 
         # Newline
         OnInternalStatementEqual(
-            parse_mock.method_calls[2][1],
+            parse_mock.method_calls[2],
             self._newline_statement,
             result.Data.DataItems[1].Data,
             3,
@@ -107,7 +108,7 @@ class TestStandard(object):
 
         # Or statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[3][1],
+            parse_mock.method_calls[3],
             self._or_statement,
             result.Data.DataItems[1],
             3,
@@ -153,7 +154,7 @@ class TestStandard(object):
 
         # one
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._word_statement,
             result.Data.DataItems[0].Data,
             0,
@@ -162,7 +163,7 @@ class TestStandard(object):
 
         # Or Statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[1][1],
+            parse_mock.method_calls[1],
             self._or_statement,
             result.Data.DataItems[0],
             0,
@@ -171,7 +172,7 @@ class TestStandard(object):
 
         # Newline
         OnInternalStatementEqual(
-            parse_mock.method_calls[2][1],
+            parse_mock.method_calls[2],
             self._newline_statement,
             result.Data.DataItems[1].Data,
             3,
@@ -180,7 +181,7 @@ class TestStandard(object):
 
         # Or statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[3][1],
+            parse_mock.method_calls[3],
             self._or_statement,
             result.Data.DataItems[1],
             3,
@@ -189,7 +190,7 @@ class TestStandard(object):
 
         # two
         OnInternalStatementEqual(
-            parse_mock.method_calls[4][1],
+            parse_mock.method_calls[4],
             self._word_statement,
             result.Data.DataItems[2].Data,
             4,
@@ -198,7 +199,7 @@ class TestStandard(object):
 
         # Or Statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[5][1],
+            parse_mock.method_calls[5],
             self._or_statement,
             result.Data.DataItems[2],
             4,
@@ -207,7 +208,7 @@ class TestStandard(object):
 
         # Newline
         OnInternalStatementEqual(
-            parse_mock.method_calls[6][1],
+            parse_mock.method_calls[6],
             self._newline_statement,
             result.Data.DataItems[3].Data,
             7,
@@ -216,7 +217,7 @@ class TestStandard(object):
 
         # Or statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[7][1],
+            parse_mock.method_calls[7],
             self._or_statement,
             result.Data.DataItems[3],
             7,
@@ -265,7 +266,7 @@ class TestStandard(object):
 
         # one
         OnInternalStatementEqual(
-            parse_mock.method_calls[0][1],
+            parse_mock.method_calls[0],
             self._word_statement,
             result.Data.DataItems[0].Data,
             0,
@@ -274,7 +275,7 @@ class TestStandard(object):
 
         # Or Statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[1][1],
+            parse_mock.method_calls[1],
             self._or_statement,
             result.Data.DataItems[0],
             0,
@@ -283,7 +284,7 @@ class TestStandard(object):
 
         # Newline
         OnInternalStatementEqual(
-            parse_mock.method_calls[2][1],
+            parse_mock.method_calls[2],
             self._newline_statement,
             result.Data.DataItems[1].Data,
             3,
@@ -292,7 +293,7 @@ class TestStandard(object):
 
         # Or statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[3][1],
+            parse_mock.method_calls[3],
             self._or_statement,
             result.Data.DataItems[1],
             3,
@@ -301,7 +302,7 @@ class TestStandard(object):
 
         # two
         OnInternalStatementEqual(
-            parse_mock.method_calls[4][1],
+            parse_mock.method_calls[4],
             self._word_statement,
             result.Data.DataItems[2].Data,
             4,
@@ -310,7 +311,7 @@ class TestStandard(object):
 
         # Or Statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[5][1],
+            parse_mock.method_calls[5],
             self._or_statement,
             result.Data.DataItems[2],
             4,
@@ -319,7 +320,7 @@ class TestStandard(object):
 
         # Newline
         OnInternalStatementEqual(
-            parse_mock.method_calls[6][1],
+            parse_mock.method_calls[6],
             self._newline_statement,
             result.Data.DataItems[3].Data,
             7,
@@ -328,7 +329,7 @@ class TestStandard(object):
 
         # Or statement
         OnInternalStatementEqual(
-            parse_mock.method_calls[7][1],
+            parse_mock.method_calls[7],
             self._or_statement,
             result.Data.DataItems[3],
             7,
@@ -403,6 +404,83 @@ class TestStandard(object):
         assert list(result.Data.EnumTokens()) == [
             result.Data.DataItems[0].Data,
         ]
+
+    # ----------------------------------------------------------------------
+    def test_ExactMatch(self, parse_mock):
+        result = self._exact_statement.Parse(
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    one
+                    two
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            8
+                Or [Word, Newline+]
+                    0) Word
+                           Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                    1) Newline+
+                           Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                    2) Word
+                           Word <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
+                    3) Newline+
+                           Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
+            """,
+        )
+
+    # ----------------------------------------------------------------------
+    def test_ExactLimitedMatch(self, parse_mock):
+        result = self._exact_statement.Parse(
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    one
+                    two
+                    three
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            8
+                Or [Word, Newline+]
+                    0) Word
+                           Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                    1) Newline+
+                           Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                    2) Word
+                           Word <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
+                    3) Newline+
+                           Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
+            """,
+        )
+
+    # ----------------------------------------------------------------------
+    def test_ExactNoMatch(self, parse_mock):
+        result = self._exact_statement.Parse(CreateIterator("one"), parse_mock)
+
+        assert str(result) == textwrap.dedent(
+            """\
+            False
+            4
+                Or [Word, Newline+]
+                    0) Word
+                           Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                    1) Newline+
+                           Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+            """,
+        )
 
 # ----------------------------------------------------------------------
 def test_CreationErrors():

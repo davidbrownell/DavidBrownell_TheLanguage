@@ -41,32 +41,6 @@ class OrStatement(Statement):
 
     # ----------------------------------------------------------------------
     # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class UnsuccessfulParseResultData(Statement.ParseResultData):
-        """\
-        Result when none of the Statements match.
-
-        Note that Statement.StandardParseResultData is returned when a match was found.
-        """
-
-        DataItems: List[Statement.StandardParseResultData]
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def __str__(self) -> str:
-            return "\n".join([str(data).rstrip() for data in self.DataItems])
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def EnumTokens(self) -> Generator[Statement.TokenParseResultData, None, None]:
-            for data in self.DataItems:
-                yield from data.EnumTokens()
-
-    # ----------------------------------------------------------------------
-    # |
     # |  Public Methods
     # |
     # ----------------------------------------------------------------------
@@ -217,5 +191,5 @@ class OrStatement(Statement):
         return Statement.ParseResult(
             False,
             cast(Statement.NormalizedIterator, max_iter),
-            OrStatement.UnsuccessfulParseResultData(data_items),
+            Statement.MultipleStandardParseResultData(data_items),
         )

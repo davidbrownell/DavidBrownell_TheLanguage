@@ -55,7 +55,10 @@ class RepeatStatement(StatementType):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def __str__(self) -> str:
+        def ToString(
+            self,
+            verbose=False,
+        ) -> str:
             results = []
 
             for data_item_index, data_item in enumerate(self.DataItems):
@@ -74,10 +77,11 @@ class RepeatStatement(StatementType):
             return textwrap.dedent(
                 """\
                 {name}
-                    {results}
+                    {label}{results}
                 """,
             ).format(
                 name=self.Statement.Name,
+                label="DataItems:\n    " if verbose else "",
                 results=StringHelpers.LeftJustify("\n".join(results), 4),
             )
 
@@ -174,14 +178,20 @@ class RepeatStatement(StatementType):
         )
 
         if not success:
-            assert error_result
+            result_data = [result.Data for result in results]
+
+            if error_result:
+                result_data.append(error_result.Data)
+                end_iter = error_result.Iter
+            else:
+                end_iter = normalized_iter
 
             return StatementType.ParseResult(
                 False,
-                error_result.Iter,
+                end_iter,
                 RepeatStatement.RepeatParseResultData(
                     self.Statement,
-                    [result.Data for result in results] + [error_result.Data],
+                    result_data,
                 ),
             )
 

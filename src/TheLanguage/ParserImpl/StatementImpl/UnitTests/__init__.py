@@ -18,7 +18,7 @@
 import os
 
 from concurrent.futures import ThreadPoolExecutor
-from typing import Tuple
+from typing import Any, Dict, Tuple
 from unittest.mock import Mock
 
 import pytest
@@ -59,13 +59,25 @@ def CreateIterator(
 
 # ----------------------------------------------------------------------
 def OnInternalStatementEqual(
-    mock_method_call_result: Tuple[Statement, Statement.ParseResultData, NormalizedIterator, NormalizedIterator],
+    mock_method_call_result: Tuple[
+        str,
+        Tuple[
+            Statement,
+            Statement.ParseResultData,
+            NormalizedIterator,
+            NormalizedIterator,
+        ],
+        Dict[str, Any],
+    ],
     statement: Statement,
     data: Statement.ParseResultData,
     offset_before: int,
     offset_after: int,
 ):
-    assert statement == mock_method_call_result[0]
-    assert data == mock_method_call_result[1]
-    assert offset_before == mock_method_call_result[2].Offset
-    assert offset_after == mock_method_call_result[3].Offset
+    assert mock_method_call_result[0] == "OnInternalStatement"
+    call_result = mock_method_call_result[1]
+
+    assert statement == call_result[0]
+    assert data == call_result[1]
+    assert offset_before == call_result[2].Offset
+    assert offset_after == call_result[3].Offset

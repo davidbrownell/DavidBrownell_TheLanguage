@@ -67,9 +67,29 @@ class DynamicStatement(Statement):
             sort_results=False,
         )
 
-        return or_statement.Parse(
+        queue_command_observer = Statement.QueueCommandObserver(observer)
+
+        result = or_statement.Parse(
             normalized_iter,
-            observer,
+            queue_command_observer,
             ignore_whitespace=ignore_whitespace,
             single_threaded=single_threaded,
+        )
+
+        if result.Success:
+            if not queue_command_observer.Replay():
+                return None
+
+            if not observer.OnInternalStatement(
+                or_statement,
+                result.Data,
+                normalized_iter,
+                result.Iter,
+            ):
+                return None
+
+        return Statement.ParseResult(
+            result.Success,
+            result.Iter,
+            Statement.StandardParseResultData(or_statement, result.Data),
         )

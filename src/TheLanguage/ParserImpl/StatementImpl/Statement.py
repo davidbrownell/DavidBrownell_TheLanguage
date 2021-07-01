@@ -37,11 +37,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..NormalizedIterator import NormalizedIterator
-
-    from ..Token import (
-        RegexToken,
-        Token as TokenClass,
-    )
+    from ..Token import Token as TokenClass
 
 
 # ----------------------------------------------------------------------
@@ -103,8 +99,15 @@ class Statement(Interface.Interface):
         Data: Optional["Statement.ParseResultData"]
 
         # ----------------------------------------------------------------------
+        def __str__(self):
+            return self.ToString()
+
+        # ----------------------------------------------------------------------
         @Interface.extensionmethod
-        def __str__(self) -> str:
+        def ToString(
+            self,
+            verbose=False,
+        ) -> str:
             return textwrap.dedent(
                 """\
                 {success}
@@ -114,7 +117,12 @@ class Statement(Interface.Interface):
             ).format(
                 success=self.Success,
                 iter=self.Iter.Offset,
-                data="<No Data>" if self.Data is None else StringHelpers.LeftJustify(str(self.Data).rstrip(), 4),
+                data="<No Data>" if self.Data is None else StringHelpers.LeftJustify(
+                    self.Data.ToString(
+                        verbose=verbose,
+                    ).rstrip(),
+                    4,
+                ),
             )
 
     # ----------------------------------------------------------------------
@@ -122,8 +130,16 @@ class Statement(Interface.Interface):
         """Abstract base class for data associated with a ParseResult."""
 
         # ----------------------------------------------------------------------
-        @Interface.abstractmethod
         def __str__(self) -> str:
+            return self.ToString()
+
+        # ----------------------------------------------------------------------
+        @Interface.abstractmethod
+        def ToString(
+            self,
+            verbose=False,
+        ) -> str:
+            """Displays the object as a string"""
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
@@ -142,15 +158,29 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def __str__(self) -> str:
+        def ToString(
+            self,
+            verbose=False,
+        ) -> str:
+            if verbose:
+                label = "Data:\n    "
+            else:
+                label = ""
+
             return textwrap.dedent(
                 """\
                 {name}
-                    {result}
+                    {label}{result}
                 """,
             ).format(
                 name=self.Statement.Name,
-                result=StringHelpers.LeftJustify(str(self.Data), 4),
+                label=label,
+                result=StringHelpers.LeftJustify(
+                    self.Data.ToString(
+                        verbose=verbose,
+                    ) if self.Data else str(self.Data),
+                    4,
+                ),
             )
 
         # ----------------------------------------------------------------------
@@ -163,7 +193,65 @@ class Statement(Interface.Interface):
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
+    class MultipleStandardParseResultData(ParseResultData):
+        """A collection of StandardParseResultData items"""
+
+        DataItems: List["Statement.StandardParseResultData"]
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def ToString(
+            self,
+            verbose=False,
+        ) -> str:
+            data_items = []
+
+            for data_index, data in enumerate(self.DataItems):
+                if verbose:
+                    prefix = "{}) ".format(data_index) if verbose else ""
+                    indent = len(prefix)
+                else:
+                    prefix = ""
+                    indent = 0
+
+                data_items.append(
+                    "{}{}".format(
+                        prefix,
+                        StringHelpers.LeftJustify(
+                            data.ToString(
+                                verbose=verbose,
+                            ).rstrip() if data else str(data),
+                            indent,
+                        ),
+                    ),
+                )
+
+            if not data_items:
+                data_items.append("<No Items>")
+
+            data_items = "\n".join(data_items)
+
+            if verbose:
+                label = "DataItems:\n"
+            else:
+                label = ""
+
+            return "{label}{data}\n".format(
+                label=label,
+                data=data_items,
+            )
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def EnumTokens(self) -> Generator["Statement.TokenParseResultData", None, None]:
+            for data in self.DataItems:
+                yield from data.EnumTokens()
+
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
     class TokenParseResultData(ParseResultData):
+        """Result of parsing a token"""
+
         Token: TokenClass
 
         Whitespace: Optional[Tuple[int, int]]
@@ -174,7 +262,10 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def __str__(self) -> str:
+        def ToString(
+            self,
+            verbose=False,
+        ) -> str:
             return "{name} <<{value}>> ws:{ws}{ignored} [{line_before}, {column_before} -> {line_after}, {column_after}]".format(
                 name=self.Token.Name,
                 value=str(self.Value),
@@ -270,6 +361,18 @@ class Statement(Interface.Interface):
 
             self._events = []
             return result
+
+        # ----------------------------------------------------------------------
+        def __getattr__(self, name):
+            """The default behavior is to forward the call to the wrapped observer"""
+
+            # ----------------------------------------------------------------------
+            def Impl(*args, **kwargs):
+                return getattr(self._observer, name)(*args, **kwargs)
+
+            # ----------------------------------------------------------------------
+
+            return Impl
 
         # ----------------------------------------------------------------------
         @Interface.override
