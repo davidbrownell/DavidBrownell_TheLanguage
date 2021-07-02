@@ -136,6 +136,10 @@ class StatementEx(Statement):
             raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
+    ParseResult                             = Statement.ParseResult
+    ParseResultData                         = Statement.ParseResultData
+
+    # ----------------------------------------------------------------------
     # |
     # |  Public Methods
     # |
@@ -157,7 +161,7 @@ class StatementEx(Statement):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Parse(
+    async def ParseAsync(
         self,
         normalized_iter: Statement.NormalizedIterator,
         observer: Statement.Observer,
@@ -225,7 +229,7 @@ class StatementEx(Statement):
                 break
 
             # Process the statement
-            result = statement.Parse(
+            result = await statement.ParseAsync(
                 normalized_iter.Clone(),
                 queue_command_observer,
                 ignore_whitespace=ignore_whitespace_ctr != 0,

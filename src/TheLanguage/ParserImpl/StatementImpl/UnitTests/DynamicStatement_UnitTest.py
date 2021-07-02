@@ -67,7 +67,7 @@ class TestStandard(object):
         OnInternalStatementEqual(
             parse_mock.method_calls[1],
             result.Data.Statement,
-            result.Data,
+            result.Data.Data,
             0,
             result.Iter.Offset,
         )
@@ -125,7 +125,7 @@ class TestStandard(object):
         OnInternalStatementEqual(
             parse_mock.method_calls[1],
             result.Data.Statement,
-            result.Data,
+            result.Data.Data,
             0,
             result.Iter.Offset,
         )

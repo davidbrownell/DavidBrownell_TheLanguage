@@ -518,8 +518,14 @@ def test_RepeatParseResultDataNoneItems():
 
 # ----------------------------------------------------------------------
 def test_ParseReturnsNone():
+    # ----------------------------------------------------------------------
+    async def ParseAsync(*args, **kwargs):
+        return None
+
+    # ----------------------------------------------------------------------
+
     mock = Mock()
-    mock.Parse = Mock(return_value=None)
+    mock.ParseAsync = ParseAsync
 
     statement = RepeatStatement(mock, 1, None)
 

@@ -56,7 +56,7 @@ def CreateStatement(result):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def Parse(self, *args, **kwargs):
+        async def ParseAsync(self, *args, **kwargs):
             return self.parse_mock(*args, **kwargs)
 
     # ----------------------------------------------------------------------
@@ -76,14 +76,16 @@ class TestStandard(object):
     class MyStatement(Statement):
         @staticmethod
         @Interface.override
-        def Parse(*args, **kwargs):
+        async def ParseAsync(*args, **kwargs):
             pass
 
     # ----------------------------------------------------------------------
     class MyParseResultData(Statement.ParseResultData):
         @staticmethod
         @Interface.override
-        def __str__() -> str:
+        def ToString(
+            verbose=False,
+        ) -> str:
             return "Hello!"
 
         @staticmethod
@@ -320,8 +322,6 @@ def test_Parse(iterator, parse_mock):
 # ----------------------------------------------------------------------
 def test_QueueCommandObserver(parse_mock):
     observer = Statement.QueueCommandObserver(parse_mock)
-
-    observer.Enqueue([])
 
     observer.OnIndent(1)
     assert parse_mock.OnIndent.call_count == 0

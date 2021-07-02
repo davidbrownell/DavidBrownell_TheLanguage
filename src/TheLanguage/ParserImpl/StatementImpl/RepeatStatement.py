@@ -119,7 +119,7 @@ class RepeatStatement(StatementType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Parse(
+    async def ParseAsync(
         self,
         normalized_iter: StatementType.NormalizedIterator,
         observer: StatementType.Observer,
@@ -136,7 +136,7 @@ class RepeatStatement(StatementType):
         while not normalized_iter.AtEnd():
             this_queue_command_observer = StatementType.QueueCommandObserver(queue_command_observer)
 
-            result = self.Statement.Parse(
+            result = await self.Statement.ParseAsync(
                 normalized_iter.Clone(),
                 this_queue_command_observer,
                 ignore_whitespace=ignore_whitespace,

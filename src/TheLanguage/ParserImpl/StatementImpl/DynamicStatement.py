@@ -52,7 +52,7 @@ class DynamicStatement(Statement):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Parse(
+    async def ParseAsync(
         self,
         normalized_iter: Statement.NormalizedIterator,
         observer: Statement.Observer,
@@ -69,7 +69,7 @@ class DynamicStatement(Statement):
 
         queue_command_observer = Statement.QueueCommandObserver(observer)
 
-        result = or_statement.Parse(
+        result = await or_statement.ParseAsync(
             normalized_iter,
             queue_command_observer,
             ignore_whitespace=ignore_whitespace,

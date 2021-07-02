@@ -15,9 +15,10 @@
 # ----------------------------------------------------------------------
 """Contains the OrStatement object"""
 
+import asyncio
 import os
 
-from typing import cast, Generator, List, Optional, Union
+from typing import cast, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -59,7 +60,7 @@ class OrStatement(Statement):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Parse(
+    async def ParseAsync(
         self,
         normalized_iter: Statement.NormalizedIterator,
         observer: Statement.Observer,
@@ -71,41 +72,33 @@ class OrStatement(Statement):
     ]:
         use_futures = not single_threaded and len(self.Items) > 1
 
-        queue_command_observers: List[Statement.QueueCommandObserver] = []
-
         # ----------------------------------------------------------------------
-        def Parse(statement):
-            queue_command_observers.append(Statement.QueueCommandObserver(observer))
-
-            return statement.Parse(
+        async def Impl(statement, queue_command_observer):
+            return await statement.ParseAsync(
                 normalized_iter.Clone(),
-                queue_command_observers[-1],
+                queue_command_observer,
                 ignore_whitespace=ignore_whitespace,
                 single_threaded=single_threaded,
             )
 
         # ----------------------------------------------------------------------
 
+        queue_command_observers = [Statement.QueueCommandObserver(observer) for statement in self.Items]
         results: List[Statement.ParseResult] = []
 
         if use_futures:
-            futures = observer.Enqueue(
-                [
-                    lambda statement=statement: Parse(statement)
-                    for statement in self.Items
-                ],
-            )
+            futures = []
 
-            for future in futures:
-                result = future.result()
-                if result is None:
-                    return result
+            for statement, queue_command_observer in zip(self.Items, queue_command_observers):
+                futures.append(Impl(statement, queue_command_observer))
 
-                results.append(result)
+            results = await asyncio.gather(*futures)
+            if any(result is None for result in results):
+                return None
 
         else:
-            for statement in self.Items:
-                result = Parse(statement)
+            for statement, queue_command_observer in zip(self.Items, queue_command_observers):
+                result = await Impl(statement, queue_command_observer)
                 if result is None:
                     return result
 

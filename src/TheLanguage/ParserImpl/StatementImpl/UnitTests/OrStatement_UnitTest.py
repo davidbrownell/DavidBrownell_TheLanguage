@@ -443,8 +443,14 @@ class TestSort(object):
 
 # ----------------------------------------------------------------------
 class TestParseReturnsNone(object):
+    # ----------------------------------------------------------------------
+    async def ParseAsync(*args, **kwargs):
+        return None
+
+    # ----------------------------------------------------------------------
+
     _statement_mock                         = Mock()
-    _statement_mock.Parse                   = Mock(return_value=None)
+    _statement_mock.ParseAsync              = ParseAsync
     _statement_mock.Name                    = "Mocked Statement"
 
     _statement                              = OrStatement(

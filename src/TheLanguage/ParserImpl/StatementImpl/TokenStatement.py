@@ -58,7 +58,7 @@ class TokenStatement(Statement):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Parse(
+    async def ParseAsync(
         self,
         normalized_iter: Statement.NormalizedIterator,
         observer: Statement.Observer,
