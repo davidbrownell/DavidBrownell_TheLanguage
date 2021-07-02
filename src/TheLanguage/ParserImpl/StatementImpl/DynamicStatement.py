@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, List, Union
+from typing import Callable, List, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -41,7 +41,13 @@ class DynamicStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        get_dynamic_statements_func: Callable[[Statement.Observer], List[Statement]],
+        get_dynamic_statements_func: Callable[
+            [Statement.Observer],
+            Union[
+                Tuple[str, List[Statement]],
+                List[Statement],
+            ]
+        ],
         name: str = None,
     ):
         name = name or "Dynamic Statements"
@@ -62,9 +68,17 @@ class DynamicStatement(Statement):
         Statement.ParseResult,
         None,
     ]:
+        dynamic_statements = self._get_dynamic_statements_func(observer)
+        if isinstance(dynamic_statements, Tuple):
+            name = dynamic_statements[0]
+            dynamic_statements = dynamic_statements[1]
+        else:
+            name = None
+
         or_statement = OrStatement(
-            *self._get_dynamic_statements_func(observer),
+            *dynamic_statements,
             sort_results=False,
+            name=name,
         )
 
         queue_command_observer = Statement.QueueCommandObserver(observer)

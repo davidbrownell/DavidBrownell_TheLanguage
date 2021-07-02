@@ -81,7 +81,7 @@ class RepeatStatement(StatementType):
                 """,
             ).format(
                 name=self.Statement.Name,
-                label="DataItems:\n    " if verbose else "",
+                label="Data:\n    " if verbose else "",
                 results=StringHelpers.LeftJustify("\n".join(results), 4),
             )
 

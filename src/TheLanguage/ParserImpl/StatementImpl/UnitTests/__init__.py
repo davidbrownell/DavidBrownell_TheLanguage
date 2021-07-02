@@ -44,9 +44,6 @@ with InitRelativeImports():
 def parse_mock():
     mock = Mock()
 
-    mock._executor = ThreadPoolExecutor()
-    mock.Enqueue = lambda funcs: [mock._executor.submit(func) for func in funcs]
-
     return mock
 
 

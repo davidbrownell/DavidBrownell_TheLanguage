@@ -70,7 +70,7 @@ class OrStatement(Statement):
         Statement.ParseResult,
         None,
     ]:
-        use_futures = not single_threaded and len(self.Items) > 1
+        use_async = not single_threaded and len(self.Items) > 1
 
         # ----------------------------------------------------------------------
         async def Impl(statement, queue_command_observer):
@@ -86,7 +86,7 @@ class OrStatement(Statement):
         queue_command_observers = [Statement.QueueCommandObserver(observer) for statement in self.Items]
         results: List[Statement.ParseResult] = []
 
-        if use_futures:
+        if use_async:
             futures = []
 
             for statement, queue_command_observer in zip(self.Items, queue_command_observers):

@@ -19,9 +19,8 @@ import asyncio
 import os
 import textwrap
 
-from concurrent.futures import Future
 from enum import auto, Enum
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -168,9 +167,11 @@ class Statement(Interface.Interface):
                 name=self.Statement.Name,
                 label=label,
                 result=StringHelpers.LeftJustify(
-                    self.Data.ToString(
-                        verbose=verbose,
-                    ) if self.Data else str(self.Data),
+                    (
+                        self.Data.ToString(
+                            verbose=verbose,
+                        ) if self.Data else str(self.Data)
+                    ).rstrip(),
                     4,
                 ),
             )
@@ -224,7 +225,7 @@ class Statement(Interface.Interface):
             data_items = "\n".join(data_items)
 
             if verbose:
-                label = "DataItems:\n"
+                label = "Data:\n"
             else:
                 label = ""
 
@@ -295,26 +296,6 @@ class Statement(Interface.Interface):
         return self.__dict__ == other.__dict__
 
     # ----------------------------------------------------------------------
-    def Parse(
-        self,
-        normalized_iter: NormalizedIterator,
-        observer: Observer,
-        ignore_whitespace=False,
-        single_threaded=False,
-    ) -> Union[
-        "Statement.ParseResult",            # Result may or may not be successful
-        None,                               # Terminate processing
-    ]:
-        return asyncio.get_event_loop().run_until_complete(
-            self.ParseAsync(
-                normalized_iter,
-                observer,
-                ignore_whitespace=ignore_whitespace,
-                single_threaded=single_threaded,
-            ),
-        )
-
-    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
     async def ParseAsync(
@@ -328,6 +309,10 @@ class Statement(Interface.Interface):
     ]:
         """Parse the content indicated by the provide iterator"""
         raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    def Parse(self, *args, **kwargs):
+        return asyncio.get_event_loop().run_until_complete(self.ParseAsync(*args, **kwargs))
 
     # ----------------------------------------------------------------------
     # |

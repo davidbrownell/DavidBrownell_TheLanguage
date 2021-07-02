@@ -106,6 +106,7 @@ _rpar_token                                 = RegexToken("rpar", re.compile(r"\)
 # ----------------------------------------------------------------------
 class TestParseSimple(object):
     _statement                              = StatementEx(
+        "Statement",
         _word_token,
         _word_token,
         NewlineToken(),
@@ -425,6 +426,7 @@ class TestParseSimple(object):
 # ----------------------------------------------------------------------
 class TestParseIndentAndDedent(object):
     _statement                              = StatementEx(
+        "Statement",
         _word_token,
         NewlineToken(),
         IndentToken(),
@@ -476,10 +478,10 @@ class TestParseIndentAndDedent(object):
         assert len(parse_mock.method_calls) == 2
 
         assert parse_mock.method_calls[0][0] == "OnIndent"
-        assert parse_mock.method_calls[0][1] == (result.Data.DataItems[2].Data,)
+        assert parse_mock.method_calls[0][1] == (result.Data.Data[2].Data,)
 
         assert parse_mock.method_calls[1][0] == "OnDedent"
-        assert parse_mock.method_calls[1][1] == (result.Data.DataItems[7].Data,)
+        assert parse_mock.method_calls[1][1] == (result.Data.Data[7].Data,)
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, parse_mock):
@@ -546,6 +548,7 @@ class TestParseIndentAndDedent(object):
 # ----------------------------------------------------------------------
 class TestIgnoreWhitespace(object):
     _statement                              = StatementEx(
+        "Statement",
         _word_token,
         _lpar_token,
         PushIgnoreWhitespaceControlToken(),
@@ -622,12 +625,17 @@ class TestIgnoreWhitespace(object):
 # ----------------------------------------------------------------------
 class TestEmbeddedStatements(object):
     _inner_statement                        = StatementEx(
+        "Inner",
         _word_token,
         _word_token,
-        name="Inner",
     )
 
-    _statement                              = StatementEx(_lpar_token, _inner_statement, _rpar_token)
+    _statement                              = StatementEx(
+        "Statement",
+        _lpar_token,
+        _inner_statement,
+        _rpar_token,
+    )
 
     # ----------------------------------------------------------------------
     def test_Match(self, parse_mock):
@@ -654,7 +662,7 @@ class TestEmbeddedStatements(object):
         OnInternalStatementEqual(
             parse_mock.method_calls[0],
             self._inner_statement,
-            result.Data.DataItems[1].Data,
+            result.Data.Data[1].Data,
             1,
             9,
         )
@@ -721,10 +729,21 @@ class TestEmbeddedStatements(object):
 
 # ----------------------------------------------------------------------
 class TestDynamicStatements(object):
-    _word_statement                         = StatementEx(_word_token, _word_token, NewlineToken(), name="Word Statement")
-    _number_statement                       = StatementEx(_number_token, NewlineToken(), name="Number Statement")
+    _word_statement                         = StatementEx(
+        "Word Statement",
+        _word_token,
+        _word_token,
+        NewlineToken(),
+    )
+
+    _number_statement                       = StatementEx(
+        "Number Statement",
+        _number_token,
+        NewlineToken(),
+    )
 
     _statement                              = StatementEx(
+        "Statement",
         DynamicStatements.Statements,
         DynamicStatements.Statements,
         DynamicStatements.Expressions,
@@ -757,7 +776,7 @@ class TestDynamicStatements(object):
             """\
             True
             20
-                Dynamic Statements
+                DynamicStatements.Statements
                     Or [Word Statement, Number Statement]
                         Word Statement
                             Word Token
@@ -766,14 +785,14 @@ class TestDynamicStatements(object):
                                 Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                             Newline+
                                 Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                Dynamic Statements
+                DynamicStatements.Statements
                     Or [Word Statement, Number Statement]
                         Number Statement
                             Number Token
                                 Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                             Newline+
                                 Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-                Dynamic Statements
+                DynamicStatements.Expressions
                     Or [Number Statement]
                         Number Statement
                             Number Token
@@ -789,7 +808,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[0],
             self._word_statement,
-            result.Data.DataItems[0].Data.Data.Data,
+            result.Data.Data[0].Data.Data.Data,
             0,
             12,
         )
@@ -798,7 +817,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[1],
             None,
-            result.Data.DataItems[0].Data.Data,
+            result.Data.Data[0].Data.Data,
             0,
             12,
         )
@@ -806,7 +825,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[2],
             self._statement.Statements[0],
-            result.Data.DataItems[0].Data,
+            result.Data.Data[0].Data,
             0,
             12,
         )
@@ -815,7 +834,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[3],
             self._number_statement,
-            result.Data.DataItems[1].Data.Data.Data,
+            result.Data.Data[1].Data.Data.Data,
             12,
             16,
         )
@@ -824,7 +843,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[4],
             None,
-            result.Data.DataItems[1].Data.Data,
+            result.Data.Data[1].Data.Data,
             12,
             16,
         )
@@ -832,7 +851,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[5],
             self._statement.Statements[1],
-            result.Data.DataItems[1].Data,
+            result.Data.Data[1].Data,
             12,
             16,
         )
@@ -841,7 +860,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[6],
             self._number_statement,
-            result.Data.DataItems[2].Data.Data.Data,
+            result.Data.Data[2].Data.Data.Data,
             16,
             20,
         )
@@ -850,7 +869,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[7],
             None,
-            result.Data.DataItems[2].Data.Data,
+            result.Data.Data[2].Data.Data,
             16,
             20,
         )
@@ -858,7 +877,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[8],
             self._statement.Statements[2],
-            result.Data.DataItems[2].Data,
+            result.Data.Data[2].Data,
             16,
             20,
         )
@@ -882,7 +901,7 @@ class TestDynamicStatements(object):
             """\
             False
             16
-                Dynamic Statements
+                DynamicStatements.Statements
                     Or [Word Statement, Number Statement]
                         Word Statement
                             Word Token
@@ -891,14 +910,14 @@ class TestDynamicStatements(object):
                                 Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                             Newline+
                                 Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                Dynamic Statements
+                DynamicStatements.Statements
                     Or [Word Statement, Number Statement]
                         Number Statement
                             Number Token
                                 Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                             Newline+
                                 Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-                Dynamic Statements
+                DynamicStatements.Expressions
                     Or [Number Statement]
                         Number Statement
                             Number Token
@@ -910,11 +929,26 @@ class TestDynamicStatements(object):
 
 # ----------------------------------------------------------------------
 class TestOrStatements(object):
-    _word_statement                         = StatementEx(_word_token, NewlineToken(), name="Word Statement")
-    _number_statement                       = StatementEx(_number_token, NewlineToken(), name="Number Statement")
-    _upper_statement                        = StatementEx(_upper_token, NewlineToken(), name="Upper Statement")
+    _word_statement                         = StatementEx(
+        "Word Statement",
+        _word_token,
+        NewlineToken(),
+    )
+
+    _number_statement                       = StatementEx(
+        "Number Statement",
+        _number_token,
+        NewlineToken(),
+    )
+
+    _upper_statement                        = StatementEx(
+        "Upper Statement",
+        _upper_token,
+        NewlineToken(),
+    )
 
     _statement                              = StatementEx(
+        "Statement",
         [_word_statement, _number_statement, _upper_statement],
     )
 
@@ -1013,11 +1047,26 @@ class TestOrStatements(object):
 
 # ----------------------------------------------------------------------
 class TestRepeatStatements(object):
-    _word_statement                         = StatementEx(_word_token, NewlineToken(), name="Word Statement")
-    _number_statement                       = StatementEx(_number_token, NewlineToken(), name="Number Statement")
-    _upper_statement                        = StatementEx(_upper_token, NewlineToken(), name="Upper Statement")
+    _word_statement                         = StatementEx(
+        "Word Statement",
+        _word_token,
+        NewlineToken(),
+    )
+
+    _number_statement                       = StatementEx(
+        "Number Statement",
+        _number_token,
+        NewlineToken(),
+    )
+
+    _upper_statement                        = StatementEx(
+        "Upper Statement",
+        _upper_token,
+        NewlineToken(),
+    )
 
     _statement                              = StatementEx(
+        "Statement",
         (_word_statement, 0, None),
         (_number_statement, 1, None),
         (_upper_statement, 0, 1),
@@ -1388,9 +1437,17 @@ class TestRepeatSimilarStatements(object):
     # Ensure that the first statement doesn't eat the word so that it isn't available to the
     # second statement.
     _statement                              = StatementEx(
-        (StatementEx(_word_token, _number_token, name="Word & Number"), 0, None),
+        "Statement",
+        (
+            StatementEx(
+                "Word & Number",
+                _word_token,
+                _number_token,
+            ),
+            0,
+            None,
+        ),
         (_word_token, 0, 1),
-        name="Statement",
     )
 
     # ----------------------------------------------------------------------
@@ -1466,11 +1523,26 @@ class TestRepeatSimilarStatements(object):
 
 # ----------------------------------------------------------------------
 class TestNamedStatements(object):
-    _word_line_statement                    = StatementEx(_word_token, NewlineToken(), name="Word Line")
-    _upper_line_statement                   = StatementEx(_upper_token, NewlineToken(), name="Upper Line")
-    _number_line_statement                  = StatementEx(_number_token, NewlineToken(), name="Number Line")
+    _word_line_statement                    = StatementEx(
+        "Word Line",
+        _word_token,
+        NewlineToken(),
+    )
+
+    _upper_line_statement                   = StatementEx(
+        "Upper Line",
+        _upper_token,
+        NewlineToken(),
+    )
+
+    _number_line_statement                  = StatementEx(
+        "Number Line",
+        _number_token,
+        NewlineToken(),
+    )
 
     _statement                              = StatementEx(
+        "Statement",
         StatementEx.NamedItem("__Dynamic__", DynamicStatements.Statements),
         StatementEx.NamedItem("__Or__", [_word_line_statement, _upper_line_statement]),
         StatementEx.NamedItem("__Repeat__", (_number_line_statement, 2, 2)),
@@ -1573,13 +1645,29 @@ class TestNamedStatements(object):
 
 # ----------------------------------------------------------------------
 class TestComments(object):
-    _word_line_statement                    = StatementEx(_word_token, NewlineToken(), name="Word Line")
-    _upper_line_statement                   = StatementEx(_upper_token, NewlineToken(), name="Upper Line")
-    _number_line_statement                  = StatementEx(_number_token, NewlineToken(), name="Number Line")
+    _word_line_statement                    = StatementEx(
+        "Word Line",
+        _word_token,
+        NewlineToken(),
+    )
+
+    _upper_line_statement                   = StatementEx(
+        "Upper Line",
+        _upper_token,
+        NewlineToken(),
+    )
+
+    _number_line_statement                  = StatementEx(
+        "Number Line",
+        _number_token,
+        NewlineToken(),
+    )
 
     _multiline_statement                    = StatementEx(
+        "Multiline",
         (
             StatementEx(
+                "Repeat",
                 _word_line_statement,
                 _upper_line_statement,
                 _number_line_statement,
@@ -1587,10 +1675,10 @@ class TestComments(object):
             1,
             None,
         ),
-        name="Multiline",
     )
 
     _indent_statement                       = StatementEx(
+        "Inner",
         _word_token,
         RegexToken("Colon", re.compile(r":")),
         NewlineToken(),
@@ -1628,8 +1716,8 @@ class TestComments(object):
             """\
             True
             164
-                Repeat: (StatementEx (3), 1, None)
-                    StatementEx (3)
+                Repeat: (Repeat, 1, None)
+                    Repeat
                         0) Word Line
                                Word Token
                                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
@@ -1855,13 +1943,13 @@ class TestComments(object):
 # ----------------------------------------------------------------------
 class TestRecursiveStatements(object):
     _statement                              = StatementEx(
+        "Recursive Statement",
         _lpar_token,
         [
             _word_token,
             None,
         ],
         _rpar_token,
-        name="Recursive Statement",
         populate_empty=True,
     )
 
@@ -1940,13 +2028,13 @@ class TestRecursiveStatements(object):
     # ----------------------------------------------------------------------
     def test_ErrorParseWithoutPopulate(self, parse_mock):
         statement = StatementEx(
+            "Recursive Statement",
             _lpar_token,
             [
                 _word_token,
                 None,
             ],
             _rpar_token,
-            name="Recursive Statement",
         )
 
         with pytest.raises(Exception) as ex:
@@ -1959,12 +2047,14 @@ class TestRecursiveStatements(object):
     # ----------------------------------------------------------------------
     def test_NestedWithoutPopulation(self):
         StatementEx(
+            "Statement 1",
             [
                 None,
             ],
         )
 
         StatementEx(
+            "Statement 2",
             (
                 None,
                 0,
@@ -1975,6 +2065,7 @@ class TestRecursiveStatements(object):
 # ----------------------------------------------------------------------
 def test_IgnoreWhitespace(parse_mock):
     statement = StatementEx(
+        "Statement",
         PushIgnoreWhitespaceControlToken(),
         _word_token,
         _word_token,
@@ -2017,6 +2108,7 @@ def test_IgnoreWhitespace(parse_mock):
 # ----------------------------------------------------------------------
 def test_StatementWithNestedStatement(parse_mock):
     statement = StatementEx(
+        "Statement",
         TokenStatement(_word_token),
     )
 

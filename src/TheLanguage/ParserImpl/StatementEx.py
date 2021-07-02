@@ -131,7 +131,10 @@ class StatementEx(Statement):
         @Interface.abstractmethod
         def GetDynamicStatements(
             value: DynamicStatements,
-        ) -> List[Statement]:
+        ) -> Union[
+            Tuple[str, List[Statement]],
+            List[Statement],
+        ]:
             """Returns all currently available dynamic statements based on the current scope"""
             raise Exception("Abstract method")  # pragma: no cover
 
@@ -146,11 +149,11 @@ class StatementEx(Statement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
+        name: str,
         *items: "StatementEx.ItemType",
-        name: Optional[str]=None,
         populate_empty=False,
     ):
-        super(StatementEx, self).__init__(name or "StatementEx ({})".format(len(items)))
+        super(StatementEx, self).__init__(name)
 
         self._items: List[StatementEx.ItemType]                             = list(items)
         self.Statements: Optional[List[Statement]]                          = None
@@ -263,6 +266,13 @@ class StatementEx(Statement):
         if success and not queue_command_observer.Replay():
             return None
 
+        if len(self._items) == 1 and len(data_items) == 1:
+            return Statement.ParseResult(
+                success,
+                normalized_iter,
+                data_items[0],
+            )
+
         return Statement.ParseResult(
             success,
             normalized_iter,
@@ -324,7 +334,7 @@ class StatementEx(Statement):
         elif isinstance(item, DynamicStatements):
             return DynamicStatement(
                 lambda observer: observer.GetDynamicStatements(item),
-                name=name,
+                name=name or str(item),
             )
 
         elif isinstance(item, list):
