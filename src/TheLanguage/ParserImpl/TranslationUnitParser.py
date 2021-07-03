@@ -117,7 +117,7 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnIndent(
+    async def OnIndentAsync(
         data: Statement.TokenParseResultData,
     ) -> Optional[DynamicStatementInfo]:
         raise Exception("Abstract method")  # pragma: no cover
@@ -125,7 +125,7 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnDedent(
+    async def OnDedentAsync(
         data: Statement.TokenParseResultData,
     ):
         raise Exception("Abstract method")  # pragma: no cover
@@ -133,7 +133,7 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnStatementComplete(
+    async def OnStatementCompleteAsync(
         statement: Statement,
         data: Optional[Statement.ParseResultData],
         iter_before: NormalizedIterator,
@@ -266,13 +266,13 @@ class _StatementObserver(StatementEx.Observer):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnIndent(
+    async def OnIndentAsync(
         self,
         data: Statement.TokenParseResultData,
     ):
         self._all_statement_infos.append([])
 
-        this_result = self._observer.OnIndent(data)
+        this_result = await self._observer.OnIndentAsync(data)
         if isinstance(this_result, DynamicStatementInfo):
             assert self._location_and_data_items
             self.AddDynamicStatementInfo(self._location_and_data_items[-1].Location, this_result)
@@ -281,7 +281,7 @@ class _StatementObserver(StatementEx.Observer):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnDedent(
+    async def OnDedentAsync(
         self,
         data: Statement.TokenParseResultData,
     ):
@@ -291,18 +291,18 @@ class _StatementObserver(StatementEx.Observer):
 
         self._UpdateCache()
 
-        self._observer.OnDedent()
+        await self._observer.OnDedentAsync()
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnInternalStatement(
+    async def OnInternalStatementAsync(
         self,
         statement: Statement,
         data: Optional[Statement.ParseResultData],
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> bool:
-        this_result = self._observer.OnStatementComplete(statement, data, iter_before, iter_after)
+        this_result = await self._observer.OnStatementCompleteAsync(statement, data, iter_before, iter_after)
 
         if isinstance(this_result, DynamicStatementInfo):
             self.AddDynamicStatementInfo(iter_before, this_result)

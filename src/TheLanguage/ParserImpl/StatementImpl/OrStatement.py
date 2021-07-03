@@ -83,7 +83,7 @@ class OrStatement(Statement):
 
         # ----------------------------------------------------------------------
 
-        queue_command_observers = [Statement.QueueCommandObserver(observer) for statement in self.Items]
+        queue_command_observers = [Statement.QueueCommandObserver(observer) for _ in self.Items]
         results: List[Statement.ParseResult] = []
 
         if use_async:
@@ -147,10 +147,10 @@ class OrStatement(Statement):
             best_observer = queue_command_observers[best_index]
             best_statement = self.Items[best_index]
 
-            result = best_observer.Replay()
+            result = await best_observer.ReplayAsync()
             assert result, "This should always be True as it is a result from Statement.QueueCommandObserver"
 
-            if not observer.OnInternalStatement(
+            if not await observer.OnInternalStatementAsync(
                 best_statement,
                 best_result.Data,
                 normalized_iter,

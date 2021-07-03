@@ -51,7 +51,7 @@ class Statement(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        def OnIndent(
+        async def OnIndentAsync(
             data: "Statement.TokenParseResultData",
         ):
             raise Exception("Abstract method")  # pragma: no cover
@@ -59,7 +59,7 @@ class Statement(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        def OnDedent(
+        async def OnDedentAsync(
             data: "Statement.TokenParseResultData",
         ):
             raise Exception("Abstract method")  # pragma: no cover
@@ -67,7 +67,7 @@ class Statement(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        def OnInternalStatement(
+        async def OnInternalStatementAsync(
             statement: "Statement",
             data: Optional["Statement.ParseResultData"],
             iter_before: NormalizedIterator,
@@ -75,6 +75,7 @@ class Statement(Interface.Interface):
         ) -> bool:                          # True to continue, False to terminate
             """Invoked when an internal statement is successfully matched"""
             raise Exception("Abstract method")  # pragma: no cover
+
 
     # ----------------------------------------------------------------------
     # |
@@ -345,6 +346,8 @@ class Statement(Interface.Interface):
     # |  Protected Types
     # |
     # ----------------------------------------------------------------------
+    # BugBug: This is causing problems, as we need the events to happen in real time. However, when
+    # it comes to adding dynamic statements, we need a way to differentiate paths.
     class QueueCommandObserver(Observer):
         """\
         Captures events so that they can be replayed at a later time.
@@ -367,16 +370,16 @@ class Statement(Interface.Interface):
             self._events: List["Statement.QueueCommandObserver.EventInfo"] = []
 
         # ----------------------------------------------------------------------
-        def Replay(self) -> bool:
+        async def ReplayAsync(self) -> bool:
             result = True
 
             for event in self._events:
                 if event.Type == Statement.QueueCommandObserver.EventType.Indent:
-                    self._observer.OnIndent(*event.Args, **event.Kwargs)
+                    await self._observer.OnIndentAsync(*event.Args, **event.Kwargs)
                 elif event.Type == Statement.QueueCommandObserver.EventType.Dedent:
-                    self._observer.OnDedent(*event.Args, **event.Kwargs)
+                    await self._observer.OnDedentAsync(*event.Args, **event.Kwargs)
                 elif event.Type == Statement.QueueCommandObserver.EventType.InternalStatement:
-                    result = self._observer.OnInternalStatement(*event.Args, **event.Kwargs)
+                    result = await self._observer.OnInternalStatementAsync(*event.Args, **event.Kwargs)
                     if not result:
                         break
                 else:
@@ -399,7 +402,7 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def OnIndent(self, *args, **kwargs):
+        async def OnIndentAsync(self, *args, **kwargs):
             self._events.append(
                 Statement.QueueCommandObserver.EventInfo(
                     Statement.QueueCommandObserver.EventType.Indent,
@@ -410,7 +413,7 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def OnDedent(self, *args, **kwargs):
+        async def OnDedentAsync(self, *args, **kwargs):
             self._events.append(
                 Statement.QueueCommandObserver.EventInfo(
                     Statement.QueueCommandObserver.EventType.Dedent,
@@ -421,7 +424,7 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def OnInternalStatement(self, *args, **kwargs):
+        async def OnInternalStatementAsync(self, *args, **kwargs):
             self._events.append(
                 Statement.QueueCommandObserver.EventInfo(
                     Statement.QueueCommandObserver.EventType.InternalStatement,

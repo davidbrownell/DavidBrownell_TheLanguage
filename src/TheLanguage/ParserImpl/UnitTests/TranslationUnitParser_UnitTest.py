@@ -19,8 +19,6 @@ import os
 import re
 import textwrap
 
-from unittest.mock import Mock
-
 import pytest
 
 import CommonEnvironment
@@ -43,7 +41,20 @@ with InitRelativeImports():
 
     from ..TranslationUnitParser import *
 
-    from ..StatementImpl.UnitTests import CreateIterator, parse_mock
+    from ..StatementImpl.UnitTests import (
+        CoroutineMock,
+        CreateIterator,
+        parse_mock as parse_mock_impl,
+    )
+
+# ----------------------------------------------------------------------
+@pytest.fixture
+def parse_mock(parse_mock_impl):
+    parse_mock_impl.OnIndentAsync = CoroutineMock()
+    parse_mock_impl.OnDedentAsync = CoroutineMock()
+    parse_mock_impl.OnStatementCompleteAsync = CoroutineMock()
+
+    return parse_mock_impl
 
 # ----------------------------------------------------------------------
 def OnStatementCompleteEqual(
@@ -123,11 +134,11 @@ class TestSimple(object):
         )
 
         assert len(parse_mock.method_calls) == 6
-        assert len(parse_mock.OnStatementComplete.call_args_list) == 6
+        assert len(parse_mock.OnStatementCompleteAsync.call_args_list) == 6
 
         # Line 1
         OnStatementCompleteEqual(
-            parse_mock.OnStatementComplete.call_args_list[0],
+            parse_mock.OnStatementCompleteAsync.call_args_list[0],
             self._upper_statement,
             results[0].Data.Data,
             0,
@@ -135,7 +146,7 @@ class TestSimple(object):
         )
 
         OnStatementCompleteEqual(
-            parse_mock.OnStatementComplete.call_args_list[1],
+            parse_mock.OnStatementCompleteAsync.call_args_list[1],
             None, # Or Statement
             results[0].Data,
             0,
@@ -144,7 +155,7 @@ class TestSimple(object):
 
         # Line 2
         OnStatementCompleteEqual(
-            parse_mock.OnStatementComplete.call_args_list[2],
+            parse_mock.OnStatementCompleteAsync.call_args_list[2],
             self._lower_statement,
             results[1].Data.Data,
             4,
@@ -152,7 +163,7 @@ class TestSimple(object):
         )
 
         OnStatementCompleteEqual(
-            parse_mock.OnStatementComplete.call_args_list[3],
+            parse_mock.OnStatementCompleteAsync.call_args_list[3],
             None, # Or Statement
             results[1].Data,
             4,
@@ -161,7 +172,7 @@ class TestSimple(object):
 
         # Line 3
         OnStatementCompleteEqual(
-            parse_mock.OnStatementComplete.call_args_list[4],
+            parse_mock.OnStatementCompleteAsync.call_args_list[4],
             self._number_statement,
             results[2].Data.Data,
             8,
@@ -169,7 +180,7 @@ class TestSimple(object):
         )
 
         OnStatementCompleteEqual(
-            parse_mock.OnStatementComplete.call_args_list[5],
+            parse_mock.OnStatementCompleteAsync.call_args_list[5],
             None, # Or Statement
             results[2].Data,
             8,
@@ -216,11 +227,11 @@ class TestSimple(object):
         )
 
         assert len(parse_mock.method_calls) == 6
-        assert len(parse_mock.OnStatementComplete.call_args_list) == 6
+        assert len(parse_mock.OnStatementCompleteAsync.call_args_list) == 6
 
     # ----------------------------------------------------------------------
     def test_EarlyTermination(self, parse_mock):
-        parse_mock.OnStatementComplete = Mock(
+        parse_mock.OnStatementCompleteAsync = CoroutineMock(
             side_effect=[True, False],
         )
 
@@ -304,7 +315,7 @@ class TestNewStatements(object):
 
     # ----------------------------------------------------------------------
     def test_Match(self, parse_mock):
-        parse_mock.OnStatementComplete = Mock(
+        parse_mock.OnStatementCompleteAsync = CoroutineMock(
             side_effect=[self._new_statements, True, True, True],
         )
 
@@ -385,7 +396,7 @@ class TestNewScopedStatements(object):
 
     # ----------------------------------------------------------------------
     def test_Match(self, parse_mock):
-        parse_mock.OnIndent = Mock(
+        parse_mock.OnIndentAsync = CoroutineMock(
             return_value=self._new_statements,
         )
 
@@ -433,7 +444,7 @@ class TestNewScopedStatements(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, parse_mock):
-        parse_mock.OnIndent = Mock(
+        parse_mock.OnIndentAsync = CoroutineMock(
             return_value=self._new_statements,
         )
 
@@ -612,7 +623,7 @@ class TestVariedLengthMatches(object):
 
 # ----------------------------------------------------------------------
 def test_EmptyDynamicStatementInfo(parse_mock):
-    parse_mock.OnStatementComplete = Mock(
+    parse_mock.OnStatementCompleteAsync = CoroutineMock(
         return_value=DynamicStatementInfo([], []),
     )
 
@@ -664,7 +675,7 @@ class TestPreventParentTraversal(object):
 
     # ----------------------------------------------------------------------
     def test_Match(self, parse_mock):
-        parse_mock.OnIndent = Mock(
+        parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicStatementInfo(
                 [self._lower_statement, self._dedent_statement],
                 [],
@@ -734,7 +745,7 @@ class TestPreventParentTraversal(object):
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, parse_mock):
-        parse_mock.OnIndent = Mock(
+        parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicStatementInfo(
                 [self._lower_statement, self._dedent_statement],
                 [],
@@ -817,7 +828,7 @@ class TestPreventParentTraversal(object):
 
 # ----------------------------------------------------------------------
 def test_InvalidDynamicTraversalError(parse_mock):
-    parse_mock.OnStatementComplete = Mock(
+    parse_mock.OnStatementCompleteAsync = CoroutineMock(
         return_value=DynamicStatementInfo(
             [StatementEx("Newline", NewlineToken())],
             [],

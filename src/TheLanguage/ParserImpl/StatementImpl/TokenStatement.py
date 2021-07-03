@@ -87,9 +87,9 @@ class TokenStatement(Statement):
         )
 
         if isinstance(self.Token, IndentToken):
-            observer.OnIndent(data)
+            await observer.OnIndentAsync(data)
         elif isinstance(self.Token, DedentToken):
-            observer.OnDedent(data)
+            await observer.OnDedentAsync(data)
 
         return Statement.ParseResult(True, potential_iter, data)
 

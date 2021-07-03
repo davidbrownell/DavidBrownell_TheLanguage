@@ -154,10 +154,10 @@ class RepeatStatement(StatementType):
                 error_result = result
                 break
 
-            replay_result = this_queue_command_observer.Replay()
+            replay_result = await this_queue_command_observer.ReplayAsync()
             assert replay_result
 
-            on_internal_statement_results = queue_command_observer.OnInternalStatement(
+            on_internal_statement_results = await queue_command_observer.OnInternalStatementAsync(
                 self.Statement,
                 result.Data,
                 normalized_iter,
@@ -199,7 +199,7 @@ class RepeatStatement(StatementType):
                 ),
             )
 
-        if not queue_command_observer.Replay():
+        if not await queue_command_observer.ReplayAsync():
             return None
 
         return StatementType.ParseResult(

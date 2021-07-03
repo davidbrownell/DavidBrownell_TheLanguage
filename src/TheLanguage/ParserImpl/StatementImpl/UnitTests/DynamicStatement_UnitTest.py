@@ -19,6 +19,8 @@ import os
 import re
 import textwrap
 
+import pytest
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -29,10 +31,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import CreateIterator, parse_mock, OnInternalStatementEqual
+    from . import (
+        CoroutineMock,
+        CreateIterator,
+        parse_mock as parse_mock_impl,
+        OnInternalStatementEqual,
+    )
 
     from ..DynamicStatement import *
     from ..TokenStatement import TokenStatement, RegexToken
+
+
+# ----------------------------------------------------------------------
+@pytest.fixture
+def parse_mock(parse_mock_impl):
+    parse_mock_impl.OnIndentAsync = CoroutineMock()
+    parse_mock_impl.OnDedentAsync = CoroutineMock()
+    parse_mock_impl.OnInternalStatementAsync = CoroutineMock()
+
+    return parse_mock_impl
+
 
 # ----------------------------------------------------------------------
 class TestStandard(object):

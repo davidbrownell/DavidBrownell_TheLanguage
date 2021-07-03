@@ -17,11 +17,11 @@
 
 import os
 
-from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Dict, Tuple
-from unittest.mock import Mock
 
 import pytest
+
+from asynctest import CoroutineMock
 
 import CommonEnvironment
 
@@ -42,7 +42,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @pytest.fixture
 def parse_mock():
-    mock = Mock()
+    mock = CoroutineMock()
 
     return mock
 
@@ -71,7 +71,7 @@ def OnInternalStatementEqual(
     offset_before: int,
     offset_after: int,
 ):
-    assert mock_method_call_result[0] == "OnInternalStatement"
+    assert mock_method_call_result[0] == "OnInternalStatementAsync"
     call_result = mock_method_call_result[1]
 
     assert statement == call_result[0]

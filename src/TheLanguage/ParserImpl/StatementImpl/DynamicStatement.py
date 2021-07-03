@@ -91,10 +91,10 @@ class DynamicStatement(Statement):
         )
 
         if result.Success:
-            if not queue_command_observer.Replay():
+            if not await queue_command_observer.ReplayAsync():
                 return None
 
-            if not observer.OnInternalStatement(
+            if not await observer.OnInternalStatementAsync(
                 or_statement,
                 result.Data,
                 normalized_iter,

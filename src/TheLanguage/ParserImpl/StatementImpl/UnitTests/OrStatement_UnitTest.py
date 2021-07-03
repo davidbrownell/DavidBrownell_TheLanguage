@@ -21,6 +21,8 @@ import textwrap
 
 from unittest.mock import Mock
 
+import pytest
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -31,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import parse_mock, CreateIterator, OnInternalStatementEqual
+    from . import parse_mock as parse_mock_impl, CoroutineMock, CreateIterator, OnInternalStatementEqual
 
     from ..OrStatement import *
     from ..TokenStatement import (
@@ -47,6 +49,16 @@ with InitRelativeImports():
         NewlineToken,
         RegexToken,
     )
+
+
+# ----------------------------------------------------------------------
+@pytest.fixture
+def parse_mock(parse_mock_impl):
+    parse_mock_impl.OnIndentAsync = CoroutineMock()
+    parse_mock_impl.OnDedentAsync = CoroutineMock()
+    parse_mock_impl.OnInternalStatementAsync = CoroutineMock()
+
+    return parse_mock_impl
 
 
 # ----------------------------------------------------------------------
@@ -205,7 +217,7 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_OnInternalStatementReturnsNone(self, parse_mock):
-        parse_mock.OnInternalStatement = Mock(return_value=None)
+        parse_mock.OnInternalStatementAsync = CoroutineMock(return_value=None)
 
         iter = CreateIterator("12345678")
 

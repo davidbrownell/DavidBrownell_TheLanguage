@@ -19,8 +19,6 @@ import os
 import re
 import textwrap
 
-from unittest.mock import Mock
-
 import pytest
 
 import CommonEnvironment
@@ -33,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import CreateIterator, parse_mock
+    from . import CoroutineMock, CreateIterator, parse_mock
 
     from ..TokenStatement import *
 
@@ -152,6 +150,9 @@ class TestWords(object):
 
     # ----------------------------------------------------------------------
     def test_IndentSimple(self, parse_mock):
+        parse_mock.OnIndentAsync = CoroutineMock()
+        parse_mock.OnDedentAsync = CoroutineMock()
+
         iter = CreateIterator(
             textwrap.dedent(
                 """\
@@ -204,7 +205,7 @@ class TestWords(object):
 
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 1
-        assert parse_mock.method_calls[0] == ("OnIndent", (result.Data,), {})
+        assert parse_mock.method_calls[0] == ("OnIndentAsync", (result.Data,), {})
 
         iter = result.Iter
 
@@ -250,10 +251,13 @@ class TestWords(object):
 
         assert result.Iter.AtEnd()
         assert len(parse_mock.method_calls) == 2
-        assert parse_mock.method_calls[1] == ("OnDedent", (result.Data,), {})
+        assert parse_mock.method_calls[1] == ("OnDedentAsync", (result.Data,), {})
 
     # ----------------------------------------------------------------------
     def test_IndentMoreComplex(self, parse_mock):
+        parse_mock.OnIndentAsync = CoroutineMock()
+        parse_mock.OnDedentAsync = CoroutineMock()
+
         iter = CreateIterator(
             textwrap.dedent(
                 """\
@@ -321,9 +325,9 @@ class TestWords(object):
                 assert result.Data.Value.Match.group("value") == expected_text
 
             if expected_statement == self._indent_statement:
-                event_name = "OnIndent"
+                event_name = "OnIndentAsync"
             elif expected_statement == self._dedent_statement:
-                event_name = "OnDedent"
+                event_name = "OnDedentAsync"
             else:
                 event_name = None
 

@@ -20,7 +20,7 @@ import re
 import textwrap
 
 from enum import auto, Enum
-from typing import cast, List, Optional, Set, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -75,7 +75,7 @@ class DynamicStatements(Enum):
 
 # ----------------------------------------------------------------------
 class StatementEx(Statement):
-    """Executes the given statements sequentially"""
+    """Executes the given statements sequentially while also providing a simple DSL for auto-creating specific Statement types"""
 
     # ----------------------------------------------------------------------
     # |
@@ -84,12 +84,12 @@ class StatementEx(Statement):
     # ----------------------------------------------------------------------
     ItemType                                = Union[
         Statement,
-        TokenClass,
-        DynamicStatements,
-        List["StatementEx.ItemType"],                                       # Or
-        Tuple["StatementEx.ItemType", int, Optional[int]],                  # Repeat: (Type, Min, Max)
+        TokenClass,                                                         # TokenStatement
+        DynamicStatements,                                                  # DynamicStatement
+        List["StatementEx.ItemType"],                                       # OrStatement
+        Tuple["StatementEx.ItemType", int, Optional[int]],                  # RepeatStatement: (Type, Min, Max)
         None,                                                               # Item to be populated later
-        "StatementEx.NamedItem",
+        "StatementEx.NamedItem",                                            # Statement with a custom name
     ]
 
     # ----------------------------------------------------------------------
@@ -246,7 +246,7 @@ class StatementEx(Statement):
                 result.Success
                 and not isinstance(statement, TokenStatement)
             ):
-                on_internal_statement_result = queue_command_observer.OnInternalStatement(
+                on_internal_statement_result = await queue_command_observer.OnInternalStatementAsync(
                     statement,
                     result.Data,
                     normalized_iter,
@@ -263,7 +263,7 @@ class StatementEx(Statement):
                 success = False
                 break
 
-        if success and not queue_command_observer.Replay():
+        if success and not await queue_command_observer.ReplayAsync():
             return None
 
         if len(self._items) == 1 and len(data_items) == 1:

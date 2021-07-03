@@ -22,6 +22,8 @@ from unittest.mock import Mock
 
 import pytest
 
+from asynctest import CoroutineMock
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -340,48 +342,54 @@ def test_Parse(iterator, parse_mock):
     assert parse_mock.OnInternalStatement.call_count == 0
 
 # ----------------------------------------------------------------------
-def test_QueueCommandObserver(parse_mock):
+@pytest.mark.asyncio
+async def test_QueueCommandObserver(parse_mock):
+    parse_mock.OnIndentAsync = CoroutineMock()
+    parse_mock.OnDedentAsync = CoroutineMock()
+    parse_mock.OnInternalStatementAsync = CoroutineMock()
+
     observer = Statement.QueueCommandObserver(parse_mock)
 
-    observer.OnIndent(1)
-    assert parse_mock.OnIndent.call_count == 0
+    await observer.OnIndentAsync(1)
+    assert parse_mock.OnIndentAsync.call_count == 0
 
-    observer.OnInternalStatement(2)
-    assert parse_mock.OnInternalStatement.call_count == 0
+    await observer.OnInternalStatementAsync(2)
+    assert parse_mock.OnInternalStatementAsync.call_count == 0
 
-    observer.OnDedent(3)
-    assert parse_mock.OnDedent.call_count == 0
+    await observer.OnDedentAsync(3)
+    assert parse_mock.OnDedentAsync.call_count == 0
 
-    observer.OnInternalStatement(4)
-    assert parse_mock.OnInternalStatement.call_count == 0
+    await observer.OnInternalStatementAsync(4)
+    assert parse_mock.OnInternalStatementAsync.call_count == 0
 
-    observer.Replay()
-    assert parse_mock.OnIndent.call_count == 1
-    assert parse_mock.OnDedent.call_count == 1
-    assert parse_mock.OnInternalStatement.call_count == 2
+    await observer.ReplayAsync()
+    assert parse_mock.OnIndentAsync.call_count == 1
+    assert parse_mock.OnDedentAsync.call_count == 1
+    assert parse_mock.OnInternalStatementAsync.call_count == 2
 
-    assert parse_mock.method_calls[0] == ("OnIndent", (1,), {})
-    assert parse_mock.method_calls[1] == ("OnInternalStatement", (2,), {})
-    assert parse_mock.method_calls[2] == ("OnDedent", (3,), {})
-    assert parse_mock.method_calls[3] == ("OnInternalStatement", (4,), {})
+    assert parse_mock.method_calls[0] == ("OnIndentAsync", (1,), {})
+    assert parse_mock.method_calls[1] == ("OnInternalStatementAsync", (2,), {})
+    assert parse_mock.method_calls[2] == ("OnDedentAsync", (3,), {})
+    assert parse_mock.method_calls[3] == ("OnInternalStatementAsync", (4,), {})
 
     # Observer should have been reset and will not replay
-    assert observer.Replay()
+    assert await observer.ReplayAsync()
     assert len(parse_mock.method_calls) == 4
 
 # ----------------------------------------------------------------------
-def test_QueueCommandObserverEarlyReturn(parse_mock):
+@pytest.mark.asyncio
+async def test_QueueCommandObserverEarlyReturn(parse_mock):
     observer = Statement.QueueCommandObserver(parse_mock)
 
-    parse_mock.OnInternalStatement = Mock(side_effect=[True, False, True])
+    parse_mock.OnInternalStatementAsync = CoroutineMock(side_effect=[True, False, True])
 
-    observer.OnInternalStatement(1)
-    observer.OnInternalStatement(2)
-    observer.OnInternalStatement(3)
+    await observer.OnInternalStatementAsync(1)
+    await observer.OnInternalStatementAsync(2)
+    await observer.OnInternalStatementAsync(3)
 
     assert len(parse_mock.method_calls) == 0
-    assert observer.Replay() == False
+    assert await observer.ReplayAsync() == False
 
     assert len(parse_mock.method_calls) == 2
-    assert parse_mock.method_calls[0] == ("OnInternalStatement", (1,), {})
-    assert parse_mock.method_calls[1] == ("OnInternalStatement", (2,), {})
+    assert parse_mock.method_calls[0] == ("OnInternalStatementAsync", (1,), {})
+    assert parse_mock.method_calls[1] == ("OnInternalStatementAsync", (2,), {})

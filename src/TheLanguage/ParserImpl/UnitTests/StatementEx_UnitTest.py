@@ -21,8 +21,6 @@ import textwrap
 
 from typing import Any, Dict, Tuple
 
-from unittest.mock import Mock
-
 import pytest
 
 import CommonEnvironment
@@ -47,7 +45,21 @@ with InitRelativeImports():
         PushIgnoreWhitespaceControlToken,
     )
 
-    from ..StatementImpl.UnitTests import CreateIterator, parse_mock
+    from ..StatementImpl.UnitTests import (
+        CoroutineMock,
+        CreateIterator,
+        parse_mock as parse_mock_impl,
+    )
+
+
+# ----------------------------------------------------------------------
+@pytest.fixture
+def parse_mock(parse_mock_impl):
+    parse_mock_impl.OnIndentAsync = CoroutineMock()
+    parse_mock_impl.OnDedentAsync = CoroutineMock()
+    parse_mock_impl.OnInternalStatementAsync = CoroutineMock()
+
+    return parse_mock_impl
 
 
 # ----------------------------------------------------------------------
@@ -84,7 +96,7 @@ def OnInternalStatementEqual(
     """
 
     if len(mock_method_call_result) == 3:
-        assert mock_method_call_result[0] == "OnInternalStatement"
+        assert mock_method_call_result[0] == "OnInternalStatementAsync"
         mock_method_call_result = mock_method_call_result[1]
     else:
         mock_method_call_result = mock_method_call_result[0]
@@ -477,10 +489,10 @@ class TestParseIndentAndDedent(object):
 
         assert len(parse_mock.method_calls) == 2
 
-        assert parse_mock.method_calls[0][0] == "OnIndent"
+        assert parse_mock.method_calls[0][0] == "OnIndentAsync"
         assert parse_mock.method_calls[0][1] == (result.Data.DataItems[2].Data,)
 
-        assert parse_mock.method_calls[1][0] == "OnDedent"
+        assert parse_mock.method_calls[1][0] == "OnDedentAsync"
         assert parse_mock.method_calls[1][1] == (result.Data.DataItems[7].Data,)
 
     # ----------------------------------------------------------------------
@@ -802,11 +814,11 @@ class TestDynamicStatements(object):
             """,
         )
 
-        assert len(modified_parse_mock.OnInternalStatement.call_args_list) == 9
+        assert len(modified_parse_mock.OnInternalStatementAsync.call_args_list) == 9
 
         # Line 1
         OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatement.call_args_list[0],
+            modified_parse_mock.OnInternalStatementAsync.call_args_list[0],
             self._word_statement,
             result.Data.DataItems[0].Data.Data.Data,
             0,
@@ -815,7 +827,7 @@ class TestDynamicStatements(object):
 
         # The or statement is dynamic, so we don't have access to it here for comparison
         OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatement.call_args_list[1],
+            modified_parse_mock.OnInternalStatementAsync.call_args_list[1],
             None,
             result.Data.DataItems[0].Data.Data,
             0,
@@ -823,7 +835,7 @@ class TestDynamicStatements(object):
         )
 
         OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatement.call_args_list[2],
+            modified_parse_mock.OnInternalStatementAsync.call_args_list[2],
             self._statement.Statements[0],
             result.Data.DataItems[0].Data,
             0,
@@ -832,7 +844,7 @@ class TestDynamicStatements(object):
 
         # Line 2
         OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatement.call_args_list[3],
+            modified_parse_mock.OnInternalStatementAsync.call_args_list[3],
             self._number_statement,
             result.Data.DataItems[1].Data.Data.Data,
             12,
@@ -841,7 +853,7 @@ class TestDynamicStatements(object):
 
         # The or statement is dynamic, so we don't have access to it here for comparison
         OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatement.call_args_list[4],
+            modified_parse_mock.OnInternalStatementAsync.call_args_list[4],
             None,
             result.Data.DataItems[1].Data.Data,
             12,
@@ -849,7 +861,7 @@ class TestDynamicStatements(object):
         )
 
         OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatement.call_args_list[5],
+            modified_parse_mock.OnInternalStatementAsync.call_args_list[5],
             self._statement.Statements[1],
             result.Data.DataItems[1].Data,
             12,
@@ -858,7 +870,7 @@ class TestDynamicStatements(object):
 
         # Line 3
         OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatement.call_args_list[6],
+            modified_parse_mock.OnInternalStatementAsync.call_args_list[6],
             self._number_statement,
             result.Data.DataItems[2].Data.Data.Data,
             16,
@@ -867,7 +879,7 @@ class TestDynamicStatements(object):
 
         # The or statement is dynamic, so we don't have access to it here for comparison
         OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatement.call_args_list[7],
+            modified_parse_mock.OnInternalStatementAsync.call_args_list[7],
             None,
             result.Data.DataItems[2].Data.Data,
             16,
@@ -875,7 +887,7 @@ class TestDynamicStatements(object):
         )
 
         OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatement.call_args_list[8],
+            modified_parse_mock.OnInternalStatementAsync.call_args_list[8],
             self._statement.Statements[2],
             result.Data.DataItems[2].Data,
             16,
@@ -925,7 +937,7 @@ class TestDynamicStatements(object):
             """,
         )
 
-        assert modified_parse_mock.OnInternalStatement.call_args_list == []
+        assert modified_parse_mock.OnInternalStatementAsync.call_args_list == []
 
 # ----------------------------------------------------------------------
 class TestOrStatements(object):
@@ -969,7 +981,7 @@ class TestOrStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 2
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 2
 
     # ----------------------------------------------------------------------
     def test_NumberMatch(self, parse_mock):
@@ -988,7 +1000,7 @@ class TestOrStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 2
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 2
 
     # ----------------------------------------------------------------------
     def test_UpperMatch(self, parse_mock):
@@ -1007,7 +1019,7 @@ class TestOrStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 2
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 2
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, parse_mock):
@@ -1032,18 +1044,18 @@ class TestOrStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 0
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 0
 
     # ----------------------------------------------------------------------
     def test_EarlyTermination(self, parse_mock):
-        parse_mock.OnInternalStatement = Mock(
+        parse_mock.OnInternalStatementAsync = CoroutineMock(
             side_effect=[True, False],
         )
 
         result = self._statement.Parse(CreateIterator("word"), parse_mock)
 
         assert result is None
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 2
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 2
 
 # ----------------------------------------------------------------------
 class TestRepeatStatements(object):
@@ -1140,7 +1152,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 12
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 12
 
     # ----------------------------------------------------------------------
     def test_Match2(self, parse_mock):
@@ -1200,7 +1212,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 10
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 10
 
     # ----------------------------------------------------------------------
     def test_Match3(self, parse_mock):
@@ -1260,7 +1272,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 10
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 10
 
     # ----------------------------------------------------------------------
     def test_Match4(self, parse_mock):
@@ -1316,7 +1328,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 9
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 9
 
     # ----------------------------------------------------------------------
     def test_NoMatch1(self, parse_mock):
@@ -1357,7 +1369,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 0
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 0
 
     # ----------------------------------------------------------------------
     def test_NoMatch2(self, parse_mock):
@@ -1405,11 +1417,11 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatement.call_args_list) == 0
+        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 0
 
     # ----------------------------------------------------------------------
     def test_EarlyTermination(self, parse_mock):
-        parse_mock.OnInternalStatement = Mock(
+        parse_mock.OnInternalStatementAsync = CoroutineMock(
             side_effect=[True, True, True, True, False],
         )
 

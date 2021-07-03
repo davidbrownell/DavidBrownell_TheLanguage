@@ -33,7 +33,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import CreateIterator, OnInternalStatementEqual, parse_mock
+    from . import (
+        CoroutineMock,
+        CreateIterator,
+        OnInternalStatementEqual,
+        parse_mock as parse_mock_impl,
+    )
 
     from ..OrStatement import OrStatement
     from ..RepeatStatement import *
@@ -42,6 +47,17 @@ with InitRelativeImports():
         RegexToken,
         TokenStatement,
     )
+
+
+# ----------------------------------------------------------------------
+@pytest.fixture
+def parse_mock(parse_mock_impl):
+    parse_mock_impl.OnIndentAsync = CoroutineMock()
+    parse_mock_impl.OnDedentAsync = CoroutineMock()
+    parse_mock_impl.OnInternalStatementAsync = CoroutineMock()
+
+    return parse_mock_impl
+
 
 # ----------------------------------------------------------------------
 class TestStandard(object):
@@ -545,7 +561,7 @@ def test_ParseReturnsNone():
 
 # ----------------------------------------------------------------------
 def test_OnInternalStatementFalse(parse_mock):
-    parse_mock.OnInternalStatement = Mock(return_value=False)
+    parse_mock.OnInternalStatementAsync = CoroutineMock(return_value=False)
 
     statement = RepeatStatement(TokenStatement(NewlineToken()), 1, None)
 
