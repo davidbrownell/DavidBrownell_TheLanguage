@@ -90,7 +90,14 @@ class TestStandard(object):
 
         @staticmethod
         @Interface.override
-        def EnumTokens() -> Generator[Statement.TokenParseResultData, None, None]:
+        def Enum() -> Generator[
+            Tuple[
+                Optional[Statement],
+                Optional[Statement.TokenParseResultData],
+            ],
+            None,
+            None
+        ]:
             if False:
                 yield None
 
@@ -162,12 +169,16 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_StandardParseResultDataEnumWithNone(self):
+        statement = CreateStatement(20)
+
         data = Statement.StandardParseResultData(
-            CreateStatement(20),
+            statement,
             None,
         )
 
-        assert list(data.EnumTokens()) == []
+        assert list(data.Enum()) == [
+            (statement, None),
+        ]
 
 # ----------------------------------------------------------------------
 class TestTokenParseResultData(object):
@@ -244,12 +255,16 @@ class TestTokenParseResultData(object):
             False,
         )
 
-        assert list(data.EnumTokens()) == [data]
+        assert list(data.Enum()) == [
+            (None, data),
+        ]
 
     # ----------------------------------------------------------------------
     def test_StandardParseResultDataEnum(self, iterator):
+        statement = CreateStatement(20)
+
         data = Statement.StandardParseResultData(
-            CreateStatement(20),
+            statement,
             Statement.TokenParseResultData(
                 self._token,
                 None,
@@ -260,7 +275,9 @@ class TestTokenParseResultData(object):
             ),
         )
 
-        assert list(data.EnumTokens()) == [data.Data]
+        assert list(data.Enum()) == [
+            (statement, data.Data),
+        ]
 
 # ----------------------------------------------------------------------
 class TestMultipleParseResultData(object):
@@ -307,8 +324,11 @@ class TestMultipleParseResultData(object):
         )
 
     # ----------------------------------------------------------------------
-    def test_NumTokens(self):
-        assert list(self._data.EnumTokens()) == [self._data.DataItems[0].Data, self._data.DataItems[1].Data]
+    def test_Enum(self):
+        assert list(self._data.Enum()) == [
+            (self._statement, self._data.DataItems[0].Data),
+            (self._statement, self._data.DataItems[1].Data),
+        ]
 
 # ----------------------------------------------------------------------
 def test_Parse(iterator, parse_mock):

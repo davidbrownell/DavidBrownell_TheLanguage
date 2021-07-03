@@ -54,13 +54,13 @@ class TestStandard(object):
     _lower_statement                        = TokenStatement(RegexToken("lower", re.compile(r"(?P<value>[a-z]+[0-9]*)")))
     _upper_statement                        = TokenStatement(RegexToken("upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)")))
     _number_statement                       = TokenStatement(RegexToken("number", re.compile(r"(?P<value>[0-9]+)")))
-    _newline_sttement                       = TokenStatement(NewlineToken())
+    _newline_statement                      = TokenStatement(NewlineToken())
 
     _statement                              = OrStatement(
         _lower_statement,
         _upper_statement,
         _number_statement,
-        _newline_sttement,
+        _newline_statement,
         name="My Or Statement",
     )
 
@@ -101,9 +101,9 @@ class TestStandard(object):
             result.Iter.Offset,
         )
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == [result.Data.Data,]
+        assert list(result.Data.Enum()) == [
+            (self._lower_statement, result.Data.Data),
+        ]
 
     # ----------------------------------------------------------------------
     def test_MatchUpper(self, parse_mock):
@@ -132,9 +132,9 @@ class TestStandard(object):
             result.Iter.Offset,
         )
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == [result.Data.Data,]
+        assert list(result.Data.Enum()) == [
+            (self._upper_statement, result.Data.Data),
+        ]
 
     # ----------------------------------------------------------------------
     def test_MatchNumber(self, parse_mock):
@@ -163,9 +163,9 @@ class TestStandard(object):
             result.Iter.Offset,
         )
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == [result.Data.Data,]
+        assert list(result.Data.Enum()) == [
+            (self._number_statement, result.Data.Data),
+        ]
 
     # ----------------------------------------------------------------------
     def test_MatchNumberSingleThreaded(self, parse_mock):
@@ -199,9 +199,9 @@ class TestStandard(object):
             result.Iter.Offset,
         )
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == [result.Data.Data,]
+        assert list(result.Data.Enum()) == [
+            (self._number_statement, result.Data.Data),
+        ]
 
     # ----------------------------------------------------------------------
     def test_OnInternalStatementReturnsNone(self, parse_mock):
@@ -245,9 +245,12 @@ class TestStandard(object):
 
         assert len(parse_mock.method_calls) == 0
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == []
+        assert list(result.Data.Enum()) == [
+            (self._lower_statement, None),
+            (self._upper_statement, None),
+            (self._number_statement, None),
+            (self._newline_statement, None),
+        ]
 
     # ----------------------------------------------------------------------
     def test_NoMatchSingleThreaded(self, parse_mock):
@@ -279,9 +282,12 @@ class TestStandard(object):
 
         assert len(parse_mock.method_calls) == 0
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == []
+        assert list(result.Data.Enum()) == [
+            (self._lower_statement, None),
+            (self._upper_statement, None),
+            (self._number_statement, None),
+            (self._newline_statement, None),
+        ]
 
     # ----------------------------------------------------------------------
     def test_NestedLower(self, parse_mock):
@@ -318,9 +324,9 @@ class TestStandard(object):
             result.Iter.Offset,
         )
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == [result.Data.Data.Data,]
+        assert list(result.Data.Enum()) == [
+            (self._inner_nested_statement, result.Data.Data),
+        ]
 
     # ----------------------------------------------------------------------
     def test_NestedUpper(self, parse_mock):
@@ -348,9 +354,9 @@ class TestStandard(object):
             result.Iter.Offset,
         )
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == [result.Data.Data,]
+        assert list(result.Data.Enum()) == [
+            (self._upper_statement, result.Data.Data),
+        ]
 
 # ----------------------------------------------------------------------
 class TestSort(object):
@@ -437,9 +443,10 @@ class TestSort(object):
 
         assert len(parse_mock.method_calls) == 0
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == []
+        assert list(result.Data.Enum()) == [
+            (self._short_statement, None),
+            (self._long_statement, None),
+        ]
 
 # ----------------------------------------------------------------------
 class TestParseReturnsNone(object):

@@ -115,9 +115,9 @@ class TestStandard(object):
             4,
         )
 
-        assert list(result.Data.EnumTokens()) == [
-            result.Data.DataItems[0].Data,
-            result.Data.DataItems[1].Data,
+        assert list(result.Data.Enum()) == [
+            (self._statement.Statement, result.Data.DataItems[0]),
+            (self._statement.Statement, result.Data.DataItems[1]),
         ]
 
     # ----------------------------------------------------------------------
@@ -224,11 +224,11 @@ class TestStandard(object):
             8,
         )
 
-        assert list(result.Data.EnumTokens()) == [
-            result.Data.DataItems[0].Data,
-            result.Data.DataItems[1].Data,
-            result.Data.DataItems[2].Data,
-            result.Data.DataItems[3].Data,
+        assert list(result.Data.Enum()) == [
+            (self._statement.Statement, result.Data.DataItems[0]),
+            (self._statement.Statement, result.Data.DataItems[1]),
+            (self._statement.Statement, result.Data.DataItems[2]),
+            (self._statement.Statement, result.Data.DataItems[3]),
         ]
 
     # ----------------------------------------------------------------------
@@ -336,11 +336,11 @@ class TestStandard(object):
             8,
         )
 
-        assert list(result.Data.EnumTokens()) == [
-            result.Data.DataItems[0].Data,
-            result.Data.DataItems[1].Data,
-            result.Data.DataItems[2].Data,
-            result.Data.DataItems[3].Data,
+        assert list(result.Data.Enum()) == [
+            (self._statement.Statement, result.Data.DataItems[0]),
+            (self._statement.Statement, result.Data.DataItems[1]),
+            (self._statement.Statement, result.Data.DataItems[2]),
+            (self._statement.Statement, result.Data.DataItems[3]),
         ]
 
     # ----------------------------------------------------------------------
@@ -370,7 +370,10 @@ class TestStandard(object):
         )
 
         assert len(parse_mock.method_calls) == 0
-        assert list(result.Data.EnumTokens()) == []
+
+        assert list(result.Data.Enum()) == [
+            (self._statement.Statement, result.Data.DataItems[0]),
+        ]
 
     # ----------------------------------------------------------------------
     def test_PartialMatch(self, parse_mock):
@@ -401,8 +404,10 @@ class TestStandard(object):
         )
 
         assert len(parse_mock.method_calls) == 0
-        assert list(result.Data.EnumTokens()) == [
-            result.Data.DataItems[0].Data,
+
+        assert list(result.Data.Enum()) == [
+            (self._statement.Statement, result.Data.DataItems[0]),
+            (self._statement.Statement, result.Data.DataItems[1]),
         ]
 
     # ----------------------------------------------------------------------
@@ -492,7 +497,9 @@ def test_CreationErrors():
 
 # ----------------------------------------------------------------------
 def test_RepeatParseResultDataNoItems():
-    data = RepeatStatement.RepeatParseResultData(TokenStatement(NewlineToken()), [])
+    statement = TokenStatement(NewlineToken())
+
+    data = RepeatStatement.RepeatParseResultData(statement, [])
 
     assert str(data) == textwrap.dedent(
         """\
@@ -501,11 +508,13 @@ def test_RepeatParseResultDataNoItems():
         """,
     )
 
-    assert list(data.EnumTokens()) == []
+    assert list(data.Enum()) == []
 
 # ----------------------------------------------------------------------
 def test_RepeatParseResultDataNoneItems():
-    data = RepeatStatement.RepeatParseResultData(TokenStatement(NewlineToken()), [None])
+    statement = TokenStatement(NewlineToken())
+
+    data = RepeatStatement.RepeatParseResultData(statement, [None])
 
     assert str(data) == textwrap.dedent(
         """\
@@ -514,7 +523,9 @@ def test_RepeatParseResultDataNoneItems():
         """,
     )
 
-    assert list(data.EnumTokens()) == []
+    assert list(data.Enum()) == [
+        (statement, None),
+    ]
 
 # ----------------------------------------------------------------------
 def test_ParseReturnsNone():

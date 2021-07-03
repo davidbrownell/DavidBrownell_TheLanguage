@@ -72,9 +72,9 @@ class TestStandard(object):
             result.Iter.Offset,
         )
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == [result.Data.Data.Data,]
+        assert [t[1] for t in result.Data.Enum()] == [
+            result.Data.Data,
+        ]
 
     # ----------------------------------------------------------------------
     def test_SingleNoMatch(self, parse_mock):
@@ -93,9 +93,9 @@ class TestStandard(object):
 
         assert len(parse_mock.method_calls) == 0
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == []
+        assert [t[1] for t in result.Data.Enum()] == [
+            result.Data.Data,
+        ]
 
     # ----------------------------------------------------------------------
     def test_Multiple(self, parse_mock):
@@ -130,6 +130,6 @@ class TestStandard(object):
             result.Iter.Offset,
         )
 
-        tokens = list(result.Data.EnumTokens())
-
-        assert tokens == [result.Data.Data.Data,]
+        assert [t[1] for t in result.Data.Enum()] == [
+            result.Data.Data,
+        ]
