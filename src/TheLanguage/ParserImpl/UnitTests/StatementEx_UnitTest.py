@@ -478,10 +478,10 @@ class TestParseIndentAndDedent(object):
         assert len(parse_mock.method_calls) == 2
 
         assert parse_mock.method_calls[0][0] == "OnIndent"
-        assert parse_mock.method_calls[0][1] == (result.Data.Data[2].Data,)
+        assert parse_mock.method_calls[0][1] == (result.Data.DataItems[2].Data,)
 
         assert parse_mock.method_calls[1][0] == "OnDedent"
-        assert parse_mock.method_calls[1][1] == (result.Data.Data[7].Data,)
+        assert parse_mock.method_calls[1][1] == (result.Data.DataItems[7].Data,)
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, parse_mock):
@@ -662,7 +662,7 @@ class TestEmbeddedStatements(object):
         OnInternalStatementEqual(
             parse_mock.method_calls[0],
             self._inner_statement,
-            result.Data.Data[1].Data,
+            result.Data.DataItems[1].Data,
             1,
             9,
         )
@@ -808,7 +808,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[0],
             self._word_statement,
-            result.Data.Data[0].Data.Data.Data,
+            result.Data.DataItems[0].Data.Data.Data,
             0,
             12,
         )
@@ -817,7 +817,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[1],
             None,
-            result.Data.Data[0].Data.Data,
+            result.Data.DataItems[0].Data.Data,
             0,
             12,
         )
@@ -825,7 +825,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[2],
             self._statement.Statements[0],
-            result.Data.Data[0].Data,
+            result.Data.DataItems[0].Data,
             0,
             12,
         )
@@ -834,7 +834,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[3],
             self._number_statement,
-            result.Data.Data[1].Data.Data.Data,
+            result.Data.DataItems[1].Data.Data.Data,
             12,
             16,
         )
@@ -843,7 +843,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[4],
             None,
-            result.Data.Data[1].Data.Data,
+            result.Data.DataItems[1].Data.Data,
             12,
             16,
         )
@@ -851,7 +851,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[5],
             self._statement.Statements[1],
-            result.Data.Data[1].Data,
+            result.Data.DataItems[1].Data,
             12,
             16,
         )
@@ -860,7 +860,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[6],
             self._number_statement,
-            result.Data.Data[2].Data.Data.Data,
+            result.Data.DataItems[2].Data.Data.Data,
             16,
             20,
         )
@@ -869,7 +869,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[7],
             None,
-            result.Data.Data[2].Data.Data,
+            result.Data.DataItems[2].Data.Data,
             16,
             20,
         )
@@ -877,7 +877,7 @@ class TestDynamicStatements(object):
         OnInternalStatementEqual(
             modified_parse_mock.OnInternalStatement.call_args_list[8],
             self._statement.Statements[2],
-            result.Data.Data[2].Data,
+            result.Data.DataItems[2].Data,
             16,
             20,
         )

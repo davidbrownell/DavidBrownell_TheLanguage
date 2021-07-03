@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  MultifileParser.py
+# |  TranslationUnitsParser.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-11 10:50:58
+# |      2021-07-02 11:23:32
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,18 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that parses multiple files"""
+"""Functionality to parse multiple translation units simultaneously"""
 
+import asyncio
 import os
 import textwrap
 import threading
 import traceback
 
 from concurrent.futures import Future
-from typing import Any, cast, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, cast, Dict, List, Optional, Tuple, Union
+
+import nest_asyncio
 
 from dataclasses import dataclass, field
 
@@ -41,15 +44,22 @@ with InitRelativeImports():
     from .Error import Error
     from .Normalize import Normalize
     from .NormalizedIterator import NormalizedIterator
-    from .Statement import Statement
 
-    from .StatementsParser import (
-        DynamicStatementInfo,
-        Observer as StatementsObserver,
-        Parse as StatementsParse,
+    from .StatementEx import (
+        Statement,
+        TokenClass as Token,
+        TokenStatement,
     )
 
-    from .Token import Token
+    from .TranslationUnitParser import (
+        DynamicStatementInfo,
+        Observer as TranslationUnitObserver,
+        ParseAsync as TranslationUnitParseAsync,
+    )
+
+
+# ----------------------------------------------------------------------
+nest_asyncio.apply()
 
 
 # ----------------------------------------------------------------------
@@ -62,43 +72,65 @@ class UnknownSourceError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class _ParseResultBase(object):
+class _ParseResultBase(Interface.Interface):
     """Base class for parsed AST entities"""
 
-    Type: Union[Optional[Statement], Token]
+    Type: Union[None, Statement, Token]
+
+    Parent: Optional[Statement]             = field(
+        default_factory=lambda: None,
+        init=False,
+    )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        object.__setattr__(self, "Parent", None)
+    def __str__(self):
+        return self.ToString()
 
     # ----------------------------------------------------------------------
-    def __str__(self) -> str:
+    @Interface.extensionmethod
+    def ToString(
+        self,
+        verbose=False,
+    ) -> str:
         if self.Type is None:
             return "<Root>" if isinstance(self, RootNode) else "<None>"
 
-        return Statement.ItemTypeToString(self.Type)
+        return self.Type.Name
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class _Node(_ParseResultBase):
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(_Node, self).__post_init__()
-        object.__setattr__(self, "Children", [])
+    Children: List[Union["_Node", "Leaf"]]  = field(
+        default_factory=list,
+        init=False,
+    )
 
     # ----------------------------------------------------------------------
-    def __str__(self) -> str:
-        children = [str(child).rstrip() for child in getattr(self, "Children", [])]
+    @Interface.override
+    def ToString(
+        self,
+        verbose=False,
+    ) -> str:
+        children = [
+            child.ToString(
+                verbose=verbose,
+            ).rstrip()
+            for child in self.Children
+        ]
+
         if not children:
-            children.append("<No children>")
+            children.append("<No Children>")
 
         return textwrap.dedent(
             """\
-            {name}
+            {heading}
                 {children}
             """,
         ).format(
-            name=super(_Node, self).__str__(),
+            heading=super(_Node, self).ToString(
+                verbose=verbose,
+            ),
             children=StringHelpers.LeftJustify(
                 "\n".join(children),
                 4,
@@ -111,7 +143,7 @@ class _Node(_ParseResultBase):
         node = self
 
         while isinstance(node, _Node):
-            node = node.Children[0]         # <Has no member> pylint: disable=E1101
+            node = node.Children[0]
 
         return cast(Leaf, node).IterBefore
 
@@ -120,29 +152,22 @@ class _Node(_ParseResultBase):
         node = self
 
         while isinstance(node, _Node):
-            node = node.Children[-1]        # <Has no member> pylint: disable=E1101
+            node = node.Children[-1]
 
         return cast(Leaf, node).IterAfter
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class RootNode(_Node):
-    # ----------------------------------------------------------------------
-    def __init__(self):
-        super(RootNode, self).__init__(None)
+    pass
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class Node(_Node):
     """AST results of a Statement"""
-
-    # ----------------------------------------------------------------------
-    # <Useless super delegation> pylint: disable=W0235
-    def __init__(
-        self,
-        statement: Statement,
-    ):
-        super(Node, self).__init__(statement)
+    pass
 
 
 # ----------------------------------------------------------------------
@@ -157,9 +182,15 @@ class Leaf(_ParseResultBase):
     IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
 
     # ----------------------------------------------------------------------
-    def __str__(self):
+    @Interface.override
+    def ToString(
+        self,
+        verbose=False,
+    ) -> str:
         return "{typ} <<{value}>> ws:{ws}{ignored} [{line_before}, {column_before} -> {line_after}, {column_after}]".format(
-            typ=super(Leaf, self).__str__(),
+            typ=super(Leaf, self).ToString(
+                verbose=verbose,
+            ),
             value=str(self.Value),
             ws="None" if self.Whitespace is None else "({}, {})".format(*self.Whitespace),
             ignored=" !Ignored!" if self.IsIgnored else "",
@@ -173,16 +204,24 @@ class Leaf(_ParseResultBase):
 # ----------------------------------------------------------------------
 class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class ImportInfo(object):
         SourceName: str
         FullyQualifiedName: Optional[str]   # None if the SourceName cannot be resolved
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
     def LoadContent(
-        fully_qualified_name: str
+        fully_qualified_name: str,
     ) -> str:
         """Returns the content associated with the fully qualified name"""
         raise Exception("Abstract method")  # pragma: no cover
@@ -193,13 +232,13 @@ class Observer(Interface.Interface):
     def Enqueue(
         funcs: List[Callable[[], None]],
     ) -> List[Future]:
-        """Enqueues the funcs for execution"""
+        """Enqueues the funcs for execution on a thread pool"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def ExtractDynamicStatementInfo(
+    def ExtractDynamicStatements(
         fully_qualified_name: str,
         node: RootNode,
     ) -> DynamicStatementInfo:
@@ -211,9 +250,9 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     def OnIndent(
         fully_qualified_name: str,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        data: Statement.TokenParseResultData,
     ) -> Optional[DynamicStatementInfo]:
+        """Event generated on the creation of a new scope"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -221,9 +260,9 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     def OnDedent(
         fully_qualified_name: str,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
-    ):
+        data: Statement.TokenParseResultData,
+    ) -> None:
+        """Event generated on the end of a scope"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -236,7 +275,7 @@ class Observer(Interface.Interface):
         iter_after: NormalizedIterator,
     ) -> Union[
         bool,                               # True to continue processing, False to terminate
-        DynamicStatementInfo,               # DynamicStatementInfo generated by the statement (if necessary)
+        DynamicStatementInfo,               # DynamicStatementInfo generated by the statement
         "Observer.ImportInfo",              # Import information generated by the statement
     ]:
         """Called on the completion of each statement"""
@@ -244,32 +283,36 @@ class Observer(Interface.Interface):
 
 
 # ----------------------------------------------------------------------
-def Parse(
+async def ParseAsync(
     fully_qualified_names: List[str],
     initial_statement_info: DynamicStatementInfo,
     observer: Observer,
-
-    # True to execute all statements within a single thread
     single_threaded=False,
 ) -> Union[
+    None,
     Dict[str, RootNode],
     List[Exception],
 ]:
     # ----------------------------------------------------------------------
-    @dataclass
     class SourceInfo(object):
-        Node: RootNode
-        SourceInfo: DynamicStatementInfo
+        # ----------------------------------------------------------------------
+        def __init__(
+            self,
+            node: Optional[RootNode],
+            statement_info: DynamicStatementInfo,
+        ):
+            self.Node                       = node
+            self.StatementInfo              = statement_info
 
     # ----------------------------------------------------------------------
-    @dataclass
     class ThreadInfo(object):
-        pending_ctr: int                                                    = 0
+        def __init__(self):
+            self.pending_ctr                                                = 0
 
-        source_lookup: Dict[str, Optional[SourceInfo]]                      = field(default_factory=dict)
-        source_pending: Dict[str, List[threading.Event]]                    = field(default_factory=dict)
+            self.source_lookup: Dict[str, Optional[SourceInfo]]             = {}
+            self.source_pending: Dict[str, List[threading.Event]]           = {}
 
-        errors: List[Exception]                                             = field(default_factory=list)
+            self.errors: List[Exception]                                    = []
 
     # ----------------------------------------------------------------------
 
@@ -279,8 +322,10 @@ def Parse(
     is_complete = threading.Event()
 
     # ----------------------------------------------------------------------
-    # TODO: Check for import cycles
-    def Execute(fully_qualified_name) -> DynamicStatementInfo:
+    async def ExecuteAsync(
+        fully_qualified_name,
+        increment_pending_ctr=True,
+    ) -> DynamicStatementInfo:
         final_result = None
 
         # ----------------------------------------------------------------------
@@ -301,22 +346,24 @@ def Parse(
 
         with CallOnExit(OnExit):
             with thread_info_lock:
-                if fully_qualified_name not in thread_info.source_lookup:       # <Value doesn't support membership test> pylint: disable=E1135
+                if fully_qualified_name not in thread_info.source_lookup:
                     should_execute = True
                     wait_event = None
 
-                    thread_info.source_lookup[fully_qualified_name] = None      # <Value doesn't support item assignment> pylint: disable=E1137
-                    thread_info.pending_ctr += 1
+                    thread_info.source_lookup[fully_qualified_name] = None
+
+                    if increment_pending_ctr:
+                        thread_info.pending_ctr += 1
 
                 else:
-                    source_info = thread_info.source_lookup[fully_qualified_name]                       # <Value is unscriptable> pylint: disable=E1136
+                    source_info = thread_info.source_lookup[fully_qualified_name]
                     if source_info is not None:
-                        return source_info.SourceInfo
+                        return source_info.StatementInfo
 
                     should_execute = False
                     wait_event = threading.Event()
 
-                    thread_info.source_pending.setdefault(fully_qualified_name, []).append(wait_event)  # <Has no member> pylint: disable=E1101
+                    thread_info.source_pending.setdefault(fully_qualified_name, []).append(wait_event)
 
             if should_execute:
                 # ----------------------------------------------------------------------
@@ -332,31 +379,33 @@ def Parse(
 
                 with CallOnExit(OnExecuteExit):
                     try:
-                        statement_observer = _StatementsObserver(fully_qualified_name, observer, Execute)
+                        statement_observer = _StatementsObserver(fully_qualified_name, observer, ExecuteAsync)
 
                         content = observer.LoadContent(fully_qualified_name)
 
-                        results = StatementsParse(
+                        results = await TranslationUnitParseAsync(
                             initial_statement_info,
                             NormalizedIterator(Normalize(content)),
                             statement_observer,
                             single_threaded=single_threaded,
                         )
 
-                        # The nodes have already been created, but we need to finalize the parent/child
-                        # relationships.
-                        root = RootNode()
+                        # BugBug: What happens when results is None?
+
+                        # The noes have already been created, but we need to finalize
+                        # the relationships.
+                        root = RootNode(None)
 
                         for result in results:
-                            statement_observer.CreateNode(result.Statement, result.Results, root)
+                            statement_observer.CreateNode(result.Statement, result.Data, root)
 
-                        # Get the source info
-                        source_info = observer.ExtractDynamicStatementInfo(fully_qualified_name, root)
+                        # Get the Dynamic Statements
+                        dynamic_statements = observer.ExtractDynamicStatements(fully_qualified_name, root)
 
                         # Commit the results
                         with thread_info_lock:
-                            assert thread_info.source_lookup[fully_qualified_name] is None                      # <Value is unscriptable> pylint: disable=E1136
-                            thread_info.source_lookup[fully_qualified_name] = SourceInfo(root, source_info)     # <Does not support item assignment> pylint: disable=E1137
+                            assert thread_info.source_lookup[fully_qualified_name] is None
+                            thread_info.source_lookup[fully_qualified_name] = SourceInfo(root, dynamic_statements)
 
                     except Exception as ex:
                         assert not hasattr(ex, "Traceback")
@@ -366,23 +415,47 @@ def Parse(
                         object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
 
                         with thread_info_lock:
-                            thread_info.errors.append(ex)   # <Has no member> pylint: disable=E1101
+                            thread_info.errors.append(ex)
 
             elif wait_event:
                 wait_event.wait()
 
-        return final_result.SourceInfo
+        assert final_result
+        return final_result.StatementInfo
+
+    # ----------------------------------------------------------------------
+    def PrepLoopAndExecute(
+        fully_qualified_name,
+        increment_pending_ctr=True,
+    ):
+        thread_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(thread_loop)
+
+        try:
+            return thread_loop.run_until_complete(
+                ExecuteAsync(
+                    fully_qualified_name,
+                    increment_pending_ctr=increment_pending_ctr,
+                ),
+            )
+        finally:
+            thread_loop.close()
 
     # ----------------------------------------------------------------------
 
     if single_threaded:
         for fqn in fully_qualified_names:
-            Execute(fqn)
+            await ExecuteAsync(fqn)
 
     else:
+        with thread_info_lock:
+            # Prepopulate the pending ctr so that we can make sure that we don't
+            # prematurely terminate as threads are spinning up.
+            thread_info.pending_ctr = len(fully_qualified_names)
+
         observer.Enqueue(
             [
-                cast(Callable[[], None], lambda fqn=fqn: Execute(fqn))
+                cast(Callable[[], None], lambda fqn=fqn: PrepLoopAndExecute(fqn, increment_pending_ctr=False))
                 for fqn in fully_qualified_names
             ],
         )
@@ -394,72 +467,71 @@ def Parse(
     if thread_info.errors:
         return thread_info.errors
 
-    return {fqn: si.Node for fqn, si in thread_info.source_lookup.items()}  # <Has no member> pylint: disable=E1101
+    return {
+        fqn: cast(RootNode, cast(SourceInfo, si).Node)
+        for fqn, si in thread_info.source_lookup.items()
+    }
+
+
+# ----------------------------------------------------------------------
+def Parse(*args, **kwargs):
+    return asyncio.get_event_loop().run_until_complete(ParseAsync(*args, **kwargs))
 
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-class _StatementsObserver(StatementsObserver):
+class _StatementsObserver(TranslationUnitObserver):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         fully_qualified_name: str,
         observer: Observer,
-        enqueue_content_func: Callable[[str], DynamicStatementInfo],
+        async_parse_func: Callable[[str], Awaitable[DynamicStatementInfo]],
     ):
         self._fully_qualified_name          = fully_qualified_name
         self._observer                      = observer
-        self._enqueue_content_func          = enqueue_content_func
+        self._async_parse_func              = async_parse_func
 
         # Preserve cached nodes so that we don't have to continually recreate them.
         # This is also beneficial, as some statements will add context data to the
         # node when processing it.
-        self.node_cache: Dict[Any, Node]    = {}
+        self._node_cache: Dict[Any, Node]   = {}
         self._node_cache_lock               = threading.Lock()
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Enqueue(
-        self,
-        funcs: List[Callable[[], None]],
-    ) -> List[Future]:
-        return self._observer.Enqueue(funcs)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def OnIndent(
         self,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
-    ) -> Optional[DynamicStatementInfo]:
-        return self._observer.OnIndent(self._fully_qualified_name, statement, results)
+        data: Statement.TokenParseResultData,
+    ):
+        return self._observer.OnIndent(self._fully_qualified_name, data)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def OnDedent(
         self,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        data: Statement.TokenParseResultData,
     ):
-        return self._observer.OnDedent(self._fully_qualified_name, statement, results)
+        return self._observer.OnDedent(self._fully_qualified_name, data)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def OnStatementComplete(
         self,
-        result: Statement.StatementParseResultItem,
+        statement: Statement,
+        data: Optional[Statement.ParseResultData],
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Union[
-        bool,                               # True to continue processing, False to terminate
-        DynamicStatementInfo,               # DynamicStatementInfo generated by the statement (if necessary)
+        bool,
+        DynamicStatementInfo,
     ]:
         this_result = self._observer.OnStatementComplete(
             self._fully_qualified_name,
             self.CreateNode(
-                cast(Statement, result.Statement),
-                result.Results,
+                statement,
+                data,
                 parent=None,
             ),
             iter_before,
@@ -474,7 +546,7 @@ class _StatementsObserver(StatementsObserver):
                     this_result.SourceName,
                 )
 
-            return self._enqueue_content_func(this_result.FullyQualifiedName)
+            return asyncio.get_event_loop().run_until_complete(self._async_parse_func(this_result.FullyQualifiedName))
 
         return this_result
 
@@ -482,19 +554,17 @@ class _StatementsObserver(StatementsObserver):
     def CreateNode(
         self,
         statement: Statement,
-        parse_results: Statement.ParseResultItemsType,
+        data: Optional[Statement.ParseResultData],
         parent: Optional[Union[RootNode, Node]],
     ) -> Node:
-        """Converts a parse result into a node"""
-
-        node = None
+        node: Optional[Node] = None
         was_cached = False
 
         # Look for the cached value
-        key = tuple([id(statement)] + [id(result) for result in parse_results])
+        key = tuple([id(statement)] + ([id(child_data) for _, child_data in data.Enum()]) if data else [])
         if key:
             with self._node_cache_lock:
-                potential_node = self.node_cache.get(key, None)             # <Has no member> pylint: disable=E1101
+                potential_node = self._node_cache.get(key, None)
                 if potential_node is not None:
                     node = potential_node
                     was_cached = True
@@ -504,21 +574,25 @@ class _StatementsObserver(StatementsObserver):
 
         if parent is not None:
             object.__setattr__(node, "Parent", parent)
-            parent.Children.append(node)  # type: ignore
+            parent.Children.append(node)
 
         if not was_cached:
-            for result in parse_results:
-                if isinstance(result, Statement.TokenParseResultItem):
-                    self._CreateLeaf(result, node)
-                elif isinstance(result, Statement.StatementParseResultItem):
-                    self.CreateNode(cast(Statement, result.Statement), result.Results, node)
-                else:
-                    assert False, result  # pragma: no cover
+            for child_statement, child_data in data.Enum() if data else []:
+                if isinstance(child_statement, TokenStatement):
+                    this_child_statement, this_child_data = next(child_data.Enum())
+                    assert this_child_statement is None
 
-            # Cache the node
+                    self._CreateLeaf(
+                        cast(Statement.TokenParseResultData, this_child_data),
+                        node,
+                    )
+
+                else:
+                    self.CreateNode(child_statement, child_data, node)
+
             if key:
                 with self._node_cache_lock:
-                    self.node_cache[key] = node         # <Does not support item assignment> pylint: disable=E1137
+                    self._node_cache[key] = node
 
         return node
 
@@ -527,21 +601,19 @@ class _StatementsObserver(StatementsObserver):
     # ----------------------------------------------------------------------
     @staticmethod
     def _CreateLeaf(
-        result: Statement.TokenParseResultItem,
+        data: Statement.TokenParseResultData,
         parent: Node,
     ) -> Leaf:
-        """Converts a parse result item into a leaf"""
-
         leaf = Leaf(
-            result.Token,
-            result.Whitespace,
-            result.Value,
-            result.IterBefore,
-            result.IterAfter,
-            result.IsIgnored,
+            data.Token,
+            data.Whitespace,
+            data.Value,
+            data.IterBefore,
+            data.IterAfter,
+            data.IsIgnored,
         )
 
         object.__setattr__(leaf, "Parent", parent)
-        parent.Children.append(leaf)  # type: ignore
+        parent.Children.append(leaf)
 
         return leaf

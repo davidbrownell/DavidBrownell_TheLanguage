@@ -19,7 +19,7 @@ import asyncio
 import os
 import textwrap
 
-from typing import List, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -172,7 +172,7 @@ async def ParseAsync(
     )
 
     statement = DynamicStatement(
-        lambda observer: observer.GetDynamicStatements(DynamicStatements.Statements),
+        lambda observer: cast(StatementEx.Observer, observer).GetDynamicStatements(DynamicStatements.Statements),
     )
 
     while not normalized_iter.AtEnd():
@@ -334,35 +334,42 @@ class _StatementObserver(StatementEx.Observer):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     def _UpdateCache(self):
-        statements = []
-        statement_names = []
+        for statement_info_attribute_name, cached_attribute_name in [
+            ("Statements", "_cached_statements"),
+            ("Expressions", "_cached_expressions"),
+        ]:
+            cached_statements = []
+            names = []
+            id_lookup = set()
 
-        expressions = []
-        expression_names = []
+            for statement_infos in reversed(self._all_statement_infos):
+                for _, statement_info in reversed(statement_infos):
+                    statements = getattr(statement_info, statement_info_attribute_name)
+                    added_statement = False
 
-        for statement_infos in reversed(self._all_statement_infos):
-            for _, statement_info in reversed(statement_infos):
-                if statement_info.Statements:
-                    statements += statement_info.Statements
-                    statement_names.append(
-                        statement_info.Name or "[{}]".format(", ".join([statement.Name for statement in statement_info.Statements])),
-                    )
+                    for statement in statements:
+                        this_id = id(statement)
 
-                if statement_info.Expressions:
-                    expressions += statement_info.Expressions
-                    expression_names.append(
-                        statement_info.Name or "[{}]".format(", ".join([statement.Name for statement in statement_info.Expressions])),
-                    )
+                        if this_id in id_lookup:
+                            continue
 
-            if statement_infos and not statement_infos[0][1].AllowParentTraversal:
-                break
+                        id_lookup.add(this_id)
 
-        # In the code above, we reversed the list so that statements added later (or nearer)
-        # to the code would be matched before statements defined further away. However when
-        # displaying the content names, we want the names to be the order in which they were
-        # defined.
-        statement_names = " / ".join(reversed(statement_names))
-        expression_names = " / ".join(reversed(expression_names))
+                        cached_statements.append(statement)
+                        added_statement = True
 
-        self._cached_statements = (statement_names, statements)
-        self._cached_expressions = (expression_names, expressions)
+                    if added_statement:
+                        names.append(
+                            statement_info.Name or "[{}]".format(", ".join([statement.Name for statement in statements])),
+                        )
+
+                if statement_infos and not statement_infos[0][1].AllowParentTraversal:
+                    break
+
+            # In the code above, we reversed the list so that statements added later (or nearer)
+            # to the code would be matched before statements defined further away. However when
+            # displaying the content names, we want the names to be the order in which they were
+            # defined.
+            names = " / ".join(reversed(names))
+
+            setattr(self, cached_attribute_name, (names, cached_statements))

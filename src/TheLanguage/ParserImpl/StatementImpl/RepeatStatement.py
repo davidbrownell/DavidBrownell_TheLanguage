@@ -87,12 +87,16 @@ class RepeatStatement(StatementType):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def EnumTokens(self) -> Generator[StatementType.TokenParseResultData, None, None]:
-            for data in self.DataItems:
-                if data is None:
-                    continue
-
-                yield from data.EnumTokens()
+        def Enum(self) -> Generator[
+            Tuple[
+                Optional[StatementType],
+                Optional[StatementType.ParseResultData],
+            ],
+            None,
+            None
+        ]:
+            for item in self.DataItems:
+                yield self.Statement, item
 
     # ----------------------------------------------------------------------
     # |

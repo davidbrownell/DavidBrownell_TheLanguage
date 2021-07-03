@@ -136,7 +136,15 @@ class Statement(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        def EnumTokens() -> Generator["Statement.TokenParseResultData", None, None]:
+        def Enum() -> Generator[
+            Tuple[
+                Optional["Statement"],
+                Optional["Statement.ParseResultData"],
+            ],
+            None,
+            None
+        ]:
+            """Enumerates content"""
             raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -178,11 +186,15 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def EnumTokens(self) -> Generator["Statement.TokenParseResultData", None, None]:
-            if self.Data is None:
-                return
-
-            yield from self.Data.EnumTokens()
+        def Enum(self) -> Generator[
+            Tuple[
+                Optional["Statement"],
+                Optional["Statement.ParseResultData"],
+            ],
+            None,
+            None
+        ]:
+            yield self.Statement, self.Data
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -236,9 +248,16 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def EnumTokens(self) -> Generator["Statement.TokenParseResultData", None, None]:
-            for data in self.DataItems:
-                yield from data.EnumTokens()
+        def Enum(self) -> Generator[
+            Tuple[
+                Optional["Statement"],
+                Optional["Statement.ParseResultData"],
+            ],
+            None,
+            None
+        ]:
+            for item in self.DataItems:
+                yield from item.Enum()
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -272,8 +291,15 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def EnumTokens(self) -> Generator["Statement.TokenParseResultData", None, None]:
-            yield self
+        def Enum(self) -> Generator[
+            Tuple[
+                Optional["Statement"],
+                Optional["Statement.ParseResultData"],
+            ],
+            None,
+            None
+        ]:
+            yield None, self
 
     # ----------------------------------------------------------------------
     NormalizedIterator                      = NormalizedIterator

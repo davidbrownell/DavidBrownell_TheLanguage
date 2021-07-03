@@ -73,7 +73,7 @@ class OrStatement(Statement):
         use_async = not single_threaded and len(self.Items) > 1
 
         # ----------------------------------------------------------------------
-        async def Impl(statement, queue_command_observer):
+        async def ExecuteAsync(statement, queue_command_observer):
             return await statement.ParseAsync(
                 normalized_iter.Clone(),
                 queue_command_observer,
@@ -87,18 +87,21 @@ class OrStatement(Statement):
         results: List[Statement.ParseResult] = []
 
         if use_async:
-            futures = []
+            gathered_results = await asyncio.gather(
+                *[
+                    ExecuteAsync(statement, queue_command_observer)
+                    for statement, queue_command_observer in zip(self.Items, queue_command_observers)
+                ],
+            )
 
-            for statement, queue_command_observer in zip(self.Items, queue_command_observers):
-                futures.append(Impl(statement, queue_command_observer))
-
-            results = await asyncio.gather(*futures)
-            if any(result is None for result in results):
+            if any(result is None for result in gathered_results):
                 return None
+
+            results = cast(List[Statement.ParseResult], gathered_results)
 
         else:
             for statement, queue_command_observer in zip(self.Items, queue_command_observers):
-                result = await Impl(statement, queue_command_observer)
+                result = await ExecuteAsync(statement, queue_command_observer)
                 if result is None:
                     return result
 
