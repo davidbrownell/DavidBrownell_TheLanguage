@@ -19,9 +19,8 @@ import os
 
 from typing import Optional, Tuple, Union
 
-from dataclasses import dataclass
-
 import CommonEnvironment
+from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -68,30 +67,43 @@ class TokenStatement(Statement):
         Statement.ParseResult,
         None,
     ]:
-        # We only want to consume whitespace if there is a match that follows
-        potential_iter = normalized_iter.Clone()
-        potential_whitespace = self.ExtractWhitespace(potential_iter)
-        potential_iter_begin = potential_iter.Clone()
+        statement_unique_id = [self.Name]
 
-        result = self.Token.Match(potential_iter)
-        if result is None:
-            return Statement.ParseResult(False, normalized_iter, None)
+        observer.StartStatementCandidate(statement_unique_id)
+        with CallOnExit(lambda: observer.EndStatementCandidate(statement_unique_id)):
 
-        data = Statement.TokenParseResultData(
-            self.Token,
-            potential_whitespace,
-            result,
-            potential_iter_begin,
-            potential_iter,
-            IsIgnored=self.Token.IsAlwaysIgnored,
-        )
+            # We only want to consume whitespace if there is a match that follows
+            potential_iter = normalized_iter.Clone()
+            potential_whitespace = self.ExtractWhitespace(potential_iter)
+            potential_iter_begin = potential_iter.Clone()
 
-        if isinstance(self.Token, IndentToken):
-            await observer.OnIndentAsync(data)
-        elif isinstance(self.Token, DedentToken):
-            await observer.OnDedentAsync(data)
+            result = self.Token.Match(potential_iter)
+            if result is None:
+                return Statement.ParseResult(False, normalized_iter, None)
 
-        return Statement.ParseResult(True, potential_iter, data)
+            data = Statement.TokenParseResultData(
+                self.Token,
+                potential_whitespace,
+                result,
+                potential_iter_begin,
+                potential_iter,
+                IsIgnored=self.Token.IsAlwaysIgnored,
+            )
+
+            if isinstance(self.Token, IndentToken):
+                await observer.OnIndentAsync(statement_unique_id, data)
+            elif isinstance(self.Token, DedentToken):
+                await observer.OnDedentAsync(statement_unique_id, data)
+            elif not await observer.OnInternalStatementAsync(
+                    statement_unique_id,
+                    self,
+                    data,
+                    potential_iter_begin,
+                    potential_iter,
+                ):
+                    return None
+
+            return Statement.ParseResult(True, potential_iter, data)
 
     # ----------------------------------------------------------------------
     @staticmethod

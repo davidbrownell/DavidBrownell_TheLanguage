@@ -18,11 +18,12 @@
 import os
 import textwrap
 
-from typing import cast, Generator, List, Optional, Tuple, Union
+from typing import Any, cast, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 from CommonEnvironment import StringHelpers
 
@@ -133,55 +134,64 @@ class RepeatStatement(StatementType):
         StatementType.ParseResult,
         None,
     ]:
-        queue_command_observer                                              = StatementType.QueueCommandObserver(observer)
-        results: List[StatementType.ParseResult]                            = []
-        error_result: Optional[StatementType.ParseResult]                   = None
+        statement_unique_id: List[Any] = [self.Name]
 
-        while not normalized_iter.AtEnd():
-            this_queue_command_observer = StatementType.QueueCommandObserver(queue_command_observer)
+        observer.StartStatementCandidate(statement_unique_id)
+        with CallOnExit(lambda: observer.EndStatementCandidate(statement_unique_id)):
+            original_normalized_iter = normalized_iter.Clone()
 
-            result = await self.Statement.ParseAsync(
-                normalized_iter.Clone(),
-                this_queue_command_observer,
-                ignore_whitespace=ignore_whitespace,
-                single_threaded=single_threaded,
+            results: List[StatementType.ParseResult] = []
+            error_result: Optional[StatementType.ParseResult] = None
+
+            while not normalized_iter.AtEnd():
+                result = await self.Statement.ParseAsync(
+                    normalized_iter.Clone(),
+                    StatementType.SimpleObserverDecorator(statement_unique_id + [len(results)], observer),
+                    ignore_whitespace=ignore_whitespace,
+                    single_threaded=single_threaded,
+                )
+
+                if result is None:
+                    return None
+
+                if not result.Success:
+                    error_result = result
+                    break
+
+                results.append(result)
+                normalized_iter = result.Iter.Clone()
+
+                if self.MaxMatches is not None and len(results) == self.MaxMatches:
+                    break
+
+            results = cast(List[StatementType.ParseResult], results)
+
+            success = (
+                len(results) >= self.MinMatches
+                and (
+                    self.MaxMatches is None
+                    or self.MaxMatches >= len(results)
+                )
             )
 
-            if result is None:
-                return None
+            if success:
+                data = RepeatStatement.RepeatParseResultData(
+                    self.Statement,
+                    [result.Data for result in results],
+                )
 
-            if not result.Success:
-                error_result = result
-                break
+                if not await observer.OnInternalStatementAsync(
+                    statement_unique_id,
+                    self,
+                    data,
+                    original_normalized_iter,
+                    normalized_iter,
+                ):
+                    return None
 
-            replay_result = await this_queue_command_observer.ReplayAsync()
-            assert replay_result
+                return StatementType.ParseResult(True, normalized_iter, data)
 
-            on_internal_statement_results = await queue_command_observer.OnInternalStatementAsync(
-                self.Statement,
-                result.Data,
-                normalized_iter,
-                result.Iter,
-            )
-            assert on_internal_statement_results
-
-            results.append(result)
-            normalized_iter = result.Iter.Clone()
-
-            if self.MaxMatches is not None and len(results) == self.MaxMatches:
-                break
-
-        results = cast(List[StatementType.ParseResult], results)
-
-        success = (
-            len(results) >= self.MinMatches
-            and (
-                self.MaxMatches is None
-                or self.MaxMatches >= len(results)
-            )
-        )
-
-        if not success:
+            # Gather the failure information
             result_data = [result.Data for result in results]
 
             if error_result:
@@ -198,15 +208,3 @@ class RepeatStatement(StatementType):
                     result_data,
                 ),
             )
-
-        if not await queue_command_observer.ReplayAsync():
-            return None
-
-        return StatementType.ParseResult(
-            True,
-            normalized_iter,
-            RepeatStatement.RepeatParseResultData(
-                self.Statement,
-                [result.Data for result in results],
-            ),
-        )

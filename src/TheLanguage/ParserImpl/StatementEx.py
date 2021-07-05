@@ -20,11 +20,12 @@ import re
 import textwrap
 
 from enum import auto, Enum
-from typing import List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -177,107 +178,96 @@ class StatementEx(Statement):
         if self.Statements is None:
             raise Exception("The statement has not been populated by an upstream statement")
 
-        normalized_iter = normalized_iter.Clone()
+        statement_unique_id: List[Any] = [self.Name]
 
-        ignore_whitespace_ctr = 1 if ignore_whitespace else 0
-        success = True
-        data_items = []
+        observer.StartStatementCandidate(statement_unique_id)
+        with CallOnExit(lambda: observer.EndStatementCandidate(statement_unique_id)):
+            original_normalized_iter = normalized_iter.Clone()
 
-        # ----------------------------------------------------------------------
-        def ExtractWhitespaceOrComments() -> Optional[Statement.TokenParseResultData]:
-            nonlocal success
+            ignore_whitespace_ctr = 1 if ignore_whitespace else 0
+            success = True
+            data_items = []
 
-            if ignore_whitespace_ctr:
-                data_item = self._ExtractPotentialWhitespaceToken(normalized_iter)
+            # ----------------------------------------------------------------------
+            def ExtractWhitespaceOrComments() -> Optional[Statement.TokenParseResultData]:
+                nonlocal success
+
+                if ignore_whitespace_ctr:
+                    data_item = self._ExtractPotentialWhitespaceToken(normalized_iter)
+                    if data_item is not None:
+                        return data_item
+
+                data_item = self._ExtractPotentialInlineCommentToken(normalized_iter)
                 if data_item is not None:
                     return data_item
 
-            data_item = self._ExtractPotentialInlineCommentToken(normalized_iter)
-            if data_item is not None:
-                return data_item
+                return None
 
-            return None
+            # ----------------------------------------------------------------------
 
-        # ----------------------------------------------------------------------
+            for statement_index, statement in enumerate(self.Statements):
+                # Extract whitespace or comments
+                while not normalized_iter.AtEnd():
+                    potential_data_item = ExtractWhitespaceOrComments()
+                    if potential_data_item is None:
+                        break
 
-        queue_command_observer = Statement.QueueCommandObserver(observer)
+                    data_items.append(potential_data_item)
+                    normalized_iter = potential_data_item.IterAfter.Clone()
 
-        for statement_index, statement in enumerate(self.Statements):
-            # Extract whitespace or comments
-            while not normalized_iter.AtEnd():
-                potential_data_item = ExtractWhitespaceOrComments()
-                if potential_data_item is None:
+                # Process control tokens
+                if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
+                    if isinstance(statement.Token, PushIgnoreWhitespaceControlToken):
+                        ignore_whitespace_ctr += 1
+                    elif isinstance(statement.Token, PopIgnoreWhitespaceControlToken):
+                        assert ignore_whitespace_ctr != 0
+                        ignore_whitespace_ctr -= 1
+
+                        if statement_index == len(self.Statements) - 1:
+                            break
+                    else:
+                        assert False, statement.Token  # pragma: no cover
+
+                    continue
+
+                if normalized_iter.AtEnd():
+                    success = False
                     break
 
-                data_items.append(potential_data_item)
-                normalized_iter = potential_data_item.IterAfter.Clone()
-
-            # Process control tokens
-            if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
-                if isinstance(statement.Token, PushIgnoreWhitespaceControlToken):
-                    ignore_whitespace_ctr += 1
-                elif isinstance(statement.Token, PopIgnoreWhitespaceControlToken):
-                    assert ignore_whitespace_ctr != 0
-                    ignore_whitespace_ctr -= 1
-
-                    if statement_index == len(self.Statements) - 1:
-                        break
-                else:
-                    assert False, statement.Token  # pragma: no cover
-
-                continue
-
-            if normalized_iter.AtEnd():
-                success = False
-                break
-
-            # Process the statement
-            result = await statement.ParseAsync(
-                normalized_iter.Clone(),
-                queue_command_observer,
-                ignore_whitespace=ignore_whitespace_ctr != 0,
-                single_threaded=single_threaded,
-            )
-
-            assert result is not None
-
-            # Notify the observer
-            if (
-                result.Success
-                and not isinstance(statement, TokenStatement)
-            ):
-                on_internal_statement_result = await queue_command_observer.OnInternalStatementAsync(
-                    statement,
-                    result.Data,
-                    normalized_iter,
-                    result.Iter,
+                # Process the statement
+                result = await statement.ParseAsync(
+                    normalized_iter.Clone(),
+                    Statement.SimpleObserverDecorator(statement_unique_id + [statement_index], observer),
+                    ignore_whitespace=ignore_whitespace_ctr != 0,
+                    single_threaded=single_threaded,
                 )
 
-                assert on_internal_statement_result
+                if result is None:
+                    return None
 
-            # Preserve the results
-            data_items.append(Statement.StandardParseResultData(statement, result.Data))
-            normalized_iter = result.Iter
+                # Preserve the results
+                data_items.append(Statement.StandardParseResultData(statement, result.Data))
+                normalized_iter = result.Iter.Clone()
 
-            if not result.Success:
-                success = False
-                break
+                if not result.Success:
+                    success = False
+                    break
 
-        if success and not await queue_command_observer.ReplayAsync():
-            return None
+            data = Statement.MultipleStandardParseResultData(data_items)
 
-        if len(self._items) == 1 and len(data_items) == 1:
-            return Statement.ParseResult(
-                success,
-                normalized_iter,
-                data_items[0],
-            )
+            if (
+                success
+                and not await observer.OnInternalStatementAsync(
+                    statement_unique_id,
+                    self,
+                    data,
+                    original_normalized_iter,
+                    normalized_iter,
+                )
+            ):
+                return None
 
-        return Statement.ParseResult(
-            success,
-            normalized_iter,
-            Statement.MultipleStandardParseResultData(data_items),
-        )
+            return Statement.ParseResult(success, normalized_iter, data)
 
     # ----------------------------------------------------------------------
     # |

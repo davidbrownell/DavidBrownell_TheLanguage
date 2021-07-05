@@ -48,18 +48,10 @@ with InitRelativeImports():
     from ..StatementImpl.UnitTests import (
         CoroutineMock,
         CreateIterator,
-        parse_mock as parse_mock_impl,
+        InternalStatementMethodCallToTuple,
+        parse_mock,
+        MethodCallsToString,
     )
-
-
-# ----------------------------------------------------------------------
-@pytest.fixture
-def parse_mock(parse_mock_impl):
-    parse_mock_impl.OnIndentAsync = CoroutineMock()
-    parse_mock_impl.OnDedentAsync = CoroutineMock()
-    parse_mock_impl.OnInternalStatementAsync = CoroutineMock()
-
-    return parse_mock_impl
 
 
 # ----------------------------------------------------------------------
@@ -147,7 +139,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     def test_MultipleSpaceSep(self, parse_mock):
@@ -172,7 +164,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     def test_TabSep(self, parse_mock):
@@ -197,7 +189,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     def test_MultiTabSep(self, parse_mock):
@@ -222,7 +214,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     def test_TrailingSpace(self, parse_mock):
@@ -247,7 +239,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     def test_MultipleTrailingSpace(self, parse_mock):
@@ -272,7 +264,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     def test_TrailingTab(self, parse_mock):
@@ -297,7 +289,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     def test_MultipleTrailingTab(self, parse_mock):
@@ -322,7 +314,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     def test_MultipleLines(self, parse_mock):
@@ -355,7 +347,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
         iter = result.Iter
 
@@ -377,7 +369,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 24
 
         assert result.Iter.AtEnd()
 
@@ -404,7 +396,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
         assert result.Iter.AtEnd()
 
@@ -431,7 +423,7 @@ class TestParseSimple(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 10
 
         assert result.Iter.AtEnd() == False
 
@@ -487,13 +479,47 @@ class TestParseIndentAndDedent(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 2
+        assert MethodCallsToString(parse_mock) == textwrap.dedent(
+            """\
+            0, StartStatementCandidate, ['Statement']
+            1, StartStatementCandidate, ['Statement', 0, 'Word Token']
+            2, OnInternalStatementAsync, ['Statement', 0, 'Word Token']
+            3, EndStatementCandidate, ['Statement', 0, 'Word Token']
+            4, StartStatementCandidate, ['Statement', 1, 'Newline+']
+            5, OnInternalStatementAsync, ['Statement', 1, 'Newline+']
+            6, EndStatementCandidate, ['Statement', 1, 'Newline+']
+            7, StartStatementCandidate, ['Statement', 2, 'Indent']
+            8, OnIndentAsync, ['Statement', 2, 'Indent']
+            9, EndStatementCandidate, ['Statement', 2, 'Indent']
+            10, StartStatementCandidate, ['Statement', 3, 'Word Token']
+            11, OnInternalStatementAsync, ['Statement', 3, 'Word Token']
+            12, EndStatementCandidate, ['Statement', 3, 'Word Token']
+            13, StartStatementCandidate, ['Statement', 4, 'Newline+']
+            14, OnInternalStatementAsync, ['Statement', 4, 'Newline+']
+            15, EndStatementCandidate, ['Statement', 4, 'Newline+']
+            16, StartStatementCandidate, ['Statement', 5, 'Word Token']
+            17, OnInternalStatementAsync, ['Statement', 5, 'Word Token']
+            18, EndStatementCandidate, ['Statement', 5, 'Word Token']
+            19, StartStatementCandidate, ['Statement', 6, 'Newline+']
+            20, OnInternalStatementAsync, ['Statement', 6, 'Newline+']
+            21, EndStatementCandidate, ['Statement', 6, 'Newline+']
+            22, StartStatementCandidate, ['Statement', 7, 'Dedent']
+            23, OnDedentAsync, ['Statement', 7, 'Dedent']
+            24, EndStatementCandidate, ['Statement', 7, 'Dedent']
+            25, OnInternalStatementAsync, ['Statement']
+            26, EndStatementCandidate, ['Statement']
+            """,
+        )
 
-        assert parse_mock.method_calls[0][0] == "OnIndentAsync"
-        assert parse_mock.method_calls[0][1] == (result.Data.DataItems[2].Data,)
-
-        assert parse_mock.method_calls[1][0] == "OnDedentAsync"
-        assert parse_mock.method_calls[1][1] == (result.Data.DataItems[7].Data,)
+        assert InternalStatementMethodCallToTuple(parse_mock, 2, use_statement_name=True) == ("Word Token", result.Data.DataItems[0].Data, 0, 3)
+        assert InternalStatementMethodCallToTuple(parse_mock, 5, use_statement_name=True) == ("Newline+", result.Data.DataItems[1].Data, 3, 4)
+        assert result.Data.DataItems[2].Statement.Name == "Indent"
+        assert InternalStatementMethodCallToTuple(parse_mock, 11, use_statement_name=True) == ("Word Token", result.Data.DataItems[3].Data, 8, 11)
+        assert InternalStatementMethodCallToTuple(parse_mock, 14, use_statement_name=True) == ("Newline+", result.Data.DataItems[4].Data, 11, 12)
+        assert InternalStatementMethodCallToTuple(parse_mock, 17, use_statement_name=True) == ("Word Token", result.Data.DataItems[5].Data, 16, 21)
+        assert InternalStatementMethodCallToTuple(parse_mock, 20, use_statement_name=True) == ("Newline+", result.Data.DataItems[6].Data, 21, 22)
+        assert result.Data.DataItems[7].Statement.Name == "Dedent"
+        assert InternalStatementMethodCallToTuple(parse_mock, 25) == (self._statement, result.Data, 0, 22)
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, parse_mock):
@@ -529,7 +555,7 @@ class TestParseIndentAndDedent(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 19
 
     # ----------------------------------------------------------------------
     def test_FinishEarly(self, parse_mock):
@@ -555,7 +581,7 @@ class TestParseIndentAndDedent(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 8
 
 # ----------------------------------------------------------------------
 class TestIgnoreWhitespace(object):
@@ -632,7 +658,7 @@ class TestIgnoreWhitespace(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 30
 
 # ----------------------------------------------------------------------
 class TestEmbeddedStatements(object):
@@ -669,15 +695,35 @@ class TestEmbeddedStatements(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 1
-
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._inner_statement,
-            result.Data.DataItems[1].Data,
-            1,
-            9,
+        assert MethodCallsToString(parse_mock) == textwrap.dedent(
+            """\
+            0, StartStatementCandidate, ['Statement']
+            1, StartStatementCandidate, ['Statement', 0, 'lpar']
+            2, OnInternalStatementAsync, ['Statement', 0, 'lpar']
+            3, EndStatementCandidate, ['Statement', 0, 'lpar']
+            4, StartStatementCandidate, ['Statement', 1, 'Inner']
+            5, StartStatementCandidate, ['Statement', 1, 'Inner', 0, 'Word Token']
+            6, OnInternalStatementAsync, ['Statement', 1, 'Inner', 0, 'Word Token']
+            7, EndStatementCandidate, ['Statement', 1, 'Inner', 0, 'Word Token']
+            8, StartStatementCandidate, ['Statement', 1, 'Inner', 1, 'Word Token']
+            9, OnInternalStatementAsync, ['Statement', 1, 'Inner', 1, 'Word Token']
+            10, EndStatementCandidate, ['Statement', 1, 'Inner', 1, 'Word Token']
+            11, OnInternalStatementAsync, ['Statement', 1, 'Inner']
+            12, EndStatementCandidate, ['Statement', 1, 'Inner']
+            13, StartStatementCandidate, ['Statement', 2, 'rpar']
+            14, OnInternalStatementAsync, ['Statement', 2, 'rpar']
+            15, EndStatementCandidate, ['Statement', 2, 'rpar']
+            16, OnInternalStatementAsync, ['Statement']
+            17, EndStatementCandidate, ['Statement']
+            """,
         )
+
+        assert InternalStatementMethodCallToTuple(parse_mock, 2, use_statement_name=True) == ("lpar", result.Data.DataItems[0].Data, 0, 1)
+        assert InternalStatementMethodCallToTuple(parse_mock, 6, use_statement_name=True) == ("Word Token", result.Data.DataItems[1].Data.DataItems[0].Data, 2, 5)
+        assert InternalStatementMethodCallToTuple(parse_mock, 9, use_statement_name=True) == ("Word Token", result.Data.DataItems[1].Data.DataItems[1].Data, 6, 9)
+        assert InternalStatementMethodCallToTuple(parse_mock, 11) == (self._inner_statement, result.Data.DataItems[1].Data, 1, 9)
+        assert InternalStatementMethodCallToTuple(parse_mock, 14, use_statement_name=True) == ("rpar", result.Data.DataItems[2].Data, 10, 11)
+        assert InternalStatementMethodCallToTuple(parse_mock, 16) == (self._statement, result.Data, 0, 11)
 
     # ----------------------------------------------------------------------
     def test_NoMatchAllInner(self, parse_mock):
@@ -699,7 +745,7 @@ class TestEmbeddedStatements(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 16
 
     # ----------------------------------------------------------------------
     def test_NoMatchPartialInner(self, parse_mock):
@@ -719,7 +765,7 @@ class TestEmbeddedStatements(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     def test_NoMatchFirstOnly(self, parse_mock):
@@ -737,7 +783,7 @@ class TestEmbeddedStatements(object):
             """,
         )
 
-        assert parse_mock.method_calls == []
+        assert len(parse_mock.method_calls) == 9
 
 # ----------------------------------------------------------------------
 class TestDynamicStatements(object):
@@ -782,6 +828,7 @@ class TestDynamicStatements(object):
                 ),
             ),
             modified_parse_mock,
+            single_threaded=True,
         )
 
         assert str(result) == textwrap.dedent(
@@ -814,85 +861,90 @@ class TestDynamicStatements(object):
             """,
         )
 
-        assert len(modified_parse_mock.OnInternalStatementAsync.call_args_list) == 9
-
-        # Line 1
-        OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatementAsync.call_args_list[0],
-            self._word_statement,
-            result.Data.DataItems[0].Data.Data.Data,
-            0,
-            12,
+        assert MethodCallsToString(modified_parse_mock) == textwrap.dedent(
+            """\
+            0, StartStatementCandidate, ['Statement']
+            1, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements']
+            2, GetDynamicStatements, DynamicStatements.Statements
+            3, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            4, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
+            5, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 0, 'Word Token']
+            6, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 0, 'Word Token']
+            7, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 0, 'Word Token']
+            8, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 1, 'Word Token']
+            9, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 1, 'Word Token']
+            10, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 1, 'Word Token']
+            11, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 2, 'Newline+']
+            12, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 2, 'Newline+']
+            13, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 2, 'Newline+']
+            14, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
+            15, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
+            16, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
+            17, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
+            18, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
+            19, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
+            20, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            21, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            22, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements']
+            23, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements']
+            24, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements']
+            25, GetDynamicStatements, DynamicStatements.Statements
+            26, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            27, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
+            28, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 0, 'Word Token']
+            29, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 0, 'Word Token']
+            30, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
+            31, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
+            32, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
+            33, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
+            34, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
+            35, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 1, 'Newline+']
+            36, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 1, 'Newline+']
+            37, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 1, 'Newline+']
+            38, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
+            39, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
+            40, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            41, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            42, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements']
+            43, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements']
+            44, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions']
+            45, GetDynamicStatements, DynamicStatements.Expressions
+            46, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]']
+            47, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement']
+            48, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 0, 'Number Token']
+            49, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 0, 'Number Token']
+            50, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 0, 'Number Token']
+            51, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 1, 'Newline+']
+            52, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 1, 'Newline+']
+            53, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 1, 'Newline+']
+            54, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement']
+            55, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement']
+            56, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]']
+            57, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]']
+            58, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions']
+            59, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions']
+            60, OnInternalStatementAsync, ['Statement']
+            61, EndStatementCandidate, ['Statement']
+            """,
         )
 
-        # The or statement is dynamic, so we don't have access to it here for comparison
-        OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatementAsync.call_args_list[1],
-            None,
-            result.Data.DataItems[0].Data.Data,
-            0,
-            12,
-        )
-
-        OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatementAsync.call_args_list[2],
-            self._statement.Statements[0],
-            result.Data.DataItems[0].Data,
-            0,
-            12,
-        )
-
-        # Line 2
-        OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatementAsync.call_args_list[3],
-            self._number_statement,
-            result.Data.DataItems[1].Data.Data.Data,
-            12,
-            16,
-        )
-
-        # The or statement is dynamic, so we don't have access to it here for comparison
-        OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatementAsync.call_args_list[4],
-            None,
-            result.Data.DataItems[1].Data.Data,
-            12,
-            16,
-        )
-
-        OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatementAsync.call_args_list[5],
-            self._statement.Statements[1],
-            result.Data.DataItems[1].Data,
-            12,
-            16,
-        )
-
-        # Line 3
-        OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatementAsync.call_args_list[6],
-            self._number_statement,
-            result.Data.DataItems[2].Data.Data.Data,
-            16,
-            20,
-        )
-
-        # The or statement is dynamic, so we don't have access to it here for comparison
-        OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatementAsync.call_args_list[7],
-            None,
-            result.Data.DataItems[2].Data.Data,
-            16,
-            20,
-        )
-
-        OnInternalStatementEqual(
-            modified_parse_mock.OnInternalStatementAsync.call_args_list[8],
-            self._statement.Statements[2],
-            result.Data.DataItems[2].Data,
-            16,
-            20,
-        )
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 6, use_statement_name=True) == ("Word Token", result.Data.DataItems[0].Data.Data.Data.DataItems[0].Data, 0, 5)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 9, use_statement_name=True) == ("Word Token", result.Data.DataItems[0].Data.Data.Data.DataItems[1].Data, 6, 11)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 12, use_statement_name=True) == ("Newline+", result.Data.DataItems[0].Data.Data.Data.DataItems[2].Data, 11, 12)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 14) == (self._word_statement, result.Data.DataItems[0].Data.Data.Data, 0, 12)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 20, use_statement_name=True) == ("Or [Word Statement, Number Statement]", result.Data.DataItems[0].Data.Data, 0, 12)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 22, use_statement_name=True) == ("DynamicStatements.Statements", result.Data.DataItems[0].Data, 0, 12)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 33, use_statement_name=True) == ("Number Token", result.Data.DataItems[1].Data.Data.Data.DataItems[0].Data, 12, 15)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 36, use_statement_name=True) == ("Newline+", result.Data.DataItems[1].Data.Data.Data.DataItems[1].Data, 15, 16)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 38) == (self._number_statement, result.Data.DataItems[1].Data.Data.Data, 12, 16)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 40, use_statement_name=True) == ("Or [Word Statement, Number Statement]", result.Data.DataItems[1].Data.Data, 12, 16)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 42, use_statement_name=True) == ("DynamicStatements.Statements", result.Data.DataItems[1].Data, 12, 16)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 49, use_statement_name=True) == ("Number Token", result.Data.DataItems[2].Data.Data.Data.DataItems[0].Data, 16, 19)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 52, use_statement_name=True) == ("Newline+", result.Data.DataItems[2].Data.Data.Data.DataItems[1].Data, 19, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 54) == (self._number_statement, result.Data.DataItems[2].Data.Data.Data, 16, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 56, use_statement_name=True) == ("Or [Number Statement]", result.Data.DataItems[2].Data.Data, 16, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 58, use_statement_name=True) == ("DynamicStatements.Expressions", result.Data.DataItems[2].Data, 16, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 60) == (self._statement, result.Data, 0, 20)
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, modified_parse_mock):
@@ -937,7 +989,7 @@ class TestDynamicStatements(object):
             """,
         )
 
-        assert modified_parse_mock.OnInternalStatementAsync.call_args_list == []
+        assert len(modified_parse_mock.method_calls) == 54
 
 # ----------------------------------------------------------------------
 class TestOrStatements(object):
@@ -981,7 +1033,7 @@ class TestOrStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 2
+        assert len(parse_mock.method_calls) == 23
 
     # ----------------------------------------------------------------------
     def test_NumberMatch(self, parse_mock):
@@ -1000,7 +1052,7 @@ class TestOrStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 2
+        assert len(parse_mock.method_calls) == 23
 
     # ----------------------------------------------------------------------
     def test_UpperMatch(self, parse_mock):
@@ -1019,11 +1071,15 @@ class TestOrStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 2
+        assert len(parse_mock.method_calls) == 23
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, parse_mock):
-        result = self._statement.Parse(CreateIterator("this is not a match"), parse_mock)
+        result = self._statement.Parse(
+            CreateIterator("this is not a match"),
+            parse_mock,
+            single_threaded=True,
+        )
 
         assert str(result) == textwrap.dedent(
             """\
@@ -1044,7 +1100,40 @@ class TestOrStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 0
+        assert MethodCallsToString(parse_mock) == textwrap.dedent(
+            """\
+            0, StartStatementCandidate, ['Statement']
+            1, StartStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]']
+            2, StartStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 0, 'Word Statement']
+            3, StartStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 0, 'Word Statement', 0, 'Word Token']
+            4, OnInternalStatementAsync, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 0, 'Word Statement', 0, 'Word Token']
+            5, EndStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 0, 'Word Statement', 0, 'Word Token']
+            6, StartStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 0, 'Word Statement', 1, 'Newline+']
+            7, EndStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 0, 'Word Statement', 1, 'Newline+']
+            8, EndStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 0, 'Word Statement']
+            9, StartStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 1, 'Number Statement']
+            10, StartStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 1, 'Number Statement', 0, 'Number Token']
+            11, EndStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 1, 'Number Statement', 0, 'Number Token']
+            12, EndStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 1, 'Number Statement']
+            13, StartStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 2, 'Upper Statement']
+            14, StartStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 2, 'Upper Statement', 0, 'Upper Token']
+            15, EndStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 2, 'Upper Statement', 0, 'Upper Token']
+            16, EndStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]', 2, 'Upper Statement']
+            17, EndStatementCandidate, ['Statement', 0, 'Or [Word Statement, Number Statement, Upper Statement]']
+            18, EndStatementCandidate, ['Statement']
+            """,
+        )
+
+        assert InternalStatementMethodCallToTuple(parse_mock, 4, use_statement_name=True) == (
+            "Word Token",
+            result
+                .Data.DataItems[0]          # Statement
+                .Data.DataItems[0]          # [Generated] Or Statement
+                .Data.DataItems[0]          # Word Statement
+                .Data,                      # [Generated] Word Token
+            0,
+            4,
+        )
 
     # ----------------------------------------------------------------------
     def test_EarlyTermination(self, parse_mock):
@@ -1055,7 +1144,7 @@ class TestOrStatements(object):
         result = self._statement.Parse(CreateIterator("word"), parse_mock)
 
         assert result is None
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 2
+        assert len(parse_mock.method_calls) == 20
 
 # ----------------------------------------------------------------------
 class TestRepeatStatements(object):
@@ -1152,7 +1241,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 12
+        assert len(parse_mock.method_calls) == 95
 
     # ----------------------------------------------------------------------
     def test_Match2(self, parse_mock):
@@ -1212,7 +1301,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 10
+        assert len(parse_mock.method_calls) == 77
 
     # ----------------------------------------------------------------------
     def test_Match3(self, parse_mock):
@@ -1272,7 +1361,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 10
+        assert len(parse_mock.method_calls) == 81
 
     # ----------------------------------------------------------------------
     def test_Match4(self, parse_mock):
@@ -1289,6 +1378,7 @@ class TestRepeatStatements(object):
                 ),
             ),
             parse_mock,
+            single_threaded=True,
         )
 
         assert str(result) == textwrap.dedent(
@@ -1328,7 +1418,103 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 9
+        assert MethodCallsToString(parse_mock) == textwrap.dedent(
+            """\
+            0, StartStatementCandidate, ['Statement']
+            1, StartStatementCandidate, ['Statement', 0, 'Repeat: (Word Statement, 0, None)']
+            2, StartStatementCandidate, ['Statement', 0, 'Repeat: (Word Statement, 0, None)', 0, 'Word Statement']
+            3, StartStatementCandidate, ['Statement', 0, 'Repeat: (Word Statement, 0, None)', 0, 'Word Statement', 0, 'Word Token']
+            4, EndStatementCandidate, ['Statement', 0, 'Repeat: (Word Statement, 0, None)', 0, 'Word Statement', 0, 'Word Token']
+            5, EndStatementCandidate, ['Statement', 0, 'Repeat: (Word Statement, 0, None)', 0, 'Word Statement']
+            6, OnInternalStatementAsync, ['Statement', 0, 'Repeat: (Word Statement, 0, None)']
+            7, EndStatementCandidate, ['Statement', 0, 'Repeat: (Word Statement, 0, None)']
+            8, StartStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)']
+            9, StartStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 0, 'Number Statement']
+            10, StartStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 0, 'Number Statement', 0, 'Number Token']
+            11, OnInternalStatementAsync, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 0, 'Number Statement', 0, 'Number Token']
+            12, EndStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 0, 'Number Statement', 0, 'Number Token']
+            13, StartStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 0, 'Number Statement', 1, 'Newline+']
+            14, OnInternalStatementAsync, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 0, 'Number Statement', 1, 'Newline+']
+            15, EndStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 0, 'Number Statement', 1, 'Newline+']
+            16, OnInternalStatementAsync, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 0, 'Number Statement']
+            17, EndStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 0, 'Number Statement']
+            18, StartStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 1, 'Number Statement']
+            19, StartStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 1, 'Number Statement', 0, 'Number Token']
+            20, OnInternalStatementAsync, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 1, 'Number Statement', 0, 'Number Token']
+            21, EndStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 1, 'Number Statement', 0, 'Number Token']
+            22, StartStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 1, 'Number Statement', 1, 'Newline+']
+            23, OnInternalStatementAsync, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 1, 'Number Statement', 1, 'Newline+']
+            24, EndStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 1, 'Number Statement', 1, 'Newline+']
+            25, OnInternalStatementAsync, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 1, 'Number Statement']
+            26, EndStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 1, 'Number Statement']
+            27, StartStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 2, 'Number Statement']
+            28, StartStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 2, 'Number Statement', 0, 'Number Token']
+            29, EndStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 2, 'Number Statement', 0, 'Number Token']
+            30, EndStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)', 2, 'Number Statement']
+            31, OnInternalStatementAsync, ['Statement', 1, 'Repeat: (Number Statement, 1, None)']
+            32, EndStatementCandidate, ['Statement', 1, 'Repeat: (Number Statement, 1, None)']
+            33, StartStatementCandidate, ['Statement', 2, 'Repeat: (Upper Statement, 0, 1)']
+            34, StartStatementCandidate, ['Statement', 2, 'Repeat: (Upper Statement, 0, 1)', 0, 'Upper Statement']
+            35, StartStatementCandidate, ['Statement', 2, 'Repeat: (Upper Statement, 0, 1)', 0, 'Upper Statement', 0, 'Upper Token']
+            36, EndStatementCandidate, ['Statement', 2, 'Repeat: (Upper Statement, 0, 1)', 0, 'Upper Statement', 0, 'Upper Token']
+            37, EndStatementCandidate, ['Statement', 2, 'Repeat: (Upper Statement, 0, 1)', 0, 'Upper Statement']
+            38, OnInternalStatementAsync, ['Statement', 2, 'Repeat: (Upper Statement, 0, 1)']
+            39, EndStatementCandidate, ['Statement', 2, 'Repeat: (Upper Statement, 0, 1)']
+            40, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)']
+            41, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 0, 'Word Statement']
+            42, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 0, 'Word Statement', 0, 'Word Token']
+            43, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 0, 'Word Statement', 0, 'Word Token']
+            44, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 0, 'Word Statement', 0, 'Word Token']
+            45, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 0, 'Word Statement', 1, 'Newline+']
+            46, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 0, 'Word Statement', 1, 'Newline+']
+            47, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 0, 'Word Statement', 1, 'Newline+']
+            48, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 0, 'Word Statement']
+            49, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 0, 'Word Statement']
+            50, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 1, 'Word Statement']
+            51, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 1, 'Word Statement', 0, 'Word Token']
+            52, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 1, 'Word Statement', 0, 'Word Token']
+            53, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 1, 'Word Statement', 0, 'Word Token']
+            54, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 1, 'Word Statement', 1, 'Newline+']
+            55, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 1, 'Word Statement', 1, 'Newline+']
+            56, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 1, 'Word Statement', 1, 'Newline+']
+            57, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 1, 'Word Statement']
+            58, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 1, 'Word Statement']
+            59, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 2, 'Word Statement']
+            60, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 2, 'Word Statement', 0, 'Word Token']
+            61, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 2, 'Word Statement', 0, 'Word Token']
+            62, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 2, 'Word Statement', 0, 'Word Token']
+            63, StartStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 2, 'Word Statement', 1, 'Newline+']
+            64, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 2, 'Word Statement', 1, 'Newline+']
+            65, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 2, 'Word Statement', 1, 'Newline+']
+            66, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 2, 'Word Statement']
+            67, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)', 2, 'Word Statement']
+            68, OnInternalStatementAsync, ['Statement', 3, 'Repeat: (Word Statement, 1, None)']
+            69, EndStatementCandidate, ['Statement', 3, 'Repeat: (Word Statement, 1, None)']
+            70, OnInternalStatementAsync, ['Statement']
+            71, EndStatementCandidate, ['Statement']
+            """,
+        )
+
+        assert InternalStatementMethodCallToTuple(parse_mock, 6, use_statement_name=True) == ("Repeat: (Word Statement, 0, None)", result.Data.DataItems[0].Data, 0, 0)
+        assert InternalStatementMethodCallToTuple(parse_mock, 11, use_statement_name=True) == ("Number Token", result.Data.DataItems[1].Data.DataItems[0].DataItems[0].Data, 0, 2)
+        assert InternalStatementMethodCallToTuple(parse_mock, 14, use_statement_name=True) == ("Newline+", result.Data.DataItems[1].Data.DataItems[0].DataItems[1].Data, 2, 3)
+        assert InternalStatementMethodCallToTuple(parse_mock, 16) == (self._number_statement, result.Data.DataItems[1].Data.DataItems[0], 0, 3)
+        assert InternalStatementMethodCallToTuple(parse_mock, 20, use_statement_name=True) == ("Number Token", result.Data.DataItems[1].Data.DataItems[1].DataItems[0].Data, 3, 7)
+        assert InternalStatementMethodCallToTuple(parse_mock, 23, use_statement_name=True) == ("Newline+", result.Data.DataItems[1].Data.DataItems[1].DataItems[1].Data, 7, 8)
+        assert InternalStatementMethodCallToTuple(parse_mock, 25) == (self._number_statement, result.Data.DataItems[1].Data.DataItems[1], 3, 8)
+        assert InternalStatementMethodCallToTuple(parse_mock, 31, use_statement_name=True) == ("Repeat: (Number Statement, 1, None)", result.Data.DataItems[1].Data, 0, 8)
+        assert InternalStatementMethodCallToTuple(parse_mock, 38, use_statement_name=True) == ("Repeat: (Upper Statement, 0, 1)", result.Data.DataItems[2].Data, 8, 8)
+        assert InternalStatementMethodCallToTuple(parse_mock, 43, use_statement_name=True) == ("Word Token", result.Data.DataItems[3].Data.DataItems[0].DataItems[0].Data, 8, 13)
+        assert InternalStatementMethodCallToTuple(parse_mock, 46, use_statement_name=True) == ("Newline+", result.Data.DataItems[3].Data.DataItems[0].DataItems[1].Data, 13, 14)
+        assert InternalStatementMethodCallToTuple(parse_mock, 48) == (self._word_statement, result.Data.DataItems[3].Data.DataItems[0], 8, 14)
+        assert InternalStatementMethodCallToTuple(parse_mock, 52, use_statement_name=True) == ("Word Token", result.Data.DataItems[3].Data.DataItems[1].DataItems[0].Data, 14, 19)
+        assert InternalStatementMethodCallToTuple(parse_mock, 55, use_statement_name=True) == ("Newline+", result.Data.DataItems[3].Data.DataItems[1].DataItems[1].Data, 19, 20)
+        assert InternalStatementMethodCallToTuple(parse_mock, 57) == (self._word_statement, result.Data.DataItems[3].Data.DataItems[1], 14, 20)
+        assert InternalStatementMethodCallToTuple(parse_mock, 61, use_statement_name=True) == ("Word Token", result.Data.DataItems[3].Data.DataItems[2].DataItems[0].Data, 20, 25)
+        assert InternalStatementMethodCallToTuple(parse_mock, 64, use_statement_name=True) == ("Newline+", result.Data.DataItems[3].Data.DataItems[2].DataItems[1].Data, 25, 26)
+        assert InternalStatementMethodCallToTuple(parse_mock, 66) == (self._word_statement, result.Data.DataItems[3].Data.DataItems[2], 20, 26)
+        assert InternalStatementMethodCallToTuple(parse_mock, 68, use_statement_name=True) == ("Repeat: (Word Statement, 1, None)", result.Data.DataItems[3].Data, 8, 26)
+        assert InternalStatementMethodCallToTuple(parse_mock, 70) == (self._statement, result.Data, 0, 26)
 
     # ----------------------------------------------------------------------
     def test_NoMatch1(self, parse_mock):
@@ -1369,7 +1555,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 0
+        assert len(parse_mock.method_calls) == 33
 
     # ----------------------------------------------------------------------
     def test_NoMatch2(self, parse_mock):
@@ -1417,7 +1603,7 @@ class TestRepeatStatements(object):
             """,
         )
 
-        assert len(parse_mock.OnInternalStatementAsync.call_args_list) == 0
+        assert len(parse_mock.method_calls) == 52
 
     # ----------------------------------------------------------------------
     def test_EarlyTermination(self, parse_mock):

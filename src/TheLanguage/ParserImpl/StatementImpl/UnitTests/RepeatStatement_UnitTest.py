@@ -36,8 +36,9 @@ with InitRelativeImports():
     from . import (
         CoroutineMock,
         CreateIterator,
-        OnInternalStatementEqual,
-        parse_mock as parse_mock_impl,
+        InternalStatementMethodCallToTuple,
+        MethodCallsToString,
+        parse_mock,
     )
 
     from ..OrStatement import OrStatement
@@ -47,16 +48,6 @@ with InitRelativeImports():
         RegexToken,
         TokenStatement,
     )
-
-
-# ----------------------------------------------------------------------
-@pytest.fixture
-def parse_mock(parse_mock_impl):
-    parse_mock_impl.OnIndentAsync = CoroutineMock()
-    parse_mock_impl.OnDedentAsync = CoroutineMock()
-    parse_mock_impl.OnInternalStatementAsync = CoroutineMock()
-
-    return parse_mock_impl
 
 
 # ----------------------------------------------------------------------
@@ -79,6 +70,7 @@ class TestStandard(object):
                 ),
             ),
             parse_mock,
+            single_threaded=True,
         )
 
         assert str(result) == textwrap.dedent(
@@ -93,43 +85,35 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 4
-
-        # one
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._word_statement,
-            result.Data.DataItems[0].Data,
-            0,
-            3,
+        assert MethodCallsToString(parse_mock) == textwrap.dedent(
+            """\
+            0, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)']
+            1, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]']
+            2, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 0, 'Word']
+            3, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 0, 'Word']
+            4, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 0, 'Word']
+            5, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 1, 'Newline+']
+            6, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 1, 'Newline+']
+            7, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]']
+            8, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]']
+            9, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]']
+            10, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 0, 'Word']
+            11, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 0, 'Word']
+            12, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 1, 'Newline+']
+            13, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 1, 'Newline+']
+            14, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 1, 'Newline+']
+            15, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]']
+            16, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]']
+            17, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)']
+            18, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)']
+            """,
         )
 
-        # Or Statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[1],
-            self._or_statement,
-            result.Data.DataItems[0],
-            0,
-            3,
-        )
-
-        # Newline
-        OnInternalStatementEqual(
-            parse_mock.method_calls[2],
-            self._newline_statement,
-            result.Data.DataItems[1].Data,
-            3,
-            4,
-        )
-
-        # Or statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[3],
-            self._or_statement,
-            result.Data.DataItems[1],
-            3,
-            4,
-        )
+        assert InternalStatementMethodCallToTuple(parse_mock, 3) == (self._word_statement, result.Data.DataItems[0].Data, 0, 3)
+        assert InternalStatementMethodCallToTuple(parse_mock, 7) == (self._or_statement, result.Data.DataItems[0], 0, 3)
+        assert InternalStatementMethodCallToTuple(parse_mock, 13) == (self._newline_statement, result.Data.DataItems[1].Data, 3, 4)
+        assert InternalStatementMethodCallToTuple(parse_mock, 15) == (self._or_statement, result.Data.DataItems[1], 3, 4)
+        assert InternalStatementMethodCallToTuple(parse_mock, 17) == (self._statement, result.Data, 0, 4)
 
         assert list(result.Data.Enum()) == [
             (self._statement.Statement, result.Data.DataItems[0]),
@@ -166,79 +150,7 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 8
-
-        # one
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._word_statement,
-            result.Data.DataItems[0].Data,
-            0,
-            3,
-        )
-
-        # Or Statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[1],
-            self._or_statement,
-            result.Data.DataItems[0],
-            0,
-            3,
-        )
-
-        # Newline
-        OnInternalStatementEqual(
-            parse_mock.method_calls[2],
-            self._newline_statement,
-            result.Data.DataItems[1].Data,
-            3,
-            4,
-        )
-
-        # Or statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[3],
-            self._or_statement,
-            result.Data.DataItems[1],
-            3,
-            4,
-        )
-
-        # two
-        OnInternalStatementEqual(
-            parse_mock.method_calls[4],
-            self._word_statement,
-            result.Data.DataItems[2].Data,
-            4,
-            7,
-        )
-
-        # Or Statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[5],
-            self._or_statement,
-            result.Data.DataItems[2],
-            4,
-            7,
-        )
-
-        # Newline
-        OnInternalStatementEqual(
-            parse_mock.method_calls[6],
-            self._newline_statement,
-            result.Data.DataItems[3].Data,
-            7,
-            8,
-        )
-
-        # Or statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[7],
-            self._or_statement,
-            result.Data.DataItems[3],
-            7,
-            8,
-        )
+        assert len(parse_mock.method_calls) == 35
 
         assert list(result.Data.Enum()) == [
             (self._statement.Statement, result.Data.DataItems[0]),
@@ -278,79 +190,7 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 8
-
-        # one
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._word_statement,
-            result.Data.DataItems[0].Data,
-            0,
-            3,
-        )
-
-        # Or Statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[1],
-            self._or_statement,
-            result.Data.DataItems[0],
-            0,
-            3,
-        )
-
-        # Newline
-        OnInternalStatementEqual(
-            parse_mock.method_calls[2],
-            self._newline_statement,
-            result.Data.DataItems[1].Data,
-            3,
-            4,
-        )
-
-        # Or statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[3],
-            self._or_statement,
-            result.Data.DataItems[1],
-            3,
-            4,
-        )
-
-        # two
-        OnInternalStatementEqual(
-            parse_mock.method_calls[4],
-            self._word_statement,
-            result.Data.DataItems[2].Data,
-            4,
-            7,
-        )
-
-        # Or Statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[5],
-            self._or_statement,
-            result.Data.DataItems[2],
-            4,
-            7,
-        )
-
-        # Newline
-        OnInternalStatementEqual(
-            parse_mock.method_calls[6],
-            self._newline_statement,
-            result.Data.DataItems[3].Data,
-            7,
-            8,
-        )
-
-        # Or statement
-        OnInternalStatementEqual(
-            parse_mock.method_calls[7],
-            self._or_statement,
-            result.Data.DataItems[3],
-            7,
-            8,
-        )
+        assert len(parse_mock.method_calls) == 35
 
         assert list(result.Data.Enum()) == [
             (self._statement.Statement, result.Data.DataItems[0]),
@@ -385,7 +225,7 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 0
+        assert len(parse_mock.method_calls) == 8
 
         assert list(result.Data.Enum()) == [
             (self._statement.Statement, result.Data.DataItems[0]),
@@ -419,7 +259,7 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 0
+        assert len(parse_mock.method_calls) == 16
 
         assert list(result.Data.Enum()) == [
             (self._statement.Statement, result.Data.DataItems[0]),

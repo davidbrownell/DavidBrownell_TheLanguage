@@ -19,8 +19,7 @@ import asyncio
 import os
 import textwrap
 
-from enum import auto, Enum
-from typing import Any, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -51,23 +50,43 @@ class Statement(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
+        def StartStatementCandidate(
+            candidate_id: List[Any],
+        ) -> None:
+            """Called before any event is generated for a particular candidate_id"""
+            raise Exception("Abstract method")  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
+        def EndStatementCandidate(
+            candidate_id: List[Any],
+        ) -> None:
+            """Called when all events have been generated for a particular candidate_id"""
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
         async def OnIndentAsync(
+            candidate_id: List[Any],
             data: "Statement.TokenParseResultData",
-        ):
+        ) -> None:
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
         async def OnDedentAsync(
+            candidate_id: List[Any],
             data: "Statement.TokenParseResultData",
-        ):
+        ) -> None:
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
         async def OnInternalStatementAsync(
+            candidate_id: List[Any],
             statement: "Statement",
             data: Optional["Statement.ParseResultData"],
             iter_before: NormalizedIterator,
@@ -75,7 +94,6 @@ class Statement(Interface.Interface):
         ) -> bool:                          # True to continue, False to terminate
             """Invoked when an internal statement is successfully matched"""
             raise Exception("Abstract method")  # pragma: no cover
-
 
     # ----------------------------------------------------------------------
     # |
@@ -346,47 +364,17 @@ class Statement(Interface.Interface):
     # |  Protected Types
     # |
     # ----------------------------------------------------------------------
-    # BugBug: This is causing problems, as we need the events to happen in real time. However, when
-    # it comes to adding dynamic statements, we need a way to differentiate paths.
-    class QueueCommandObserver(Observer):
-        """\
-        Captures events so that they can be replayed at a later time.
-
-        We only want to generate events for statements that are successfully parsed.
-        For simple Statements, this means that we can send events immediately. However,
-        this isn't the case for more complicated Statements; for example, an OrStatement
-        should only generate events for a single matching Statement.
-
-        This object can be used to capture events generated and then replay them at a
-        later time.
-        """
+    class SimpleObserverDecorator(Observer):
+        """Adds a component to the candidate_id and then forwards the event"""
 
         # ----------------------------------------------------------------------
         def __init__(
             self,
+            candidate_id: List[Any],
             observer: "Statement.Observer",
         ):
-            self._observer                                                  = observer
-            self._events: List["Statement.QueueCommandObserver.EventInfo"] = []
-
-        # ----------------------------------------------------------------------
-        async def ReplayAsync(self) -> bool:
-            result = True
-
-            for event in self._events:
-                if event.Type == Statement.QueueCommandObserver.EventType.Indent:
-                    await self._observer.OnIndentAsync(*event.Args, **event.Kwargs)
-                elif event.Type == Statement.QueueCommandObserver.EventType.Dedent:
-                    await self._observer.OnDedentAsync(*event.Args, **event.Kwargs)
-                elif event.Type == Statement.QueueCommandObserver.EventType.InternalStatement:
-                    result = await self._observer.OnInternalStatementAsync(*event.Args, **event.Kwargs)
-                    if not result:
-                        break
-                else:
-                    assert False, event  # pragma: no cover
-
-            self._events = []
-            return result
+            self._candidate_id              = candidate_id
+            self._observer                  = observer
 
         # ----------------------------------------------------------------------
         def __getattr__(self, name):
@@ -402,50 +390,61 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        async def OnIndentAsync(self, *args, **kwargs):
-            self._events.append(
-                Statement.QueueCommandObserver.EventInfo(
-                    Statement.QueueCommandObserver.EventType.Indent,
-                    args,
-                    kwargs,
-                ),
-            )
+        def StartStatementCandidate(
+            self,
+            candidate_id: List[Any],
+        ) -> None:
+            return self._observer.StartStatementCandidate(self._CreateId(candidate_id))
 
         # ----------------------------------------------------------------------
         @Interface.override
-        async def OnDedentAsync(self, *args, **kwargs):
-            self._events.append(
-                Statement.QueueCommandObserver.EventInfo(
-                    Statement.QueueCommandObserver.EventType.Dedent,
-                    args,
-                    kwargs,
-                ),
-            )
+        def EndStatementCandidate(
+            self,
+            candidate_id: List[Any],
+        ) -> None:
+            return self._observer.EndStatementCandidate(self._CreateId(candidate_id))
 
         # ----------------------------------------------------------------------
         @Interface.override
-        async def OnInternalStatementAsync(self, *args, **kwargs):
-            self._events.append(
-                Statement.QueueCommandObserver.EventInfo(
-                    Statement.QueueCommandObserver.EventType.InternalStatement,
-                    args,
-                    kwargs,
-                ),
+        async def OnIndentAsync(
+            self,
+            candidate_id: List[Any],
+            data: "Statement.TokenParseResultData",
+        ) -> None:
+            return await self._observer.OnIndentAsync(self._CreateId(candidate_id), data)
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def OnDedentAsync(
+            self,
+            candidate_id: List[Any],
+            data: "Statement.TokenParseResultData",
+        ) -> None:
+            return await self._observer.OnDedentAsync(self._CreateId(candidate_id), data)
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def OnInternalStatementAsync(
+            self,
+            candidate_id: List[Any],
+            statement: "Statement",
+            data: Optional["Statement.ParseResultData"],
+            iter_before: NormalizedIterator,
+            iter_after: NormalizedIterator,
+        ) -> bool:
+            return await self._observer.OnInternalStatementAsync(
+                self._CreateId(candidate_id),
+                statement,
+                data,
+                iter_before,
+                iter_after,
             )
 
-            return True
-
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
-        class EventType(Enum):
-            Indent                          = auto()
-            Dedent                          = auto()
-            InternalStatement               = auto()
-
-        # ----------------------------------------------------------------------
-        @dataclass(frozen=True)
-        class EventInfo(object):
-            Type: "Statement.QueueCommandObserver.EventType"
-            Args: Tuple[Any]
-            Kwargs: Dict[str, Any]
+        def _CreateId(
+            self,
+            candidate_id: List[Any],
+        ):
+            return self._candidate_id + candidate_id

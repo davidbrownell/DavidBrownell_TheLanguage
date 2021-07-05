@@ -21,8 +21,6 @@ import textwrap
 
 from unittest.mock import Mock
 
-import pytest
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -33,7 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import parse_mock as parse_mock_impl, CoroutineMock, CreateIterator, OnInternalStatementEqual
+    from . import (
+        CoroutineMock,
+        CreateIterator,
+        InternalStatementMethodCallToTuple,
+        parse_mock,
+        MethodCallsToString,
+    )
 
     from ..OrStatement import *
     from ..TokenStatement import (
@@ -42,23 +46,10 @@ with InitRelativeImports():
         TokenStatement,
     )
 
-    from ...Normalize import Normalize
-    from ...NormalizedIterator import NormalizedIterator
-
     from ...Token import (
         NewlineToken,
         RegexToken,
     )
-
-
-# ----------------------------------------------------------------------
-@pytest.fixture
-def parse_mock(parse_mock_impl):
-    parse_mock_impl.OnIndentAsync = CoroutineMock()
-    parse_mock_impl.OnDedentAsync = CoroutineMock()
-    parse_mock_impl.OnInternalStatementAsync = CoroutineMock()
-
-    return parse_mock_impl
 
 
 # ----------------------------------------------------------------------
@@ -103,15 +94,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.Iter.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 1
-
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._lower_statement,
-            result.Data.Data,
-            0,
-            result.Iter.Offset,
-        )
+        assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
             (self._lower_statement, result.Data.Data),
@@ -134,15 +117,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.Iter.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 1
-
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._upper_statement,
-            result.Data.Data,
-            0,
-            result.Iter.Offset,
-        )
+        assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
             (self._upper_statement, result.Data.Data),
@@ -165,15 +140,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.Iter.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 1
-
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._number_statement,
-            result.Data.Data,
-            0,
-            result.Iter.Offset,
-        )
+        assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
             (self._number_statement, result.Data.Data),
@@ -201,15 +168,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.Iter.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 1
-
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._number_statement,
-            result.Data.Data,
-            0,
-            result.Iter.Offset,
-        )
+        assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
             (self._number_statement, result.Data.Data),
@@ -224,13 +183,7 @@ class TestStandard(object):
         result = self._statement.Parse(iter, parse_mock)
         assert result is None
 
-        assert len(parse_mock.method_calls) == 1
-
-        # We can't use OnInternalStatementEqual here because we don't have all the data necessary to make
-        # the comparison; do as much as we can manually.
-        assert parse_mock.method_calls[0][1][0] == self._number_statement
-        assert parse_mock.method_calls[0][1][2].Offset == 0
-        assert parse_mock.method_calls[0][1][3].Offset == 8
+        assert len(parse_mock.method_calls) == 11
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, parse_mock):
@@ -255,7 +208,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.Iter.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 0
+        assert len(parse_mock.method_calls) == 10
 
         assert list(result.Data.Enum()) == [
             (self._lower_statement, None),
@@ -292,7 +245,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.Iter.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 0
+        assert len(parse_mock.method_calls) == 10
 
         assert list(result.Data.Enum()) == [
             (self._lower_statement, None),
@@ -318,23 +271,51 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 2
+        assert len(parse_mock.method_calls) == 13
 
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._lower_statement,
-            result.Data.Data.Data,
-            0,
-            result.Iter.Offset,
+        assert list(result.Data.Enum()) == [
+            (self._inner_nested_statement, result.Data.Data),
+        ]
+
+    # ----------------------------------------------------------------------
+    def test_NestedLowerEvents(self, parse_mock):
+        result = self._outer_nested_statement.Parse(
+            CreateIterator("word"),
+            parse_mock,
+            single_threaded=True,
         )
 
-        OnInternalStatementEqual(
-            parse_mock.method_calls[1],
-            self._inner_nested_statement,
-            result.Data.Data,
-            0,
-            result.Iter.Offset,
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            4
+                Or [lower, number]
+                    lower
+                        lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+            """,
         )
+
+        assert MethodCallsToString(parse_mock) == textwrap.dedent(
+            """\
+            0, StartStatementCandidate, ['Or [upper, Or [lower, number]]']
+            1, StartStatementCandidate, ['Or [upper, Or [lower, number]]', 0, 'upper']
+            2, EndStatementCandidate, ['Or [upper, Or [lower, number]]', 0, 'upper']
+            3, StartStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]']
+            4, StartStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 0, 'lower']
+            5, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 0, 'lower']
+            6, EndStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 0, 'lower']
+            7, StartStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 1, 'number']
+            8, EndStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 1, 'number']
+            9, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]']
+            10, EndStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]']
+            11, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]']
+            12, EndStatementCandidate, ['Or [upper, Or [lower, number]]']
+            """,
+        )
+
+        assert InternalStatementMethodCallToTuple(parse_mock, 5) == (self._lower_statement, result.Data.Data.Data, 0, 4)
+        assert InternalStatementMethodCallToTuple(parse_mock, 9) == (self._inner_nested_statement, result.Data.Data, 0, 4)
+        assert InternalStatementMethodCallToTuple(parse_mock, 11) == (self._outer_nested_statement, result.Data, 0, 4)
 
         assert list(result.Data.Enum()) == [
             (self._inner_nested_statement, result.Data.Data),
@@ -356,15 +337,7 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 1
-
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._upper_statement,
-            result.Data.Data,
-            0,
-            result.Iter.Offset,
-        )
+        assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
             (self._upper_statement, result.Data.Data),
@@ -385,7 +358,7 @@ class TestSort(object):
     _no_sort_statement                      = OrStatement(
         _short_statement,
         _long_statement,
-        name="Sort",
+        name="No Sort",
         sort_results=False,
     )
 
@@ -403,15 +376,8 @@ class TestSort(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 1
+        assert len(parse_mock.method_calls) == 9
 
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._long_statement,
-            result.Data.Data,
-            0,
-            result.Iter.Offset,
-        )
 
     # ----------------------------------------------------------------------
     def test_NoSort(self, parse_mock):
@@ -427,15 +393,7 @@ class TestSort(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 1
-
-        OnInternalStatementEqual(
-            parse_mock.method_calls[0],
-            self._short_statement,
-            result.Data.Data,
-            0,
-            result.Iter.Offset,
-        )
+        assert len(parse_mock.method_calls) == 9
 
     # ----------------------------------------------------------------------
     def test_NoMatchNoSort(self, parse_mock):
@@ -453,7 +411,7 @@ class TestSort(object):
 
         assert result.Iter.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 0
+        assert len(parse_mock.method_calls) == 6
 
         assert list(result.Data.Enum()) == [
             (self._short_statement, None),
@@ -483,7 +441,7 @@ class TestParseReturnsNone(object):
         result = self._statement.Parse(CreateIterator("test"), parse_mock)
         assert result is None
 
-        assert len(parse_mock.method_calls) == 0
+        assert len(parse_mock.method_calls) == 2
 
     # ----------------------------------------------------------------------
     def test_StandardSingleThreaded(self, parse_mock):
@@ -494,4 +452,4 @@ class TestParseReturnsNone(object):
         )
         assert result is None
 
-        assert len(parse_mock.method_calls) == 0
+        assert len(parse_mock.method_calls) == 2

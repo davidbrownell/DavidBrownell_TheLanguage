@@ -20,6 +20,7 @@ import os
 from typing import Callable, List, Tuple, Union
 
 import CommonEnvironment
+from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -68,42 +69,42 @@ class DynamicStatement(Statement):
         Statement.ParseResult,
         None,
     ]:
-        dynamic_statements = self._get_dynamic_statements_func(observer)
-        if isinstance(dynamic_statements, Tuple):
-            name = dynamic_statements[0]
-            dynamic_statements = dynamic_statements[1]
-        else:
-            name = None
+        statement_unique_id = [self.Name]
 
-        or_statement = OrStatement(
-            *dynamic_statements,
-            sort_results=False,
-            name=name,
-        )
+        observer.StartStatementCandidate(statement_unique_id)
+        with CallOnExit(lambda: observer.EndStatementCandidate(statement_unique_id)):
+            dynamic_statements = self._get_dynamic_statements_func(observer)
+            if isinstance(dynamic_statements, Tuple):
+                name = dynamic_statements[0]
+                dynamic_statements = dynamic_statements[1]
+            else:
+                name = None
 
-        queue_command_observer = Statement.QueueCommandObserver(observer)
+            or_statement = OrStatement(
+                *dynamic_statements,
+                sort_results=False,
+                name=name,
+            )
 
-        result = await or_statement.ParseAsync(
-            normalized_iter,
-            queue_command_observer,
-            ignore_whitespace=ignore_whitespace,
-            single_threaded=single_threaded,
-        )
-
-        if result.Success:
-            if not await queue_command_observer.ReplayAsync():
-                return None
-
-            if not await observer.OnInternalStatementAsync(
-                or_statement,
-                result.Data,
+            result = await or_statement.ParseAsync(
                 normalized_iter,
-                result.Iter,
+                Statement.SimpleObserverDecorator(statement_unique_id, observer),
+                ignore_whitespace=ignore_whitespace,
+                single_threaded=single_threaded,
+            )
+
+            data = Statement.StandardParseResultData(or_statement, result.Data)
+
+            if (
+                result.Success
+                and not await observer.OnInternalStatementAsync(
+                    statement_unique_id,
+                    self,
+                    data,
+                    normalized_iter,
+                    result.Iter,
+                )
             ):
                 return None
 
-        return Statement.ParseResult(
-            result.Success,
-            result.Iter,
-            Statement.StandardParseResultData(or_statement, result.Data),
-        )
+            return Statement.ParseResult(result.Success, result.Iter, data)

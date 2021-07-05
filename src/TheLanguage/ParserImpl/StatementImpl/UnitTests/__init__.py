@@ -16,8 +16,7 @@
 """Types and Methods common across unit tests"""
 
 import os
-
-from typing import Any, Dict, Tuple
+import textwrap
 
 import pytest
 
@@ -44,6 +43,10 @@ with InitRelativeImports():
 def parse_mock():
     mock = CoroutineMock()
 
+    mock.OnIndentAsync = CoroutineMock()
+    mock.OnDedentAsync = CoroutineMock()
+    mock.OnInternalStatementAsync = CoroutineMock()
+
     return mock
 
 
@@ -55,26 +58,33 @@ def CreateIterator(
 
 
 # ----------------------------------------------------------------------
-def OnInternalStatementEqual(
-    mock_method_call_result: Tuple[
-        str,
-        Tuple[
-            Statement,
-            Statement.ParseResultData,
-            NormalizedIterator,
-            NormalizedIterator,
-        ],
-        Dict[str, Any],
-    ],
-    statement: Statement,
-    data: Statement.ParseResultData,
-    offset_before: int,
-    offset_after: int,
-):
-    assert mock_method_call_result[0] == "OnInternalStatementAsync"
-    call_result = mock_method_call_result[1]
+def MethodCallsToString(parse_mock) -> str:
+    return textwrap.dedent(
+        """\
+        {}
+        """,
+    ).format(
+        "\n".join(
+            [
+                "{}, {}, {}".format(
+                    index,
+                    method_call[0],
+                    str(method_call[1][0]),
+                )
+                for index, method_call in enumerate(parse_mock.method_calls)
+            ],
+        ),
+    )
 
-    assert statement == call_result[0]
-    assert data == call_result[1]
-    assert offset_before == call_result[2].Offset
-    assert offset_after == call_result[3].Offset
+# ----------------------------------------------------------------------
+def InternalStatementMethodCallToTuple(
+    parse_mock,
+    index,
+    use_statement_name=False,
+):
+    return (
+        parse_mock.method_calls[index][1][1].Name if use_statement_name else parse_mock.method_calls[index][1][1],
+        parse_mock.method_calls[index][1][2],
+        parse_mock.method_calls[index][1][3].Offset,
+        parse_mock.method_calls[index][1][4].Offset,
+    )

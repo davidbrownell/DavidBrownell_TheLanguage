@@ -18,11 +18,10 @@
 import asyncio
 import os
 
-from typing import cast, List, Optional, Union
-
-from dataclasses import dataclass
+from typing import Any, cast, List, Optional, Union
 
 import CommonEnvironment
+from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -70,122 +69,118 @@ class OrStatement(Statement):
         Statement.ParseResult,
         None,
     ]:
-        use_async = not single_threaded and len(self.Items) > 1
+        statement_unique_id: List[Any] = [self.Name]
 
-        # ----------------------------------------------------------------------
-        async def ExecuteAsync(statement, queue_command_observer):
-            return await statement.ParseAsync(
-                normalized_iter.Clone(),
-                queue_command_observer,
-                ignore_whitespace=ignore_whitespace,
-                single_threaded=single_threaded,
-            )
+        observer.StartStatementCandidate(statement_unique_id)
+        with CallOnExit(lambda: observer.EndStatementCandidate(statement_unique_id)):
+            use_async = not single_threaded and len(self.Items) > 1
 
-        # ----------------------------------------------------------------------
-
-        queue_command_observers = [Statement.QueueCommandObserver(observer) for _ in self.Items]
-        results: List[Statement.ParseResult] = []
-
-        if use_async:
-            gathered_results = await asyncio.gather(
-                *[
-                    ExecuteAsync(statement, queue_command_observer)
-                    for statement, queue_command_observer in zip(self.Items, queue_command_observers)
-                ],
-            )
-
-            if any(result is None for result in gathered_results):
-                return None
-
-            results = cast(List[Statement.ParseResult], gathered_results)
-
-        else:
-            for statement, queue_command_observer in zip(self.Items, queue_command_observers):
-                result = await ExecuteAsync(statement, queue_command_observer)
-                if result is None:
-                    return result
-
-                results.append(result)
-
-        assert results
-
-        best_index = None
-
-        if self.SortResults:
-            # Stable sort according to the criteria:
-            #   - Success
-            #   - Longest matched content
-
-            sort_data = [
-                (
-                    index,
-                    1 if result.Success else 0,
-                    result.Iter.Offset,
+            # ----------------------------------------------------------------------
+            async def ExecuteAsync(statement_index, statement):
+                return await statement.ParseAsync(
+                    normalized_iter.Clone(),
+                    Statement.SimpleObserverDecorator(statement_unique_id + [statement_index], observer),
+                    ignore_whitespace=ignore_whitespace,
+                    single_threaded=single_threaded,
                 )
-                for index, result in enumerate(results)
-            ]
 
-            sort_data.sort(
-                key=lambda value: value[1:],
-                reverse=True,
-            )
+            # ----------------------------------------------------------------------
 
-            best_index = sort_data[0][0]
+            results: List[Statement.ParseResult] = []
 
-        else:
-            for index, result in enumerate(results):
-                if result.Success:
-                    best_index = index
-                    break
+            if use_async:
+                gathered_results = await asyncio.gather(
+                    *[
+                        ExecuteAsync(statement_index, statement)
+                        for statement_index, statement in enumerate(self.Items)
+                    ],
+                )
 
-            if best_index is None:
-                best_index = 0
+                if any(result is None for result in gathered_results):
+                    return None
 
-        best_result = results[best_index]
+                results = cast(List[Statement.ParseResult], gathered_results)
 
-        if best_result.Success:
-            best_observer = queue_command_observers[best_index]
-            best_statement = self.Items[best_index]
+            else:
+                for statement_index, statement in enumerate(self.Items):
+                    result = await ExecuteAsync(statement_index, statement)
+                    if result is None:
+                        return result
 
-            result = await best_observer.ReplayAsync()
-            assert result, "This should always be True as it is a result from Statement.QueueCommandObserver"
+                    results.append(result)
 
-            if not await observer.OnInternalStatementAsync(
-                best_statement,
-                best_result.Data,
-                normalized_iter,
-                best_result.Iter,
-            ):
-                return None
+            assert results
+
+            best_index = None
+
+            if self.SortResults:
+                # Stable sort according to the criteria:
+                #   - Success
+                #   - Longest matched content
+
+                sort_data = [
+                    (
+                        index,
+                        1 if result.Success else 0,
+                        result.Iter.Offset,
+                    )
+                    for index, result in enumerate(results)
+                ]
+
+                sort_data.sort(
+                    key=lambda value: value[1:],
+                    reverse=True,
+                )
+
+                best_index = sort_data[0][0]
+
+            else:
+                for index, result in enumerate(results):
+                    if result.Success:
+                        best_index = index
+                        break
+
+                if best_index is None:
+                    best_index = 0
+
+            best_result = results[best_index]
+
+            if best_result.Success:
+                data = Statement.StandardParseResultData(
+                    self.Items[best_index],
+                    best_result.Data,
+                )
+
+                if not await observer.OnInternalStatementAsync(
+                    statement_unique_id,
+                    self,
+                    data,
+                    normalized_iter,
+                    best_result.Iter,
+                ):
+                    return None
+
+                return Statement.ParseResult(True, best_result.Iter, data)
+
+            # Gather the failure information
+            data_items: List[Statement.StandardParseResultData] = []
+            max_iter: Optional[Statement.NormalizedIterator] = None
+
+            for statement, result in zip(self.Items, results):
+                assert not result.Success
+
+                data_items.append(
+                    Statement.StandardParseResultData(
+                        statement,
+                        result.Data,
+                    ),
+                )
+
+                if max_iter is None or result.Iter.Offset > max_iter.Offset:
+                    max_iter = result.Iter
 
             return Statement.ParseResult(
-                True,
-                best_result.Iter,
-                Statement.StandardParseResultData(
-                    best_statement,
-                    best_result.Data,
-                ),
+                False,
+                cast(Statement.NormalizedIterator, max_iter),
+                Statement.MultipleStandardParseResultData(data_items),
             )
-
-        # Gather the failure information
-        data_items: List[Statement.StandardParseResultData] = []
-        max_iter: Optional[Statement.NormalizedIterator] = None
-
-        for statement, result in zip(self.Items, results):
-            assert not result.Success
-
-            data_items.append(
-                Statement.StandardParseResultData(
-                    statement,
-                    result.Data,
-                ),
-            )
-
-            if max_iter is None or result.Iter.Offset > max_iter.Offset:
-                max_iter = result.Iter
-
-        return Statement.ParseResult(
-            False,
-            cast(Statement.NormalizedIterator, max_iter),
-            Statement.MultipleStandardParseResultData(data_items),
-        )
