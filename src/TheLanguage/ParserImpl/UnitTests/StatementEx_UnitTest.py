@@ -879,52 +879,48 @@ class TestDynamicStatements(object):
             13, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 2, 'Newline+']
             14, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
             15, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
-            16, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
-            17, StartStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
-            18, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
-            19, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
-            20, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
-            21, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
-            22, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements']
-            23, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements']
-            24, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements']
-            25, GetDynamicStatements, DynamicStatements.Statements
-            26, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
-            27, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
-            28, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 0, 'Word Token']
-            29, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 0, 'Word Token']
-            30, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
-            31, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
-            32, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
-            33, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
-            34, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
-            35, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 1, 'Newline+']
-            36, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 1, 'Newline+']
-            37, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 1, 'Newline+']
-            38, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
-            39, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
-            40, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
-            41, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
-            42, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements']
-            43, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements']
-            44, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions']
-            45, GetDynamicStatements, DynamicStatements.Expressions
-            46, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]']
-            47, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement']
-            48, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 0, 'Number Token']
-            49, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 0, 'Number Token']
-            50, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 0, 'Number Token']
-            51, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 1, 'Newline+']
-            52, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 1, 'Newline+']
-            53, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 1, 'Newline+']
-            54, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement']
-            55, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement']
-            56, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]']
-            57, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]']
-            58, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions']
-            59, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions']
-            60, OnInternalStatementAsync, ['Statement']
-            61, EndStatementCandidate, ['Statement']
+            16, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            17, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            18, OnInternalStatementAsync, ['Statement', 0, 'DynamicStatements.Statements']
+            19, EndStatementCandidate, ['Statement', 0, 'DynamicStatements.Statements']
+            20, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements']
+            21, GetDynamicStatements, DynamicStatements.Statements
+            22, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            23, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
+            24, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 0, 'Word Token']
+            25, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement', 0, 'Word Token']
+            26, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 0, 'Word Statement']
+            27, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
+            28, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
+            29, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
+            30, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 0, 'Number Token']
+            31, StartStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 1, 'Newline+']
+            32, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 1, 'Newline+']
+            33, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement', 1, 'Newline+']
+            34, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
+            35, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]', 1, 'Number Statement']
+            36, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            37, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements', 'Or [Word Statement, Number Statement]']
+            38, OnInternalStatementAsync, ['Statement', 1, 'DynamicStatements.Statements']
+            39, EndStatementCandidate, ['Statement', 1, 'DynamicStatements.Statements']
+            40, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions']
+            41, GetDynamicStatements, DynamicStatements.Expressions
+            42, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]']
+            43, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement']
+            44, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 0, 'Number Token']
+            45, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 0, 'Number Token']
+            46, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 0, 'Number Token']
+            47, StartStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 1, 'Newline+']
+            48, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 1, 'Newline+']
+            49, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement', 1, 'Newline+']
+            50, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement']
+            51, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]', 0, 'Number Statement']
+            52, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]']
+            53, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions', 'Or [Number Statement]']
+            54, OnInternalStatementAsync, ['Statement', 2, 'DynamicStatements.Expressions']
+            55, EndStatementCandidate, ['Statement', 2, 'DynamicStatements.Expressions']
+            56, OnInternalStatementAsync, ['Statement']
+            57, EndStatementCandidate, ['Statement']
             """,
         )
 
@@ -932,19 +928,19 @@ class TestDynamicStatements(object):
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 9, use_statement_name=True) == ("Word Token", result.Data.DataItems[0].Data.Data.Data.DataItems[1].Data, 6, 11)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 12, use_statement_name=True) == ("Newline+", result.Data.DataItems[0].Data.Data.Data.DataItems[2].Data, 11, 12)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 14) == (self._word_statement, result.Data.DataItems[0].Data.Data.Data, 0, 12)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 20, use_statement_name=True) == ("Or [Word Statement, Number Statement]", result.Data.DataItems[0].Data.Data, 0, 12)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 22, use_statement_name=True) == ("DynamicStatements.Statements", result.Data.DataItems[0].Data, 0, 12)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 33, use_statement_name=True) == ("Number Token", result.Data.DataItems[1].Data.Data.Data.DataItems[0].Data, 12, 15)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 36, use_statement_name=True) == ("Newline+", result.Data.DataItems[1].Data.Data.Data.DataItems[1].Data, 15, 16)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 38) == (self._number_statement, result.Data.DataItems[1].Data.Data.Data, 12, 16)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 40, use_statement_name=True) == ("Or [Word Statement, Number Statement]", result.Data.DataItems[1].Data.Data, 12, 16)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 42, use_statement_name=True) == ("DynamicStatements.Statements", result.Data.DataItems[1].Data, 12, 16)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 49, use_statement_name=True) == ("Number Token", result.Data.DataItems[2].Data.Data.Data.DataItems[0].Data, 16, 19)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 52, use_statement_name=True) == ("Newline+", result.Data.DataItems[2].Data.Data.Data.DataItems[1].Data, 19, 20)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 54) == (self._number_statement, result.Data.DataItems[2].Data.Data.Data, 16, 20)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 56, use_statement_name=True) == ("Or [Number Statement]", result.Data.DataItems[2].Data.Data, 16, 20)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 58, use_statement_name=True) == ("DynamicStatements.Expressions", result.Data.DataItems[2].Data, 16, 20)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 60) == (self._statement, result.Data, 0, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 16, use_statement_name=True) == ("Or [Word Statement, Number Statement]", result.Data.DataItems[0].Data.Data, 0, 12)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 18, use_statement_name=True) == ("DynamicStatements.Statements", result.Data.DataItems[0].Data, 0, 12)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 29, use_statement_name=True) == ("Number Token", result.Data.DataItems[1].Data.Data.Data.DataItems[0].Data, 12, 15)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 32, use_statement_name=True) == ("Newline+", result.Data.DataItems[1].Data.Data.Data.DataItems[1].Data, 15, 16)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 34) == (self._number_statement, result.Data.DataItems[1].Data.Data.Data, 12, 16)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 36, use_statement_name=True) == ("Or [Word Statement, Number Statement]", result.Data.DataItems[1].Data.Data, 12, 16)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 38, use_statement_name=True) == ("DynamicStatements.Statements", result.Data.DataItems[1].Data, 12, 16)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 45, use_statement_name=True) == ("Number Token", result.Data.DataItems[2].Data.Data.Data.DataItems[0].Data, 16, 19)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 48, use_statement_name=True) == ("Newline+", result.Data.DataItems[2].Data.Data.Data.DataItems[1].Data, 19, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 50) == (self._number_statement, result.Data.DataItems[2].Data.Data.Data, 16, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 52, use_statement_name=True) == ("Or [Number Statement]", result.Data.DataItems[2].Data.Data, 16, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 54, use_statement_name=True) == ("DynamicStatements.Expressions", result.Data.DataItems[2].Data, 16, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 56) == (self._statement, result.Data, 0, 20)
 
     # ----------------------------------------------------------------------
     def test_NoMatch(self, modified_parse_mock):

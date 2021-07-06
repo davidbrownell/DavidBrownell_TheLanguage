@@ -109,6 +109,9 @@ class OrStatement(Statement):
 
                     results.append(result)
 
+                    if not self.SortResults and result.Success:
+                        break
+
             assert results
 
             best_index = None
