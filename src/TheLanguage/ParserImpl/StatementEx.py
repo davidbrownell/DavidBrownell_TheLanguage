@@ -131,6 +131,7 @@ class StatementEx(Statement):
         @staticmethod
         @Interface.abstractmethod
         def GetDynamicStatements(
+            unique_id: List[Any],
             value: DynamicStatements,
         ) -> Union[
             Tuple[str, List[Statement]],
@@ -153,14 +154,34 @@ class StatementEx(Statement):
         name: str,
         *items: "StatementEx.ItemType",
         populate_empty=False,
+        unique_id: Optional[List[Any]]=None,
     ):
-        super(StatementEx, self).__init__(name)
+        super(StatementEx, self).__init__(
+            name,
+            unique_id=unique_id or [name],
+        )
 
         self._items: List[StatementEx.ItemType]                             = list(items)
+        self._populate_empty                                                = populate_empty
+
         self.Statements: Optional[List[Statement]]                          = None
+        self._working_statements: Optional[List[Statement]]                 = None
 
         self._PopulateStatements(
             self if populate_empty else None,
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Clone(
+        self,
+        unique_id: List[Any],
+    ):
+        return self.__class__(
+            self.Name,
+            *self._items,
+            populate_empty=self._populate_empty,
+            unique_id=unique_id,
         )
 
     # ----------------------------------------------------------------------
@@ -178,14 +199,19 @@ class StatementEx(Statement):
         if self.Statements is None:
             raise Exception("The statement has not been populated by an upstream statement")
 
-        statement_unique_id: List[Any] = [self.Name]
+        if self._working_statements is None:
+            self._working_statements = [
+                statement.Clone(self.UniqueId + ["Ex: {} [{}]".format(statement.Name, statement_index)])
+                for statement_index, statement in enumerate(self.Statements)
+            ]
 
-        observer.StartStatementCandidate(statement_unique_id)
-        with CallOnExit(lambda: observer.EndStatementCandidate(statement_unique_id)):
+        success = True
+
+        observer.StartStatement(self.UniqueId)
+        with CallOnExit(lambda: observer.EndStatement(self.UniqueId, success)):
             original_normalized_iter = normalized_iter.Clone()
 
             ignore_whitespace_ctr = 1 if ignore_whitespace else 0
-            success = True
             data_items = []
 
             # ----------------------------------------------------------------------
@@ -205,7 +231,7 @@ class StatementEx(Statement):
 
             # ----------------------------------------------------------------------
 
-            for statement_index, statement in enumerate(self.Statements):
+            for statement_index, statement in enumerate(self._working_statements):
                 # Extract whitespace or comments
                 while not normalized_iter.AtEnd():
                     potential_data_item = ExtractWhitespaceOrComments()
@@ -223,7 +249,7 @@ class StatementEx(Statement):
                         assert ignore_whitespace_ctr != 0
                         ignore_whitespace_ctr -= 1
 
-                        if statement_index == len(self.Statements) - 1:
+                        if statement_index == len(self._working_statements) - 1:
                             break
                     else:
                         assert False, statement.Token  # pragma: no cover
@@ -237,7 +263,7 @@ class StatementEx(Statement):
                 # Process the statement
                 result = await statement.ParseAsync(
                     normalized_iter.Clone(),
-                    Statement.SimpleObserverDecorator(statement_unique_id + [statement_index], observer),
+                    observer,
                     ignore_whitespace=ignore_whitespace_ctr != 0,
                     single_threaded=single_threaded,
                 )
@@ -258,7 +284,7 @@ class StatementEx(Statement):
             if (
                 success
                 and not await observer.OnInternalStatementAsync(
-                    statement_unique_id,
+                    self.UniqueId,
                     self,
                     data,
                     original_normalized_iter,
@@ -323,7 +349,7 @@ class StatementEx(Statement):
 
         elif isinstance(item, DynamicStatements):
             return DynamicStatement(
-                lambda observer: observer.GetDynamicStatements(item),
+                lambda unique_id, observer: observer.GetDynamicStatements(unique_id, item),
                 name=name or str(item),
             )
 

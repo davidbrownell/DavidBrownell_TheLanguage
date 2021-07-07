@@ -87,25 +87,25 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)']
-            1, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]']
-            2, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 0, 'Word']
-            3, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 0, 'Word']
-            4, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 0, 'Word']
-            5, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 1, 'Newline+']
-            6, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]', 1, 'Newline+']
-            7, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]']
-            8, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 0, 'Or [Word, Newline+]']
-            9, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]']
-            10, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 0, 'Word']
-            11, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 0, 'Word']
-            12, StartStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 1, 'Newline+']
-            13, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 1, 'Newline+']
-            14, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]', 1, 'Newline+']
-            15, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]']
-            16, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)', 1, 'Or [Word, Newline+]']
+            0, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)']
+            1, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]']
+            2, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Word [0]']
+            3, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Word [0]']
+            4, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Word [0]']
+            5, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Newline+ [1]']
+            6, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Newline+ [1]']
+            7, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]']
+            8, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]']
+            9, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]']
+            10, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Word [0]']
+            11, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Word [0]']
+            12, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Newline+ [1]']
+            13, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Newline+ [1]']
+            14, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Newline+ [1]']
+            15, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]']
+            16, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]']
             17, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)']
-            18, EndStatementCandidate, ['Repeat: (Or [Word, Newline+], 2, 4)']
+            18, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)']
             """,
         )
 
@@ -384,19 +384,30 @@ def test_RepeatParseResultDataNoneItems():
     ]
 
 # ----------------------------------------------------------------------
-def test_ParseReturnsNone():
+def test_ParseReturnsNone(parse_mock):
     # ----------------------------------------------------------------------
-    async def ParseAsync(*args, **kwargs):
-        return None
+    class NoneStatement(StatementType):
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def Clone(
+            self,
+            unique_id: List[Any],
+        ):
+            return self.__class__(
+                self.Name,
+                unique_id=unique_id,
+            )
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def ParseAsync(self, *args, **kwargs):
+            return None
 
     # ----------------------------------------------------------------------
 
-    mock = Mock()
-    mock.ParseAsync = ParseAsync
+    statement = RepeatStatement(NoneStatement("None Statement"), 1, None)
 
-    statement = RepeatStatement(mock, 1, None)
-
-    result = statement.Parse(CreateIterator("test"), mock)
+    result = statement.Parse(CreateIterator("test"), parse_mock)
     assert result is None
 
 # ----------------------------------------------------------------------

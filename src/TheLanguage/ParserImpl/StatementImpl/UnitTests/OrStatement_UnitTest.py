@@ -297,19 +297,19 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, StartStatementCandidate, ['Or [upper, Or [lower, number]]']
-            1, StartStatementCandidate, ['Or [upper, Or [lower, number]]', 0, 'upper']
-            2, EndStatementCandidate, ['Or [upper, Or [lower, number]]', 0, 'upper']
-            3, StartStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]']
-            4, StartStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 0, 'lower']
-            5, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 0, 'lower']
-            6, EndStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 0, 'lower']
-            7, StartStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 1, 'number']
-            8, EndStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]', 1, 'number']
-            9, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]']
-            10, EndStatementCandidate, ['Or [upper, Or [lower, number]]', 1, 'Or [lower, number]']
+            0, StartStatement, ['Or [upper, Or [lower, number]]']
+            1, StartStatement, ['Or [upper, Or [lower, number]]', 'Or: upper [0]']
+            2, EndStatement, ['Or [upper, Or [lower, number]]', 'Or: upper [0]']
+            3, StartStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]']
+            4, StartStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: lower [0]']
+            5, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: lower [0]']
+            6, EndStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: lower [0]']
+            7, StartStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: number [1]']
+            8, EndStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: number [1]']
+            9, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]']
+            10, EndStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]']
             11, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]']
-            12, EndStatementCandidate, ['Or [upper, Or [lower, number]]']
+            12, EndStatement, ['Or [upper, Or [lower, number]]']
             """,
         )
 
@@ -421,19 +421,29 @@ class TestSort(object):
 # ----------------------------------------------------------------------
 class TestParseReturnsNone(object):
     # ----------------------------------------------------------------------
-    async def ParseAsync(*args, **kwargs):
-        return None
+    class EmptyStatement(Statement):
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def Clone(
+            self,
+            unique_id: List[Any],
+        ):
+            return self.__class__(
+                self.Name,
+                unique_id=unique_id,
+            )
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def ParseAsync(self, *args, **kwargs):
+            return None
 
     # ----------------------------------------------------------------------
 
-    _statement_mock                         = Mock()
-    _statement_mock.ParseAsync              = ParseAsync
-    _statement_mock.Name                    = "Mocked Statement"
-
     _statement                              = OrStatement(
         # Note that we need 2 statements so that the implementation doesn't default to a single thread
-        _statement_mock,
-        _statement_mock,
+        EmptyStatement("1"),
+        EmptyStatement("2"),
     )
 
     # ----------------------------------------------------------------------

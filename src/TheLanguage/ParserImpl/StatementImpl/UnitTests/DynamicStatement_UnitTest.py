@@ -19,8 +19,6 @@ import os
 import re
 import textwrap
 
-import pytest
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -50,7 +48,7 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_Single(self, parse_mock):
-        statement = DynamicStatement(lambda observer: [self._lower_statement])
+        statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement])
 
         result = statement.Parse(CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
@@ -71,7 +69,7 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_SingleNoMatch(self, parse_mock):
-        statement = DynamicStatement(lambda observer: [self._lower_statement])
+        statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement])
 
         result = statement.Parse(CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
@@ -88,7 +86,7 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_MultipleNumber(self, parse_mock):
-        statement = DynamicStatement(lambda observer: [self._lower_statement, self._number_statement])
+        statement = DynamicStatement(lambda uniqud_id, observer: [self._lower_statement, self._number_statement])
 
         result = statement.Parse(CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
@@ -109,7 +107,7 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_MultipleLower(self, parse_mock):
-        statement = DynamicStatement(lambda observer: [self._lower_statement, self._number_statement])
+        statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement, self._number_statement])
 
         result = statement.Parse(CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
@@ -130,7 +128,7 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_MultipleNumberEvents(self, parse_mock):
-        statement = DynamicStatement(lambda observer: [self._lower_statement, self._number_statement])
+        statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement, self._number_statement])
 
         result = statement.Parse(
             CreateIterator("1234"),
@@ -156,17 +154,17 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, StartStatementCandidate, ['Dynamic Statements']
-            1, StartStatementCandidate, ['Dynamic Statements', 'Or [lower, number]']
-            2, StartStatementCandidate, ['Dynamic Statements', 'Or [lower, number]', 0, 'lower']
-            3, EndStatementCandidate, ['Dynamic Statements', 'Or [lower, number]', 0, 'lower']
-            4, StartStatementCandidate, ['Dynamic Statements', 'Or [lower, number]', 1, 'number']
-            5, OnInternalStatementAsync, ['Dynamic Statements', 'Or [lower, number]', 1, 'number']
-            6, EndStatementCandidate, ['Dynamic Statements', 'Or [lower, number]', 1, 'number']
+            0, StartStatement, ['Dynamic Statements']
+            1, StartStatement, ['Dynamic Statements', 'Or [lower, number]']
+            2, StartStatement, ['Dynamic Statements', 'Or [lower, number]', 'Or: lower [0]']
+            3, EndStatement, ['Dynamic Statements', 'Or [lower, number]', 'Or: lower [0]']
+            4, StartStatement, ['Dynamic Statements', 'Or [lower, number]', 'Or: number [1]']
+            5, OnInternalStatementAsync, ['Dynamic Statements', 'Or [lower, number]', 'Or: number [1]']
+            6, EndStatement, ['Dynamic Statements', 'Or [lower, number]', 'Or: number [1]']
             7, OnInternalStatementAsync, ['Dynamic Statements', 'Or [lower, number]']
-            8, EndStatementCandidate, ['Dynamic Statements', 'Or [lower, number]']
+            8, EndStatement, ['Dynamic Statements', 'Or [lower, number]']
             9, OnInternalStatementAsync, ['Dynamic Statements']
-            10, EndStatementCandidate, ['Dynamic Statements']
+            10, EndStatement, ['Dynamic Statements']
             """,
         )
 
@@ -183,7 +181,7 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_SingleNoMatchEvents(self, parse_mock):
-        statement = DynamicStatement(lambda observer: [self._lower_statement])
+        statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement])
 
         result = statement.Parse(CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
@@ -196,26 +194,13 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 6
-
-        assert "{}\n".format(
-            "\n".join(
-                [
-                    "{}, {}, {}".format(
-                        index,
-                        method_call[0],
-                        str(method_call[1][0]),
-                    )
-                    for index, method_call in enumerate(parse_mock.method_calls)
-                ],
-            ),
-        ) == textwrap.dedent(
+        assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, StartStatementCandidate, ['Dynamic Statements']
-            1, StartStatementCandidate, ['Dynamic Statements', 'Or [lower]']
-            2, StartStatementCandidate, ['Dynamic Statements', 'Or [lower]', 0, 'lower']
-            3, EndStatementCandidate, ['Dynamic Statements', 'Or [lower]', 0, 'lower']
-            4, EndStatementCandidate, ['Dynamic Statements', 'Or [lower]']
-            5, EndStatementCandidate, ['Dynamic Statements']
+            0, StartStatement, ['Dynamic Statements']
+            1, StartStatement, ['Dynamic Statements', 'Or [lower]']
+            2, StartStatement, ['Dynamic Statements', 'Or [lower]', 'Or: lower [0]']
+            3, EndStatement, ['Dynamic Statements', 'Or [lower]', 'Or: lower [0]']
+            4, EndStatement, ['Dynamic Statements', 'Or [lower]']
+            5, EndStatement, ['Dynamic Statements']
             """,
         )

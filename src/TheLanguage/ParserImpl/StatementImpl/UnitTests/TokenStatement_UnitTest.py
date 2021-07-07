@@ -19,8 +19,6 @@ import os
 import re
 import textwrap
 
-import pytest
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -71,11 +69,11 @@ class TestWords(object):
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._word_statement
         assert parse_mock.method_calls[1][1][2] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
         parse_mock.reset_mock()
@@ -93,11 +91,11 @@ class TestWords(object):
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._word_statement
         assert parse_mock.method_calls[1][1][2] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
         parse_mock.reset_mock()
@@ -115,11 +113,11 @@ class TestWords(object):
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._word_statement
         assert parse_mock.method_calls[1][1][2] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
         parse_mock.reset_mock()
@@ -137,11 +135,11 @@ class TestWords(object):
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._word_statement
         assert parse_mock.method_calls[1][1][2] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
         parse_mock.reset_mock()
@@ -159,11 +157,11 @@ class TestWords(object):
         assert result.Iter.AtEnd()
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._newline_statement
         assert parse_mock.method_calls[1][1][2] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
     # ----------------------------------------------------------------------
     def test_NotAMatch(self, parse_mock):
@@ -183,8 +181,8 @@ class TestWords(object):
 
         assert len(parse_mock.method_calls) == 2
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
-        assert parse_mock.method_calls[1][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
+        assert parse_mock.method_calls[1][0] == "EndStatement"
 
     # ----------------------------------------------------------------------
     def test_IndentSimple(self, parse_mock):
@@ -214,11 +212,11 @@ class TestWords(object):
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._word_statement
         assert parse_mock.method_calls[1][1][2] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
         parse_mock.reset_mock()
@@ -236,11 +234,11 @@ class TestWords(object):
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._newline_statement
         assert parse_mock.method_calls[1][1][2] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
         parse_mock.reset_mock()
@@ -258,10 +256,10 @@ class TestWords(object):
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnIndentAsync"
         assert parse_mock.method_calls[1][1][1] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
         parse_mock.reset_mock()
@@ -279,11 +277,11 @@ class TestWords(object):
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._word_statement
         assert parse_mock.method_calls[1][1][2] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
         parse_mock.reset_mock()
@@ -301,11 +299,11 @@ class TestWords(object):
         assert result.Iter.AtEnd() == False
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._newline_statement
         assert parse_mock.method_calls[1][1][2] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
         parse_mock.reset_mock()
@@ -323,10 +321,10 @@ class TestWords(object):
         assert result.Iter.AtEnd()
         assert len(parse_mock.method_calls) == 3
 
-        assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
+        assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnDedentAsync"
         assert parse_mock.method_calls[1][1][1] == result.Data
-        assert parse_mock.method_calls[2][0] == "EndStatementCandidate"
+        assert parse_mock.method_calls[2][0] == "EndStatement"
 
     # ----------------------------------------------------------------------
     def test_IndentMoreComplex(self, parse_mock):
@@ -392,8 +390,8 @@ class TestWords(object):
             assert result.Success
 
             assert len(parse_mock.method_calls) == 3
-            assert parse_mock.method_calls[0][0] == "StartStatementCandidate"
-            assert parse_mock.method_calls[-1][0] == "EndStatementCandidate"
+            assert parse_mock.method_calls[0][0] == "StartStatement"
+            assert parse_mock.method_calls[-1][0] == "EndStatement"
 
             if expected_statement == self._indent_statement:
                 expected_name = "OnIndentAsync"

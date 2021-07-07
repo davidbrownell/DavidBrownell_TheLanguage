@@ -110,17 +110,35 @@ class RepeatStatement(StatementType):
         min_matches: int,
         max_matches: Optional[int],
         name: str=None,
+        unique_id: Optional[List[Any]]=None,
     ):
         assert min_matches >= 0, min_matches
         assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
 
         name = name or "Repeat: ({}, {}, {})".format(statement.Name, min_matches, max_matches)
 
-        super(RepeatStatement, self).__init__(name)
+        super(RepeatStatement, self).__init__(
+            name,
+            unique_id=unique_id,
+        )
 
         self.Statement                      = statement
         self.MinMatches                     = min_matches
         self.MaxMatches                     = max_matches
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Clone(
+        self,
+        unique_id: List[Any],
+    ):
+        return self.__class__(
+            self.Statement,
+            self.MinMatches,
+            self.MaxMatches,
+            name=self.Name,
+            unique_id=unique_id,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -134,19 +152,21 @@ class RepeatStatement(StatementType):
         StatementType.ParseResult,
         None,
     ]:
-        statement_unique_id: List[Any] = [self.Name]
+        success = False
 
-        observer.StartStatementCandidate(statement_unique_id)
-        with CallOnExit(lambda: observer.EndStatementCandidate(statement_unique_id)):
+        observer.StartStatement(self.UniqueId)
+        with CallOnExit(lambda: observer.EndStatement(self.UniqueId, success)):
             original_normalized_iter = normalized_iter.Clone()
 
             results: List[StatementType.ParseResult] = []
             error_result: Optional[StatementType.ParseResult] = None
 
             while not normalized_iter.AtEnd():
-                result = await self.Statement.ParseAsync(
+                statement = self.Statement.Clone(self.UniqueId + ["Rpt: {} [{}]".format(self.Statement.Name, len(results))])
+
+                result = await statement.ParseAsync(
                     normalized_iter.Clone(),
-                    StatementType.SimpleObserverDecorator(statement_unique_id + [len(results)], observer),
+                    observer,
                     ignore_whitespace=ignore_whitespace,
                     single_threaded=single_threaded,
                 )
@@ -181,7 +201,7 @@ class RepeatStatement(StatementType):
                 )
 
                 if not await observer.OnInternalStatementAsync(
-                    statement_unique_id,
+                    self.UniqueId,
                     self,
                     data,
                     original_normalized_iter,

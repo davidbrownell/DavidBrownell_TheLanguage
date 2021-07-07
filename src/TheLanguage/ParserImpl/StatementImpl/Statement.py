@@ -50,26 +50,29 @@ class Statement(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        def StartStatementCandidate(
-            candidate_id: List[Any],
+        def StartStatement(
+            unique_id: List[Any],
         ) -> None:
-            """Called before any event is generated for a particular candidate_id"""
+            """Called before any event is generated for a particular unique_id"""
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        def EndStatementCandidate(
-            candidate_id: List[Any],
+        def EndStatement(
+            unique_id: List[Any],
+            was_successful: bool,
         ) -> None:
-            """Called when all events have been generated for a particular candidate_id"""
+            """Called when all events have been generated for a particular unique_id"""
 
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
         async def OnIndentAsync(
-            candidate_id: List[Any],
+            unique_id: List[Any],
             data: "Statement.TokenParseResultData",
+            iter_before: NormalizedIterator,
+            iter_after: NormalizedIterator,
         ) -> None:
             raise Exception("Abstract method")  # pragma: no cover
 
@@ -77,8 +80,10 @@ class Statement(Interface.Interface):
         @staticmethod
         @Interface.abstractmethod
         async def OnDedentAsync(
-            candidate_id: List[Any],
+            unique_id: List[Any],
             data: "Statement.TokenParseResultData",
+            iter_before: NormalizedIterator,
+            iter_after: NormalizedIterator,
         ) -> None:
             raise Exception("Abstract method")  # pragma: no cover
 
@@ -86,7 +91,7 @@ class Statement(Interface.Interface):
         @staticmethod
         @Interface.abstractmethod
         async def OnInternalStatementAsync(
-            candidate_id: List[Any],
+            unique_id: List[Any],
             statement: "Statement",
             data: Optional["Statement.ParseResultData"],
             iter_before: NormalizedIterator,
@@ -191,7 +196,9 @@ class Statement(Interface.Interface):
                     {label}{result}
                 """,
             ).format(
-                name=self.Statement.Name,
+                name=self.Statement.ToString(
+                    verbose=verbose,
+                ),
                 label=label,
                 result=StringHelpers.LeftJustify(
                     (
@@ -331,14 +338,53 @@ class Statement(Interface.Interface):
     def __init__(
         self,
         name: str,
+        unique_id: Optional[List[Any]] = None,
     ):
         assert name
 
         self.Name                           = name
+        self.UniqueId                       = unique_id or [name]
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        for k, v in self.__dict__.items():
+            if k == "UniqueId":
+                continue
+
+            if k.startswith("_"):
+                continue
+
+            other_v = other.__dict__.get(k, Exception)
+            if other_v == Exception:
+                return False
+
+            if other_v != v:
+                return False
+
+        return len(self.__dict__) == len(other.__dict__)
+
+    # ----------------------------------------------------------------------
+    def __str__(self):
+        return self.ToString()
+
+    # ----------------------------------------------------------------------
+    def ToString(
+        self,
+        verbose=False,
+    ) -> str:
+        if verbose:
+            return "{} <{}>".format(self.Name, ", ".join([str(uid) for uid in self.UniqueId]))
+
+        return self.Name
+
+    # ----------------------------------------------------------------------
+    @Interface.abstractmethod
+    def Clone(
+        self,
+        unique_id: List[Any],
+    ) -> "Statement":
+        """Clones the statement with the new unique_id value"""
+        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -352,99 +398,8 @@ class Statement(Interface.Interface):
         "Statement.ParseResult",            # Result may or may not be successful
         None,                               # Terminate processing
     ]:
-        """Parse the content indicated by the provide iterator"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     def Parse(self, *args, **kwargs):
         return asyncio.get_event_loop().run_until_complete(self.ParseAsync(*args, **kwargs))
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Types
-    # |
-    # ----------------------------------------------------------------------
-    class SimpleObserverDecorator(Observer):
-        """Adds a component to the candidate_id and then forwards the event"""
-
-        # ----------------------------------------------------------------------
-        def __init__(
-            self,
-            candidate_id: List[Any],
-            observer: "Statement.Observer",
-        ):
-            self._candidate_id              = candidate_id
-            self._observer                  = observer
-
-        # ----------------------------------------------------------------------
-        def __getattr__(self, name):
-            """The default behavior is to forward the call to the wrapped observer"""
-
-            # ----------------------------------------------------------------------
-            def Impl(*args, **kwargs):
-                return getattr(self._observer, name)(*args, **kwargs)
-
-            # ----------------------------------------------------------------------
-
-            return Impl
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def StartStatementCandidate(
-            self,
-            candidate_id: List[Any],
-        ) -> None:
-            return self._observer.StartStatementCandidate(self._CreateId(candidate_id))
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def EndStatementCandidate(
-            self,
-            candidate_id: List[Any],
-        ) -> None:
-            return self._observer.EndStatementCandidate(self._CreateId(candidate_id))
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def OnIndentAsync(
-            self,
-            candidate_id: List[Any],
-            data: "Statement.TokenParseResultData",
-        ) -> None:
-            return await self._observer.OnIndentAsync(self._CreateId(candidate_id), data)
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def OnDedentAsync(
-            self,
-            candidate_id: List[Any],
-            data: "Statement.TokenParseResultData",
-        ) -> None:
-            return await self._observer.OnDedentAsync(self._CreateId(candidate_id), data)
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def OnInternalStatementAsync(
-            self,
-            candidate_id: List[Any],
-            statement: "Statement",
-            data: Optional["Statement.ParseResultData"],
-            iter_before: NormalizedIterator,
-            iter_after: NormalizedIterator,
-        ) -> bool:
-            return await self._observer.OnInternalStatementAsync(
-                self._CreateId(candidate_id),
-                statement,
-                data,
-                iter_before,
-                iter_after,
-            )
-
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
-        def _CreateId(
-            self,
-            candidate_id: List[Any],
-        ):
-            return self._candidate_id + candidate_id

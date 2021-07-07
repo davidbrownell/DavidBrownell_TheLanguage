@@ -47,11 +47,27 @@ def CreateStatement(result):
     # ----------------------------------------------------------------------
     class TheStatement(Statement):
         # ----------------------------------------------------------------------
-        def __init__(self):
-            super(TheStatement, self).__init__("The Statement")
+        def __init__(
+            self,
+            unique_id: Optional[List[Any]]=None,
+        ):
+            super(TheStatement, self).__init__(
+                "The Statement",
+                unique_id=unique_id,
+            )
 
             self.parse_mock = Mock(
                 return_value=result,
+            )
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def Clone(
+            self,
+            unique_id: List[Any],
+        ) -> Statement:
+            return self.__class__(
+                unique_id=unique_id,
             )
 
         # ----------------------------------------------------------------------
@@ -74,6 +90,18 @@ def iterator(
 class TestStandard(object):
     # ----------------------------------------------------------------------
     class MyStatement(Statement):
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def Clone(
+            self,
+            unique_id: List[Any],
+        ) -> Statement:
+            return self.__class__(
+                self.Name,
+                unique_id=unique_id,
+            )
+
+        # ----------------------------------------------------------------------
         @staticmethod
         @Interface.override
         async def ParseAsync(*args, **kwargs):

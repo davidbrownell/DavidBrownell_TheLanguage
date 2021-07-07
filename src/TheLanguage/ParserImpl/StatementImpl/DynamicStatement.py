@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, List, Tuple, Union
+from typing import Any, Callable, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -43,19 +43,38 @@ class DynamicStatement(Statement):
     def __init__(
         self,
         get_dynamic_statements_func: Callable[
-            [Statement.Observer],
+            [
+                List[Any],
+                Statement.Observer,
+            ],
             Union[
                 Tuple[str, List[Statement]],
                 List[Statement],
             ]
         ],
-        name: str = None,
+        name: str=None,
+        unique_id: Optional[List[Any]]=None,
     ):
         name = name or "Dynamic Statements"
 
-        super(DynamicStatement, self).__init__(name)
+        super(DynamicStatement, self).__init__(
+            name,
+            unique_id=unique_id,
+        )
 
         self._get_dynamic_statements_func   = get_dynamic_statements_func
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Clone(
+        self,
+        unique_id: List[Any],
+    ):
+        return self.__class__(
+            self._get_dynamic_statements_func,
+            name=self.Name,
+            unique_id=unique_id,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -69,36 +88,47 @@ class DynamicStatement(Statement):
         Statement.ParseResult,
         None,
     ]:
-        statement_unique_id = [self.Name]
+        result: Optional[Statement.ParseResult] = None
 
-        observer.StartStatementCandidate(statement_unique_id)
-        with CallOnExit(lambda: observer.EndStatementCandidate(statement_unique_id)):
-            dynamic_statements = self._get_dynamic_statements_func(observer)
+        observer.StartStatement(self.UniqueId)
+        with CallOnExit(
+            lambda: observer.EndStatement(
+                self.UniqueId,
+                result is not None and result.Success,
+            ),
+        ):
+            dynamic_statements = self._get_dynamic_statements_func(self.UniqueId, observer)
             if isinstance(dynamic_statements, Tuple):
                 name = dynamic_statements[0]
                 dynamic_statements = dynamic_statements[1]
             else:
                 name = None
 
+            # Use the logic in the OrStatement constructor to create a pretty name; then use that
+            # name when creating the unique_id when cloning the new OrStatement.
             or_statement = OrStatement(
                 *dynamic_statements,
-                sort_results=False,
                 name=name,
             )
 
+            or_statement = or_statement.Clone(self.UniqueId + [or_statement.Name])
+
             result = await or_statement.ParseAsync(
                 normalized_iter,
-                Statement.SimpleObserverDecorator(statement_unique_id, observer),
+                observer,
                 ignore_whitespace=ignore_whitespace,
                 single_threaded=single_threaded,
             )
+
+            if result is None:
+                return None
 
             data = Statement.StandardParseResultData(or_statement, result.Data)
 
             if (
                 result.Success
                 and not await observer.OnInternalStatementAsync(
-                    statement_unique_id,
+                    self.UniqueId,
                     self,
                     data,
                     normalized_iter,
