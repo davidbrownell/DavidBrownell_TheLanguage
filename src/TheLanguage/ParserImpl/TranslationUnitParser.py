@@ -20,14 +20,12 @@ import os
 import textwrap
 
 from collections import OrderedDict
-from enum import auto, Flag
 from typing import Any, cast, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -153,7 +151,6 @@ async def ParseAsync(
     all_statement_infos: Dict[Any, _StatementInfoNode] = {
         _DefaultStatementInfoTag : _StatementInfoNode(
             [],
-            None,
             OrderedDict(),
             [
                 _InternalDynamicStatementInfo(
@@ -230,45 +227,8 @@ class _InternalDynamicStatementInfo(object):
 @dataclass()
 class _StatementInfoNode(object):
     UniqueIdPart: Any
-    Parent: Optional["_StatementInfoNode"]
     Children: Dict[Any, "_StatementInfoNode"]           = field(default_factory=OrderedDict)
     Infos: List[_InternalDynamicStatementInfo]          = field(default_factory=list)
-
-    # ----------------------------------------------------------------------
-    def __str__(self):
-        return textwrap.dedent(
-            """\
-            UniqueIdPart:   {unique_id}
-            Parent:         {parent}
-            Children:
-                {children}
-            Infos:
-                {infos}
-            """,
-        ).format(
-            unique_id=self.UniqueIdPart,
-            parent="None" if self.Parent is None else self.Parent.UniqueIdPart,
-            children="<No Children>" if not self.Children else StringHelpers.LeftJustify(
-                "\n".join(
-                    [
-                        "{} :\n{}".format(
-                            k,
-                            StringHelpers.LeftJustify(
-                                str(v),
-                                4,
-                                skip_first_line=False,
-                            ),
-                        )
-                        for k, v in self.Children.items()
-                    ],
-                ),
-                4,
-            ).rstrip(),
-            infos="<No Infos>" if not self.Infos else StringHelpers.LeftJustify(
-                "\n".join([str(info) for info in self.Infos]),
-                4,
-            ).rstrip(),
-        )
 
 
 # ----------------------------------------------------------------------
@@ -289,7 +249,10 @@ class _StatementObserver(StatementEx.Observer):
         self,
         unique_id: List[Any],
         value: DynamicStatements,
-    ) -> List[Statement]:
+    ) -> Union[
+        Tuple[str, List[Statement]],
+        List[Statement],
+    ]:
         if value == DynamicStatements.Statements:
             attribute_name = "Statements"
         elif value == DynamicStatements.Expressions:
@@ -368,16 +331,12 @@ class _StatementObserver(StatementEx.Observer):
         self,
         unique_id: List[Any],
     ):
-        parent = None
         d = self._all_statement_infos
 
         for id_part in unique_id:
             value = d.get(id_part, None)
-            if value is not None:
-                d = value.Children
-                parent = value
-            else:
-                value = _StatementInfoNode(id_part, parent)
+            if value is None:
+                value = _StatementInfoNode(id_part)
                 d[id_part] = value
 
             d = value.Children
@@ -418,7 +377,7 @@ class _StatementObserver(StatementEx.Observer):
             iter_after,
         )
         if isinstance(this_result, DynamicStatementInfo):
-            self._AddDynamicStatementInfo(unique_id, iter_before, iter_after, this_result)
+            self._AddDynamicStatementInfo(unique_id, iter_after, this_result)
 
         return None
 
@@ -472,7 +431,7 @@ class _StatementObserver(StatementEx.Observer):
         )
 
         if isinstance(this_result, DynamicStatementInfo):
-            self._AddDynamicStatementInfo(unique_id, iter_before, iter_after, this_result)
+            self._AddDynamicStatementInfo(unique_id, iter_after, this_result)
             return True
 
         return this_result
@@ -485,6 +444,7 @@ class _StatementObserver(StatementEx.Observer):
         unique_id: List[Any],
     ) -> _StatementInfoNode:
         d = self._all_statement_infos
+        node = None
 
         for id_part in unique_id:
             node = d.get(id_part, None)
@@ -492,13 +452,13 @@ class _StatementObserver(StatementEx.Observer):
 
             d = node.Children
 
+        assert node
         return node
 
     # ----------------------------------------------------------------------
     def _AddDynamicStatementInfo(
         self,
         unique_id: List[Any],
-        iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
         info: DynamicStatementInfo,
     ):
