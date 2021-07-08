@@ -44,39 +44,17 @@ with InitRelativeImports():
     from ..StatementImpl.UnitTests import (
         CoroutineMock,
         CreateIterator,
+        InternalStatementMethodCallToTuple,
+        MethodCallsToString,
         parse_mock as parse_mock_impl,
     )
 
 # ----------------------------------------------------------------------
 @pytest.fixture
 def parse_mock(parse_mock_impl):
-    parse_mock_impl.OnIndentAsync = CoroutineMock()
-    parse_mock_impl.OnDedentAsync = CoroutineMock()
     parse_mock_impl.OnStatementCompleteAsync = CoroutineMock()
 
     return parse_mock_impl
-
-# ----------------------------------------------------------------------
-def OnStatementCompleteEqual(
-    mock_method_call_result: Tuple[
-        Statement,
-        Statement.ParseResultData,
-        NormalizedIterator,
-        NormalizedIterator,
-    ],
-    statement: Optional[Statement],
-    data: Statement.ParseResultData,
-    offset_before: int,
-    offset_after: int,
-):
-    mock_method_call_result = mock_method_call_result[0]
-
-    if statement is not None:
-        assert statement == mock_method_call_result[0]
-
-    assert data == mock_method_call_result[1]
-    assert offset_before == mock_method_call_result[2].Offset
-    assert offset_after == mock_method_call_result[3].Offset
 
 # ----------------------------------------------------------------------
 _upper_token                                = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
@@ -108,6 +86,7 @@ class TestSimple(object):
                 ),
             ),
             parse_mock,
+            single_threaded=True,
         )
 
         assert "".join([str(result) for result in results]) == textwrap.dedent(
@@ -133,59 +112,26 @@ class TestSimple(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 6
-        assert len(parse_mock.OnStatementCompleteAsync.call_args_list) == 6
-
-        # Line 1
-        OnStatementCompleteEqual(
-            parse_mock.OnStatementCompleteAsync.call_args_list[0],
-            self._upper_statement,
-            results[0].Data.Data,
-            0,
-            4,
+        assert MethodCallsToString(parse_mock) == textwrap.dedent(
+            """\
+            0, OnStatementCompleteAsync, Upper
+            1, OnStatementCompleteAsync, Newline+
+            2, OnStatementCompleteAsync, Upper Statement
+            3, OnStatementCompleteAsync, [Upper Statement, Lower Statement, Number Statement]
+            4, OnStatementCompleteAsync, Dynamic Statements
+            5, OnStatementCompleteAsync, Lower
+            6, OnStatementCompleteAsync, Newline+
+            7, OnStatementCompleteAsync, Lower Statement
+            8, OnStatementCompleteAsync, [Upper Statement, Lower Statement, Number Statement]
+            9, OnStatementCompleteAsync, Dynamic Statements
+            10, OnStatementCompleteAsync, Number
+            11, OnStatementCompleteAsync, Newline+
+            12, OnStatementCompleteAsync, Number Statement
+            13, OnStatementCompleteAsync, [Upper Statement, Lower Statement, Number Statement]
+            14, OnStatementCompleteAsync, Dynamic Statements
+            """,
         )
 
-        OnStatementCompleteEqual(
-            parse_mock.OnStatementCompleteAsync.call_args_list[1],
-            None, # Or Statement
-            results[0].Data,
-            0,
-            4,
-        )
-
-        # Line 2
-        OnStatementCompleteEqual(
-            parse_mock.OnStatementCompleteAsync.call_args_list[2],
-            self._lower_statement,
-            results[1].Data.Data,
-            4,
-            8,
-        )
-
-        OnStatementCompleteEqual(
-            parse_mock.OnStatementCompleteAsync.call_args_list[3],
-            None, # Or Statement
-            results[1].Data,
-            4,
-            8,
-        )
-
-        # Line 3
-        OnStatementCompleteEqual(
-            parse_mock.OnStatementCompleteAsync.call_args_list[4],
-            self._number_statement,
-            results[2].Data.Data,
-            8,
-            14,
-        )
-
-        OnStatementCompleteEqual(
-            parse_mock.OnStatementCompleteAsync.call_args_list[5],
-            None, # Or Statement
-            results[2].Data,
-            8,
-            14,
-        )
 
     # ----------------------------------------------------------------------
     def test_MatchReverse(self, parse_mock):
@@ -226,8 +172,7 @@ class TestSimple(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 6
-        assert len(parse_mock.OnStatementCompleteAsync.call_args_list) == 6
+        assert len(parse_mock.method_calls) == 15
 
     # ----------------------------------------------------------------------
     def test_EarlyTermination(self, parse_mock):
@@ -316,7 +261,7 @@ class TestNewStatements(object):
     # ----------------------------------------------------------------------
     def test_Match(self, parse_mock):
         parse_mock.OnStatementCompleteAsync = CoroutineMock(
-            side_effect=[self._new_statements, True, True, True],
+            side_effect=[self._new_statements, True, True, True, True, True, True, True, True],
         )
 
         results = Parse(
@@ -367,7 +312,7 @@ class TestNewStatements(object):
         assert ex.Line == 1
         assert ex.Column == 4
 
-        assert ex.ToString() == textwrap.dedent(
+        assert ex.ToDebugString() == textwrap.dedent(
             """\
             The syntax is not recognized [1, 4]
 
@@ -470,7 +415,7 @@ class TestNewScopedStatements(object):
         assert ex.Line == 4
         assert ex.Column == 1
 
-        assert ex.ToString() == textwrap.dedent(
+        assert ex.ToDebugString() == textwrap.dedent(
             """\
             The syntax is not recognized [4, 1]
 
@@ -511,6 +456,88 @@ class TestNewScopedStatements(object):
                 Dedent Statement
                     Dedent
                         None
+            """,
+        )
+
+# ----------------------------------------------------------------------
+class TestNewScopedStatementsComplex(object):
+    _upper_statement                        = StatementEx("Upper Statement", _upper_token)
+    _lower_statement                        = StatementEx("Lower Statement", _lower_token)
+
+    _newline_statement                      = StatementEx("Newline Statement", NewlineToken())
+    _dedent_statement                       = StatementEx("Dedent Statement", DedentToken())
+
+    _new_scope_statement                    = StatementEx(
+        "New Scope",
+        _upper_token,
+        RegexToken("Colon", re.compile(r":")),
+        NewlineToken(),
+        IndentToken(),
+        DynamicStatements.Statements,
+        DynamicStatements.Statements,
+        DynamicStatements.Statements,
+        DynamicStatements.Statements,
+        DedentToken(),
+    )
+
+    _statements                             = DynamicStatementInfo([_newline_statement, _new_scope_statement], [])
+    _new_statements                         = DynamicStatementInfo([_upper_statement, _lower_statement], [])
+
+    # ----------------------------------------------------------------------
+    def test_Match(self, parse_mock):
+        parse_mock.OnIndentAsync = CoroutineMock(
+            return_value=self._new_statements,
+        )
+
+        results = Parse(
+            self._statements,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    NEWSCOPE:
+                        UPPER
+
+                        lower
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+            """\
+            [Newline Statement, New Scope]
+                New Scope
+                    Upper
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> ws:None [1, 1 -> 1, 9]
+                    Colon
+                        Colon <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
+                    Newline+
+                        Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
+                    Indent
+                        Indent <<10, 14, (4)>> ws:None [2, 1 -> 2, 5]
+                    DynamicStatements.Statements
+                        [Newline Statement, New Scope] / [Upper Statement, Lower Statement]
+                            Upper Statement
+                                Upper
+                                    Upper <<Regex: <_sre.SRE_Match object; span=(14, 19), match='UPPER'>>> ws:None [2, 5 -> 2, 10]
+                    DynamicStatements.Statements
+                        [Newline Statement, New Scope] / [Upper Statement, Lower Statement]
+                            Newline Statement
+                                Newline+
+                                    Newline+ <<19, 21>> ws:None [2, 10 -> 4, 1]
+                    DynamicStatements.Statements
+                        [Newline Statement, New Scope] / [Upper Statement, Lower Statement]
+                            Lower Statement
+                                Lower
+                                    Lower <<Regex: <_sre.SRE_Match object; span=(25, 30), match='lower'>>> ws:None [4, 5 -> 4, 10]
+                    DynamicStatements.Statements
+                        [Newline Statement, New Scope] / [Upper Statement, Lower Statement]
+                            Newline Statement
+                                Newline+
+                                    Newline+ <<30, 31>> ws:None [4, 10 -> 5, 1]
+                    Dedent
+                        Dedent <<>> ws:None [5, 1 -> 5, 1]
             """,
         )
 
@@ -777,7 +804,7 @@ class TestPreventParentTraversal(object):
         assert ex.Line == 6
         assert ex.Column == 1
 
-        assert ex.ToString() == textwrap.dedent(
+        assert ex.ToDebugString() == textwrap.dedent(
             """\
             The syntax is not recognized [6, 1]
 
@@ -857,7 +884,7 @@ def test_InvalidDynamicTraversalError(parse_mock):
     ex = ex.value
 
     assert str(ex) == "Dynamic statements that prohibit parent traversal should never be applied over other dynamic statements within the same lexical scope. You should make these dynamic statements the first ones applied in this lexical scope."
-    assert ex.Line == 1
+    assert ex.Line == 4
     assert ex.Column == 1
 
 # ----------------------------------------------------------------------
@@ -901,3 +928,324 @@ def test_DynamicExpressions(parse_mock):
                     Newline+ <<15, 16>> ws:None [1, 16 -> 2, 1]
         """,
     )
+
+# ----------------------------------------------------------------------
+class TestCatastrophicInclude(object):
+    _include_statement                      = StatementEx(
+        "Include Statement",
+        RegexToken("include", re.compile(r"include")),
+        _upper_token,
+        NewlineToken(),
+    )
+
+    # Both of these statements start with an include, but the
+    # dynamic statements allowed will be based on the included
+    # value.
+    _lower_include_statement                = StatementEx(
+        "Lower Include Statement",
+        _include_statement,
+        DynamicStatements.Statements,
+        DynamicStatements.Statements,
+    )
+
+    _number_include_statement               = StatementEx(
+        "Number Include Statement",
+        _include_statement,
+        DynamicStatements.Statements,
+        DynamicStatements.Statements,
+        DynamicStatements.Statements,
+    )
+
+    _lower_statement                        = StatementEx(
+        "Lower Statement",
+        _lower_token,
+        NewlineToken(),
+    )
+
+    _number_statement                       = StatementEx(
+        "Number Statement",
+        _number_token,
+        NewlineToken(),
+    )
+
+    _statements                             = DynamicStatementInfo(
+        [_lower_include_statement, _number_include_statement],
+        [],
+    )
+
+    _lower_dynamic_statements               = DynamicStatementInfo(
+        [_lower_statement],
+        [],
+        True,
+        # "Lower Dynamic Statements",
+    )
+
+    _number_dynamic_statements              = DynamicStatementInfo(
+        [_number_statement],
+        [],
+        True,
+        # "Number Dynamic Statements",
+    )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @pytest.fixture
+    def this_parse_mock(cls, parse_mock):
+        # ----------------------------------------------------------------------
+        async def OnStatementCompleteAsync(
+            statement: Statement,
+            data: Optional[Statement.ParseResultData],
+            iter_before: NormalizedIterator,
+            iter_after: NormalizedIterator,
+        ):
+            if statement == cls._include_statement:
+                value = data.DataItems[1].Data.Value.Match.group("value")
+
+                if value == "LOWER":
+                    return cls._lower_dynamic_statements
+                elif value == "NUMBER":
+                    return cls._number_dynamic_statements
+                else:
+                    assert False, value
+
+            return True
+
+        # ----------------------------------------------------------------------
+
+        parse_mock.OnStatementCompleteAsync = OnStatementCompleteAsync
+
+        return parse_mock
+
+    # ----------------------------------------------------------------------
+    def test_Lower(self, this_parse_mock):
+        results = Parse(
+            self._statements,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    include LOWER
+                    one
+                    two
+                    """,
+                ),
+            ),
+            this_parse_mock,
+        )
+
+        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+            """\
+            [Lower Include Statement, Number Include Statement]
+                Lower Include Statement
+                    Include Statement
+                        include
+                            include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
+                        Upper
+                            Upper <<Regex: <_sre.SRE_Match object; span=(8, 13), match='LOWER'>>> ws:(7, 8) [1, 9 -> 1, 14]
+                        Newline+
+                            Newline+ <<13, 14>> ws:None [1, 14 -> 2, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
+                            Lower Statement
+                                Lower
+                                    Lower <<Regex: <_sre.SRE_Match object; span=(14, 17), match='one'>>> ws:None [2, 1 -> 2, 4]
+                                Newline+
+                                    Newline+ <<17, 18>> ws:None [2, 4 -> 3, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
+                            Lower Statement
+                                Lower
+                                    Lower <<Regex: <_sre.SRE_Match object; span=(18, 21), match='two'>>> ws:None [3, 1 -> 3, 4]
+                                Newline+
+                                    Newline+ <<21, 22>> ws:None [3, 4 -> 4, 1]
+            """,
+        )
+
+        assert this_parse_mock.method_calls == []
+
+    # ----------------------------------------------------------------------
+    def test_LowerAdditionalItem(self, this_parse_mock):
+        results = Parse(
+            self._statements,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    include LOWER
+                    one
+                    two
+
+                    three
+                    four
+                    """,
+                ),
+            ),
+            this_parse_mock,
+        )
+
+        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+            """\
+            [Lower Include Statement, Number Include Statement]
+                Number Include Statement
+                    Include Statement
+                        include
+                            include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
+                        Upper
+                            Upper <<Regex: <_sre.SRE_Match object; span=(8, 13), match='LOWER'>>> ws:(7, 8) [1, 9 -> 1, 14]
+                        Newline+
+                            Newline+ <<13, 14>> ws:None [1, 14 -> 2, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
+                            Lower Statement
+                                Lower
+                                    Lower <<Regex: <_sre.SRE_Match object; span=(14, 17), match='one'>>> ws:None [2, 1 -> 2, 4]
+                                Newline+
+                                    Newline+ <<17, 18>> ws:None [2, 4 -> 3, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
+                            Lower Statement
+                                Lower
+                                    Lower <<Regex: <_sre.SRE_Match object; span=(18, 21), match='two'>>> ws:None [3, 1 -> 3, 4]
+                                Newline+
+                                    Newline+ <<21, 23>> ws:None [3, 4 -> 5, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
+                            Lower Statement
+                                Lower
+                                    Lower <<Regex: <_sre.SRE_Match object; span=(23, 28), match='three'>>> ws:None [5, 1 -> 5, 6]
+                                Newline+
+                                    Newline+ <<28, 29>> ws:None [5, 6 -> 6, 1]
+
+            [Lower Include Statement, Number Include Statement] / [Lower Statement]
+                Lower Statement
+                    Lower
+                        Lower <<Regex: <_sre.SRE_Match object; span=(29, 33), match='four'>>> ws:None [6, 1 -> 6, 5]
+                    Newline+
+                        Newline+ <<33, 34>> ws:None [6, 5 -> 7, 1]
+            """,
+        )
+
+        assert this_parse_mock.method_calls == []
+
+    # ----------------------------------------------------------------------
+    def test_Number(self, this_parse_mock):
+        results = Parse(
+            self._statements,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    include NUMBER
+                    1
+                    2
+                    3
+                    """,
+                ),
+            ),
+            this_parse_mock,
+        )
+
+        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+            """\
+            [Lower Include Statement, Number Include Statement]
+                Number Include Statement
+                    Include Statement
+                        include
+                            include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
+                        Upper
+                            Upper <<Regex: <_sre.SRE_Match object; span=(8, 14), match='NUMBER'>>> ws:(7, 8) [1, 9 -> 1, 15]
+                        Newline+
+                            Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Number Statement]
+                            Number Statement
+                                Number
+                                    Number <<Regex: <_sre.SRE_Match object; span=(15, 16), match='1'>>> ws:None [2, 1 -> 2, 2]
+                                Newline+
+                                    Newline+ <<16, 17>> ws:None [2, 2 -> 3, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Number Statement]
+                            Number Statement
+                                Number
+                                    Number <<Regex: <_sre.SRE_Match object; span=(17, 18), match='2'>>> ws:None [3, 1 -> 3, 2]
+                                Newline+
+                                    Newline+ <<18, 19>> ws:None [3, 2 -> 4, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Number Statement]
+                            Number Statement
+                                Number
+                                    Number <<Regex: <_sre.SRE_Match object; span=(19, 20), match='3'>>> ws:None [4, 1 -> 4, 2]
+                                Newline+
+                                    Newline+ <<20, 21>> ws:None [4, 2 -> 5, 1]
+            """,
+        )
+
+        assert this_parse_mock.method_calls == []
+
+    # ----------------------------------------------------------------------
+    def test_NumberAdditionalItems(self, this_parse_mock):
+        results = Parse(
+            self._statements,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    include NUMBER
+                    1
+                    2
+                    3
+
+                    4
+                    5
+                    """,
+                ),
+            ),
+            this_parse_mock,
+        )
+
+        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+            """\
+            [Lower Include Statement, Number Include Statement]
+                Number Include Statement
+                    Include Statement
+                        include
+                            include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
+                        Upper
+                            Upper <<Regex: <_sre.SRE_Match object; span=(8, 14), match='NUMBER'>>> ws:(7, 8) [1, 9 -> 1, 15]
+                        Newline+
+                            Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Number Statement]
+                            Number Statement
+                                Number
+                                    Number <<Regex: <_sre.SRE_Match object; span=(15, 16), match='1'>>> ws:None [2, 1 -> 2, 2]
+                                Newline+
+                                    Newline+ <<16, 17>> ws:None [2, 2 -> 3, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Number Statement]
+                            Number Statement
+                                Number
+                                    Number <<Regex: <_sre.SRE_Match object; span=(17, 18), match='2'>>> ws:None [3, 1 -> 3, 2]
+                                Newline+
+                                    Newline+ <<18, 19>> ws:None [3, 2 -> 4, 1]
+                    DynamicStatements.Statements
+                        [Lower Include Statement, Number Include Statement] / [Number Statement]
+                            Number Statement
+                                Number
+                                    Number <<Regex: <_sre.SRE_Match object; span=(19, 20), match='3'>>> ws:None [4, 1 -> 4, 2]
+                                Newline+
+                                    Newline+ <<20, 22>> ws:None [4, 2 -> 6, 1]
+
+            [Lower Include Statement, Number Include Statement] / [Number Statement]
+                Number Statement
+                    Number
+                        Number <<Regex: <_sre.SRE_Match object; span=(22, 23), match='4'>>> ws:None [6, 1 -> 6, 2]
+                    Newline+
+                        Newline+ <<23, 24>> ws:None [6, 2 -> 7, 1]
+
+            [Lower Include Statement, Number Include Statement] / [Number Statement]
+                Number Statement
+                    Number
+                        Number <<Regex: <_sre.SRE_Match object; span=(24, 25), match='5'>>> ws:None [7, 1 -> 7, 2]
+                    Newline+
+                        Newline+ <<25, 26>> ws:None [7, 2 -> 8, 1]
+            """,
+        )
+
+        assert this_parse_mock.method_calls == []

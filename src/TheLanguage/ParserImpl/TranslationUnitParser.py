@@ -19,12 +19,15 @@ import asyncio
 import os
 import textwrap
 
-from typing import cast, List, Optional, Tuple, Union
+from collections import OrderedDict
+from enum import auto, Flag
+from typing import Any, cast, Dict, Generator, List, Optional, Tuple, Union
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -43,36 +46,10 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class DynamicStatementInfo(object):
-    """Contains Statements that have been dynamically added to the active scope"""
-
-    Statements: List[Statement]
-    Expressions: List[Statement]
-    AllowParentTraversal: bool              = True      # If False, prevent content from including values from higher-level scope
-    Name: Optional[str]                     = None
-
-    # ----------------------------------------------------------------------
-    def Clone(
-        self,
-        updated_statements=None,
-        updated_expressions=None,
-        updated_allow_parent_traversal=None,
-        updated_name=None,
-    ):
-        return self.__class__(
-            updated_statements if updated_statements is not None else list(self.Statements),
-            updated_expressions if updated_expressions is not None else list(self.Expressions),
-            updated_allow_parent_traversal if updated_allow_parent_traversal is not None else self.AllowParentTraversal,
-            updated_name if updated_name is not None else self.Name,
-        )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
 class InvalidDynamicTraversalError(Error):
     """Exception thrown when dynamic statements that prohibit parent traversal are applied over other dynamic statements"""
 
-    ExistingDynamicStatements: List[NormalizedIterator]
+    ExistingDynamicStatements: NormalizedIterator
 
     MessageTemplate                         = Interface.DerivedProperty("Dynamic statements that prohibit parent traversal should never be applied over other dynamic statements within the same lexical scope. You should make these dynamic statements the first ones applied in this lexical scope.")
 
@@ -87,7 +64,7 @@ class SyntaxInvalidError(Error):
     MessageTemplate                         = Interface.DerivedProperty("The syntax is not recognized")
 
     # ----------------------------------------------------------------------
-    def ToString(
+    def ToDebugString(
         self,
         verbose=False,
     ):
@@ -113,12 +90,25 @@ class SyntaxInvalidError(Error):
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class DynamicStatementInfo(object):
+    """Contains Statements that have been dynamically added to the active scope"""
+
+    Statements: List[Statement]
+    Expressions: List[Statement]
+    AllowParentTraversal: bool              = True      # If False, prevent content from including values from higher-level scope
+    Name: Optional[str]                     = None
+
+
+# ----------------------------------------------------------------------
 class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
     async def OnIndentAsync(
         data: Statement.TokenParseResultData,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -127,6 +117,8 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     async def OnDedentAsync(
         data: Statement.TokenParseResultData,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ):
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -152,28 +144,35 @@ async def ParseAsync(
     normalized_iter: NormalizedIterator,
     observer: Observer,
     single_threaded=False,
+    name: str = None,
 ) -> Optional[List[Statement.ParseResultData]]:
     """Repeatedly matches statements for all of the iterator"""
 
     assert normalized_iter.Offset == 0, normalized_iter
 
-    location_and_data_items: List[_LocationAndData] = []
-
-    # ----------------------------------------------------------------------
-    def ToDataResults() -> List[Statement.ParseResultData]:
-        return [item.Data for item in location_and_data_items]
-
-    # ----------------------------------------------------------------------
-
-    statement_observer = _StatementObserver(
-        initial_statement_info,
-        observer,
-        location_and_data_items,
-    )
+    all_statement_infos: Dict[Any, _StatementInfoNode] = {
+        _DefaultStatementInfoTag : _StatementInfoNode(
+            [],
+            None,
+            OrderedDict(),
+            [
+                _InternalDynamicStatementInfo(
+                    0,
+                    normalized_iter.Clone(),
+                    initial_statement_info,
+                ),
+            ],
+        ),
+    }
 
     statement = DynamicStatement(
-        lambda observer: cast(StatementEx.Observer, observer).GetDynamicStatements(DynamicStatements.Statements),
+        lambda unique_id, observer: cast(StatementEx.Observer, observer).GetDynamicStatements(unique_id, DynamicStatements.Statements),
+        name=name,
     )
+
+    statement_observer = _StatementObserver(all_statement_infos, observer)
+
+    data_items: List[Statement.ParseResultData] = []
 
     while not normalized_iter.AtEnd():
         result = await statement.ParseAsync(
@@ -187,25 +186,20 @@ async def ParseAsync(
             return None
 
         assert result.Data
-        location_and_data_items.append(
-            _LocationAndData(
-                result.Iter,
-                result.Data,
-            ),
-        )
+        data_items.append(result.Data)
 
         if not result.Success:
             raise SyntaxInvalidError(
                 result.Iter.Line,
                 result.Iter.Column,
-                ToDataResults(),
+                data_items,
             )
 
         normalized_iter = result.Iter.Clone()
 
     assert normalized_iter.AtEnd()
 
-    return ToDataResults()
+    return data_items
 
 
 # ----------------------------------------------------------------------
@@ -216,66 +210,215 @@ def Parse(*args, **kwargs):
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
+class _DefaultStatementInfoTag(object):
+    """\
+    Unique type to use as a key in `_StatementInfoNode` dictionaries; this is used rather
+    than a normal value (for example, `None`) to allow for any key types.
+    """
+    pass
+
+
+# ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class _LocationAndData(object):
-    Location: NormalizedIterator
-    Data: Statement.ParseResultData
+class _InternalDynamicStatementInfo(object):
+    IndentLevel: int
+    IterAfter: NormalizedIterator
+    Info: DynamicStatementInfo
+
+
+ # ----------------------------------------------------------------------
+@dataclass()
+class _StatementInfoNode(object):
+    UniqueIdPart: Any
+    Parent: Optional["_StatementInfoNode"]
+    Children: Dict[Any, "_StatementInfoNode"]           = field(default_factory=OrderedDict)
+    Infos: List[_InternalDynamicStatementInfo]          = field(default_factory=list)
+
+    # ----------------------------------------------------------------------
+    def __str__(self):
+        return textwrap.dedent(
+            """\
+            UniqueIdPart:   {unique_id}
+            Parent:         {parent}
+            Children:
+                {children}
+            Infos:
+                {infos}
+            """,
+        ).format(
+            unique_id=self.UniqueIdPart,
+            parent="None" if self.Parent is None else self.Parent.UniqueIdPart,
+            children="<No Children>" if not self.Children else StringHelpers.LeftJustify(
+                "\n".join(
+                    [
+                        "{} :\n{}".format(
+                            k,
+                            StringHelpers.LeftJustify(
+                                str(v),
+                                4,
+                                skip_first_line=False,
+                            ),
+                        )
+                        for k, v in self.Children.items()
+                    ],
+                ),
+                4,
+            ).rstrip(),
+            infos="<No Infos>" if not self.Infos else StringHelpers.LeftJustify(
+                "\n".join([str(info) for info in self.Infos]),
+                4,
+            ).rstrip(),
+        )
+
 
 # ----------------------------------------------------------------------
 class _StatementObserver(StatementEx.Observer):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        init_statement_info: DynamicStatementInfo,
+        all_statement_infos: Dict[Any, _StatementInfoNode],
         observer: Observer,
-        location_and_data_items: List[_LocationAndData],
     ):
-        all_statement_infos: List[
-            List[
-                Tuple[
-                    Optional[NormalizedIterator],
-                    DynamicStatementInfo,
-                ]
-            ]
-        ] = [
-            [ (None, init_statement_info.Clone()) ],
-        ]
-
-        self._observer                      = observer
-        self._location_and_data_items       = location_and_data_items
-
         self._all_statement_infos           = all_statement_infos
-
-        self._cached_statements: Tuple[str, List[Statement]] = []
-        self._cached_expressions: Tuple[str, List[Statement]] = []
-
-        self._UpdateCache()
+        self._observer                      = observer
+        self._indent_level                  = 0
 
     # ----------------------------------------------------------------------
     @Interface.override
     def GetDynamicStatements(
         self,
+        unique_id: List[Any],
         value: DynamicStatements,
     ) -> List[Statement]:
         if value == DynamicStatements.Statements:
-            return self._cached_statements
+            attribute_name = "Statements"
         elif value == DynamicStatements.Expressions:
-            return self._cached_expressions
+            attribute_name = "Expressions"
         else:
             assert False, value  # pragma: no cover
+
+        all_statements = []
+        all_names = []
+
+        processed_infos = set()
+        processed_statements = set()
+
+        should_continue = True
+
+        # Process the most recently added statements to the original ones
+        for node in self._EnumInfoNodes(unique_id):
+            these_statements = []
+            these_names = []
+
+            for info in node.Infos:
+                info = info.Info
+
+                # Have we seen this DynamicStatementInfo before?
+                info_key = id(info)
+
+                if info_key in processed_infos:
+                    continue
+
+                processed_infos.add(info_key)
+
+                # Get the statements
+                statements = getattr(info, attribute_name)
+                if not statements:
+                    continue
+
+                len_these_statements = len(these_statements)
+
+                for statement in statements:
+                    # Have we already seen this statement
+                    statement_key = id(statement)
+
+                    if statement_key in processed_statements:
+                        continue
+
+                    processed_statements.add(statement_key)
+
+                    these_statements.append(statement)
+
+                if len(these_statements) == len_these_statements:
+                    continue
+
+                these_names.append(
+                    info.Name or "[{}]".format(
+                        ", ".join([statement.ToString() for statement in these_statements[len_these_statements:]]),
+                    ),
+                )
+
+                if not info.AllowParentTraversal:
+                    should_continue = False
+                    break
+
+            if these_statements:
+                all_statements = these_statements + all_statements
+            if these_names:
+                all_names = these_names + all_names
+
+            if not should_continue:
+                break
+
+        return " / ".join(all_names), all_statements
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def StartStatement(
+        self,
+        unique_id: List[Any],
+    ):
+        parent = None
+        d = self._all_statement_infos
+
+        for id_part in unique_id:
+            value = d.get(id_part, None)
+            if value is not None:
+                d = value.Children
+                parent = value
+            else:
+                value = _StatementInfoNode(id_part, parent)
+                d[id_part] = value
+
+            d = value.Children
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EndStatement(
+        self,
+        unique_id: List[Any],
+        was_successful: bool,
+    ):
+        node = self._GetNode(unique_id)
+
+        # Collect all the infos of the descendants and add them here
+        if was_successful:
+            if not node.Infos:
+                for descendant in self._EnumDescendantNodes(node.Children):
+                    node.Infos += descendant.Infos
+        else:
+            node.Infos = []
+
+        node.Children = {}
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def OnIndentAsync(
         self,
+        unique_id: List[Any],
         data: Statement.TokenParseResultData,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ):
-        self._all_statement_infos.append([])
+        self._indent_level += 1
 
-        this_result = await self._observer.OnIndentAsync(data)
+        this_result = await self._observer.OnIndentAsync(
+            data,
+            iter_before,
+            iter_after,
+        )
         if isinstance(this_result, DynamicStatementInfo):
-            assert self._location_and_data_items
-            self.AddDynamicStatementInfo(self._location_and_data_items[-1].Location, this_result)
+            self._AddDynamicStatementInfo(unique_id, iter_before, iter_after, this_result)
 
         return None
 
@@ -283,93 +426,151 @@ class _StatementObserver(StatementEx.Observer):
     @Interface.override
     async def OnDedentAsync(
         self,
+        unique_id: List[Any],
         data: Statement.TokenParseResultData,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ):
-        assert self._all_statement_infos
-        self._all_statement_infos.pop()
-        assert len(self._all_statement_infos) >= 1, self._all_statement_infos
+        for node in self._EnumPreviousNodes(unique_id):
+            if not node.Infos:
+                continue
 
-        self._UpdateCache()
+            info_index = 0
+            while info_index < len(node.Infos):
+                info = node.Infos[info_index]
 
-        await self._observer.OnDedentAsync()
+                if info.IndentLevel == self._indent_level:
+                    del node.Infos[info_index]
+                else:
+                    info_index += 1
+
+        assert self._indent_level
+        self._indent_level -= 1
+
+        await self._observer.OnDedentAsync(
+            data,
+            iter_before,
+            iter_after,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def OnInternalStatementAsync(
         self,
+        unique_id: List[Any],
         statement: Statement,
         data: Optional[Statement.ParseResultData],
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> bool:
-        this_result = await self._observer.OnStatementCompleteAsync(statement, data, iter_before, iter_after)
+
+        this_result = await self._observer.OnStatementCompleteAsync(
+            statement,
+            data,
+            iter_before,
+            iter_after,
+        )
 
         if isinstance(this_result, DynamicStatementInfo):
-            self.AddDynamicStatementInfo(iter_before, this_result)
+            self._AddDynamicStatementInfo(unique_id, iter_before, iter_after, this_result)
             return True
 
         return this_result
 
     # ----------------------------------------------------------------------
-    def AddDynamicStatementInfo(
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _GetNode(
         self,
-        normalized_iter: NormalizedIterator,
+        unique_id: List[Any],
+    ) -> _StatementInfoNode:
+        d = self._all_statement_infos
+
+        for id_part in unique_id:
+            node = d.get(id_part, None)
+            assert node is not None
+
+            d = node.Children
+
+        return node
+
+    # ----------------------------------------------------------------------
+    def _AddDynamicStatementInfo(
+        self,
+        unique_id: List[Any],
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
         info: DynamicStatementInfo,
     ):
-        if not info.Statements and not info.Expressions:
-            return
+        this_node = None
+        last_info = None
 
-        if not info.AllowParentTraversal and self._all_statement_infos[-1]:
+        for node in self._EnumInfoNodes(unique_id):
+            if this_node is None:
+                this_node = node
+
+            if node.Infos:
+                last_info = node.Infos[-1]
+                break
+
+        assert this_node.UniqueIdPart == unique_id[-1], (node.UniqueIdPart, unique_id[-1])
+
+        if (
+            not info.AllowParentTraversal
+            and last_info is not None
+            and last_info.IndentLevel == self._indent_level
+        ):
             raise InvalidDynamicTraversalError(
-                normalized_iter.Line,
-                normalized_iter.Column,
-                [location for location, _ in self._all_statement_infos[-1] if location is not None],
+                iter_after.Line,
+                iter_after.Column,
+                last_info.IterAfter,
             )
 
-        self._all_statement_infos[-1].append((normalized_iter, info))
-
-        self._UpdateCache()
+        assert this_node is not None, unique_id
+        this_node.Infos.append(
+            _InternalDynamicStatementInfo(
+                self._indent_level,
+                iter_after.Clone(),
+                info,
+            ),
+        )
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def _EnumDescendantNodes(
+        cls,
+        node_children: Dict[Any, _StatementInfoNode],
+    ) -> Generator[_StatementInfoNode, None, None]:
+        for v in node_children.values():
+            yield v
+            yield from cls._EnumDescendantNodes(v.Children)
+
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    def _UpdateCache(self):
-        for statement_info_attribute_name, cached_attribute_name in [
-            ("Statements", "_cached_statements"),
-            ("Expressions", "_cached_expressions"),
-        ]:
-            cached_statements = []
-            names = []
-            id_lookup = set()
+    def _EnumPreviousNodes(
+        self,
+        unique_id: List[Any],
+    ) -> Generator[_StatementInfoNode, None, None]:
+        yield self._all_statement_infos[_DefaultStatementInfoTag]
 
-            for statement_infos in reversed(self._all_statement_infos):
-                for _, statement_info in reversed(statement_infos):
-                    statements = getattr(statement_info, statement_info_attribute_name)
-                    added_statement = False
+        d = self._all_statement_infos
 
-                    for statement in statements:
-                        this_id = id(statement)
+        for id_part in unique_id:
+            for k, v in d.items():
+                if k == _DefaultStatementInfoTag:
+                    continue
 
-                        if this_id in id_lookup:
-                            continue
+                yield v
 
-                        id_lookup.add(this_id)
-
-                        cached_statements.append(statement)
-                        added_statement = True
-
-                    if added_statement:
-                        names.append(
-                            statement_info.Name or "[{}]".format(", ".join([statement.Name for statement in statements])),
-                        )
-
-                if statement_infos and not statement_infos[0][1].AllowParentTraversal:
+                if k == id_part:
+                    d = v.Children
                     break
 
-            # In the code above, we reversed the list so that statements added later (or nearer)
-            # to the code would be matched before statements defined further away. However when
-            # displaying the content names, we want the names to be the order in which they were
-            # defined.
-            names = " / ".join(reversed(names))
+    # ----------------------------------------------------------------------
+    def _EnumInfoNodes(
+        self,
+        unique_id: List[Any],
+    ) -> Generator[_StatementInfoNode, None, None]:
+        nodes = list(self._EnumPreviousNodes(unique_id))
 
-            setattr(self, cached_attribute_name, (names, cached_statements))
+        # Process the most recently added statements to the original ones
+        yield from reversed(nodes)
