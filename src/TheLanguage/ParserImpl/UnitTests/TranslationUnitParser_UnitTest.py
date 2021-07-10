@@ -73,8 +73,9 @@ class TestSimple(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_MatchStandard(self, parse_mock):
-        results = Parse(
+    @pytest.mark.asyncio
+    async def test_MatchStandard(self, parse_mock):
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -134,8 +135,9 @@ class TestSimple(object):
 
 
     # ----------------------------------------------------------------------
-    def test_MatchReverse(self, parse_mock):
-        results = Parse(
+    @pytest.mark.asyncio
+    async def test_MatchReverse(self, parse_mock):
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -175,12 +177,13 @@ class TestSimple(object):
         assert len(parse_mock.method_calls) == 15
 
     # ----------------------------------------------------------------------
-    def test_EarlyTermination(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_EarlyTermination(self, parse_mock):
         parse_mock.OnStatementCompleteAsync = CoroutineMock(
             side_effect=[True, False],
         )
 
-        results = Parse(
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -215,8 +218,9 @@ class TestIndentation(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_Match(self, parse_mock):
-        results = Parse(
+    @pytest.mark.asyncio
+    async def test_Match(self, parse_mock):
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -259,12 +263,13 @@ class TestNewStatements(object):
     _new_statements                         = DynamicStatementInfo([_lower_statement], [])
 
     # ----------------------------------------------------------------------
-    def test_Match(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_Match(self, parse_mock):
         parse_mock.OnStatementCompleteAsync = CoroutineMock(
             side_effect=[self._new_statements, True, True, True, True, True, True, True, True],
         )
 
-        results = Parse(
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -292,9 +297,10 @@ class TestNewStatements(object):
         )
 
     # ----------------------------------------------------------------------
-    def test_NoMatch(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_NoMatch(self, parse_mock):
         with pytest.raises(SyntaxInvalidError) as ex:
-            Parse(
+            await ParseAsync(
                 self._statements,
                 CreateIterator(
                     textwrap.dedent(
@@ -340,12 +346,13 @@ class TestNewScopedStatements(object):
     _new_statements                         = DynamicStatementInfo([_lower_statement], [])
 
     # ----------------------------------------------------------------------
-    def test_Match(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_Match(self, parse_mock):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=self._new_statements,
         )
 
-        results = Parse(
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -388,13 +395,14 @@ class TestNewScopedStatements(object):
         )
 
     # ----------------------------------------------------------------------
-    def test_NoMatch(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_NoMatch(self, parse_mock):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=self._new_statements,
         )
 
         with pytest.raises(SyntaxInvalidError) as ex:
-            Parse(
+            await ParseAsync(
                 self._statements,
                 CreateIterator(
                     textwrap.dedent(
@@ -484,12 +492,13 @@ class TestNewScopedStatementsComplex(object):
     _new_statements                         = DynamicStatementInfo([_upper_statement, _lower_statement], [])
 
     # ----------------------------------------------------------------------
-    def test_Match(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_Match(self, parse_mock):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=self._new_statements,
         )
 
-        results = Parse(
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -551,8 +560,9 @@ class TestEmbeddedStatements(object):
     _statements                             = DynamicStatementInfo([_uul_statement, _lul_statement], [])
 
     # ----------------------------------------------------------------------
-    def test_Match(self, parse_mock):
-        results = Parse(
+    @pytest.mark.asyncio
+    async def test_Match(self, parse_mock):
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -604,8 +614,9 @@ class TestVariedLengthMatches(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_Match(self, parse_mock):
-        results = Parse(
+    @pytest.mark.asyncio
+    async def test_Match(self, parse_mock):
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -649,12 +660,13 @@ class TestVariedLengthMatches(object):
         )
 
 # ----------------------------------------------------------------------
-def test_EmptyDynamicStatementInfo(parse_mock):
+@pytest.mark.asyncio
+async def test_EmptyDynamicStatementInfo(parse_mock):
     parse_mock.OnStatementCompleteAsync = CoroutineMock(
         return_value=DynamicStatementInfo([], []),
     )
 
-    results = Parse(
+    results = await ParseAsync(
         DynamicStatementInfo(
             [
                 StatementEx("Newline Statement", NewlineToken()),
@@ -701,7 +713,8 @@ class TestPreventParentTraversal(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_Match(self, parse_mock):
+    @pytest.mark.asyncio
+    async  def test_Match(self, parse_mock):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicStatementInfo(
                 [self._lower_statement, self._dedent_statement],
@@ -710,7 +723,7 @@ class TestPreventParentTraversal(object):
             ),
         )
 
-        results = Parse(
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -771,7 +784,8 @@ class TestPreventParentTraversal(object):
         )
 
     # ----------------------------------------------------------------------
-    def test_NoMatch(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_NoMatch(self, parse_mock):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicStatementInfo(
                 [self._lower_statement, self._dedent_statement],
@@ -781,7 +795,7 @@ class TestPreventParentTraversal(object):
         )
 
         with pytest.raises(SyntaxInvalidError) as ex:
-            Parse(
+            await ParseAsync(
                 self._statements,
                 CreateIterator(
                     textwrap.dedent(
@@ -854,7 +868,8 @@ class TestPreventParentTraversal(object):
         )
 
 # ----------------------------------------------------------------------
-def test_InvalidDynamicTraversalError(parse_mock):
+@pytest.mark.asyncio
+async def test_InvalidDynamicTraversalError(parse_mock):
     parse_mock.OnStatementCompleteAsync = CoroutineMock(
         return_value=DynamicStatementInfo(
             [StatementEx("Newline", NewlineToken())],
@@ -864,7 +879,7 @@ def test_InvalidDynamicTraversalError(parse_mock):
     )
 
     with pytest.raises(InvalidDynamicTraversalError) as ex:
-        Parse(
+        await ParseAsync(
             DynamicStatementInfo(
                 [StatementEx("Newline", NewlineToken())],
                 [],
@@ -888,8 +903,9 @@ def test_InvalidDynamicTraversalError(parse_mock):
     assert ex.Column == 1
 
 # ----------------------------------------------------------------------
-def test_DynamicExpressions(parse_mock):
-    results = Parse(
+@pytest.mark.asyncio
+async def test_DynamicExpressions(parse_mock):
+    results = await ParseAsync(
         DynamicStatementInfo(
             [
                 StatementEx(
@@ -1017,8 +1033,9 @@ class TestCatastrophicInclude(object):
         return parse_mock
 
     # ----------------------------------------------------------------------
-    def test_Lower(self, this_parse_mock):
-        results = Parse(
+    @pytest.mark.asyncio
+    async def test_Lower(self, this_parse_mock):
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -1063,8 +1080,9 @@ class TestCatastrophicInclude(object):
         assert this_parse_mock.method_calls == []
 
     # ----------------------------------------------------------------------
-    def test_LowerAdditionalItem(self, this_parse_mock):
-        results = Parse(
+    @pytest.mark.asyncio
+    async def test_LowerAdditionalItem(self, this_parse_mock):
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -1126,8 +1144,9 @@ class TestCatastrophicInclude(object):
         assert this_parse_mock.method_calls == []
 
     # ----------------------------------------------------------------------
-    def test_Number(self, this_parse_mock):
-        results = Parse(
+    @pytest.mark.asyncio
+    async def test_Number(self, this_parse_mock):
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -1180,8 +1199,9 @@ class TestCatastrophicInclude(object):
         assert this_parse_mock.method_calls == []
 
     # ----------------------------------------------------------------------
-    def test_NumberAdditionalItems(self, this_parse_mock):
-        results = Parse(
+    @pytest.mark.asyncio
+    async def test_NumberAdditionalItems(self, this_parse_mock):
+        results = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(

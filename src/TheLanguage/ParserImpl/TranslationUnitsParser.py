@@ -24,8 +24,6 @@ import traceback
 from concurrent.futures import Future
 from typing import Any, Awaitable, Callable, cast, Dict, List, Optional, Tuple, Union
 
-import nest_asyncio
-
 from dataclasses import dataclass, field
 
 import CommonEnvironment
@@ -56,10 +54,6 @@ with InitRelativeImports():
         Observer as TranslationUnitObserver,
         ParseAsync as TranslationUnitParseAsync,
     )
-
-
-# ----------------------------------------------------------------------
-nest_asyncio.apply()
 
 
 # ----------------------------------------------------------------------
@@ -248,9 +242,11 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnIndent(
+    async def OnIndentAsync(
         fully_qualified_name: str,
         data: Statement.TokenParseResultData,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
         """Event generated on the creation of a new scope"""
         raise Exception("Abstract method")  # pragma: no cover
@@ -258,9 +254,11 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnDedent(
+    async def OnDedentAsync(
         fully_qualified_name: str,
         data: Statement.TokenParseResultData,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ) -> None:
         """Event generated on the end of a scope"""
         raise Exception("Abstract method")  # pragma: no cover
@@ -268,9 +266,9 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnStatementComplete(
+    async def OnStatementCompleteAsync(
         fully_qualified_name: str,
-        node: Node,
+        node: Union[Node, Leaf],
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Union[
@@ -390,7 +388,7 @@ async def ParseAsync(
                             single_threaded=single_threaded,
                         )
 
-                        # BugBug: What happens when results is None?
+                        # TODO: What happens when results is None?
 
                         # The noes have already been created, but we need to finalize
                         # the relationships.
@@ -474,11 +472,6 @@ async def ParseAsync(
 
 
 # ----------------------------------------------------------------------
-def Parse(*args, **kwargs):
-    return asyncio.get_event_loop().run_until_complete(ParseAsync(*args, **kwargs))
-
-
-# ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 class _StatementsObserver(TranslationUnitObserver):
@@ -496,28 +489,42 @@ class _StatementsObserver(TranslationUnitObserver):
         # Preserve cached nodes so that we don't have to continually recreate them.
         # This is also beneficial, as some statements will add context data to the
         # node when processing it.
-        self._node_cache: Dict[Any, Node]   = {}
-        self._node_cache_lock               = threading.Lock()
+        self._node_cache: Dict[Any, Union[Node, Leaf]]  = {}
+        self._node_cache_lock                           = threading.Lock()
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnIndent(
+    async def OnIndentAsync(
         self,
         data: Statement.TokenParseResultData,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ):
-        return self._observer.OnIndent(self._fully_qualified_name, data)
+        return await self._observer.OnIndentAsync(
+            self._fully_qualified_name,
+            data,
+            iter_before,
+            iter_after,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnDedent(
+    async def OnDedentAsync(
         self,
         data: Statement.TokenParseResultData,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ):
-        return self._observer.OnDedent(self._fully_qualified_name, data)
+        return await self._observer.OnDedentAsync(
+            self._fully_qualified_name,
+            data,
+            iter_before,
+            iter_after,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnStatementComplete(
+    async def OnStatementCompleteAsync(
         self,
         statement: Statement,
         data: Optional[Statement.ParseResultData],
@@ -527,26 +534,35 @@ class _StatementsObserver(TranslationUnitObserver):
         bool,
         DynamicStatementInfo,
     ]:
-        this_result = self._observer.OnStatementComplete(
-            self._fully_qualified_name,
-            self.CreateNode(
-                statement,
-                data,
-                parent=None,
-            ),
-            iter_before,
-            iter_after,
+        node_or_leaf = self.CreateNode(
+            statement,
+            data,
+            parent=None,
         )
 
-        if isinstance(this_result, Observer.ImportInfo):
-            if not this_result.FullyQualifiedName:
-                raise UnknownSourceError(
-                    iter_before.Line,
-                    iter_before.Column,
-                    this_result.SourceName,
-                )
+        if isinstance(node_or_leaf, Node):
+            this_result = await self._observer.OnStatementCompleteAsync(
+                self._fully_qualified_name,
+                node_or_leaf,
+                iter_before,
+                iter_after,
+            )
 
-            return asyncio.get_event_loop().run_until_complete(self._async_parse_func(this_result.FullyQualifiedName))
+            if isinstance(this_result, Observer.ImportInfo):
+                if not this_result.FullyQualifiedName:
+                    raise UnknownSourceError(
+                        iter_before.Line,
+                        iter_before.Column,
+                        this_result.SourceName,
+                    )
+
+                return await self._async_parse_func(this_result.FullyQualifiedName)
+
+        elif isinstance(node_or_leaf, Leaf):
+            this_result = True
+
+        else:
+            assert False, node_or_leaf  # pragma: no cover
 
         return this_result
 
@@ -556,8 +572,9 @@ class _StatementsObserver(TranslationUnitObserver):
         statement: Statement,
         data: Optional[Statement.ParseResultData],
         parent: Optional[Union[RootNode, Node]],
-    ) -> Node:
-        node: Optional[Node] = None
+    ) -> Union[Node, Leaf]:
+
+        node: Optional[Union[Node, Leaf]] = None
         was_cached = False
 
         # Look for the cached value
@@ -570,24 +587,28 @@ class _StatementsObserver(TranslationUnitObserver):
                     was_cached = True
 
         if node is None:
-            node = Node(statement)
+            if isinstance(statement, TokenStatement):
+                data = cast(Statement.TokenParseResultData, data)
+
+                node = Leaf(
+                    data.Token,
+                    data.Whitespace,
+                    data.Value,
+                    data.IterBefore,
+                    data.IterAfter,
+                    data.IsIgnored,
+                )
+
+            else:
+                node = Node(statement)
 
         if parent is not None:
             object.__setattr__(node, "Parent", parent)
             parent.Children.append(node)
 
         if not was_cached:
-            for child_statement, child_data in data.Enum() if data else []:
-                if isinstance(child_statement, TokenStatement):
-                    this_child_statement, this_child_data = next(child_data.Enum())
-                    assert this_child_statement is None
-
-                    self._CreateLeaf(
-                        cast(Statement.TokenParseResultData, this_child_data),
-                        node,
-                    )
-
-                else:
+            if isinstance(node, Node):
+                for child_statement, child_data in data.Enum() if data else []:
                     self.CreateNode(child_statement, child_data, node)
 
             if key:
@@ -595,25 +616,3 @@ class _StatementsObserver(TranslationUnitObserver):
                     self._node_cache[key] = node
 
         return node
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _CreateLeaf(
-        data: Statement.TokenParseResultData,
-        parent: Node,
-    ) -> Leaf:
-        leaf = Leaf(
-            data.Token,
-            data.Whitespace,
-            data.Value,
-            data.IterBefore,
-            data.IterAfter,
-            data.IsIgnored,
-        )
-
-        object.__setattr__(leaf, "Parent", parent)
-        parent.Children.append(leaf)
-
-        return leaf

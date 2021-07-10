@@ -24,6 +24,8 @@ from contextlib import contextmanager
 from typing import Dict, Optional
 from unittest.mock import Mock
 
+import pytest
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -105,6 +107,8 @@ class TestStandard(object):
     _or_statement_name                      = "[Include, Upper, Lower, Number, New Scope]"
     _dynamic_or_statement_name              = "[Include, Upper, Lower, Number, New Scope] / [Dynamic Number]"
 
+    _dynamic_statements_name                = "Dynamic Statements"
+
     # ----------------------------------------------------------------------
     @classmethod
     @contextmanager
@@ -129,26 +133,20 @@ class TestStandard(object):
                     )
 
                 # ----------------------------------------------------------------------
-                def VerifyCallArgs(
+                def OnStatementCompleteMethodCallToTuple(
                     self,
-                    index: int,
-                    statement: Union[Statement, str],
-                    before_line: int,
-                    before_col: int,
-                    after_line: int,
-                    after_col: int,
+                    index,
+                    use_statement_name=False,
                 ):
                     callback_args = self.on_statement_compete_mock.call_args_list[index][0]
 
-                    if isinstance(statement, str):
-                        assert callback_args[0].Type.Name == statement
-                    else:
-                        assert callback_args[0].Type == statement
-
-                    assert callback_args[1].Line == before_line
-                    assert callback_args[1].Column == before_col
-                    assert callback_args[2].Line == after_line
-                    assert callback_args[2].Column == after_col
+                    return (
+                        callback_args[0].Type.Name if use_statement_name else callback_args[0].Type,
+                        callback_args[1].Line,
+                        callback_args[1].Column,
+                        callback_args[2].Line,
+                        callback_args[2].Column,
+                    )
 
                 # ----------------------------------------------------------------------
                 @staticmethod
@@ -182,24 +180,28 @@ class TestStandard(object):
                 # ----------------------------------------------------------------------
                 @staticmethod
                 @Interface.override
-                def OnIndent(
+                async def OnIndentAsync(
                     fully_qualified_name: str,
                     data: Statement.TokenParseResultData,
+                    iter_before: NormalizedIterator,
+                    iter_after: NormalizedIterator,
                 ) -> Optional[DynamicStatementInfo]:
                     return None
 
                 # ----------------------------------------------------------------------
                 @staticmethod
                 @Interface.override
-                def OnDedent(
+                async def OnDedentAsync(
                     fully_qualified_name: str,
                     data: Statement.TokenParseResultData,
+                    iter_before: NormalizedIterator,
+                    iter_after: NormalizedIterator,
                 ) -> None:
                     return None
 
                 # ----------------------------------------------------------------------
                 @Interface.override
-                def OnStatementComplete(
+                async def OnStatementCompleteAsync(
                     self,
                     fully_qualified_name: str,
                     node: Node,
@@ -223,7 +225,8 @@ class TestStandard(object):
             yield MyObserver()
 
     # ----------------------------------------------------------------------
-    def test_NoInclude(self):
+    @pytest.mark.asyncio
+    async def test_NoInclude(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -236,10 +239,11 @@ class TestStandard(object):
             },
             num_threads=5,
         ) as observer:
-            results = Parse(
+            results = await ParseAsync(
                 ["one"],
                 self._statements,
                 observer,
+                single_threaded=True,
             )
 
             assert len(results) == 1
@@ -264,17 +268,21 @@ class TestStandard(object):
                 """,
             )
 
-            assert len(observer.on_statement_compete_mock.call_args_list) == 6
+            assert len(observer.on_statement_compete_mock.call_args_list) == 9
 
-            observer.VerifyCallArgs(0, self._lower_statement, 1, 1, 2, 1)
-            observer.VerifyCallArgs(1, self._or_statement_name, 1, 1, 2, 1)
-            observer.VerifyCallArgs(2, self._upper_statement, 2, 1, 3, 1)
-            observer.VerifyCallArgs(3, self._or_statement_name, 2, 1, 3, 1)
-            observer.VerifyCallArgs(4, self._number_statement, 3, 1, 4, 1)
-            observer.VerifyCallArgs(5, self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(0) == (self._lower_statement, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(1, use_statement_name=True) == (self._or_statement_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(2, use_statement_name=True) == (self._dynamic_statements_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(3) == (self._upper_statement, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(4, use_statement_name=True) == (self._or_statement_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(5, use_statement_name=True) == (self._dynamic_statements_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(6) == (self._number_statement, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(7, use_statement_name=True) == (self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(8, use_statement_name=True) == (self._dynamic_statements_name, 3, 1, 4, 1)
 
     # ----------------------------------------------------------------------
-    def test_SingleInclude(self):
+    @pytest.mark.asyncio
+    async def test_SingleInclude(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -286,12 +294,12 @@ class TestStandard(object):
                     """,
                 ),
             },
-            num_threads=5,
         ) as observer:
-            all_results = Parse(
+            all_results = await ParseAsync(
                 ["one"],
                 self._statements,
                 observer,
+                single_threaded=True,
             )
 
             assert len(all_results) == 2
@@ -343,31 +351,39 @@ class TestStandard(object):
                 """,
             )
 
-            assert len(observer.on_statement_compete_mock.call_args_list) == 13
+            assert len(observer.on_statement_compete_mock.call_args_list) == 20
 
             # one (lines 1 - 3)
-            observer.VerifyCallArgs(0, self._lower_statement, 1, 1, 2, 1)
-            observer.VerifyCallArgs(1, self._or_statement_name, 1, 1, 2, 1)
-            observer.VerifyCallArgs(2, self._upper_statement, 2, 1, 3, 1)
-            observer.VerifyCallArgs(3, self._or_statement_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(0) == (self._lower_statement, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(1, use_statement_name=True) == (self._or_statement_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(2, use_statement_name=True) == (self._dynamic_statements_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(3) == (self._upper_statement, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(4, use_statement_name=True) == (self._or_statement_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(5, use_statement_name=True) == (self._dynamic_statements_name, 2, 1, 3, 1)
 
             # number
-            observer.VerifyCallArgs(4, self._number_statement, 1, 1, 2, 1)
-            observer.VerifyCallArgs(5, self._or_statement_name, 1, 1, 2, 1)
-            observer.VerifyCallArgs(6, self._number_statement, 2, 1, 3, 1)
-            observer.VerifyCallArgs(7, self._or_statement_name, 2, 1, 3, 1)
-            observer.VerifyCallArgs(8, self._number_statement, 3, 1, 4, 1)
-            observer.VerifyCallArgs(9, self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(6) == (self._number_statement, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(7, use_statement_name=True) == (self._or_statement_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(8, use_statement_name=True) == (self._dynamic_statements_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(9) == (self._number_statement, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(10, use_statement_name=True) == (self._or_statement_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(11, use_statement_name=True) == (self._dynamic_statements_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(12) == (self._number_statement, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(13, use_statement_name=True) == (self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(14, use_statement_name=True) == (self._dynamic_statements_name, 3, 1, 4, 1)
 
             # one (line 3, after include)
-            observer.VerifyCallArgs(10, self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(15, use_statement_name=True) == (self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(16, use_statement_name=True) == (self._dynamic_statements_name, 3, 1, 4, 1)
 
             # one (line 4)
-            observer.VerifyCallArgs(11, self._number_statement, 4, 1, 5, 1)
-            observer.VerifyCallArgs(12, self._dynamic_or_statement_name, 4, 1, 5, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(17) == (self._number_statement, 4, 1, 5, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(18, use_statement_name=True) == (self._dynamic_or_statement_name, 4, 1, 5, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(19, use_statement_name=True) == (self._dynamic_statements_name, 4, 1, 5, 1)
 
     # ----------------------------------------------------------------------
-    def test_DoubleInclude(self):
+    @pytest.mark.asyncio
+    async def test_DoubleInclude(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -383,7 +399,7 @@ class TestStandard(object):
             },
             num_threads=10,
         ) as observer:
-            all_results = Parse(
+            all_results = await ParseAsync(
                 ["one"],
                 self._statements,
                 observer,
@@ -427,38 +443,48 @@ class TestStandard(object):
                 """,
             )
 
-            assert len(observer.on_statement_compete_mock.call_args_list) == 16
+            assert len(observer.on_statement_compete_mock.call_args_list) == 25
 
             # one (lines 1 - 3)
-            observer.VerifyCallArgs(0, self._lower_statement, 1, 1, 2, 1)
-            observer.VerifyCallArgs(1, self._or_statement_name, 1, 1, 2, 1)
-            observer.VerifyCallArgs(2, self._upper_statement, 2, 1, 3, 1)
-            observer.VerifyCallArgs(3, self._or_statement_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(0) == (self._lower_statement, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(1, use_statement_name=True) == (self._or_statement_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(2, use_statement_name=True) == (self._dynamic_statements_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(3) == (self._upper_statement, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(4, use_statement_name=True) == (self._or_statement_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(5, use_statement_name=True) == (self._dynamic_statements_name, 2, 1, 3, 1)
 
             # number
-            observer.VerifyCallArgs(4, self._number_statement, 1, 1, 2, 1)
-            observer.VerifyCallArgs(5, self._or_statement_name, 1, 1, 2, 1)
-            observer.VerifyCallArgs(6, self._number_statement, 2, 1, 3, 1)
-            observer.VerifyCallArgs(7, self._or_statement_name, 2, 1, 3, 1)
-            observer.VerifyCallArgs(8, self._number_statement, 3, 1, 4, 1)
-            observer.VerifyCallArgs(9, self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(6) == (self._number_statement, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(7, use_statement_name=True) == (self._or_statement_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(8, use_statement_name=True) == (self._dynamic_statements_name, 1, 1, 2, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(9) == (self._number_statement, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(10, use_statement_name=True) == (self._or_statement_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(11, use_statement_name=True) == (self._dynamic_statements_name, 2, 1, 3, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(12) == (self._number_statement, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(13, use_statement_name=True) == (self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(14, use_statement_name=True) == (self._dynamic_statements_name, 3, 1, 4, 1)
 
             # one (line 3, after include)
-            observer.VerifyCallArgs(10, self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(15, use_statement_name=True) == (self._or_statement_name, 3, 1, 4, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(16, use_statement_name=True) == (self._dynamic_statements_name, 3, 1, 4, 1)
 
             # one (line 4)
-            observer.VerifyCallArgs(11, self._number_statement, 4, 1, 5, 1)
-            observer.VerifyCallArgs(12, self._dynamic_or_statement_name, 4, 1, 5, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(17) == (self._number_statement, 4, 1, 5, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(18, use_statement_name=True) == (self._dynamic_or_statement_name, 4, 1, 5, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(19, use_statement_name=True) == (self._dynamic_statements_name, 4, 1, 5, 1)
 
             # one (line 5)
-            observer.VerifyCallArgs(13, self._dynamic_or_statement_name, 5, 1, 6, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(20, use_statement_name=True) == (self._dynamic_or_statement_name, 5, 1, 6, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(21, use_statement_name=True) == (self._dynamic_statements_name, 5, 1, 6, 1)
 
             # one (line 6)
-            observer.VerifyCallArgs(14, self._number_statement, 6, 1, 7, 1)
-            observer.VerifyCallArgs(15, self._dynamic_or_statement_name, 6, 1, 7, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(22) == (self._number_statement, 6, 1, 7, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(23, use_statement_name=True) == (self._dynamic_or_statement_name, 6, 1, 7, 1)
+            assert observer.OnStatementCompleteMethodCallToTuple(24, use_statement_name=True) == (self._dynamic_statements_name, 6, 1, 7, 1)
 
     # ----------------------------------------------------------------------
-    def test_InvalidInclude(self):
+    @pytest.mark.asyncio
+    async def test_InvalidInclude(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -472,7 +498,7 @@ class TestStandard(object):
             },
             num_threads=10,
         ) as observer:
-            results = Parse(
+            results = await ParseAsync(
                 ["one"],
                 self._statements,
                 observer,
@@ -488,7 +514,8 @@ class TestStandard(object):
             assert results.FullyQualifiedName == "one"
 
     # ----------------------------------------------------------------------
-    def test_MultipleFileSingleImport(self):
+    @pytest.mark.asyncio
+    async def test_MultipleFileSingleImport(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -510,7 +537,7 @@ class TestStandard(object):
             },
             num_threads=10,
         ) as observer:
-            results = Parse(
+            results = await ParseAsync(
                 ["one", "two"],
                 self._statements,
                 observer,
@@ -591,10 +618,11 @@ class TestStandard(object):
                 """,
             )
 
-            assert len(observer.on_statement_compete_mock.call_args_list) == 20
+            assert len(observer.on_statement_compete_mock.call_args_list) == 31
 
     # ----------------------------------------------------------------------
-    def test_InsertedStatementsError(self):
+    @pytest.mark.asyncio
+    async def test_InsertedStatementsError(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -604,7 +632,7 @@ class TestStandard(object):
                 ),
             },
         ) as observer:
-            results = Parse(
+            results = await ParseAsync(
                 ["one"],
                 self._statements,
                 observer,
@@ -619,7 +647,8 @@ class TestStandard(object):
             assert results.FullyQualifiedName == "one"
 
     # ----------------------------------------------------------------------
-    def test_InsertedStatementsSuccess(self):
+    @pytest.mark.asyncio
+    async def test_InsertedStatementsSuccess(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -630,7 +659,7 @@ class TestStandard(object):
                 ),
             },
         ) as observer:
-            results = Parse(
+            results = await ParseAsync(
                 ["one"],
                 self._statements,
                 observer,
@@ -660,7 +689,8 @@ class TestStandard(object):
             )
 
     # ----------------------------------------------------------------------
-    def test_InsertedScopedStatementsError(self):
+    @pytest.mark.asyncio
+    async def test_InsertedScopedStatementsError(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -674,7 +704,7 @@ class TestStandard(object):
             },
             num_threads=10,
         ) as observer:
-            results = Parse(
+            results = await ParseAsync(
                 ["one"],
                 self._statements,
                 observer,
@@ -683,17 +713,128 @@ class TestStandard(object):
             assert len(results) == 1
             results = results[0]
 
-            # BugBug assert results.Line == 4
-            # BugBug assert results.Column == 2
+            assert results.Line == 4
+            assert results.Column == 2
             assert str(results) == "The syntax is not recognized"
 
-            assert results.ToString() == textwrap.dedent(
+            assert results.ToDebugString() == textwrap.dedent(
                 """\
+                The syntax is not recognized [4, 2]
+
+                [Include, Upper, Lower, Number, New Scope]
+                    New Scope
+                        Upper Token
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> ws:None [1, 1 -> 1, 9]
+                        Colon Token
+                            Colon Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
+                        Newline+
+                            Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
+                        Indent
+                            Indent <<10, 14, (4)>> ws:None [2, 1 -> 2, 5]
+                        DynamicStatements.Statements
+                            [Include, Upper, Lower, Number, New Scope]
+                                Include
+                                    Include Token
+                                        Include Token <<Regex: <_sre.SRE_Match object; span=(14, 21), match='include'>>> ws:None [2, 5 -> 2, 12]
+                                    Lower Token
+                                        Lower Token <<Regex: <_sre.SRE_Match object; span=(22, 28), match='number'>>> ws:(21, 22) [2, 13 -> 2, 19]
+                                    Newline+
+                                        Newline+ <<28, 29>> ws:None [2, 19 -> 3, 1]
+                        DynamicStatements.Statements
+                            [Include, Upper, Lower, Number, New Scope] / [Dynamic Number]
+                                Dynamic Number
+                                    Number Token
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(33, 34), match='4'>>> ws:None [3, 5 -> 3, 6]
+                                    Number Token
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(35, 36), match='5'>>> ws:(34, 35) [3, 7 -> 3, 8]
+                                    Number Token
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(37, 38), match='6'>>> ws:(36, 37) [3, 9 -> 3, 10]
+                                    Newline+
+                                        Newline+ <<38, 39>> ws:None [3, 10 -> 4, 1]
+                        Dedent
+                            Dedent <<>> ws:None [4, 1 -> 4, 1]
+                [Include, Upper, Lower, Number, New Scope]
+                    Include
+                        Include Token
+                            None
+                    Upper
+                        Upper Token
+                            None
+                    Lower
+                        Lower Token
+                            None
+                    Number
+                        Number Token
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(39, 40), match='7'>>> ws:None [4, 1 -> 4, 2]
+                        Newline+
+                            None
+                    New Scope
+                        Upper Token
+                            None
                 """,
             )
 
     # ----------------------------------------------------------------------
-    def test_InsertedScopedStatementsSuccess(self):
-        pass # BugBug
+    @pytest.mark.asyncio
+    async def test_InsertedScopedStatementsSuccess(self):
+        with self.CreateObserver(
+            {
+                "one" : textwrap.dedent(
+                    """\
+                    NEWSCOPE:
+                        include number
+                        1 2 3
+                    """,
+                ),
+            },
+        ) as observer:
+            results = await ParseAsync(
+                ["one"],
+                self._statements,
+                observer,
+            )
 
-# BugBug: Not finished
+            assert len(results) == 2
+            assert "one" in results
+            assert "number" in results
+
+            one_results = results["one"]
+
+            assert str(one_results) == textwrap.dedent(
+                """\
+                <Root>
+                    [Include, Upper, Lower, Number, New Scope]
+                        New Scope
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> ws:None [1, 1 -> 1, 9]
+                            Colon Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
+                            Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
+                            Indent <<10, 14, (4)>> ws:None [2, 1 -> 2, 5]
+                            DynamicStatements.Statements
+                                [Include, Upper, Lower, Number, New Scope]
+                                    Include
+                                        Include Token <<Regex: <_sre.SRE_Match object; span=(14, 21), match='include'>>> ws:None [2, 5 -> 2, 12]
+                                        Lower Token <<Regex: <_sre.SRE_Match object; span=(22, 28), match='number'>>> ws:(21, 22) [2, 13 -> 2, 19]
+                                        Newline+ <<28, 29>> ws:None [2, 19 -> 3, 1]
+                            DynamicStatements.Statements
+                                [Include, Upper, Lower, Number, New Scope] / [Dynamic Number]
+                                    Dynamic Number
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(33, 34), match='1'>>> ws:None [3, 5 -> 3, 6]
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(35, 36), match='2'>>> ws:(34, 35) [3, 7 -> 3, 8]
+                                        Number Token <<Regex: <_sre.SRE_Match object; span=(37, 38), match='3'>>> ws:(36, 37) [3, 9 -> 3, 10]
+                                        Newline+ <<38, 39>> ws:None [3, 10 -> 4, 1]
+                            Dedent <<>> ws:None [4, 1 -> 4, 1]
+                """,
+            )
+
+# ----------------------------------------------------------------------
+def test_NodeStrNoChildren():
+    node = Node(StatementEx("Statement", NewlineToken()))
+
+    assert str(node) == textwrap.dedent(
+        """\
+        Statement
+            <No Children>
+        """,
+    )
+
+# TODO: Circular dependencies
