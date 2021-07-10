@@ -215,31 +215,30 @@ class StatementEx(Statement):
             data_items = []
 
             # ----------------------------------------------------------------------
-            def ExtractWhitespaceOrComments() -> Optional[Statement.TokenParseResultData]:
-                nonlocal success
-
+            def ExtractWhitespaceOrComments() -> Optional[
+                Tuple[
+                    List[Statement.TokenParseResultData],
+                    NormalizedIterator,
+                ]
+            ]:
                 if ignore_whitespace_ctr:
                     data_item = self._ExtractPotentialWhitespaceToken(normalized_iter)
                     if data_item is not None:
-                        return data_item
+                        return [data_item], data_item.IterAfter
 
-                data_item = self._ExtractPotentialInlineCommentToken(normalized_iter)
-                if data_item is not None:
-                    return data_item
-
-                return None
+                return self._ExtractPotentialCommentTokens(normalized_iter)
 
             # ----------------------------------------------------------------------
 
             for statement_index, statement in enumerate(self._working_statements):
                 # Extract whitespace or comments
                 while not normalized_iter.AtEnd():
-                    potential_data_item = ExtractWhitespaceOrComments()
-                    if potential_data_item is None:
+                    potential_results = ExtractWhitespaceOrComments()
+                    if potential_results is None:
                         break
 
-                    data_items.append(potential_data_item)
-                    normalized_iter = potential_data_item.IterAfter.Clone()
+                    data_items += potential_results[0]
+                    normalized_iter = potential_results[1].Clone()
 
                 # Process control tokens
                 if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
@@ -442,25 +441,59 @@ class StatementEx(Statement):
 
     # ----------------------------------------------------------------------
     @classmethod
-    def _ExtractPotentialInlineCommentToken(
+    def _ExtractPotentialCommentTokens(
         cls,
         normalized_iter: NormalizedIterator,
-    ) -> Optional[Statement.TokenParseResultData]:
-        """Eats any comment when requested"""
+    ) -> Optional[
+        Tuple[
+            List[Statement.TokenParseResultData],
+            NormalizedIterator,
+        ]
+    ]:
+        """Eats any comment (stand-alone or trailing) when requested"""
 
         normalized_iter = normalized_iter.Clone()
-        potential_whitespace = TokenStatement.ExtractWhitespace(normalized_iter)
+
+        at_beginning_of_line = normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
+
+        if at_beginning_of_line and normalized_iter.LineInfo.HasNewIndent():
+            normalized_iter_begin = normalized_iter.Clone()
+            normalized_iter.SkipPrefix()
+
+            potential_whitespace = normalized_iter_begin.Offset, normalized_iter.Offset
+        else:
+            potential_whitespace = TokenStatement.ExtractWhitespace(normalized_iter)
+
         normalized_iter_begin = normalized_iter.Clone()
 
         result = cls.CommentToken.Match(normalized_iter)
-        if result is not None:
-            return Statement.TokenParseResultData(
+        if not result:
+            return None
+
+        results = [
+            Statement.TokenParseResultData(
                 cls.CommentToken,
                 potential_whitespace,
                 result,
                 normalized_iter_begin,
                 normalized_iter,
                 IsIgnored=True,
-            )
+            ),
+        ]
 
-        return None
+        if at_beginning_of_line:
+            # Capture the trailing newline
+            result = cls._ExtractPotentialWhitespaceToken(results[-1].IterAfter)
+            assert result
+
+            results.append(result)
+
+            # Consume the dedent, but don't make it part of the result (as we absorbed the
+            # corresponding indent)
+            if results[0].Whitespace is not None:
+                result = cls._ExtractPotentialWhitespaceToken(results[-1].IterAfter)
+                assert result
+
+                return results, result.IterAfter
+
+        return results, results[-1].IterAfter

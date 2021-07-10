@@ -2138,6 +2138,62 @@ class TestComments(object):
 
         assert iterator.AtEnd()
 
+    # ----------------------------------------------------------------------
+    def test_StandAlone(self, parse_mock):
+        result = self._multiline_statement.Parse(
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    # one
+                    one     # After one
+
+                    # TWO
+
+                    TWO     # After TWO
+
+                            # 3
+                    3       # After 3
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        assert str(result) == textwrap.dedent(
+            """\
+            True
+            85
+                Comment <<Regex: <_sre.SRE_Match object; span=(0, 5), match='# one'>>> ws:None !Ignored! [1, 1 -> 1, 6]
+                Newline+ <<5, 6>> ws:None !Ignored! [1, 6 -> 2, 1]
+                Repeat: (Repeat, 1, None)
+                    Repeat
+                        0) Word Line
+                               Word Token
+                                   Word Token <<Regex: <_sre.SRE_Match object; span=(6, 9), match='one'>>> ws:None [2, 1 -> 2, 4]
+                               Comment <<Regex: <_sre.SRE_Match object; span=(14, 25), match='# After one'>>> ws:(9, 14) !Ignored! [2, 9 -> 2, 20]
+                               Newline+
+                                   Newline+ <<25, 27>> ws:None [2, 20 -> 4, 1]
+                           Comment <<Regex: <_sre.SRE_Match object; span=(27, 32), match='# TWO'>>> ws:None !Ignored! [4, 1 -> 4, 6]
+                           Newline+ <<32, 34>> ws:None !Ignored! [4, 6 -> 6, 1]
+                           Upper Line
+                               Upper Token
+                                   Upper Token <<Regex: <_sre.SRE_Match object; span=(34, 37), match='TWO'>>> ws:None [6, 1 -> 6, 4]
+                               Comment <<Regex: <_sre.SRE_Match object; span=(42, 53), match='# After TWO'>>> ws:(37, 42) !Ignored! [6, 9 -> 6, 20]
+                               Newline+
+                                   Newline+ <<53, 55>> ws:None [6, 20 -> 8, 1]
+                           Comment <<Regex: <_sre.SRE_Match object; span=(63, 66), match='# 3'>>> ws:(55, 63) !Ignored! [8, 9 -> 8, 12]
+                           Newline+ <<66, 67>> ws:None !Ignored! [8, 12 -> 9, 1]
+                           Number Line
+                               Number Token
+                                   Number Token <<Regex: <_sre.SRE_Match object; span=(67, 68), match='3'>>> ws:None [9, 1 -> 9, 2]
+                               Comment <<Regex: <_sre.SRE_Match object; span=(75, 84), match='# After 3'>>> ws:(68, 75) !Ignored! [9, 9 -> 9, 18]
+                               Newline+
+                                   Newline+ <<84, 85>> ws:None [9, 18 -> 10, 1]
+            """,
+        )
+
+
+
 # ----------------------------------------------------------------------
 class TestRecursiveStatements(object):
     _statement                              = StatementEx(
