@@ -231,7 +231,7 @@ class _Observer(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ExtractDynamicStatementInfo(
+    def ExtractDynamicStatements(
         self,
         fully_qualified_name: str,
         node: RootNode,
@@ -241,7 +241,7 @@ class _Observer(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnIndent(
+    async def OnIndentAsync(
         self,
         fully_qualified_name: str,
         statement: StatementEx,
@@ -254,7 +254,7 @@ class _Observer(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnDedent(
+    async def OnDedentAsync(
         self,
         fully_qualified_name: str,
         statement: StatementEx,
@@ -267,7 +267,7 @@ class _Observer(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnStatementComplete(
+    async def OnStatementCompleteAsync(
         self,
         fully_qualified_name: str,
         node: Node,

@@ -34,7 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ....Parse import Parse, Prune, Validate
-    from ....ParserImpl.StatementsParser import SyntaxInvalidError
+    from ....ParserImpl.TranslationUnitParser import SyntaxInvalidError
+
 
 # ----------------------------------------------------------------------
 class PatchAndExecuteFlag(Flag):
@@ -45,6 +46,7 @@ class PatchAndExecuteFlag(Flag):
     Parse                                   = _parse_flag
     Prune                                   = _parse_flag | _prune_flag
     Validate                                = _parse_flag | _prune_flag | _validate_flag
+
 
 def PatchAndExecute(
     simulated_file_content: Dict[

@@ -51,7 +51,7 @@ class OrStatement(Statement):
         name: str=None,
         unique_id: Optional[List[Any]]=None,
     ):
-        name = name or "Or [{}]".format(", ".join([item.Name for item in statements]))
+        name = name or "Or: [{}]".format(", ".join([item.Name for item in statements]))
 
         super(OrStatement, self).__init__(
             name,

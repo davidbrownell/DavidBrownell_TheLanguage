@@ -836,7 +836,7 @@ class TestDynamicStatements(object):
             True
             20
                 DynamicStatements.Statements
-                    Or [Word Statement, Number Statement]
+                    Or: [Word Statement, Number Statement]
                         Word Statement
                             Word Token
                                 Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
@@ -845,14 +845,14 @@ class TestDynamicStatements(object):
                             Newline+
                                 Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
                 DynamicStatements.Statements
-                    Or [Word Statement, Number Statement]
+                    Or: [Word Statement, Number Statement]
                         Number Statement
                             Number Token
                                 Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                             Newline+
                                 Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
                 DynamicStatements.Expressions
-                    Or [Number Statement]
+                    Or: [Number Statement]
                         Number Statement
                             Number Token
                                 Number Token <<Regex: <_sre.SRE_Match object; span=(16, 19), match='456'>>> ws:None [3, 1 -> 3, 4]
@@ -866,61 +866,61 @@ class TestDynamicStatements(object):
             0, StartStatement, ['Statement']
             1, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]']
             2, GetDynamicStatements, ['Statement', 'Ex: DynamicStatements.Statements [0]']
-            3, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]']
-            4, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]']
-            5, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
-            6, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
-            7, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
-            8, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [1]']
-            9, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [1]']
-            10, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [1]']
-            11, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Newline+ [2]']
-            12, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Newline+ [2]']
-            13, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Newline+ [2]']
-            14, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]']
-            15, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]']
-            16, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]']
-            17, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
-            18, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
-            19, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]']
-            20, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]']
-            21, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or [Word Statement, Number Statement]']
+            3, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]']
+            4, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]']
+            5, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
+            6, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
+            7, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
+            8, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [1]']
+            9, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [1]']
+            10, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [1]']
+            11, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Newline+ [2]']
+            12, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Newline+ [2]']
+            13, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Newline+ [2]']
+            14, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]']
+            15, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]']
+            16, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]']
+            17, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
+            18, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
+            19, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]']
+            20, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]']
+            21, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]', 'Or: [Word Statement, Number Statement]']
             22, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [0]']
             23, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [0]']
             24, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]']
             25, GetDynamicStatements, ['Statement', 'Ex: DynamicStatements.Statements [1]']
-            26, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]']
-            27, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]']
-            28, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
-            29, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
-            30, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Word Statement [0]']
-            31, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]']
-            32, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
-            33, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
-            34, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
-            35, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Newline+ [1]']
-            36, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Newline+ [1]']
-            37, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Newline+ [1]']
-            38, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]']
-            39, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]', 'Or: Number Statement [1]']
-            40, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]']
-            41, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or [Word Statement, Number Statement]']
+            26, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]']
+            27, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]']
+            28, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
+            29, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
+            30, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Word Statement [0]']
+            31, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]']
+            32, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
+            33, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
+            34, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
+            35, StartStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Newline+ [1]']
+            36, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Newline+ [1]']
+            37, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]', 'Ex: Newline+ [1]']
+            38, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]']
+            39, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]', 'Or: Number Statement [1]']
+            40, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]']
+            41, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]', 'Or: [Word Statement, Number Statement]']
             42, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Statements [1]']
             43, EndStatement, ['Statement', 'Ex: DynamicStatements.Statements [1]']
             44, StartStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]']
             45, GetDynamicStatements, ['Statement', 'Ex: DynamicStatements.Expressions [2]']
-            46, StartStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]']
-            47, StartStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]', 'Or: Number Statement [0]']
-            48, StartStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]', 'Or: Number Statement [0]', 'Ex: Number Token [0]']
-            49, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]', 'Or: Number Statement [0]', 'Ex: Number Token [0]']
-            50, EndStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]', 'Or: Number Statement [0]', 'Ex: Number Token [0]']
-            51, StartStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]', 'Or: Number Statement [0]', 'Ex: Newline+ [1]']
-            52, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]', 'Or: Number Statement [0]', 'Ex: Newline+ [1]']
-            53, EndStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]', 'Or: Number Statement [0]', 'Ex: Newline+ [1]']
-            54, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]', 'Or: Number Statement [0]']
-            55, EndStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]', 'Or: Number Statement [0]']
-            56, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]']
-            57, EndStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or [Number Statement]']
+            46, StartStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]']
+            47, StartStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]', 'Or: Number Statement [0]']
+            48, StartStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]', 'Or: Number Statement [0]', 'Ex: Number Token [0]']
+            49, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]', 'Or: Number Statement [0]', 'Ex: Number Token [0]']
+            50, EndStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]', 'Or: Number Statement [0]', 'Ex: Number Token [0]']
+            51, StartStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]', 'Or: Number Statement [0]', 'Ex: Newline+ [1]']
+            52, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]', 'Or: Number Statement [0]', 'Ex: Newline+ [1]']
+            53, EndStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]', 'Or: Number Statement [0]', 'Ex: Newline+ [1]']
+            54, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]', 'Or: Number Statement [0]']
+            55, EndStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]', 'Or: Number Statement [0]']
+            56, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]']
+            57, EndStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]', 'Or: [Number Statement]']
             58, OnInternalStatementAsync, ['Statement', 'Ex: DynamicStatements.Expressions [2]']
             59, EndStatement, ['Statement', 'Ex: DynamicStatements.Expressions [2]']
             60, OnInternalStatementAsync, ['Statement']
@@ -932,17 +932,17 @@ class TestDynamicStatements(object):
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 9, use_statement_name=True) == ("Word Token", result.Data.DataItems[0].Data.Data.Data.DataItems[1].Data, 6, 11)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 12, use_statement_name=True) == ("Newline+", result.Data.DataItems[0].Data.Data.Data.DataItems[2].Data, 11, 12)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 14) == (self._word_statement, result.Data.DataItems[0].Data.Data.Data, 0, 12)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 20, use_statement_name=True) == ("Or [Word Statement, Number Statement]", result.Data.DataItems[0].Data.Data, 0, 12)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 20, use_statement_name=True) == ("Or: [Word Statement, Number Statement]", result.Data.DataItems[0].Data.Data, 0, 12)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 22, use_statement_name=True) == ("DynamicStatements.Statements", result.Data.DataItems[0].Data, 0, 12)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 33, use_statement_name=True) == ("Number Token", result.Data.DataItems[1].Data.Data.Data.DataItems[0].Data, 12, 15)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 36, use_statement_name=True) == ("Newline+", result.Data.DataItems[1].Data.Data.Data.DataItems[1].Data, 15, 16)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 38) == (self._number_statement, result.Data.DataItems[1].Data.Data.Data, 12, 16)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 40, use_statement_name=True) == ("Or [Word Statement, Number Statement]", result.Data.DataItems[1].Data.Data, 12, 16)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 40, use_statement_name=True) == ("Or: [Word Statement, Number Statement]", result.Data.DataItems[1].Data.Data, 12, 16)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 42, use_statement_name=True) == ("DynamicStatements.Statements", result.Data.DataItems[1].Data, 12, 16)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 49, use_statement_name=True) == ("Number Token", result.Data.DataItems[2].Data.Data.Data.DataItems[0].Data, 16, 19)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 52, use_statement_name=True) == ("Newline+", result.Data.DataItems[2].Data.Data.Data.DataItems[1].Data, 19, 20)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 54) == (self._number_statement, result.Data.DataItems[2].Data.Data.Data, 16, 20)
-        assert InternalStatementMethodCallToTuple(modified_parse_mock, 56, use_statement_name=True) == ("Or [Number Statement]", result.Data.DataItems[2].Data.Data, 16, 20)
+        assert InternalStatementMethodCallToTuple(modified_parse_mock, 56, use_statement_name=True) == ("Or: [Number Statement]", result.Data.DataItems[2].Data.Data, 16, 20)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 58, use_statement_name=True) == ("DynamicStatements.Expressions", result.Data.DataItems[2].Data, 16, 20)
         assert InternalStatementMethodCallToTuple(modified_parse_mock, 60) == (self._statement, result.Data, 0, 20)
 
@@ -966,7 +966,7 @@ class TestDynamicStatements(object):
             False
             16
                 DynamicStatements.Statements
-                    Or [Word Statement, Number Statement]
+                    Or: [Word Statement, Number Statement]
                         Word Statement
                             Word Token
                                 Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
@@ -975,14 +975,14 @@ class TestDynamicStatements(object):
                             Newline+
                                 Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
                 DynamicStatements.Statements
-                    Or [Word Statement, Number Statement]
+                    Or: [Word Statement, Number Statement]
                         Number Statement
                             Number Token
                                 Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                             Newline+
                                 Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
                 DynamicStatements.Expressions
-                    Or [Number Statement]
+                    Or: [Number Statement]
                         Number Statement
                             Number Token
                                 None
@@ -1024,7 +1024,7 @@ class TestOrStatements(object):
             """\
             True
             5
-                Or [Word Statement, Number Statement, Upper Statement]
+                Or: [Word Statement, Number Statement, Upper Statement]
                     Word Statement
                         Word Token
                             Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
@@ -1043,7 +1043,7 @@ class TestOrStatements(object):
             """\
             True
             5
-                Or [Word Statement, Number Statement, Upper Statement]
+                Or: [Word Statement, Number Statement, Upper Statement]
                     Number Statement
                         Number Token
                             Number Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
@@ -1062,7 +1062,7 @@ class TestOrStatements(object):
             """\
             True
             5
-                Or [Word Statement, Number Statement, Upper Statement]
+                Or: [Word Statement, Number Statement, Upper Statement]
                     Upper Statement
                         Upper Token
                             Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='WORD'>>> ws:None [1, 1 -> 1, 5]
@@ -1085,7 +1085,7 @@ class TestOrStatements(object):
             """\
             False
             4
-                Or [Word Statement, Number Statement, Upper Statement]
+                Or: [Word Statement, Number Statement, Upper Statement]
                     Word Statement
                         Word Token
                             Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='this'>>> ws:None [1, 1 -> 1, 5]
@@ -1103,23 +1103,23 @@ class TestOrStatements(object):
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
             0, StartStatement, ['Statement']
-            1, StartStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]']
-            2, StartStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]']
-            3, StartStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
-            4, OnInternalStatementAsync, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
-            5, EndStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
-            6, StartStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Newline+ [1]']
-            7, EndStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Newline+ [1]']
-            8, EndStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]']
-            9, StartStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Number Statement [1]']
-            10, StartStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
-            11, EndStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
-            12, EndStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Number Statement [1]']
-            13, StartStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Upper Statement [2]']
-            14, StartStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Upper Statement [2]', 'Ex: Upper Token [0]']
-            15, EndStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Upper Statement [2]', 'Ex: Upper Token [0]']
-            16, EndStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Upper Statement [2]']
-            17, EndStatement, ['Statement', 'Ex: Or [Word Statement, Number Statement, Upper Statement] [0]']
+            1, StartStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]']
+            2, StartStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]']
+            3, StartStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
+            4, OnInternalStatementAsync, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
+            5, EndStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Word Token [0]']
+            6, StartStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Newline+ [1]']
+            7, EndStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]', 'Ex: Newline+ [1]']
+            8, EndStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Word Statement [0]']
+            9, StartStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Number Statement [1]']
+            10, StartStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
+            11, EndStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Number Statement [1]', 'Ex: Number Token [0]']
+            12, EndStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Number Statement [1]']
+            13, StartStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Upper Statement [2]']
+            14, StartStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Upper Statement [2]', 'Ex: Upper Token [0]']
+            15, EndStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Upper Statement [2]', 'Ex: Upper Token [0]']
+            16, EndStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]', 'Or: Upper Statement [2]']
+            17, EndStatement, ['Statement', 'Ex: Or: [Word Statement, Number Statement, Upper Statement] [0]']
             18, EndStatement, ['Statement']
             """,
         )
@@ -1775,7 +1775,7 @@ class TestNamedStatements(object):
             True
             20
                 __Dynamic__
-                    Or [Word Line]
+                    Or: [Word Line]
                         Word Line
                             Word Token
                                 Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
@@ -1820,7 +1820,7 @@ class TestNamedStatements(object):
             False
             16
                 __Dynamic__
-                    Or [Word Line]
+                    Or: [Word Line]
                         Word Line
                             Word Token
                                 Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
@@ -2217,7 +2217,7 @@ class TestRecursiveStatements(object):
             9
                 lpar
                     lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 1 -> 1, 2]
-                Or [Word Token, Recursive Statement]
+                Or: [Word Token, Recursive Statement]
                     Word Token
                         Word Token <<Regex: <_sre.SRE_Match object; span=(2, 7), match='hello'>>> ws:(1, 2) [1, 3 -> 1, 8]
                 rpar
@@ -2235,11 +2235,11 @@ class TestRecursiveStatements(object):
             9
                 lpar
                     lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 1 -> 1, 2]
-                Or [Word Token, Recursive Statement]
+                Or: [Word Token, Recursive Statement]
                     Recursive Statement
                         lpar
                             lpar <<Regex: <_sre.SRE_Match object; span=(1, 2), match='('>>> ws:None [1, 2 -> 1, 3]
-                        Or [Word Token, Recursive Statement]
+                        Or: [Word Token, Recursive Statement]
                             Word Token
                                 Word Token <<Regex: <_sre.SRE_Match object; span=(2, 7), match='hello'>>> ws:None [1, 3 -> 1, 8]
                         rpar
@@ -2259,15 +2259,15 @@ class TestRecursiveStatements(object):
             14
                 lpar
                     lpar <<Regex: <_sre.SRE_Match object; span=(0, 1), match='('>>> ws:None [1, 1 -> 1, 2]
-                Or [Word Token, Recursive Statement]
+                Or: [Word Token, Recursive Statement]
                     Recursive Statement
                         lpar
                             lpar <<Regex: <_sre.SRE_Match object; span=(2, 3), match='('>>> ws:(1, 2) [1, 3 -> 1, 4]
-                        Or [Word Token, Recursive Statement]
+                        Or: [Word Token, Recursive Statement]
                             Recursive Statement
                                 lpar
                                     lpar <<Regex: <_sre.SRE_Match object; span=(4, 5), match='('>>> ws:(3, 4) [1, 5 -> 1, 6]
-                                Or [Word Token, Recursive Statement]
+                                Or: [Word Token, Recursive Statement]
                                     Word Token
                                         Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='hello'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 rpar

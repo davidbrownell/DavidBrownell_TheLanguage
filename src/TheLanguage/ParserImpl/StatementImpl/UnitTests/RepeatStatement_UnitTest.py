@@ -77,7 +77,7 @@ class TestStandard(object):
             """\
             True
             4
-                Or [Word, Newline+]
+                Or: [Word, Newline+]
                     0) Word
                            Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
                     1) Newline+
@@ -87,25 +87,25 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)']
-            1, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]']
-            2, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Word [0]']
-            3, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Word [0]']
-            4, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Word [0]']
-            5, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Newline+ [1]']
-            6, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]', 'Or: Newline+ [1]']
-            7, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]']
-            8, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [0]']
-            9, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]']
-            10, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Word [0]']
-            11, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Word [0]']
-            12, StartStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Newline+ [1]']
-            13, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Newline+ [1]']
-            14, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]', 'Or: Newline+ [1]']
-            15, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]']
-            16, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)', 'Rpt: Or [Word, Newline+] [1]']
-            17, OnInternalStatementAsync, ['Repeat: (Or [Word, Newline+], 2, 4)']
-            18, EndStatement, ['Repeat: (Or [Word, Newline+], 2, 4)']
+            0, StartStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)']
+            1, StartStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [0]']
+            2, StartStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [0]', 'Or: Word [0]']
+            3, OnInternalStatementAsync, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [0]', 'Or: Word [0]']
+            4, EndStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [0]', 'Or: Word [0]']
+            5, StartStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [0]', 'Or: Newline+ [1]']
+            6, EndStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [0]', 'Or: Newline+ [1]']
+            7, OnInternalStatementAsync, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [0]']
+            8, EndStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [0]']
+            9, StartStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [1]']
+            10, StartStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [1]', 'Or: Word [0]']
+            11, EndStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [1]', 'Or: Word [0]']
+            12, StartStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [1]', 'Or: Newline+ [1]']
+            13, OnInternalStatementAsync, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [1]', 'Or: Newline+ [1]']
+            14, EndStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [1]', 'Or: Newline+ [1]']
+            15, OnInternalStatementAsync, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [1]']
+            16, EndStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)', 'Rpt: Or: [Word, Newline+] [1]']
+            17, OnInternalStatementAsync, ['Repeat: (Or: [Word, Newline+], 2, 4)']
+            18, EndStatement, ['Repeat: (Or: [Word, Newline+], 2, 4)']
             """,
         )
 
@@ -138,7 +138,7 @@ class TestStandard(object):
             """\
             True
             8
-                Or [Word, Newline+]
+                Or: [Word, Newline+]
                     0) Word
                            Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
                     1) Newline+
@@ -178,7 +178,7 @@ class TestStandard(object):
             """\
             True
             8
-                Or [Word, Newline+]
+                Or: [Word, Newline+]
                     0) Word
                            Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
                     1) Newline+
@@ -217,7 +217,7 @@ class TestStandard(object):
             """\
             False
             0
-                Or [Word, Newline+]
+                Or: [Word, Newline+]
                     0) Word
                            None
                        Newline+
@@ -249,7 +249,7 @@ class TestStandard(object):
             """\
             False
             3
-                Or [Word, Newline+]
+                Or: [Word, Newline+]
                     0) Word
                            Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='abc'>>> ws:None [1, 1 -> 1, 4]
                     1) Word
@@ -284,7 +284,7 @@ class TestStandard(object):
             """\
             True
             8
-                Or [Word, Newline+]
+                Or: [Word, Newline+]
                     0) Word
                            Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
                     1) Newline+
@@ -315,7 +315,7 @@ class TestStandard(object):
             """\
             True
             8
-                Or [Word, Newline+]
+                Or: [Word, Newline+]
                     0) Word
                            Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
                     1) Newline+
@@ -335,7 +335,7 @@ class TestStandard(object):
             """\
             False
             4
-                Or [Word, Newline+]
+                Or: [Word, Newline+]
                     0) Word
                            Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
                     1) Newline+

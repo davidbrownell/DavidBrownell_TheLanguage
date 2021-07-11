@@ -265,7 +265,7 @@ class TestStandard(object):
             """\
             True
             4
-                Or [lower, number]
+                Or: [lower, number]
                     lower
                         lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
@@ -289,7 +289,7 @@ class TestStandard(object):
             """\
             True
             4
-                Or [lower, number]
+                Or: [lower, number]
                     lower
                         lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
@@ -297,19 +297,19 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, StartStatement, ['Or [upper, Or [lower, number]]']
-            1, StartStatement, ['Or [upper, Or [lower, number]]', 'Or: upper [0]']
-            2, EndStatement, ['Or [upper, Or [lower, number]]', 'Or: upper [0]']
-            3, StartStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]']
-            4, StartStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: lower [0]']
-            5, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: lower [0]']
-            6, EndStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: lower [0]']
-            7, StartStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: number [1]']
-            8, EndStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]', 'Or: number [1]']
-            9, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]']
-            10, EndStatement, ['Or [upper, Or [lower, number]]', 'Or: Or [lower, number] [1]']
-            11, OnInternalStatementAsync, ['Or [upper, Or [lower, number]]']
-            12, EndStatement, ['Or [upper, Or [lower, number]]']
+            0, StartStatement, ['Or: [upper, Or: [lower, number]]']
+            1, StartStatement, ['Or: [upper, Or: [lower, number]]', 'Or: upper [0]']
+            2, EndStatement, ['Or: [upper, Or: [lower, number]]', 'Or: upper [0]']
+            3, StartStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]']
+            4, StartStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: lower [0]']
+            5, OnInternalStatementAsync, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: lower [0]']
+            6, EndStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: lower [0]']
+            7, StartStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: number [1]']
+            8, EndStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: number [1]']
+            9, OnInternalStatementAsync, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]']
+            10, EndStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]']
+            11, OnInternalStatementAsync, ['Or: [upper, Or: [lower, number]]']
+            12, EndStatement, ['Or: [upper, Or: [lower, number]]']
             """,
         )
 

@@ -55,7 +55,7 @@ class TestStandard(object):
             """\
             True
             4
-                Or [lower]
+                Or: [lower]
                     lower
                         lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
@@ -76,7 +76,7 @@ class TestStandard(object):
             """\
             False
             0
-                Or [lower]
+                Or: [lower]
                     lower
                         None
             """,
@@ -93,7 +93,7 @@ class TestStandard(object):
             """\
             True
             4
-                Or [lower, number]
+                Or: [lower, number]
                     number
                         number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
             """,
@@ -114,7 +114,7 @@ class TestStandard(object):
             """\
             True
             4
-                Or [lower, number]
+                Or: [lower, number]
                     lower
                         lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
@@ -140,7 +140,7 @@ class TestStandard(object):
             """\
             True
             4
-                Or [lower, number]
+                Or: [lower, number]
                     number
                         number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
             """,
@@ -155,14 +155,14 @@ class TestStandard(object):
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
             0, StartStatement, ['Dynamic Statements']
-            1, StartStatement, ['Dynamic Statements', 'Or [lower, number]']
-            2, StartStatement, ['Dynamic Statements', 'Or [lower, number]', 'Or: lower [0]']
-            3, EndStatement, ['Dynamic Statements', 'Or [lower, number]', 'Or: lower [0]']
-            4, StartStatement, ['Dynamic Statements', 'Or [lower, number]', 'Or: number [1]']
-            5, OnInternalStatementAsync, ['Dynamic Statements', 'Or [lower, number]', 'Or: number [1]']
-            6, EndStatement, ['Dynamic Statements', 'Or [lower, number]', 'Or: number [1]']
-            7, OnInternalStatementAsync, ['Dynamic Statements', 'Or [lower, number]']
-            8, EndStatement, ['Dynamic Statements', 'Or [lower, number]']
+            1, StartStatement, ['Dynamic Statements', 'Or: [lower, number]']
+            2, StartStatement, ['Dynamic Statements', 'Or: [lower, number]', 'Or: lower [0]']
+            3, EndStatement, ['Dynamic Statements', 'Or: [lower, number]', 'Or: lower [0]']
+            4, StartStatement, ['Dynamic Statements', 'Or: [lower, number]', 'Or: number [1]']
+            5, OnInternalStatementAsync, ['Dynamic Statements', 'Or: [lower, number]', 'Or: number [1]']
+            6, EndStatement, ['Dynamic Statements', 'Or: [lower, number]', 'Or: number [1]']
+            7, OnInternalStatementAsync, ['Dynamic Statements', 'Or: [lower, number]']
+            8, EndStatement, ['Dynamic Statements', 'Or: [lower, number]']
             9, OnInternalStatementAsync, ['Dynamic Statements']
             10, EndStatement, ['Dynamic Statements']
             """,
@@ -175,7 +175,7 @@ class TestStandard(object):
             parse_mock,
             7,
             use_statement_name=True,
-        ) == ("Or [lower, number]", result.Data.Data, 0, 4)
+        ) == ("Or: [lower, number]", result.Data.Data, 0, 4)
 
         assert InternalStatementMethodCallToTuple(parse_mock, 9) == (statement, result.Data, 0, 4)
 
@@ -188,7 +188,7 @@ class TestStandard(object):
             """\
             False
             0
-                Or [lower]
+                Or: [lower]
                     lower
                         None
             """,
@@ -197,10 +197,10 @@ class TestStandard(object):
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
             0, StartStatement, ['Dynamic Statements']
-            1, StartStatement, ['Dynamic Statements', 'Or [lower]']
-            2, StartStatement, ['Dynamic Statements', 'Or [lower]', 'Or: lower [0]']
-            3, EndStatement, ['Dynamic Statements', 'Or [lower]', 'Or: lower [0]']
-            4, EndStatement, ['Dynamic Statements', 'Or [lower]']
+            1, StartStatement, ['Dynamic Statements', 'Or: [lower]']
+            2, StartStatement, ['Dynamic Statements', 'Or: [lower]', 'Or: lower [0]']
+            3, EndStatement, ['Dynamic Statements', 'Or: [lower]', 'Or: lower [0]']
+            4, EndStatement, ['Dynamic Statements', 'Or: [lower]']
             5, EndStatement, ['Dynamic Statements']
             """,
         )
