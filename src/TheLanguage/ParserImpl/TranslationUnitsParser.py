@@ -44,6 +44,7 @@ with InitRelativeImports():
     from .NormalizedIterator import NormalizedIterator
 
     from .StatementEx import (
+        DynamicStatements,                  # This is here as a convenience for importing modules; do not remove
         Statement,
         StatementEx,
         TokenClass as Token,

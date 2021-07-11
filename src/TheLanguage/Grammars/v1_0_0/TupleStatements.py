@@ -38,7 +38,7 @@ with InitRelativeImports():
         DynamicStatements,
         GrammarStatement,
         Node,
-        Statement,
+        StatementEx,
     )
 
 
@@ -56,19 +56,19 @@ class _TupleBase(GrammarStatement):
         desc: str,
         grammar_statement_type: GrammarStatement.Type,
         content: Union[DynamicStatements, CommonTokens.RegexToken],
-        *statement_items_suffix: Statement.ItemType,
+        *statement_items_suffix: StatementEx.ItemType,
     ):
         statement_items = [
             [
                 # Multiple elements
                 #   '(' <expr> (',' <expr>)+ ','? ')'
-                Statement(
+                StatementEx(
                     "Multiple",
                     CommonTokens.LParen,
                     CommonTokens.PushIgnoreWhitespaceControl,
                     content,
                     (
-                        Statement(
+                        StatementEx(
                             "Comma and {}".format(desc),
                             CommonTokens.Comma,
                             content,
@@ -86,7 +86,7 @@ class _TupleBase(GrammarStatement):
                 #
                 #   Note that for single element tuples, the comma is required
                 #   to differentiate it from a grouping construct.
-                Statement(
+                StatementEx(
                     "Single",
                     CommonTokens.LParen,
                     CommonTokens.PushIgnoreWhitespaceControl,
@@ -103,7 +103,7 @@ class _TupleBase(GrammarStatement):
 
         super(_TupleBase, self).__init__(
             grammar_statement_type,
-            Statement("Tuple {}".format(desc), *statement_items),
+            StatementEx("Tuple {}".format(desc), *statement_items),
         )
 
 

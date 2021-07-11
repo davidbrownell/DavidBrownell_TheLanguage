@@ -38,12 +38,12 @@ with InitRelativeImports():
     from ..GrammarStatement import (
         ImportGrammarStatement,
         Leaf,
-        MultifileParserObserver,
         Node,
-        Statement,
+        StatementEx,
+        TranslationUnitsParserObserver,
     )
 
-    from ...ParserImpl.MultifileParser import UnknownSourceError
+    from ...ParserImpl.TranslationUnitsParser import UnknownSourceError
 
 
 # ----------------------------------------------------------------------
@@ -73,7 +73,7 @@ class ImportStatement(ImportGrammarStatement):
 
         content_item_statement = [
             # <name> as <name>
-            Statement(
+            StatementEx(
                 "Renamed",
                 CommonTokens.Name,
                 CommonTokens.As,
@@ -85,11 +85,11 @@ class ImportStatement(ImportGrammarStatement):
         ]
 
         # <content_item_statement> (',' <content_item_statement>)* ','?
-        content_items_statement = Statement(
+        content_items_statement = StatementEx(
             "Items",
             content_item_statement,
             (
-                Statement(
+                StatementEx(
                     "Comma and Item",
                     CommonTokens.Comma,
                     content_item_statement,
@@ -102,14 +102,14 @@ class ImportStatement(ImportGrammarStatement):
 
         super(ImportStatement, self).__init__(
             # 'from' <name> 'import' ...
-            Statement(
+            StatementEx(
                 "Import",
                 CommonTokens.From,
                 CommonTokens.Name,
                 CommonTokens.Import,
                 [
                     # '(' <content_items_statement> ')'
-                    Statement(
+                    StatementEx(
                         "Grouped",
                         CommonTokens.LParen,
                         CommonTokens.PushIgnoreWhitespaceControl,
@@ -133,7 +133,7 @@ class ImportStatement(ImportGrammarStatement):
         source_roots: List[str],
         fully_qualified_name: str,
         node: Node,
-    ) -> MultifileParserObserver.ImportInfo:
+    ) -> TranslationUnitsParserObserver.ImportInfo:
 
         # We need to get the source and the items to import, however that information depends on
         # context. The content will fall into one of these scenarios:
@@ -238,14 +238,14 @@ class ImportStatement(ImportGrammarStatement):
             )
 
         if source_filename is None:
-            return MultifileParserObserver.ImportInfo(original_source, None)
+            return TranslationUnitsParserObserver.ImportInfo(original_source, None)
 
         # Cache these values for later
         node.source_filename = source_filename
         node.import_items = import_items
         node.import_items_lookup = import_items_lookup
 
-        return MultifileParserObserver.ImportInfo(original_source, source_filename)
+        return TranslationUnitsParserObserver.ImportInfo(original_source, source_filename)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

@@ -40,7 +40,7 @@ with InitRelativeImports():
         GrammarStatement,
         Leaf,
         Node,
-        Statement,
+        StatementEx,
         ValidationError,
     )
 
@@ -66,7 +66,7 @@ class _FuncInvocationBase(GrammarStatement):
     ):
         argument_statement = [
             # <name> = <rhs>
-            Statement(
+            StatementEx(
                 "Keyword",
                 CommonTokens.Name,
                 CommonTokens.Equal,
@@ -78,18 +78,18 @@ class _FuncInvocationBase(GrammarStatement):
 
         super(_FuncInvocationBase, self).__init__(
             grammar_statement_type,
-            Statement(
+            StatementEx(
                 "Function Invocation",
                 CommonTokens.Name,
                 CommonTokens.LParen,
                 CommonTokens.PushIgnoreWhitespaceControl,
 
                 (
-                    Statement(
+                    StatementEx(
                         "Arguments",
                         argument_statement,
                         (
-                            Statement(
+                            StatementEx(
                                 "Comma and Argument",
                                 CommonTokens.Comma,
                                 argument_statement,

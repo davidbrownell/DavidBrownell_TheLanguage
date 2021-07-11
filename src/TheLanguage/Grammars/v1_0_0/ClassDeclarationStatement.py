@@ -33,7 +33,7 @@ with InitRelativeImports():
 
     from .Impl import CustomStatements
 
-    from .CommentStatement import CommentStatement
+    # BugBug: Is this necessary?
     from .VerticalWhitespaceStatement import VerticalWhitespaceStatement
 
     from ..GrammarStatement import (
@@ -42,6 +42,7 @@ with InitRelativeImports():
         Leaf,
         Node,
         Statement,
+        StatementEx,
         ValidationError,
     )
 
@@ -65,12 +66,11 @@ class ClassDeclarationStatement(GrammarStatement):
             CustomStatements.DynamicContentStatement,
             # BugBug: Attributes
             # BugBug: Methods
-            CommentStatement().Statement,
             VerticalWhitespaceStatement().Statement,
         ] # BugBug
 
         suffix_statement = [
-            Statement(
+            StatementEx(
                 "Inheritance",
                 [
                     CommonTokens.Public,
@@ -79,23 +79,23 @@ class ClassDeclarationStatement(GrammarStatement):
                 ],
                 CommonTokens.Name,
             ),
-            Statement(
+            StatementEx(
                 "Implements",
                 CommonTokens.Implements,
                 CommonTokens.Name,
             ),
-            Statement(
+            StatementEx(
                 "Uses",
                 CommonTokens.Uses,
                 CommonTokens.Name,
             ),
         ]
 
-        suffix_statements = Statement(
+        suffix_statements = StatementEx(
             "Suffixes",
             suffix_statement,
             (
-                Statement(
+                StatementEx(
                     "Comma and Suffix",
                     CommonTokens.Comma,
                     suffix_statement,
@@ -108,7 +108,7 @@ class ClassDeclarationStatement(GrammarStatement):
 
         super(ClassDeclarationStatement, self).__init__(
             GrammarStatement.Type.Statement,
-            Statement(
+            StatementEx(
                 "Class Declaration",
                 (CommonTokens.Export, 0, 1),
                 CommonTokens.Class,
@@ -116,7 +116,7 @@ class ClassDeclarationStatement(GrammarStatement):
                 (
                     [
                         # '(' <suffix_statements> ')'
-                        Statement(
+                        StatementEx(
                             "Grouped",
                             CommonTokens.LParen,
                             CommonTokens.PushIgnoreWhitespaceControl,

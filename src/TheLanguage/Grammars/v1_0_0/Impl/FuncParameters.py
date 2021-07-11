@@ -41,7 +41,7 @@ with InitRelativeImports():
         DynamicStatements,
         Leaf,
         Node,
-        Statement,
+        StatementEx,
         ValidationError,
     )
 
@@ -144,12 +144,12 @@ class TraditionalPositionalDelimiterError(ValidationError):
 # |  Public Data
 # |
 # ----------------------------------------------------------------------
-_parameter_statement = Statement(
+_parameter_statement = StatementEx(
     "Parameter",
     CommonStatements.Type,
     [
         # <name> = <rhs>
-        Statement(
+        StatementEx(
             "With Default",
             CommonTokens.Name,
             CommonTokens.Equal,
@@ -186,13 +186,13 @@ ParameterItems                              = [
             #           <statements>
             #
             (
-                Statement(
+                StatementEx(
                     "New Style",
                     CommonTokens.AllNewStyleParameters,
                     CommonTokens.Colon,
                     _parameter_statement,
                     (
-                        Statement(
+                        StatementEx(
                             "Comma and Parameter",
                             CommonTokens.Comma,
                             _parameter_statement,
@@ -220,11 +220,11 @@ ParameterItems                              = [
             #       # No restriction on positional or keyword parameters
             #       <type> Func(<type> a, <type> b, <type> c, <type> d, <type> e=100, <type> f=200, <type> g=300):
             #           <statement>
-            Statement(
+            StatementEx(
                 "Traditional",
                 _traditional_parameter_statement,
                 (
-                    Statement(
+                    StatementEx(
                         "Comma and Parameter",
                         CommonTokens.Comma,
                         _traditional_parameter_statement,

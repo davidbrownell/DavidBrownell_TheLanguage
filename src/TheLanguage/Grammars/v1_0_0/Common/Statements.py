@@ -32,20 +32,20 @@ with InitRelativeImports():
     from ...GrammarStatement import (
         DynamicStatements,
         Node,
-        Statement,
+        StatementEx,
     )
 
 
 # ----------------------------------------------------------------------
 # <type_name> <var|ref|val|view|...>
-Type                                        = Statement(
+Type                                        = StatementEx(
     "Type",
     CommonTokens.Name,
     # TODO: Tempataes
 
     # The modifier is optional and will default to the first item in the list if not provided
     (
-        Statement.NamedItem(
+        StatementEx.NamedItem(
             "Modifier",
             [
                 # TODO: Not sure that all of these should be here

@@ -39,7 +39,7 @@ with InitRelativeImports():
         DynamicStatements,
         GrammarStatement,
         Node,
-        Statement,
+        StatementEx,
         ValidationError,
     )
 
@@ -75,7 +75,7 @@ class VariableDeclarationStatement(GrammarStatement):
     def __init__(self):
         super(VariableDeclarationStatement, self).__init__(
             GrammarStatement.Type.Statement,
-            Statement(
+            StatementEx(
                 "Variable Declaration",
                 CommonTokens.Name,
                 CommonTokens.Equal,

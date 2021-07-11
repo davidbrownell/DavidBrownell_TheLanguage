@@ -54,7 +54,7 @@ with InitRelativeImports():
         DynamicStatements,
         GrammarStatement,
         Node,
-        Statement,
+        StatementEx,
         ValidationError,
     )
 
@@ -109,7 +109,7 @@ class FuncDeclarationStatement(GrammarStatement):
 
         super(FuncDeclarationStatement, self).__init__(
             GrammarStatement.Type.Statement,
-            Statement(
+            StatementEx(
                 "Function Declaration",
                 *statement_items,
             ),

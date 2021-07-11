@@ -28,7 +28,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassDeclarationStatement import ClassDeclarationStatement
-    from .CommentStatement import CommentStatement
     from .FuncDeclarationStatement import FuncDeclarationStatement
     from .FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
     from .ImportStatement import ImportStatement
@@ -49,8 +48,9 @@ Statements                                  = [
     TupleVariableDeclarationStatement(),
     VariableDeclarationStatement(),
 
-    CommentStatement(),
     PassStatement(),
+
+    # BugBug: Is this necessary?
     VerticalWhitespaceStatement(),
 
     # Expressions

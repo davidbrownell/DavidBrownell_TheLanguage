@@ -368,6 +368,10 @@ class Statement(Interface.Interface):
         return self.ToString()
 
     # ----------------------------------------------------------------------
+    def __hash__(self):
+        return id(self)
+
+    # ----------------------------------------------------------------------
     def ToString(
         self,
         verbose=False,
