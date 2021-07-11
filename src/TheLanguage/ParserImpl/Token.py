@@ -18,7 +18,6 @@
 import os
 import re
 
-from collections import OrderedDict
 from typing import (
     Match as TypingMatch,
     Optional,

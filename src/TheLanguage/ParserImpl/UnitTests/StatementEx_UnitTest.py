@@ -489,7 +489,7 @@ class TestParseIndentAndDedent(object):
             5, OnInternalStatementAsync, ['Statement', 'Ex: Newline+ [1]']
             6, EndStatement, ['Statement', 'Ex: Newline+ [1]']
             7, StartStatement, ['Statement', 'Ex: Indent [2]']
-            8, OnIndentAsync, ['Statement', 'Ex: Indent [2]']
+            8, OnIndentAsync, Statement
             9, EndStatement, ['Statement', 'Ex: Indent [2]']
             10, StartStatement, ['Statement', 'Ex: Word Token [3]']
             11, OnInternalStatementAsync, ['Statement', 'Ex: Word Token [3]']
@@ -504,7 +504,7 @@ class TestParseIndentAndDedent(object):
             20, OnInternalStatementAsync, ['Statement', 'Ex: Newline+ [6]']
             21, EndStatement, ['Statement', 'Ex: Newline+ [6]']
             22, StartStatement, ['Statement', 'Ex: Dedent [7]']
-            23, OnDedentAsync, ['Statement', 'Ex: Dedent [7]']
+            23, OnDedentAsync, Statement
             24, EndStatement, ['Statement', 'Ex: Dedent [7]']
             25, OnInternalStatementAsync, ['Statement']
             26, EndStatement, ['Statement']

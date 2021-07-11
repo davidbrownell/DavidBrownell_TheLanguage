@@ -45,6 +45,7 @@ with InitRelativeImports():
 
     from .StatementEx import (
         Statement,
+        StatementEx,
         TokenClass as Token,
         TokenStatement,
     )
@@ -244,6 +245,8 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     async def OnIndentAsync(
         fully_qualified_name: str,
+        statement: StatementEx,
+        data_items: List[Statement.ParseResultData],
         data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
@@ -256,6 +259,8 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     async def OnDedentAsync(
         fully_qualified_name: str,
+        statement: Statement,
+        data_items: List[Statement.ParseResultData],
         data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
@@ -496,12 +501,16 @@ class _StatementsObserver(TranslationUnitObserver):
     @Interface.override
     async def OnIndentAsync(
         self,
+        statement: StatementEx,
+        data_items: List[Statement.ParseResultData],
         data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ):
         return await self._observer.OnIndentAsync(
             self._fully_qualified_name,
+            statement,
+            data_items,
             data,
             iter_before,
             iter_after,
@@ -511,12 +520,16 @@ class _StatementsObserver(TranslationUnitObserver):
     @Interface.override
     async def OnDedentAsync(
         self,
+        statement: Statement,
+        data_items: List[Statement.ParseResultData],
         data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ):
         return await self._observer.OnDedentAsync(
             self._fully_qualified_name,
+            statement,
+            data_items,
             data,
             iter_before,
             iter_after,
@@ -567,6 +580,8 @@ class _StatementsObserver(TranslationUnitObserver):
         return this_result
 
     # ----------------------------------------------------------------------
+    # TODO: Move node creation to TranslationUnitParser.py so that SyntaxInvalidError can
+    # be defined in terms of nodes.
     def CreateNode(
         self,
         statement: Statement,

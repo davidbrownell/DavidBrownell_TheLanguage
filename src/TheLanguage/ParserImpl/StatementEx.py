@@ -126,7 +126,7 @@ class StatementEx(Statement):
     )
 
     # ----------------------------------------------------------------------
-    class Observer(Statement.Observer):
+    class Observer(Interface.Interface):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
@@ -138,6 +138,65 @@ class StatementEx(Statement):
             List[Statement],
         ]:
             """Returns all currently available dynamic statements based on the current scope"""
+            raise Exception("Abstract method")  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
+        def StartStatement(
+            unique_id: List[Any],
+        ) -> None:
+            """Called before any event is generated for a particular unique_id"""
+            raise Exception("Abstract method")  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
+        def EndStatement(
+            unique_id: List[Any],
+            was_successful: bool,
+        ) -> None:
+            """Called when all events have been generated for a particular unique_id"""
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
+        async def OnIndentAsync(
+            statement: "StatementEx",
+            data_items: List[Statement.ParseResultData],
+            unique_id: List[Any],
+            data: Statement.TokenParseResultData,
+            iter_before: NormalizedIterator,
+            iter_after: NormalizedIterator,
+        ) -> None:
+            """Includes the statement in the callback"""
+            raise Exception("Abstract method")  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
+        async def OnDedentAsync(
+            statement: "StatementEx",
+            data_items: List[Statement.ParseResultData],
+            unique_id: List[Any],
+            data: Statement.TokenParseResultData,
+            iter_before: NormalizedIterator,
+            iter_after: NormalizedIterator,
+        ) -> None:
+            """Includes the statement in the callback"""
+            raise Exception("Abstract method")  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
+        async def OnInternalStatementAsync(
+            unique_id: List[Any],
+            statement: "Statement",
+            data: Optional["Statement.ParseResultData"],
+            iter_before: NormalizedIterator,
+            iter_after: NormalizedIterator,
+        ) -> bool:                          # True to continue, False to terminate
+            """Invoked when an internal statement is successfully matched"""
             raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -189,7 +248,7 @@ class StatementEx(Statement):
     async def ParseAsync(
         self,
         normalized_iter: Statement.NormalizedIterator,
-        observer: Statement.Observer,
+        observer: "StatementEx.Observer",
         ignore_whitespace=False,
         single_threaded=False,
     ) -> Union[
@@ -206,13 +265,21 @@ class StatementEx(Statement):
             ]
 
         success = True
+        data_items = []
 
-        observer.StartStatement(self.UniqueId)
-        with CallOnExit(lambda: observer.EndStatement(self.UniqueId, success)):
+        observer_wrapper = self._ObserverWrapper(
+            self,
+            observer,
+            data_items,
+        )
+
+        del observer
+
+        observer_wrapper.StartStatement(self.UniqueId)
+        with CallOnExit(lambda: observer_wrapper.EndStatement(self.UniqueId, success)):
             original_normalized_iter = normalized_iter.Clone()
 
             ignore_whitespace_ctr = 1 if ignore_whitespace else 0
-            data_items = []
 
             # ----------------------------------------------------------------------
             def ExtractWhitespaceOrComments() -> Optional[
@@ -262,7 +329,7 @@ class StatementEx(Statement):
                 # Process the statement
                 result = await statement.ParseAsync(
                     normalized_iter.Clone(),
-                    observer,
+                    observer_wrapper,
                     ignore_whitespace=ignore_whitespace_ctr != 0,
                     single_threaded=single_threaded,
                 )
@@ -282,7 +349,7 @@ class StatementEx(Statement):
 
             if (
                 success
-                and not await observer.OnInternalStatementAsync(
+                and not await observer_wrapper.OnInternalStatementAsync(
                     self.UniqueId,
                     self,
                     data,
@@ -293,6 +360,64 @@ class StatementEx(Statement):
                 return None
 
             return Statement.ParseResult(success, normalized_iter, data)
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Types
+    # |
+    # ----------------------------------------------------------------------
+    class _ObserverWrapper(Statement.Observer):
+        """Provides additional data about the current statement to some methods of Statement.Observer"""
+
+        # ----------------------------------------------------------------------
+        def __init__(
+            self,
+            statement: "StatementEx",
+            observer: "StatementEx.Observer",
+            data_items: List[Statement.ParseResultData],
+        ):
+            self._observer                  = observer
+            self._statement                 = statement
+            self._data_items                = data_items
+
+        # ----------------------------------------------------------------------
+        def GetDynamicStatements(self, *args, **kwargs):
+            return self._observer.GetDynamicStatements(*args, **kwargs)
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def StartStatement(self, *args, **kwargs):
+            return self._observer.StartStatement(*args, **kwargs)
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def EndStatement(self, *args, **kwargs):
+            return self._observer.EndStatement(*args, **kwargs)
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def OnIndentAsync(self, *args, **kwargs):
+            return await self._observer.OnIndentAsync(
+                self._statement,
+                self._data_items,
+                *args,
+                **kwargs,
+            )
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def OnDedentAsync(self, *args, **kwargs):
+            return await self._observer.OnDedentAsync(
+                self._statement,
+                self._data_items,
+                *args,
+                **kwargs,
+            )
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def OnInternalStatementAsync(self, *args, **kwargs):
+            return await self._observer.OnInternalStatementAsync(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     # |
@@ -347,8 +472,18 @@ class StatementEx(Statement):
             return TokenStatement(item)
 
         elif isinstance(item, DynamicStatements):
+            # ----------------------------------------------------------------------
+            def GetStatements(
+                unique_id: List[Any],
+                observer: Statement.Observer,
+            ):
+                assert isinstance(observer, cls._ObserverWrapper), observer
+                return observer.GetDynamicStatements(unique_id, item)
+
+            # ----------------------------------------------------------------------
+
             return DynamicStatement(
-                lambda unique_id, observer: observer.GetDynamicStatements(unique_id, item),
+                GetStatements,
                 name=name or str(item),
             )
 

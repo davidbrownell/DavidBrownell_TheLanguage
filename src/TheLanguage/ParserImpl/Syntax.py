@@ -18,7 +18,7 @@
 import os
 import re
 
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 from semantic_version import Version as SemVer
@@ -35,9 +35,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Error import Error
-    from .MultifileParser import Observer as MultifileParserObserver
-    from .Statement import DynamicStatements, Statement
-    from .StatementsParser import DynamicStatementInfo
+
+    from .StatementEx import (
+        DynamicStatements,
+        NormalizedIterator,
+        Statement,
+        StatementEx,
+    )
+
+    from .TranslationUnitParser import DynamicStatementInfo
+
+    from .TranslationUnitsParser import (
+        Node,
+        Observer as TranslationUnitsParserObserver,
+    )
 
     from .Token import (
         DedentToken,
@@ -68,7 +79,7 @@ _simple_semantic_version_regex              = re.compile(r"(?P<major>0|[1-9]\d*)
 # __with_syntax=1.0:
 #     ...
 #
-SetSyntaxStatement                          = Statement(
+SetSyntaxStatement                          = StatementEx(
     "Set Syntax",
     RegexToken("'__with_syntax'", re.compile(r"(?P<value>__with_syntax)")),
     RegexToken("'='", re.compile(r"(?P<value>=)")),
@@ -82,13 +93,13 @@ SetSyntaxStatement                          = Statement(
 
 
 # ----------------------------------------------------------------------
-class Observer(MultifileParserObserver):
+class Observer(TranslationUnitsParserObserver):
     """Processes syntax-related statements; all other statements are processed by the provided observer"""
 
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        observer: MultifileParserObserver,
+        observer: TranslationUnitsParserObserver,
         syntaxes: Dict[
             SemVer,                         # Syntax Name
             DynamicStatementInfo,           # Syntax Info
@@ -106,8 +117,8 @@ class Observer(MultifileParserObserver):
 
             updated_statements = None
 
-            if not any(statement for statement in statement_info.statements if getattr(statement, "Name", None) == SetSyntaxStatement.Name):
-                updated_statements = [SetSyntaxStatement] + statement_info.statements
+            if not any(statement for statement in statement_info.Statements if getattr(statement, "Name", None) == SetSyntaxStatement.Name):
+                updated_statements = [SetSyntaxStatement] + statement_info.Statements
 
             updated_syntaxes[semver] = statement_info.Clone(
                 updated_statements=updated_statements,
@@ -126,8 +137,8 @@ class Observer(MultifileParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ExtractDynamicStatementInfo(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.ExtractDynamicStatementInfo(*args, **kwargs)
+    def ExtractDynamicStatements(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+        return self._observer.ExtractDynamicStatements(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -136,17 +147,20 @@ class Observer(MultifileParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnIndent(
+    async def OnIndentAsync(
         self,
         fully_qualified_name: str,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        statement: StatementEx,
+        data_items: List[Statement.ParseResultData],
+        data: Statement.TokenParseResultData,
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
         if statement == SetSyntaxStatement:
-            assert len(results) >= 3, len(results)
-            assert results[2].Token.Name == "<semantic_version>"
+            assert len(data_items) >= 3, len(data_items)
+            assert data_items[2].Statement.Name == "<semantic_version>"
 
-            regex_match = results[2].Value.Match
+            regex_match = data_items[2].Data.Value.Match
             semver_string = "{}.{}.{}".format(
                 regex_match.group("major"),
                 regex_match.group("minor"),
@@ -156,21 +170,28 @@ class Observer(MultifileParserObserver):
             statement_info = self.Syntaxes.get(SemVer(semver_string), None)
             if statement_info is None:
                 raise SyntaxInvalidVersionError(
-                    results[2].IterBefore.Line,
-                    results[2].IterBefore.Column,
+                    data_items[2].Data.IterBefore.Line,
+                    data_items[2].Data.IterBefore.Column,
                     semver_string,
                 )
 
             return statement_info
 
-        return self._observer.OnIndent(fully_qualified_name, statement, results)
+        return self._observer.OnIndentAsync(
+            fully_qualified_name,
+            statement,
+            data_items,
+            data,
+            iter_before,
+            iter_after,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnDedent(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.OnDedent(*args, **kwargs)
+    async def OnDedentAsync(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+        return await self._observer.OnDedentAsync(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnStatementComplete(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.OnStatementComplete(*args, **kwargs)
+    async def OnStatementCompleteAsync(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+        return await self._observer.OnStatementCompleteAsync(*args, **kwargs)

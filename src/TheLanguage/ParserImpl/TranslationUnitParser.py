@@ -15,7 +15,6 @@
 # ----------------------------------------------------------------------
 """Functionality used to parse a single translation unit"""
 
-import asyncio
 import os
 import textwrap
 
@@ -97,6 +96,21 @@ class DynamicStatementInfo(object):
     AllowParentTraversal: bool              = True      # If False, prevent content from including values from higher-level scope
     Name: Optional[str]                     = None
 
+    # ----------------------------------------------------------------------
+    def Clone(
+        self,
+        updated_statements=None,
+        updated_expressions=None,
+        updated_allow_parent_traversal=None,
+        updated_name=None,
+    ):
+        return self.__class__(
+            updated_statements if updated_statements is not None else list(self.Statements),
+            updated_expressions if updated_expressions is not None else list(self.Expressions),
+            updated_allow_parent_traversal if updated_allow_parent_traversal is not None else self.AllowParentTraversal,
+            updated_name if updated_name is not None else self.Name,
+        )
+
 
 # ----------------------------------------------------------------------
 class Observer(Interface.Interface):
@@ -104,6 +118,8 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     async def OnIndentAsync(
+        statement: StatementEx,
+        data_items: List[Statement.ParseResultData],
         data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
@@ -114,6 +130,8 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     async def OnDedentAsync(
+        statement: Statement,
+        data_items: List[Statement.ParseResultData],
         data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
@@ -359,6 +377,8 @@ class _StatementObserver(StatementEx.Observer):
     @Interface.override
     async def OnIndentAsync(
         self,
+        statement: StatementEx,
+        data_items: List[Statement.ParseResultData],
         unique_id: List[Any],
         data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
@@ -367,6 +387,8 @@ class _StatementObserver(StatementEx.Observer):
         self._indent_level += 1
 
         this_result = await self._observer.OnIndentAsync(
+            statement,
+            data_items,
             data,
             iter_before,
             iter_after,
@@ -380,6 +402,8 @@ class _StatementObserver(StatementEx.Observer):
     @Interface.override
     async def OnDedentAsync(
         self,
+        statement: Statement,
+        data_items: List[Statement.ParseResultData],
         unique_id: List[Any],
         data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
@@ -402,6 +426,8 @@ class _StatementObserver(StatementEx.Observer):
         self._indent_level -= 1
 
         await self._observer.OnDedentAsync(
+            statement,
+            data_items,
             data,
             iter_before,
             iter_after,

@@ -22,6 +22,9 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from unittest.mock import Mock
 
+import pytest
+
+from asynctest import CoroutineMock
 from semantic_version import Version as SemVer
 
 import CommonEnvironment
@@ -34,10 +37,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..MultifileParser import Parse
-    from ..Statement import Statement
-    from ..StatementsParser import DynamicStatementInfo
     from ..Syntax import *
+    from ..TranslationUnitsParser import ParseAsync
 
 
 # ----------------------------------------------------------------------
@@ -47,9 +48,9 @@ class TestStandard(object):
     _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
     _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
 
-    _upper_statement                        = Statement("Upper Statement", _upper_token, NewlineToken())
-    _lower_statement                        = Statement("Lower Statement", _lower_token, NewlineToken())
-    _number_statement                       = Statement("Number Statement", _number_token, NewlineToken())
+    _upper_statement                        = StatementEx("Upper Statement", _upper_token, NewlineToken())
+    _lower_statement                        = StatementEx("Lower Statement", _lower_token, NewlineToken())
+    _number_statement                       = StatementEx("Number Statement", _number_token, NewlineToken())
 
     _syntaxes                               = {
         SemVer("1.0.0") : DynamicStatementInfo([_upper_statement, _lower_statement], []),
@@ -72,6 +73,10 @@ class TestStandard(object):
             mock.LoadContent = lambda fully_qualified_name: content_dict[fully_qualified_name]
             mock.Enqueue = lambda funcs: [executor.submit(func) for func in funcs]
 
+            mock.OnIndentAsync = CoroutineMock()
+            mock.OnDedentAsync = CoroutineMock()
+            mock.OnStatementCompleteAsync = CoroutineMock()
+
             yield Observer(mock, cls._syntaxes)
 
     # ----------------------------------------------------------------------
@@ -82,11 +87,12 @@ class TestStandard(object):
             assert len(observer.Syntaxes) == 2
 
             # The syntax statement should have been added to each
-            assert len(observer.Syntaxes[SemVer("1.0.0")].statements) == 3
-            assert len(observer.Syntaxes[SemVer("2.0.0")].statements) == 4
+            assert len(observer.Syntaxes[SemVer("1.0.0")].Statements) == 3
+            assert len(observer.Syntaxes[SemVer("2.0.0")].Statements) == 4
 
     # ----------------------------------------------------------------------
-    def test_Default(self):
+    @pytest.mark.asyncio
+    async def test_Default(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -98,7 +104,7 @@ class TestStandard(object):
                 ),
             },
         ) as observer:
-            result = Parse(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
+            result = await ParseAsync(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
 
             assert len(result) == 1
             assert "one" in result
@@ -123,7 +129,8 @@ class TestStandard(object):
             )
 
     # ----------------------------------------------------------------------
-    def test_V1_NoError(self):
+    @pytest.mark.asyncio
+    async def test_V1_NoError(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -144,7 +151,7 @@ class TestStandard(object):
                 ),
             },
         ) as observer:
-            result = Parse(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
+            result = await ParseAsync(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
 
             assert len(result) == 1
             assert "one" in result
@@ -208,7 +215,8 @@ class TestStandard(object):
             )
 
     # ----------------------------------------------------------------------
-    def test_V1_Error(self):
+    @pytest.mark.asyncio
+    async def test_V1_Error(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -225,7 +233,7 @@ class TestStandard(object):
                 ),
             },
         ) as observer:
-            result = Parse(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
+            result = await ParseAsync(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
 
             assert len(result) == 1
             result = result[0]
@@ -235,59 +243,73 @@ class TestStandard(object):
             assert result.Line == 8
             assert result.Column == 1
 
-            assert len(result.PotentialStatements) == 1
-            key = tuple(observer.Syntaxes[observer.DefaultVersion].statements)
-            assert key in result.PotentialStatements
-
-            potentials = result.PotentialStatements[key]
-            assert len(potentials) == 4
-
-            assert str(potentials[0]) == textwrap.dedent(
+            assert result.ToDebugString() == textwrap.dedent(
                 """\
-                Set Syntax
-                    '__with_syntax' <<Regex: <_sre.SRE_Match object; span=(20, 33), match='__with_syntax'>>> ws:None [5, 1 -> 5, 14]
-                    '=' <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> ws:None [5, 14 -> 5, 15]
-                    <semantic_version> <<Regex: <_sre.SRE_Match object; span=(34, 37), match='1.0'>>> ws:None [5, 15 -> 5, 18]
-                    ':' <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> ws:None [5, 18 -> 5, 19]
-                    Newline+ <<38, 39>> ws:None [5, 19 -> 6, 1]
-                    Indent <<39, 43, (4)>> ws:None [6, 1 -> 6, 5]
-                    Repeat: (DynamicStatements.Statements, 1, None)
-                        DynamicStatements.Statements
-                            1.0.0 Grammar
-                                Upper Statement
-                                    Upper Token <<Regex: <_sre.SRE_Match object; span=(43, 49), match='BUPPER'>>> ws:None [6, 5 -> 6, 11]
-                                    Newline+ <<49, 50>> ws:None [6, 11 -> 7, 1]
-                        DynamicStatements.Statements
-                            1.0.0 Grammar
-                                Lower Statement
-                                    Lower Token <<Regex: <_sre.SRE_Match object; span=(54, 60), match='blower'>>> ws:None [7, 5 -> 7, 11]
-                                    Newline+ <<60, 61>> ws:None [7, 11 -> 8, 1]
-                """,
-            )
+                The syntax is not recognized [8, 1]
 
-            assert str(potentials[1]) == textwrap.dedent(
-                """\
-                Upper Statement
-                    <No results>
-                """,
-            )
-
-            assert str(potentials[2]) == textwrap.dedent(
-                """\
-                Lower Statement
-                    <No results>
-                """,
-            )
-
-            assert str(potentials[3]) == textwrap.dedent(
-                """\
-                Number Statement
-                    <No results>
+                2.0.0 Grammar
+                    Upper Statement
+                        Upper Token
+                            Upper Token <<Regex: <_sre.SRE_Match object; span=(0, 6), match='AUPPER'>>> ws:None [1, 1 -> 1, 7]
+                        Newline+
+                            Newline+ <<6, 7>> ws:None [1, 7 -> 2, 1]
+                2.0.0 Grammar
+                    Lower Statement
+                        Lower Token
+                            Lower Token <<Regex: <_sre.SRE_Match object; span=(7, 13), match='alower'>>> ws:None [2, 1 -> 2, 7]
+                        Newline+
+                            Newline+ <<13, 14>> ws:None [2, 7 -> 3, 1]
+                2.0.0 Grammar
+                    Number Statement
+                        Number Token
+                            Number Token <<Regex: <_sre.SRE_Match object; span=(14, 18), match='1234'>>> ws:None [3, 1 -> 3, 5]
+                        Newline+
+                            Newline+ <<18, 20>> ws:None [3, 5 -> 5, 1]
+                2.0.0 Grammar
+                    Set Syntax
+                        '__with_syntax'
+                            '__with_syntax' <<Regex: <_sre.SRE_Match object; span=(20, 33), match='__with_syntax'>>> ws:None [5, 1 -> 5, 14]
+                        '='
+                            '=' <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> ws:None [5, 14 -> 5, 15]
+                        <semantic_version>
+                            <semantic_version> <<Regex: <_sre.SRE_Match object; span=(34, 37), match='1.0'>>> ws:None [5, 15 -> 5, 18]
+                        ':'
+                            ':' <<Regex: <_sre.SRE_Match object; span=(37, 38), match=':'>>> ws:None [5, 18 -> 5, 19]
+                        Newline+
+                            Newline+ <<38, 39>> ws:None [5, 19 -> 6, 1]
+                        Indent
+                            Indent <<39, 43, (4)>> ws:None [6, 1 -> 6, 5]
+                        Repeat: (DynamicStatements.Statements, 1, None)
+                            DynamicStatements.Statements
+                                0) 1.0.0 Grammar
+                                       Upper Statement
+                                           Upper Token
+                                               Upper Token <<Regex: <_sre.SRE_Match object; span=(43, 49), match='BUPPER'>>> ws:None [6, 5 -> 6, 11]
+                                           Newline+
+                                               Newline+ <<49, 50>> ws:None [6, 11 -> 7, 1]
+                                1) 1.0.0 Grammar
+                                       Lower Statement
+                                           Lower Token
+                                               Lower Token <<Regex: <_sre.SRE_Match object; span=(54, 60), match='blower'>>> ws:None [7, 5 -> 7, 11]
+                                           Newline+
+                                               Newline+ <<60, 61>> ws:None [7, 11 -> 8, 1]
+                        Dedent
+                            None
+                    Upper Statement
+                        Upper Token
+                            None
+                    Lower Statement
+                        Lower Token
+                            None
+                    Number Statement
+                        Number Token
+                            None
                 """,
             )
 
     # ----------------------------------------------------------------------
-    def test_InvalidVersion1(self):
+    @pytest.mark.asyncio
+    async def test_InvalidVersion1(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -298,7 +320,7 @@ class TestStandard(object):
                 ),
             },
         ) as observer:
-            result = Parse(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
+            result = await ParseAsync(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
 
             assert len(result) == 1
             result = result[0]
@@ -309,7 +331,8 @@ class TestStandard(object):
             assert result.Column == 15
 
     # ----------------------------------------------------------------------
-    def test_InvalidVersion2(self):
+    @pytest.mark.asyncio
+    async def test_InvalidVersion2(self):
         with self.CreateObserver(
             {
                 "one" : textwrap.dedent(
@@ -320,7 +343,7 @@ class TestStandard(object):
                 ),
             },
         ) as observer:
-            result = Parse(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
+            result = await ParseAsync(["one"], observer.Syntaxes[observer.DefaultVersion], observer)
 
             assert len(result) == 1
             result = result[0]

@@ -182,6 +182,8 @@ class TestStandard(object):
                 @Interface.override
                 async def OnIndentAsync(
                     fully_qualified_name: str,
+                    statement: Statement,
+                    data_items: List[Statement.ParseResultData],
                     data: Statement.TokenParseResultData,
                     iter_before: NormalizedIterator,
                     iter_after: NormalizedIterator,
@@ -193,6 +195,8 @@ class TestStandard(object):
                 @Interface.override
                 async def OnDedentAsync(
                     fully_qualified_name: str,
+                    statement: Statement,
+                    data_items: List[Statement.ParseResultData],
                     data: Statement.TokenParseResultData,
                     iter_before: NormalizedIterator,
                     iter_after: NormalizedIterator,
