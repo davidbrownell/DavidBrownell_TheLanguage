@@ -327,7 +327,7 @@ async def ParseAsync(
     async def ExecuteAsync(
         fully_qualified_name,
         increment_pending_ctr=True,
-    ) -> DynamicStatementInfo:
+    ) -> Optional[DynamicStatementInfo]:
         final_result = None
 
         # ----------------------------------------------------------------------
@@ -392,7 +392,8 @@ async def ParseAsync(
                             single_threaded=single_threaded,
                         )
 
-                        # TODO: What happens when results is None?
+                        if results is None:
+                            return None
 
                         # The noes have already been created, but we need to finalize
                         # the relationships.
@@ -447,7 +448,9 @@ async def ParseAsync(
 
     if single_threaded:
         for fqn in fully_qualified_names:
-            await ExecuteAsync(fqn)
+            result = await ExecuteAsync(fqn)
+            if result is None:
+                return None
 
     else:
         with thread_info_lock:
@@ -455,12 +458,17 @@ async def ParseAsync(
             # prematurely terminate as threads are spinning up.
             thread_info.pending_ctr = len(fully_qualified_names)
 
-        observer.Enqueue(
+        futures = observer.Enqueue(
             [
                 cast(Callable[[], None], lambda fqn=fqn: PrepLoopAndExecute(fqn, increment_pending_ctr=False))
                 for fqn in fully_qualified_names
             ],
         )
+
+        for future in futures:
+            result = future.result()
+            if result is None:
+                return None
 
     is_complete.wait()
 
@@ -564,7 +572,9 @@ class _TranslationUnitObserver(TranslationUnitObserver):
                         this_result.SourceName,
                     )
 
-                return await self._async_parse_func(this_result.FullyQualifiedName)
+                result = await self._async_parse_func(this_result.FullyQualifiedName)
+
+                return False if result is None else result
 
         elif isinstance(node_or_leaf, Leaf):
             this_result = True
@@ -575,8 +585,6 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         return this_result
 
     # ----------------------------------------------------------------------
-    # TODO: Move node creation to TranslationUnitParser.py so that SyntaxInvalidError can
-    # be defined in terms of nodes.
     def CreateNode(
         self,
         statement: Statement,

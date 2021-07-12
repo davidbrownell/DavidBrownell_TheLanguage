@@ -302,7 +302,6 @@ class Statement(Interface.Interface):
             self,
             verbose=False,
         ) -> str:
-            # BugBug: Figure out a way where parent is not displayed
             return "{name} <<{value}>> ws:{ws}{ignored} [{line_before}, {column_before} -> {line_after}, {column_after}]".format(
                 name=self.Token.Name,
                 value=str(self.Value),
