@@ -431,6 +431,7 @@ class TestParseReturnsNone(object):
             return self.__class__(
                 self.Name,
                 unique_id=unique_id,
+                type_id=self.TypeId,
             )
 
         # ----------------------------------------------------------------------

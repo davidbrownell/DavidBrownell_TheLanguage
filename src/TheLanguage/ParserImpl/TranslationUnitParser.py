@@ -185,14 +185,14 @@ async def ParseAsync(
         name=name,
     )
 
-    statement_observer = _StatementObserver(all_statement_infos, observer)
+    statement_ex_observer = _StatementExObserver(all_statement_infos, observer)
 
     data_items: List[Statement.ParseResultData] = []
 
     while not normalized_iter.AtEnd():
         result = await statement.ParseAsync(
             normalized_iter,
-            statement_observer,
+            statement_ex_observer,
             ignore_whitespace=False,
             single_threaded=single_threaded,
         )
@@ -245,7 +245,7 @@ class _StatementInfoNode(object):
 
 
 # ----------------------------------------------------------------------
-class _StatementObserver(StatementEx.Observer):
+class _StatementExObserver(StatementEx.Observer):
     # ----------------------------------------------------------------------
     def __init__(
         self,

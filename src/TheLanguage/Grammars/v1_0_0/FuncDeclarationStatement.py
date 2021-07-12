@@ -58,6 +58,8 @@ with InitRelativeImports():
         ValidationError,
     )
 
+    from ...ParserImpl.StatementImpl.RepeatStatement import RepeatStatement
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -124,8 +126,8 @@ class FuncDeclarationStatement(GrammarStatement):
     ):
         # The export keyword may or may not appear, which will impact the parameter index
         if (
-            isinstance(node.Children[0].Type, tuple)
-            and node.Children[0].Type[0] == CommonTokens.Export
+            isinstance(node.Children[0].Type, RepeatStatement)
+            and node.Children[0].Type.Statement.Name == CommonTokens.Export.Name
         ):
             parameter_offset = 1
         else:
@@ -145,5 +147,5 @@ class FuncDeclarationStatement(GrammarStatement):
         parameters = FuncParameters.GetParameters(node.Children[3 + parameter_offset])
 
         # Commit the values for later
-        node.function_name = function_name
-        node.parameters = parameters
+        object.__setattr__(node, "function_name", function_name)
+        object.__setattr__(node, "parameters", parameters)

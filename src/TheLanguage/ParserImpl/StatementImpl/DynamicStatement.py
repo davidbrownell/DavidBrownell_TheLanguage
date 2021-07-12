@@ -54,12 +54,14 @@ class DynamicStatement(Statement):
         ],
         name: str=None,
         unique_id: Optional[List[Any]]=None,
+        type_id: Optional[int]=None,
     ):
         name = name or "Dynamic Statements"
 
         super(DynamicStatement, self).__init__(
             name,
             unique_id=unique_id,
+            type_id=type_id,
         )
 
         self._get_dynamic_statements_func   = get_dynamic_statements_func
@@ -74,6 +76,7 @@ class DynamicStatement(Statement):
             self._get_dynamic_statements_func,
             name=self.Name,
             unique_id=unique_id,
+            type_id=self.TypeId,
         )
 
     # ----------------------------------------------------------------------
@@ -98,7 +101,7 @@ class DynamicStatement(Statement):
             ),
         ):
             dynamic_statements = self._get_dynamic_statements_func(self.UniqueId, observer)
-            if isinstance(dynamic_statements, Tuple):
+            if isinstance(dynamic_statements, tuple):
                 name = dynamic_statements[0]
                 dynamic_statements = dynamic_statements[1]
             else:

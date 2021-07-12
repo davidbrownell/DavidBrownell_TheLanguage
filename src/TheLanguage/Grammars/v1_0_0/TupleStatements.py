@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Union
+from typing import Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -40,6 +40,8 @@ with InitRelativeImports():
         Node,
         StatementEx,
     )
+
+    from ...ParserImpl.StatementImpl.OrStatement import OrStatement
 
 
 # ----------------------------------------------------------------------
@@ -142,7 +144,7 @@ class TupleVariableDeclarationStatement(_TupleBase):
         node: Node,
     ):
         # Drill into the Or node
-        assert isinstance(node.Children[0].Type, list)
+        assert isinstance(node.Children[0].Type, OrStatement)
         assert len(node.Children[0].Children) == 1
         node = node.Children[0].Children[0]
 

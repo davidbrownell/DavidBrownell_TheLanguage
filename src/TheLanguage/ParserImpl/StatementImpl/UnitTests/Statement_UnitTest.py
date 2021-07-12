@@ -50,10 +50,12 @@ def CreateStatement(result):
         def __init__(
             self,
             unique_id: Optional[List[Any]]=None,
+            type_id: Optional[int]=None,
         ):
             super(TheStatement, self).__init__(
                 "The Statement",
                 unique_id=unique_id,
+                type_id=type_id,
             )
 
             self.parse_mock = Mock(
@@ -68,6 +70,7 @@ def CreateStatement(result):
         ) -> Statement:
             return self.__class__(
                 unique_id=unique_id,
+                type_id=self.TypeId,
             )
 
         # ----------------------------------------------------------------------
@@ -99,6 +102,7 @@ class TestStandard(object):
             return self.__class__(
                 self.Name,
                 unique_id=unique_id,
+                type_id=self.TypeId,
             )
 
         # ----------------------------------------------------------------------
@@ -140,8 +144,12 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_Equality(self):
+        hello = self.MyStatement("hello")
+        goodbye = self.MyStatement("goodbye")
+
+        assert hello == hello
+        assert goodbye != hello
         assert self.MyStatement("hello") == self.MyStatement("hello")
-        assert self.MyStatement("goodbye") != self.MyStatement("hello")
 
     # ----------------------------------------------------------------------
     def test_ParseResultEmptyData(self, iterator):

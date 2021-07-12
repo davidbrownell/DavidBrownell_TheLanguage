@@ -396,6 +396,7 @@ def test_ParseReturnsNone(parse_mock):
             return self.__class__(
                 self.Name,
                 unique_id=unique_id,
+                type_id=self.TypeId,
             )
 
         # ----------------------------------------------------------------------

@@ -62,7 +62,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 Grammars: Dict[SemVer, DynamicStatementInfo]            = OrderedDict()
-StatementLookup: Dict[Statement, GrammarStatement]      = OrderedDict()
+StatementLookup: Dict[int, GrammarStatement]            = OrderedDict()
 
 
 # ----------------------------------------------------------------------
@@ -96,8 +96,8 @@ def _LoadDyanmicStatementsFromFile(
             else:
                 assert False, grammar_statement.TypeValue  # pragma: no cover
 
-            assert grammar_statement.Statement not in StatementLookup, grammar_statement.Statement
-            StatementLookup[grammar_statement.Statement] = grammar_statement
+            assert grammar_statement.Statement.TypeId not in StatementLookup, grammar_statement.Statement
+            StatementLookup[grammar_statement.Statement.TypeId] = grammar_statement
 
         del sys.modules[basename]
 
@@ -279,7 +279,7 @@ class _Observer(TranslationUnitsParserObserver):
         TranslationUnitsParserObserver.ImportInfo,
     ]:
         try:
-            grammar_statement = StatementLookup.get(node.Type, None)
+            grammar_statement = StatementLookup.get(node.Type.TypeId, None)
         except TypeError:
             grammar_statement = None
 
@@ -372,7 +372,7 @@ def _ValidateNode(
     node: Union[Node, Leaf],
 ):
     if isinstance(node.Type, Statement):
-        grammar_statement = StatementLookup.get(cast(Statement, node.Type), None)
+        grammar_statement = StatementLookup.get(cast(Statement, node.Type).TypeId, None)
         if grammar_statement:
             result = grammar_statement.ValidateNodeSyntax(node)
             if isinstance(result, bool) and not result:

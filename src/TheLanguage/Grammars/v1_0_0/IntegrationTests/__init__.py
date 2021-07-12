@@ -104,7 +104,7 @@ def PatchAndExecute(
                             # ----------------------------------------------------------------------
 
                             """,
-                        ).format(result[0].DebugString()),
+                        ).format(result[0].ToDebugString()),
                     )
 
                 raise result[0]

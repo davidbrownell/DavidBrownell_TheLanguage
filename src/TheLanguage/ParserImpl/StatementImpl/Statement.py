@@ -70,6 +70,7 @@ class Statement(Interface.Interface):
         @Interface.abstractmethod
         async def OnIndentAsync(
             unique_id: List[Any],
+            # BugBug: data is not necessary
             data: "Statement.TokenParseResultData",
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
@@ -81,6 +82,7 @@ class Statement(Interface.Interface):
         @Interface.abstractmethod
         async def OnDedentAsync(
             unique_id: List[Any],
+            # BugBug: data is not necessary
             data: "Statement.TokenParseResultData",
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
@@ -304,6 +306,7 @@ class Statement(Interface.Interface):
             self,
             verbose=False,
         ) -> str:
+            # BugBug: Figure out a way where parent is not displayed
             return "{name} <<{value}>> ws:{ws}{ignored} [{line_before}, {column_before} -> {line_after}, {column_after}]".format(
                 name=self.Token.Name,
                 value=str(self.Value),
@@ -339,18 +342,21 @@ class Statement(Interface.Interface):
         self,
         name: str,
         unique_id: Optional[List[Any]] = None,
+        type_id: Optional[int] = None,
     ):
         assert name
 
         self.Name                           = name
         self.UniqueId                       = unique_id or [name]
+        self.TypeId                         = type_id or id(self)
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):
         for k, v in self.__dict__.items():
             if k == "UniqueId":
                 continue
-
+            if k == "TypeId":
+                continue
             if k.startswith("_"):
                 continue
 

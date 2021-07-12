@@ -383,14 +383,14 @@ async def ParseAsync(
 
                 with CallOnExit(OnExecuteExit):
                     try:
-                        statement_observer = _StatementsObserver(fully_qualified_name, observer, ExecuteAsync)
+                        translation_unit_observer = _TranslationUnitObserver(fully_qualified_name, observer, ExecuteAsync)
 
                         content = observer.LoadContent(fully_qualified_name)
 
                         results = await TranslationUnitParseAsync(
                             initial_statement_info,
                             NormalizedIterator(Normalize(content)),
-                            statement_observer,
+                            translation_unit_observer,
                             single_threaded=single_threaded,
                         )
 
@@ -401,7 +401,7 @@ async def ParseAsync(
                         root = RootNode(None)
 
                         for result in results:
-                            statement_observer.CreateNode(result.Statement, result.Data, root)
+                            translation_unit_observer.CreateNode(result.Statement, result.Data, root)
 
                         # Get the Dynamic Statements
                         dynamic_statements = observer.ExtractDynamicStatements(fully_qualified_name, root)
@@ -480,7 +480,7 @@ async def ParseAsync(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-class _StatementsObserver(TranslationUnitObserver):
+class _TranslationUnitObserver(TranslationUnitObserver):
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -604,15 +604,9 @@ class _StatementsObserver(TranslationUnitObserver):
 
         if node is None:
             if isinstance(statement, TokenStatement):
-                data = cast(Statement.TokenParseResultData, data)
-
-                node = Leaf(
-                    data.Token,
-                    data.Whitespace,
-                    data.Value,
-                    data.IterBefore,
-                    data.IterAfter,
-                    data.IsIgnored,
+                node = self._CreateLeaf(
+                    cast(Statement.TokenParseResultData, data),
+                    parent=None,
                 )
 
             else:
@@ -625,10 +619,39 @@ class _StatementsObserver(TranslationUnitObserver):
         if not was_cached:
             if isinstance(node, Node):
                 for child_statement, child_data in data.Enum() if data else []:
-                    self.CreateNode(child_statement, child_data, node)
+                    if child_statement is None:
+                        self._CreateLeaf(
+                            cast(Statement.TokenParseResultData, child_data),
+                            parent=node,
+                        )
+                    else:
+                        self.CreateNode(child_statement, child_data, node)
 
             if key:
                 with self._node_cache_lock:
                     self._node_cache[key] = node
 
         return node
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _CreateLeaf(
+        data: Statement.TokenParseResultData,
+        parent: Optional[Node],
+    ):
+        leaf = Leaf(
+            data.Token,
+            data.Whitespace,
+            data.Value,
+            data.IterBefore,
+            data.IterAfter,
+            data.IsIgnored,
+        )
+
+        if parent is not None:
+            object.__setattr__(leaf, "Parent", parent)
+            parent.Children.append(leaf)
+
+        return leaf

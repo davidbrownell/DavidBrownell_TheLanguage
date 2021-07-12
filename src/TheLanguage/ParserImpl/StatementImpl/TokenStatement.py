@@ -50,11 +50,13 @@ class TokenStatement(Statement):
     def __init__(
         self,
         token: TokenClass,
-        unique_id: Optional[List[Any]] = None,
+        unique_id: Optional[List[Any]]=None,
+        type_id: Optional[int]=None,
     ):
         super(TokenStatement, self).__init__(
             token.Name,
             unique_id=unique_id,
+            type_id=type_id,
         )
 
         self.Token                          = token
@@ -68,6 +70,7 @@ class TokenStatement(Statement):
         return self.__class__(
             self.Token,
             unique_id=unique_id,
+            type_id=self.TypeId,
         )
 
     # ----------------------------------------------------------------------

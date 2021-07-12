@@ -41,10 +41,13 @@ with InitRelativeImports():
         DynamicStatements,
         Leaf,
         Node,
+        Statement,
         StatementEx,
         ValidationError,
     )
 
+    from ....ParserImpl.StatementImpl.OrStatement import OrStatement
+    from ....ParserImpl.StatementImpl.RepeatStatement import RepeatStatement
 
 # ----------------------------------------------------------------------
 # |
@@ -261,17 +264,17 @@ def GetParameters(
         return Parameters([], [], [])
 
     # Drill into the Optional node
-    assert isinstance(node.Type, tuple)
+    assert isinstance(node.Type, RepeatStatement)
     assert len(node.Children) == 1
     node = node.Children[0]
 
     # Drill into the Or node
-    assert isinstance(node.Type, list)
+    assert isinstance(node.Type, OrStatement)
     assert len(node.Children) == 1
     node = node.Children[0]
 
     # Arrive at the content node
-    if isinstance(node.Type, tuple):
+    if isinstance(node.Type, RepeatStatement):
         result = _GetNewStyleParameters(node)
     elif node.Type.Name == "Traditional":
         result = _GetTraditionalParameters(node)
@@ -321,7 +324,7 @@ def _GetNewStyleParameters(
         the_type = child.Children[0]
 
         # Drill into the Or node
-        assert isinstance(the_type.Type, list)
+        assert isinstance(the_type.Type, OrStatement)
         assert len(the_type.Children) == 1
         the_type = the_type.Children[0]
 
@@ -346,8 +349,8 @@ def _GetNewStyleParameters(
 
         if (
             len(child.Children) > 4
-            and isinstance(child.Children[3].Type, tuple)
-            and isinstance(child.Children[3].Type[0], Statement)
+            and isinstance(child.Children[3].Type, RepeatStatement)
+            and isinstance(child.Children[3].Type.Statement, StatementEx)
         ):
             parameter_nodes = child.Children[3]
 
@@ -451,8 +454,8 @@ def _GetTraditionalParameters(
 
     has_comma_delimited_parameters = (
         len(node.Children) > 1
-        and isinstance(node.Children[1].Type, tuple)
-        and isinstance(node.Children[1].Type[0], Statement)
+        and isinstance(node.Children[1].Type, RepeatStatement)
+        and isinstance(node.Children[1].Type.Statement, StatementEx)
     )
 
     # Initial parameter
@@ -473,7 +476,7 @@ def _GetTraditionalParameters(
             child = child.Children[1]
 
             # Drill into the Or node
-            assert isinstance(child.Type, list)
+            assert isinstance(child.Type, OrStatement)
             assert len(child.Children) == 1
             child = child.Children[0]
 
@@ -501,7 +504,7 @@ def _CreateParameterInfo(
     node = node.Children[1]
 
     # Drill into the Or node
-    assert isinstance(node.Type, list)
+    assert isinstance(node.Type, OrStatement)
     assert len(node.Children) == 1
     node = node.Children[0]
 

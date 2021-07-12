@@ -47,6 +47,7 @@ Indent                                      = IndentToken()
 PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
+# BugBug: Reconcile this with NamingConventions.py
 Name                                        = RegexToken(
     "<name>",
     re.compile(

@@ -111,6 +111,7 @@ class RepeatStatement(StatementType):
         max_matches: Optional[int],
         name: str=None,
         unique_id: Optional[List[Any]]=None,
+        type_id: Optional[int]=None,
     ):
         assert min_matches >= 0, min_matches
         assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
@@ -120,6 +121,7 @@ class RepeatStatement(StatementType):
         super(RepeatStatement, self).__init__(
             name,
             unique_id=unique_id,
+            type_id=type_id,
         )
 
         self.Statement                      = statement
@@ -138,6 +140,7 @@ class RepeatStatement(StatementType):
             self.MaxMatches,
             name=self.Name,
             unique_id=unique_id,
+            type_id=self.TypeId,
         )
 
     # ----------------------------------------------------------------------

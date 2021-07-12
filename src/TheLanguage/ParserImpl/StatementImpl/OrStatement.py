@@ -50,12 +50,16 @@ class OrStatement(Statement):
         sort_results=True,
         name: str=None,
         unique_id: Optional[List[Any]]=None,
+        type_id: Optional[int]=None,
     ):
+        assert statements
+
         name = name or "Or: [{}]".format(", ".join([item.Name for item in statements]))
 
         super(OrStatement, self).__init__(
             name,
             unique_id=unique_id,
+            type_id=type_id,
         )
 
         self.Statements                                                     = list(statements)
@@ -74,6 +78,7 @@ class OrStatement(Statement):
             sort_results=self.SortResults,
             name=self.Name,
             unique_id=unique_id,
+            type_id=self.TypeId,
         )
 
     # ----------------------------------------------------------------------

@@ -20,7 +20,7 @@ import re
 import textwrap
 
 from enum import auto, Enum
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -214,10 +214,12 @@ class StatementEx(Statement):
         *items: "StatementEx.ItemType",
         populate_empty=False,
         unique_id: Optional[List[Any]]=None,
+        type_id: Optional[int]=None,
     ):
         super(StatementEx, self).__init__(
             name,
             unique_id=unique_id or [name],
+            type_id=type_id,
         )
 
         self._items: List[StatementEx.ItemType]                             = list(items)
@@ -241,6 +243,7 @@ class StatementEx(Statement):
             *self._items,
             populate_empty=self._populate_empty,
             unique_id=unique_id,
+            type_id=self.TypeId,
         )
 
     # ----------------------------------------------------------------------
@@ -265,18 +268,9 @@ class StatementEx(Statement):
             ]
 
         success = True
-        data_items = []
 
-        observer_wrapper = self._ObserverWrapper(
-            self,
-            observer,
-            data_items,
-        )
-
-        del observer
-
-        observer_wrapper.StartStatement(self.UniqueId)
-        with CallOnExit(lambda: observer_wrapper.EndStatement(self.UniqueId, success)):
+        observer.StartStatement(self.UniqueId)
+        with CallOnExit(lambda: observer.EndStatement(self.UniqueId, success)):
             original_normalized_iter = normalized_iter.Clone()
 
             ignore_whitespace_ctr = 1 if ignore_whitespace else 0
@@ -297,7 +291,9 @@ class StatementEx(Statement):
 
             # ----------------------------------------------------------------------
 
-            for statement_index, statement in enumerate(self._working_statements):
+            data_items = []
+
+            for statement in self._working_statements:
                 # Extract whitespace or comments
                 while not normalized_iter.AtEnd():
                     potential_results = ExtractWhitespaceOrComments()
@@ -305,7 +301,7 @@ class StatementEx(Statement):
                         break
 
                     data_items += potential_results[0]
-                    normalized_iter = potential_results[1].Clone()
+                    normalized_iter = potential_results[1]
 
                 # Process control tokens
                 if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
@@ -314,9 +310,6 @@ class StatementEx(Statement):
                     elif isinstance(statement.Token, PopIgnoreWhitespaceControlToken):
                         assert ignore_whitespace_ctr != 0
                         ignore_whitespace_ctr -= 1
-
-                        if statement_index == len(self._working_statements) - 1:
-                            break
                     else:
                         assert False, statement.Token  # pragma: no cover
 
@@ -329,7 +322,11 @@ class StatementEx(Statement):
                 # Process the statement
                 result = await statement.ParseAsync(
                     normalized_iter.Clone(),
-                    observer_wrapper,
+                    self._StatementObserver(
+                        self,
+                        observer,
+                        data_items,
+                    ),
                     ignore_whitespace=ignore_whitespace_ctr != 0,
                     single_threaded=single_threaded,
                 )
@@ -349,7 +346,7 @@ class StatementEx(Statement):
 
             if (
                 success
-                and not await observer_wrapper.OnInternalStatementAsync(
+                and not await observer.OnInternalStatementAsync(
                     self.UniqueId,
                     self,
                     data,
@@ -366,7 +363,7 @@ class StatementEx(Statement):
     # |  Private Types
     # |
     # ----------------------------------------------------------------------
-    class _ObserverWrapper(Statement.Observer):
+    class _StatementObserver(Statement.Observer):
         """Provides additional data about the current statement to some methods of Statement.Observer"""
 
         # ----------------------------------------------------------------------
@@ -381,8 +378,12 @@ class StatementEx(Statement):
             self._data_items                = data_items
 
         # ----------------------------------------------------------------------
-        def GetDynamicStatements(self, *args, **kwargs):
-            return self._observer.GetDynamicStatements(*args, **kwargs)
+        @property
+        def StatementExObserver(self) -> "StatementEx.Observer":
+            if not isinstance(self._observer, StatementEx._StatementObserver):
+                return self._observer
+
+            return self._observer.StatementExObserver
 
         # ----------------------------------------------------------------------
         @Interface.override
@@ -477,8 +478,12 @@ class StatementEx(Statement):
                 unique_id: List[Any],
                 observer: Statement.Observer,
             ):
-                assert isinstance(observer, cls._ObserverWrapper), observer
-                return observer.GetDynamicStatements(unique_id, item)
+                assert isinstance(observer, StatementEx._StatementObserver), observer
+
+                return cast(StatementEx._StatementObserver, observer).StatementExObserver.GetDynamicStatements(
+                    unique_id,
+                    cast(DynamicStatements, item),
+                )
 
             # ----------------------------------------------------------------------
 

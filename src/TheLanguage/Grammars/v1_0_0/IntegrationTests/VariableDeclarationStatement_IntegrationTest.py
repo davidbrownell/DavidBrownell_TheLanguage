@@ -41,7 +41,7 @@ def test_Standard():
             """\
             one = two
             three = Four()
-            fix = Six(
+            six = Six(
                 seven,
                 eight,
                 nine=value,
@@ -71,7 +71,7 @@ def test_Standard():
                                 ')' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=')'>>> ws:None [2, 14 -> 2, 15]
             1.0.0 Grammar
                 Variable Declaration
-                    <name> <<Regex: <_sre.SRE_Match object; span=(25, 28), match='fix'>>> ws:None [3, 1 -> 3, 4]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(25, 28), match='six'>>> ws:None [3, 1 -> 3, 4]
                     '=' <<Regex: <_sre.SRE_Match object; span=(29, 30), match='='>>> ws:(28, 29) [3, 5 -> 3, 6]
                     DynamicStatements.Expressions
                         1.0.0 Grammar
