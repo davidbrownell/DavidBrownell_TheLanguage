@@ -396,22 +396,48 @@ class StatementEx(Statement):
         # ----------------------------------------------------------------------
         @Interface.override
         async def OnIndentAsync(self, *args, **kwargs):
-            return await self._observer.OnIndentAsync(
-                self._statement,
-                self._data_items,
-                *args,
-                **kwargs,
-            )
+            assert not kwargs, kwargs
+
+            if len(args) == 3:
+                args = [
+                    self._statement,
+                    self._data_items,
+                    args[0], # unique_id
+                    args[1], # iter_before
+                    args[2], # iter_after
+                ]
+
+            elif len(args) == 5:
+                # Do not modify the args
+                pass
+
+            else:
+                assert False, args  # pragma: no cover
+
+            return await self._observer.OnIndentAsync(*args)
 
         # ----------------------------------------------------------------------
         @Interface.override
         async def OnDedentAsync(self, *args, **kwargs):
-            return await self._observer.OnDedentAsync(
-                self._statement,
-                self._data_items,
-                *args,
-                **kwargs,
-            )
+            assert not kwargs, kwargs
+
+            if len(args) == 3:
+                args = [
+                    self._statement,
+                    self._data_items,
+                    args[0], # unique_id
+                    args[1], # iter_before
+                    args[2], # iter_after
+                ]
+
+            elif len(args) == 5:
+                # Do not modify the args
+                pass
+
+            else:
+                assert False, args  # pragma: no cover
+
+            return await self._observer.OnDedentAsync(*args)
 
         # ----------------------------------------------------------------------
         @Interface.override

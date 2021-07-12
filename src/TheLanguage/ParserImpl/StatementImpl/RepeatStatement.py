@@ -35,69 +35,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Statement import Statement as StatementType
+    from .Statement import Statement
 
 
 # ----------------------------------------------------------------------
-class RepeatStatement(StatementType):
+class RepeatStatement(Statement):
     """Matches content that repeats the provided statement N times"""
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class RepeatParseResultData(StatementType.ParseResultData):
-        """Result return for both matching and non-matching statements"""
-
-        Statement: StatementType
-        DataItems: List[Optional[StatementType.ParseResultData]]
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def ToString(
-            self,
-            verbose=False,
-        ) -> str:
-            results = []
-
-            for data_item_index, data_item in enumerate(self.DataItems):
-                prefix = "{}) ".format(data_item_index)
-
-                results.append(
-                    "{}{}".format(
-                        prefix,
-                        StringHelpers.LeftJustify(str(data_item).rstrip(), len(prefix)),
-                    ),
-                )
-
-            if not results:
-                results.append("<No Results>")
-
-            return textwrap.dedent(
-                """\
-                {name}
-                    {label}{results}
-                """,
-            ).format(
-                name=self.Statement.Name,
-                label="Data:\n    " if verbose else "",
-                results=StringHelpers.LeftJustify("\n".join(results), 4),
-            )
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def Enum(self) -> Generator[
-            Tuple[
-                Optional[StatementType],
-                Optional[StatementType.ParseResultData],
-            ],
-            None,
-            None
-        ]:
-            for item in self.DataItems:
-                yield self.Statement, item
 
     # ----------------------------------------------------------------------
     # |
@@ -106,13 +49,14 @@ class RepeatStatement(StatementType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        statement: StatementType,
+        statement: Statement,
         min_matches: int,
         max_matches: Optional[int],
         name: str=None,
         unique_id: Optional[List[Any]]=None,
         type_id: Optional[int]=None,
     ):
+        assert statement
         assert min_matches >= 0, min_matches
         assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
 
@@ -147,29 +91,34 @@ class RepeatStatement(StatementType):
     @Interface.override
     async def ParseAsync(
         self,
-        normalized_iter: StatementType.NormalizedIterator,
-        observer: StatementType.Observer,
+        normalized_iter: Statement.NormalizedIterator,
+        observer: Statement.Observer,
         ignore_whitespace=False,
         single_threaded=False,
     ) -> Union[
-        StatementType.ParseResult,
+        Statement.ParseResult,
         None,
     ]:
         success = False
 
-        observer.StartStatement(self.UniqueId)
-        with CallOnExit(lambda: observer.EndStatement(self.UniqueId, success)):
+        observer.StartStatement([self])
+        with CallOnExit(lambda: observer.EndStatement([(self, success)])):
             original_normalized_iter = normalized_iter.Clone()
 
-            results: List[StatementType.ParseResult] = []
-            error_result: Optional[StatementType.ParseResult] = None
+            results: List[Statement.ParseResult] = []
+            error_result: Optional[Statement.ParseResult] = None
 
             while not normalized_iter.AtEnd():
                 statement = self.Statement.Clone(self.UniqueId + ["Rpt: {} [{}]".format(self.Statement.Name, len(results))])
 
                 result = await statement.ParseAsync(
                     normalized_iter.Clone(),
-                    observer,
+                    Statement.ObserverDecorator(
+                        self,
+                        observer,
+                        results,
+                        lambda result: result.Data,
+                    ),
                     ignore_whitespace=ignore_whitespace,
                     single_threaded=single_threaded,
                 )
@@ -187,7 +136,7 @@ class RepeatStatement(StatementType):
                 if self.MaxMatches is not None and len(results) == self.MaxMatches:
                     break
 
-            results = cast(List[StatementType.ParseResult], results)
+            results = cast(List[Statement.ParseResult], results)
 
             success = (
                 len(results) >= self.MinMatches
@@ -198,21 +147,25 @@ class RepeatStatement(StatementType):
             )
 
             if success:
-                data = RepeatStatement.RepeatParseResultData(
-                    self.Statement,
-                    [result.Data for result in results],
+                data = Statement.StandardParseResultData(
+                    self,
+                    Statement.StandardParseResultData(
+                        self.Statement,
+                        Statement.MultipleStandardParseResultData(
+                            [result.Data for result in results],
+                            True,
+                        ),
+                    ),
                 )
 
                 if not await observer.OnInternalStatementAsync(
-                    self.UniqueId,
-                    self,
-                    data,
+                    [data],
                     original_normalized_iter,
                     normalized_iter,
                 ):
                     return None
 
-                return StatementType.ParseResult(True, normalized_iter, data)
+                return Statement.ParseResult(True, normalized_iter, data)
 
             # Gather the failure information
             result_data = [result.Data for result in results]
@@ -223,11 +176,14 @@ class RepeatStatement(StatementType):
             else:
                 end_iter = normalized_iter
 
-            return StatementType.ParseResult(
+            return Statement.ParseResult(
                 False,
                 end_iter,
-                RepeatStatement.RepeatParseResultData(
-                    self.Statement,
-                    result_data,
+                Statement.StandardParseResultData(
+                    self,
+                    Statement.StandardParseResultData(
+                        self.Statement,
+                        Statement.MultipleStandardParseResultData(result_data, True),
+                    ),
                 ),
             )

@@ -56,6 +56,8 @@ class DynamicStatement(Statement):
         unique_id: Optional[List[Any]]=None,
         type_id: Optional[int]=None,
     ):
+        assert get_dynamic_statements_func
+
         name = name or "Dynamic Statements"
 
         super(DynamicStatement, self).__init__(
@@ -93,11 +95,15 @@ class DynamicStatement(Statement):
     ]:
         result: Optional[Statement.ParseResult] = None
 
-        observer.StartStatement(self.UniqueId)
+        observer.StartStatement([self])
         with CallOnExit(
             lambda: observer.EndStatement(
-                self.UniqueId,
-                result is not None and result.Success,
+                [
+                    (
+                        self,
+                        result is not None and result.Success,
+                    ),
+                ],
             ),
         ):
             dynamic_statements = self._get_dynamic_statements_func(self.UniqueId, observer)
@@ -118,7 +124,12 @@ class DynamicStatement(Statement):
 
             result = await or_statement.ParseAsync(
                 normalized_iter,
-                observer,
+                Statement.ObserverDecorator(
+                    self,
+                    observer,
+                    [result],
+                    lambda result: result.Data,
+                ),
                 ignore_whitespace=ignore_whitespace,
                 single_threaded=single_threaded,
             )
@@ -126,14 +137,15 @@ class DynamicStatement(Statement):
             if result is None:
                 return None
 
-            data = Statement.StandardParseResultData(or_statement, result.Data)
+            data = Statement.StandardParseResultData(
+                self,
+                Statement.StandardParseResultData(or_statement, result.Data),
+            )
 
             if (
                 result.Success
                 and not await observer.OnInternalStatementAsync(
-                    self.UniqueId,
-                    self,
-                    data,
+                    [data],
                     normalized_iter,
                     result.Iter,
                 )

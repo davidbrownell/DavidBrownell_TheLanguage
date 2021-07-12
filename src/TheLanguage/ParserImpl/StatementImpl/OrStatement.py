@@ -53,8 +53,9 @@ class OrStatement(Statement):
         type_id: Optional[int]=None,
     ):
         assert statements
+        assert all(statement for statement in statements)
 
-        name = name or "Or: [{}]".format(", ".join([item.Name for item in statements]))
+        name = name or "Or: {{{}}}".format(", ".join([statement.Name for statement in statements]))
 
         super(OrStatement, self).__init__(
             name,
@@ -62,10 +63,16 @@ class OrStatement(Statement):
             type_id=type_id,
         )
 
-        self.Statements                                                     = list(statements)
-        self.SortResults                                                    = sort_results
+        cloned_statements = [
+            statement.Clone(
+                unique_id=self.UniqueId + ["Or: {} [{}]".format(statement.Name, statement_index)],
+            )
+            for statement_index, statement in enumerate(statements)
+        ]
 
-        self._working_statements: Optional[List[Statement]]                  = None
+        self.Statements                     = cloned_statements
+        self.SortResults                    = sort_results
+        self._original_statements           = statements
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -74,7 +81,7 @@ class OrStatement(Statement):
         unique_id: List[Any],
     ) -> Statement:
         return self.__class__(
-            *self.Statements,
+            *self._original_statements,
             sort_results=self.SortResults,
             name=self.Name,
             unique_id=unique_id,
@@ -93,40 +100,45 @@ class OrStatement(Statement):
         Statement.ParseResult,
         None,
     ]:
-        if self._working_statements is None:
-            self._working_statements = [
-                statement.Clone(self.UniqueId + ["Or: {} [{}]".format(statement.Name, statement_index)])
-                for statement_index, statement in enumerate(self.Statements)
-            ]
-
         best_result: Optional[Statement.ParseResult] = None
 
-        observer.StartStatement(self.UniqueId)
+        observer.StartStatement([self])
         with CallOnExit(lambda: observer.EndStatement(
-                self.UniqueId,
-                best_result is not None and best_result.Success,
+                [
+                    (
+                        self,
+                        best_result is not None and best_result.Success,
+                    ),
+                ],
             ),
         ):
-            use_async = not single_threaded and len(self._working_statements) > 1
+            results: List[Statement.ParseResult] = []
+
+            observer_decorator = Statement.ObserverDecorator(
+                self,
+                observer,
+                results,
+                lambda result: result.Data,
+            )
 
             # ----------------------------------------------------------------------
             async def ExecuteAsync(statement):
                 return await statement.ParseAsync(
                     normalized_iter.Clone(),
-                    observer,
+                    observer_decorator,
                     ignore_whitespace=ignore_whitespace,
                     single_threaded=single_threaded,
                 )
 
             # ----------------------------------------------------------------------
 
-            results: List[Statement.ParseResult] = []
+            use_async = not single_threaded and len(self.Statements) > 1
 
             if use_async:
                 gathered_results = await asyncio.gather(
                     *[
                         ExecuteAsync(statement)
-                        for statement in self._working_statements
+                        for statement in self.Statements
                     ],
                 )
 
@@ -136,7 +148,7 @@ class OrStatement(Statement):
                 results = cast(List[Statement.ParseResult], gathered_results)
 
             else:
-                for statement in self._working_statements:
+                for statement in self.Statements:
                     result = await ExecuteAsync(statement)
                     if result is None:
                         return None
@@ -185,14 +197,15 @@ class OrStatement(Statement):
 
             if best_result.Success:
                 data = Statement.StandardParseResultData(
-                    self._working_statements[best_index],
-                    best_result.Data,
+                    self,
+                    Statement.StandardParseResultData(
+                        self.Statements[best_index],
+                        best_result.Data,
+                    ),
                 )
 
                 if not await observer.OnInternalStatementAsync(
-                    self.UniqueId,
-                    self,
-                    data,
+                    [data],
                     normalized_iter,
                     best_result.Iter,
                 ):
@@ -201,10 +214,10 @@ class OrStatement(Statement):
                 return Statement.ParseResult(True, best_result.Iter, data)
 
             # Gather the failure information
-            data_items: List[Statement.StandardParseResultData] = []
+            data_items: List[Statement.ParseResultData] = []
             max_iter: Optional[Statement.NormalizedIterator] = None
 
-            for statement, result in zip(self._working_statements, results):
+            for statement, result in zip(self.Statements, results):
                 assert not result.Success
 
                 data_items.append(
@@ -217,8 +230,13 @@ class OrStatement(Statement):
                 if max_iter is None or result.Iter.Offset > max_iter.Offset:
                     max_iter = result.Iter
 
+            assert max_iter
+
             return Statement.ParseResult(
                 False,
-                cast(Statement.NormalizedIterator, max_iter),
-                Statement.MultipleStandardParseResultData(data_items),
+                max_iter,
+                Statement.StandardParseResultData(
+                    self,
+                    Statement.MultipleStandardParseResultData(data_items, True),
+                ),
             )

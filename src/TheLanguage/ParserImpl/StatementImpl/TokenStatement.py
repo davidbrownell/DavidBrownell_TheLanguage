@@ -53,6 +53,8 @@ class TokenStatement(Statement):
         unique_id: Optional[List[Any]]=None,
         type_id: Optional[int]=None,
     ):
+        assert token
+
         super(TokenStatement, self).__init__(
             token.Name,
             unique_id=unique_id,
@@ -85,10 +87,10 @@ class TokenStatement(Statement):
         Statement.ParseResult,
         None,
     ]:
-        data: Optional[Statement.TokenParseResultData] = None
+        data: Optional[Statement.StandardParseResultData] = None
 
-        observer.StartStatement(self.UniqueId)
-        with CallOnExit(lambda: observer.EndStatement(self.UniqueId, data != None)):
+        observer.StartStatement([self])
+        with CallOnExit(lambda: observer.EndStatement([(self, data != None)])):
             # We only want to consume whitespace if there is a match that follows
             potential_iter = normalized_iter.Clone()
             potential_whitespace = self.ExtractWhitespace(potential_iter)
@@ -98,31 +100,32 @@ class TokenStatement(Statement):
             if result is None:
                 return Statement.ParseResult(False, normalized_iter, None)
 
-            data = Statement.TokenParseResultData(
-                self.Token,
-                potential_whitespace,
-                result,
-                potential_iter_begin,
-                potential_iter,
-                IsIgnored=self.Token.IsAlwaysIgnored,
+            data = Statement.StandardParseResultData(
+                self,
+                Statement.TokenParseResultData(
+                    self.Token,
+                    potential_whitespace,
+                    result,
+                    potential_iter_begin,
+                    potential_iter,
+                    IsIgnored=self.Token.IsAlwaysIgnored,
+                )
             )
 
             if isinstance(self.Token, IndentToken):
                 await observer.OnIndentAsync(
-                    self.UniqueId,
+                    [data],
                     potential_iter_begin,
                     potential_iter,
                 )
             elif isinstance(self.Token, DedentToken):
                 await observer.OnDedentAsync(
-                    self.UniqueId,
+                    [data],
                     potential_iter_begin,
                     potential_iter,
                 )
             elif not await observer.OnInternalStatementAsync(
-                    self.UniqueId,
-                    self,
-                    data,
+                    [data],
                     potential_iter_begin,
                     potential_iter,
                 ):
