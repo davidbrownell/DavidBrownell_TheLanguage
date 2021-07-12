@@ -120,7 +120,6 @@ class Observer(Interface.Interface):
     async def OnIndentAsync(
         statement: StatementEx,
         data_items: List[Statement.ParseResultData],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
@@ -132,7 +131,6 @@ class Observer(Interface.Interface):
     async def OnDedentAsync(
         statement: Statement,
         data_items: List[Statement.ParseResultData],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ):
@@ -380,7 +378,6 @@ class _StatementExObserver(StatementEx.Observer):
         statement: StatementEx,
         data_items: List[Statement.ParseResultData],
         unique_id: List[Any],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ):
@@ -389,7 +386,6 @@ class _StatementExObserver(StatementEx.Observer):
         this_result = await self._observer.OnIndentAsync(
             statement,
             data_items,
-            data,
             iter_before,
             iter_after,
         )
@@ -405,7 +401,6 @@ class _StatementExObserver(StatementEx.Observer):
         statement: Statement,
         data_items: List[Statement.ParseResultData],
         unique_id: List[Any],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ):
@@ -428,7 +423,6 @@ class _StatementExObserver(StatementEx.Observer):
         await self._observer.OnDedentAsync(
             statement,
             data_items,
-            data,
             iter_before,
             iter_after,
         )

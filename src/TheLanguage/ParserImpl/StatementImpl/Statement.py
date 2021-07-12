@@ -70,8 +70,6 @@ class Statement(Interface.Interface):
         @Interface.abstractmethod
         async def OnIndentAsync(
             unique_id: List[Any],
-            # BugBug: data is not necessary
-            data: "Statement.TokenParseResultData",
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
         ) -> None:
@@ -82,8 +80,6 @@ class Statement(Interface.Interface):
         @Interface.abstractmethod
         async def OnDedentAsync(
             unique_id: List[Any],
-            # BugBug: data is not necessary
-            data: "Statement.TokenParseResultData",
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
         ) -> None:

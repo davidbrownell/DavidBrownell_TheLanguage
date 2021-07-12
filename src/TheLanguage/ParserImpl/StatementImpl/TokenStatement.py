@@ -110,14 +110,12 @@ class TokenStatement(Statement):
             if isinstance(self.Token, IndentToken):
                 await observer.OnIndentAsync(
                     self.UniqueId,
-                    data,
                     potential_iter_begin,
                     potential_iter,
                 )
             elif isinstance(self.Token, DedentToken):
                 await observer.OnDedentAsync(
                     self.UniqueId,
-                    data,
                     potential_iter_begin,
                     potential_iter,
                 )

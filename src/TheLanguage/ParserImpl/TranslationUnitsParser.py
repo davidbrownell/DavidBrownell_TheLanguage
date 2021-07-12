@@ -248,7 +248,6 @@ class Observer(Interface.Interface):
         fully_qualified_name: str,
         statement: StatementEx,
         data_items: List[Statement.ParseResultData],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
@@ -262,7 +261,6 @@ class Observer(Interface.Interface):
         fully_qualified_name: str,
         statement: Statement,
         data_items: List[Statement.ParseResultData],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> None:
@@ -504,7 +502,6 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         self,
         statement: StatementEx,
         data_items: List[Statement.ParseResultData],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ):
@@ -512,7 +509,6 @@ class _TranslationUnitObserver(TranslationUnitObserver):
             self._fully_qualified_name,
             statement,
             data_items,
-            data,
             iter_before,
             iter_after,
         )
@@ -523,7 +519,6 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         self,
         statement: Statement,
         data_items: List[Statement.ParseResultData],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ):
@@ -531,7 +526,6 @@ class _TranslationUnitObserver(TranslationUnitObserver):
             self._fully_qualified_name,
             statement,
             data_items,
-            data,
             iter_before,
             iter_after,
         )

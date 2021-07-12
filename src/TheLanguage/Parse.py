@@ -246,7 +246,6 @@ class _Observer(TranslationUnitsParserObserver):
         fully_qualified_name: str,
         statement: StatementEx,
         data_items: List[Statement.ParseResultData],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
@@ -259,7 +258,6 @@ class _Observer(TranslationUnitsParserObserver):
         fully_qualified_name: str,
         statement: StatementEx,
         data_items: List[Statement.ParseResultData],
-        data: Statement.TokenParseResultData,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ):

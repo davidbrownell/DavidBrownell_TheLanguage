@@ -165,7 +165,6 @@ class StatementEx(Statement):
             statement: "StatementEx",
             data_items: List[Statement.ParseResultData],
             unique_id: List[Any],
-            data: Statement.TokenParseResultData,
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
         ) -> None:
@@ -179,7 +178,6 @@ class StatementEx(Statement):
             statement: "StatementEx",
             data_items: List[Statement.ParseResultData],
             unique_id: List[Any],
-            data: Statement.TokenParseResultData,
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
         ) -> None:

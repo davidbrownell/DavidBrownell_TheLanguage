@@ -215,7 +215,6 @@ class TestWords(object):
         assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._word_statement
-        assert parse_mock.method_calls[1][1][2] == result.Data
         assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
@@ -237,7 +236,6 @@ class TestWords(object):
         assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._newline_statement
-        assert parse_mock.method_calls[1][1][2] == result.Data
         assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
@@ -258,7 +256,6 @@ class TestWords(object):
 
         assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnIndentAsync"
-        assert parse_mock.method_calls[1][1][1] == result.Data
         assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
@@ -280,7 +277,6 @@ class TestWords(object):
         assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._word_statement
-        assert parse_mock.method_calls[1][1][2] == result.Data
         assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
@@ -302,7 +298,6 @@ class TestWords(object):
         assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnInternalStatementAsync"
         assert parse_mock.method_calls[1][1][1] == self._newline_statement
-        assert parse_mock.method_calls[1][1][2] == result.Data
         assert parse_mock.method_calls[2][0] == "EndStatement"
 
         iter = result.Iter
@@ -323,7 +318,6 @@ class TestWords(object):
 
         assert parse_mock.method_calls[0][0] == "StartStatement"
         assert parse_mock.method_calls[1][0] == "OnDedentAsync"
-        assert parse_mock.method_calls[1][1][1] == result.Data
         assert parse_mock.method_calls[2][0] == "EndStatement"
 
     # ----------------------------------------------------------------------
@@ -395,11 +389,9 @@ class TestWords(object):
 
             if expected_statement == self._indent_statement:
                 expected_name = "OnIndentAsync"
-                assert parse_mock.method_calls[1][1][1] == result.Data
 
             elif expected_statement == self._dedent_statement:
                 expected_name = "OnDedentAsync"
-                assert parse_mock.method_calls[1][1][1] == result.Data
 
             else:
                 expected_name = "OnInternalStatementAsync"

@@ -184,7 +184,6 @@ class TestStandard(object):
                     fully_qualified_name: str,
                     statement: Statement,
                     data_items: List[Statement.ParseResultData],
-                    data: Statement.TokenParseResultData,
                     iter_before: NormalizedIterator,
                     iter_after: NormalizedIterator,
                 ) -> Optional[DynamicStatementInfo]:
@@ -197,7 +196,6 @@ class TestStandard(object):
                     fully_qualified_name: str,
                     statement: Statement,
                     data_items: List[Statement.ParseResultData],
-                    data: Statement.TokenParseResultData,
                     iter_before: NormalizedIterator,
                     iter_after: NormalizedIterator,
                 ) -> None:
