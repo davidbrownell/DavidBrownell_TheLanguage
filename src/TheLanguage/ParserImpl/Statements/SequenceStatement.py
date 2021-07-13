@@ -65,8 +65,29 @@ class SequenceStatement(Statement):
         assert statements
         assert all(statement for statement in statements)
 
-        # BugBug: Validate that control tokens come in pairs
+        # Ensure that any control token requiring a pair has a peer
+        control_token_tracker = set()
 
+        for statement in statements:
+            if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
+                if statement.Token.ClosingToken is not None:
+                    key = type(statement.Token)
+                    if key in control_token_tracker:
+                        assert False, key
+
+                    control_token_tracker.add(key)
+
+                if statement.Token.OpeningToken is not None:
+                    key = statement.Token.OpeningToken
+
+                    if key not in control_token_tracker:
+                        assert False, key
+
+                    del control_token_tracker[key]
+
+        assert not control_token_tracker, control_token_tracker
+
+        # Initialize the class
         name = name or "Sequence: [{}]".format(", ".join([statement.Name for statement in statements]))
 
         super(SequenceStatement, self).__init__(

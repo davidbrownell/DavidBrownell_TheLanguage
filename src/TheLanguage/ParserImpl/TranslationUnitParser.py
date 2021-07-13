@@ -385,7 +385,9 @@ class _InternalObserver(Statement.Observer):
         should_continue = True
 
         # Process the most recently added statements to the original ones
-        for node in self._EnumInfoNodes(unique_id):
+        previous_nodes = list(self._EnumPreviousNodes(unique_id))
+
+        for node in reversed(previous_nodes):
             these_statements = []
             these_names = []
 
@@ -473,7 +475,17 @@ class _InternalObserver(Statement.Observer):
         unique_id, was_successful = statement_info_stack[0]
         unique_id = unique_id.UniqueId
 
-        node = self._GetNode(unique_id)
+        # Get this node
+        d = self._all_statement_infos
+        node = None
+
+        for id_part in unique_id:
+            node = d.get(id_part, None)
+            assert node is not None
+
+            d = node.Children
+
+        assert node
 
         # Collect all the infos of the descendants and add them here
         if was_successful:
@@ -583,24 +595,6 @@ class _InternalObserver(Statement.Observer):
 
         return leaf
 
-    # BugBug: Refactor these methods
-    # ----------------------------------------------------------------------
-    def _GetNode(
-        self,
-        unique_id: List[Any],
-    ) -> _StatementInfoNode:
-        d = self._all_statement_infos
-        node = None
-
-        for id_part in unique_id:
-            node = d.get(id_part, None)
-            assert node is not None
-
-            d = node.Children
-
-        assert node
-        return node
-
     # ----------------------------------------------------------------------
     def _AddDynamicStatementInfo(
         self,
@@ -608,16 +602,21 @@ class _InternalObserver(Statement.Observer):
         iter_after: Statement.NormalizedIterator,
         info: DynamicStatementInfo,
     ):
+        if not info.Statements and not info.Expressions:
+            return
+
         this_node = None
         last_info = None
 
-        for node in self._EnumInfoNodes(unique_id):
-            if this_node is None:
-                this_node = node
+        # The node associated with this event will be the last one that
+        # we encounter in this generator. In addition to the current node,
+        # get the last dynamic info associated with all of the nodes to determine
+        # if adding this dynamic info will be a problem.
+        for node in self._EnumPreviousNodes(unique_id):
+            this_node = node
 
             if node.Infos:
                 last_info = node.Infos[-1]
-                break
 
         assert this_node.UniqueIdPart == unique_id[-1], (node.UniqueIdPart, unique_id[-1])
 
@@ -670,13 +669,3 @@ class _InternalObserver(Statement.Observer):
                 if k == id_part:
                     d = v.Children
                     break
-
-    # ----------------------------------------------------------------------
-    def _EnumInfoNodes(
-        self,
-        unique_id: List[Any],
-    ) -> Generator[_StatementInfoNode, None, None]:
-        nodes = list(self._EnumPreviousNodes(unique_id))
-
-        # Process the most recently added statements to the original ones
-        yield from reversed(nodes)
