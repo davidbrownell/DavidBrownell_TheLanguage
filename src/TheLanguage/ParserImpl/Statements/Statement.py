@@ -53,7 +53,7 @@ class Statement(Interface.Interface):
 
         Success: bool
         Iter: NormalizedIterator
-        Data: "Statement.StandardParseResultData"
+        Data: Optional["Statement.StandardParseResultData"]
 
         # ----------------------------------------------------------------------
         def __str__(self):
@@ -169,7 +169,7 @@ class Statement(Interface.Interface):
     class MultipleStandardParseResultData(ParseResultData):
         """A collection of ParseResultData items"""
 
-        DataItems: List["Statement.ParseResultData"]
+        DataItems: List[Optional["Statement.ParseResultData"]]
         IsComplete: bool
 
         # ----------------------------------------------------------------------
@@ -194,7 +194,7 @@ class Statement(Interface.Interface):
                         StringHelpers.LeftJustify(
                             data.ToString(
                                 verbose=verbose,
-                            ).rstrip() if data else str(data),
+                            ).rstrip() if data else "<No Data>",
                             indent,
                         ),
                     ),
@@ -295,6 +295,7 @@ class Statement(Interface.Interface):
             ],
         ) -> None:
             """Called when all events have been generated for a particular unique_id"""
+            raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
         @staticmethod
@@ -394,6 +395,19 @@ class Statement(Interface.Interface):
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
+    @Interface.abstractmethod
+    def PopulateRecursive(
+        self,
+        new_statement: "Statement",
+        type_to_replace: Any,
+    ):
+        """\
+        Populates all instances of `type_to_replace` with `new_statement`. This
+        allows for recursive statement definitions.
+        """
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
     async def ParseAsync(
@@ -430,6 +444,16 @@ class Statement(Interface.Interface):
             self._observer                  = observer
             self._items                     = items
             self._item_decorator_func       = item_decorator_func
+
+        # ----------------------------------------------------------------------
+        def __getattr__(self, name):
+            # ----------------------------------------------------------------------
+            def Impl(*args, **kwargs):
+                return getattr(self._observer, name)(*args, **kwargs)
+
+            # ----------------------------------------------------------------------
+
+            return Impl
 
         # ----------------------------------------------------------------------
         @Interface.override
@@ -523,7 +547,7 @@ class Statement(Interface.Interface):
                     Statement.StandardParseResultData(
                         self._statement,
                         Statement.MultipleStandardParseResultData(
-                            [self._item_decorator_func(item) for item in self._items],
+                            [None if item is None else self._item_decorator_func(item) for item in self._items],
                             False,
                         ),
                     ),

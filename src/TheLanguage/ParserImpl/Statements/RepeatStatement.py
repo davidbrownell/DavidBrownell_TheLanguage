@@ -16,16 +16,12 @@
 """Contains the RepeatStatement object"""
 
 import os
-import textwrap
 
-from typing import Any, cast, Generator, List, Optional, Tuple, Union
-
-from dataclasses import dataclass
+from typing import Any, cast, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
-from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -89,6 +85,20 @@ class RepeatStatement(Statement):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def PopulateRecursive(
+        self,
+        new_statement: Statement,
+        type_to_replace: Any,
+    ):
+        if isinstance(self.Statement, type_to_replace):
+            self.Statement = new_statement.Clone(
+                unique_id=self.Statement.UniqueId,
+            )
+        else:
+            self.Statement.PopulateRecursive(new_statement, type_to_replace)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     async def ParseAsync(
         self,
         normalized_iter: Statement.NormalizedIterator,
@@ -149,12 +159,9 @@ class RepeatStatement(Statement):
             if success:
                 data = Statement.StandardParseResultData(
                     self,
-                    Statement.StandardParseResultData(
-                        self.Statement,
-                        Statement.MultipleStandardParseResultData(
-                            [result.Data for result in results],
-                            True,
-                        ),
+                    Statement.MultipleStandardParseResultData(
+                        [result.Data for result in results],
+                        True,
                     ),
                 )
 
@@ -181,9 +188,6 @@ class RepeatStatement(Statement):
                 end_iter,
                 Statement.StandardParseResultData(
                     self,
-                    Statement.StandardParseResultData(
-                        self.Statement,
-                        Statement.MultipleStandardParseResultData(result_data, True),
-                    ),
+                    Statement.MultipleStandardParseResultData(result_data, True),
                 ),
             )

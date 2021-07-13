@@ -50,13 +50,16 @@ class TokenStatement(Statement):
     def __init__(
         self,
         token: TokenClass,
+        name: str=None,
         unique_id: Optional[List[Any]]=None,
         type_id: Optional[int]=None,
     ):
         assert token
 
+        name = name or token.Name
+
         super(TokenStatement, self).__init__(
-            token.Name,
+            name,
             unique_id=unique_id,
             type_id=type_id,
         )
@@ -74,6 +77,16 @@ class TokenStatement(Statement):
             unique_id=unique_id,
             type_id=self.TypeId,
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def PopulateRecursive(
+        self,
+        new_statement: Statement,
+        type_to_replace: Any,
+    ):
+        # Nothing to do here
+        pass
 
     # ----------------------------------------------------------------------
     @Interface.override

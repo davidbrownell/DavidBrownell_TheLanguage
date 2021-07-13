@@ -102,6 +102,21 @@ class SequenceStatement(Statement):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def PopulateRecursive(
+        self,
+        new_statement: Statement,
+        type_to_replace: Any,
+    ):
+        for statement_index, statement in enumerate(self.Statements):
+            if isinstance(statement, type_to_replace):
+                self.Statements[statement_index] = new_statement.Clone(
+                    unique_id=statement.UniqueId,
+                )
+            else:
+                statement.PopulateRecursive(new_statement, type_to_replace)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     async def ParseAsync(
         self,
         normalized_iter: Statement.NormalizedIterator,
@@ -136,7 +151,7 @@ class SequenceStatement(Statement):
 
             # ----------------------------------------------------------------------
 
-            data_items: List[Statement.ParseResultData] = []
+            data_items: List[Optional[Statement.ParseResultData]] = []
 
             observer_decorator = Statement.ObserverDecorator(
                 self,
@@ -183,7 +198,9 @@ class SequenceStatement(Statement):
                     return None
 
                 # Preserve the results
-                data_items.append(Statement.StandardParseResultData(statement, result.Data))
+                if result.Data:
+                    data_items.append(result.Data)
+
                 normalized_iter = result.Iter.Clone()
 
                 if not result.Success:

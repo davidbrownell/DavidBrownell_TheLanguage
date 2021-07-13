@@ -75,6 +75,16 @@ def CreateStatement(result):
 
         # ----------------------------------------------------------------------
         @Interface.override
+        def PopulateRecursive(
+            self,
+            new_statement: Statement,
+            type_to_replace: Any,
+        ):
+            # Nothing to do here
+            pass
+
+        # ----------------------------------------------------------------------
+        @Interface.override
         async def ParseAsync(self, *args, **kwargs):
             return self.parse_mock(*args, **kwargs)
 
@@ -104,6 +114,16 @@ class TestStandard(object):
                 unique_id=unique_id,
                 type_id=self.TypeId,
             )
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def PopulateRecursive(
+            self,
+            new_statement: Statement,
+            type_to_replace: Any,
+        ):
+            # Nothing to do here
+            pass
 
         # ----------------------------------------------------------------------
         @staticmethod
@@ -346,6 +366,7 @@ class TestMultipleParseResultData(object):
                 ),
             ),
         ],
+        True,
     )
 
     # ----------------------------------------------------------------------
@@ -367,8 +388,9 @@ class TestMultipleParseResultData(object):
         ]
 
 # ----------------------------------------------------------------------
-def test_Parse(iterator, parse_mock):
-    result = CreateStatement(1).Parse(iterator, parse_mock)
+@pytest.mark.asyncio
+async def test_Parse(iterator, parse_mock):
+    result = await CreateStatement(1).ParseAsync(iterator, parse_mock)
     assert result == 1
 
     assert parse_mock.OnIndent.call_count == 0

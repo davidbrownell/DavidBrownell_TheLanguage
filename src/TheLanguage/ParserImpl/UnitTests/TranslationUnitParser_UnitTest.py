@@ -31,20 +31,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..StatementEx import (
+    from ..StatementDSL import CreateStatement, DynamicStatements, StatementItem
+
+    from ..Token import (
         DedentToken,
         IndentToken,
         NewlineToken,
         RegexToken,
-        StatementEx,
     )
 
     from ..TranslationUnitParser import *
 
-    from ..StatementImpl.UnitTests import (
+    from ..Statements.UnitTests import (
         CoroutineMock,
         CreateIterator,
-        InternalStatementMethodCallToTuple,
         MethodCallsToString,
         parse_mock as parse_mock_impl,
     )
@@ -63,19 +63,19 @@ _number_token                               = RegexToken("Number", re.compile(r"
 
 # ----------------------------------------------------------------------
 class TestSimple(object):
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token, NewlineToken())
-    _lower_statement                        = StatementEx("Lower Statement", _lower_token, NewlineToken())
-    _number_statement                       = StatementEx("Number Statement", _number_token, NewlineToken())
+    _upper_statement                        = CreateStatement(name="Upper Statement", item=[_upper_token, NewlineToken()])
+    _lower_statement                        = CreateStatement(name="Lower Statement", item=[_lower_token, NewlineToken()])
+    _number_statement                       = CreateStatement(name="Number Statement", item=[_number_token, NewlineToken()])
 
     _statements                             = DynamicStatementInfo(
-        [_upper_statement, _lower_statement, _number_statement],
-        [],
+        (_upper_statement, _lower_statement, _number_statement),
+        (),
     )
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MatchStandard(self, parse_mock):
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -90,46 +90,95 @@ class TestSimple(object):
             single_threaded=True,
         )
 
-        assert "".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Upper Statement, Lower Statement, Number Statement]
-                Upper Statement
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-                    Newline+
-                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
-            [Upper Statement, Lower Statement, Number Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
-                    Newline+
-                        Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
-            [Upper Statement, Lower Statement, Number Statement]
-                Number Statement
-                    Number
-                        Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
-                    Newline+
-                        Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
+            <Root>
+                Dynamic Statements
+                    {Upper Statement, Lower Statement, Number Statement}
+                        Upper Statement
+                            Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                Dynamic Statements
+                    {Upper Statement, Lower Statement, Number Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
+                            Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
+                Dynamic Statements
+                    {Upper Statement, Lower Statement, Number Statement}
+                        Number Statement
+                            Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
+                            Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
             """,
         )
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, OnStatementCompleteAsync, Upper
-            1, OnStatementCompleteAsync, Newline+
-            2, OnStatementCompleteAsync, Upper Statement
-            3, OnStatementCompleteAsync, [Upper Statement, Lower Statement, Number Statement]
-            4, OnStatementCompleteAsync, Dynamic Statements
-            5, OnStatementCompleteAsync, Lower
-            6, OnStatementCompleteAsync, Newline+
-            7, OnStatementCompleteAsync, Lower Statement
-            8, OnStatementCompleteAsync, [Upper Statement, Lower Statement, Number Statement]
-            9, OnStatementCompleteAsync, Dynamic Statements
-            10, OnStatementCompleteAsync, Number
-            11, OnStatementCompleteAsync, Newline+
-            12, OnStatementCompleteAsync, Number Statement
-            13, OnStatementCompleteAsync, [Upper Statement, Lower Statement, Number Statement]
-            14, OnStatementCompleteAsync, Dynamic Statements
+            0) OnStatementCompleteAsync, Upper, 0, 3
+                Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+            1) OnStatementCompleteAsync, Newline+, 3, 4
+                Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+            2) OnStatementCompleteAsync, Upper Statement, 0, 4
+                Upper
+                    Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                Newline+
+                    Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+            3) OnStatementCompleteAsync, {Upper Statement, Lower Statement, Number Statement}, 0, 4
+                Upper Statement
+                    Upper
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                    Newline+
+                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+            4) OnStatementCompleteAsync, Dynamic Statements, 0, 4
+                {Upper Statement, Lower Statement, Number Statement}
+                    Upper Statement
+                        Upper
+                            Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                        Newline+
+                            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+            5) OnStatementCompleteAsync, Lower, 4, 7
+                Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
+            6) OnStatementCompleteAsync, Newline+, 7, 8
+                Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
+            7) OnStatementCompleteAsync, Lower Statement, 4, 8
+                Lower
+                    Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
+                Newline+
+                    Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
+            8) OnStatementCompleteAsync, {Upper Statement, Lower Statement, Number Statement}, 4, 8
+                Lower Statement
+                    Lower
+                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
+                    Newline+
+                        Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
+            9) OnStatementCompleteAsync, Dynamic Statements, 4, 8
+                {Upper Statement, Lower Statement, Number Statement}
+                    Lower Statement
+                        Lower
+                            Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
+                        Newline+
+                            Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
+            10) OnStatementCompleteAsync, Number, 8, 13
+                Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
+            11) OnStatementCompleteAsync, Newline+, 13, 14
+                Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
+            12) OnStatementCompleteAsync, Number Statement, 8, 14
+                Number
+                    Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
+                Newline+
+                    Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
+            13) OnStatementCompleteAsync, {Upper Statement, Lower Statement, Number Statement}, 8, 14
+                Number Statement
+                    Number
+                        Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
+                    Newline+
+                        Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
+            14) OnStatementCompleteAsync, Dynamic Statements, 8, 14
+                {Upper Statement, Lower Statement, Number Statement}
+                    Number Statement
+                        Number
+                            Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
+                        Newline+
+                            Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
             """,
         )
 
@@ -137,7 +186,7 @@ class TestSimple(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MatchReverse(self, parse_mock):
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -151,26 +200,24 @@ class TestSimple(object):
             parse_mock,
         )
 
-        assert "".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Upper Statement, Lower Statement, Number Statement]
-                Number Statement
-                    Number
-                        Number <<Regex: <_sre.SRE_Match object; span=(0, 2), match='33'>>> ws:None [1, 1 -> 1, 3]
-                    Newline+
-                        Newline+ <<2, 3>> ws:None [1, 3 -> 2, 1]
-            [Upper Statement, Lower Statement, Number Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(3, 14), match='twooooooooo'>>> ws:None [2, 1 -> 2, 12]
-                    Newline+
-                        Newline+ <<14, 15>> ws:None [2, 12 -> 3, 1]
-            [Upper Statement, Lower Statement, Number Statement]
-                Upper Statement
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(15, 18), match='ONE'>>> ws:None [3, 1 -> 3, 4]
-                    Newline+
-                        Newline+ <<18, 19>> ws:None [3, 4 -> 4, 1]
+            <Root>
+                Dynamic Statements
+                    {Upper Statement, Lower Statement, Number Statement}
+                        Number Statement
+                            Number <<Regex: <_sre.SRE_Match object; span=(0, 2), match='33'>>> ws:None [1, 1 -> 1, 3]
+                            Newline+ <<2, 3>> ws:None [1, 3 -> 2, 1]
+                Dynamic Statements
+                    {Upper Statement, Lower Statement, Number Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(3, 14), match='twooooooooo'>>> ws:None [2, 1 -> 2, 12]
+                            Newline+ <<14, 15>> ws:None [2, 12 -> 3, 1]
+                Dynamic Statements
+                    {Upper Statement, Lower Statement, Number Statement}
+                        Upper Statement
+                            Upper <<Regex: <_sre.SRE_Match object; span=(15, 18), match='ONE'>>> ws:None [3, 1 -> 3, 4]
+                            Newline+ <<18, 19>> ws:None [3, 4 -> 4, 1]
             """,
         )
 
@@ -183,7 +230,7 @@ class TestSimple(object):
             side_effect=[True, False],
         )
 
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -197,30 +244,32 @@ class TestSimple(object):
             parse_mock,
         )
 
-        assert results is None
+        assert result is None
 
 # ----------------------------------------------------------------------
 class TestIndentation(object):
-    _statement                              = StatementEx(
-        "Statement",
-        _upper_token,
-        NewlineToken(),
-        IndentToken(),
-        _upper_token,
-        _upper_token,
-        NewlineToken(),
-        DedentToken(),
+    _statement                              = CreateStatement(
+        name="Statement",
+        item=[
+            _upper_token,
+            NewlineToken(),
+            IndentToken(),
+            _upper_token,
+            _upper_token,
+            NewlineToken(),
+            DedentToken(),
+        ],
     )
 
     _statements                             = DynamicStatementInfo(
-        [_statement],
-        [],
+        (_statement,),
+        (),
     )
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -233,34 +282,29 @@ class TestIndentation(object):
             parse_mock,
         )
 
-        assert "".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Statement]
-                Statement
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-                    Newline+
-                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
-                    Indent
-                        Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(8, 11), match='TWO'>>> ws:None [2, 5 -> 2, 8]
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(17, 22), match='THREE'>>> ws:(11, 17) [2, 14 -> 2, 19]
-                    Newline+
-                        Newline+ <<22, 23>> ws:None [2, 19 -> 3, 1]
-                    Dedent
-                        Dedent <<>> ws:None [3, 1 -> 3, 1]
+            <Root>
+                Dynamic Statements
+                    {Statement}
+                        Statement
+                            Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                            Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
+                            Upper <<Regex: <_sre.SRE_Match object; span=(8, 11), match='TWO'>>> ws:None [2, 5 -> 2, 8]
+                            Upper <<Regex: <_sre.SRE_Match object; span=(17, 22), match='THREE'>>> ws:(11, 17) [2, 14 -> 2, 19]
+                            Newline+ <<22, 23>> ws:None [2, 19 -> 3, 1]
+                            Dedent <<>> ws:None [3, 1 -> 3, 1]
             """,
         )
 
 # ----------------------------------------------------------------------
 class TestNewStatements(object):
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token)
-    _lower_statement                        = StatementEx("Lower Statement", _lower_token, NewlineToken())
+    _upper_statement                        = CreateStatement(name="Upper Statement", item=_upper_token)
+    _lower_statement                        = CreateStatement(name="Lower Statement", item=[_lower_token, NewlineToken()])
 
-    _statements                             = DynamicStatementInfo([_upper_statement], [])
-    _new_statements                         = DynamicStatementInfo([_lower_statement], [])
+    _statements                             = DynamicStatementInfo((_upper_statement,), ())
+    _new_statements                         = DynamicStatementInfo((_lower_statement,), ())
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -269,7 +313,7 @@ class TestNewStatements(object):
             side_effect=[self._new_statements, True, True, True, True, True, True, True, True],
         )
 
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -281,18 +325,17 @@ class TestNewStatements(object):
             parse_mock,
         )
 
-        assert "".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Upper Statement]
-                Upper Statement
-                    Upper
+            <Root>
+                Dynamic Statements
+                    {Upper Statement}
                         Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-            [Upper Statement] / [Lower Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
-                    Newline+
-                        Newline+ <<7, 8>> ws:None [1, 8 -> 2, 1]
+                Dynamic Statements
+                    {Upper Statement} / {Lower Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                            Newline+ <<7, 8>> ws:None [1, 8 -> 2, 1]
             """,
         )
 
@@ -322,28 +365,28 @@ class TestNewStatements(object):
             """\
             The syntax is not recognized [1, 4]
 
-            [Upper Statement]
-                Upper Statement
-                    Upper
+            <Root>
+                Dynamic Statements
+                    {Upper Statement}
                         Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-            [Upper Statement]
-                Upper Statement
-                    Upper
-                        None
+                Dynamic Statements
+                    {Upper Statement}
+                        Upper
+                            <No Children>
             """,
         )
 
 # ----------------------------------------------------------------------
 class TestNewScopedStatements(object):
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token)
-    _lower_statement                        = StatementEx("Lower Statement", _lower_token)
+    _upper_statement                        = CreateStatement(name="Upper Statement", item=_upper_token)
+    _lower_statement                        = CreateStatement(name="Lower Statement", item=_lower_token)
 
-    _newline_statement                      = StatementEx("Newline Statement", NewlineToken())
-    _indent_statement                       = StatementEx("Indent Statement", IndentToken())
-    _dedent_statement                       = StatementEx("Dedent Statement", DedentToken())
+    _newline_statement                      = CreateStatement(name="Newline Statement", item=NewlineToken())
+    _indent_statement                       = CreateStatement(name="Indent Statement", item=IndentToken())
+    _dedent_statement                       = CreateStatement(name="Dedent Statement", item=DedentToken())
 
-    _statements                             = DynamicStatementInfo([_upper_statement, _newline_statement, _indent_statement, _dedent_statement], [])
-    _new_statements                         = DynamicStatementInfo([_lower_statement], [])
+    _statements                             = DynamicStatementInfo((_upper_statement, _newline_statement, _indent_statement, _dedent_statement), ())
+    _new_statements                         = DynamicStatementInfo((_lower_statement,), ())
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -352,7 +395,7 @@ class TestNewScopedStatements(object):
             return_value=self._new_statements,
         )
 
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -365,31 +408,26 @@ class TestNewScopedStatements(object):
             parse_mock,
         )
 
-        assert "".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
-                Upper Statement
-                    Upper
+            <Root>
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement}
                         Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
-                Newline Statement
-                    Newline+
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement}
                         Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
-                Indent Statement
-                    Indent
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement}
                         Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement] / [Lower Statement]
-                Lower Statement
-                    Lower
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement} / {Lower Statement}
                         Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement] / [Lower Statement]
-                Newline Statement
-                    Newline+
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement} / {Lower Statement}
                         Newline+ <<11, 12>> ws:None [2, 8 -> 3, 1]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement] / [Lower Statement]
-                Dedent Statement
-                    Dedent
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement} / {Lower Statement}
                         Dedent <<>> ws:None [3, 1 -> 3, 1]
             """,
         )
@@ -427,69 +465,63 @@ class TestNewScopedStatements(object):
             """\
             The syntax is not recognized [4, 1]
 
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
-                Upper Statement
-                    Upper
+            <Root>
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement}
                         Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
-                Newline Statement
-                    Newline+
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement}
                         Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
-                Indent Statement
-                    Indent
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement}
                         Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement] / [Lower Statement]
-                Lower Statement
-                    Lower
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement} / {Lower Statement}
                         Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement] / [Lower Statement]
-                Newline Statement
-                    Newline+
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement} / {Lower Statement}
                         Newline+ <<11, 13>> ws:None [2, 8 -> 4, 1]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement] / [Lower Statement]
-                Dedent Statement
-                    Dedent
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement} / {Lower Statement}
                         Dedent <<>> ws:None [4, 1 -> 4, 1]
-            [Upper Statement, Newline Statement, Indent Statement, Dedent Statement]
-                Upper Statement
-                    Upper
-                        None
-                Newline Statement
-                    Newline+
-                        None
-                Indent Statement
-                    Indent
-                        None
-                Dedent Statement
-                    Dedent
-                        None
+                Dynamic Statements
+                    {Upper Statement, Newline Statement, Indent Statement, Dedent Statement}
+                        Upper
+                            <No Children>
+                        Newline+
+                            <No Children>
+                        Indent
+                            <No Children>
+                        Dedent
+                            <No Children>
             """,
         )
 
 # ----------------------------------------------------------------------
 class TestNewScopedStatementsComplex(object):
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token)
-    _lower_statement                        = StatementEx("Lower Statement", _lower_token)
+    _upper_statement                        = CreateStatement(name="Upper Statement", item=_upper_token)
+    _lower_statement                        = CreateStatement(name="Lower Statement", item=_lower_token)
 
-    _newline_statement                      = StatementEx("Newline Statement", NewlineToken())
-    _dedent_statement                       = StatementEx("Dedent Statement", DedentToken())
+    _newline_statement                      = CreateStatement(name="Newline Statement", item=NewlineToken())
+    _dedent_statement                       = CreateStatement(name="Dedent Statement", item=DedentToken())
 
-    _new_scope_statement                    = StatementEx(
-        "New Scope",
-        _upper_token,
-        RegexToken("Colon", re.compile(r":")),
-        NewlineToken(),
-        IndentToken(),
-        DynamicStatements.Statements,
-        DynamicStatements.Statements,
-        DynamicStatements.Statements,
-        DynamicStatements.Statements,
-        DedentToken(),
+    _new_scope_statement                    = CreateStatement(
+        name="New Scope",
+        item=[
+            _upper_token,
+            RegexToken("Colon", re.compile(r":")),
+            NewlineToken(),
+            IndentToken(),
+            DynamicStatements.Statements,
+            DynamicStatements.Statements,
+            DynamicStatements.Statements,
+            DynamicStatements.Statements,
+            DedentToken(),
+        ],
     )
 
-    _statements                             = DynamicStatementInfo([_newline_statement, _new_scope_statement], [])
-    _new_statements                         = DynamicStatementInfo([_upper_statement, _lower_statement], [])
+    _statements                             = DynamicStatementInfo((_newline_statement, _new_scope_statement), ())
+    _new_statements                         = DynamicStatementInfo((_upper_statement, _lower_statement), ())
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -498,7 +530,7 @@ class TestNewScopedStatementsComplex(object):
             return_value=self._new_statements,
         )
 
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -513,56 +545,45 @@ class TestNewScopedStatementsComplex(object):
             parse_mock,
         )
 
-        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Newline Statement, New Scope]
-                New Scope
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> ws:None [1, 1 -> 1, 9]
-                    Colon
-                        Colon <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
-                    Newline+
-                        Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
-                    Indent
-                        Indent <<10, 14, (4)>> ws:None [2, 1 -> 2, 5]
-                    DynamicStatements.Statements
-                        [Newline Statement, New Scope] / [Upper Statement, Lower Statement]
-                            Upper Statement
-                                Upper
+            <Root>
+                Dynamic Statements
+                    {Newline Statement, New Scope}
+                        New Scope
+                            Upper <<Regex: <_sre.SRE_Match object; span=(0, 8), match='NEWSCOPE'>>> ws:None [1, 1 -> 1, 9]
+                            Colon <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
+                            Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
+                            Indent <<10, 14, (4)>> ws:None [2, 1 -> 2, 5]
+                            DynamicStatements.Statements
+                                {Newline Statement, New Scope} / {Upper Statement, Lower Statement}
                                     Upper <<Regex: <_sre.SRE_Match object; span=(14, 19), match='UPPER'>>> ws:None [2, 5 -> 2, 10]
-                    DynamicStatements.Statements
-                        [Newline Statement, New Scope] / [Upper Statement, Lower Statement]
-                            Newline Statement
-                                Newline+
+                            DynamicStatements.Statements
+                                {Newline Statement, New Scope} / {Upper Statement, Lower Statement}
                                     Newline+ <<19, 21>> ws:None [2, 10 -> 4, 1]
-                    DynamicStatements.Statements
-                        [Newline Statement, New Scope] / [Upper Statement, Lower Statement]
-                            Lower Statement
-                                Lower
+                            DynamicStatements.Statements
+                                {Newline Statement, New Scope} / {Upper Statement, Lower Statement}
                                     Lower <<Regex: <_sre.SRE_Match object; span=(25, 30), match='lower'>>> ws:None [4, 5 -> 4, 10]
-                    DynamicStatements.Statements
-                        [Newline Statement, New Scope] / [Upper Statement, Lower Statement]
-                            Newline Statement
-                                Newline+
+                            DynamicStatements.Statements
+                                {Newline Statement, New Scope} / {Upper Statement, Lower Statement}
                                     Newline+ <<30, 31>> ws:None [4, 10 -> 5, 1]
-                    Dedent
-                        Dedent <<>> ws:None [5, 1 -> 5, 1]
+                            Dedent <<>> ws:None [5, 1 -> 5, 1]
             """,
         )
 
 # ----------------------------------------------------------------------
 class TestEmbeddedStatements(object):
-    _upper_lower_statement                  = StatementEx("Upper Lower Statement", _upper_token, _lower_token, NewlineToken())
+    _upper_lower_statement                  = CreateStatement(name="Upper Lower Statement", item=[_upper_token, _lower_token, NewlineToken()])
 
-    _uul_statement                          = StatementEx("uul", _upper_token, _upper_lower_statement)
-    _lul_statement                          = StatementEx("lul", _lower_token, _upper_lower_statement)
+    _uul_statement                          = CreateStatement(name="uul", item=[_upper_token, _upper_lower_statement])
+    _lul_statement                          = CreateStatement(name="lul", item=[_lower_token, _upper_lower_statement])
 
-    _statements                             = DynamicStatementInfo([_uul_statement, _lul_statement], [])
+    _statements                             = DynamicStatementInfo((_uul_statement, _lul_statement), ())
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -575,48 +596,43 @@ class TestEmbeddedStatements(object):
             parse_mock,
         )
 
-        assert "".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [uul, lul]
-                uul
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-                    Upper Lower Statement
-                        Upper
-                            Upper <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:(3, 4) [1, 5 -> 1, 8]
-                        Lower
-                            Lower <<Regex: <_sre.SRE_Match object; span=(9, 14), match='three'>>> ws:(7, 9) [1, 10 -> 1, 15]
-                        Newline+
-                            Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
-            [uul, lul]
-                lul
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(15, 19), match='four'>>> ws:None [2, 1 -> 2, 5]
-                    Upper Lower Statement
-                        Upper
-                            Upper <<Regex: <_sre.SRE_Match object; span=(23, 27), match='FIVE'>>> ws:(19, 23) [2, 9 -> 2, 13]
-                        Lower
-                            Lower <<Regex: <_sre.SRE_Match object; span=(28, 31), match='six'>>> ws:(27, 28) [2, 14 -> 2, 17]
-                        Newline+
-                            Newline+ <<31, 32>> ws:None [2, 17 -> 3, 1]
+            <Root>
+                Dynamic Statements
+                    {uul, lul}
+                        uul
+                            Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                            Upper Lower Statement
+                                Upper <<Regex: <_sre.SRE_Match object; span=(4, 7), match='TWO'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                                Lower <<Regex: <_sre.SRE_Match object; span=(9, 14), match='three'>>> ws:(7, 9) [1, 10 -> 1, 15]
+                                Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
+                Dynamic Statements
+                    {uul, lul}
+                        lul
+                            Lower <<Regex: <_sre.SRE_Match object; span=(15, 19), match='four'>>> ws:None [2, 1 -> 2, 5]
+                            Upper Lower Statement
+                                Upper <<Regex: <_sre.SRE_Match object; span=(23, 27), match='FIVE'>>> ws:(19, 23) [2, 9 -> 2, 13]
+                                Lower <<Regex: <_sre.SRE_Match object; span=(28, 31), match='six'>>> ws:(27, 28) [2, 14 -> 2, 17]
+                                Newline+ <<31, 32>> ws:None [2, 17 -> 3, 1]
             """,
         )
 
 # ----------------------------------------------------------------------
 class TestVariedLengthMatches(object):
-    _upper_statement                        = StatementEx("Upper", _upper_token, NewlineToken())
-    _lower_statement                        = StatementEx("Lower", _lower_token, _lower_token, NewlineToken())
-    _number_statement                       = StatementEx("Number", _number_token, _number_token, _number_token, NewlineToken())
+    _upper_statement                        = CreateStatement(name="Upper", item=[_upper_token, NewlineToken()])
+    _lower_statement                        = CreateStatement(name="Lower", item=[_lower_token, _lower_token, NewlineToken()])
+    _number_statement                       = CreateStatement(name="Number", item=[_number_token, _number_token, _number_token, NewlineToken()])
 
     _statements                             = DynamicStatementInfo(
-        [_upper_statement, _lower_statement, _number_statement],
-        [],
+        (_upper_statement, _lower_statement, _number_statement),
+        (),
     )
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -630,32 +646,27 @@ class TestVariedLengthMatches(object):
             parse_mock,
         )
 
-        assert "".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Upper, Lower, Number]
-                Lower
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
-                    Newline+
-                        Newline+ <<7, 8>> ws:None [1, 8 -> 2, 1]
-            [Upper, Lower, Number]
-                Number
-                    Number
-                        Number <<Regex: <_sre.SRE_Match object; span=(8, 9), match='1'>>> ws:None [2, 1 -> 2, 2]
-                    Number
-                        Number <<Regex: <_sre.SRE_Match object; span=(10, 11), match='2'>>> ws:(9, 10) [2, 3 -> 2, 4]
-                    Number
-                        Number <<Regex: <_sre.SRE_Match object; span=(12, 13), match='3'>>> ws:(11, 12) [2, 5 -> 2, 6]
-                    Newline+
-                        Newline+ <<13, 14>> ws:None [2, 6 -> 3, 1]
-            [Upper, Lower, Number]
-                Upper
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(14, 18), match='WORD'>>> ws:None [3, 1 -> 3, 5]
-                    Newline+
-                        Newline+ <<18, 19>> ws:None [3, 5 -> 4, 1]
+            <Root>
+                Dynamic Statements
+                    {Upper, Lower, Number}
+                        Lower
+                            Lower <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                            Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:(3, 4) [1, 5 -> 1, 8]
+                            Newline+ <<7, 8>> ws:None [1, 8 -> 2, 1]
+                Dynamic Statements
+                    {Upper, Lower, Number}
+                        Number
+                            Number <<Regex: <_sre.SRE_Match object; span=(8, 9), match='1'>>> ws:None [2, 1 -> 2, 2]
+                            Number <<Regex: <_sre.SRE_Match object; span=(10, 11), match='2'>>> ws:(9, 10) [2, 3 -> 2, 4]
+                            Number <<Regex: <_sre.SRE_Match object; span=(12, 13), match='3'>>> ws:(11, 12) [2, 5 -> 2, 6]
+                            Newline+ <<13, 14>> ws:None [2, 6 -> 3, 1]
+                Dynamic Statements
+                    {Upper, Lower, Number}
+                        Upper
+                            Upper <<Regex: <_sre.SRE_Match object; span=(14, 18), match='WORD'>>> ws:None [3, 1 -> 3, 5]
+                            Newline+ <<18, 19>> ws:None [3, 5 -> 4, 1]
             """,
         )
 
@@ -663,16 +674,16 @@ class TestVariedLengthMatches(object):
 @pytest.mark.asyncio
 async def test_EmptyDynamicStatementInfo(parse_mock):
     parse_mock.OnStatementCompleteAsync = CoroutineMock(
-        return_value=DynamicStatementInfo([], []),
+        return_value=DynamicStatementInfo((), ()),
     )
 
-    results = await ParseAsync(
+    result = await ParseAsync(
         DynamicStatementInfo(
-            [
-                StatementEx("Newline Statement", NewlineToken()),
-                StatementEx("Lower Statement", _lower_token, NewlineToken()),
-            ],
-            [],
+            (
+                CreateStatement(name="Newline Statement", item=NewlineToken()),
+                CreateStatement(name="Lower Statement", item=[_lower_token, NewlineToken()]),
+            ),
+            (),
         ),
         CreateIterator(
             textwrap.dedent(
@@ -685,31 +696,30 @@ async def test_EmptyDynamicStatementInfo(parse_mock):
         parse_mock,
     )
 
-    assert "".join([str(result) for result in results]) == textwrap.dedent(
+    assert str(result) == textwrap.dedent(
         """\
-        [Newline Statement, Lower Statement]
-            Newline Statement
-                Newline+
+        <Root>
+            Dynamic Statements
+                {Newline Statement, Lower Statement}
                     Newline+ <<0, 1>> ws:None [1, 1 -> 2, 1]
-        [Newline Statement, Lower Statement]
-            Lower Statement
-                Lower
-                    Lower <<Regex: <_sre.SRE_Match object; span=(1, 5), match='word'>>> ws:None [2, 1 -> 2, 5]
-                Newline+
-                    Newline+ <<5, 6>> ws:None [2, 5 -> 3, 1]
+            Dynamic Statements
+                {Newline Statement, Lower Statement}
+                    Lower Statement
+                        Lower <<Regex: <_sre.SRE_Match object; span=(1, 5), match='word'>>> ws:None [2, 1 -> 2, 5]
+                        Newline+ <<5, 6>> ws:None [2, 5 -> 3, 1]
         """,
     )
 
 # ----------------------------------------------------------------------
 class TestPreventParentTraversal(object):
-    _upper_statement                        = StatementEx("Upper Statement", _upper_token, NewlineToken())
-    _lower_statement                        = StatementEx("Lower Statement", _lower_token, NewlineToken())
-    _indent_statement                       = StatementEx("Indent Statement", IndentToken())
-    _dedent_statement                       = StatementEx("Dedent Statement", DedentToken())
+    _upper_statement                        = CreateStatement(name="Upper Statement", item=[_upper_token, NewlineToken()])
+    _lower_statement                        = CreateStatement(name="Lower Statement", item=[_lower_token, NewlineToken()])
+    _indent_statement                       = CreateStatement(name="Indent Statement", item=IndentToken())
+    _dedent_statement                       = CreateStatement(name="Dedent Statement", item=DedentToken())
 
     _statements                             = DynamicStatementInfo(
-        [_upper_statement, _indent_statement, _dedent_statement],
-        [],
+        (_upper_statement, _indent_statement, _dedent_statement),
+        (),
     )
 
     # ----------------------------------------------------------------------
@@ -717,13 +727,13 @@ class TestPreventParentTraversal(object):
     async  def test_Match(self, parse_mock):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicStatementInfo(
-                [self._lower_statement, self._dedent_statement],
-                [],
+                (self._lower_statement, self._dedent_statement),
+                (),
                 False,
             ),
         )
 
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -740,46 +750,40 @@ class TestPreventParentTraversal(object):
             parse_mock,
         )
 
-        assert "".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Upper Statement, Indent Statement, Dedent Statement]
-                Upper Statement
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-                    Newline+
-                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
-            [Upper Statement, Indent Statement, Dedent Statement]
-                Indent Statement
-                    Indent
+            <Root>
+                Dynamic Statements
+                    {Upper Statement, Indent Statement, Dedent Statement}
+                        Upper Statement
+                            Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                Dynamic Statements
+                    {Upper Statement, Indent Statement, Dedent Statement}
                         Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
-            [Lower Statement, Dedent Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
-                    Newline+
-                        Newline+ <<11, 12>> ws:None [2, 8 -> 3, 1]
-            [Lower Statement, Dedent Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(16, 21), match='three'>>> ws:None [3, 5 -> 3, 10]
-                    Newline+
-                        Newline+ <<21, 22>> ws:None [3, 10 -> 4, 1]
-            [Lower Statement, Dedent Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(26, 30), match='four'>>> ws:None [4, 5 -> 4, 9]
-                    Newline+
-                        Newline+ <<30, 32>> ws:None [4, 9 -> 6, 1]
-            [Lower Statement, Dedent Statement]
-                Dedent Statement
-                    Dedent
+                Dynamic Statements
+                    {Lower Statement, Dedent Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
+                            Newline+ <<11, 12>> ws:None [2, 8 -> 3, 1]
+                Dynamic Statements
+                    {Lower Statement, Dedent Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(16, 21), match='three'>>> ws:None [3, 5 -> 3, 10]
+                            Newline+ <<21, 22>> ws:None [3, 10 -> 4, 1]
+                Dynamic Statements
+                    {Lower Statement, Dedent Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(26, 30), match='four'>>> ws:None [4, 5 -> 4, 9]
+                            Newline+ <<30, 32>> ws:None [4, 9 -> 6, 1]
+                Dynamic Statements
+                    {Lower Statement, Dedent Statement}
                         Dedent <<>> ws:None [6, 1 -> 6, 1]
-            [Upper Statement, Indent Statement, Dedent Statement]
-                Upper Statement
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(32, 36), match='FIVE'>>> ws:None [6, 1 -> 6, 5]
-                    Newline+
-                        Newline+ <<36, 37>> ws:None [6, 5 -> 7, 1]
+                Dynamic Statements
+                    {Upper Statement, Indent Statement, Dedent Statement}
+                        Upper Statement
+                            Upper <<Regex: <_sre.SRE_Match object; span=(32, 36), match='FIVE'>>> ws:None [6, 1 -> 6, 5]
+                            Newline+ <<36, 37>> ws:None [6, 5 -> 7, 1]
             """,
         )
 
@@ -788,8 +792,8 @@ class TestPreventParentTraversal(object):
     async def test_NoMatch(self, parse_mock):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicStatementInfo(
-                [self._lower_statement, self._dedent_statement],
-                [],
+                (self._lower_statement, self._dedent_statement),
+                (),
                 False,
             ),
         )
@@ -822,48 +826,42 @@ class TestPreventParentTraversal(object):
             """\
             The syntax is not recognized [6, 1]
 
-            [Upper Statement, Indent Statement, Dedent Statement]
-                Upper Statement
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-                    Newline+
-                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
-            [Upper Statement, Indent Statement, Dedent Statement]
-                Indent Statement
-                    Indent
+            <Root>
+                Dynamic Statements
+                    {Upper Statement, Indent Statement, Dedent Statement}
+                        Upper Statement
+                            Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                            Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                Dynamic Statements
+                    {Upper Statement, Indent Statement, Dedent Statement}
                         Indent <<4, 8, (4)>> ws:None [2, 1 -> 2, 5]
-            [Lower Statement, Dedent Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
-                    Newline+
-                        Newline+ <<11, 12>> ws:None [2, 8 -> 3, 1]
-            [Lower Statement, Dedent Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(16, 21), match='three'>>> ws:None [3, 5 -> 3, 10]
-                    Newline+
-                        Newline+ <<21, 22>> ws:None [3, 10 -> 4, 1]
-            [Lower Statement, Dedent Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(26, 30), match='four'>>> ws:None [4, 5 -> 4, 9]
-                    Newline+
-                        Newline+ <<30, 32>> ws:None [4, 9 -> 6, 1]
-            [Lower Statement, Dedent Statement]
-                Dedent Statement
-                    Dedent
+                Dynamic Statements
+                    {Lower Statement, Dedent Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(8, 11), match='two'>>> ws:None [2, 5 -> 2, 8]
+                            Newline+ <<11, 12>> ws:None [2, 8 -> 3, 1]
+                Dynamic Statements
+                    {Lower Statement, Dedent Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(16, 21), match='three'>>> ws:None [3, 5 -> 3, 10]
+                            Newline+ <<21, 22>> ws:None [3, 10 -> 4, 1]
+                Dynamic Statements
+                    {Lower Statement, Dedent Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(26, 30), match='four'>>> ws:None [4, 5 -> 4, 9]
+                            Newline+ <<30, 32>> ws:None [4, 9 -> 6, 1]
+                Dynamic Statements
+                    {Lower Statement, Dedent Statement}
                         Dedent <<>> ws:None [6, 1 -> 6, 1]
-            [Upper Statement, Indent Statement, Dedent Statement]
-                Upper Statement
-                    Upper
-                        None
-                Indent Statement
-                    Indent
-                        None
-                Dedent Statement
-                    Dedent
-                        None
+                Dynamic Statements
+                    {Upper Statement, Indent Statement, Dedent Statement}
+                        Upper Statement
+                            Upper Statement
+                                <No Children>
+                        Indent
+                            <No Children>
+                        Dedent
+                            <No Children>
             """,
         )
 
@@ -872,8 +870,8 @@ class TestPreventParentTraversal(object):
 async def test_InvalidDynamicTraversalError(parse_mock):
     parse_mock.OnStatementCompleteAsync = CoroutineMock(
         return_value=DynamicStatementInfo(
-            [StatementEx("Newline", NewlineToken())],
-            [],
+            (CreateStatement(name="Newline", item=NewlineToken()),),
+            (),
             False,
         ),
     )
@@ -881,8 +879,8 @@ async def test_InvalidDynamicTraversalError(parse_mock):
     with pytest.raises(InvalidDynamicTraversalError) as ex:
         await ParseAsync(
             DynamicStatementInfo(
-                [StatementEx("Newline", NewlineToken())],
-                [],
+                (CreateStatement(name="Newline", item=NewlineToken()),),
+                (),
             ),
             CreateIterator(
                 textwrap.dedent(
@@ -905,100 +903,109 @@ async def test_InvalidDynamicTraversalError(parse_mock):
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio
 async def test_DynamicExpressions(parse_mock):
-    results = await ParseAsync(
+    result = await ParseAsync(
         DynamicStatementInfo(
-            [
-                StatementEx(
-                    "Statement",
-                    _upper_token,
-                    DynamicStatements.Expressions,
-                    _lower_token,
-                    NewlineToken(),
+            (
+                CreateStatement(
+                    name="Statement",
+                    item=[
+                        _upper_token,
+                        DynamicStatements.Expressions,
+                        _lower_token,
+                        NewlineToken(),
+                    ],
                 ),
-            ],
-            [
-                StatementEx(
-                    "Expression",
-                    _number_token,
+            ),
+            (
+                CreateStatement(
+                    name="Expression",
+                    item=_number_token,
                 ),
-            ],
+            ),
         ),
         CreateIterator("WORD 1234 lower"),
         parse_mock,
     )
 
-    assert "".join([str(result) for result in results]) == textwrap.dedent(
+    assert str(result) == textwrap.dedent(
         """\
-        [Statement]
-            Statement
-                Upper
-                    Upper <<Regex: <_sre.SRE_Match object; span=(0, 4), match='WORD'>>> ws:None [1, 1 -> 1, 5]
-                DynamicStatements.Expressions
-                    [Expression]
-                        Expression
-                            Number
+        <Root>
+            Dynamic Statements
+                {Statement}
+                    Statement
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 4), match='WORD'>>> ws:None [1, 1 -> 1, 5]
+                        DynamicStatements.Expressions
+                            {Expression}
                                 Number <<Regex: <_sre.SRE_Match object; span=(5, 9), match='1234'>>> ws:(4, 5) [1, 6 -> 1, 10]
-                Lower
-                    Lower <<Regex: <_sre.SRE_Match object; span=(10, 15), match='lower'>>> ws:(9, 10) [1, 11 -> 1, 16]
-                Newline+
-                    Newline+ <<15, 16>> ws:None [1, 16 -> 2, 1]
+                        Lower <<Regex: <_sre.SRE_Match object; span=(10, 15), match='lower'>>> ws:(9, 10) [1, 11 -> 1, 16]
+                        Newline+ <<15, 16>> ws:None [1, 16 -> 2, 1]
         """,
     )
 
 # ----------------------------------------------------------------------
 class TestCatastrophicInclude(object):
-    _include_statement                      = StatementEx(
-        "Include Statement",
-        RegexToken("include", re.compile(r"include")),
-        _upper_token,
-        NewlineToken(),
+    _include_statement                      = CreateStatement(
+        name="Include Statement",
+        item=[
+            RegexToken("include", re.compile(r"include")),
+            _upper_token,
+            NewlineToken(),
+        ],
     )
 
     # Both of these statements start with an include, but the
     # dynamic statements allowed will be based on the included
     # value.
-    _lower_include_statement                = StatementEx(
-        "Lower Include Statement",
-        _include_statement,
-        DynamicStatements.Statements,
-        DynamicStatements.Statements,
+    _lower_include_statement                = CreateStatement(
+        name="Lower Include Statement",
+        item=[
+            _include_statement,
+            DynamicStatements.Statements,
+            DynamicStatements.Statements,
+        ],
     )
 
-    _number_include_statement               = StatementEx(
-        "Number Include Statement",
-        _include_statement,
-        DynamicStatements.Statements,
-        DynamicStatements.Statements,
-        DynamicStatements.Statements,
+    _number_include_statement               = CreateStatement(
+        name="Number Include Statement",
+        item=[
+            _include_statement,
+            DynamicStatements.Statements,
+            DynamicStatements.Statements,
+            DynamicStatements.Statements,
+        ],
     )
 
-    _lower_statement                        = StatementEx(
-        "Lower Statement",
-        _lower_token,
-        NewlineToken(),
+    _lower_statement                        = CreateStatement(
+        name="Lower Statement",
+        item=[
+            _lower_token,
+            NewlineToken(),
+        ],
     )
 
-    _number_statement                       = StatementEx(
-        "Number Statement",
-        _number_token,
-        NewlineToken(),
+    _number_statement                       = CreateStatement(
+        name="Number Statement",
+        item=[
+            _number_token,
+            NewlineToken(),
+        ],
     )
 
     _statements                             = DynamicStatementInfo(
-        [_lower_include_statement, _number_include_statement],
-        [],
+        (_lower_include_statement, _number_include_statement),
+        (),
     )
 
     _lower_dynamic_statements               = DynamicStatementInfo(
-        [_lower_statement],
-        [],
+        (_lower_statement,),
+        (),
         True,
         # "Lower Dynamic Statements",
     )
 
     _number_dynamic_statements              = DynamicStatementInfo(
-        [_number_statement],
-        [],
+        (_number_statement,),
+        (),
         True,
         # "Number Dynamic Statements",
     )
@@ -1011,8 +1018,8 @@ class TestCatastrophicInclude(object):
         async def OnStatementCompleteAsync(
             statement: Statement,
             data: Optional[Statement.ParseResultData],
-            iter_before: NormalizedIterator,
-            iter_after: NormalizedIterator,
+            iter_before: Statement.NormalizedIterator,
+            iter_after: Statement.NormalizedIterator,
         ):
             if statement == cls._include_statement:
                 value = data.DataItems[1].Data.Value.Match.group("value")
@@ -1035,7 +1042,7 @@ class TestCatastrophicInclude(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Lower(self, this_parse_mock):
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -1049,31 +1056,26 @@ class TestCatastrophicInclude(object):
             this_parse_mock,
         )
 
-        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Lower Include Statement, Number Include Statement]
-                Lower Include Statement
-                    Include Statement
-                        include
-                            include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
-                        Upper
-                            Upper <<Regex: <_sre.SRE_Match object; span=(8, 13), match='LOWER'>>> ws:(7, 8) [1, 9 -> 1, 14]
-                        Newline+
-                            Newline+ <<13, 14>> ws:None [1, 14 -> 2, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
-                            Lower Statement
-                                Lower
-                                    Lower <<Regex: <_sre.SRE_Match object; span=(14, 17), match='one'>>> ws:None [2, 1 -> 2, 4]
-                                Newline+
-                                    Newline+ <<17, 18>> ws:None [2, 4 -> 3, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
-                            Lower Statement
-                                Lower
-                                    Lower <<Regex: <_sre.SRE_Match object; span=(18, 21), match='two'>>> ws:None [3, 1 -> 3, 4]
-                                Newline+
-                                    Newline+ <<21, 22>> ws:None [3, 4 -> 4, 1]
+            <Root>
+                Dynamic Statements
+                    {Lower Include Statement, Number Include Statement}
+                        Lower Include Statement
+                            Include Statement
+                                include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
+                                Upper <<Regex: <_sre.SRE_Match object; span=(8, 13), match='LOWER'>>> ws:(7, 8) [1, 9 -> 1, 14]
+                                Newline+ <<13, 14>> ws:None [1, 14 -> 2, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Lower Statement}
+                                    Lower Statement
+                                        Lower <<Regex: <_sre.SRE_Match object; span=(14, 17), match='one'>>> ws:None [2, 1 -> 2, 4]
+                                        Newline+ <<17, 18>> ws:None [2, 4 -> 3, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Lower Statement}
+                                    Lower Statement
+                                        Lower <<Regex: <_sre.SRE_Match object; span=(18, 21), match='two'>>> ws:None [3, 1 -> 3, 4]
+                                        Newline+ <<21, 22>> ws:None [3, 4 -> 4, 1]
             """,
         )
 
@@ -1082,7 +1084,7 @@ class TestCatastrophicInclude(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_LowerAdditionalItem(self, this_parse_mock):
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -1099,45 +1101,36 @@ class TestCatastrophicInclude(object):
             this_parse_mock,
         )
 
-        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Lower Include Statement, Number Include Statement]
-                Number Include Statement
-                    Include Statement
-                        include
-                            include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
-                        Upper
-                            Upper <<Regex: <_sre.SRE_Match object; span=(8, 13), match='LOWER'>>> ws:(7, 8) [1, 9 -> 1, 14]
-                        Newline+
-                            Newline+ <<13, 14>> ws:None [1, 14 -> 2, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
-                            Lower Statement
-                                Lower
-                                    Lower <<Regex: <_sre.SRE_Match object; span=(14, 17), match='one'>>> ws:None [2, 1 -> 2, 4]
-                                Newline+
-                                    Newline+ <<17, 18>> ws:None [2, 4 -> 3, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
-                            Lower Statement
-                                Lower
-                                    Lower <<Regex: <_sre.SRE_Match object; span=(18, 21), match='two'>>> ws:None [3, 1 -> 3, 4]
-                                Newline+
-                                    Newline+ <<21, 23>> ws:None [3, 4 -> 5, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Lower Statement]
-                            Lower Statement
-                                Lower
-                                    Lower <<Regex: <_sre.SRE_Match object; span=(23, 28), match='three'>>> ws:None [5, 1 -> 5, 6]
-                                Newline+
-                                    Newline+ <<28, 29>> ws:None [5, 6 -> 6, 1]
-
-            [Lower Include Statement, Number Include Statement] / [Lower Statement]
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(29, 33), match='four'>>> ws:None [6, 1 -> 6, 5]
-                    Newline+
-                        Newline+ <<33, 34>> ws:None [6, 5 -> 7, 1]
+            <Root>
+                Dynamic Statements
+                    {Lower Include Statement, Number Include Statement}
+                        Number Include Statement
+                            Include Statement
+                                include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
+                                Upper <<Regex: <_sre.SRE_Match object; span=(8, 13), match='LOWER'>>> ws:(7, 8) [1, 9 -> 1, 14]
+                                Newline+ <<13, 14>> ws:None [1, 14 -> 2, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Lower Statement}
+                                    Lower Statement
+                                        Lower <<Regex: <_sre.SRE_Match object; span=(14, 17), match='one'>>> ws:None [2, 1 -> 2, 4]
+                                        Newline+ <<17, 18>> ws:None [2, 4 -> 3, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Lower Statement}
+                                    Lower Statement
+                                        Lower <<Regex: <_sre.SRE_Match object; span=(18, 21), match='two'>>> ws:None [3, 1 -> 3, 4]
+                                        Newline+ <<21, 23>> ws:None [3, 4 -> 5, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Lower Statement}
+                                    Lower Statement
+                                        Lower <<Regex: <_sre.SRE_Match object; span=(23, 28), match='three'>>> ws:None [5, 1 -> 5, 6]
+                                        Newline+ <<28, 29>> ws:None [5, 6 -> 6, 1]
+                Dynamic Statements
+                    {Lower Include Statement, Number Include Statement} / {Lower Statement}
+                        Lower Statement
+                            Lower <<Regex: <_sre.SRE_Match object; span=(29, 33), match='four'>>> ws:None [6, 1 -> 6, 5]
+                            Newline+ <<33, 34>> ws:None [6, 5 -> 7, 1]
             """,
         )
 
@@ -1146,7 +1139,7 @@ class TestCatastrophicInclude(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Number(self, this_parse_mock):
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -1161,38 +1154,31 @@ class TestCatastrophicInclude(object):
             this_parse_mock,
         )
 
-        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Lower Include Statement, Number Include Statement]
-                Number Include Statement
-                    Include Statement
-                        include
-                            include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
-                        Upper
-                            Upper <<Regex: <_sre.SRE_Match object; span=(8, 14), match='NUMBER'>>> ws:(7, 8) [1, 9 -> 1, 15]
-                        Newline+
-                            Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Number Statement]
-                            Number Statement
-                                Number
-                                    Number <<Regex: <_sre.SRE_Match object; span=(15, 16), match='1'>>> ws:None [2, 1 -> 2, 2]
-                                Newline+
-                                    Newline+ <<16, 17>> ws:None [2, 2 -> 3, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Number Statement]
-                            Number Statement
-                                Number
-                                    Number <<Regex: <_sre.SRE_Match object; span=(17, 18), match='2'>>> ws:None [3, 1 -> 3, 2]
-                                Newline+
-                                    Newline+ <<18, 19>> ws:None [3, 2 -> 4, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Number Statement]
-                            Number Statement
-                                Number
-                                    Number <<Regex: <_sre.SRE_Match object; span=(19, 20), match='3'>>> ws:None [4, 1 -> 4, 2]
-                                Newline+
-                                    Newline+ <<20, 21>> ws:None [4, 2 -> 5, 1]
+            <Root>
+                Dynamic Statements
+                    {Lower Include Statement, Number Include Statement}
+                        Number Include Statement
+                            Include Statement
+                                include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
+                                Upper <<Regex: <_sre.SRE_Match object; span=(8, 14), match='NUMBER'>>> ws:(7, 8) [1, 9 -> 1, 15]
+                                Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Number Statement}
+                                    Number Statement
+                                        Number <<Regex: <_sre.SRE_Match object; span=(15, 16), match='1'>>> ws:None [2, 1 -> 2, 2]
+                                        Newline+ <<16, 17>> ws:None [2, 2 -> 3, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Number Statement}
+                                    Number Statement
+                                        Number <<Regex: <_sre.SRE_Match object; span=(17, 18), match='2'>>> ws:None [3, 1 -> 3, 2]
+                                        Newline+ <<18, 19>> ws:None [3, 2 -> 4, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Number Statement}
+                                    Number Statement
+                                        Number <<Regex: <_sre.SRE_Match object; span=(19, 20), match='3'>>> ws:None [4, 1 -> 4, 2]
+                                        Newline+ <<20, 21>> ws:None [4, 2 -> 5, 1]
             """,
         )
 
@@ -1201,7 +1187,7 @@ class TestCatastrophicInclude(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NumberAdditionalItems(self, this_parse_mock):
-        results = await ParseAsync(
+        result = await ParseAsync(
             self._statements,
             CreateIterator(
                 textwrap.dedent(
@@ -1219,52 +1205,41 @@ class TestCatastrophicInclude(object):
             this_parse_mock,
         )
 
-        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+        assert str(result) == textwrap.dedent(
             """\
-            [Lower Include Statement, Number Include Statement]
-                Number Include Statement
-                    Include Statement
-                        include
-                            include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
-                        Upper
-                            Upper <<Regex: <_sre.SRE_Match object; span=(8, 14), match='NUMBER'>>> ws:(7, 8) [1, 9 -> 1, 15]
-                        Newline+
-                            Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Number Statement]
-                            Number Statement
-                                Number
-                                    Number <<Regex: <_sre.SRE_Match object; span=(15, 16), match='1'>>> ws:None [2, 1 -> 2, 2]
-                                Newline+
-                                    Newline+ <<16, 17>> ws:None [2, 2 -> 3, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Number Statement]
-                            Number Statement
-                                Number
-                                    Number <<Regex: <_sre.SRE_Match object; span=(17, 18), match='2'>>> ws:None [3, 1 -> 3, 2]
-                                Newline+
-                                    Newline+ <<18, 19>> ws:None [3, 2 -> 4, 1]
-                    DynamicStatements.Statements
-                        [Lower Include Statement, Number Include Statement] / [Number Statement]
-                            Number Statement
-                                Number
-                                    Number <<Regex: <_sre.SRE_Match object; span=(19, 20), match='3'>>> ws:None [4, 1 -> 4, 2]
-                                Newline+
-                                    Newline+ <<20, 22>> ws:None [4, 2 -> 6, 1]
-
-            [Lower Include Statement, Number Include Statement] / [Number Statement]
-                Number Statement
-                    Number
-                        Number <<Regex: <_sre.SRE_Match object; span=(22, 23), match='4'>>> ws:None [6, 1 -> 6, 2]
-                    Newline+
-                        Newline+ <<23, 24>> ws:None [6, 2 -> 7, 1]
-
-            [Lower Include Statement, Number Include Statement] / [Number Statement]
-                Number Statement
-                    Number
-                        Number <<Regex: <_sre.SRE_Match object; span=(24, 25), match='5'>>> ws:None [7, 1 -> 7, 2]
-                    Newline+
-                        Newline+ <<25, 26>> ws:None [7, 2 -> 8, 1]
+            <Root>
+                Dynamic Statements
+                    {Lower Include Statement, Number Include Statement}
+                        Number Include Statement
+                            Include Statement
+                                include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
+                                Upper <<Regex: <_sre.SRE_Match object; span=(8, 14), match='NUMBER'>>> ws:(7, 8) [1, 9 -> 1, 15]
+                                Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Number Statement}
+                                    Number Statement
+                                        Number <<Regex: <_sre.SRE_Match object; span=(15, 16), match='1'>>> ws:None [2, 1 -> 2, 2]
+                                        Newline+ <<16, 17>> ws:None [2, 2 -> 3, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Number Statement}
+                                    Number Statement
+                                        Number <<Regex: <_sre.SRE_Match object; span=(17, 18), match='2'>>> ws:None [3, 1 -> 3, 2]
+                                        Newline+ <<18, 19>> ws:None [3, 2 -> 4, 1]
+                            DynamicStatements.Statements
+                                {Lower Include Statement, Number Include Statement} / {Number Statement}
+                                    Number Statement
+                                        Number <<Regex: <_sre.SRE_Match object; span=(19, 20), match='3'>>> ws:None [4, 1 -> 4, 2]
+                                        Newline+ <<20, 22>> ws:None [4, 2 -> 6, 1]
+                Dynamic Statements
+                    {Lower Include Statement, Number Include Statement} / {Number Statement}
+                        Number Statement
+                            Number <<Regex: <_sre.SRE_Match object; span=(22, 23), match='4'>>> ws:None [6, 1 -> 6, 2]
+                            Newline+ <<23, 24>> ws:None [6, 2 -> 7, 1]
+                Dynamic Statements
+                    {Lower Include Statement, Number Include Statement} / {Number Statement}
+                        Number Statement
+                            Number <<Regex: <_sre.SRE_Match object; span=(24, 25), match='5'>>> ws:None [7, 1 -> 7, 2]
+                            Newline+ <<25, 26>> ws:None [7, 2 -> 8, 1]
             """,
         )
 

@@ -83,6 +83,16 @@ class DynamicStatement(Statement):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def PopulateRecursive(
+        self,
+        new_statement: Statement,
+        type_to_replace: Any,
+    ):
+        # Nothing to do here
+        pass
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     async def ParseAsync(
         self,
         normalized_iter: Statement.NormalizedIterator,
@@ -137,10 +147,7 @@ class DynamicStatement(Statement):
             if result is None:
                 return None
 
-            data = Statement.StandardParseResultData(
-                self,
-                Statement.StandardParseResultData(or_statement, result.Data),
-            )
+            data = Statement.StandardParseResultData(self, result.Data)
 
             if (
                 result.Success

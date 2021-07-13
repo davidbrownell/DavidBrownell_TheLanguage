@@ -90,6 +90,21 @@ class OrStatement(Statement):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def PopulateRecursive(
+        self,
+        new_statement: Statement,
+        type_to_replace: Any,
+    ):
+        for statement_index, statement in enumerate(self.Statements):
+            if isinstance(statement, type_to_replace):
+                self.Statements[statement_index] = new_statement.Clone(
+                    unique_id=statement.UniqueId,
+                )
+            else:
+                statement.PopulateRecursive(new_statement, type_to_replace)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     async def ParseAsync(
         self,
         normalized_iter: Statement.NormalizedIterator,
@@ -198,10 +213,7 @@ class OrStatement(Statement):
             if best_result.Success:
                 data = Statement.StandardParseResultData(
                     self,
-                    Statement.StandardParseResultData(
-                        self.Statements[best_index],
-                        best_result.Data,
-                    ),
+                    best_result.Data,
                 )
 
                 if not await observer.OnInternalStatementAsync(

@@ -19,7 +19,7 @@ import os
 import re
 import textwrap
 
-from unittest.mock import Mock
+import pytest
 
 import CommonEnvironment
 
@@ -34,7 +34,6 @@ with InitRelativeImports():
     from . import (
         CoroutineMock,
         CreateIterator,
-        InternalStatementMethodCallToTuple,
         parse_mock,
         MethodCallsToString,
     )
@@ -78,16 +77,18 @@ class TestStandard(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_MatchLower(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_MatchLower(self, parse_mock):
         iter = CreateIterator("lowercase")
 
-        result = self._statement.Parse(iter, parse_mock)
+        result = await self._statement.ParseAsync(iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
             9
-                lower
-                    lower <<Regex: <_sre.SRE_Match object; span=(0, 9), match='lowercase'>>> ws:None [1, 1 -> 1, 10]
+                My Or Statement
+                    lower
+                        lower <<Regex: <_sre.SRE_Match object; span=(0, 9), match='lowercase'>>> ws:None [1, 1 -> 1, 10]
             """,
         )
 
@@ -97,20 +98,22 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._lower_statement, result.Data.Data),
+            (self._statement, result.Data.Data),
         ]
 
     # ----------------------------------------------------------------------
-    def test_MatchUpper(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_MatchUpper(self, parse_mock):
         iter = CreateIterator("UPPERCASE")
 
-        result = self._statement.Parse(iter, parse_mock)
+        result = await self._statement.ParseAsync(iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
             9
-                upper
-                    upper <<Regex: <_sre.SRE_Match object; span=(0, 9), match='UPPERCASE'>>> ws:None [1, 1 -> 1, 10]
+                My Or Statement
+                    upper
+                        upper <<Regex: <_sre.SRE_Match object; span=(0, 9), match='UPPERCASE'>>> ws:None [1, 1 -> 1, 10]
             """,
         )
 
@@ -120,20 +123,22 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._upper_statement, result.Data.Data),
+            (self._statement, result.Data.Data),
         ]
 
     # ----------------------------------------------------------------------
-    def test_MatchNumber(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_MatchNumber(self, parse_mock):
         iter = CreateIterator("12345678")
 
-        result = self._statement.Parse(iter, parse_mock)
+        result = await self._statement.ParseAsync(iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
             8
-                number
-                    number <<Regex: <_sre.SRE_Match object; span=(0, 8), match='12345678'>>> ws:None [1, 1 -> 1, 9]
+                My Or Statement
+                    number
+                        number <<Regex: <_sre.SRE_Match object; span=(0, 8), match='12345678'>>> ws:None [1, 1 -> 1, 9]
             """,
         )
 
@@ -143,14 +148,15 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._number_statement, result.Data.Data),
+            (self._statement, result.Data.Data),
         ]
 
     # ----------------------------------------------------------------------
-    def test_MatchNumberSingleThreaded(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_MatchNumberSingleThreaded(self, parse_mock):
         iter = CreateIterator("12345678")
 
-        result = self._statement.Parse(
+        result = await self._statement.ParseAsync(
             iter,
             parse_mock,
             single_threaded=True,
@@ -160,8 +166,9 @@ class TestStandard(object):
             """\
             True
             8
-                number
-                    number <<Regex: <_sre.SRE_Match object; span=(0, 8), match='12345678'>>> ws:None [1, 1 -> 1, 9]
+                My Or Statement
+                    number
+                        number <<Regex: <_sre.SRE_Match object; span=(0, 8), match='12345678'>>> ws:None [1, 1 -> 1, 9]
             """,
         )
 
@@ -171,37 +178,40 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._number_statement, result.Data.Data),
+            (self._statement, result.Data.Data),
         ]
 
     # ----------------------------------------------------------------------
-    def test_OnInternalStatementReturnsNone(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_OnInternalStatementReturnsNone(self, parse_mock):
         parse_mock.OnInternalStatementAsync = CoroutineMock(return_value=None)
 
         iter = CreateIterator("12345678")
 
-        result = self._statement.Parse(iter, parse_mock)
+        result = await self._statement.ParseAsync(iter, parse_mock)
         assert result is None
 
         assert len(parse_mock.method_calls) == 11
 
     # ----------------------------------------------------------------------
-    def test_NoMatch(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_NoMatch(self, parse_mock):
         iter = CreateIterator("!1122334")
 
-        result = self._statement.Parse(iter, parse_mock)
+        result = await self._statement.ParseAsync(iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             False
             0
-                lower
-                    None
-                upper
-                    None
-                number
-                    None
-                Newline+
-                    None
+                My Or Statement
+                    lower
+                        None
+                    upper
+                        None
+                    number
+                        None
+                    Newline+
+                        None
             """,
         )
 
@@ -211,17 +221,15 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 10
 
         assert list(result.Data.Enum()) == [
-            (self._lower_statement, None),
-            (self._upper_statement, None),
-            (self._number_statement, None),
-            (self._newline_statement, None),
+            (self._statement, result.Data.Data),
         ]
 
     # ----------------------------------------------------------------------
-    def test_NoMatchSingleThreaded(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_NoMatchSingleThreaded(self, parse_mock):
         iter = CreateIterator("!1122334")
 
-        result = self._statement.Parse(
+        result = await self._statement.ParseAsync(
             iter,
             parse_mock,
             single_threaded=True,
@@ -231,14 +239,15 @@ class TestStandard(object):
             """\
             False
             0
-                lower
-                    None
-                upper
-                    None
-                number
-                    None
-                Newline+
-                    None
+                My Or Statement
+                    lower
+                        None
+                    upper
+                        None
+                    number
+                        None
+                    Newline+
+                        None
             """,
         )
 
@@ -248,15 +257,13 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 10
 
         assert list(result.Data.Enum()) == [
-            (self._lower_statement, None),
-            (self._upper_statement, None),
-            (self._number_statement, None),
-            (self._newline_statement, None),
+            (self._statement, result.Data.Data),
         ]
 
     # ----------------------------------------------------------------------
-    def test_NestedLower(self, parse_mock):
-        result = self._outer_nested_statement.Parse(
+    @pytest.mark.asyncio
+    async def test_NestedLower(self, parse_mock):
+        result = await self._outer_nested_statement.ParseAsync(
             CreateIterator("word"),
             parse_mock,
         )
@@ -265,21 +272,23 @@ class TestStandard(object):
             """\
             True
             4
-                Or: [lower, number]
-                    lower
-                        lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+                Or: {upper, Or: {lower, number}}
+                    Or: {lower, number}
+                        lower
+                            lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
         assert len(parse_mock.method_calls) == 13
 
         assert list(result.Data.Enum()) == [
-            (self._inner_nested_statement, result.Data.Data),
+            (self._outer_nested_statement, result.Data.Data),
         ]
 
     # ----------------------------------------------------------------------
-    def test_NestedLowerEvents(self, parse_mock):
-        result = self._outer_nested_statement.Parse(
+    @pytest.mark.asyncio
+    async def test_NestedLowerEvents(self, parse_mock):
+        result = await self._outer_nested_statement.ParseAsync(
             CreateIterator("word"),
             parse_mock,
             single_threaded=True,
@@ -289,41 +298,54 @@ class TestStandard(object):
             """\
             True
             4
-                Or: [lower, number]
-                    lower
-                        lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+                Or: {upper, Or: {lower, number}}
+                    Or: {lower, number}
+                        lower
+                            lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, StartStatement, ['Or: [upper, Or: [lower, number]]']
-            1, StartStatement, ['Or: [upper, Or: [lower, number]]', 'Or: upper [0]']
-            2, EndStatement, ['Or: [upper, Or: [lower, number]]', 'Or: upper [0]']
-            3, StartStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]']
-            4, StartStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: lower [0]']
-            5, OnInternalStatementAsync, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: lower [0]']
-            6, EndStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: lower [0]']
-            7, StartStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: number [1]']
-            8, EndStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]', 'Or: number [1]']
-            9, OnInternalStatementAsync, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]']
-            10, EndStatement, ['Or: [upper, Or: [lower, number]]', 'Or: Or: [lower, number] [1]']
-            11, OnInternalStatementAsync, ['Or: [upper, Or: [lower, number]]']
-            12, EndStatement, ['Or: [upper, Or: [lower, number]]']
+            0) StartStatement, "Or: {upper, Or: {lower, number}}"
+            1) StartStatement, "upper", "Or: {upper, Or: {lower, number}}"
+            2) EndStatement, "upper" [False], "Or: {upper, Or: {lower, number}}" [None]
+            3) StartStatement, "Or: {lower, number}", "Or: {upper, Or: {lower, number}}"
+            4) StartStatement, "lower", "Or: {lower, number}", "Or: {upper, Or: {lower, number}}"
+            5) OnInternalStatementAsync, 0, 4
+                lower
+                    lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+                Or: {lower, number}
+                    <No Items>
+                Or: {upper, Or: {lower, number}}
+                    <No Data>
+            6) EndStatement, "lower" [True], "Or: {lower, number}" [None], "Or: {upper, Or: {lower, number}}" [None]
+            7) StartStatement, "number", "Or: {lower, number}", "Or: {upper, Or: {lower, number}}"
+            8) EndStatement, "number" [False], "Or: {lower, number}" [None], "Or: {upper, Or: {lower, number}}" [None]
+            9) OnInternalStatementAsync, 0, 4
+                Or: {lower, number}
+                    lower
+                        lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+                Or: {upper, Or: {lower, number}}
+                    <No Data>
+            10) EndStatement, "Or: {lower, number}" [True], "Or: {upper, Or: {lower, number}}" [None]
+            11) OnInternalStatementAsync, 0, 4
+                Or: {upper, Or: {lower, number}}
+                    Or: {lower, number}
+                        lower
+                            lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+            12) EndStatement, "Or: {upper, Or: {lower, number}}" [True]
             """,
         )
 
-        assert InternalStatementMethodCallToTuple(parse_mock, 5) == (self._lower_statement, result.Data.Data.Data, 0, 4)
-        assert InternalStatementMethodCallToTuple(parse_mock, 9) == (self._inner_nested_statement, result.Data.Data, 0, 4)
-        assert InternalStatementMethodCallToTuple(parse_mock, 11) == (self._outer_nested_statement, result.Data, 0, 4)
-
         assert list(result.Data.Enum()) == [
-            (self._inner_nested_statement, result.Data.Data),
+            (self._outer_nested_statement, result.Data.Data),
         ]
 
     # ----------------------------------------------------------------------
-    def test_NestedUpper(self, parse_mock):
-        result = self._outer_nested_statement.Parse(
+    @pytest.mark.asyncio
+    async def test_NestedUpper(self, parse_mock):
+        result = await self._outer_nested_statement.ParseAsync(
             CreateIterator("WORD"),
             parse_mock,
         )
@@ -332,15 +354,16 @@ class TestStandard(object):
             """\
             True
             4
-                upper
-                    upper <<Regex: <_sre.SRE_Match object; span=(0, 4), match='WORD'>>> ws:None [1, 1 -> 1, 5]
+                Or: {upper, Or: {lower, number}}
+                    upper
+                        upper <<Regex: <_sre.SRE_Match object; span=(0, 4), match='WORD'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._upper_statement, result.Data.Data),
+            (self._outer_nested_statement, result.Data.Data),
         ]
 
 # ----------------------------------------------------------------------
@@ -363,16 +386,18 @@ class TestSort(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_Sort(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_Sort(self, parse_mock):
         iter = CreateIterator("1234")
 
-        result = self._sort_statement.Parse(iter, parse_mock)
+        result = await self._sort_statement.ParseAsync(iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
             4
-                Long
-                    Long <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
+                Sort
+                    Long
+                        Long <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
@@ -380,32 +405,36 @@ class TestSort(object):
 
 
     # ----------------------------------------------------------------------
-    def test_NoSort(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_NoSort(self, parse_mock):
         iter = CreateIterator("1234")
 
-        result = self._no_sort_statement.Parse(iter, parse_mock)
+        result = await self._no_sort_statement.ParseAsync(iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
             2
-                Short
-                    Short <<Regex: <_sre.SRE_Match object; span=(0, 2), match='12'>>> ws:None [1, 1 -> 1, 3]
+                No Sort
+                    Short
+                        Short <<Regex: <_sre.SRE_Match object; span=(0, 2), match='12'>>> ws:None [1, 1 -> 1, 3]
             """,
         )
 
         assert len(parse_mock.method_calls) == 9
 
     # ----------------------------------------------------------------------
-    def test_NoMatchNoSort(self, parse_mock):
-        result = self._no_sort_statement.Parse(CreateIterator("!1122"), parse_mock)
+    @pytest.mark.asyncio
+    async def test_NoMatchNoSort(self, parse_mock):
+        result = await self._no_sort_statement.ParseAsync(CreateIterator("!1122"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             False
             0
-                Short
-                    None
-                Long
-                    None
+                No Sort
+                    Short
+                        None
+                    Long
+                        None
             """,
         )
 
@@ -414,8 +443,7 @@ class TestSort(object):
         assert len(parse_mock.method_calls) == 6
 
         assert list(result.Data.Enum()) == [
-            (self._short_statement, None),
-            (self._long_statement, None),
+            (self._no_sort_statement, result.Data.Data),
         ]
 
 # ----------------------------------------------------------------------
@@ -436,6 +464,16 @@ class TestParseReturnsNone(object):
 
         # ----------------------------------------------------------------------
         @Interface.override
+        def PopulateRecursive(
+            self,
+            new_statement: Statement,
+            type_to_replace: Any,
+        ):
+            # Nothing to do here
+            pass
+
+        # ----------------------------------------------------------------------
+        @Interface.override
         async def ParseAsync(self, *args, **kwargs):
             return None
 
@@ -448,15 +486,17 @@ class TestParseReturnsNone(object):
     )
 
     # ----------------------------------------------------------------------
-    def test_Standard(self, parse_mock):
-        result = self._statement.Parse(CreateIterator("test"), parse_mock)
+    @pytest.mark.asyncio
+    async def test_Standard(self, parse_mock):
+        result = await self._statement.ParseAsync(CreateIterator("test"), parse_mock)
         assert result is None
 
         assert len(parse_mock.method_calls) == 2
 
     # ----------------------------------------------------------------------
-    def test_StandardSingleThreaded(self, parse_mock):
-        result = self._statement.Parse(
+    @pytest.mark.asyncio
+    async def test_StandardSingleThreaded(self, parse_mock):
+        result = await self._statement.ParseAsync(
             CreateIterator("test"),
             parse_mock,
             single_threaded=True,

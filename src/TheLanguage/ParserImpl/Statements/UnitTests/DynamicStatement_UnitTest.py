@@ -19,6 +19,8 @@ import os
 import re
 import textwrap
 
+import pytest
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -30,11 +32,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from . import (
-        CoroutineMock,
         CreateIterator,
-        parse_mock,
-        InternalStatementMethodCallToTuple,
         MethodCallsToString,
+        parse_mock,
     )
 
     from ..DynamicStatement import *
@@ -47,17 +47,19 @@ class TestStandard(object):
     _number_statement                       = TokenStatement(RegexToken("number", re.compile(r"(?P<value>[0-9]+)")))
 
     # ----------------------------------------------------------------------
-    def test_Single(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_Single(self, parse_mock):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement])
 
-        result = statement.Parse(CreateIterator("word"), parse_mock)
+        result = await statement.ParseAsync(CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
             4
-                Or: [lower]
-                    lower
-                        lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+                Dynamic Statements
+                    Or: {lower}
+                        lower
+                            lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
@@ -68,34 +70,38 @@ class TestStandard(object):
         ]
 
     # ----------------------------------------------------------------------
-    def test_SingleNoMatch(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_SingleNoMatch(self, parse_mock):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement])
 
-        result = statement.Parse(CreateIterator("1234"), parse_mock)
+        result = await statement.ParseAsync(CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             False
             0
-                Or: [lower]
-                    lower
-                        None
+                Dynamic Statements
+                    Or: {lower}
+                        lower
+                            None
             """,
         )
 
         assert len(parse_mock.method_calls) == 6
 
     # ----------------------------------------------------------------------
-    def test_MultipleNumber(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_MultipleNumber(self, parse_mock):
         statement = DynamicStatement(lambda uniqud_id, observer: [self._lower_statement, self._number_statement])
 
-        result = statement.Parse(CreateIterator("1234"), parse_mock)
+        result = await statement.ParseAsync(CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
             4
-                Or: [lower, number]
-                    number
-                        number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
+                Dynamic Statements
+                    Or: {lower, number}
+                        number
+                            number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
@@ -106,17 +112,19 @@ class TestStandard(object):
         ]
 
     # ----------------------------------------------------------------------
-    def test_MultipleLower(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_MultipleLower(self, parse_mock):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement, self._number_statement])
 
-        result = statement.Parse(CreateIterator("word"), parse_mock)
+        result = await statement.ParseAsync(CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
             4
-                Or: [lower, number]
-                    lower
-                        lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
+                Dynamic Statements
+                    Or: {lower, number}
+                        lower
+                            lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
@@ -127,10 +135,11 @@ class TestStandard(object):
         ]
 
     # ----------------------------------------------------------------------
-    def test_MultipleNumberEvents(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_MultipleNumberEvents(self, parse_mock):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement, self._number_statement])
 
-        result = statement.Parse(
+        result = await statement.ParseAsync(
             CreateIterator("1234"),
             parse_mock,
             single_threaded=True,
@@ -140,9 +149,10 @@ class TestStandard(object):
             """\
             True
             4
-                Or: [lower, number]
-                    number
-                        number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
+                Dynamic Statements
+                    Or: {lower, number}
+                        number
+                            number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
 
@@ -154,53 +164,63 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, StartStatement, ['Dynamic Statements']
-            1, StartStatement, ['Dynamic Statements', 'Or: [lower, number]']
-            2, StartStatement, ['Dynamic Statements', 'Or: [lower, number]', 'Or: lower [0]']
-            3, EndStatement, ['Dynamic Statements', 'Or: [lower, number]', 'Or: lower [0]']
-            4, StartStatement, ['Dynamic Statements', 'Or: [lower, number]', 'Or: number [1]']
-            5, OnInternalStatementAsync, ['Dynamic Statements', 'Or: [lower, number]', 'Or: number [1]']
-            6, EndStatement, ['Dynamic Statements', 'Or: [lower, number]', 'Or: number [1]']
-            7, OnInternalStatementAsync, ['Dynamic Statements', 'Or: [lower, number]']
-            8, EndStatement, ['Dynamic Statements', 'Or: [lower, number]']
-            9, OnInternalStatementAsync, ['Dynamic Statements']
-            10, EndStatement, ['Dynamic Statements']
+            0) StartStatement, "Dynamic Statements"
+            1) StartStatement, "Or: {lower, number}", "Dynamic Statements"
+            2) StartStatement, "lower", "Or: {lower, number}", "Dynamic Statements"
+            3) EndStatement, "lower" [False], "Or: {lower, number}" [None], "Dynamic Statements" [None]
+            4) StartStatement, "number", "Or: {lower, number}", "Dynamic Statements"
+            5) OnInternalStatementAsync, 0, 4
+                number
+                    number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
+                Or: {lower, number}
+                    <No Data>
+                Dynamic Statements
+                    <No Data>
+            6) EndStatement, "number" [True], "Or: {lower, number}" [None], "Dynamic Statements" [None]
+            7) OnInternalStatementAsync, 0, 4
+                Or: {lower, number}
+                    number
+                        number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
+                Dynamic Statements
+                    <No Data>
+            8) EndStatement, "Or: {lower, number}" [True], "Dynamic Statements" [None]
+            9) OnInternalStatementAsync, 0, 4
+                Dynamic Statements
+                    Or: {lower, number}
+                        number
+                            number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
+            10) EndStatement, "Dynamic Statements" [True]
             """,
         )
 
-        assert InternalStatementMethodCallToTuple(parse_mock, 5) == (self._number_statement, result.Data.Data.Data, 0, 4)
-
-        # Note that the or statement generated is dynamic, so we cannot compare it directly
-        assert InternalStatementMethodCallToTuple(
-            parse_mock,
-            7,
-            use_statement_name=True,
-        ) == ("Or: [lower, number]", result.Data.Data, 0, 4)
-
-        assert InternalStatementMethodCallToTuple(parse_mock, 9) == (statement, result.Data, 0, 4)
-
     # ----------------------------------------------------------------------
-    def test_SingleNoMatchEvents(self, parse_mock):
+    @pytest.mark.asyncio
+    async def test_SingleNoMatchEvents(self, parse_mock):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement])
 
-        result = statement.Parse(CreateIterator("1234"), parse_mock)
+        result = await statement.ParseAsync(
+            CreateIterator("1234"),
+            parse_mock,
+            single_threaded=True,
+        )
         assert str(result) == textwrap.dedent(
             """\
             False
             0
-                Or: [lower]
-                    lower
-                        None
+                Dynamic Statements
+                    Or: {lower}
+                        lower
+                            None
             """,
         )
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0, StartStatement, ['Dynamic Statements']
-            1, StartStatement, ['Dynamic Statements', 'Or: [lower]']
-            2, StartStatement, ['Dynamic Statements', 'Or: [lower]', 'Or: lower [0]']
-            3, EndStatement, ['Dynamic Statements', 'Or: [lower]', 'Or: lower [0]']
-            4, EndStatement, ['Dynamic Statements', 'Or: [lower]']
-            5, EndStatement, ['Dynamic Statements']
+            0) StartStatement, "Dynamic Statements"
+            1) StartStatement, "Or: {lower}", "Dynamic Statements"
+            2) StartStatement, "lower", "Or: {lower}", "Dynamic Statements"
+            3) EndStatement, "lower" [False], "Or: {lower}" [None], "Dynamic Statements" [None]
+            4) EndStatement, "Or: {lower}" [False], "Dynamic Statements" [None]
+            5) EndStatement, "Dynamic Statements" [False]
             """,
         )
