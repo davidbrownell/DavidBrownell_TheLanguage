@@ -20,12 +20,11 @@ import re
 import textwrap
 
 from enum import auto, Enum
-from typing import Any, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -39,6 +38,7 @@ with InitRelativeImports():
 
     from .Statements.DynamicStatement import DynamicStatement
     from .Statements.OrStatement import OrStatement
+    from .Statements.RecursivePlaceholderStatement import RecursivePlaceholderStatement
     from .Statements.RepeatStatement import RepeatStatement
     from .Statements.SequenceStatement import SequenceStatement
     from .Statements.Statement import Statement
@@ -73,7 +73,7 @@ class StatementItem(object):
         Token,
         DynamicStatements,
         List["ItemType"],                   # Converts to an SequenceStatement
-        Tuple["ItemType"],                  # Converts to an OrStatement
+        Tuple["ItemType", ...],             # Converts to an OrStatement
         None,                               # Populated at a later time
     ]
 
@@ -138,54 +138,9 @@ def CreateStatement(
     else:
         statement = _PopulateItem(comment_token, item)
 
-    statement.PopulateRecursive(
-        statement,
-        _PlaceholderStatement,
-    )
+    statement.PopulateRecursive()
 
     return statement
-
-
-# ----------------------------------------------------------------------
-# |
-# |  Private Types
-# |
-# ----------------------------------------------------------------------
-class _PlaceholderStatement(Statement):
-    """Statement that should be replaced during final initialization"""
-
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        unique_id: Optional[List[str]]=None,
-        type_id: Optional[int]=None,
-    ):
-        super(_PlaceholderStatement, self).__init__("Placeholder")
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Clone(
-        self,
-        unique_id: List[str],
-    ) -> Statement:
-        return self.__class__(
-            unique_id=unique_id,
-            type_id=self.TypeId,
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def PopulateRecursive(
-        self,
-        new_statement: Statement,
-        type_to_replace: Any,
-    ):
-        raise Exception("'PopulateRecursive' should never be called on a _PlaceholderStatement instance")
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    async def ParseAsync(self, *args, **kwargs):
-        raise Exception("'ParseAsync' should never be called on a _PlaceholderStatement instance")
 
 
 # ----------------------------------------------------------------------
@@ -198,7 +153,7 @@ def _PopulateItem(
     item: StatementItem.ItemType,
 ) -> Statement:
     if item is None:
-        return _PlaceholderStatement()
+        return RecursivePlaceholderStatement()
 
     if not isinstance(item, StatementItem):
         item = StatementItem(item)
@@ -244,6 +199,10 @@ def _PopulateItem(
             *[_PopulateItem(comment_token, i) for i in item.Item],
             name=item.Name,
         )
+
+    elif item.Item is None:
+        statement = RecursivePlaceholderStatement()
+        name = item.Name
 
     else:
         assert False, item.Item  # pragma: no cover

@@ -18,6 +18,7 @@
 import os
 import re
 
+from typing import Callable, List
 from unittest.mock import Mock
 
 import pytest
@@ -68,25 +69,26 @@ def CreateStatement(result):
             self,
             unique_id: List[str],
         ) -> Statement:
-            return self.__class__(
+            return self.CloneImpl(
                 unique_id=unique_id,
                 type_id=self.TypeId,
             )
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def PopulateRecursive(
-            self,
-            new_statement: Statement,
-            type_to_replace: Any,
-        ):
-            # Nothing to do here
-            pass
-
-        # ----------------------------------------------------------------------
-        @Interface.override
         async def ParseAsync(self, *args, **kwargs):
             return self.parse_mock(*args, **kwargs)
+
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def PopulateRecursiveImpl(
+            self,
+            new_statement: Statement,
+        ) -> bool:
+            # Nothing to do here
+            return False
 
     # ----------------------------------------------------------------------
 
@@ -109,27 +111,28 @@ class TestStandard(object):
             self,
             unique_id: List[str],
         ) -> Statement:
-            return self.__class__(
+            return self.CloneImpl(
                 self.Name,
                 unique_id=unique_id,
                 type_id=self.TypeId,
             )
 
         # ----------------------------------------------------------------------
-        @Interface.override
-        def PopulateRecursive(
-            self,
-            new_statement: Statement,
-            type_to_replace: Any,
-        ):
-            # Nothing to do here
-            pass
-
-        # ----------------------------------------------------------------------
         @staticmethod
         @Interface.override
         async def ParseAsync(*args, **kwargs):
             pass
+
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def PopulateRecursiveImpl(
+            self,
+            new_statement: Statement,
+        ) -> bool:
+            # Nothing to do here
+            return False
 
     # ----------------------------------------------------------------------
     class MyParseResultData(Statement.ParseResultData):

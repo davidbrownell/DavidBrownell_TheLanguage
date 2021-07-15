@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -72,21 +72,11 @@ class TokenStatement(Statement):
         self,
         unique_id: List[str],
     ) -> Statement:
-        return self.__class__(
+        return self.CloneImpl(
             self.Token,
             unique_id=unique_id,
             type_id=self.TypeId,
         )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def PopulateRecursive(
-        self,
-        new_statement: Statement,
-        type_to_replace: Any,
-    ):
-        # Nothing to do here
-        pass
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -179,3 +169,14 @@ class TokenStatement(Statement):
                     return start, normalized_iter.Offset
 
         return None
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def PopulateRecursiveImpl(
+        self,
+        new_statement: Statement,
+    ) -> bool:
+        # Nothing to do here
+        return False

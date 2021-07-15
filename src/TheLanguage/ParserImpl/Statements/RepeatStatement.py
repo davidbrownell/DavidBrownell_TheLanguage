@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, cast, List, Optional, Union
+from typing import cast, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -31,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .RecursivePlaceholderStatement import RecursivePlaceholderStatement
     from .Statement import Statement
 
 
@@ -51,12 +52,17 @@ class RepeatStatement(Statement):
         name: str=None,
         unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
+        _name_is_default: Optional[bool]=None,
     ):
         assert statement
         assert min_matches >= 0, min_matches
         assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
 
-        name = name or "Repeat: ({}, {}, {})".format(statement.Name, min_matches, max_matches)
+        if name is None:
+            name = self._CreateDefaultName(statement, min_matches, max_matches)
+            _name_is_default = True
+        elif _name_is_default is None:
+            _name_is_default = False
 
         super(RepeatStatement, self).__init__(
             name,
@@ -67,6 +73,8 @@ class RepeatStatement(Statement):
         self.Statement                      = statement
         self.MinMatches                     = min_matches
         self.MaxMatches                     = max_matches
+        self._original_statement            = statement
+        self._name_is_default               = _name_is_default
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -74,28 +82,15 @@ class RepeatStatement(Statement):
         self,
         unique_id: List[str],
     ):
-        return self.__class__(
-            self.Statement,
+        return self.CloneImpl(
+            self._original_statement,
             self.MinMatches,
             self.MaxMatches,
             name=self.Name,
             unique_id=unique_id,
             type_id=self.TypeId,
+            _name_is_default=self._name_is_default,
         )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def PopulateRecursive(
-        self,
-        new_statement: Statement,
-        type_to_replace: Any,
-    ):
-        if isinstance(self.Statement, type_to_replace):
-            self.Statement = new_statement.Clone(
-                unique_id=self.Statement.UniqueId,
-            )
-        else:
-            self.Statement.PopulateRecursive(new_statement, type_to_replace)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -191,3 +186,34 @@ class RepeatStatement(Statement):
                     Statement.MultipleStandardParseResultData(cast(List[Optional[Statement.ParseResultData]], result_data), True),
                 ),
             )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def PopulateRecursiveImpl(
+        self,
+        new_statement: Statement,
+    ) -> bool:
+        updated_statements = False
+
+        if isinstance(self.Statement, RecursivePlaceholderStatement):
+            self.Statement = new_statement
+            updated_statements = True
+
+        else:
+            updated_statements = self.Statement.PopulateRecursiveImpl(new_statement)
+
+        if updated_statements and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Statement, self.MinMatches, self.MaxMatches)
+
+        return updated_statements
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _CreateDefaultName(
+        statement: Statement,
+        min_matches: int,
+        max_matches: Optional[int],
+    ) -> str:
+        return "Repeat: ({}, {}, {})".format(statement.Name, min_matches, max_matches)

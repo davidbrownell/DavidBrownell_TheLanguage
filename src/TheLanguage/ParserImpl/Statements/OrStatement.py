@@ -18,7 +18,7 @@
 import asyncio
 import os
 
-from typing import Any, cast, List, Optional, Union
+from typing import cast, Iterable, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -32,6 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .RecursivePlaceholderStatement import RecursivePlaceholderStatement
     from .Statement import Statement
 
 
@@ -51,11 +52,16 @@ class OrStatement(Statement):
         name: str=None,
         unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
+        _name_is_default: Optional[bool]=None,
     ):
         assert statements
         assert all(statement for statement in statements)
 
-        name = name or "Or: {{{}}}".format(", ".join([statement.Name for statement in statements]))
+        if name is None:
+            name = self._CreateDefaultName(statements)
+            _name_is_default = True
+        elif _name_is_default is None:
+            _name_is_default = False
 
         super(OrStatement, self).__init__(
             name,
@@ -73,6 +79,7 @@ class OrStatement(Statement):
         self.Statements                     = cloned_statements
         self.SortResults                    = sort_results
         self._original_statements           = statements
+        self._name_is_default               = _name_is_default
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -80,28 +87,14 @@ class OrStatement(Statement):
         self,
         unique_id: List[str],
     ) -> Statement:
-        return self.__class__(
+        return self.CloneImpl(
             *self._original_statements,
             sort_results=self.SortResults,
             name=self.Name,
             unique_id=unique_id,
             type_id=self.TypeId,
+            _name_is_default=self._name_is_default,
         )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def PopulateRecursive(
-        self,
-        new_statement: Statement,
-        type_to_replace: Any,
-    ):
-        for statement_index, statement in enumerate(self.Statements):
-            if isinstance(statement, type_to_replace):
-                self.Statements[statement_index] = new_statement.Clone(
-                    unique_id=statement.UniqueId,
-                )
-            else:
-                statement.PopulateRecursive(new_statement, type_to_replace)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -247,3 +240,32 @@ class OrStatement(Statement):
                     Statement.MultipleStandardParseResultData(cast(List[Optional[Statement.ParseResultData]], data_items), True),
                 ),
             )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def PopulateRecursiveImpl(
+        self,
+        new_statement: Statement,
+    ) -> bool:
+        updated_statements = False
+
+        for statement_index, statement in enumerate(self.Statements):
+            if isinstance(statement, RecursivePlaceholderStatement):
+                self.Statements[statement_index] = new_statement
+                updated_statements = True
+            else:
+                updated_statements = statement.PopulateRecursiveImpl(new_statement) or updated_statements
+
+        if updated_statements and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Statements)
+
+        return updated_statements
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _CreateDefaultName(
+        statements: Iterable[Statement],
+    ) -> str:
+        return "Or: {{{}}}".format(", ".join([statement.Name for statement in statements]))

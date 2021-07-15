@@ -1,6 +1,8 @@
 {
     "exclude": [
         "**/__pycache__",
+        "**/site-packages",
+
         "**/*Tests",
 
         "Grammars/*" // TODO: Restore this once grammars are back

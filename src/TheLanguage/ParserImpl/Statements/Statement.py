@@ -348,6 +348,22 @@ class Statement(Interface.Interface):
         self.Name                           = name
         self.UniqueId                       = unique_id or [name]
         self.TypeId                         = type_id or id(self)
+        self._is_recursive_root             = False
+
+    # ----------------------------------------------------------------------
+    def PopulateRecursive(self):
+        assert self._is_recursive_root == False
+        self._is_recursive_root = True
+        self.PopulateRecursiveImpl(self)
+
+    # ----------------------------------------------------------------------
+    @Interface.abstractmethod
+    def Clone(
+        self,
+        unique_id: List[str],
+    ) -> "Statement":
+        """Clones the statement with the new unique_id value"""
+        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):
@@ -385,28 +401,6 @@ class Statement(Interface.Interface):
             return "{} <{}>".format(self.Name, ", ".join([str(uid) for uid in self.UniqueId]))
 
         return self.Name
-
-    # ----------------------------------------------------------------------
-    @Interface.abstractmethod
-    def Clone(
-        self,
-        unique_id: List[str],
-    ) -> "Statement":
-        """Clones the statement with the new unique_id value"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @Interface.abstractmethod
-    def PopulateRecursive(
-        self,
-        new_statement: "Statement",
-        type_to_replace: Any,
-    ):
-        """\
-        Populates all instances of `type_to_replace` with `new_statement`. This
-        allows for recursive statement definitions.
-        """
-        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -558,3 +552,34 @@ class Statement(Interface.Interface):
                 iter_before,
                 iter_after,
             )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Protected Methods
+    # |
+    # ----------------------------------------------------------------------
+    def CloneImpl(self, *args, **kwargs):
+        result = self.__class__(*args, **kwargs)
+
+        if self._is_recursive_root:
+            result.PopulateRecursive()
+
+        return result
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
+    # ----------------------------------------------------------------------
+    @Interface.abstractmethod
+    def PopulateRecursiveImpl(
+        self,
+        new_statement: "Statement",
+    ) -> bool:
+        """\
+        Populates all instances of `type_to_replace` with `new_statement`. This
+        allows for recursive statement definitions.
+
+        Return true if the statement was updated, False if not.
+        """
+        raise Exception("Abstract method")  # pragma: no cover

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, cast, List, Optional, Tuple, Union
+from typing import cast, Iterable, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -32,6 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Statement import Statement
+    from .RecursivePlaceholderStatement import RecursivePlaceholderStatement
     from .TokenStatement import TokenStatement
 
     from ..Token import (
@@ -61,6 +62,7 @@ class SequenceStatement(Statement):
         name: str=None,
         unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
+        _name_is_default: Optional[bool]=None,
     ):
         assert comment_token
         assert statements
@@ -91,7 +93,11 @@ class SequenceStatement(Statement):
         assert not control_token_tracker, control_token_tracker
 
         # Initialize the class
-        name = name or "Sequence: [{}]".format(", ".join([statement.Name for statement in statements]))
+        if name is None:
+            name = self._CreateDefaultName(statements)
+            _name_is_default = True
+        elif _name_is_default is None:
+            _name_is_default = False
 
         super(SequenceStatement, self).__init__(
             name,
@@ -109,6 +115,7 @@ class SequenceStatement(Statement):
         self.CommentToken                   = comment_token
         self.Statements                     = cloned_statements
         self._original_statements           = statements
+        self._name_is_default               = _name_is_default
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -116,28 +123,13 @@ class SequenceStatement(Statement):
         self,
         unique_id: List[str],
     ) -> Statement:
-        return self.__class__(
+        return self.CloneImpl(
             self.CommentToken,
             *self._original_statements,
             name=self.Name,
             unique_id=unique_id,
             type_id=self.TypeId,
         )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def PopulateRecursive(
-        self,
-        new_statement: Statement,
-        type_to_replace: Any,
-    ):
-        for statement_index, statement in enumerate(self.Statements):
-            if isinstance(statement, type_to_replace):
-                self.Statements[statement_index] = new_statement.Clone(
-                    unique_id=statement.UniqueId,
-                )
-            else:
-                statement.PopulateRecursive(new_statement, type_to_replace)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -363,3 +355,32 @@ class SequenceStatement(Statement):
                 return results, result.IterAfter
 
         return results, results[-1].IterAfter
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def PopulateRecursiveImpl(
+        self,
+        new_statement: Statement,
+    ) -> bool:
+        updated_statements = False
+
+        for statement_index, statement in enumerate(self.Statements):
+            if isinstance(statement, RecursivePlaceholderStatement):
+                self.Statements[statement_index] = new_statement
+                updated_statements = True
+            else:
+                updated_statements = statement.PopulateRecursiveImpl(new_statement) or updated_statements
+
+        if updated_statements and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Statements)
+
+        return updated_statements
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _CreateDefaultName(
+        statements: Iterable[Statement],
+    ) -> str:
+        return "Sequence: [{}]".format(", ".join([statement.Name for statement in statements]))

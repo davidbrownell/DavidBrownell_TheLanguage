@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -74,22 +74,12 @@ class DynamicStatement(Statement):
         self,
         unique_id: List[str],
     ):
-        return self.__class__(
+        return self.CloneImpl(
             self._get_dynamic_statements_func,
             name=self.Name,
             unique_id=unique_id,
             type_id=self.TypeId,
         )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def PopulateRecursive(
-        self,
-        new_statement: Statement,
-        type_to_replace: Any,
-    ):
-        # Nothing to do here
-        pass
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -160,3 +150,14 @@ class DynamicStatement(Statement):
                 return None
 
             return Statement.ParseResult(result.Success, result.Iter, data)
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def PopulateRecursiveImpl(
+        self,
+        new_statement: Statement,
+    ) -> bool:
+        # Nothing to do here
+        return False

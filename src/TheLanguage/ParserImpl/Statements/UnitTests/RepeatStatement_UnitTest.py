@@ -19,6 +19,8 @@ import os
 import re
 import textwrap
 
+from typing import Callable, List
+
 import pytest
 
 import CommonEnvironment
@@ -410,7 +412,7 @@ async def test_ParseReturnsNone(parse_mock):
             self,
             unique_id: List[str],
         ):
-            return self.__class__(
+            return self.CloneImpl(
                 self.Name,
                 unique_id=unique_id,
                 type_id=self.TypeId,
@@ -418,18 +420,19 @@ async def test_ParseReturnsNone(parse_mock):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def PopulateRecursive(
-            self,
-            new_statement: Statement,
-            type_to_replace: Any,
-        ):
-            # Nothing to do here
-            pass
-
-        # ----------------------------------------------------------------------
-        @Interface.override
         async def ParseAsync(self, *args, **kwargs):
             return None
+
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def PopulateRecursiveImpl(
+            self,
+            new_statement: Statement,
+        ) -> bool:
+            # Nothing to do here
+            return False
 
     # ----------------------------------------------------------------------
 

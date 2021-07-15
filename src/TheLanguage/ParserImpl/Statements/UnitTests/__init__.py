@@ -117,6 +117,19 @@ def MethodCallsToString(
                     StringHelpers.LeftJustify(method_call[1][1].ToString(), 4),
                 ).rstrip(),
             )
+        elif method_name == "GetDynamicStatements":
+            contents.append(
+                textwrap.dedent(
+                    """\
+                    {}) {}, {}
+                    """,
+                ).format(
+                    index,
+                    method_name,
+                    method_call[0][1],
+                ).rstrip(),
+            )
+
         elif method_name is None:
             contents.append(
                 textwrap.dedent(
