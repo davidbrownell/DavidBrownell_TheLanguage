@@ -82,7 +82,7 @@ class TestStandard(object):
                 Dynamic Statements
                     Or: {lower}
                         lower
-                            None
+                            <No Data>
             """,
         )
 
@@ -173,7 +173,8 @@ class TestStandard(object):
                 number
                     number <<Regex: <_sre.SRE_Match object; span=(0, 4), match='1234'>>> ws:None [1, 1 -> 1, 5]
                 Or: {lower, number}
-                    <No Data>
+                    lower
+                        <No Data>
                 Dynamic Statements
                     <No Data>
             6) EndStatement, "number" [True], "Or: {lower, number}" [None], "Dynamic Statements" [None]
@@ -210,7 +211,7 @@ class TestStandard(object):
                 Dynamic Statements
                     Or: {lower}
                         lower
-                            None
+                            <No Data>
             """,
         )
 

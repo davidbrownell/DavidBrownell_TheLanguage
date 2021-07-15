@@ -88,17 +88,17 @@ class SyntaxInvalidError(Error):
 class DynamicStatementInfo(object):
     """Contains Statements that have been dynamically added to the active scope"""
 
-    Statements: Tuple[Statement]
-    Expressions: Tuple[Statement]
+    Statements: Tuple[Statement, ...]
+    Expressions: Tuple[Statement, ...]
     AllowParentTraversal: bool              = True      # If False, prevent content from including values from higher-level scope
     Name: Optional[str]                     = None
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         if not isinstance(self.Statements, tuple):
-            raise Exception("Statements must be a tuple")
+            raise Exception("'Statements' must be a tuple")
         if not isinstance(self.Expressions, tuple):
-            raise Exception("Expressions must be a tuple")
+            raise Exception("'Expressions' must be a tuple")
 
     # ----------------------------------------------------------------------
     def Clone(
@@ -122,13 +122,13 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     def GetDynamicStatements(
-        unique_id: List[Any],
+        unique_id: List[str],
         dynamic_statement_type: DynamicStatements,
     ) -> Union[
-        Tuple[str, List[Statement]],
         List[Statement],
+        Tuple[str, List[Statement]],
     ]:
-        """Returns all currently available dynamic statements based on the current scope"""
+        """Returns a list of dynamic statements for this id"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -216,8 +216,17 @@ async def ParseAsync(
         ),
     }
 
+    # ----------------------------------------------------------------------
+    def GetDynamicStatements(
+        unique_id: List[str],
+        observer: Statement.Observer,
+    ):
+        return cast(Observer, observer).GetDynamicStatements(unique_id, DynamicStatements.Statements)
+
+    # ----------------------------------------------------------------------
+
     statement = DynamicStatement(
-        lambda unique_id, observer: cast(Observer, observer).GetDynamicStatements(unique_id, DynamicStatements.Statements),
+        GetDynamicStatements,
         name=name,
     )
 
@@ -241,6 +250,7 @@ async def ParseAsync(
             return None
 
         assert result.Data
+
         internal_observer.CreateNode(
             result.Data.Statement,
             result.Data.Data,
@@ -316,35 +326,27 @@ class _InternalObserver(Statement.Observer):
         was_cached = False
 
         # Look for the cached value
-        key = tuple(
-            [
-                id(statement),
-            ] +
-            [
-                id(child_data)
-                for _, child_data in data.Enum()
-            ]
-            if data else []
-        )
+        key = (tuple(statement.UniqueId), data.ToString() if data else None).__hash__()
 
-        if key:
-            potential_node = self._node_cache.get(key, None)
-            if potential_node is not None:
-                node = potential_node
-                was_cached = True
+        potential_node = self._node_cache.get(key, None)
+        if potential_node is not None:
+            node = potential_node
+            was_cached = True
 
         if node is None:
             if isinstance(statement, TokenStatement) and data:
-                assert parent
                 node = self._CreateLeaf(cast(Statement.TokenParseResultData, data), parent)
             else:
                 node = AST.Node(statement)
 
-                if parent is not None:
-                    object.__setattr__(node, "Parent", parent)
-                    parent.Children.append(node)
-
         assert node
+
+        if parent is not None:
+            if node.Parent is not None:
+                assert node.Parent == parent
+            else:
+                object.__setattr__(node, "Parent", parent)
+                parent.Children.append(node)
 
         if not was_cached:
             if isinstance(node, AST.Node):
@@ -355,15 +357,14 @@ class _InternalObserver(Statement.Observer):
                     else:
                         self.CreateNode(child_statement, child_data, node)
 
-            if key:
-                self._node_cache[key] = node
+            self._node_cache[key] = node
 
         return node
 
     # ----------------------------------------------------------------------
     def GetDynamicStatements(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
         dynamic_statement_type: DynamicStatements,
     ) -> Union[
         Tuple[str, List[Statement]],
@@ -556,13 +557,12 @@ class _InternalObserver(Statement.Observer):
         iter_after: Statement.NormalizedIterator,
     ) -> bool:
         statement = data_stack[0].Statement
-
         data = data_stack[0].Data
         assert data
 
         this_result = await self._observer.OnStatementCompleteAsync(
             statement,
-            data,
+            cast(AST.Node, self.CreateNode(statement, data, None)),
             iter_before,
             iter_after,
         )
@@ -579,7 +579,7 @@ class _InternalObserver(Statement.Observer):
     @staticmethod
     def _CreateLeaf(
         data: Statement.TokenParseResultData,
-        parent: Union[AST.RootNode, AST.Node],
+        parent: Optional[Union[AST.RootNode, AST.Node]],
     ) -> AST.Leaf:
         leaf = AST.Leaf(
             data.Token,
@@ -590,15 +590,16 @@ class _InternalObserver(Statement.Observer):
             data.IsIgnored,
         )
 
-        object.__setattr__(leaf, "Parent", parent)
-        parent.Children.append(leaf)
+        if parent:
+            object.__setattr__(leaf, "Parent", parent)
+            parent.Children.append(leaf)
 
         return leaf
 
     # ----------------------------------------------------------------------
     def _AddDynamicStatementInfo(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
         iter_after: Statement.NormalizedIterator,
         info: DynamicStatementInfo,
     ):
@@ -618,7 +619,8 @@ class _InternalObserver(Statement.Observer):
             if node.Infos:
                 last_info = node.Infos[-1]
 
-        assert this_node.UniqueIdPart == unique_id[-1], (node.UniqueIdPart, unique_id[-1])
+        assert this_node
+        assert this_node.UniqueIdPart == unique_id[-1], (this_node.UniqueIdPart, unique_id[-1])
 
         if (
             not info.AllowParentTraversal
@@ -653,7 +655,7 @@ class _InternalObserver(Statement.Observer):
     # ----------------------------------------------------------------------
     def _EnumPreviousNodes(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
     ) -> Generator[_StatementInfoNode, None, None]:
         yield self._all_statement_infos[_DefaultStatementInfoTag]
 

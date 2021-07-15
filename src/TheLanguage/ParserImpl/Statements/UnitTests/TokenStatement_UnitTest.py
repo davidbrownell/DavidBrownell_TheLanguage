@@ -196,7 +196,8 @@ class TestWords(object):
             """\
             False
             0
-                <No Data>
+                Word
+                    <No Data>
             """,
         )
 

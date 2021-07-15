@@ -49,7 +49,7 @@ def CreateStatement(result):
         # ----------------------------------------------------------------------
         def __init__(
             self,
-            unique_id: Optional[List[Any]]=None,
+            unique_id: Optional[List[str]]=None,
             type_id: Optional[int]=None,
         ):
             super(TheStatement, self).__init__(
@@ -66,7 +66,7 @@ def CreateStatement(result):
         @Interface.override
         def Clone(
             self,
-            unique_id: List[Any],
+            unique_id: List[str],
         ) -> Statement:
             return self.__class__(
                 unique_id=unique_id,
@@ -107,7 +107,7 @@ class TestStandard(object):
         @Interface.override
         def Clone(
             self,
-            unique_id: List[Any],
+            unique_id: List[str],
         ) -> Statement:
             return self.__class__(
                 self.Name,

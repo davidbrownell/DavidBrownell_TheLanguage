@@ -49,7 +49,7 @@ class RepeatStatement(Statement):
         min_matches: int,
         max_matches: Optional[int],
         name: str=None,
-        unique_id: Optional[List[Any]]=None,
+        unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
     ):
         assert statement
@@ -72,7 +72,7 @@ class RepeatStatement(Statement):
     @Interface.override
     def Clone(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
     ):
         return self.__class__(
             self.Statement,
@@ -119,7 +119,7 @@ class RepeatStatement(Statement):
             error_result: Optional[Statement.ParseResult] = None
 
             while not normalized_iter.AtEnd():
-                statement = self.Statement.Clone(self.UniqueId + ["Rpt: {} [{}]".format(self.Statement.Name, len(results))])
+                statement = self.Statement.Clone(self.UniqueId + ["Repeat: {} [{}]".format(self.Statement.Name, len(results))])
 
                 result = await statement.ParseAsync(
                     normalized_iter.Clone(),
@@ -188,6 +188,6 @@ class RepeatStatement(Statement):
                 end_iter,
                 Statement.StandardParseResultData(
                     self,
-                    Statement.MultipleStandardParseResultData(result_data, True),
+                    Statement.MultipleStandardParseResultData(cast(List[Optional[Statement.ParseResultData]], result_data), True),
                 ),
             )

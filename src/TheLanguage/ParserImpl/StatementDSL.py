@@ -157,7 +157,7 @@ class _PlaceholderStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        unique_id: Optional[List[Any]]=None,
+        unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
     ):
         super(_PlaceholderStatement, self).__init__("Placeholder")
@@ -166,7 +166,7 @@ class _PlaceholderStatement(Statement):
     @Interface.override
     def Clone(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
     ) -> Statement:
         return self.__class__(
             unique_id=unique_id,
@@ -216,8 +216,19 @@ def _PopulateItem(
         )
 
     elif isinstance(item.Item, DynamicStatements):
+        dynamic_statement_value = item.Item
+
+        # ----------------------------------------------------------------------
+        def GetDynamicStatements(
+            unique_id: List[str],
+            observer,
+        ):
+            return observer.GetDynamicStatements(unique_id, dynamic_statement_value)
+
+        # ----------------------------------------------------------------------
+
         statement = DynamicStatement(
-            lambda unique_id, observer: observer.GetDynamicStatements(unique_id, item.Item),
+            GetDynamicStatements,
             name=item.Name or str(item.Item),
         )
 

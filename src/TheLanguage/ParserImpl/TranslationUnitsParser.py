@@ -17,19 +17,17 @@
 
 import asyncio
 import os
-import textwrap
 import threading
 import traceback
 
 from concurrent.futures import Future
 from typing import Any, Awaitable, Callable, cast, Dict, List, Optional, Tuple, Union
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
-from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -39,17 +37,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .AST import Leaf, Node, RootNode
     from .Error import Error
     from .Normalize import Normalize
     from .NormalizedIterator import NormalizedIterator
 
-    from .StatementEx import (
-        DynamicStatements,                  # This is here as a convenience for importing modules; do not remove
-        Statement,
-        StatementEx,
-        TokenClass as Token,
-        TokenStatement,
-    )
+    from .Statements.Statement import Statement
 
     from .TranslationUnitParser import (
         DynamicStatementInfo,
@@ -64,137 +57,6 @@ class UnknownSourceError(Error):
     SourceName: str
 
     MessageTemplate                         = Interface.DerivedProperty("'{SourceName}' could not be found")
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class _ParseResultBase(Interface.Interface):
-    """Base class for parsed AST entities"""
-
-    Type: Union[None, Statement, Token]
-
-    Parent: Optional[Statement]             = field(
-        default_factory=lambda: None,
-        init=False,
-    )
-
-    # ----------------------------------------------------------------------
-    def __str__(self):
-        return self.ToString()
-
-    # ----------------------------------------------------------------------
-    @Interface.extensionmethod
-    def ToString(
-        self,
-        verbose=False,
-    ) -> str:
-        if self.Type is None:
-            return "<Root>" if isinstance(self, RootNode) else "<None>"
-
-        return self.Type.Name
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class _Node(_ParseResultBase):
-    Children: List[Union["_Node", "Leaf"]]  = field(
-        default_factory=list,
-        init=False,
-    )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def ToString(
-        self,
-        verbose=False,
-    ) -> str:
-        children = [
-            child.ToString(
-                verbose=verbose,
-            ).rstrip()
-            for child in self.Children
-        ]
-
-        if not children:
-            children.append("<No Children>")
-
-        return textwrap.dedent(
-            """\
-            {heading}
-                {children}
-            """,
-        ).format(
-            heading=super(_Node, self).ToString(
-                verbose=verbose,
-            ),
-            children=StringHelpers.LeftJustify(
-                "\n".join(children),
-                4,
-            ),
-        )
-
-    # ----------------------------------------------------------------------
-    @property
-    def IterBefore(self):
-        node = self
-
-        while isinstance(node, _Node):
-            node = node.Children[0]
-
-        return cast(Leaf, node).IterBefore
-
-    @property
-    def IterAfter(self):
-        node = self
-
-        while isinstance(node, _Node):
-            node = node.Children[-1]
-
-        return cast(Leaf, node).IterAfter
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class RootNode(_Node):
-    pass
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class Node(_Node):
-    """AST results of a Statement"""
-    pass
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class Leaf(_ParseResultBase):
-    """AST results of a Token"""
-
-    Whitespace: Optional[Tuple[int, int]]   # Whitespace immediately before the token
-    Value: Token.MatchType                  # Result of the call to Token.Match
-    IterBefore: NormalizedIterator          # NormalizedIterator before the token
-    IterAfter: NormalizedIterator           # NormalizedIterator after the token has been consumed
-    IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def ToString(
-        self,
-        verbose=False,
-    ) -> str:
-        return "{typ} <<{value}>> ws:{ws}{ignored} [{line_before}, {column_before} -> {line_after}, {column_after}]".format(
-            typ=super(Leaf, self).ToString(
-                verbose=verbose,
-            ),
-            value=str(self.Value),
-            ws="None" if self.Whitespace is None else "({}, {})".format(*self.Whitespace),
-            ignored=" !Ignored!" if self.IsIgnored else "",
-            line_before=self.IterBefore.Line,
-            column_before=self.IterBefore.Column,
-            line_after=self.IterAfter.Line,
-            column_after=self.IterAfter.Column,
-        )
 
 
 # ----------------------------------------------------------------------
@@ -216,19 +78,19 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def LoadContent(
-        fully_qualified_name: str,
-    ) -> str:
-        """Returns the content associated with the fully qualified name"""
+    def Enqueue(
+        funcs: List[Callable[[], None]],
+    ) -> List[Future]:
+        """Enqueues the funcs for execution on a thread pool"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def Enqueue(
-        funcs: List[Callable[[], None]],
-    ) -> List[Future]:
-        """Enqueues the funcs for execution on a thread pool"""
+    def LoadContent(
+        fully_qualified_name: str,
+    ) -> str:
+        """Returns the content associated with the fully qualified name"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -244,10 +106,34 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
+    def StartStatement(
+        fully_qualified_name: str,
+        statement_stack: List[Statement],
+    ) -> None:
+        """Called when a statement is started"""
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def EndStatement(
+        fully_qualified_name: str,
+        statement_info_stack: List[
+            Tuple[
+                Statement,
+                Optional[bool],
+            ],
+        ],
+    ) -> None:
+        """Called when a statement ends"""
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
     async def OnIndentAsync(
         fully_qualified_name: str,
-        statement: StatementEx,
-        data_items: List[Statement.ParseResultData],
+        data_stack: List[Statement.StandardParseResultData],
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
@@ -259,8 +145,7 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     async def OnDedentAsync(
         fully_qualified_name: str,
-        statement: Statement,
-        data_items: List[Statement.ParseResultData],
+        data_stack: List[Statement.StandardParseResultData],
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> None:
@@ -272,7 +157,8 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     async def OnStatementCompleteAsync(
         fully_qualified_name: str,
-        node: Union[Node, Leaf],
+        statement: Statement,
+        node: Node,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Union[
@@ -339,10 +225,13 @@ async def ParseAsync(
                 if final_result is None:
                     del thread_info.source_lookup[fully_qualified_name]
 
-                    final_result = SourceInfo(None, DynamicStatementInfo([], []))
+                    final_result = SourceInfo(None, DynamicStatementInfo((), ()))
 
                 for event in thread_info.source_pending.pop(fully_qualified_name, []):
                     event.set()
+
+                if thread_info.pending_ctr == 0:
+                    is_complete.set()
 
         # ----------------------------------------------------------------------
 
@@ -374,9 +263,6 @@ async def ParseAsync(
                         assert thread_info.pending_ctr
                         thread_info.pending_ctr -= 1
 
-                        if thread_info.pending_ctr == 0:
-                            is_complete.set()
-
                 # ----------------------------------------------------------------------
 
                 with CallOnExit(OnExecuteExit):
@@ -385,22 +271,15 @@ async def ParseAsync(
 
                         content = observer.LoadContent(fully_qualified_name)
 
-                        results = await TranslationUnitParseAsync(
+                        root = await TranslationUnitParseAsync(
                             initial_statement_info,
                             NormalizedIterator(Normalize(content)),
                             translation_unit_observer,
                             single_threaded=single_threaded,
                         )
 
-                        if results is None:
+                        if root is None:
                             return None
-
-                        # The noes have already been created, but we need to finalize
-                        # the relationships.
-                        root = RootNode(None)
-
-                        for result in results:
-                            translation_unit_observer.CreateNode(result.Statement, result.Data, root)
 
                         # Get the Dynamic Statements
                         dynamic_statements = observer.ExtractDynamicStatements(fully_qualified_name, root)
@@ -446,18 +325,18 @@ async def ParseAsync(
 
     # ----------------------------------------------------------------------
 
+    with thread_info_lock:
+        # Prepopulate `pending_ctr` so that we can make sure that we don't
+        # prematurely terminate as threads are spinning up.
+        thread_info.pending_ctr = len(fully_qualified_names)
+
     if single_threaded:
         for fqn in fully_qualified_names:
-            result = await ExecuteAsync(fqn)
+            result = await ExecuteAsync(fqn, increment_pending_ctr=False)
             if result is None:
                 return None
 
     else:
-        with thread_info_lock:
-            # Prepopulate the pending ctr so that we can make sure that we don't
-            # prematurely terminate as threads are spinning up.
-            thread_info.pending_ctr = len(fully_qualified_names)
-
         futures = observer.Enqueue(
             [
                 cast(Callable[[], None], lambda fqn=fqn: PrepLoopAndExecute(fqn, increment_pending_ctr=False))
@@ -470,7 +349,7 @@ async def ParseAsync(
             if result is None:
                 return None
 
-    is_complete.wait()
+        is_complete.wait()
 
     assert not thread_info.source_pending, thread_info.source_pending
 
@@ -492,50 +371,46 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         self,
         fully_qualified_name: str,
         observer: Observer,
-        async_parse_func: Callable[[str], Awaitable[DynamicStatementInfo]],
+        async_parse_func: Callable[[str], Awaitable[Optional[DynamicStatementInfo]]],
     ):
         self._fully_qualified_name          = fully_qualified_name
         self._observer                      = observer
         self._async_parse_func              = async_parse_func
 
-        # Preserve cached nodes so that we don't have to continually recreate them.
-        # This is also beneficial, as some statements will add context data to the
-        # node when processing it.
-        self._node_cache: Dict[Any, Union[Node, Leaf]]  = {}
-        self._node_cache_lock                           = threading.Lock()
-
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnIndentAsync(
-        self,
-        statement: StatementEx,
-        data_items: List[Statement.ParseResultData],
-        iter_before: NormalizedIterator,
-        iter_after: NormalizedIterator,
-    ):
-        return await self._observer.OnIndentAsync(
+    def StartStatement(self, *args, **kwargs):
+        return self._observer.StartStatement(
             self._fully_qualified_name,
-            statement,
-            data_items,
-            iter_before,
-            iter_after,
+            *args,
+            **kwargs,
         )
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnDedentAsync(
-        self,
-        statement: Statement,
-        data_items: List[Statement.ParseResultData],
-        iter_before: NormalizedIterator,
-        iter_after: NormalizedIterator,
-    ):
+    def EndStatement(self, *args, **kwargs):
+        return self._observer.EndStatement(
+            self._fully_qualified_name,
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def OnIndentAsync(self, *args, **kwargs):
+        return await self._observer.OnIndentAsync(
+            self._fully_qualified_name,
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def OnDedentAsync(self, *args, **kwargs):
         return await self._observer.OnDedentAsync(
             self._fully_qualified_name,
-            statement,
-            data_items,
-            iter_before,
-            iter_after,
+            *args,
+            **kwargs,
         )
 
     # ----------------------------------------------------------------------
@@ -543,117 +418,28 @@ class _TranslationUnitObserver(TranslationUnitObserver):
     async def OnStatementCompleteAsync(
         self,
         statement: Statement,
-        data: Optional[Statement.ParseResultData],
+        node: Node,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
-    ) -> Union[
-        bool,
-        DynamicStatementInfo,
-    ]:
-        node_or_leaf = self.CreateNode(
+    ):
+        result = await self._observer.OnStatementCompleteAsync(
+            self._fully_qualified_name,
             statement,
-            data,
-            parent=None,
+            node,
+            iter_before,
+            iter_after,
         )
 
-        if isinstance(node_or_leaf, Node):
-            this_result = await self._observer.OnStatementCompleteAsync(
-                self._fully_qualified_name,
-                node_or_leaf,
-                iter_before,
-                iter_after,
-            )
-
-            if isinstance(this_result, Observer.ImportInfo):
-                if not this_result.FullyQualifiedName:
-                    raise UnknownSourceError(
-                        iter_before.Line,
-                        iter_before.Column,
-                        this_result.SourceName,
-                    )
-
-                result = await self._async_parse_func(this_result.FullyQualifiedName)
-
-                return False if result is None else result
-
-        elif isinstance(node_or_leaf, Leaf):
-            this_result = True
-
-        else:
-            assert False, node_or_leaf  # pragma: no cover
-
-        return this_result
-
-    # ----------------------------------------------------------------------
-    def CreateNode(
-        self,
-        statement: Statement,
-        data: Optional[Statement.ParseResultData],
-        parent: Optional[Union[RootNode, Node]],
-    ) -> Union[Node, Leaf]:
-
-        node: Optional[Union[Node, Leaf]] = None
-        was_cached = False
-
-        # Look for the cached value
-        key = tuple([id(statement)] + ([id(child_data) for _, child_data in data.Enum()]) if data else [])
-        if key:
-            with self._node_cache_lock:
-                potential_node = self._node_cache.get(key, None)
-                if potential_node is not None:
-                    node = potential_node
-                    was_cached = True
-
-        if node is None:
-            if isinstance(statement, TokenStatement):
-                node = self._CreateLeaf(
-                    cast(Statement.TokenParseResultData, data),
-                    parent=None,
+        if isinstance(result, Observer.ImportInfo):
+            if not result.FullyQualifiedName:
+                raise UnknownSourceError(
+                    iter_before.Line,
+                    iter_before.Column,
+                    result.SourceName,
                 )
 
-            else:
-                node = Node(statement)
+            result = await self._async_parse_func(result.FullyQualifiedName)
 
-        if parent is not None:
-            object.__setattr__(node, "Parent", parent)
-            parent.Children.append(node)
+            return False if result is None else result
 
-        if not was_cached:
-            if isinstance(node, Node):
-                for child_statement, child_data in data.Enum() if data else []:
-                    if child_statement is None:
-                        self._CreateLeaf(
-                            cast(Statement.TokenParseResultData, child_data),
-                            parent=node,
-                        )
-                    else:
-                        self.CreateNode(child_statement, child_data, node)
-
-            if key:
-                with self._node_cache_lock:
-                    self._node_cache[key] = node
-
-        return node
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _CreateLeaf(
-        data: Statement.TokenParseResultData,
-        parent: Optional[Node],
-    ):
-        leaf = Leaf(
-            data.Token,
-            data.Whitespace,
-            data.Value,
-            data.IterBefore,
-            data.IterAfter,
-            data.IsIgnored,
-        )
-
-        if parent is not None:
-            object.__setattr__(leaf, "Parent", parent)
-            parent.Children.append(leaf)
-
-        return leaf
+        return result

@@ -49,7 +49,7 @@ class OrStatement(Statement):
         *statements: Statement,
         sort_results=True,
         name: str=None,
-        unique_id: Optional[List[Any]]=None,
+        unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
     ):
         assert statements
@@ -78,7 +78,7 @@ class OrStatement(Statement):
     @Interface.override
     def Clone(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
     ) -> Statement:
         return self.__class__(
             *self._original_statements,
@@ -226,18 +226,13 @@ class OrStatement(Statement):
                 return Statement.ParseResult(True, best_result.Iter, data)
 
             # Gather the failure information
-            data_items: List[Statement.ParseResultData] = []
+            data_items: List[Optional[Statement.StandardParseResultData]] = []
             max_iter: Optional[Statement.NormalizedIterator] = None
 
-            for statement, result in zip(self.Statements, results):
+            for result in results:
                 assert not result.Success
 
-                data_items.append(
-                    Statement.StandardParseResultData(
-                        statement,
-                        result.Data,
-                    ),
-                )
+                data_items.append(result.Data)
 
                 if max_iter is None or result.Iter.Offset > max_iter.Offset:
                     max_iter = result.Iter
@@ -249,6 +244,6 @@ class OrStatement(Statement):
                 max_iter,
                 Statement.StandardParseResultData(
                     self,
-                    Statement.MultipleStandardParseResultData(data_items, True),
+                    Statement.MultipleStandardParseResultData(cast(List[Optional[Statement.ParseResultData]], data_items), True),
                 ),
             )

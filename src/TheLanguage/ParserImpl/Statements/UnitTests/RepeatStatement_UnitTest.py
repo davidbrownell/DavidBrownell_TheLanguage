@@ -115,7 +115,8 @@ class TestStandard(object):
                 Newline+
                     Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
                 Or: {Word, Newline+}
-                    <No Data>
+                    Word
+                        <No Data>
                 Repeat: (Or: {Word, Newline+}, 2, 4)
                     Or: {Word, Newline+}
                         Word
@@ -251,9 +252,9 @@ class TestStandard(object):
                 Repeat: (Or: {Word, Newline+}, 2, 4)
                     Or: {Word, Newline+}
                         Word
-                            None
+                            <No Data>
                         Newline+
-                            None
+                            <No Data>
             """,
         )
 
@@ -288,9 +289,9 @@ class TestStandard(object):
                             Word <<Regex: <_sre.SRE_Match object; span=(0, 3), match='abc'>>> ws:None [1, 1 -> 1, 4]
                     Or: {Word, Newline+}
                         Word
-                            None
+                            <No Data>
                         Newline+
-                            None
+                            <No Data>
             """,
         )
 
@@ -407,7 +408,7 @@ async def test_ParseReturnsNone(parse_mock):
         @Interface.override
         def Clone(
             self,
-            unique_id: List[Any],
+            unique_id: List[str],
         ):
             return self.__class__(
                 self.Name,

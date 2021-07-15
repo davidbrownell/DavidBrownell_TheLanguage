@@ -99,6 +99,10 @@ class Token(Interface.Interface):
     IsAlwaysIgnored                         = False
 
     # ----------------------------------------------------------------------
+    def __hash__(self):
+        return tuple(self.__dict__.values()).__hash__()
+
+    # ----------------------------------------------------------------------
     @Interface.abstractproperty
     def Name(self):
         """Name of the token"""
@@ -271,7 +275,7 @@ class MultilineRegexToken(Token):
     def __init__(
         self,
         name: str,
-        *regex_delimiters: str,
+        *regex_delimiters: Pattern,
         regex_match_group_name="value",
     ):
         assert name

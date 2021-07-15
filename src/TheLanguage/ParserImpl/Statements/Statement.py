@@ -18,7 +18,7 @@
 import os
 import textwrap
 
-from typing import Any, Callable, Generator, List, Optional, Tuple, Union
+from typing import cast, Any, Callable, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -118,7 +118,7 @@ class Statement(Interface.Interface):
     class StandardParseResultData(ParseResultData):
         """Single statement and data"""
 
-        Statement: "Statement"
+        Statement: "Statement"  # type: ignore
         Data: Optional["Statement.ParseResultData"]
 
         # ----------------------------------------------------------------------
@@ -146,7 +146,7 @@ class Statement(Interface.Interface):
                     (
                         self.Data.ToString(
                             verbose=verbose,
-                        ) if self.Data else str(self.Data)
+                        ) if self.Data else "<No Data>"
                     ).rstrip(),
                     4,
                 ),
@@ -226,6 +226,7 @@ class Statement(Interface.Interface):
             None
         ]:
             for item in self.DataItems:
+                assert item
                 yield from item.Enum()
 
     # ----------------------------------------------------------------------
@@ -339,7 +340,7 @@ class Statement(Interface.Interface):
     def __init__(
         self,
         name: str,
-        unique_id: Optional[List[Any]] = None,
+        unique_id: Optional[List[str]] = None,
         type_id: Optional[int] = None,
     ):
         assert name
@@ -369,7 +370,7 @@ class Statement(Interface.Interface):
 
     # ----------------------------------------------------------------------
     def __hash__(self):
-        return id(self)
+        return tuple(self.UniqueId).__hash__()
 
     # ----------------------------------------------------------------------
     def __str__(self):
@@ -389,7 +390,7 @@ class Statement(Interface.Interface):
     @Interface.abstractmethod
     def Clone(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
     ) -> "Statement":
         """Clones the statement with the new unique_id value"""
         raise Exception("Abstract method")  # pragma: no cover
@@ -447,9 +448,11 @@ class Statement(Interface.Interface):
 
         # ----------------------------------------------------------------------
         def __getattr__(self, name):
+            value = getattr(self._observer, name)
+
             # ----------------------------------------------------------------------
             def Impl(*args, **kwargs):
-                return getattr(self._observer, name)(*args, **kwargs)
+                return value(*args, **kwargs)
 
             # ----------------------------------------------------------------------
 
@@ -477,7 +480,7 @@ class Statement(Interface.Interface):
             ],
         ):
             return self._observer.EndStatement(
-                statement_info_stack + [(self._statement, None)],
+                statement_info_stack + cast(List[Tuple["Statement", Optional[bool]]], [(self._statement, None)]),
             )
 
         # ----------------------------------------------------------------------

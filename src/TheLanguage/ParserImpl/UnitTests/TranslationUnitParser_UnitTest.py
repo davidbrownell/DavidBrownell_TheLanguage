@@ -31,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..AST import Node
     from ..StatementDSL import CreateStatement, DynamicStatements, StatementItem
 
     from ..Token import (
@@ -118,66 +119,57 @@ class TestSimple(object):
             1) OnStatementCompleteAsync, Newline+, 3, 4
                 Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
             2) OnStatementCompleteAsync, Upper Statement, 0, 4
-                Upper
+                Upper Statement
                     Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-                Newline+
                     Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
             3) OnStatementCompleteAsync, {Upper Statement, Lower Statement, Number Statement}, 0, 4
-                Upper Statement
-                    Upper
-                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-                    Newline+
-                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
-            4) OnStatementCompleteAsync, Dynamic Statements, 0, 4
                 {Upper Statement, Lower Statement, Number Statement}
                     Upper Statement
-                        Upper
+                        Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
+                        Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+            4) OnStatementCompleteAsync, Dynamic Statements, 0, 4
+                Dynamic Statements
+                    {Upper Statement, Lower Statement, Number Statement}
+                        Upper Statement
                             Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
-                        Newline+
                             Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
             5) OnStatementCompleteAsync, Lower, 4, 7
                 Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
             6) OnStatementCompleteAsync, Newline+, 7, 8
                 Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
             7) OnStatementCompleteAsync, Lower Statement, 4, 8
-                Lower
+                Lower Statement
                     Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
-                Newline+
                     Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
             8) OnStatementCompleteAsync, {Upper Statement, Lower Statement, Number Statement}, 4, 8
-                Lower Statement
-                    Lower
-                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
-                    Newline+
-                        Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
-            9) OnStatementCompleteAsync, Dynamic Statements, 4, 8
                 {Upper Statement, Lower Statement, Number Statement}
                     Lower Statement
-                        Lower
+                        Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
+                        Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
+            9) OnStatementCompleteAsync, Dynamic Statements, 4, 8
+                Dynamic Statements
+                    {Upper Statement, Lower Statement, Number Statement}
+                        Lower Statement
                             Lower <<Regex: <_sre.SRE_Match object; span=(4, 7), match='two'>>> ws:None [2, 1 -> 2, 4]
-                        Newline+
                             Newline+ <<7, 8>> ws:None [2, 4 -> 3, 1]
             10) OnStatementCompleteAsync, Number, 8, 13
                 Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
             11) OnStatementCompleteAsync, Newline+, 13, 14
                 Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
             12) OnStatementCompleteAsync, Number Statement, 8, 14
-                Number
+                Number Statement
                     Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
-                Newline+
                     Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
             13) OnStatementCompleteAsync, {Upper Statement, Lower Statement, Number Statement}, 8, 14
-                Number Statement
-                    Number
-                        Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
-                    Newline+
-                        Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
-            14) OnStatementCompleteAsync, Dynamic Statements, 8, 14
                 {Upper Statement, Lower Statement, Number Statement}
                     Number Statement
-                        Number
+                        Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
+                        Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
+            14) OnStatementCompleteAsync, Dynamic Statements, 8, 14
+                Dynamic Statements
+                    {Upper Statement, Lower Statement, Number Statement}
+                        Number Statement
                             Number <<Regex: <_sre.SRE_Match object; span=(8, 13), match='33333'>>> ws:None [3, 1 -> 3, 6]
-                        Newline+
                             Newline+ <<13, 14>> ws:None [3, 6 -> 4, 1]
             """,
         )
@@ -343,7 +335,7 @@ class TestNewStatements(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, parse_mock):
         with pytest.raises(SyntaxInvalidError) as ex:
-            await ParseAsync(
+            result = await ParseAsync(
                 self._statements,
                 CreateIterator(
                     textwrap.dedent(
@@ -354,6 +346,8 @@ class TestNewStatements(object):
                 ),
                 parse_mock,
             )
+
+            assert result is None, result
 
         ex = ex.value
 
@@ -440,7 +434,7 @@ class TestNewScopedStatements(object):
         )
 
         with pytest.raises(SyntaxInvalidError) as ex:
-            await ParseAsync(
+            result = await ParseAsync(
                 self._statements,
                 CreateIterator(
                     textwrap.dedent(
@@ -454,6 +448,8 @@ class TestNewScopedStatements(object):
                 ),
                 parse_mock,
             )
+
+            assert result is None, result
 
         ex = ex.value
 
@@ -799,7 +795,7 @@ class TestPreventParentTraversal(object):
         )
 
         with pytest.raises(SyntaxInvalidError) as ex:
-            await ParseAsync(
+            result = await ParseAsync(
                 self._statements,
                 CreateIterator(
                     textwrap.dedent(
@@ -815,6 +811,8 @@ class TestPreventParentTraversal(object):
                 ),
                 parse_mock,
             )
+
+            assert result is None, result
 
         ex = ex.value
 
@@ -856,7 +854,7 @@ class TestPreventParentTraversal(object):
                 Dynamic Statements
                     {Upper Statement, Indent Statement, Dedent Statement}
                         Upper Statement
-                            Upper Statement
+                            Upper
                                 <No Children>
                         Indent
                             <No Children>
@@ -877,7 +875,7 @@ async def test_InvalidDynamicTraversalError(parse_mock):
     )
 
     with pytest.raises(InvalidDynamicTraversalError) as ex:
-        await ParseAsync(
+        result = await ParseAsync(
             DynamicStatementInfo(
                 (CreateStatement(name="Newline", item=NewlineToken()),),
                 (),
@@ -893,6 +891,8 @@ async def test_InvalidDynamicTraversalError(parse_mock):
             ),
             parse_mock,
         )
+
+        assert result is None, result
 
     ex = ex.value
 
@@ -1017,12 +1017,12 @@ class TestCatastrophicInclude(object):
         # ----------------------------------------------------------------------
         async def OnStatementCompleteAsync(
             statement: Statement,
-            data: Optional[Statement.ParseResultData],
+            node: Node,
             iter_before: Statement.NormalizedIterator,
             iter_after: Statement.NormalizedIterator,
         ):
             if statement == cls._include_statement:
-                value = data.DataItems[1].Data.Value.Match.group("value")
+                value = node.Children[1].Value.Match.group("value")
 
                 if value == "LOWER":
                     return cls._lower_dynamic_statements

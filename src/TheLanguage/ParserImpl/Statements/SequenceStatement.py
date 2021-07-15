@@ -35,6 +35,7 @@ with InitRelativeImports():
     from .TokenStatement import TokenStatement
 
     from ..Token import (
+        ControlTokenBase,
         DedentToken,
         IndentToken,
         NewlineToken,
@@ -58,7 +59,7 @@ class SequenceStatement(Statement):
         comment_token: RegexToken,
         *statements: Statement,
         name: str=None,
-        unique_id: Optional[List[Any]]=None,
+        unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
     ):
         assert comment_token
@@ -70,20 +71,22 @@ class SequenceStatement(Statement):
 
         for statement in statements:
             if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
-                if statement.Token.ClosingToken is not None:
-                    key = type(statement.Token)
+                control_token = cast(ControlTokenBase, statement.Token)
+
+                if control_token.ClosingToken is not None:
+                    key = type(control_token)
                     if key in control_token_tracker:
                         assert False, key
 
                     control_token_tracker.add(key)
 
-                if statement.Token.OpeningToken is not None:
-                    key = statement.Token.OpeningToken
+                if control_token.OpeningToken is not None:
+                    key = control_token.OpeningToken
 
                     if key not in control_token_tracker:
                         assert False, key
 
-                    del control_token_tracker[key]
+                    control_token_tracker.remove(key)
 
         assert not control_token_tracker, control_token_tracker
 
@@ -111,7 +114,7 @@ class SequenceStatement(Statement):
     @Interface.override
     def Clone(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
     ) -> Statement:
         return self.__class__(
             self.CommentToken,

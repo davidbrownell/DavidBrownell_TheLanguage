@@ -205,13 +205,13 @@ class TestStandard(object):
             0
                 My Or Statement
                     lower
-                        None
+                        <No Data>
                     upper
-                        None
+                        <No Data>
                     number
-                        None
+                        <No Data>
                     Newline+
-                        None
+                        <No Data>
             """,
         )
 
@@ -241,13 +241,13 @@ class TestStandard(object):
             0
                 My Or Statement
                     lower
-                        None
+                        <No Data>
                     upper
-                        None
+                        <No Data>
                     number
-                        None
+                        <No Data>
                     Newline+
-                        None
+                        <No Data>
             """,
         )
 
@@ -318,7 +318,8 @@ class TestStandard(object):
                 Or: {lower, number}
                     <No Items>
                 Or: {upper, Or: {lower, number}}
-                    <No Data>
+                    upper
+                        <No Data>
             6) EndStatement, "lower" [True], "Or: {lower, number}" [None], "Or: {upper, Or: {lower, number}}" [None]
             7) StartStatement, "number", "Or: {lower, number}", "Or: {upper, Or: {lower, number}}"
             8) EndStatement, "number" [False], "Or: {lower, number}" [None], "Or: {upper, Or: {lower, number}}" [None]
@@ -327,7 +328,8 @@ class TestStandard(object):
                     lower
                         lower <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
                 Or: {upper, Or: {lower, number}}
-                    <No Data>
+                    upper
+                        <No Data>
             10) EndStatement, "Or: {lower, number}" [True], "Or: {upper, Or: {lower, number}}" [None]
             11) OnInternalStatementAsync, 0, 4
                 Or: {upper, Or: {lower, number}}
@@ -432,9 +434,9 @@ class TestSort(object):
             0
                 No Sort
                     Short
-                        None
+                        <No Data>
                     Long
-                        None
+                        <No Data>
             """,
         )
 
@@ -454,7 +456,7 @@ class TestParseReturnsNone(object):
         @Interface.override
         def Clone(
             self,
-            unique_id: List[Any],
+            unique_id: List[str],
         ):
             return self.__class__(
                 self.Name,

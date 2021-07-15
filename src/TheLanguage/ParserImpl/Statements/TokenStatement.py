@@ -51,7 +51,7 @@ class TokenStatement(Statement):
         self,
         token: TokenClass,
         name: str=None,
-        unique_id: Optional[List[Any]]=None,
+        unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
     ):
         assert token
@@ -70,7 +70,7 @@ class TokenStatement(Statement):
     @Interface.override
     def Clone(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
     ) -> Statement:
         return self.__class__(
             self.Token,
@@ -111,7 +111,11 @@ class TokenStatement(Statement):
 
             result = self.Token.Match(potential_iter)
             if result is None:
-                return Statement.ParseResult(False, normalized_iter, None)
+                return Statement.ParseResult(
+                    False,
+                    normalized_iter,
+                    Statement.StandardParseResultData(self, None),
+                )
 
             data = Statement.StandardParseResultData(
                 self,

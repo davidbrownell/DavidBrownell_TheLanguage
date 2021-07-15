@@ -44,7 +44,7 @@ class DynamicStatement(Statement):
         self,
         get_dynamic_statements_func: Callable[
             [
-                List[Any],
+                List[str],
                 Statement.Observer,
             ],
             Union[
@@ -53,7 +53,7 @@ class DynamicStatement(Statement):
             ]
         ],
         name: str=None,
-        unique_id: Optional[List[Any]]=None,
+        unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
     ):
         assert get_dynamic_statements_func
@@ -72,7 +72,7 @@ class DynamicStatement(Statement):
     @Interface.override
     def Clone(
         self,
-        unique_id: List[Any],
+        unique_id: List[str],
     ):
         return self.__class__(
             self._get_dynamic_statements_func,

@@ -18,6 +18,8 @@
 import os
 import textwrap
 
+from typing import Optional
+
 import pytest
 
 from asynctest import CoroutineMock
@@ -59,11 +61,23 @@ def CreateIterator(
 
 
 # ----------------------------------------------------------------------
-def MethodCallsToString(parse_mock) -> str:
+def MethodCallsToString(
+    parse_mock,
+    attribute_name: Optional[str]=None,
+) -> str:
+    if attribute_name is None:
+        attribute_name = "method_calls"
+        get_method_name = True
+    else:
+        get_method_name = False
+
     contents = []
 
-    for index, method_call in enumerate(parse_mock.method_calls):
-        method_name = method_call[0]
+    for index, method_call in enumerate(getattr(parse_mock, attribute_name)):
+        method_name = None
+
+        if get_method_name:
+            method_name = method_call[0]
 
         if method_name == "StartStatement":
             contents.append(
@@ -103,7 +117,20 @@ def MethodCallsToString(parse_mock) -> str:
                     StringHelpers.LeftJustify(method_call[1][1].ToString(), 4),
                 ).rstrip(),
             )
-
+        elif method_name is None:
+            contents.append(
+                textwrap.dedent(
+                    """\
+                    {}) {}, {}
+                        {}
+                    """,
+                ).format(
+                    index,
+                    method_call[0][1].Offset,
+                    method_call[0][2].Offset,
+                    StringHelpers.LeftJustify(method_call[0][0].ToString(), 4),
+                ).rstrip(),
+            )
         else:
             contents.append(
                 textwrap.dedent(
