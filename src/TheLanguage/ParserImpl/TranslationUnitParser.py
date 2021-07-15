@@ -121,19 +121,6 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def GetDynamicStatements(
-        unique_id: List[str],
-        dynamic_statement_type: DynamicStatements,
-    ) -> Union[
-        List[Statement],
-        Tuple[str, List[Statement]],
-    ]:
-        """Returns a list of dynamic statements for this id"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
     def StartStatement(
         statement_stack: List[Statement],
     ) -> None:
@@ -216,24 +203,11 @@ async def ParseAsync(
         ),
     }
 
-    # ----------------------------------------------------------------------
-    def GetDynamicStatements(
-        unique_id: List[str],
-        observer: Statement.Observer,
-    ):
-        return cast(Observer, observer).GetDynamicStatements(unique_id, DynamicStatements.Statements)
-
-    # ----------------------------------------------------------------------
+    statement_observer = _StatementObserver(observer, all_statement_infos)
 
     statement = DynamicStatement(
-        GetDynamicStatements,
+        lambda unique_id, observer: cast(_StatementObserver, observer).GetDynamicStatements(unique_id, DynamicStatements.Statements),
         name=name,
-    )
-
-    internal_observer = _InternalObserver(
-        observer,
-        all_statement_infos,
-        statement,
     )
 
     root = AST.RootNode(None)
@@ -241,7 +215,7 @@ async def ParseAsync(
     while not normalized_iter.AtEnd():
         result = await statement.ParseAsync(
             normalized_iter,
-            internal_observer,
+            statement_observer,
             ignore_whitespace=False,
             single_threaded=single_threaded,
         )
@@ -251,7 +225,7 @@ async def ParseAsync(
 
         assert result.Data
 
-        internal_observer.CreateNode(
+        statement_observer.CreateNode(
             result.Data.Statement,
             result.Data.Data,
             root,
@@ -298,17 +272,15 @@ class _StatementInfoNode(object):
 
 
 # ----------------------------------------------------------------------
-class _InternalObserver(Statement.Observer):
+class _StatementObserver(Statement.Observer):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         observer: Observer,
         all_statement_infos: Dict[Any, _StatementInfoNode],
-        statement: Statement,
     ):
         self._observer                      = observer
         self._all_statement_infos           = all_statement_infos
-        self._statement                     = statement
 
         self._indent_level                  = 0
 

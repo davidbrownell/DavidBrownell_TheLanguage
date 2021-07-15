@@ -1119,19 +1119,20 @@ class TestStandard(object):
                     Dynamic Statements
                         {Include, Upper, Lower, Number, New Scope}
                             Include
-                                Include
+                                Include Token
                                     <No Children>
                             Upper
-                                Upper
+                                Upper Token
                                     <No Children>
                             Lower
-                                Lower
+                                Lower Token
                                     <No Children>
                             Number
-                                Number
-                                    Number Token <<Regex: <_sre.SRE_Match object; span=(39, 40), match='7'>>> ws:None [4, 1 -> 4, 2]
+                                Number Token <<Regex: <_sre.SRE_Match object; span=(39, 40), match='7'>>> ws:None [4, 1 -> 4, 2]
+                                Newline+
+                                    <No Children>
                             New Scope
-                                New Scope
+                                Upper Token
                                     <No Children>
                 """,
             )

@@ -48,8 +48,8 @@ class DynamicStatement(Statement):
                 Statement.Observer,
             ],
             Union[
-                Tuple[str, List[Statement]],
                 List[Statement],
+                Tuple[str, List[Statement]],
             ]
         ],
         name: str=None,
