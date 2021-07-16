@@ -81,7 +81,7 @@ class _Node(_ASTBase):
             child.ToString(
                 verbose=verbose,
             ).rstrip()
-            for child in self.Children
+            for child in self.Children  # pylint: disable=not-an-iterable
         ]
 
         if not children:
@@ -108,8 +108,7 @@ class _Node(_ASTBase):
         node = self
 
         while isinstance(node, _Node):
-            node = node.Children[0]
-
+            node = node.Children[0]  # pylint: disable=unsubscriptable-object
         return cast(Leaf, node).IterBefore
 
     @property
@@ -117,7 +116,7 @@ class _Node(_ASTBase):
         node = self
 
         while isinstance(node, _Node):
-            node = node.Children[-1]
+            node = node.Children[-1]  # pylint: disable=unsubscriptable-object
 
         return cast(Leaf, node).IterAfter
 
@@ -153,8 +152,8 @@ class Leaf(_ASTBase):
         self,
         verbose=False,
     ) -> str:
-        return "{typ} <<{value}>> ws:{ws}{ignored} [{line_before}, {column_before} -> {line_after}, {column_after}]".format(
-            typ=super(Leaf, self).ToString(
+        return "{super_string} <<{value}>> ws:{ws}{ignored} [{line_before}, {column_before} -> {line_after}, {column_after}]".format(
+            super_string=super(Leaf, self).ToString(
                 verbose=verbose,
             ),
             value=str(self.Value),
