@@ -38,12 +38,13 @@ with InitRelativeImports():
     from ..GrammarStatement import (
         ImportGrammarStatement,
         Leaf,
-        MultifileParserObserver,
         Node,
-        Statement,
+        StatementEx,
+        TranslationUnitsParserObserver,
     )
 
-    from ...ParserImpl.MultifileParser import UnknownSourceError
+    from ...ParserImpl.StatementImpl.OrStatement import OrStatement
+    from ...ParserImpl.TranslationUnitsParser import UnknownSourceError
 
 
 # ----------------------------------------------------------------------
@@ -73,7 +74,7 @@ class ImportStatement(ImportGrammarStatement):
 
         content_item_statement = [
             # <name> as <name>
-            Statement(
+            StatementEx(
                 "Renamed",
                 CommonTokens.Name,
                 CommonTokens.As,
@@ -85,11 +86,11 @@ class ImportStatement(ImportGrammarStatement):
         ]
 
         # <content_item_statement> (',' <content_item_statement>)* ','?
-        content_items_statement = Statement(
+        content_items_statement = StatementEx(
             "Items",
             content_item_statement,
             (
-                Statement(
+                StatementEx(
                     "Comma and Item",
                     CommonTokens.Comma,
                     content_item_statement,
@@ -102,14 +103,14 @@ class ImportStatement(ImportGrammarStatement):
 
         super(ImportStatement, self).__init__(
             # 'from' <name> 'import' ...
-            Statement(
+            StatementEx(
                 "Import",
                 CommonTokens.From,
                 CommonTokens.Name,
                 CommonTokens.Import,
                 [
                     # '(' <content_items_statement> ')'
-                    Statement(
+                    StatementEx(
                         "Grouped",
                         CommonTokens.LParen,
                         CommonTokens.PushIgnoreWhitespaceControl,
@@ -133,7 +134,7 @@ class ImportStatement(ImportGrammarStatement):
         source_roots: List[str],
         fully_qualified_name: str,
         node: Node,
-    ) -> MultifileParserObserver.ImportInfo:
+    ) -> TranslationUnitsParserObserver.ImportInfo:
 
         # We need to get the source and the items to import, however that information depends on
         # context. The content will fall into one of these scenarios:
@@ -181,7 +182,7 @@ class ImportStatement(ImportGrammarStatement):
         import_node = node.Children[3]
 
         # Drill into the Or node
-        assert isinstance(import_node.Type, list)
+        assert isinstance(import_node.Type, OrStatement)
         assert len(import_node.Children) == 1
         import_node = import_node.Children[0]
 
@@ -192,7 +193,7 @@ class ImportStatement(ImportGrammarStatement):
             # We have to use care when importing the grouped items as we have not yet removed
             # ignored whitespace.
             for child in import_node.Children:
-                if isinstance(child.Type, Statement):
+                if isinstance(child.Type, StatementEx):
                     import_items, import_items_lookup = self._CreateContentItems(child)
                     break
 
@@ -238,14 +239,14 @@ class ImportStatement(ImportGrammarStatement):
             )
 
         if source_filename is None:
-            return MultifileParserObserver.ImportInfo(original_source, None)
+            return TranslationUnitsParserObserver.ImportInfo(original_source, None)
 
         # Cache these values for later
-        node.source_filename = source_filename
-        node.import_items = import_items
-        node.import_items_lookup = import_items_lookup
+        object.__setattr__(node, "source_filename", source_filename)
+        object.__setattr__(node, "import_items", import_items)
+        object.__setattr__(node, "import_items_lookup", import_items_lookup)
 
-        return MultifileParserObserver.ImportInfo(original_source, source_filename)
+        return TranslationUnitsParserObserver.ImportInfo(original_source, source_filename)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -308,11 +309,11 @@ class ImportStatement(ImportGrammarStatement):
     ) -> Tuple[str, Leaf, str, Leaf]:
 
         # Drill into the Or node
-        assert isinstance(node.Type, list)
+        assert isinstance(node.Type, OrStatement)
         assert len(node.Children) == 1
         node = node.Children[0]
 
-        if isinstance(node.Type, Statement):
+        if isinstance(node.Type, StatementEx):
             # Renamed
             leaves = [cast(Leaf, child) for child in node.Children if isinstance(child, Leaf) and not child.IsIgnored]
             assert len(leaves) == 3

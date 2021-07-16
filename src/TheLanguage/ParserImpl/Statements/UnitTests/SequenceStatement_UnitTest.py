@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CommentStatement_IntegrationTest.py
+# |  SequenceStatement_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-15 17:05:57
+# |      2021-07-12 08:59:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for CommentStatement.py"""
+"""Unit test for SequenceStatement.py"""
 
 import os
-import textwrap
 
 import CommonEnvironment
 
@@ -28,22 +27,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Execute
-    from ..CommentStatement import *
+    from ..SequenceStatement import *
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            # Single line comment
-            # Another comment
-            """,
-        ),
-    ) == textwrap.dedent(
-        """\
-        <Root>
-            <No children>
-        """,
-    )
+def test_BugBug():
+    assert True

@@ -102,16 +102,24 @@ class LineInfo(object):
         return self.IndentationInfo is not None and self.IndentationInfo[0] == LineInfo.IndentType.Dedent
 
     # ----------------------------------------------------------------------
-    def IndentationValue(self):
-        return self.IndentationInfo[1] if self.HasNewIndent() else None
+    def IndentationValue(self) -> Optional[int]:
+        if not self.HasNewIndent():
+            return None
+
+        assert self.IndentationInfo
+        return self.IndentationInfo[1]
 
     # ----------------------------------------------------------------------
     def NumDedents(self):
-        return self.IndentationInfo[1] if self.HasNewDedents() else 0
+        if not self.HasNewDedents():
+            return 0
+
+        assert self.IndentationInfo
+        return self.IndentationInfo[1]
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
+@dataclass(frozen=True, unsafe_hash=True)
 class NormalizedContent(object):
     """Data returned from calls to the function `Normalize`"""
 
@@ -175,18 +183,18 @@ def Normalize(
         content_end_offset: Optional[int] = None
 
         while offset < len_content:
-            char = content[offset]
+            character = content[offset]
 
             if indentation_value is not None:
-                if char == " ":
+                if character == " ":
                     indentation_value += 1
-                elif char == "\t":
+                elif character == "\t":
                     # Ensure that " \t" compares as different from "\t "
                     indentation_value += (offset - line_start_offset + 1) * 100
                 else:
-                    assert char == "\n" or not char.isspace(), char
+                    assert character == "\n" or not character.isspace(), character
 
-                    if char != "\n":
+                    if character != "\n":
                         num_chars = offset - line_start_offset
 
                         if num_chars:
@@ -220,7 +228,7 @@ def Normalize(
                     indentation_value = None
                     content_start_offset = offset
 
-            if char == "\n":
+            if character == "\n":
                 line_end_offset = offset
                 offset += 1
 

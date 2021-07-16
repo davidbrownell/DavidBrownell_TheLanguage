@@ -15,6 +15,7 @@
 # ----------------------------------------------------------------------
 """Contains functionality that helps with parsing"""
 
+import asyncio
 import importlib
 import os
 import sys
@@ -39,20 +40,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Grammars.GrammarStatement import GrammarStatement, ImportGrammarStatement
 
-    from .ParserImpl.MultifileParser import (
-        Leaf,
-        Node,
-        Observer as MultifileObserver,
-        Parse as MultifileParse,
-        RootNode,
-    )
-
     from .ParserImpl.NormalizedIterator import NormalizedIterator
-    from .ParserImpl.Statement import Statement
-    from .ParserImpl.StatementsParser import DynamicStatementInfo
 
     from .ParserImpl.Syntax import (
         Observer as SyntaxObserver
+    )
+
+    from .ParserImpl.TranslationUnitsParser import (
+        DynamicStatementInfo,
+        Leaf,
+        Node,
+        Observer as TranslationUnitsParserObserver,
+        ParseAsync as TranslationUnitsParseAsync,
+        RootNode,
+        Statement,
     )
 
 
@@ -60,7 +61,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 Grammars: Dict[SemVer, DynamicStatementInfo]            = OrderedDict()
-StatementLookup: Dict[Statement, GrammarStatement]      = OrderedDict()
+StatementLookup: Dict[int, GrammarStatement]            = OrderedDict()
 
 
 # ----------------------------------------------------------------------
@@ -94,15 +95,15 @@ def _LoadDyanmicStatementsFromFile(
             else:
                 assert False, grammar_statement.TypeValue  # pragma: no cover
 
-            assert grammar_statement.Statement not in StatementLookup, grammar_statement.Statement
-            StatementLookup[grammar_statement.Statement] = grammar_statement
+            assert grammar_statement.Statement.TypeId not in StatementLookup, grammar_statement.Statement
+            StatementLookup[grammar_statement.Statement.TypeId] = grammar_statement
 
         del sys.modules[basename]
 
         return DynamicStatementInfo(
-            statements,
-            expressions,
-            allow_parent_traversal=False,
+            tuple(statements),
+            tuple(expressions),
+            AllowParentTraversal=False,
         )
 
 
@@ -111,7 +112,8 @@ Grammars[SemVer("1.0.0")]                   = _LoadDyanmicStatementsFromFile(os.
 
 
 # ----------------------------------------------------------------------
-assert StatementLookup
+# TODO: Restore this once we have at least one statement
+# TODO: assert StatementLookup
 del _LoadDyanmicStatementsFromFile
 
 
@@ -144,11 +146,13 @@ def Parse(
         Grammars,
     )
 
-    return MultifileParse(
-        fully_qualified_names,
-        syntax_observer.Syntaxes[syntax_observer.DefaultVersion],
-        syntax_observer,
-        single_threaded=max_num_threads == 1,
+    return asyncio.get_event_loop().run_until_complete(
+        TranslationUnitsParseAsync(
+            fully_qualified_names,
+            syntax_observer.Syntaxes[syntax_observer.DefaultVersion],
+            syntax_observer,
+            single_threaded=max_num_threads == 1,
+        ),
     )
 
 
@@ -183,7 +187,7 @@ def Validate(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-class _Observer(MultifileObserver):
+class _Observer(TranslationUnitsParserObserver):
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -205,6 +209,15 @@ class _Observer(MultifileObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def Enqueue(
+        self,
+        funcs: List[Callable[[], None]],
+    ) -> List[Future]:
+        # TODO: Handle scenario where there are too many enqueued items
+        return [self._executor.submit(func) for func in funcs]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def LoadContent(
         self,
         fully_qualified_name: str,
@@ -218,46 +231,61 @@ class _Observer(MultifileObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ExtractDynamicStatementInfo(
+    def ExtractDynamicStatements(
         self,
         fully_qualified_name: str,
         node: RootNode,
     ) -> DynamicStatementInfo:
         # TODO
-        return DynamicStatementInfo([], [])
+        return DynamicStatementInfo((), ())
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Enqueue(
-        self,
-        funcs: List[Callable[[], None]],
-    ) -> List[Future]:
-        # TODO: Handle scenario where there are too many enqueued items
-        return [self._executor.submit(func) for func in funcs]
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def OnIndent(
+    def StartStatement(
         self,
         fully_qualified_name: str,
         statement: Statement,
-        results: Statement.ParseResultItemsType,
+    ) -> None:
+        # Nothing to do here
+        return None
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EndStatement(
+        self,
+        fully_qualified_name: str,
+        statement: Statement,
+    ) -> None:
+        # Nothing to do here
+        return None
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def OnIndentAsync(
+        self,
+        fully_qualified_name: str,
+        data_stack: List[Statement.StandardParseResultData],
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
+        # Nothing to do here
         return None
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnDedent(
+    async def OnDedentAsync(
         self,
         fully_qualified_name: str,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
-    ):
+        data_stack: List[Statement.StandardParseResultData],
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
+    ) -> None:
+        # Nothing to do here
         return None
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnStatementComplete(
+    async def OnStatementCompleteAsync(
         self,
         fully_qualified_name: str,
         node: Node,
@@ -266,10 +294,10 @@ class _Observer(MultifileObserver):
     ) -> Union[
         bool,
         DynamicStatementInfo,
-        MultifileObserver.ImportInfo,
+        TranslationUnitsParserObserver.ImportInfo,
     ]:
         try:
-            grammar_statement = StatementLookup.get(node.Type, None)
+            grammar_statement = StatementLookup.get(node.Type.TypeId, None)
         except TypeError:
             grammar_statement = None
 
@@ -362,7 +390,7 @@ def _ValidateNode(
     node: Union[Node, Leaf],
 ):
     if isinstance(node.Type, Statement):
-        grammar_statement = StatementLookup.get(cast(Statement, node.Type), None)
+        grammar_statement = StatementLookup.get(cast(Statement, node.Type).TypeId, None)
         if grammar_statement:
             result = grammar_statement.ValidateNodeSyntax(node)
             if isinstance(result, bool) and not result:

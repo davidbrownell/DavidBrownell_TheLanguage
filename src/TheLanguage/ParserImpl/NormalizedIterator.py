@@ -46,10 +46,39 @@ class NormalizedIterator(object):
         self._offset                        = 0
 
         self._last_consumed_dedent_line     = None
+        self._consumed_dedent_count         = None
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
+
+    # ----------------------------------------------------------------------
+    def __str__(self):
+        return "{offset} {content_len} {line_index} {last_consumed_dedent_line} {consumed_dedent_count}".format(
+            content_len=self.ContentLen,
+            line_index=self._line_info_index,
+            offset=self._offset,
+            last_consumed_dedent_line=self._last_consumed_dedent_line,
+            consumed_dedent_count=self._consumed_dedent_count,
+        )
+
+    # ----------------------------------------------------------------------
+    def Clone(self):
+        # Dynamically created the NormalizedContent object
+        result = self.__class__(
+            NormalizedContent(
+                self.Content,
+                self.ContentLen,
+                self.LineInfos,
+            ),
+        )
+
+        result._offset = self._offset                                           # <Access to a protected member> pylint: disable=W0212
+        result._line_info_index = self._line_info_index                         # <Access to a protected member> pylint: disable=W0212
+        result._last_consumed_dedent_line = self._last_consumed_dedent_line     # <Access to a protected member> pylint: disable=W0212
+        result._consumed_dedent_count = self._consumed_dedent_count
+
+        return result
 
     # ----------------------------------------------------------------------
     @property
@@ -95,7 +124,7 @@ class NormalizedIterator(object):
         return self.HasTrailingDedents() and self._line_info_index == len(self.LineInfos) - 1
 
     # ----------------------------------------------------------------------
-    def HasConsumedDedents(self):
+    def HasConsumedAllDedents(self):
         """\
         Returns True if the dedents on the current line have been consumed.
 
@@ -108,14 +137,24 @@ class NormalizedIterator(object):
         if the dedent should be ignored.
         """
 
-        return not self.LineInfo.HasNewDedents() or self._last_consumed_dedent_line == self._line_info_index
+        return (
+            not self.LineInfo.HasNewDedents()
+            or (
+                self._last_consumed_dedent_line == self._line_info_index
+                and self._consumed_dedent_count == self.LineInfo.NumDedents()
+            )
+        )
 
     # ----------------------------------------------------------------------
-    def ConsumeDedents(self):
+    def ConsumeDedent(self):
         assert self.LineInfo.HasNewDedents()
-        assert self._last_consumed_dedent_line != self._line_info_index
+        if self._last_consumed_dedent_line != self._line_info_index:
+            self._last_consumed_dedent_line = self._line_info_index
+            self._consumed_dedent_count = 0
+        else:
+            assert isinstance(self._consumed_dedent_count, int), self._consumed_dedent_count
 
-        self._last_consumed_dedent_line = self._line_info_index
+        self._consumed_dedent_count += 1
 
     # ----------------------------------------------------------------------
     def IsBlankLine(self) -> bool:
@@ -196,25 +235,9 @@ class NormalizedIterator(object):
             assert (
                 offset >= info.StartPos
                 or (offset == info.OffsetStart and offset + delta == info.StartPos)
+                or (delta == info.OffsetEnd - info.OffsetStart)
             ), (offset, info)
 
         self._offset += delta
 
         return self
-
-    # ----------------------------------------------------------------------
-    def Clone(self):
-        # Dynamically created the NormalizedContent object
-        result = self.__class__(
-            NormalizedContent(
-                self.Content,
-                self.ContentLen,
-                self.LineInfos,
-            ),
-        )
-
-        result._offset = self._offset                                           # <Access to a protected member> pylint: disable=W0212
-        result._line_info_index = self._line_info_index                         # <Access to a protected member> pylint: disable=W0212
-        result._last_consumed_dedent_line = self._last_consumed_dedent_line     # <Access to a protected member> pylint: disable=W0212
-
-        return result

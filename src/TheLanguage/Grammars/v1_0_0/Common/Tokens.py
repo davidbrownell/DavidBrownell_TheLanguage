@@ -32,6 +32,7 @@ with InitRelativeImports():
     from ....ParserImpl.Token import (
         DedentToken,
         IndentToken,
+        MultilineRegexToken,                # Included as a convenience for other modules; do not remove
         NewlineToken,                       # Included as a convenience for other modules; do not remove
         PopIgnoreWhitespaceControlToken,
         PushIgnoreWhitespaceControlToken,
@@ -46,6 +47,7 @@ Indent                                      = IndentToken()
 PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
+# BugBug: Reconcile this with NamingConventions.py
 Name                                        = RegexToken(
     "<name>",
     re.compile(
@@ -65,6 +67,24 @@ Comma                                       = RegexToken("','", re.compile(r",")
 
 LParen                                      = RegexToken("'('", re.compile(r"\("))
 RParen                                      = RegexToken("')'", re.compile(r"\)"))
+
+DocString                                   = RegexToken(
+    "<docstring>",
+    re.compile(
+        r'"""\n(?P<value>.+?)\n\s*"""',
+        re.DOTALL | re.MULTILINE,
+    ),
+    is_multiline=True,
+)
+
+# ----------------------------------------------------------------------
+# |  ClassDeclarationStatement
+Class                                       = RegexToken("'class'", re.compile(r"class\b"))
+Public                                      = RegexToken("'public'", re.compile(r"public\b"))
+Protected                                   = RegexToken("'protected'", re.compile(r"protected\b"))
+Private                                     = RegexToken("'private'", re.compile(r"private\b"))
+Implements                                  = RegexToken("'implements'", re.compile(r"implements\b"))
+Uses                                        = RegexToken("'uses'", re.compile(r"uses\b"))
 
 # ----------------------------------------------------------------------
 # |  FunctionDeclarationStatement

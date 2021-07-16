@@ -37,6 +37,7 @@ class _NamingConvention(object):
 
 
 # ----------------------------------------------------------------------
+# BugBug: Not end with double underscore
 Class                                       = _NamingConvention(
     re.compile(
         r"""(?#
@@ -54,6 +55,7 @@ Class                                       = _NamingConvention(
 
 
 # ----------------------------------------------------------------------
+# BugBug: Not end with double underscore
 Function                                    = _NamingConvention(
     re.compile(
         r"""(?#
@@ -73,6 +75,7 @@ Function                                    = _NamingConvention(
 
 
 # ----------------------------------------------------------------------
+# BugBug: Not end with double underscore
 Variable                                    = _NamingConvention(
     re.compile(
         r"""(?#

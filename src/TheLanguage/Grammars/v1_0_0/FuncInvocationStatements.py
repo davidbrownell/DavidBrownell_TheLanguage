@@ -40,9 +40,13 @@ with InitRelativeImports():
         GrammarStatement,
         Leaf,
         Node,
-        Statement,
+        StatementEx,
         ValidationError,
     )
+
+    from ...ParserImpl.StatementImpl.DynamicStatement import DynamicStatement
+    from ...ParserImpl.StatementImpl.OrStatement import OrStatement
+    from ...ParserImpl.StatementImpl.RepeatStatement import RepeatStatement
 
 
 # ----------------------------------------------------------------------
@@ -66,7 +70,7 @@ class _FuncInvocationBase(GrammarStatement):
     ):
         argument_statement = [
             # <name> = <rhs>
-            Statement(
+            StatementEx(
                 "Keyword",
                 CommonTokens.Name,
                 CommonTokens.Equal,
@@ -78,18 +82,18 @@ class _FuncInvocationBase(GrammarStatement):
 
         super(_FuncInvocationBase, self).__init__(
             grammar_statement_type,
-            Statement(
+            StatementEx(
                 "Function Invocation",
                 CommonTokens.Name,
                 CommonTokens.LParen,
                 CommonTokens.PushIgnoreWhitespaceControl,
 
                 (
-                    Statement(
+                    StatementEx(
                         "Arguments",
                         argument_statement,
                         (
-                            Statement(
+                            StatementEx(
                                 "Comma and Argument",
                                 CommonTokens.Comma,
                                 argument_statement,
@@ -116,7 +120,7 @@ class _FuncInvocationBase(GrammarStatement):
         node: Node,
     ):
         assert len(node.Children) >= 3
-        node.arguments = cls._GetArguments(node.Children[2])
+        object.__setattr__(node, "arguments", cls._GetArguments(node.Children[2]))
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -142,7 +146,7 @@ class _FuncInvocationBase(GrammarStatement):
             return []
 
         # Drill into the Optional node
-        assert isinstance(node.Type, tuple)
+        assert isinstance(node.Type, RepeatStatement)
         assert len(node.Children) == 1
         node = node.Children[0]
 
@@ -153,8 +157,8 @@ class _FuncInvocationBase(GrammarStatement):
 
         if (
             len(node.Children) >= 2
-            and isinstance(node.Children[1].Type, tuple)
-            and isinstance(node.Children[1].Type[0], Statement)
+            and isinstance(node.Children[1].Type, RepeatStatement)
+            and isinstance(node.Children[1].Type.Statement, StatementEx)
         ):
             for argument_node in node.Children[1].Children:
                 # First value is the comma, second is the argument
@@ -182,25 +186,27 @@ class _FuncInvocationBase(GrammarStatement):
         node: Node,
     ) -> "FuncInvocationHybrid._ArgumentInfo":
         # Drill into the Or node
-        assert isinstance(node.Type, list)
+        assert isinstance(node.Type, OrStatement)
         assert len(node.Children) == 1
         node = node.Children[0]
 
-        if isinstance(node.Type, Statement):
-            # Keyword Argument
-            assert len(node.Children) == 3
-
+        if isinstance(node.Type, DynamicStatement):
             return cls._ArgumentInfo(
-                node,
-                node.Children[0].Value.Match.group("value"),
-                CommonStatements.ExtractDynamicExpressionsNode(node.Children[2]),
+                CommonStatements.ExtractDynamicExpressionsNode(node),
+                None,
+                None,
             )
 
+        assert node.Type.Name == "Keyword"
+        assert len(node.Children) == 3
+
         return cls._ArgumentInfo(
-            CommonStatements.ExtractDynamicExpressionsNode(node),
-            None,
-            None,
+            node,
+            node.Children[0].Value.Match.group("value"),
+            CommonStatements.ExtractDynamicExpressionsNode(node.Children[2]),
         )
+
+
 
 
 # ----------------------------------------------------------------------

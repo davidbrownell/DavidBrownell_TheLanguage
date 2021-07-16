@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Union
+from typing import Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -38,8 +38,10 @@ with InitRelativeImports():
         DynamicStatements,
         GrammarStatement,
         Node,
-        Statement,
+        StatementEx,
     )
+
+    from ...ParserImpl.StatementImpl.OrStatement import OrStatement
 
 
 # ----------------------------------------------------------------------
@@ -56,19 +58,19 @@ class _TupleBase(GrammarStatement):
         desc: str,
         grammar_statement_type: GrammarStatement.Type,
         content: Union[DynamicStatements, CommonTokens.RegexToken],
-        *statement_items_suffix: Statement.ItemType,
+        *statement_items_suffix: StatementEx.ItemType,
     ):
         statement_items = [
             [
                 # Multiple elements
                 #   '(' <expr> (',' <expr>)+ ','? ')'
-                Statement(
+                StatementEx(
                     "Multiple",
                     CommonTokens.LParen,
                     CommonTokens.PushIgnoreWhitespaceControl,
                     content,
                     (
-                        Statement(
+                        StatementEx(
                             "Comma and {}".format(desc),
                             CommonTokens.Comma,
                             content,
@@ -86,7 +88,7 @@ class _TupleBase(GrammarStatement):
                 #
                 #   Note that for single element tuples, the comma is required
                 #   to differentiate it from a grouping construct.
-                Statement(
+                StatementEx(
                     "Single",
                     CommonTokens.LParen,
                     CommonTokens.PushIgnoreWhitespaceControl,
@@ -103,7 +105,7 @@ class _TupleBase(GrammarStatement):
 
         super(_TupleBase, self).__init__(
             grammar_statement_type,
-            Statement("Tuple {}".format(desc), *statement_items),
+            StatementEx("Tuple {}".format(desc), *statement_items),
         )
 
 
@@ -142,7 +144,7 @@ class TupleVariableDeclarationStatement(_TupleBase):
         node: Node,
     ):
         # Drill into the Or node
-        assert isinstance(node.Children[0].Type, list)
+        assert isinstance(node.Children[0].Type, OrStatement)
         assert len(node.Children[0].Children) == 1
         node = node.Children[0].Children[0]
 

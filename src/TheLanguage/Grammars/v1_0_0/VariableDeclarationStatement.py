@@ -39,7 +39,7 @@ with InitRelativeImports():
         DynamicStatements,
         GrammarStatement,
         Node,
-        Statement,
+        StatementEx,
         ValidationError,
     )
 
@@ -62,21 +62,6 @@ class InvalidVariableNameError(ValidationError):
         ),
     )
 
-    # ----------------------------------------------------------------------
-    @classmethod
-    def FromNode(
-        cls,
-        node: Node,
-        variable_name: str,
-    ):
-        return cls(
-            node.IterBefore.Line,
-            node.IterBefore.Column,
-            node.IterAfter.Line,
-            node.IterAfter.Column,
-            variable_name,
-        )
-
 
 # ----------------------------------------------------------------------
 class VariableDeclarationStatement(GrammarStatement):
@@ -90,7 +75,7 @@ class VariableDeclarationStatement(GrammarStatement):
     def __init__(self):
         super(VariableDeclarationStatement, self).__init__(
             GrammarStatement.Type.Statement,
-            Statement(
+            StatementEx(
                 "Variable Declaration",
                 CommonTokens.Name,
                 CommonTokens.Equal,

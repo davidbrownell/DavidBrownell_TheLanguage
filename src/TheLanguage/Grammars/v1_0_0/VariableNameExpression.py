@@ -28,7 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Common import Tokens as CommonTokens
-    from ..GrammarStatement import GrammarStatement, Statement
+    from ..GrammarStatement import GrammarStatement, StatementEx
 
 
 # ----------------------------------------------------------------------
@@ -39,5 +39,5 @@ class VariableNameExpression(GrammarStatement):
     def __init__(self):
         super(VariableNameExpression, self).__init__(
             GrammarStatement.Type.Expression,
-            Statement("Variable Name", CommonTokens.Name),
+            StatementEx("Variable Name", CommonTokens.Name),
         )
