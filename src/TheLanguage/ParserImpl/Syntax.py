@@ -18,7 +18,7 @@
 import os
 import re
 
-from typing import Dict, List, Optional
+from typing import cast, Dict, List, Optional
 
 from dataclasses import dataclass
 from semantic_version import Version as SemVer
@@ -49,6 +49,7 @@ with InitRelativeImports():
         IndentToken,
         NewlineToken,
         RegexToken,
+        Token,
     )
 
 
@@ -104,7 +105,7 @@ class Observer(TranslationUnitsParserObserver):
         assert observer
         assert syntaxes
 
-        max_ver = None
+        max_ver: Optional[SemVer] = None
         updated_syntaxes = {}
 
         for semver, statement_info in syntaxes.items():
@@ -121,6 +122,8 @@ class Observer(TranslationUnitsParserObserver):
                 updated_allow_parent_traversal=False,
                 updated_name="{} Grammar".format(semver),
             )
+
+        assert max_ver
 
         self._observer                      = observer
         self.DefaultVersion                 = max_ver
@@ -161,26 +164,31 @@ class Observer(TranslationUnitsParserObserver):
         iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
         if len(data_stack) > 1 and data_stack[1].Statement == SetSyntaxStatement:
-            data = data_stack[1].Data
+            data = cast(Statement.MultipleStandardParseResultData, data_stack[1].Data)
 
             # The data should include everything prior to the indentation
             assert len(data.DataItems) == 5, data.DataItems
-            assert data.DataItems[2].Statement.Name == "<semantic_version>", data.DataItems[2].Statement.Name
+            data = cast(Statement.StandardParseResultData, data.DataItems[2])
+            assert data.Statement.Name == "<semantic_version>", data.Statement.Name
 
-            regex_match = data.DataItems[2].Data.Value.Match
+            token_data = cast(Statement.TokenParseResultData, data.Data)
 
-            semver_string = "{}.{}.{}".format(
-                regex_match.group("major"),
-                regex_match.group("minor"),
-                regex_match.group("patch") or "0",
+            regex_match = cast(Token.RegexMatch, token_data.Value).Match
+
+            semver = SemVer(
+                "{}.{}.{}".format(
+                    regex_match.group("major"),
+                    regex_match.group("minor"),
+                    regex_match.group("patch") or "0",
+                ),
             )
 
-            statement_info = self.Syntaxes.get(SemVer(semver_string), None)
+            statement_info = self.Syntaxes.get(semver, None)
             if statement_info is None:
                 raise SyntaxInvalidVersionError(
-                    data.DataItems[2].Data.IterBefore.Line,
-                    data.DataItems[2].Data.IterBefore.Column,
-                    semver_string,
+                    token_data.IterBefore.Line,
+                    token_data.IterBefore.Column,
+                    semver,
                 )
 
             return statement_info

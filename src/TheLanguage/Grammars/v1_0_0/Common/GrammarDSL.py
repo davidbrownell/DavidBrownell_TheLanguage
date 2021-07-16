@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  GrammarDSL.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-06 08:32:04
+# |      2021-07-16 10:05:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains statements used in this grammar"""
+"""Contains functionality used across the grammar definition"""
 
 import os
 
@@ -27,15 +27,33 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .VariableDeclarationStatement import VariableDeclarationStatement
-    from .VariableNameExpression import VariableNameExpression
+    # Convenience imports for other files, please do not remove
+    from ....ParserImpl.AST import Leaf, Node, RootNode
+    from ....ParserImpl.StatementDSL import (
+        DynamicStatements,
+        Statement,
+        StatementItem,
+    )
+
+    # Standard imports
+    from . import Tokens as CommonTokens
+    from ....ParserImpl import StatementDSL
+    from ....ParserImpl.Token import Token
 
 
 # ----------------------------------------------------------------------
-Statements                                  = [
-    # Statements
-    VariableDeclarationStatement(),
+def CreateStatement(
+    item: StatementItem.ItemType,
+    name: str=None,
+) -> Statement:
+    # Single tokens don't have the opportunity to participate in node validation,
+    # as there won't be a corresponding node emitted. In this case, turn the token
+    # into a sequence.
+    if isinstance(item, Token):
+        item = [item]
 
-    # Expressions
-    VariableNameExpression(),
-]
+    return StatementDSL.CreateStatement(
+        item=item,
+        name=name,
+        comment_token=CommonTokens.Comment,
+    )

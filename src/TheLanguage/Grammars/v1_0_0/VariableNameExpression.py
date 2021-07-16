@@ -3,7 +3,7 @@
 # |  VariableNameExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-13 12:15:44
+# |      2021-07-16 10:16:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,17 +30,41 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Common.GrammarAST import GetRegexMatch
+    from .Common import GrammarDSL
+    from .Common import NamingConventions
     from .Common import Tokens as CommonTokens
-    from ..GrammarStatement import GrammarStatement, StatementEx
+
+    from ..GrammarStatement import GrammarStatement
 
 
 # ----------------------------------------------------------------------
 class VariableNameExpression(GrammarStatement):
     """A variable name"""
 
+    NODE_NAME                               = "Variable Name"
+
     # ----------------------------------------------------------------------
     def __init__(self):
         super(VariableNameExpression, self).__init__(
             GrammarStatement.Type.Expression,
-            StatementEx("Variable Name", CommonTokens.Name),
+            GrammarDSL.CreateStatement(
+                name=self.NODE_NAME,
+                item=CommonTokens.Name,
+            ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ValidateNodeSyntax(
+        cls,
+        node: GrammarDSL.Node,
+    ):
+        assert len(node.Children) == 1, node
+        name_leaf = cast(GrammarDSL.Leaf, node.Children[0])
+
+        variable_name = GetRegexMatch(name_leaf).group("value")
+
+        if not NamingConventions.Variable.Regex.match(variable_name):
+            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, variable_name)

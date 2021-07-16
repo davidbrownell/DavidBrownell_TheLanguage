@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -58,7 +58,7 @@ class ValidationError(Error):
     @classmethod
     def FromNode(
         cls,
-        node: Node,
+        node: Union[Node, Leaf],
         *args,
     ):
         return cls(

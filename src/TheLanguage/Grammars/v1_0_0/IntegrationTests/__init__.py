@@ -3,7 +3,7 @@
 # |  __init__.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-11 08:23:22
+# |      2021-07-16 10:22:42
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Common helper for automted tests in this directory"""
+"""Common helpers for automated tests in this directory"""
 
 import os
 import textwrap
 
 from enum import auto, Flag
 from io import StringIO
-from typing import Dict, List, Optional
+from typing import cast, Dict, List, Optional
 from unittest.mock import patch
 
 import CommonEnvironment
@@ -34,20 +34,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ....Parse import Parse, Prune, Validate
+
+    from ....ParserImpl.AST import RootNode
     from ....ParserImpl.TranslationUnitParser import SyntaxInvalidError
 
 
 # ----------------------------------------------------------------------
 class PatchAndExecuteFlag(Flag):
-    _parse_flag                             = auto()
     _prune_flag                             = auto()
     _validate_flag                          = auto()
 
-    Parse                                   = _parse_flag
-    Prune                                   = _parse_flag | _prune_flag
-    Validate                                = _parse_flag | _prune_flag | _validate_flag
+    Parse                                   = 0
+    Prune                                   = _prune_flag
+    Validate                                = _prune_flag | _validate_flag
 
 
+# ----------------------------------------------------------------------
 def PatchAndExecute(
     simulated_file_content: Dict[
         str,                                # filename
@@ -58,8 +60,11 @@ def PatchAndExecute(
     flag=PatchAndExecuteFlag.Parse,
     max_num_threads: Optional[int]=None,
     debug_string_on_exception=True,
-):
-    """Patches file system methods invoked by systems under tests and replaces them so that they simulate files via the file content provided"""
+) -> Dict[str, RootNode]:
+    """\
+    Patches file system methods invoked by systems under tests and replaces them
+    so that they simulate files via the file content provided.
+    """
 
     # ----------------------------------------------------------------------
     def IsFile(filename):
@@ -80,38 +85,39 @@ def PatchAndExecute(
         patch("os.path.isdir", side_effect=IsDir), \
         patch("builtins.open", side_effect=lambda filename: StringIO(simulated_file_content[filename])) \
     :
-        if flag & PatchAndExecuteFlag._parse_flag:
-            result = Parse(
-                fully_qualified_names,
-                source_roots,
-                max_num_threads=max_num_threads,
-            )
+        result = Parse(
+            fully_qualified_names,
+            source_roots,
+            max_num_threads=max_num_threads,
+        )
 
-            if isinstance(result, list):
-                assert len(result) == 1, result
+        if isinstance(result, list):
+            assert len(result) == 1, result
 
-                if debug_string_on_exception and isinstance(result[0], SyntaxInvalidError):
-                    print(
-                        textwrap.dedent(
-                            """\
+            if debug_string_on_exception and isinstance(result[0], SyntaxInvalidError):
+                print(
+                    textwrap.dedent(
+                        """\
 
-                            # ----------------------------------------------------------------------
-                            # ----------------------------------------------------------------------
-                            # ----------------------------------------------------------------------
-                            {}
-                            # ----------------------------------------------------------------------
-                            # ----------------------------------------------------------------------
-                            # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
+                        {}
+                        # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
 
-                            """,
-                        ).format(result[0].ToDebugString()),
-                    )
+                        """,
+                    ).format(result[0].ToDebugString()),
+                )
 
-                raise result[0]
+            raise result[0]
 
-            assert len(result) == len(simulated_file_content)
-            for name in result.keys():
-                assert name in simulated_file_content
+        result = cast(Dict[str, RootNode], result)
+
+        assert len(result) == len(simulated_file_content)
+        for name in result.keys():
+            assert name in simulated_file_content
 
         if flag & PatchAndExecuteFlag._prune_flag:
             Prune(
@@ -129,7 +135,9 @@ def PatchAndExecute(
 
 
 # ----------------------------------------------------------------------
-def Execute(content: str) -> str:
+def Execute(
+    content: str,
+) -> str:
     """Runs PatchAndExecute and then returns the string result"""
 
     result = PatchAndExecute(
