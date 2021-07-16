@@ -54,7 +54,6 @@ with InitRelativeImports():
         ParseAsync as TranslationUnitsParseAsync,
         RootNode,
         Statement,
-        StatementEx,
     )
 
 
@@ -102,8 +101,8 @@ def _LoadDyanmicStatementsFromFile(
         del sys.modules[basename]
 
         return DynamicStatementInfo(
-            statements,
-            expressions,
+            tuple(statements),
+            tuple(expressions),
             AllowParentTraversal=False,
         )
 
@@ -113,7 +112,8 @@ Grammars[SemVer("1.0.0")]                   = _LoadDyanmicStatementsFromFile(os.
 
 
 # ----------------------------------------------------------------------
-assert StatementLookup
+# TODO: Restore this once we have at least one statement
+# TODO: assert StatementLookup
 del _LoadDyanmicStatementsFromFile
 
 
@@ -209,6 +209,15 @@ class _Observer(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def Enqueue(
+        self,
+        funcs: List[Callable[[], None]],
+    ) -> List[Future]:
+        # TODO: Handle scenario where there are too many enqueued items
+        return [self._executor.submit(func) for func in funcs]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def LoadContent(
         self,
         fully_qualified_name: str,
@@ -222,33 +231,44 @@ class _Observer(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Enqueue(
-        self,
-        funcs: List[Callable[[], None]],
-    ) -> List[Future]:
-        # TODO: Handle scenario where there are too many enqueued items
-        return [self._executor.submit(func) for func in funcs]
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     def ExtractDynamicStatements(
         self,
         fully_qualified_name: str,
         node: RootNode,
     ) -> DynamicStatementInfo:
         # TODO
-        return DynamicStatementInfo([], [])
+        return DynamicStatementInfo((), ())
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def StartStatement(
+        self,
+        fully_qualified_name: str,
+        statement: Statement,
+    ) -> None:
+        # Nothing to do here
+        return None
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EndStatement(
+        self,
+        fully_qualified_name: str,
+        statement: Statement,
+    ) -> None:
+        # Nothing to do here
+        return None
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def OnIndentAsync(
         self,
         fully_qualified_name: str,
-        statement: StatementEx,
-        data_items: List[Statement.ParseResultData],
+        data_stack: List[Statement.StandardParseResultData],
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
+        # Nothing to do here
         return None
 
     # ----------------------------------------------------------------------
@@ -256,11 +276,11 @@ class _Observer(TranslationUnitsParserObserver):
     async def OnDedentAsync(
         self,
         fully_qualified_name: str,
-        statement: StatementEx,
-        data_items: List[Statement.ParseResultData],
+        data_stack: List[Statement.StandardParseResultData],
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
-    ):
+    ) -> None:
+        # Nothing to do here
         return None
 
     # ----------------------------------------------------------------------

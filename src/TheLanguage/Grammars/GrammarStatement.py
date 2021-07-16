@@ -33,15 +33,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..ParserImpl.AST import (
+        Leaf,                               # This is here as a convenience for files that import this one; please do not remove
+        Node,
+    )
+
     from ..ParserImpl.Error import Error
 
     from ..ParserImpl.TranslationUnitsParser import (
-        DynamicStatements,
-        Leaf,                               # This is here as a convenience for files that import this one; please do not remove
-        Node,
         Observer as TranslationUnitsParserObserver,
         Statement,
-        StatementEx,                        # This is here as a convenience for files that import this one; please do not remove
     )
 
 
