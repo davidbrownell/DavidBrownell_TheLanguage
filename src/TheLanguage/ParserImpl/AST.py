@@ -69,7 +69,7 @@ class _ASTBase(Interface.Interface):
 class _Node(_ASTBase):
     """Common base class for `RootNode` and `Node`"""
 
-    Children: List[Union["_Node", "Leaf"]]  = field(default_factory=list)
+    Children: List[Union["Node", "Leaf"]]   = field(default_factory=list)
 
     # ----------------------------------------------------------------------
     @Interface.override

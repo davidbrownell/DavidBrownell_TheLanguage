@@ -67,9 +67,11 @@ StatementLookup: Dict[int, GrammarStatement]            = OrderedDict()
 # ----------------------------------------------------------------------
 def _LoadDyanmicStatementsFromFile(
     filename: str,
-    attribute_name: Optional[str]="Statements",
+    attribute_name: Optional[str]=None,
 ) -> DynamicStatementInfo:
     assert os.path.isfile(filename), filename
+
+    attribute_name = attribute_name or "Statements"
 
     dirname, basename = os.path.split(filename)
     basename = os.path.splitext(basename)[0]
@@ -88,9 +90,6 @@ def _LoadDyanmicStatementsFromFile(
             if grammar_statement.TypeValue == GrammarStatement.Type.Statement:
                 statements.append(grammar_statement.Statement)
             elif grammar_statement.TypeValue == GrammarStatement.Type.Expression:
-                expressions.append(grammar_statement.Statement)
-            elif grammar_statement.TypeValue == GrammarStatement.Type.Hybrid:
-                statements.append(grammar_statement.Statement)
                 expressions.append(grammar_statement.Statement)
             else:
                 assert False, grammar_statement.TypeValue  # pragma: no cover
@@ -125,6 +124,7 @@ def Parse(
     source_roots: List[str],
     max_num_threads: Optional[int]=None,
 ) -> Union[
+    None,
     Dict[str, RootNode],
     List[Exception],
 ]:
@@ -297,6 +297,7 @@ class _Observer(TranslationUnitsParserObserver):
         TranslationUnitsParserObserver.ImportInfo,
     ]:
         try:
+            assert isinstance(node.Type, Statement), node.Type
             grammar_statement = StatementLookup.get(node.Type.TypeId, None)
         except TypeError:
             grammar_statement = None
@@ -392,7 +393,7 @@ def _ValidateNode(
     if isinstance(node.Type, Statement):
         grammar_statement = StatementLookup.get(cast(Statement, node.Type).TypeId, None)
         if grammar_statement:
-            result = grammar_statement.ValidateNodeSyntax(node)
+            result = grammar_statement.ValidateNodeSyntax(cast(Node, node))
             if isinstance(result, bool) and not result:
                 return
 
