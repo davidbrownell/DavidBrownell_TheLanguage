@@ -3,7 +3,7 @@
 # |  PassStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-13 15:18:08
+# |      2021-07-16 16:37:54
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,6 +18,7 @@
 import os
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,17 +28,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Common import GrammarDSL
     from .Common import Tokens as CommonTokens
-    from ..GrammarStatement import GrammarStatement, StatementEx
+    from ..GrammarStatement import GrammarStatement
 
 
 # ----------------------------------------------------------------------
 class PassStatement(GrammarStatement):
-    """'pass'"""
+    """pass"""
+
+    NODE_NAME                               = "Pass"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(PassStatement, self).__init__(
             GrammarStatement.Type.Statement,
-            StatementEx("Pass", CommonTokens.Pass),
+            GrammarDSL.CreateStatement(
+                name=self.NODE_NAME,
+                item=[
+                    CommonTokens.Pass,
+                    CommonTokens.Newline,
+                ],
+            ),
         )

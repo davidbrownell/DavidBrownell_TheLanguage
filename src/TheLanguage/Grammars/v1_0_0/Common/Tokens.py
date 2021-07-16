@@ -77,3 +77,7 @@ Colon                                       = RegexToken("':'", re.compile(r":")
 Comma                                       = RegexToken("','", re.compile(r","))
 LParen                                      = RegexToken("'('", re.compile(r"\("))
 RParen                                      = RegexToken("')'", re.compile(r"\)"))
+
+# ----------------------------------------------------------------------
+# |  PassStatement
+Pass                                        = RegexToken("'pass'", re.compile(r"pass\b"))
