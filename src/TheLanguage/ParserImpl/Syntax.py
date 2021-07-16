@@ -105,7 +105,7 @@ class Observer(TranslationUnitsParserObserver):
         assert observer
         assert syntaxes
 
-        max_ver = None
+        max_ver: Optional[SemVer] = None
         updated_syntaxes = {}
 
         for semver, statement_info in syntaxes.items():
@@ -122,6 +122,8 @@ class Observer(TranslationUnitsParserObserver):
                 updated_allow_parent_traversal=False,
                 updated_name="{} Grammar".format(semver),
             )
+
+        assert max_ver
 
         self._observer                      = observer
         self.DefaultVersion                 = max_ver
