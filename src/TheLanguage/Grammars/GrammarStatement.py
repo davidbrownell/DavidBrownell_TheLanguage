@@ -33,16 +33,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserImpl.Error import Error
-
-    from ..ParserImpl.MultifileParser import (
+    from ..ParserImpl.AST import (
         Leaf,                               # This is here as a convenience for files that import this one; please do not remove
         Node,
-        Observer as MultifileParserObserver,
     )
 
-    from ..ParserImpl.Statement import (
-        DynamicStatements,                  # This is here as a convenience for files that import this one; please do not remove
+    from ..ParserImpl.Error import Error
+
+    from ..ParserImpl.TranslationUnitsParser import (
+        Observer as TranslationUnitsParserObserver,
         Statement,
     )
 
@@ -60,12 +59,14 @@ class ValidationError(Error):
     def FromNode(
         cls,
         node: Node,
+        *args,
     ):
         return cls(
             node.IterBefore.Line,
             node.IterBefore.Column,
             node.IterAfter.Line,
             node.IterAfter.Column,
+            *args,
         )
 
     # ----------------------------------------------------------------------
@@ -134,6 +135,6 @@ class ImportGrammarStatement(GrammarStatement):
         source_roots: List[str],
         fully_qualified_name: str,
         node: Node,
-    ) -> MultifileParserObserver.ImportInfo:
+    ) -> TranslationUnitsParserObserver.ImportInfo:
         """Returns ImportInfo for the statement"""
         raise Exception("Abstract method")  # pragma: no cover

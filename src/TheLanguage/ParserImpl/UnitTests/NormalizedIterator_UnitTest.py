@@ -199,7 +199,7 @@ def test_Standard():
     assert iter.Line == 6
     assert iter.Column == 15
 
-    assert iter.HasConsumedDedents()
+    assert iter.HasConsumedAllDedents()
     assert iter.AtTrailingDedents() == False
     iter.Advance(1)
 
@@ -217,9 +217,11 @@ def test_Standard():
     assert iter.Line == 7
     assert iter.Column == 1
 
-    assert iter.HasConsumedDedents() == False
-    iter.ConsumeDedents()
-    assert iter.HasConsumedDedents()
+    assert iter.HasConsumedAllDedents() == False
+    iter.ConsumeDedent()
+    assert iter.HasConsumedAllDedents() == False
+    iter.ConsumeDedent()
+    assert iter.HasConsumedAllDedents()
 
     iter.Advance(0)
 

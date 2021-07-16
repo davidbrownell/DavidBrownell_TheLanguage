@@ -261,7 +261,8 @@ def test_Dedent():
     iter.Advance(1)
 
     # Line 5
-    assert token.Match(iter) == [Token.DedentMatch(), Token.DedentMatch()]
+    assert token.Match(iter) == Token.DedentMatch()
+    assert token.Match(iter) == Token.DedentMatch()
     iter.Advance(len("five"))
     iter.Advance(1)
 
@@ -278,13 +279,13 @@ def test_Dedent():
     iter.Advance(1)
 
     # Line 8
-    assert token.Match(iter) == [Token.DedentMatch()]
+    assert token.Match(iter) == Token.DedentMatch()
     iter.Advance(len("eight"))
     iter.Advance(1)
 
     # Final dedent line
     assert iter.AtEnd() == False
-    assert token.Match(iter) == [Token.DedentMatch()]
+    assert token.Match(iter) == Token.DedentMatch()
     assert iter.AtEnd()
 
 # ----------------------------------------------------------------------
@@ -368,6 +369,170 @@ def test_ControlTokens():
         MyControlToken.Match(None)
 
 # ----------------------------------------------------------------------
+def test_MultilineRegexTokenSingleDelimiter():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                """\
+                if True:
+                    # Line 1
+                    # Line 2
+
+                    # Line 3
+
+                    <end>
+                """,
+            ),
+        ),
+    )
+
+    token = MultilineRegexToken(
+        "This Token",
+        re.compile(r"[ \t]+<end>"),
+    )
+
+    assert token.Name == "This Token"
+
+    result = token.Match(iter)
+
+    assert result is not None
+    assert result.Match.group("value") == textwrap.dedent(
+        """\
+        if True:
+            # Line 1
+            # Line 2
+
+            # Line 3
+
+        """,
+    )
+
+    assert result.Match.start() == 0
+    assert result.Match.end() == 50
+
+    assert iter.Offset == 50
+
+# ----------------------------------------------------------------------
+def test_MultilineRegexTokenMultipleDelimiterFirstMatch():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                """\
+                if True:
+                    # Line 1
+                    # Line 2
+
+                    # Line 3
+
+                    <end>
+                """,
+            ),
+        ),
+    )
+
+    result = MultilineRegexToken(
+        "Token",
+        re.compile(r"[ \t]+<end>"),
+        re.compile(r"this_will_never_match"),
+    ).Match(iter)
+
+    assert result is not None
+    assert result.Match.group("value") == textwrap.dedent(
+        """\
+        if True:
+            # Line 1
+            # Line 2
+
+            # Line 3
+
+        """,
+    )
+
+    assert result.Match.start() == 0
+    assert result.Match.end() == 50
+
+    assert iter.Offset == 50
+
+# ----------------------------------------------------------------------
+def test_MultilineRegexTokenMultipleDelimiterSecondMatch():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                """\
+                if True:
+                    # Line 1
+                    # Line 2
+
+                    # Line 3
+
+                    <end>
+                """,
+            ),
+        ),
+    )
+
+    result = MultilineRegexToken(
+        "Token",
+        re.compile(r"[ \t]+<end>"),
+        re.compile(r"# Line 3"),
+    ).Match(iter)
+
+    assert result is not None
+    assert result.Match.group("value") == "if True:\n    # Line 1\n    # Line 2\n\n    "
+    assert result.Match.start() == 0
+    assert result.Match.end() == 40
+
+    assert iter.Offset == 40
+
+# ----------------------------------------------------------------------
+def test_MultilineRegexNoMatch():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                """\
+                one
+                two
+                three
+                """,
+            ),
+        ),
+    )
+
+    result = MultilineRegexToken(
+        "Token",
+        re.compile(r"This will never match"),
+    ).Match(iter)
+
+    assert result is None
+
+# ----------------------------------------------------------------------
+def test_MultilineRegexCustomGroup():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                """\
+                orange
+                green
+                blue
+                """,
+            ),
+        ),
+    )
+
+    result = MultilineRegexToken(
+        "Token",
+        re.compile(r"green"),
+        regex_match_group_name="custom_name",
+    ).Match(iter)
+
+    assert result is not None
+    assert result.Match.group("custom_name") == "orange\n"
+    assert result.Match.start() == 0
+    assert result.Match.end() == 7
+
+    assert iter.Offset == 7
+
+# ----------------------------------------------------------------------
 def test_PushIgnoreWhitespaceControlToken():
     token = PushIgnoreWhitespaceControlToken()
 
@@ -380,3 +545,63 @@ def test_PopIgnoreWhitespaceControlToken():
 
     assert token.IsControlToken
     assert token.Name == "PopIgnoreWhitespaceControl"
+
+# ----------------------------------------------------------------------
+def test_NewlineMatch():
+    result = NewlineToken().Match(
+        NormalizedIterator(
+            Normalize(
+                textwrap.dedent(
+                    """\
+
+
+                    """,
+                ),
+            ),
+        ),
+    )
+
+    assert str(result) == "0, 2"
+
+# ----------------------------------------------------------------------
+def test_IndentMatch():
+    result = IndentToken().Match(
+        NormalizedIterator(
+            Normalize(
+                "    foo",
+            ),
+        ),
+    )
+
+    assert str(result) == "0, 4, (4)"
+
+# ----------------------------------------------------------------------
+def test_DedentMatch():
+    iter = NormalizedIterator(
+        Normalize(
+            textwrap.dedent(
+                """\
+                    foo
+                bar
+                """,
+            ),
+        ),
+    )
+
+    iter.SkipLine()
+
+    result = DedentToken().Match(iter)
+
+    assert str(result) == ""
+
+# ----------------------------------------------------------------------
+def test_RegexMatch():
+    result = RegexToken("Token", re.compile("foo")).Match(
+        NormalizedIterator(
+            Normalize(
+                "foo",
+            ),
+        ),
+    )
+
+    assert str(result) == "Regex: <_sre.SRE_Match object; span=(0, 3), match='foo'>"

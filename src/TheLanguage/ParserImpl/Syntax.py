@@ -18,7 +18,7 @@
 import os
 import re
 
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 from semantic_version import Version as SemVer
@@ -35,9 +35,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Error import Error
-    from .MultifileParser import Observer as MultifileParserObserver
-    from .Statement import DynamicStatements, Statement
-    from .StatementsParser import DynamicStatementInfo
+    from .StatementDSL import CreateStatement, DynamicStatements, StatementItem
+    from .TranslationUnitParser import DynamicStatementInfo
+
+    from .TranslationUnitsParser import (
+        NormalizedIterator,
+        Observer as TranslationUnitsParserObserver,
+        Statement,
+    )
 
     from .Token import (
         DedentToken,
@@ -68,27 +73,29 @@ _simple_semantic_version_regex              = re.compile(r"(?P<major>0|[1-9]\d*)
 # __with_syntax=1.0:
 #     ...
 #
-SetSyntaxStatement                          = Statement(
-    "Set Syntax",
-    RegexToken("'__with_syntax'", re.compile(r"(?P<value>__with_syntax)")),
-    RegexToken("'='", re.compile(r"(?P<value>=)")),
-    RegexToken("<semantic_version>", _simple_semantic_version_regex),
-    RegexToken("':'", re.compile(r"(?P<value>:)")),
-    NewlineToken(),
-    IndentToken(),
-    (DynamicStatements.Statements, 1, None),
-    DedentToken(),
+SetSyntaxStatement                          = CreateStatement(
+    name="Set Syntax",
+    item=[
+        RegexToken("'__with_syntax'", re.compile(r"(?P<value>__with_syntax)")),
+        RegexToken("'='", re.compile(r"(?P<value>=)")),
+        RegexToken("<semantic_version>", _simple_semantic_version_regex),
+        RegexToken("':'", re.compile(r"(?P<value>:)")),
+        NewlineToken(),
+        IndentToken(),
+        StatementItem(DynamicStatements.Statements, Arity="+"),
+        DedentToken(),
+    ],
 )
 
 
 # ----------------------------------------------------------------------
-class Observer(MultifileParserObserver):
+class Observer(TranslationUnitsParserObserver):
     """Processes syntax-related statements; all other statements are processed by the provided observer"""
 
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        observer: MultifileParserObserver,
+        observer: TranslationUnitsParserObserver,
         syntaxes: Dict[
             SemVer,                         # Syntax Name
             DynamicStatementInfo,           # Syntax Info
@@ -106,8 +113,8 @@ class Observer(MultifileParserObserver):
 
             updated_statements = None
 
-            if not any(statement for statement in statement_info.statements if getattr(statement, "Name", None) == SetSyntaxStatement.Name):
-                updated_statements = [SetSyntaxStatement] + statement_info.statements
+            if not any(statement for statement in statement_info.Statements if getattr(statement, "Name", None) == SetSyntaxStatement.Name):
+                updated_statements = (SetSyntaxStatement,) + statement_info.Statements
 
             updated_syntaxes[semver] = statement_info.Clone(
                 updated_statements=updated_statements,
@@ -121,32 +128,47 @@ class Observer(MultifileParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def LoadContent(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.LoadContent(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def ExtractDynamicStatementInfo(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.ExtractDynamicStatementInfo(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     def Enqueue(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
         return self._observer.Enqueue(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnIndent(
+    def LoadContent(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+        return self._observer.LoadContent(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ExtractDynamicStatements(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+        return self._observer.ExtractDynamicStatements(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def StartStatement(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+        return self._observer.StartStatement(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EndStatement(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+        return self._observer.EndStatement(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def OnIndentAsync(
         self,
         fully_qualified_name: str,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        data_stack: List[Statement.StandardParseResultData],
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
-        if statement == SetSyntaxStatement:
-            assert len(results) >= 3, len(results)
-            assert results[2].Token.Name == "<semantic_version>"
+        if len(data_stack) > 1 and data_stack[1].Statement == SetSyntaxStatement:
+            data = data_stack[1].Data
 
-            regex_match = results[2].Value.Match
+            # The data should include everything prior to the indentation
+            assert len(data.DataItems) == 5, data.DataItems
+            assert data.DataItems[2].Statement.Name == "<semantic_version>", data.DataItems[2].Statement.Name
+
+            regex_match = data.DataItems[2].Data.Value.Match
+
             semver_string = "{}.{}.{}".format(
                 regex_match.group("major"),
                 regex_match.group("minor"),
@@ -156,21 +178,26 @@ class Observer(MultifileParserObserver):
             statement_info = self.Syntaxes.get(SemVer(semver_string), None)
             if statement_info is None:
                 raise SyntaxInvalidVersionError(
-                    results[2].IterBefore.Line,
-                    results[2].IterBefore.Column,
+                    data.DataItems[2].Data.IterBefore.Line,
+                    data.DataItems[2].Data.IterBefore.Column,
                     semver_string,
                 )
 
             return statement_info
 
-        return self._observer.OnIndent(fully_qualified_name, statement, results)
+        return await self._observer.OnIndentAsync(
+            fully_qualified_name,
+            data_stack,
+            iter_before,
+            iter_after,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnDedent(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.OnDedent(*args, **kwargs)
+    async def OnDedentAsync(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+        return await self._observer.OnDedentAsync(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnStatementComplete(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.OnStatementComplete(*args, **kwargs)
+    async def OnStatementCompleteAsync(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+        return await self._observer.OnStatementCompleteAsync(*args, **kwargs)
