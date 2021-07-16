@@ -22,7 +22,7 @@ import sys
 
 from collections import OrderedDict
 from concurrent.futures import Future, ThreadPoolExecutor
-from typing import cast, Callable, Dict, List, Optional, Union
+from typing import cast, Callable, Dict, List, Optional, Tuple, Union
 
 from semantic_version import Version as SemVer
 
@@ -111,8 +111,7 @@ Grammars[SemVer("1.0.0")]                   = _LoadDyanmicStatementsFromFile(os.
 
 
 # ----------------------------------------------------------------------
-# TODO: Restore this once we have at least one statement
-# TODO: assert StatementLookup
+assert StatementLookup
 del _LoadDyanmicStatementsFromFile
 
 
@@ -244,7 +243,7 @@ class _Observer(TranslationUnitsParserObserver):
     def StartStatement(
         self,
         fully_qualified_name: str,
-        statement: Statement,
+        statement_stack: List[Statement],
     ) -> None:
         # Nothing to do here
         return None
@@ -254,7 +253,12 @@ class _Observer(TranslationUnitsParserObserver):
     def EndStatement(
         self,
         fully_qualified_name: str,
-        statement: Statement,
+        statement_info_stack: List[
+            Tuple[
+                Statement,
+                Optional[bool],
+            ],
+        ],
     ) -> None:
         # Nothing to do here
         return None
@@ -288,6 +292,7 @@ class _Observer(TranslationUnitsParserObserver):
     async def OnStatementCompleteAsync(
         self,
         fully_qualified_name: str,
+        statement: Statement,
         node: Node,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
@@ -297,8 +302,7 @@ class _Observer(TranslationUnitsParserObserver):
         TranslationUnitsParserObserver.ImportInfo,
     ]:
         try:
-            assert isinstance(node.Type, Statement), node.Type
-            grammar_statement = StatementLookup.get(node.Type.TypeId, None)
+            grammar_statement = StatementLookup.get(statement.TypeId, None)
         except TypeError:
             grammar_statement = None
 

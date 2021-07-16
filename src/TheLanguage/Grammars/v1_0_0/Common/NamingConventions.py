@@ -3,7 +3,7 @@
 # |  NamingConventions.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-16 19:48:33
+# |      2021-07-16 10:48:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,79 +13,73 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Various naming conventions enforced automatically"""
+"""Various naming conventions requiring environment"""
 
 import os
 import re
+import textwrap
 
 from dataclasses import dataclass
 from typing import List, Pattern
 
 import CommonEnvironment
+from CommonEnvironment import Interface
+from CommonEnvironment import StringHelpers
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from ...GrammarStatement import ValidationError
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class _NamingConvention(object):
+class NamingConvention(object):
     Regex: Pattern
     Constraints: List[str]
 
 
 # ----------------------------------------------------------------------
-# BugBug: Not end with double underscore
-Class                                       = _NamingConvention(
+Variable                                    = NamingConvention(
     re.compile(
-        r"""(?#
-            [Optional] Underscore           )_?(?#
-            Uppercase                       )[A-Z](?#
-            Alpha-numeric and underscore    )[A-Za-z0-9_]+(?#
-        )""",
-    ),
-    [
-        "Begin with an uppercase letter",
-        "Contain upper-, lower-, numeric-, or underscore-characters",
-        "Contain at least 2 characters",
-    ],
-)
-
-
-# ----------------------------------------------------------------------
-# BugBug: Not end with double underscore
-Function                                    = _NamingConvention(
-    re.compile(
-        r"""(?#
-            [Optional] Underscore           )_?(?#
-            Uppercase                       )[A-Z](?#
-            Alpha-numeric and underscore    )[A-Za-z0-9_]+(?#
-            [Optional] Async Decorator      )(?:\.\.\.)?(?#
-            [Optional] Partial Decorator    )\??(?#
-        )""",
-    ),
-    [
-        "Begin with an uppercase letter",
-        "Contain upper-, lower-, numeric-, or underscore-characters",
-        "Contain 2 or more characters",
-    ],
-)
-
-
-# ----------------------------------------------------------------------
-# BugBug: Not end with double underscore
-Variable                                    = _NamingConvention(
-    re.compile(
-        r"""(?#
-            [Optional] Underscore           )_?(?#
-            Lowercase                       )[a-z](?#
-            Alpha-numeric and underscore    )[a-zA-Z0-9_]*(?#
-        )""",
+        textwrap.dedent(
+            r"""(?#
+                Start of Content            )^(?#
+                [Optional] Underscore       )_?(?#
+                Lowercase                   )[a-z](?#
+                Alpha-numeric and under     )[a-zA-Z0-9_]*(?#
+                Not end with double under   )(?<!__)(?#
+                End of Content              )$(?#
+            )""",
+        ),
     ),
     [
         "Begin with a lowercase letter",
         "Contain upper-, lower-, numeric-, or underscore-characters",
+        "Not end with double underscores",
     ],
 )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidVariableNameError(ValidationError):
+    VariableName: str
+
+    MessageTemplate                         = Interface.DerivedProperty(
+        textwrap.dedent(
+            """\
+            '{{VariableName}}' is not a valid variable name.
+
+            Variable names must:
+                {}
+            """,
+        ).format(
+            StringHelpers.LeftJustify("\n".join(Variable.Constraints).rstrip(), 4),
+        ),
+    )

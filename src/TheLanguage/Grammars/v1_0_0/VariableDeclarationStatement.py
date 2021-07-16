@@ -3,7 +3,7 @@
 # |  VariableDeclarationStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-15 14:27:21
+# |      2021-07-16 10:03:15
 # |
 # ----------------------------------------------------------------------
 # |
@@ -16,13 +16,11 @@
 """Contains the VariableDeclarationStatement object"""
 
 import os
-import textwrap
 
-from dataclasses import dataclass
+from typing import cast
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,35 +30,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common import Tokens as CommonTokens
+    from . import GetRegexMatch
+
+    from .Common import GrammarDSL
     from .Common import NamingConventions
+    from .Common import Tokens as CommonTokens
 
-    from ..GrammarStatement import (
-        DynamicStatements,
-        GrammarStatement,
-        Node,
-        StatementEx,
-        ValidationError,
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidVariableNameError(ValidationError):
-    VariableName: str
-
-    MessageTemplate                         = Interface.DerivedProperty(
-        textwrap.dedent(
-            """\
-            '{{VariableName}}' is not a valid variable name.
-
-            Variable names must:
-                {}
-            """,
-        ).format(
-            StringHelpers.LeftJustify("\n".join(NamingConventions.Variable.Constraints).rstrip(), 4),
-        ),
-    )
+    from ..GrammarStatement import GrammarStatement
 
 
 # ----------------------------------------------------------------------
@@ -68,18 +44,23 @@ class VariableDeclarationStatement(GrammarStatement):
     """\
     Declares a variable.
 
-    <name> = <expression>>
+    <name> = <expression>
     """
+
+    NODE_NAME                               = "Variable Declaration"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(VariableDeclarationStatement, self).__init__(
             GrammarStatement.Type.Statement,
-            StatementEx(
-                "Variable Declaration",
-                CommonTokens.Name,
-                CommonTokens.Equal,
-                DynamicStatements.Expressions,
+            GrammarDSL.CreateStatement(
+                name=self.NODE_NAME,
+                item=[
+                    CommonTokens.Name,
+                    CommonTokens.Equal,
+                    GrammarDSL.DynamicStatements.Expressions,
+                    CommonTokens.Newline,
+                ],
             ),
         )
 
@@ -88,13 +69,12 @@ class VariableDeclarationStatement(GrammarStatement):
     @Interface.override
     def ValidateNodeSyntax(
         cls,
-        node: Node,
+        node: GrammarDSL.Node,
     ):
-        # Validate the variable name
-        assert len(node.Children) > 1
-        name_node = node.Children[0]
+        assert len(node.Children) > 1, node
+        name_leaf = cast(GrammarDSL.Leaf, node.Children[0])
 
-        variable_name = name_node.Value.Match.group("value")
+        variable_name = GetRegexMatch(name_leaf).group("value")
 
         if not NamingConventions.Variable.Regex.match(variable_name):
-            raise InvalidVariableNameError.FromNode(name_node, variable_name)
+            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, variable_name)
