@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  __init__.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-06 08:32:04
+# |      2021-07-16 10:59:14
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains statements used in this grammar"""
+"""Contains utilities used by multiple statements and expressions"""
 
 import os
+
+from typing import cast, Match
 
 import CommonEnvironment
 
@@ -27,15 +29,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .VariableDeclarationStatement import VariableDeclarationStatement
-    from .VariableNameExpression import VariableNameExpression
+    from ....ParserImpl.Token import Token
+
+    from ...GrammarStatement import (
+        Leaf,
+        Statement,
+    )
+
 
 
 # ----------------------------------------------------------------------
-Statements                                  = [
-    # Statements
-    VariableDeclarationStatement(),
-
-    # Expressions
-    VariableNameExpression(),
-]
+def GetRegexMatch(
+    leaf: Leaf,
+) -> Match:
+    return cast(
+        Token.RegexMatch,
+        leaf.Value,
+    ).Match
