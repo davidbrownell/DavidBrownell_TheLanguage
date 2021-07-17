@@ -372,8 +372,8 @@ def test_MultipleExpression():
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(8, 9), match='a'>>> ws:None [1, 9 -> 1, 10]
-                                        Repeat: (Comma and Expression, 1, None)
-                                            Comma and Expression
+                                        Repeat: (Sequence: [',', DynamicStatements.Expressions], 1, None)
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(9, 10), match=','>>> ws:None [1, 10 -> 1, 11]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
@@ -395,8 +395,8 @@ def test_MultipleExpression():
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(22, 23), match='c'>>> ws:None [2, 9 -> 2, 10]
-                                        Repeat: (Comma and Expression, 1, None)
-                                            Comma and Expression
+                                        Repeat: (Sequence: [',', DynamicStatements.Expressions], 1, None)
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [2, 10 -> 2, 11]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
@@ -420,20 +420,20 @@ def test_MultipleExpression():
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(39, 40), match='e'>>> ws:None [4, 9 -> 4, 10]
-                                        Repeat: (Comma and Expression, 1, None)
-                                            Comma and Expression
+                                        Repeat: (Sequence: [',', DynamicStatements.Expressions], 1, None)
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(40, 41), match=','>>> ws:None [4, 10 -> 4, 11]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(42, 43), match='f'>>> ws:(41, 42) [4, 12 -> 4, 13]
-                                            Comma and Expression
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(43, 44), match=','>>> ws:None [4, 13 -> 4, 14]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(45, 46), match='g'>>> ws:(44, 45) [4, 15 -> 4, 16]
-                                            Comma and Expression
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(46, 47), match=','>>> ws:None [4, 16 -> 4, 17]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
@@ -455,20 +455,20 @@ def test_MultipleExpression():
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(59, 60), match='i'>>> ws:None [5, 9 -> 5, 10]
-                                        Repeat: (Comma and Expression, 1, None)
-                                            Comma and Expression
+                                        Repeat: (Sequence: [',', DynamicStatements.Expressions], 1, None)
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(60, 61), match=','>>> ws:None [5, 10 -> 5, 11]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(62, 63), match='j'>>> ws:(61, 62) [5, 12 -> 5, 13]
-                                            Comma and Expression
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(63, 64), match=','>>> ws:None [5, 13 -> 5, 14]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(65, 66), match='k'>>> ws:(64, 65) [5, 15 -> 5, 16]
-                                            Comma and Expression
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(66, 67), match=','>>> ws:None [5, 16 -> 5, 17]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
@@ -492,32 +492,32 @@ def test_MultipleExpression():
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(82, 83), match='m'>>> ws:None [7, 9 -> 7, 10]
-                                        Repeat: (Comma and Expression, 1, None)
-                                            Comma and Expression
+                                        Repeat: (Sequence: [',', DynamicStatements.Expressions], 1, None)
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(83, 84), match=','>>> ws:None [7, 10 -> 7, 11]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(85, 86), match='n'>>> ws:(84, 85) [7, 12 -> 7, 13]
-                                            Comma and Expression
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(86, 87), match=','>>> ws:None [7, 13 -> 7, 14]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(92, 93), match='o'>>> ws:None [8, 5 -> 8, 6]
-                                            Comma and Expression
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(93, 94), match=','>>> ws:None [8, 6 -> 8, 7]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(95, 96), match='p'>>> ws:(94, 95) [8, 8 -> 8, 9]
-                                            Comma and Expression
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(96, 97), match=','>>> ws:None [8, 9 -> 8, 10]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(106, 107), match='q'>>> ws:None [9, 9 -> 9, 10]
-                                            Comma and Expression
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(107, 108), match=','>>> ws:None [9, 10 -> 9, 11]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar
@@ -546,16 +546,16 @@ def test_MultipleExpression():
                                                             1.0.0 Grammar
                                                                 Variable Name
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(123, 124), match='x'>>> ws:None [12, 10 -> 12, 11]
-                                                        Repeat: (Comma and Expression, 1, None)
-                                                            Comma and Expression
+                                                        Repeat: (Sequence: [',', DynamicStatements.Expressions], 1, None)
+                                                            Sequence: [',', DynamicStatements.Expressions]
                                                                 ',' <<Regex: <_sre.SRE_Match object; span=(124, 125), match=','>>> ws:None [12, 11 -> 12, 12]
                                                                 DynamicStatements.Expressions
                                                                     1.0.0 Grammar
                                                                         Variable Name
                                                                             <name> <<Regex: <_sre.SRE_Match object; span=(126, 127), match='y'>>> ws:(125, 126) [12, 13 -> 12, 14]
                                                         ')' <<Regex: <_sre.SRE_Match object; span=(127, 128), match=')'>>> ws:None [12, 14 -> 12, 15]
-                                        Repeat: (Comma and Expression, 1, None)
-                                            Comma and Expression
+                                        Repeat: (Sequence: [',', DynamicStatements.Expressions], 1, None)
+                                            Sequence: [',', DynamicStatements.Expressions]
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(128, 129), match=','>>> ws:None [12, 15 -> 12, 16]
                                                 DynamicStatements.Expressions
                                                     1.0.0 Grammar

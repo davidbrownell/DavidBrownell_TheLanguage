@@ -208,6 +208,7 @@ async def ParseAsync(
         statement_observer.CreateNode(
             result.Data.Statement,
             result.Data.Data,
+            result.Data.UniqueId,
             root,
         )
 
@@ -277,27 +278,25 @@ class _StatementObserver(Statement.Observer):
         self,
         statement: Statement,
         data: Optional[Statement.ParseResultData],
+        unique_id: Optional[List[str]],
         parent: Optional[Union[AST.RootNode, AST.Node]],
     ) -> Union[AST.Node, AST.Leaf]:
 
-        node: Optional[Union[AST.Node, AST.Leaf]] = None
-        was_cached = False
-
         # Look for the cached value
-        if (
-            data is not None
-            and isinstance(data, Statement.StandardParseResultData)
-            and data.UniqueId
-        ):
-            key = tuple(data.UniqueId)
+        if unique_id is not None:
+            key = tuple(unique_id)
         else:
             key = None
+
+        node: Optional[Union[AST.Node, AST.Leaf]] = None
+        was_cached = False
 
         potential_node = self._node_cache.get(key, None)
         if potential_node is not None:
             node = potential_node
             was_cached = True
 
+        # Create the node if necessary
         if node is None:
             if isinstance(statement, TokenStatement) and data:
                 node = self._CreateLeaf(cast(Statement.TokenParseResultData, data), parent)
@@ -306,20 +305,22 @@ class _StatementObserver(Statement.Observer):
 
         assert node
 
+        # Assign the parent if necessary
         if parent != node.Parent:
             assert parent
 
             object.__setattr__(node, "Parent", parent)
             parent.Children.append(node)
 
+        # Populate the children
         if not was_cached:
             if isinstance(node, AST.Node):
-                for child_statement, child_data in (data.Enum() if data else []):
+                for child_statement, child_data, child_unique_id in (data.Enum() if data else []):
                     if child_statement is None:
                         assert child_data
                         self._CreateLeaf(cast(Statement.TokenParseResultData, child_data), node)
                     else:
-                        self.CreateNode(child_statement, child_data, node)
+                        self.CreateNode(child_statement, child_data, child_unique_id, node)
 
             if key is not None:
                 self._node_cache[key] = node
@@ -526,13 +527,19 @@ class _StatementObserver(Statement.Observer):
         iter_before: Statement.NormalizedIterator,
         iter_after: Statement.NormalizedIterator,
     ) -> bool:
-        statement = data_stack[0].Statement
-        data = data_stack[0].Data
-        assert data
+        assert data_stack[0].Data
 
         this_result = await self._observer.OnStatementCompleteAsync(
-            statement,
-            cast(AST.Node, self.CreateNode(statement, data, None)),
+            data_stack[0].Statement,
+            cast(
+                AST.Node,
+                self.CreateNode(
+                    data_stack[0].Statement,
+                    data_stack[0].Data,
+                    data_stack[0].UniqueId,
+                    None,
+                ),
+            ),
             iter_before,
             iter_after,
         )

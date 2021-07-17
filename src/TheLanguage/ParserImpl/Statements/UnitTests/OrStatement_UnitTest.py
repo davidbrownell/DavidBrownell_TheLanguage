@@ -100,7 +100,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
@@ -125,7 +125,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
@@ -150,7 +150,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
@@ -181,7 +181,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
@@ -224,7 +224,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 10
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
@@ -261,7 +261,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 10
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
@@ -287,7 +287,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 13
 
         assert list(result.Data.Enum()) == [
-            (self._outer_nested_statement, result.Data.Data),
+            (self._outer_nested_statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
@@ -347,7 +347,7 @@ class TestStandard(object):
         )
 
         assert list(result.Data.Enum()) == [
-            (self._outer_nested_statement, result.Data.Data),
+            (self._outer_nested_statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
@@ -372,7 +372,7 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 12
 
         assert list(result.Data.Enum()) == [
-            (self._outer_nested_statement, result.Data.Data),
+            (self._outer_nested_statement, result.Data.Data, result.Data.UniqueId),
         ]
 
 # ----------------------------------------------------------------------
@@ -452,7 +452,7 @@ class TestSort(object):
         assert len(parse_mock.method_calls) == 6
 
         assert list(result.Data.Enum()) == [
-            (self._no_sort_statement, result.Data.Data),
+            (self._no_sort_statement, result.Data.Data, result.Data.UniqueId),
         ]
 
 # ----------------------------------------------------------------------
