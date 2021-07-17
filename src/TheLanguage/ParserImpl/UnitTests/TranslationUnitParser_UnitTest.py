@@ -365,7 +365,7 @@ class TestNewStatements(object):
                         Upper <<Regex: <_sre.SRE_Match object; span=(0, 3), match='ONE'>>> ws:None [1, 1 -> 1, 4]
                 Dynamic Statements
                     {Upper Statement}
-                        Upper
+                        Upper Statement
                             <No Children>
             """,
         )
@@ -482,13 +482,13 @@ class TestNewScopedStatements(object):
                         Dedent <<>> ws:None [4, 1 -> 4, 1]
                 Dynamic Statements
                     {Upper Statement, Newline Statement, Indent Statement, Dedent Statement}
-                        Upper
+                        Upper Statement
                             <No Children>
-                        Newline+
+                        Newline Statement
                             <No Children>
-                        Indent
+                        Indent Statement
                             <No Children>
-                        Dedent
+                        Dedent Statement
                             <No Children>
             """,
         )
@@ -856,9 +856,9 @@ class TestPreventParentTraversal(object):
                         Upper Statement
                             Upper
                                 <No Children>
-                        Indent
+                        Indent Statement
                             <No Children>
-                        Dedent
+                        Dedent Statement
                             <No Children>
             """,
         )

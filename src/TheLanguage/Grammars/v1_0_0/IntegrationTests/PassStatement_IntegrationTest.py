@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  PassStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-06 08:32:04
+# |      2021-07-16 16:41:29
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains statements used in this grammar"""
+"""Automated tests for PassStatement.py"""
 
 import os
+import textwrap
 
 import CommonEnvironment
 
@@ -27,20 +28,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .PassStatement import PassStatement
-    from .TupleStatements import TupleExpression, TupleVariableDeclarationStatement
-    from .VariableDeclarationStatement import VariableDeclarationStatement
-    from .VariableNameExpression import VariableNameExpression
+    from . import Execute
+    from ..PassStatement import *
 
 
 # ----------------------------------------------------------------------
-Statements                                  = [
-    # Statements
-    PassStatement(),
-    TupleVariableDeclarationStatement(),
-    VariableDeclarationStatement(),
-
-    # Expressions
-    TupleExpression(),
-    VariableNameExpression(),
-]
+def test_Standard():
+    assert Execute("pass") == textwrap.dedent(
+        """\
+        <Root>
+            Dynamic Statements
+                1.0.0 Grammar
+                    Pass
+                        'pass' <<Regex: <_sre.SRE_Match object; span=(0, 4), match='pass'>>> ws:None [1, 1 -> 1, 5]
+                        Newline+ <<4, 5>> ws:None [1, 5 -> 2, 1]
+        """,
+    )

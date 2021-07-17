@@ -106,31 +106,6 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def StartStatement(
-        fully_qualified_name: str,
-        statement_stack: List[Statement],
-    ) -> None:
-        """Called when a statement is started"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def EndStatement(
-        fully_qualified_name: str,
-        statement_info_stack: List[
-            Tuple[
-                Statement,
-                Optional[bool],
-            ],
-        ],
-    ) -> None:
-        """Called when a statement ends"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
     async def OnIndentAsync(
         fully_qualified_name: str,
         data_stack: List[Statement.StandardParseResultData],
@@ -376,24 +351,6 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         self._fully_qualified_name          = fully_qualified_name
         self._observer                      = observer
         self._async_parse_func              = async_parse_func
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def StartStatement(self, *args, **kwargs):
-        return self._observer.StartStatement(
-            self._fully_qualified_name,
-            *args,
-            **kwargs,
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def EndStatement(self, *args, **kwargs):
-        return self._observer.EndStatement(
-            self._fully_qualified_name,
-            *args,
-            **kwargs,
-        )
 
     # ----------------------------------------------------------------------
     @Interface.override

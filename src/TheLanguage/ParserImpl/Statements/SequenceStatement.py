@@ -60,8 +60,6 @@ class SequenceStatement(Statement):
         comment_token: RegexToken,
         *statements: Statement,
         name: str=None,
-        unique_id: Optional[List[str]]=None,
-        type_id: Optional[int]=None,
         _name_is_default: Optional[bool]=None,
     ):
         assert comment_token
@@ -99,42 +97,17 @@ class SequenceStatement(Statement):
         elif _name_is_default is None:
             _name_is_default = False
 
-        super(SequenceStatement, self).__init__(
-            name,
-            unique_id=unique_id,
-            type_id=type_id,
-        )
-
-        cloned_statements = [
-            statement.Clone(
-                unique_id=self.UniqueId + ["Sequence: {} [{}]".format(statement.Name, statement_index)],
-            )
-            for statement_index, statement in enumerate(statements)
-        ]
+        super(SequenceStatement, self).__init__(name)
 
         self.CommentToken                   = comment_token
-        self.Statements                     = cloned_statements
-        self._original_statements           = statements
+        self.Statements                     = list(statements)
         self._name_is_default               = _name_is_default
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Clone(
-        self,
-        unique_id: List[str],
-    ) -> Statement:
-        return self.CloneImpl(
-            self.CommentToken,
-            *self._original_statements,
-            name=self.Name,
-            unique_id=unique_id,
-            type_id=self.TypeId,
-        )
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def ParseAsync(
         self,
+        unique_id: List[str],
         normalized_iter: Statement.NormalizedIterator,
         observer: Statement.Observer,
         ignore_whitespace=False,
@@ -145,8 +118,8 @@ class SequenceStatement(Statement):
     ]:
         success = True
 
-        observer.StartStatement([self])
-        with CallOnExit(lambda: observer.EndStatement([(self, success)])):
+        observer.StartStatement(unique_id, [self])
+        with CallOnExit(lambda: observer.EndStatement(unique_id, [(self, success)])):
             original_normalized_iter = normalized_iter.Clone()
 
             ignore_whitespace_ctr = 1 if ignore_whitespace else 0
@@ -171,12 +144,13 @@ class SequenceStatement(Statement):
 
             observer_decorator = Statement.ObserverDecorator(
                 self,
+                unique_id,
                 observer,
                 data_items,
                 lambda data_item: data_item,
             )
 
-            for statement in self.Statements:
+            for statement_index, statement in enumerate(self.Statements):
                 # Extract whitespace or comments
                 while not normalized_iter.AtEnd():
                     potential_prefix_info = ExtractWhitespaceOrComments()
@@ -204,6 +178,7 @@ class SequenceStatement(Statement):
 
                 # Process the statement
                 result = await statement.ParseAsync(
+                    unique_id + ["Sequence: {} [{}]".format(statement.Name, statement_index)],
                     normalized_iter.Clone(),
                     observer_decorator,
                     ignore_whitespace=ignore_whitespace_ctr != 0,
@@ -226,6 +201,7 @@ class SequenceStatement(Statement):
             data = Statement.StandardParseResultData(
                 self,
                 Statement.MultipleStandardParseResultData(data_items, True),
+                unique_id,
             )
 
             if (
@@ -357,26 +333,25 @@ class SequenceStatement(Statement):
         return results, results[-1].IterAfter
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     @Interface.override
-    def PopulateRecursiveImpl(
+    def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
     ) -> bool:
-        updated_statements = False
+        replaced_statements = False
 
         for statement_index, statement in enumerate(self.Statements):
             if isinstance(statement, RecursivePlaceholderStatement):
                 self.Statements[statement_index] = new_statement
-                updated_statements = True
-            else:
-                updated_statements = statement.PopulateRecursiveImpl(new_statement) or updated_statements
+                replaced_statements = True
 
-        if updated_statements and self._name_is_default:
+            else:
+                replaced_statements = statement.PopulateRecursiveImpl(new_statement) or replaced_statements
+
+        if replaced_statements and self._name_is_default:
             self.Name = self._CreateDefaultName(self.Statements)
 
-        return updated_statements
+        return replaced_statements
 
     # ----------------------------------------------------------------------
     @staticmethod
