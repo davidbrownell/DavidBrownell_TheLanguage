@@ -73,7 +73,7 @@ class VariableDeclarationStatement(GrammarStatement):
         assert len(node.Children) > 1, node
         name_leaf = cast(GrammarDSL.Leaf, node.Children[0])
 
-        variable_name = GetRegexMatch(name_leaf).group("value")
+        variable_name = GetRegexMatch(name_leaf)
 
         if not NamingConventions.Variable.Regex.match(variable_name):
             raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, variable_name)

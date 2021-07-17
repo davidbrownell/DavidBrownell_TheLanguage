@@ -106,6 +106,7 @@ class Statement(Interface.Interface):
             Tuple[
                 Optional["Statement"],
                 Optional["Statement.ParseResultData"],
+                Optional[List[str]],
             ],
             None,
             None
@@ -166,11 +167,12 @@ class Statement(Interface.Interface):
             Tuple[
                 Optional["Statement"],
                 Optional["Statement.ParseResultData"],
+                Optional[List[str]],
             ],
             None,
             None
         ]:
-            yield self.Statement, self.Data
+            yield self.Statement, self.Data, self.UniqueId
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -229,6 +231,7 @@ class Statement(Interface.Interface):
             Tuple[
                 Optional["Statement"],
                 Optional["Statement.ParseResultData"],
+                Optional[List[str]]
             ],
             None,
             None
@@ -273,11 +276,12 @@ class Statement(Interface.Interface):
             Tuple[
                 Optional["Statement"],
                 Optional["Statement.ParseResultData"],
+                Optional[List[str]],
             ],
             None,
             None
         ]:
-            yield None, self
+            yield None, self, None
 
     # ----------------------------------------------------------------------
     class Observer(Interface.Interface):

@@ -27,6 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .ImportStatement import ImportStatement
     from .PassStatement import PassStatement
     from .TupleStatements import TupleExpression, TupleVariableDeclarationStatement
     from .VariableDeclarationStatement import VariableDeclarationStatement
@@ -36,6 +37,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 Statements                                  = [
     # Statements
+    ImportStatement(".TheLanguage"),        # TODO: Change this once the language name is finalized
     PassStatement(),
     TupleVariableDeclarationStatement(),
     VariableDeclarationStatement(),

@@ -64,8 +64,8 @@ Name                                        = RegexToken(
     re.compile(
         textwrap.dedent(
             r"""(?P<value>(?#
-                Initial char [not a number or period]   )[A-Za-z](?#
-                Alpha numeric, underscore, dot          )[A-Za-z0-9\._]*(?#
+                Initial char [not a number]             )[A-Za-z\._](?#
+                Alpha numeric, underscore, dot          )[A-Za-z\._0-9]*(?#
                 [optional] Trailing ? for funcs         )\??(?#
             ))""",
         ),
@@ -77,6 +77,12 @@ Colon                                       = RegexToken("':'", re.compile(r":")
 Comma                                       = RegexToken("','", re.compile(r","))
 LParen                                      = RegexToken("'('", re.compile(r"\("))
 RParen                                      = RegexToken("')'", re.compile(r"\)"))
+
+# ----------------------------------------------------------------------
+# |  ImportStatement
+From                                        = RegexToken("'from'", re.compile(r"from\b"))
+Import                                      = RegexToken("'import'", re.compile(r"import\b"))
+As                                          = RegexToken("'as'", re.compile(r"as\b"))
 
 # ----------------------------------------------------------------------
 # |  PassStatement

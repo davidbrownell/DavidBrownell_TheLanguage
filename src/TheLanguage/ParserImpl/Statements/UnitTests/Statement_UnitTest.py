@@ -208,7 +208,7 @@ class TestStandard(object):
         )
 
         assert list(data.Enum()) == [
-            (statement, None),
+            (statement, None, None),
         ]
 
 # ----------------------------------------------------------------------
@@ -287,7 +287,7 @@ class TestTokenParseResultData(object):
         )
 
         assert list(data.Enum()) == [
-            (None, data),
+            (None, data, None),
         ]
 
     # ----------------------------------------------------------------------
@@ -308,7 +308,7 @@ class TestTokenParseResultData(object):
         )
 
         assert list(data.Enum()) == [
-            (statement, data.Data),
+            (statement, data.Data, ["id1"]),
         ]
 
 # ----------------------------------------------------------------------
@@ -361,8 +361,8 @@ class TestMultipleParseResultData(object):
     # ----------------------------------------------------------------------
     def test_Enum(self):
         assert list(self._data.Enum()) == [
-            (self._statement, self._data.DataItems[0].Data),
-            (self._statement, self._data.DataItems[1].Data),
+            (self._statement, self._data.DataItems[0].Data, self._data.DataItems[0].UniqueId),
+            (self._statement, self._data.DataItems[1].Data, self._data.DataItems[1].UniqueId),
         ]
 
 # ----------------------------------------------------------------------

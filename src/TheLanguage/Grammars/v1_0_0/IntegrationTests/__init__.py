@@ -20,7 +20,7 @@ import textwrap
 
 from enum import auto, Flag
 from io import StringIO
-from typing import cast, Dict, List, Optional
+from typing import cast, Dict, List, Optional, Union
 from unittest.mock import patch
 
 import CommonEnvironment
@@ -60,7 +60,10 @@ def PatchAndExecute(
     flag=PatchAndExecuteFlag.Parse,
     max_num_threads: Optional[int]=None,
     debug_string_on_exception=True,
-) -> Dict[str, RootNode]:
+) -> Union[
+    Dict[str, RootNode],
+    List[Exception],
+]:
     """\
     Patches file system methods invoked by systems under tests and replaces them
     so that they simulate files via the file content provided.
@@ -92,26 +95,27 @@ def PatchAndExecute(
         )
 
         if isinstance(result, list):
-            assert len(result) == 1, result
+            if len(result) == 1:
+                if debug_string_on_exception and isinstance(result[0], SyntaxInvalidError):
+                    print(
+                        textwrap.dedent(
+                            """\
 
-            if debug_string_on_exception and isinstance(result[0], SyntaxInvalidError):
-                print(
-                    textwrap.dedent(
-                        """\
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+                            {}
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
+                            # ----------------------------------------------------------------------
 
-                        # ----------------------------------------------------------------------
-                        # ----------------------------------------------------------------------
-                        # ----------------------------------------------------------------------
-                        {}
-                        # ----------------------------------------------------------------------
-                        # ----------------------------------------------------------------------
-                        # ----------------------------------------------------------------------
+                            """,
+                        ).format(result[0].ToDebugString()),
+                    )
 
-                        """,
-                    ).format(result[0].ToDebugString()),
-                )
+                raise result[0]
 
-            raise result[0]
+            return result
 
         result = cast(Dict[str, RootNode], result)
 

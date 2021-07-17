@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Match
+from typing import cast, Match, Optional, Union
 
 import CommonEnvironment
 
@@ -42,8 +42,17 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 def GetRegexMatch(
     leaf: Leaf,
-) -> Match:
-    return cast(
+    group_value_name: Optional[str]="value",
+) -> Union[
+    Match,                                  # When `group_value_name` is None
+    str,                                    # When `group_value_name` is a string
+]:
+    result = cast(
         Token.RegexMatch,
         leaf.Value,
     ).Match
+
+    if group_value_name is not None:
+        result = result.group(group_value_name)
+
+    return result

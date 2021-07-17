@@ -61,7 +61,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 Grammars: Dict[SemVer, DynamicStatementInfo]            = OrderedDict()
-StatementLookup: Dict[int, GrammarStatement]            = OrderedDict()
+StatementLookup: Dict[Statement, GrammarStatement]      = OrderedDict()
 
 
 # ----------------------------------------------------------------------
@@ -193,7 +193,9 @@ class _Observer(TranslationUnitsParserObserver):
         source_roots: List[str],
         max_num_threads: Optional[int] = None,
     ):
-        assert all(os.path.isdir(source_root) for source_root in source_roots)
+        for source_root in source_roots:
+            assert os.path.isdir(source_root), source_root
+
         assert max_num_threads is None or max_num_threads > 0, max_num_threads
 
         self._is_cancelled                  = False
