@@ -3,7 +3,7 @@
 # |  ImportStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-15 11:10:01
+# |      2021-07-17 09:36:24
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,7 +18,8 @@
 import os
 
 from collections import OrderedDict
-from typing import Callable, cast, Dict, List, Optional, Tuple
+from enum import auto, Enum
+from typing import cast, Callable, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -33,18 +34,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Common.GrammarAST import GetRegexMatch, Leaf, Node
+    from .Common import GrammarDSL
     from .Common import Tokens as CommonTokens
+    from ..GrammarStatement import ImportGrammarStatement
 
-    from ..GrammarStatement import (
-        ImportGrammarStatement,
-        Leaf,
-        Node,
-        StatementEx,
-        TranslationUnitsParserObserver,
+    from ...ParserImpl.Statements.OrStatement import OrStatement
+    from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
+    from ...ParserImpl.Token import Token
+
+    from ...ParserImpl.TranslationUnitsParser import (
+        Observer as TranslationUnitsParserObserver,
+        UnknownSourceError,
     )
-
-    from ...ParserImpl.StatementImpl.OrStatement import OrStatement
-    from ...ParserImpl.TranslationUnitsParser import UnknownSourceError
 
 
 # ----------------------------------------------------------------------
@@ -62,9 +64,24 @@ class ImportStatement(ImportGrammarStatement):
     """\
     Imports content from another source file.
 
-    'from' <source> 'import' <content>
+    'from' <source_file|source_path> 'import' <content>
     """
 
+    NODE_NAME                               = "Import"
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    class ImportType(Enum):
+        SourceIsModule                      = auto()
+        SourceIsDirectory                   = auto()
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -72,60 +89,64 @@ class ImportStatement(ImportGrammarStatement):
     ):
         assert file_extensions
 
-        content_item_statement = [
+        content_item_statement = (
             # <name> as <name>
-            StatementEx(
-                "Renamed",
+            [
                 CommonTokens.Name,
                 CommonTokens.As,
                 CommonTokens.Name,
-            ),
+            ],
 
             # <name>
             CommonTokens.Name,
-        ]
-
-        # <content_item_statement> (',' <content_item_statement>)* ','?
-        content_items_statement = StatementEx(
-            "Items",
-            content_item_statement,
-            (
-                StatementEx(
-                    "Comma and Item",
-                    CommonTokens.Comma,
-                    content_item_statement,
-                ),
-                0,
-                None,
-            ),
-            (CommonTokens.Comma, 0, 1),
         )
 
-        super(ImportStatement, self).__init__(
-            # 'from' <name> 'import' ...
-            StatementEx(
-                "Import",
-                CommonTokens.From,
-                CommonTokens.Name,
-                CommonTokens.Import,
-                [
-                    # '(' <content_items_statement> ')'
-                    StatementEx(
-                        "Grouped",
-                        CommonTokens.LParen,
-                        CommonTokens.PushIgnoreWhitespaceControl,
-                        content_items_statement,
-                        CommonTokens.PopIgnoreWhitespaceControl,
-                        CommonTokens.RParen,
-                    ),
+        # <content_item_statement> (',' <content_item_statement>)* ','?
+        content_items_statement = [
+            content_item_statement,
+            GrammarDSL.StatementItem(
+                Item=[  # type: ignore
+                    CommonTokens.Comma,
+                    content_item_statement,
+                ],
+                Arity="*",
+            ),
+            GrammarDSL.StatementItem(
+                Item=CommonTokens.Comma,
+                Arity="?",
+            ),
+        ]
 
-                    # <content_items_statement>
-                    content_items_statement,
+        super(ImportStatement, self).__init__(
+            GrammarDSL.CreateStatement(
+                name=self.NODE_NAME,
+                item=[
+                    # 'from' <name> 'import' ...
+                    CommonTokens.From,
+                    CommonTokens.Name,
+                    CommonTokens.Import,
+                    (
+                        # '(' <content_items_statement> ')'
+                        GrammarDSL.StatementItem(
+                            Name="Grouped",
+                            Item=[
+                                CommonTokens.LParen,
+                                CommonTokens.PushIgnoreWhitespaceControl,
+                                content_items_statement,
+                                CommonTokens.PopIgnoreWhitespaceControl,
+                                CommonTokens.RParen,
+                            ],
+                        ),
+
+                        # <content_items_statement>
+                        content_items_statement,
+                    ),
+                    CommonTokens.Newline,
                 ],
             ),
         )
 
-        self.FileExtensions                 = file_extensions
+        self.FileExtensions                 = list(file_extensions)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -135,6 +156,8 @@ class ImportStatement(ImportGrammarStatement):
         fully_qualified_name: str,
         node: Node,
     ) -> TranslationUnitsParserObserver.ImportInfo:
+
+        assert fully_qualified_name
 
         # We need to get the source and the items to import, however that information depends on
         # context. The content will fall into one of these scenarios:
@@ -146,62 +169,69 @@ class ImportStatement(ImportGrammarStatement):
         # Update the source_roots if we are looking at a relative path
         working_dir = os.path.dirname(fully_qualified_name)
 
-        source_leaf = node.Children[1]
-        original_source = source_leaf.Value.Match.group("value")
+        # Get the source
+        source_leaf = cast(Leaf, node.Children[1])
+        importing_source = cast(str, GetRegexMatch(source_leaf))
 
-        # The logic applied when looking at all dots is special
-        if all(c if c == "." else None for c in original_source):
-            original_source_parts = [""] * len(original_source)
+        # Handle the all dots scenario specifically
+        if all(character if character == "." else None for character in importing_source):
+            importing_source_parts = [""] * len(importing_source)
         else:
-            original_source_parts = original_source.split(".")
+            importing_source_parts = importing_source.split(".")
 
-        if not original_source_parts[0]:
-            # If here, the source started with a dot; the path is relative to the fully_qualified_name
-            source_root = os.path.realpath(working_dir)
-            original_source_parts.pop(0)
+        assert importing_source_parts
 
-            while original_source_parts and not original_source_parts[0]:
-                potential_source_root = os.path.dirname(source_root)
+        if not importing_source_parts[0]:
+            # If here, the importing source started with a dot; the path is relative to the
+            # fully_qualified_name
+            importing_root = os.path.realpath(working_dir)
+            importing_source_parts.pop(0)
 
-                if potential_source_root == source_root:
+            while importing_source_parts and not importing_source_parts[0]:
+                potential_importing_root = os.path.dirname(importing_root)
+
+                if potential_importing_root == importing_root:
                     raise InvalidRelativePathError(
                         source_leaf.IterBefore.Line,
                         source_leaf.IterBefore.Column,
-                        original_source,
+                        importing_source,
                         working_dir,
                         source_leaf.IterAfter.Line,
                         source_leaf.IterAfter.Column,
                     )
 
-                source_root = potential_source_root
-                original_source_parts.pop(0)
+                importing_root = potential_importing_root
+                importing_source_parts.pop(0)
 
-            source_roots = [source_root]
+            source_roots = [importing_root]
 
         # Get the items to import
-        import_node = node.Children[3]
+        items_node = cast(GrammarDSL.Node, node.Children[3])
 
-        # Drill into the Or node
-        assert isinstance(import_node.Type, OrStatement)
-        assert len(import_node.Children) == 1
-        import_node = import_node.Children[0]
+        # Drill into the Or Node
+        assert isinstance(items_node.Type, OrStatement)
+        assert len(items_node.Children) == 1
+        items_node = cast(GrammarDSL.Node, items_node.Children[0])
 
-        if import_node.Type.Name == "Items":
-            import_items, import_items_lookup = self._CreateContentItems(import_node)
+        import_items = None
+        import_items_lookup = None
 
-        elif import_node.Type.Name == "Grouped":
-            # We have to use care when importing the grouped items as we have not yet removed
-            # ignored whitespace.
-            for child in import_node.Children:
-                if isinstance(child.Type, StatementEx):
-                    import_items, import_items_lookup = self._CreateContentItems(child)
+        assert items_node.Type
+
+        if items_node.Type.Name == "Grouped":
+            # This code is invoked before ignore content is pruned, so we need to
+            # account for random whitespace.
+            for child_node in items_node.Children:
+                if isinstance(child_node.Type, SequenceStatement):
+                    import_items, import_items_lookup = self._ExtractImportItems(cast(Node, child_node))
                     break
-
         else:
-            assert False, import_node  # pragma: no cover
+            import_items, import_items_lookup = self._ExtractImportItems(items_node)
 
-        # At this point, we have a potential source and items to import. Figure out the scenario
+        # At this point, we have a potential source and items to import. Figure the scenario
         # that we are in.
+        assert import_items
+        assert import_items_lookup
 
         # ----------------------------------------------------------------------
         def FindSource(
@@ -210,7 +240,7 @@ class ImportStatement(ImportGrammarStatement):
         ) -> Optional[str]:
 
             for source_root in source_roots:
-                root = os.path.join(source_root, *original_source_parts)
+                root = os.path.join(source_root, *importing_source_parts)
                 if not is_valid_root_func(root):
                     continue
 
@@ -226,11 +256,12 @@ class ImportStatement(ImportGrammarStatement):
 
         # ----------------------------------------------------------------------
 
-        # Check for scenarios A and B
-        source_filename = FindSource(lambda name: os.path.isdir(os.path.dirname(name)))
+        import_type = None
 
-        # Check for scenario C (if necessary)
-        if source_filename is None and len(import_items) == 1:
+        source_filename = FindSource(lambda name: os.path.isdir(os.path.dirname(name)))
+        if source_filename is not None:
+            import_type = self.__class__.ImportType.SourceIsModule
+        elif len(import_items) == 1:
             potential_module_name = next(iter(import_items.keys()))
 
             source_filename = FindSource(
@@ -238,30 +269,38 @@ class ImportStatement(ImportGrammarStatement):
                 root_suffix=potential_module_name,
             )
 
-        if source_filename is None:
-            return TranslationUnitsParserObserver.ImportInfo(original_source, None)
+            if source_filename is not None:
+                import_type = self.__class__.ImportType.SourceIsDirectory
 
-        # Cache these values for later
-        object.__setattr__(node, "source_filename", source_filename)
+        if source_filename is None:
+            return TranslationUnitsParserObserver.ImportInfo(importing_source, None)
+
+        assert import_type
+
+        # Cache the values for later
+        object.__setattr__(node, "import_type", import_type)
         object.__setattr__(node, "import_items", import_items)
         object.__setattr__(node, "import_items_lookup", import_items_lookup)
+        object.__setattr__(node, "source_filename", source_filename)
 
-        return TranslationUnitsParserObserver.ImportInfo(original_source, source_filename)
+        return TranslationUnitsParserObserver.ImportInfo(importing_source, source_filename)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @classmethod
-    def _CreateContentItems(
+    def _ExtractImportItems(
         cls,
         node: Node,
     ) -> Tuple[
         Dict[str, str],                     # Map of values
-        Dict[int, Leaf],                    # Map of strings to tokens
+        Dict[int, Leaf],         # Map of strings to tokens
     ]:
-        # Get the nodes and ignore the leaves
-        nodes = [child for child in node.Children if isinstance(child, Node)]
-        assert len(nodes) == 3
+        assert isinstance(node.Type, SequenceStatement), node
+
+        # Ignore potential whitespace
+        nodes = [child_node for child_node in node.Children if isinstance(child_node, Node)]
+        assert len(nodes) == 3, nodes
 
         # Extract the import items
         import_items = OrderedDict()
@@ -272,7 +311,7 @@ class ImportStatement(ImportGrammarStatement):
             key_leaf,
             value,
             value_leaf,
-        ) = cls._CreateContentItem(nodes[0])
+        ) = cls._ExtractImportItem(nodes[0])
 
         import_items[key] = value
         leaf_lookup[id(key)] = key_leaf
@@ -282,7 +321,7 @@ class ImportStatement(ImportGrammarStatement):
         # therefore, we do not need to determine if we are looking at comma delimited values or
         # just a comma as we do after pruning happens.
         for child in nodes[1].Children:
-            for child_node in child.Children:
+            for child_node in cast(Node, child).Children:
                 if not isinstance(child_node, Node):
                     continue
 
@@ -291,7 +330,7 @@ class ImportStatement(ImportGrammarStatement):
                     key_leaf,
                     value,
                     value_leaf,
-                ) = cls._CreateContentItem(child_node)
+                ) = cls._ExtractImportItem(child_node)
 
                 import_items[key] = value
                 leaf_lookup[id(key)] = key_leaf
@@ -303,7 +342,7 @@ class ImportStatement(ImportGrammarStatement):
 
     # ----------------------------------------------------------------------
     @classmethod
-    def _CreateContentItem(
+    def _ExtractImportItem(
         cls,
         node: Node,
     ) -> Tuple[str, Leaf, str, Leaf]:
@@ -311,24 +350,27 @@ class ImportStatement(ImportGrammarStatement):
         # Drill into the Or node
         assert isinstance(node.Type, OrStatement)
         assert len(node.Children) == 1
-        node = node.Children[0]
+        node = cast(Node, node.Children[0])
 
-        if isinstance(node.Type, StatementEx):
+        if isinstance(node, Node):
+            assert isinstance(node.Type, SequenceStatement), node
+
             # Renamed
             leaves = [cast(Leaf, child) for child in node.Children if isinstance(child, Leaf) and not child.IsIgnored]
             assert len(leaves) == 3
 
             return (
-                leaves[0].Value.Match.group("value"),
+                cast(str, GetRegexMatch(leaves[0])),
                 leaves[0],
-                leaves[2].Value.Match.group("value"),
+                cast(str, GetRegexMatch(leaves[2])),
                 leaves[2],
             )
 
-        elif isinstance(node.Type, CommonTokens.RegexToken):
+        elif isinstance(node, Leaf):
             leaf = cast(Leaf, node)
-            result = leaf.Value.Match.group("value")
+            value = cast(str, GetRegexMatch(leaf))
 
-            return (result, leaf, result, leaf)
+            return (value, leaf, value, leaf)
+
         else:
             assert False, node  # pragma: no cover

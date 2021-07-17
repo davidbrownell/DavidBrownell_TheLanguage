@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Generator, Tuple, Union
+from typing import cast, Generator, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common import GrammarAST
+    from .Common.GrammarAST import GetRegexMatch, Leaf, Node
     from .Common import GrammarDSL
     from .Common import NamingConventions
     from .Common import Tokens as CommonTokens
@@ -50,22 +50,20 @@ class _TupleBase(GrammarStatement):
     @classmethod
     def EnumElements(
         cls,
-        node: GrammarAST.Node,
+        node: Node,
     ) -> Generator[
-        Union[
-            GrammarAST.Leaf,
-            GrammarAST.Node,
-        ],
+        Union[Leaf, Node],
         None,
         None,
     ]:
         if isinstance(node.Type, SequenceStatement):
             assert node.Children
-            node = node.Children[0]
+            node = cast(Node, node.Children[0])
 
         assert isinstance(node.Type, OrStatement)
         assert len(node.Children) == 1
-        node = node.Children[0]
+        node = cast(Node, node.Children[0])
+        assert node.Type
 
         if node.Type.Name == cls.SINGLE_NODE_NAME:
             assert len(node.Children) == 4
@@ -75,7 +73,9 @@ class _TupleBase(GrammarStatement):
             assert len(node.Children) > 3
             yield node.Children[1]
 
-            for child in node.Children[2].Children:
+            for child in cast(Node, node.Children[2]).Children:
+                child = cast(Node, child)
+
                 assert len(child.Children) == 2
                 yield child.Children[1]
 
@@ -107,7 +107,6 @@ class TupleExpression(_TupleBase):
                             CommonTokens.PushIgnoreWhitespaceControl,
                             GrammarDSL.DynamicStatements.Expressions,
                             GrammarDSL.StatementItem(
-                                Name="Comma and Expression",
                                 Item=[
                                     CommonTokens.Comma,
                                     GrammarDSL.DynamicStatements.Expressions,
@@ -214,34 +213,36 @@ class TupleVariableDeclarationStatement(_TupleBase):
     @classmethod
     def EnumElements(
         cls,
-        node: GrammarAST.Node,
+        node: Node,
     ) -> Generator[
         Tuple[
-            GrammarAST.Node,                # Tuple Element
+            Union[Leaf, Node],              # Tuple Element
             Union[
                 str,                        # <name>
-                GrammarAST.Node,            # Tuple
+                Node,                       # Tuple
             ],
         ],
         None,
         None,
     ]:
-        for node in super(TupleVariableDeclarationStatement, cls).EnumElements(node):
-            assert isinstance(node.Type, OrStatement)
-            assert len(node.Children) == 1
-            node = node.Children[0]
+        for child_node in super(TupleVariableDeclarationStatement, cls).EnumElements(node):
+            assert isinstance(child_node.Type, OrStatement)
+            child_node = cast(Node, child_node)
 
-            if isinstance(node, GrammarAST.Leaf):
-                yield node, node.Value.Match.group("value")
+            assert len(child_node.Children) == 1
+            child_node = child_node.Children[0]
+
+            if isinstance(child_node, Leaf):
+                yield child_node, cast(str, GetRegexMatch(child_node))
             else:
-                yield node, node
+                yield child_node, child_node
 
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
     def ValidateNodeSyntax(
         cls,
-        node: GrammarAST.Node,
+        node: Node,
     ):
         for element_node, value in cls.EnumElements(node):
             if isinstance(value, str):
@@ -251,4 +252,4 @@ class TupleVariableDeclarationStatement(_TupleBase):
                 continue
 
             # If here, we are looking at a nested tuple
-            cls.ValidateNodeSyntax(element_node)
+            cls.ValidateNodeSyntax(cast(Node, element_node))
