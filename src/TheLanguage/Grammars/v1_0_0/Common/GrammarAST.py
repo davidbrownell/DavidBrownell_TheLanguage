@@ -33,6 +33,7 @@ with InitRelativeImports():
 
     from ...GrammarStatement import (
         Leaf,
+        Node,
         Statement,
     )
 

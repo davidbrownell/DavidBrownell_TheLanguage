@@ -177,29 +177,6 @@ class TestStandard(object):
                 # ----------------------------------------------------------------------
                 @staticmethod
                 @Interface.override
-                def StartStatement(
-                    fully_qualified_name: str,
-                    statement_stack: List[Statement],
-                ) -> None:
-                    return
-
-                # ----------------------------------------------------------------------
-                @staticmethod
-                @Interface.override
-                def EndStatement(
-                    fully_qualified_name: str,
-                    statement_info_stack: List[
-                        Tuple[
-                            Statement,
-                            Optional[bool],
-                        ],
-                    ],
-                ) -> None:
-                    return
-
-                # ----------------------------------------------------------------------
-                @staticmethod
-                @Interface.override
                 async def OnIndentAsync(
                     fully_qualified_name: str,
                     data_stack: List[Statement.StandardParseResultData],

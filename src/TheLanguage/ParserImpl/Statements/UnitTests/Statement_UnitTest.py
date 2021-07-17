@@ -40,6 +40,7 @@ with InitRelativeImports():
 
     from ...Normalize import Normalize
     from ...NormalizedIterator import NormalizedIterator
+    from ...Token import Token
 
 
 # ----------------------------------------------------------------------
@@ -48,30 +49,11 @@ def CreateStatement(result):
     # ----------------------------------------------------------------------
     class TheStatement(Statement):
         # ----------------------------------------------------------------------
-        def __init__(
-            self,
-            unique_id: Optional[List[str]]=None,
-            type_id: Optional[int]=None,
-        ):
-            super(TheStatement, self).__init__(
-                "The Statement",
-                unique_id=unique_id,
-                type_id=type_id,
-            )
+        def __init__(self):
+            super(TheStatement, self).__init__("The Statement")
 
             self.parse_mock = Mock(
                 return_value=result,
-            )
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def Clone(
-            self,
-            unique_id: List[str],
-        ) -> Statement:
-            return self.CloneImpl(
-                unique_id=unique_id,
-                type_id=self.TypeId,
             )
 
         # ----------------------------------------------------------------------
@@ -83,12 +65,12 @@ def CreateStatement(result):
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         @Interface.override
-        def PopulateRecursiveImpl(
+        def _PopulateRecursiveImpl(
             self,
             new_statement: Statement,
         ) -> bool:
             # Nothing to do here
-            return False
+            return True
 
     # ----------------------------------------------------------------------
 
@@ -106,18 +88,6 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     class MyStatement(Statement):
         # ----------------------------------------------------------------------
-        @Interface.override
-        def Clone(
-            self,
-            unique_id: List[str],
-        ) -> Statement:
-            return self.CloneImpl(
-                self.Name,
-                unique_id=unique_id,
-                type_id=self.TypeId,
-            )
-
-        # ----------------------------------------------------------------------
         @staticmethod
         @Interface.override
         async def ParseAsync(*args, **kwargs):
@@ -127,7 +97,7 @@ class TestStandard(object):
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         @Interface.override
-        def PopulateRecursiveImpl(
+        def _PopulateRecursiveImpl(
             self,
             new_statement: Statement,
         ) -> bool:
@@ -172,7 +142,7 @@ class TestStandard(object):
 
         assert hello == hello
         assert goodbye != hello
-        assert self.MyStatement("hello") == self.MyStatement("hello")
+        assert self.MyStatement("hello") != self.MyStatement("hello")
 
     # ----------------------------------------------------------------------
     def test_ParseResultEmptyData(self, iterator):
@@ -215,6 +185,7 @@ class TestStandard(object):
                 Statement.StandardParseResultData(
                     CreateStatement(20),
                     self.MyParseResultData(),
+                    ["id1"],
                 ),
             ),
         ) == textwrap.dedent(
@@ -232,6 +203,7 @@ class TestStandard(object):
 
         data = Statement.StandardParseResultData(
             statement,
+            None,
             None,
         )
 
@@ -272,14 +244,14 @@ class TestTokenParseResultData(object):
             Statement.TokenParseResultData(
                 self._token,
                 [5, 10],
-                self._token.Regex.match("word"),
+                Token.RegexMatch(self._token.Regex.match("word")),
                 iterator,
                 after_iterator,
                 False,
             ),
         ) == textwrap.dedent(
             """\
-            My Word Token <<<_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:(5, 10) [1, 1 -> 1, 4]
+            My Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:(5, 10) [1, 1 -> 1, 4]
             """,
         ).rstrip()
 
@@ -292,14 +264,14 @@ class TestTokenParseResultData(object):
             Statement.TokenParseResultData(
                 self._token,
                 None,
-                self._token.Regex.match("word"),
+                Token.RegexMatch(self._token.Regex.match("word")),
                 iterator,
                 after_iterator,
                 True,
             ),
         ) == textwrap.dedent(
             """\
-            My Word Token <<<_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None !Ignored! [1, 1 -> 1, 4]
+            My Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None !Ignored! [1, 1 -> 1, 4]
             """,
         ).rstrip()
 
@@ -308,7 +280,7 @@ class TestTokenParseResultData(object):
         data = Statement.TokenParseResultData(
             self._token,
             None,
-            self._token.Regex.match("word"),
+            Token.RegexMatch(self._token.Regex.match("word")),
             iterator,
             iterator,
             False,
@@ -327,11 +299,12 @@ class TestTokenParseResultData(object):
             Statement.TokenParseResultData(
                 self._token,
                 None,
-                self._token.Regex.match("word"),
+                Token.RegexMatch(self._token.Regex.match("word")),
                 iterator,
                 iterator,
                 False,
             ),
+            ["id1"],
         )
 
         assert list(data.Enum()) == [
@@ -351,22 +324,24 @@ class TestMultipleParseResultData(object):
                 Statement.TokenParseResultData(
                     _token,
                     None,
-                    _token.Regex.match("one"),
+                    Token.RegexMatch(_token.Regex.match("one")),
                     _iterator,
                     _iterator,
                     False,
                 ),
+                ["id1"],
             ),
             Statement.StandardParseResultData(
                 _statement,
                 Statement.TokenParseResultData(
                     _token,
                     None,
-                    _token.Regex.match("two"),
+                    Token.RegexMatch(_token.Regex.match("two")),
                     _iterator,
                     _iterator,
                     False,
                 ),
+                ["id2"],
             ),
         ],
         True,
@@ -377,9 +352,9 @@ class TestMultipleParseResultData(object):
         assert str(self._data) == textwrap.dedent(
             """\
             My Word Token
-                My Word Token <<<_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 1]
+                My Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 1]
             My Word Token
-                My Word Token <<<_sre.SRE_Match object; span=(0, 3), match='two'>>> ws:None [1, 1 -> 1, 1]
+                My Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='two'>>> ws:None [1, 1 -> 1, 1]
             """,
         )
 

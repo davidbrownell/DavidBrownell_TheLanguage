@@ -84,7 +84,7 @@ def MethodCallsToString(
                 "{}) {}, {}".format(
                     index,
                     method_name,
-                    ", ".join(['"{}"'.format(statement.Name) for statement in method_call[1][0]]),
+                    ", ".join(['"{}"'.format(statement.Name) for statement in method_call[1][1]]),
                 ),
             )
 
@@ -96,11 +96,12 @@ def MethodCallsToString(
                     ", ".join(
                         [
                             '"{}" [{}]'.format(statement.Name, result)
-                            for statement, result in method_call[1][0]
+                            for statement, result in method_call[1][1]
                         ],
                     ),
                 ),
             )
+
         elif method_name == "OnStatementCompleteAsync":
             contents.append(
                 textwrap.dedent(
@@ -117,6 +118,7 @@ def MethodCallsToString(
                     StringHelpers.LeftJustify(method_call[1][1].ToString(), 4),
                 ).rstrip(),
             )
+
         elif method_name == "GetDynamicStatements":
             contents.append(
                 textwrap.dedent(
@@ -144,6 +146,7 @@ def MethodCallsToString(
                     StringHelpers.LeftJustify(method_call[0][0].ToString(), 4),
                 ).rstrip(),
             )
+
         else:
             contents.append(
                 textwrap.dedent(
