@@ -353,8 +353,11 @@ class Statement(Interface.Interface):
     # ----------------------------------------------------------------------
     def PopulateRecursive(self):
         assert self._is_recursive_root == False
+        actions = self.PopulateRecursiveImpl(self)
         self._is_recursive_root = True
-        self.PopulateRecursiveImpl(self)
+
+        for action in actions:
+            action()
 
     # ----------------------------------------------------------------------
     @Interface.abstractmethod
@@ -571,15 +574,26 @@ class Statement(Interface.Interface):
     # |  Private Methods
     # |
     # ----------------------------------------------------------------------
-    @Interface.abstractmethod
     def PopulateRecursiveImpl(
         self,
         new_statement: "Statement",
-    ) -> bool:
+    ) -> List[Callable[[], None]]:
+        if self._is_recursive_root:
+            return []
+
+        return self._PopulateRecursiveImpl(new_statement)
+
+    # ----------------------------------------------------------------------
+    @Interface.abstractmethod
+    def _PopulateRecursiveImpl(
+        self,
+        new_statement: "Statement",
+    ) -> List[Callable[[], None]]:
         """\
         Populates all instances of `type_to_replace` with `new_statement`. This
         allows for recursive statement definitions.
 
-        Return true if the statement was updated, False if not.
+        After all placeholder values have been populated, the returned list of actions will be invoked
+        so that the final, complete statement can be cloned.
         """
         raise Exception("Abstract method")  # pragma: no cover

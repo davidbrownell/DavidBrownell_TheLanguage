@@ -18,7 +18,7 @@
 import asyncio
 import os
 
-from typing import cast, Iterable, List, Optional, Union
+from typing import Callable, cast, Iterable, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -245,23 +245,34 @@ class OrStatement(Statement):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
-    def PopulateRecursiveImpl(
+    def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
-    ) -> bool:
-        updated_statements = False
+    ) -> List[Callable[[], None]]:
+        actions = []
 
         for statement_index, statement in enumerate(self.Statements):
             if isinstance(statement, RecursivePlaceholderStatement):
-                self.Statements[statement_index] = new_statement
-                updated_statements = True
-            else:
-                updated_statements = statement.PopulateRecursiveImpl(new_statement) or updated_statements
+                prev_statement = statement
 
-        if updated_statements and self._name_is_default:
+                # ----------------------------------------------------------------------
+                def PostPopulate():
+                    self.Statements[statement_index] = new_statement.Clone(
+                        unique_id=prev_statement.UniqueId,
+                    )
+
+                # ----------------------------------------------------------------------
+
+                self.Statements[statement_index] = new_statement
+                actions.append(PostPopulate)
+
+            else:
+                actions += statement.PopulateRecursiveImpl(new_statement)
+
+        if actions and self._name_is_default:
             self.Name = self._CreateDefaultName(self.Statements)
 
-        return updated_statements
+        return actions
 
     # ----------------------------------------------------------------------
     @staticmethod

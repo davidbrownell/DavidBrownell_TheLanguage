@@ -240,6 +240,8 @@ async def ParseAsync(
 
         normalized_iter = result.Iter.Clone()
 
+        # BugBug: Eat comments (here or in SequenceStatement.py?)
+
     assert normalized_iter.AtEnd()
     return root
 
@@ -448,12 +450,16 @@ class _StatementObserver(Statement.Observer):
         unique_id, was_successful = statement_info_stack[0]
         unique_id = unique_id.UniqueId
 
+        print("BugBug", unique_id)
+
         # Get this node
         d = self._all_statement_infos
         node = None
 
         for id_part in unique_id:
             node = d.get(id_part, None)
+            if node is None:
+                BugBug = 10
             assert node is not None
 
             d = node.Children

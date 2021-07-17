@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Union
+from typing import Callable, cast, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -191,10 +191,11 @@ class RepeatStatement(Statement):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
-    def PopulateRecursiveImpl(
+    def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
-    ) -> bool:
+    ) -> List[Callable[[], None]]:
+        actions = []
         updated_statements = False
 
         if isinstance(self.Statement, RecursivePlaceholderStatement):
@@ -202,12 +203,14 @@ class RepeatStatement(Statement):
             updated_statements = True
 
         else:
-            updated_statements = self.Statement.PopulateRecursiveImpl(new_statement)
+            actions += self.Statement.PopulateRecursiveImpl(new_statement)
+            if actions:
+                updated_statements = True
 
         if updated_statements and self._name_is_default:
             self.Name = self._CreateDefaultName(self.Statement, self.MinMatches, self.MaxMatches)
 
-        return updated_statements
+        return actions
 
     # ----------------------------------------------------------------------
     @staticmethod

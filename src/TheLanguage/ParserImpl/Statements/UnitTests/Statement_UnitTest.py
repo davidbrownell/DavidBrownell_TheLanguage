@@ -83,12 +83,12 @@ def CreateStatement(result):
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         @Interface.override
-        def PopulateRecursiveImpl(
+        def _PopulateRecursiveImpl(
             self,
             new_statement: Statement,
-        ) -> bool:
+        ) -> List[Callable[[], None]]:
             # Nothing to do here
-            return False
+            return []
 
     # ----------------------------------------------------------------------
 
@@ -127,12 +127,12 @@ class TestStandard(object):
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         @Interface.override
-        def PopulateRecursiveImpl(
+        def _PopulateRecursiveImpl(
             self,
             new_statement: Statement,
-        ) -> bool:
+        ) -> List[Callable[[], None]]:
             # Nothing to do here
-            return False
+            return []
 
     # ----------------------------------------------------------------------
     class MyParseResultData(Statement.ParseResultData):

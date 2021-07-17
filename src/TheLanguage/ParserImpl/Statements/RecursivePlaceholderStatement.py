@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import Callable, List, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -43,7 +43,11 @@ class RecursivePlaceholderStatement(Statement):
         unique_id: Optional[List[str]]=None,
         type_id: Optional[int]=None,
     ):
-        super(RecursivePlaceholderStatement, self).__init__("Placeholder")
+        super(RecursivePlaceholderStatement, self).__init__(
+            "Recursive",
+            unique_id=unique_id,
+            type_id=type_id,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -69,8 +73,8 @@ class RecursivePlaceholderStatement(Statement):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
-    def PopulateRecursiveImpl(
+    def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
-    )  -> bool:
+    )  -> List[Callable[[], None]]:
         raise Exception("'PopulateRecursiveImpl' should never be called on a RecursivePlaceholderStatement instance")

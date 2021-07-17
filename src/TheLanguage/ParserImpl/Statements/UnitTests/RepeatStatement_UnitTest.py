@@ -427,12 +427,12 @@ async def test_ParseReturnsNone(parse_mock):
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         @Interface.override
-        def PopulateRecursiveImpl(
+        def _PopulateRecursiveImpl(
             self,
             new_statement: Statement,
-        ) -> bool:
+        ) -> List[Callable[[], None]]:
             # Nothing to do here
-            return False
+            return []
 
     # ----------------------------------------------------------------------
 

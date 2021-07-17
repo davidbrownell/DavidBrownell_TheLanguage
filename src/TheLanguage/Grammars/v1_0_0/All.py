@@ -28,6 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .PassStatement import PassStatement
+    from .TupleStatements import TupleExpression, TupleVariableDeclarationStatement
     from .VariableDeclarationStatement import VariableDeclarationStatement
     from .VariableNameExpression import VariableNameExpression
 
@@ -36,8 +37,10 @@ with InitRelativeImports():
 Statements                                  = [
     # Statements
     PassStatement(),
+    TupleVariableDeclarationStatement(),
     VariableDeclarationStatement(),
 
     # Expressions
+    TupleExpression(),
     VariableNameExpression(),
 ]

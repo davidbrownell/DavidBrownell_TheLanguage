@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Tuple, Union
+from typing import Callable, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -174,9 +174,9 @@ class TokenStatement(Statement):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
-    def PopulateRecursiveImpl(
+    def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
-    ) -> bool:
+    ) -> List[Callable[[], None]]:
         # Nothing to do here
-        return False
+        return []
