@@ -120,6 +120,14 @@ class Statement(Interface.Interface):
 
         Statement: "Statement"  # type: ignore
         Data: Optional["Statement.ParseResultData"]
+        UniqueId: Optional[List[str]]
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            assert (
+                (self.Data is not None and self.UniqueId is not None)
+                or (self.Data is None and self.UniqueId is None)
+            )
 
         # ----------------------------------------------------------------------
         @Interface.override
@@ -279,6 +287,7 @@ class Statement(Interface.Interface):
         @staticmethod
         @Interface.abstractmethod
         def StartStatement(
+            unique_id: List[str],
             statement_stack: List["Statement"],
         ) -> None:
             """Called before any event is generated for a particular unique_id"""
@@ -288,6 +297,7 @@ class Statement(Interface.Interface):
         @staticmethod
         @Interface.abstractmethod
         def EndStatement(
+            unique_id: List[str],
             statement_info_stack: List[
                 Tuple[
                     "Statement",
@@ -340,56 +350,15 @@ class Statement(Interface.Interface):
     def __init__(
         self,
         name: str,
-        unique_id: Optional[List[str]] = None,
-        type_id: Optional[int] = None,
     ):
         assert name
 
         self.Name                           = name
-        self.UniqueId                       = unique_id or [name]
-        self.TypeId                         = type_id or id(self)
-        self._is_recursive_root             = False
+        self._is_populated                  = False
 
     # ----------------------------------------------------------------------
     def PopulateRecursive(self):
-        assert self._is_recursive_root == False
-        actions = self.PopulateRecursiveImpl(self)
-        self._is_recursive_root = True
-
-        for action in actions:
-            action()
-
-    # ----------------------------------------------------------------------
-    @Interface.abstractmethod
-    def Clone(
-        self,
-        unique_id: List[str],
-    ) -> "Statement":
-        """Clones the statement with the new unique_id value"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    def __eq__(self, other):
-        for k, v in self.__dict__.items():
-            if k == "UniqueId":
-                continue
-            if k == "TypeId":
-                continue
-            if k.startswith("_"):
-                continue
-
-            other_v = other.__dict__.get(k, Exception)
-            if other_v == Exception:
-                return False
-
-            if other_v != v:
-                return False
-
-        return len(self.__dict__) == len(other.__dict__)
-
-    # ----------------------------------------------------------------------
-    def __hash__(self):
-        return tuple(self.UniqueId).__hash__()
+        self.PopulateRecursiveImpl(self)
 
     # ----------------------------------------------------------------------
     def __str__(self):
@@ -409,6 +378,7 @@ class Statement(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     async def ParseAsync(
+        unique_id: List[str],
         normalized_iter: NormalizedIterator,
         observer: Observer,
         ignore_whitespace=False,
@@ -434,11 +404,13 @@ class Statement(Interface.Interface):
         def __init__(
             self,
             statement: "Statement",
+            unique_id: List[str],
             observer: "Statement.Observer",
             items: List[Any],
             item_decorator_func: Callable[[Any], "Statement.ParseResultData"],
         ):
             self._statement                 = statement
+            self._unique_id                 = unique_id
             self._observer                  = observer
             self._items                     = items
             self._item_decorator_func       = item_decorator_func
@@ -459,9 +431,11 @@ class Statement(Interface.Interface):
         @Interface.override
         def StartStatement(
             self,
+            unique_id: List[str],
             statement_stack: List["Statement"],
         ):
             return self._observer.StartStatement(
+                unique_id,
                 statement_stack + [self._statement],
             )
 
@@ -469,6 +443,7 @@ class Statement(Interface.Interface):
         @Interface.override
         def EndStatement(
             self,
+            unique_id: List[str],
             statement_info_stack: List[
                 Tuple[
                     "Statement",
@@ -477,6 +452,7 @@ class Statement(Interface.Interface):
             ],
         ):
             return self._observer.EndStatement(
+                unique_id,
                 statement_info_stack + cast(List[Tuple["Statement", Optional[bool]]], [(self._statement, None)]),
             )
 
@@ -550,6 +526,7 @@ class Statement(Interface.Interface):
                             [None if item is None else self._item_decorator_func(item) for item in self._items],
                             False,
                         ),
+                        self._unique_id,
                     ),
                 ],
                 iter_before,
@@ -561,11 +538,15 @@ class Statement(Interface.Interface):
     # |  Protected Methods
     # |
     # ----------------------------------------------------------------------
-    def CloneImpl(self, *args, **kwargs):
-        result = self.__class__(*args, **kwargs)
+    def PopulateRecursiveImpl(
+        self,
+        new_statement: "Statement",
+    ) -> bool:
+        if self._is_populated:
+            return False
 
-        if self._is_recursive_root:
-            result.PopulateRecursive()
+        result = self._PopulateRecursiveImpl(new_statement)
+        self._is_populated = True
 
         return result
 
@@ -574,26 +555,13 @@ class Statement(Interface.Interface):
     # |  Private Methods
     # |
     # ----------------------------------------------------------------------
-    def PopulateRecursiveImpl(
-        self,
-        new_statement: "Statement",
-    ) -> List[Callable[[], None]]:
-        if self._is_recursive_root:
-            return []
-
-        return self._PopulateRecursiveImpl(new_statement)
-
-    # ----------------------------------------------------------------------
     @Interface.abstractmethod
     def _PopulateRecursiveImpl(
         self,
         new_statement: "Statement",
-    ) -> List[Callable[[], None]]:
+    ) -> bool:
         """\
         Populates all instances of `type_to_replace` with `new_statement`. This
         allows for recursive statement definitions.
-
-        After all placeholder values have been populated, the returned list of actions will be invoked
-        so that the final, complete statement can be cloned.
         """
         raise Exception("Abstract method")  # pragma: no cover

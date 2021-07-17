@@ -17,8 +17,6 @@
 
 import os
 
-from typing import Callable, List, Optional
-
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -38,27 +36,8 @@ class RecursivePlaceholderStatement(Statement):
     """Temporary Statement that should be replaced before participating in a Parse hierarchy"""
 
     # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        unique_id: Optional[List[str]]=None,
-        type_id: Optional[int]=None,
-    ):
-        super(RecursivePlaceholderStatement, self).__init__(
-            "Recursive",
-            unique_id=unique_id,
-            type_id=type_id,
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Clone(
-        self,
-        unique_id: List[str],
-    ) -> Statement:
-        return self.CloneImpl(
-            unique_id=unique_id,
-            type_id=self.TypeId,
-        )
+    def __init__(self):
+        super(RecursivePlaceholderStatement, self).__init__("Recursive")
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -76,5 +55,5 @@ class RecursivePlaceholderStatement(Statement):
     def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
-    )  -> List[Callable[[], None]]:
-        raise Exception("'PopulateRecursiveImpl' should never be called on a RecursivePlaceholderStatement instance")
+    )  -> bool:
+        raise Exception("'_PopulateRecursiveImpl' should never be called on a RecursivePlaceholderStatement instance")

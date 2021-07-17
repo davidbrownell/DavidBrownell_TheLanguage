@@ -53,38 +53,20 @@ class DynamicStatement(Statement):
             ]
         ],
         name: str=None,
-        unique_id: Optional[List[str]]=None,
-        type_id: Optional[int]=None,
     ):
         assert get_dynamic_statements_func
 
         name = name or "Dynamic Statements"
 
-        super(DynamicStatement, self).__init__(
-            name,
-            unique_id=unique_id,
-            type_id=type_id,
-        )
+        super(DynamicStatement, self).__init__(name)
 
         self._get_dynamic_statements_func   = get_dynamic_statements_func
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Clone(
-        self,
-        unique_id: List[str],
-    ):
-        return self.CloneImpl(
-            self._get_dynamic_statements_func,
-            name=self.Name,
-            unique_id=unique_id,
-            type_id=self.TypeId,
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     async def ParseAsync(
         self,
+        unique_id: List[str],
         normalized_iter: Statement.NormalizedIterator,
         observer: Statement.Observer,
         ignore_whitespace=False,
@@ -95,9 +77,10 @@ class DynamicStatement(Statement):
     ]:
         result: Optional[Statement.ParseResult] = None
 
-        observer.StartStatement([self])
+        observer.StartStatement(unique_id, [self])
         with CallOnExit(
             lambda: observer.EndStatement(
+                unique_id,
                 [
                     (
                         self,
@@ -106,7 +89,7 @@ class DynamicStatement(Statement):
                 ],
             ),
         ):
-            dynamic_statements = self._get_dynamic_statements_func(self.UniqueId, observer)
+            dynamic_statements = self._get_dynamic_statements_func(unique_id, observer)
             if isinstance(dynamic_statements, tuple):
                 name = dynamic_statements[0]
                 dynamic_statements = dynamic_statements[1]
@@ -120,12 +103,12 @@ class DynamicStatement(Statement):
                 name=name,
             )
 
-            or_statement = or_statement.Clone(self.UniqueId + [or_statement.Name])
-
             result = await or_statement.ParseAsync(
+                unique_id + [or_statement.Name],
                 normalized_iter,
                 Statement.ObserverDecorator(
                     self,
+                    unique_id,
                     observer,
                     [result],
                     lambda result: result.Data,
@@ -137,7 +120,7 @@ class DynamicStatement(Statement):
             if result is None:
                 return None
 
-            data = Statement.StandardParseResultData(self, result.Data)
+            data = Statement.StandardParseResultData(self, result.Data, unique_id)
 
             if (
                 result.Success
@@ -158,6 +141,6 @@ class DynamicStatement(Statement):
     def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
-    ) -> List[Callable[[], None]]:
+    ) -> bool:
         # Nothing to do here
-        return []
+        return False

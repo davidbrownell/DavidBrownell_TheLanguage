@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -51,37 +51,20 @@ class TokenStatement(Statement):
         self,
         token: TokenClass,
         name: str=None,
-        unique_id: Optional[List[str]]=None,
-        type_id: Optional[int]=None,
     ):
         assert token
 
         name = name or token.Name
 
-        super(TokenStatement, self).__init__(
-            name,
-            unique_id=unique_id,
-            type_id=type_id,
-        )
+        super(TokenStatement, self).__init__(name)
 
         self.Token                          = token
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Clone(
-        self,
-        unique_id: List[str],
-    ) -> Statement:
-        return self.CloneImpl(
-            self.Token,
-            unique_id=unique_id,
-            type_id=self.TypeId,
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     async def ParseAsync(
         self,
+        unique_id: List[str],
         normalized_iter: Statement.NormalizedIterator,
         observer: Statement.Observer,
         ignore_whitespace=False,
@@ -92,8 +75,8 @@ class TokenStatement(Statement):
     ]:
         data: Optional[Statement.StandardParseResultData] = None
 
-        observer.StartStatement([self])
-        with CallOnExit(lambda: observer.EndStatement([(self, data != None)])):
+        observer.StartStatement(unique_id, [self])
+        with CallOnExit(lambda: observer.EndStatement(unique_id, [(self, data != None)])):
             # We only want to consume whitespace if there is a match that follows
             potential_iter = normalized_iter.Clone()
             potential_whitespace = self.ExtractWhitespace(potential_iter)
@@ -104,7 +87,7 @@ class TokenStatement(Statement):
                 return Statement.ParseResult(
                     False,
                     normalized_iter,
-                    Statement.StandardParseResultData(self, None),
+                    Statement.StandardParseResultData(self, None, None),
                 )
 
             data = Statement.StandardParseResultData(
@@ -116,7 +99,8 @@ class TokenStatement(Statement):
                     potential_iter_begin,
                     potential_iter,
                     IsIgnored=self.Token.IsAlwaysIgnored,
-                )
+                ),
+                unique_id,
             )
 
             if isinstance(self.Token, IndentToken):
@@ -177,6 +161,6 @@ class TokenStatement(Statement):
     def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
-    ) -> List[Callable[[], None]]:
+    ) -> bool:
         # Nothing to do here
-        return []
+        return False

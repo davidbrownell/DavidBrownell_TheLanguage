@@ -51,7 +51,7 @@ class TestStandard(object):
     async def test_Single(self, parse_mock):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement])
 
-        result = await statement.ParseAsync(CreateIterator("word"), parse_mock)
+        result = await statement.ParseAsync(["root"], CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
@@ -74,7 +74,7 @@ class TestStandard(object):
     async def test_SingleNoMatch(self, parse_mock):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement])
 
-        result = await statement.ParseAsync(CreateIterator("1234"), parse_mock)
+        result = await statement.ParseAsync(["root"], CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             False
@@ -93,7 +93,7 @@ class TestStandard(object):
     async def test_MultipleNumber(self, parse_mock):
         statement = DynamicStatement(lambda uniqud_id, observer: [self._lower_statement, self._number_statement])
 
-        result = await statement.ParseAsync(CreateIterator("1234"), parse_mock)
+        result = await statement.ParseAsync(["root"], CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
@@ -116,7 +116,7 @@ class TestStandard(object):
     async def test_MultipleLower(self, parse_mock):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement, self._number_statement])
 
-        result = await statement.ParseAsync(CreateIterator("word"), parse_mock)
+        result = await statement.ParseAsync(["root"], CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
@@ -140,6 +140,7 @@ class TestStandard(object):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement, self._number_statement])
 
         result = await statement.ParseAsync(
+            ["root"],
             CreateIterator("1234"),
             parse_mock,
             single_threaded=True,
@@ -200,6 +201,7 @@ class TestStandard(object):
         statement = DynamicStatement(lambda unique_id, observer: [self._lower_statement])
 
         result = await statement.ParseAsync(
+            ["root"],
             CreateIterator("1234"),
             parse_mock,
             single_threaded=True,

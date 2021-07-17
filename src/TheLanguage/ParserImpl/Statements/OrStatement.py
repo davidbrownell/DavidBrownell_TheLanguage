@@ -18,7 +18,7 @@
 import asyncio
 import os
 
-from typing import Callable, cast, Iterable, List, Optional, Union
+from typing import cast, Iterable, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -50,8 +50,6 @@ class OrStatement(Statement):
         *statements: Statement,
         sort_results=True,
         name: str=None,
-        unique_id: Optional[List[str]]=None,
-        type_id: Optional[int]=None,
         _name_is_default: Optional[bool]=None,
     ):
         assert statements
@@ -63,43 +61,17 @@ class OrStatement(Statement):
         elif _name_is_default is None:
             _name_is_default = False
 
-        super(OrStatement, self).__init__(
-            name,
-            unique_id=unique_id,
-            type_id=type_id,
-        )
+        super(OrStatement, self).__init__(name)
 
-        cloned_statements = [
-            statement.Clone(
-                unique_id=self.UniqueId + ["Or: {} [{}]".format(statement.Name, statement_index)],
-            )
-            for statement_index, statement in enumerate(statements)
-        ]
-
-        self.Statements                     = cloned_statements
+        self.Statements                     = list(statements)
         self.SortResults                    = sort_results
-        self._original_statements           = statements
         self._name_is_default               = _name_is_default
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Clone(
-        self,
-        unique_id: List[str],
-    ) -> Statement:
-        return self.CloneImpl(
-            *self._original_statements,
-            sort_results=self.SortResults,
-            name=self.Name,
-            unique_id=unique_id,
-            type_id=self.TypeId,
-            _name_is_default=self._name_is_default,
-        )
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def ParseAsync(
         self,
+        unique_id: List[str],
         normalized_iter: Statement.NormalizedIterator,
         observer: Statement.Observer,
         ignore_whitespace=False,
@@ -110,8 +82,10 @@ class OrStatement(Statement):
     ]:
         best_result: Optional[Statement.ParseResult] = None
 
-        observer.StartStatement([self])
-        with CallOnExit(lambda: observer.EndStatement(
+        observer.StartStatement(unique_id, [self])
+        with CallOnExit(
+            lambda: observer.EndStatement(
+                unique_id,
                 [
                     (
                         self,
@@ -124,14 +98,16 @@ class OrStatement(Statement):
 
             observer_decorator = Statement.ObserverDecorator(
                 self,
+                unique_id,
                 observer,
                 results,
                 lambda result: result.Data,
             )
 
             # ----------------------------------------------------------------------
-            async def ExecuteAsync(statement):
+            async def ExecuteAsync(statement_index, statement):
                 return await statement.ParseAsync(
+                    unique_id + ["Or: {} [{}]".format(statement.Name, statement_index)],
                     normalized_iter.Clone(),
                     observer_decorator,
                     ignore_whitespace=ignore_whitespace,
@@ -145,8 +121,8 @@ class OrStatement(Statement):
             if use_async:
                 gathered_results = await asyncio.gather(
                     *[
-                        ExecuteAsync(statement)
-                        for statement in self.Statements
+                        ExecuteAsync(statement_index, statement)
+                        for statement_index, statement in enumerate(self.Statements)
                     ],
                 )
 
@@ -156,8 +132,8 @@ class OrStatement(Statement):
                 results = cast(List[Statement.ParseResult], gathered_results)
 
             else:
-                for statement in self.Statements:
-                    result = await ExecuteAsync(statement)
+                for statement_index, statement in enumerate(self.Statements):
+                    result = await ExecuteAsync(statement_index, statement)
                     if result is None:
                         return None
 
@@ -207,6 +183,7 @@ class OrStatement(Statement):
                 data = Statement.StandardParseResultData(
                     self,
                     best_result.Data,
+                    unique_id,
                 )
 
                 if not await observer.OnInternalStatementAsync(
@@ -238,6 +215,7 @@ class OrStatement(Statement):
                 Statement.StandardParseResultData(
                     self,
                     Statement.MultipleStandardParseResultData(cast(List[Optional[Statement.ParseResultData]], data_items), True),
+                    unique_id,
                 ),
             )
 
@@ -248,31 +226,21 @@ class OrStatement(Statement):
     def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
-    ) -> List[Callable[[], None]]:
-        actions = []
+    ) -> bool:
+        replaced_statements = False
 
         for statement_index, statement in enumerate(self.Statements):
             if isinstance(statement, RecursivePlaceholderStatement):
-                prev_statement = statement
-
-                # ----------------------------------------------------------------------
-                def PostPopulate():
-                    self.Statements[statement_index] = new_statement.Clone(
-                        unique_id=prev_statement.UniqueId,
-                    )
-
-                # ----------------------------------------------------------------------
-
                 self.Statements[statement_index] = new_statement
-                actions.append(PostPopulate)
+                replaced_statements = True
 
             else:
-                actions += statement.PopulateRecursiveImpl(new_statement)
+                replaced_statements = statement.PopulateRecursiveImpl(new_statement) or replaced_statements
 
-        if actions and self._name_is_default:
+        if replaced_statements and self._name_is_default:
             self.Name = self._CreateDefaultName(self.Statements)
 
-        return actions
+        return replaced_statements
 
     # ----------------------------------------------------------------------
     @staticmethod

@@ -57,10 +57,4 @@ def test_PopulateRecursive():
 
     ex = ex.value
 
-    assert str(ex) == "'PopulateRecursiveImpl' should never be called on a RecursivePlaceholderStatement instance"
-
-# ----------------------------------------------------------------------
-def test_Clone():
-    statement = RecursivePlaceholderStatement()
-
-    assert statement == statement.Clone(statement.UniqueId)
+    assert str(ex) == "'_PopulateRecursiveImpl' should never be called on a RecursivePlaceholderStatement instance"
