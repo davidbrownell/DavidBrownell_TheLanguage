@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CommentStatement_IntegrationTest.py
+# |  __init__.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-15 17:05:57
+# |      2021-07-16 10:59:14
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for CommentStatement.py"""
+"""Contains utilities used by multiple statements and expressions"""
 
 import os
-import textwrap
+
+from typing import cast, Match
 
 import CommonEnvironment
 
@@ -28,22 +29,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Execute
-    from ..CommentStatement import *
+    from ....ParserImpl.Token import Token
+
+    from ...GrammarStatement import (
+        Leaf,
+        Statement,
+    )
+
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            # Single line comment
-            # Another comment
-            """,
-        ),
-    ) == textwrap.dedent(
-        """\
-        <Root>
-            <No children>
-        """,
-    )
+def GetRegexMatch(
+    leaf: Leaf,
+) -> Match:
+    return cast(
+        Token.RegexMatch,
+        leaf.Value,
+    ).Match

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CommentStatement.py
+# |  SequenceStatement_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-05 17:03:13
+# |      2021-07-12 08:59:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains a statement that processes and ignores comments"""
+"""Unit test for SequenceStatement.py"""
 
 import os
 
@@ -27,16 +27,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GrammarStatement import GrammarStatement, Statement
+    from ..SequenceStatement import *
 
 
 # ----------------------------------------------------------------------
-class CommentStatement(GrammarStatement):
-    """Eats single-line comments"""
-
-    # ----------------------------------------------------------------------
-    def __init__(self):
-        super(CommentStatement, self).__init__(
-            GrammarStatement.Type.Statement,
-            Statement("Comment", Statement.CommentToken),
-        )
+def test_BugBug():
+    assert True

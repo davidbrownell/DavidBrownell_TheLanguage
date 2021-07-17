@@ -15,13 +15,14 @@
 # ----------------------------------------------------------------------
 """Contains functionality that helps with parsing"""
 
+import asyncio
 import importlib
 import os
 import sys
 
 from collections import OrderedDict
 from concurrent.futures import Future, ThreadPoolExecutor
-from typing import cast, Callable, Dict, List, Optional, Union
+from typing import cast, Callable, Dict, List, Optional, Tuple, Union
 
 from semantic_version import Version as SemVer
 
@@ -39,20 +40,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Grammars.GrammarStatement import GrammarStatement, ImportGrammarStatement
 
-    from .ParserImpl.MultifileParser import (
-        Leaf,
-        Node,
-        Observer as MultifileObserver,
-        Parse as MultifileParse,
-        RootNode,
-    )
-
     from .ParserImpl.NormalizedIterator import NormalizedIterator
-    from .ParserImpl.Statement import Statement
-    from .ParserImpl.StatementsParser import DynamicStatementInfo
 
     from .ParserImpl.Syntax import (
         Observer as SyntaxObserver
+    )
+
+    from .ParserImpl.TranslationUnitsParser import (
+        DynamicStatementInfo,
+        Leaf,
+        Node,
+        Observer as TranslationUnitsParserObserver,
+        ParseAsync as TranslationUnitsParseAsync,
+        RootNode,
+        Statement,
     )
 
 
@@ -60,15 +61,17 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 Grammars: Dict[SemVer, DynamicStatementInfo]            = OrderedDict()
-StatementLookup: Dict[Statement, GrammarStatement]      = OrderedDict()
+StatementLookup: Dict[int, GrammarStatement]            = OrderedDict()
 
 
 # ----------------------------------------------------------------------
 def _LoadDyanmicStatementsFromFile(
     filename: str,
-    attribute_name: Optional[str]="Statements",
+    attribute_name: Optional[str]=None,
 ) -> DynamicStatementInfo:
     assert os.path.isfile(filename), filename
+
+    attribute_name = attribute_name or "Statements"
 
     dirname, basename = os.path.split(filename)
     basename = os.path.splitext(basename)[0]
@@ -88,21 +91,18 @@ def _LoadDyanmicStatementsFromFile(
                 statements.append(grammar_statement.Statement)
             elif grammar_statement.TypeValue == GrammarStatement.Type.Expression:
                 expressions.append(grammar_statement.Statement)
-            elif grammar_statement.TypeValue == GrammarStatement.Type.Hybrid:
-                statements.append(grammar_statement.Statement)
-                expressions.append(grammar_statement.Statement)
             else:
                 assert False, grammar_statement.TypeValue  # pragma: no cover
 
-            assert grammar_statement.Statement not in StatementLookup, grammar_statement.Statement
-            StatementLookup[grammar_statement.Statement] = grammar_statement
+            assert grammar_statement.Statement.TypeId not in StatementLookup, grammar_statement.Statement
+            StatementLookup[grammar_statement.Statement.TypeId] = grammar_statement
 
         del sys.modules[basename]
 
         return DynamicStatementInfo(
-            statements,
-            expressions,
-            allow_parent_traversal=False,
+            tuple(statements),
+            tuple(expressions),
+            AllowParentTraversal=False,
         )
 
 
@@ -123,6 +123,7 @@ def Parse(
     source_roots: List[str],
     max_num_threads: Optional[int]=None,
 ) -> Union[
+    None,
     Dict[str, RootNode],
     List[Exception],
 ]:
@@ -144,11 +145,13 @@ def Parse(
         Grammars,
     )
 
-    return MultifileParse(
-        fully_qualified_names,
-        syntax_observer.Syntaxes[syntax_observer.DefaultVersion],
-        syntax_observer,
-        single_threaded=max_num_threads == 1,
+    return asyncio.get_event_loop().run_until_complete(
+        TranslationUnitsParseAsync(
+            fully_qualified_names,
+            syntax_observer.Syntaxes[syntax_observer.DefaultVersion],
+            syntax_observer,
+            single_threaded=max_num_threads == 1,
+        ),
     )
 
 
@@ -183,7 +186,7 @@ def Validate(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-class _Observer(MultifileObserver):
+class _Observer(TranslationUnitsParserObserver):
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -205,6 +208,15 @@ class _Observer(MultifileObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def Enqueue(
+        self,
+        funcs: List[Callable[[], None]],
+    ) -> List[Future]:
+        # TODO: Handle scenario where there are too many enqueued items
+        return [self._executor.submit(func) for func in funcs]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def LoadContent(
         self,
         fully_qualified_name: str,
@@ -218,58 +230,79 @@ class _Observer(MultifileObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ExtractDynamicStatementInfo(
+    def ExtractDynamicStatements(
         self,
         fully_qualified_name: str,
         node: RootNode,
     ) -> DynamicStatementInfo:
         # TODO
-        return DynamicStatementInfo([], [])
+        return DynamicStatementInfo((), ())
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Enqueue(
-        self,
-        funcs: List[Callable[[], None]],
-    ) -> List[Future]:
-        # TODO: Handle scenario where there are too many enqueued items
-        return [self._executor.submit(func) for func in funcs]
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def OnIndent(
+    def StartStatement(
         self,
         fully_qualified_name: str,
-        statement: Statement,
-        results: Statement.ParseResultItemsType,
+        statement_stack: List[Statement],
+    ) -> None:
+        # Nothing to do here
+        return None
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EndStatement(
+        self,
+        fully_qualified_name: str,
+        statement_info_stack: List[
+            Tuple[
+                Statement,
+                Optional[bool],
+            ],
+        ],
+    ) -> None:
+        # Nothing to do here
+        return None
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def OnIndentAsync(
+        self,
+        fully_qualified_name: str,
+        data_stack: List[Statement.StandardParseResultData],
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
     ) -> Optional[DynamicStatementInfo]:
+        # Nothing to do here
         return None
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnDedent(
+    async def OnDedentAsync(
+        self,
+        fully_qualified_name: str,
+        data_stack: List[Statement.StandardParseResultData],
+        iter_before: NormalizedIterator,
+        iter_after: NormalizedIterator,
+    ) -> None:
+        # Nothing to do here
+        return None
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def OnStatementCompleteAsync(
         self,
         fully_qualified_name: str,
         statement: Statement,
-        results: Statement.ParseResultItemsType,
-    ):
-        return None
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def OnStatementComplete(
-        self,
-        fully_qualified_name: str,
         node: Node,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
     ) -> Union[
         bool,
         DynamicStatementInfo,
-        MultifileObserver.ImportInfo,
+        TranslationUnitsParserObserver.ImportInfo,
     ]:
         try:
-            grammar_statement = StatementLookup.get(node.Type, None)
+            grammar_statement = StatementLookup.get(statement.TypeId, None)
         except TypeError:
             grammar_statement = None
 
@@ -362,9 +395,9 @@ def _ValidateNode(
     node: Union[Node, Leaf],
 ):
     if isinstance(node.Type, Statement):
-        grammar_statement = StatementLookup.get(cast(Statement, node.Type), None)
+        grammar_statement = StatementLookup.get(cast(Statement, node.Type).TypeId, None)
         if grammar_statement:
-            result = grammar_statement.ValidateNodeSyntax(node)
+            result = grammar_statement.ValidateNodeSyntax(cast(Node, node))
             if isinstance(result, bool) and not result:
                 return
 

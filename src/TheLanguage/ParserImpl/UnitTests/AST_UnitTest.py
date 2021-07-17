@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement.py
+# |  AST_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-13 15:18:08
+# |      2021-07-12 16:23:13
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement object"""
+"""Unit test for AST.py"""
 
 import os
 
@@ -27,17 +27,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common import Tokens as CommonTokens
-    from ..GrammarStatement import GrammarStatement, StatementEx
+    from ..AST import *
 
 
 # ----------------------------------------------------------------------
-class PassStatement(GrammarStatement):
-    """'pass'"""
-
-    # ----------------------------------------------------------------------
-    def __init__(self):
-        super(PassStatement, self).__init__(
-            GrammarStatement.Type.Statement,
-            StatementEx("Pass", CommonTokens.Pass),
-        )
+def test_BugBug():
+    assert True

@@ -3,7 +3,7 @@
 # |  VariableNameExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-15 17:12:13
+# |      2021-07-16 11:26:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for VariableNameExpression.py"""
+"""Automated tests for VariableNameExpression.py"""
 
 import os
 import textwrap
+
+import pytest
 
 import CommonEnvironment
 
@@ -29,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from . import Execute
-    from ..CommentStatement import *
+    from ..VariableNameExpression import *
 
 
 # ----------------------------------------------------------------------
@@ -37,31 +39,85 @@ def test_Standard():
     assert Execute(
         textwrap.dedent(
             """\
-            Func(variable_name1, variable_name2)
+            one = two
+            three = four # comment 1
+            # comment 2
+            five = six
+
+
+
+            seven = eight
             """,
         ),
     ) == textwrap.dedent(
         """\
         <Root>
-            1.0.0 Grammar
-                Function Invocation
-                    <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='Func'>>> ws:None [1, 1 -> 1, 5]
-                    '(' <<Regex: <_sre.SRE_Match object; span=(4, 5), match='('>>> ws:None [1, 5 -> 1, 6]
-                    Repeat: (Arguments, 0, 1)
-                        Arguments
-                            Or: [Keyword, DynamicStatements.Expressions]
-                                DynamicStatements.Expressions
-                                    1.0.0 Grammar
-                                        Variable Name
-                                            <name> <<Regex: <_sre.SRE_Match object; span=(5, 19), match='variable_name1'>>> ws:None [1, 6 -> 1, 20]
-                            Repeat: (Comma and Argument, 0, None)
-                                Comma and Argument
-                                    ',' <<Regex: <_sre.SRE_Match object; span=(19, 20), match=','>>> ws:None [1, 20 -> 1, 21]
-                                    Or: [Keyword, DynamicStatements.Expressions]
-                                        DynamicStatements.Expressions
-                                            1.0.0 Grammar
-                                                Variable Name
-                                                    <name> <<Regex: <_sre.SRE_Match object; span=(21, 35), match='variable_name2'>>> ws:(20, 21) [1, 22 -> 1, 36]
-                    ')' <<Regex: <_sre.SRE_Match object; span=(35, 36), match=')'>>> ws:None [1, 36 -> 1, 37]
+            Dynamic Statements
+                1.0.0 Grammar
+                    Variable Declaration
+                        <name> <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
+                        '=' <<Regex: <_sre.SRE_Match object; span=(4, 5), match='='>>> ws:(3, 4) [1, 5 -> 1, 6]
+                        DynamicStatements.Expressions
+                            1.0.0 Grammar
+                                Variable Name
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(6, 9), match='two'>>> ws:(5, 6) [1, 7 -> 1, 10]
+                        Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
+            Dynamic Statements
+                1.0.0 Grammar
+                    Variable Declaration
+                        <name> <<Regex: <_sre.SRE_Match object; span=(10, 15), match='three'>>> ws:None [2, 1 -> 2, 6]
+                        '=' <<Regex: <_sre.SRE_Match object; span=(16, 17), match='='>>> ws:(15, 16) [2, 7 -> 2, 8]
+                        DynamicStatements.Expressions
+                            1.0.0 Grammar
+                                Variable Name
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(18, 22), match='four'>>> ws:(17, 18) [2, 9 -> 2, 13]
+                        Newline+ <<34, 35>> ws:None [2, 25 -> 3, 1]
+            Dynamic Statements
+                1.0.0 Grammar
+                    Variable Declaration
+                        <name> <<Regex: <_sre.SRE_Match object; span=(47, 51), match='five'>>> ws:None [4, 1 -> 4, 5]
+                        '=' <<Regex: <_sre.SRE_Match object; span=(52, 53), match='='>>> ws:(51, 52) [4, 6 -> 4, 7]
+                        DynamicStatements.Expressions
+                            1.0.0 Grammar
+                                Variable Name
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(54, 57), match='six'>>> ws:(53, 54) [4, 8 -> 4, 11]
+                        Newline+ <<57, 61>> ws:None [4, 11 -> 8, 1]
+            Dynamic Statements
+                1.0.0 Grammar
+                    Variable Declaration
+                        <name> <<Regex: <_sre.SRE_Match object; span=(61, 66), match='seven'>>> ws:None [8, 1 -> 8, 6]
+                        '=' <<Regex: <_sre.SRE_Match object; span=(67, 68), match='='>>> ws:(66, 67) [8, 7 -> 8, 8]
+                        DynamicStatements.Expressions
+                            1.0.0 Grammar
+                                Variable Name
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(69, 74), match='eight'>>> ws:(68, 69) [8, 9 -> 8, 14]
+                        Newline+ <<74, 75>> ws:None [8, 14 -> 9, 1]
         """,
     )
+
+# ----------------------------------------------------------------------
+def test_InvalidNames():
+    for invalid_var in [
+        "InvalidUppercase",
+        "no.dots",
+        "ends_with_double_under__",
+    ]:
+        with pytest.raises(NamingConventions.InvalidVariableNameError) as ex:
+            Execute("var = {}".format(invalid_var))
+
+        ex = ex.value
+
+        expected_value = textwrap.dedent(
+            """\
+            '{}' is not a valid variable name.
+
+            Variable names must:
+                Begin with a lowercase letter
+                Contain upper-, lower-, numeric-, or underscore-characters
+                Not end with double underscores
+            """,
+        ).format(
+            invalid_var,
+        )
+
+        assert str(ex) == expected_value, invalid_var

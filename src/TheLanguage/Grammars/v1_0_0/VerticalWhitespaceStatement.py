@@ -28,7 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Common import Tokens as CommonTokens
-    from ..GrammarStatement import GrammarStatement, Statement
+    from ..GrammarStatement import GrammarStatement, StatementEx
 
 
 # ----------------------------------------------------------------------
@@ -39,7 +39,7 @@ class VerticalWhitespaceStatement(GrammarStatement):
     def __init__(self):
         super(VerticalWhitespaceStatement, self).__init__(
             GrammarStatement.Type.Statement,
-            Statement(
+            StatementEx(
                 "Vertical Whitespace",
                 CommonTokens.NewlineToken(
                     is_always_ignored=True,

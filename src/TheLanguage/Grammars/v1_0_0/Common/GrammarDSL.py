@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement_IntegrationTest.py
+# |  GrammarDSL.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-15 17:09:30
+# |      2021-07-16 10:05:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for PassStatement.py"""
+"""Contains functionality used across the grammar definition"""
 
 import os
-import textwrap
 
 import CommonEnvironment
 
@@ -28,23 +27,33 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Execute
-    from ..CommentStatement import *
+    # Convenience imports for other files, please do not remove
+    from ....ParserImpl.AST import Leaf, Node, RootNode
+    from ....ParserImpl.StatementDSL import (
+        DynamicStatements,
+        Statement,
+        StatementItem,
+    )
+
+    # Standard imports
+    from . import Tokens as CommonTokens
+    from ....ParserImpl import StatementDSL
+    from ....ParserImpl.Token import Token
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            pass
-            """,
-        ),
-    ) == textwrap.dedent(
-        """\
-        <Root>
-            1.0.0 Grammar
-                Pass
-                    'pass' <<Regex: <_sre.SRE_Match object; span=(0, 4), match='pass'>>> ws:None [1, 1 -> 1, 5]
-        """,
+def CreateStatement(
+    item: StatementItem.ItemType,
+    name: str=None,
+) -> Statement:
+    # Single tokens don't have the opportunity to participate in node validation,
+    # as there won't be a corresponding node emitted. In this case, turn the token
+    # into a sequence.
+    if isinstance(item, Token):
+        item = [item]
+
+    return StatementDSL.CreateStatement(
+        item=item,
+        name=name,
+        comment_token=CommonTokens.Comment,
     )
