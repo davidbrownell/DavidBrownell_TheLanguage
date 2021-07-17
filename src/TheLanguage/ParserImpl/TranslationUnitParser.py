@@ -284,7 +284,11 @@ class _StatementObserver(Statement.Observer):
         was_cached = False
 
         # Look for the cached value
-        if hasattr(data, "UniqueId"):
+        if (
+            data is not None
+            and isinstance(data, Statement.StandardParseResultData)
+            and data.UniqueId
+        ):
             key = tuple(data.UniqueId)
         else:
             key = None
@@ -303,6 +307,8 @@ class _StatementObserver(Statement.Observer):
         assert node
 
         if parent != node.Parent:
+            assert parent
+
             object.__setattr__(node, "Parent", parent)
             parent.Children.append(node)
 

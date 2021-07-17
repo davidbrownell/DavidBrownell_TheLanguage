@@ -369,9 +369,6 @@ class Statement(Interface.Interface):
         self,
         verbose=False,
     ) -> str:
-        if verbose:
-            return "{} <{}>".format(self.Name, ", ".join([str(uid) for uid in self.UniqueId]))
-
         return self.Name
 
     # ----------------------------------------------------------------------
