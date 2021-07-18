@@ -50,8 +50,6 @@ class RepeatStatement(Statement):
         min_matches: int,
         max_matches: Optional[int],
         name: str=None,
-        unique_id: Optional[List[str]]=None,
-        type_id: Optional[int]=None,
         _name_is_default: Optional[bool]=None,
     ):
         assert statement
@@ -64,38 +62,18 @@ class RepeatStatement(Statement):
         elif _name_is_default is None:
             _name_is_default = False
 
-        super(RepeatStatement, self).__init__(
-            name,
-            unique_id=unique_id,
-            type_id=type_id,
-        )
+        super(RepeatStatement, self).__init__(name)
 
         self.Statement                      = statement
         self.MinMatches                     = min_matches
         self.MaxMatches                     = max_matches
-        self._original_statement            = statement
         self._name_is_default               = _name_is_default
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Clone(
-        self,
-        unique_id: List[str],
-    ):
-        return self.CloneImpl(
-            self._original_statement,
-            self.MinMatches,
-            self.MaxMatches,
-            name=self.Name,
-            unique_id=unique_id,
-            type_id=self.TypeId,
-            _name_is_default=self._name_is_default,
-        )
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def ParseAsync(
         self,
+        unique_id: List[str],
         normalized_iter: Statement.NormalizedIterator,
         observer: Statement.Observer,
         ignore_whitespace=False,
@@ -106,20 +84,20 @@ class RepeatStatement(Statement):
     ]:
         success = False
 
-        observer.StartStatement([self])
-        with CallOnExit(lambda: observer.EndStatement([(self, success)])):
+        observer.StartStatement(unique_id, [self])
+        with CallOnExit(lambda: observer.EndStatement(unique_id, [(self, success)])):
             original_normalized_iter = normalized_iter.Clone()
 
             results: List[Statement.ParseResult] = []
             error_result: Optional[Statement.ParseResult] = None
 
             while not normalized_iter.AtEnd():
-                statement = self.Statement.Clone(self.UniqueId + ["Repeat: {} [{}]".format(self.Statement.Name, len(results))])
-
-                result = await statement.ParseAsync(
+                result = await self.Statement.ParseAsync(
+                    unique_id + ["Repeat: {} [{}]".format(self.Statement.Name, len(results))],
                     normalized_iter.Clone(),
                     Statement.ObserverDecorator(
                         self,
+                        unique_id,
                         observer,
                         results,
                         lambda result: result.Data,
@@ -158,6 +136,7 @@ class RepeatStatement(Statement):
                         [result.Data for result in results],
                         True,
                     ),
+                    unique_id,
                 )
 
                 if not await observer.OnInternalStatementAsync(
@@ -184,6 +163,7 @@ class RepeatStatement(Statement):
                 Statement.StandardParseResultData(
                     self,
                     Statement.MultipleStandardParseResultData(cast(List[Optional[Statement.ParseResultData]], result_data), True),
+                    unique_id,
                 ),
             )
 
@@ -191,23 +171,23 @@ class RepeatStatement(Statement):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
-    def PopulateRecursiveImpl(
+    def _PopulateRecursiveImpl(
         self,
         new_statement: Statement,
     ) -> bool:
-        updated_statements = False
+        replaced_statement = False
 
         if isinstance(self.Statement, RecursivePlaceholderStatement):
             self.Statement = new_statement
-            updated_statements = True
+            replaced_statement = True
 
         else:
-            updated_statements = self.Statement.PopulateRecursiveImpl(new_statement)
+            replaced_statement = self.Statement.PopulateRecursiveImpl(new_statement) or replaced_statement
 
-        if updated_statements and self._name_is_default:
+        if replaced_statement and self._name_is_default:
             self.Name = self._CreateDefaultName(self.Statement, self.MinMatches, self.MaxMatches)
 
-        return updated_statements
+        return replaced_statement
 
     # ----------------------------------------------------------------------
     @staticmethod

@@ -61,7 +61,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 Grammars: Dict[SemVer, DynamicStatementInfo]            = OrderedDict()
-StatementLookup: Dict[int, GrammarStatement]            = OrderedDict()
+StatementLookup: Dict[Statement, GrammarStatement]      = OrderedDict()
 
 
 # ----------------------------------------------------------------------
@@ -94,8 +94,8 @@ def _LoadDyanmicStatementsFromFile(
             else:
                 assert False, grammar_statement.TypeValue  # pragma: no cover
 
-            assert grammar_statement.Statement.TypeId not in StatementLookup, grammar_statement.Statement
-            StatementLookup[grammar_statement.Statement.TypeId] = grammar_statement
+            assert grammar_statement.Statement not in StatementLookup, grammar_statement.Statement
+            StatementLookup[grammar_statement.Statement] = grammar_statement
 
         del sys.modules[basename]
 
@@ -193,7 +193,9 @@ class _Observer(TranslationUnitsParserObserver):
         source_roots: List[str],
         max_num_threads: Optional[int] = None,
     ):
-        assert all(os.path.isdir(source_root) for source_root in source_roots)
+        for source_root in source_roots:
+            assert os.path.isdir(source_root), source_root
+
         assert max_num_threads is None or max_num_threads > 0, max_num_threads
 
         self._is_cancelled                  = False
@@ -240,31 +242,6 @@ class _Observer(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def StartStatement(
-        self,
-        fully_qualified_name: str,
-        statement_stack: List[Statement],
-    ) -> None:
-        # Nothing to do here
-        return None
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def EndStatement(
-        self,
-        fully_qualified_name: str,
-        statement_info_stack: List[
-            Tuple[
-                Statement,
-                Optional[bool],
-            ],
-        ],
-    ) -> None:
-        # Nothing to do here
-        return None
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     async def OnIndentAsync(
         self,
         fully_qualified_name: str,
@@ -302,7 +279,7 @@ class _Observer(TranslationUnitsParserObserver):
         TranslationUnitsParserObserver.ImportInfo,
     ]:
         try:
-            grammar_statement = StatementLookup.get(statement.TypeId, None)
+            grammar_statement = StatementLookup.get(statement, None)
         except TypeError:
             grammar_statement = None
 
@@ -395,7 +372,7 @@ def _ValidateNode(
     node: Union[Node, Leaf],
 ):
     if isinstance(node.Type, Statement):
-        grammar_statement = StatementLookup.get(cast(Statement, node.Type).TypeId, None)
+        grammar_statement = StatementLookup.get(cast(Statement, node.Type), None)
         if grammar_statement:
             result = grammar_statement.ValidateNodeSyntax(cast(Node, node))
             if isinstance(result, bool) and not result:

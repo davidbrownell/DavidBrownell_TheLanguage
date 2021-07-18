@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Match
+from typing import cast, Match, Optional, Union
 
 import CommonEnvironment
 
@@ -33,16 +33,45 @@ with InitRelativeImports():
 
     from ...GrammarStatement import (
         Leaf,
+        Node,
         Statement,
     )
 
+    from ....ParserImpl.Statements.DynamicStatement import DynamicStatement
+    from ....ParserImpl.Statements.OrStatement import OrStatement
 
 
 # ----------------------------------------------------------------------
 def GetRegexMatch(
     leaf: Leaf,
-) -> Match:
-    return cast(
+    group_value_name: Optional[str]="value",
+) -> Union[
+    Match,                                  # When `group_value_name` is None
+    str,                                    # When `group_value_name` is a string
+]:
+    result = cast(
         Token.RegexMatch,
         leaf.Value,
     ).Match
+
+    if group_value_name is not None:
+        result = result.group(group_value_name)
+
+    return result
+
+
+# ----------------------------------------------------------------------
+def ExtractDynamicExpressionNode(
+    node: Node,
+) -> Node:
+    # Drill into the Dynamic Expression node
+    assert isinstance(node.Type, DynamicStatement)
+    assert len(node.Children) == 1
+    node = cast(Node, node.Children[0])
+
+    # Drill into the grammar node
+    assert isinstance(node.Type, OrStatement)
+    assert len(node.Children) == 1
+    node = cast(Node, node.Children[0])
+
+    return node

@@ -146,16 +146,6 @@ class Observer(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def StartStatement(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.StartStatement(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def EndStatement(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.EndStatement(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     async def OnIndentAsync(
         self,
         fully_qualified_name: str,

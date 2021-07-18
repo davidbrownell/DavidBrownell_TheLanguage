@@ -3,7 +3,7 @@
 # |  TupleStatements.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-15 14:49:37
+# |      2021-07-16 16:50:14
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleExpression object"""
+"""Contains the TupleDeclarationStatement and the TupleExpression objects"""
 
 import os
 
-from typing import Union
+from typing import cast, Generator, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,111 +30,212 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common import Tokens as CommonTokens
+    from .Common.GrammarAST import GetRegexMatch, Leaf, Node
+    from .Common import GrammarDSL
     from .Common import NamingConventions
-    from .VariableDeclarationStatement import InvalidVariableNameError
+    from .Common import Tokens as CommonTokens
+    from ..GrammarStatement import GrammarStatement
 
-    from ..GrammarStatement import (
-        DynamicStatements,
-        GrammarStatement,
-        Node,
-        StatementEx,
-    )
-
-    from ...ParserImpl.StatementImpl.OrStatement import OrStatement
+    from ...ParserImpl.Statements.OrStatement import OrStatement
+    from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
 
 
 # ----------------------------------------------------------------------
 class _TupleBase(GrammarStatement):
+
+    MULTIPLE_NODE_NAME                     = "Multiple"
+    SINGLE_NODE_NAME                       = "Single"
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def EnumElements(
+        cls,
+        node: Node,
+    ) -> Generator[
+        Union[Leaf, Node],
+        None,
+        None,
+    ]:
+        if isinstance(node.Type, SequenceStatement):
+            assert node.Children
+            node = cast(Node, node.Children[0])
+
+        assert isinstance(node.Type, OrStatement)
+        assert len(node.Children) == 1
+        node = cast(Node, node.Children[0])
+        assert node.Type
+
+        if node.Type.Name == cls.SINGLE_NODE_NAME:
+            assert len(node.Children) == 4
+            yield node.Children[1]
+
+        elif node.Type.Name == cls.MULTIPLE_NODE_NAME:
+            assert len(node.Children) > 3
+            yield node.Children[1]
+
+            for child in cast(Node, node.Children[2]).Children:
+                child = cast(Node, child)
+
+                assert len(child.Children) == 2
+                yield child.Children[1]
+
+        else:
+            assert False, node.Type.Name  # pragma: no cover
+
+
+# ----------------------------------------------------------------------
+class TupleExpression(_TupleBase):
     """\
-    Creates a Tuple.
+    Creates a tuple.
 
     '(' <content> ')'
     """
 
     # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        desc: str,
-        grammar_statement_type: GrammarStatement.Type,
-        content: Union[DynamicStatements, CommonTokens.RegexToken],
-        *statement_items_suffix: StatementEx.ItemType,
-    ):
-        statement_items = [
-            [
-                # Multiple elements
-                #   '(' <expr> (',' <expr>)+ ','? ')'
-                StatementEx(
-                    "Multiple",
-                    CommonTokens.LParen,
-                    CommonTokens.PushIgnoreWhitespaceControl,
-                    content,
-                    (
-                        StatementEx(
-                            "Comma and {}".format(desc),
-                            CommonTokens.Comma,
-                            content,
-                        ),
-                        1,
-                        None,
-                    ),
-                    (CommonTokens.Comma, 0, 1),
-                    CommonTokens.PopIgnoreWhitespaceControl,
-                    CommonTokens.RParen,
-                ),
-
-                # Single element
-                #   '(' <expr> ',' ')'
-                #
-                #   Note that for single element tuples, the comma is required
-                #   to differentiate it from a grouping construct.
-                StatementEx(
-                    "Single",
-                    CommonTokens.LParen,
-                    CommonTokens.PushIgnoreWhitespaceControl,
-                    content,
-                    CommonTokens.Comma,
-                    CommonTokens.PopIgnoreWhitespaceControl,
-                    CommonTokens.RParen,
-                ),
-            ],
-        ]
-
-        if statement_items_suffix:
-            statement_items += list(statement_items_suffix)
-
-        super(_TupleBase, self).__init__(
-            grammar_statement_type,
-            StatementEx("Tuple {}".format(desc), *statement_items),
-        )
-
-
-# ----------------------------------------------------------------------
-class TupleExpression(_TupleBase):
-    # ----------------------------------------------------------------------
     def __init__(self):
         super(TupleExpression, self).__init__(
-            "Expression",
             GrammarStatement.Type.Expression,
-            DynamicStatements.Expressions,
+            GrammarDSL.CreateStatement(
+                name="Tuple Expression",
+                item=(
+                    # Multiple Elements
+                    #   '(' <expr> (',' <expr>)+ '?' ','? ')'
+                    GrammarDSL.StatementItem(
+                        Name=self.MULTIPLE_NODE_NAME,
+                        Item=[
+                            CommonTokens.LParen,
+                            CommonTokens.PushIgnoreWhitespaceControl,
+                            GrammarDSL.DynamicStatements.Expressions,
+                            GrammarDSL.StatementItem(
+                                Item=[
+                                    CommonTokens.Comma,
+                                    GrammarDSL.DynamicStatements.Expressions,
+                                ],
+                                Arity="+",
+                            ),
+                            GrammarDSL.StatementItem(
+                                Item=CommonTokens.Comma,
+                                Arity="?",
+                            ),
+                            CommonTokens.PopIgnoreWhitespaceControl,
+                            CommonTokens.RParen,
+                        ],
+                    ),
+
+                    # Single Element
+                    #   '(' <expr> ',' ')'
+                    GrammarDSL.StatementItem(
+                        Name=self.SINGLE_NODE_NAME,
+                        Item=[
+                            CommonTokens.LParen,
+                            CommonTokens.PushIgnoreWhitespaceControl,
+                            GrammarDSL.DynamicStatements.Expressions,
+                            CommonTokens.Comma,
+                            CommonTokens.PopIgnoreWhitespaceControl,
+                            CommonTokens.RParen,
+                        ],
+                    ),
+                ),
+            ),
         )
 
 
 # ----------------------------------------------------------------------
 class TupleVariableDeclarationStatement(_TupleBase):
     """\
-    '(' <name> (',' <name>)* ',' ')' '=' ...
+    Creates a tuple variable declaration.
+
+    '(' <content> ')' '=' <expr>
     """
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleVariableDeclarationStatement, self).__init__(
-            "Variable Declaration",
-            GrammarStatement.Type.Statement,
-            CommonTokens.Name,
-            CommonTokens.Equal,
-            DynamicStatements.Expressions,
+        tuple_element = (CommonTokens.Name, None)
+
+        tuple_definition = GrammarDSL.CreateStatement(
+            name="Tuple",
+            item=(
+                # Multiple Elements
+                #   '(' <tuple|name> (',' <tuple|name>)+ ','? ')'
+                GrammarDSL.StatementItem(
+                    Name=self.MULTIPLE_NODE_NAME,
+                    Item=[
+                        CommonTokens.LParen,
+                        CommonTokens.PushIgnoreWhitespaceControl,
+                        tuple_element,
+                        GrammarDSL.StatementItem(
+                            Name="Comma and Element",
+                            Item=[
+                                CommonTokens.Comma,
+                                tuple_element,
+                            ],
+                            Arity="+",
+                        ),
+                        GrammarDSL.StatementItem(
+                            Item=CommonTokens.Comma,
+                            Arity="?",
+                        ),
+                        CommonTokens.PopIgnoreWhitespaceControl,
+                        CommonTokens.RParen,
+                    ],
+                ),
+
+                # Single Element
+                #   '(' <tuple|name> ',' ')'
+                GrammarDSL.StatementItem(
+                    Name=self.SINGLE_NODE_NAME,
+                    Item=[
+                        CommonTokens.LParen,
+                        CommonTokens.PushIgnoreWhitespaceControl,
+                        tuple_element,
+                        CommonTokens.Comma,
+                        CommonTokens.PopIgnoreWhitespaceControl,
+                        CommonTokens.RParen,
+                    ],
+                ),
+            ),
         )
+
+        super(TupleVariableDeclarationStatement, self).__init__(
+            GrammarStatement.Type.Statement,
+            GrammarDSL.CreateStatement(
+                name="Tuple Variable Declaration",
+                item=[
+                    tuple_definition,
+                    CommonTokens.Equal,
+                    GrammarDSL.DynamicStatements.Expressions,
+                    CommonTokens.Newline,
+                ],
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def EnumElements(
+        cls,
+        node: Node,
+    ) -> Generator[
+        Tuple[
+            Union[Leaf, Node],              # Tuple Element
+            Union[
+                str,                        # <name>
+                Node,                       # Tuple
+            ],
+        ],
+        None,
+        None,
+    ]:
+        for child_node in super(TupleVariableDeclarationStatement, cls).EnumElements(node):
+            assert isinstance(child_node.Type, OrStatement)
+            child_node = cast(Node, child_node)
+
+            assert len(child_node.Children) == 1
+            child_node = child_node.Children[0]
+
+            if isinstance(child_node, Leaf):
+                yield child_node, cast(str, GetRegexMatch(child_node))
+            else:
+                yield child_node, child_node
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -143,30 +244,12 @@ class TupleVariableDeclarationStatement(_TupleBase):
         cls,
         node: Node,
     ):
-        # Drill into the Or node
-        assert isinstance(node.Children[0].Type, OrStatement)
-        assert len(node.Children[0].Children) == 1
-        node = node.Children[0].Children[0]
+        for element_node, value in cls.EnumElements(node):
+            if isinstance(value, str):
+                if not NamingConventions.Variable.Regex.match(value):
+                    raise NamingConventions.InvalidVariableNameError.FromNode(element_node, value)
 
-        if node.Type.Name == "Single":
-            assert len(node.Children) > 2
-            elements = [node.Children[1]]
+                continue
 
-        elif node.Type.Name == "Multiple":
-            assert len(node.Children) > 3
-
-            elements = [node.Children[1]]
-
-            for child in node.Children[2].Children:
-                # First element is the comma, second is the value
-                assert len(child.Children) == 2
-                elements.append(child.Children[1])
-
-        else:
-            assert False, node  # pragma: no cover
-
-        for element in elements:
-            element_name = element.Value.Match.group("value")
-
-            if not NamingConventions.Variable.Regex.match(element_name):
-                raise InvalidVariableNameError.FromNode(element, element_name)
+            # If here, we are looking at a nested tuple
+            cls.ValidateNodeSyntax(cast(Node, element_node))

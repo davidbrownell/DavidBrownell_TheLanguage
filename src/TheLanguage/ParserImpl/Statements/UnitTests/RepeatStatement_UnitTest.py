@@ -62,6 +62,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_MatchSingleLine(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -146,13 +147,14 @@ class TestStandard(object):
         )
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MatchTwoLines(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -187,13 +189,14 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 35
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MatchThreeLines(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -229,13 +232,14 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 35
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatch(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -263,13 +267,14 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 8
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_PartialMatch(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -300,13 +305,14 @@ class TestStandard(object):
         assert len(parse_mock.method_calls) == 16
 
         assert list(result.Data.Enum()) == [
-            (self._statement, result.Data.Data),
+            (self._statement, result.Data.Data, result.Data.UniqueId),
         ]
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_ExactMatch(self, parse_mock):
         result = await self._exact_statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -342,6 +348,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_ExactLimitedMatch(self, parse_mock):
         result = await self._exact_statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -377,7 +384,11 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_ExactNoMatch(self, parse_mock):
-        result = await self._exact_statement.ParseAsync(CreateIterator("one"), parse_mock)
+        result = await self._exact_statement.ParseAsync(
+            ["root"],
+            CreateIterator("one"),
+            parse_mock,
+        )
 
         assert str(result) == textwrap.dedent(
             """\
@@ -408,18 +419,6 @@ async def test_ParseReturnsNone(parse_mock):
     class NoneStatement(Statement):
         # ----------------------------------------------------------------------
         @Interface.override
-        def Clone(
-            self,
-            unique_id: List[str],
-        ):
-            return self.CloneImpl(
-                self.Name,
-                unique_id=unique_id,
-                type_id=self.TypeId,
-            )
-
-        # ----------------------------------------------------------------------
-        @Interface.override
         async def ParseAsync(self, *args, **kwargs):
             return None
 
@@ -427,7 +426,7 @@ async def test_ParseReturnsNone(parse_mock):
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         @Interface.override
-        def PopulateRecursiveImpl(
+        def _PopulateRecursiveImpl(
             self,
             new_statement: Statement,
         ) -> bool:
@@ -438,7 +437,7 @@ async def test_ParseReturnsNone(parse_mock):
 
     statement = RepeatStatement(NoneStatement("None Statement"), 1, None)
 
-    result = await statement.ParseAsync(CreateIterator("test"), parse_mock)
+    result = await statement.ParseAsync(["root"], CreateIterator("test"), parse_mock)
     assert result is None
 
 # ----------------------------------------------------------------------
@@ -449,6 +448,7 @@ async def test_OnInternalStatementFalse(parse_mock):
     statement = RepeatStatement(TokenStatement(NewlineToken()), 1, None)
 
     result = await statement.ParseAsync(
+        ["root"],
         CreateIterator(
             textwrap.dedent(
                 """\

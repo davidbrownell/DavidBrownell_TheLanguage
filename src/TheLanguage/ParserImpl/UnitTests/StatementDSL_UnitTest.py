@@ -72,7 +72,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 8 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 8 0 None None", "The incoming iterator should not be modified"
         assert str(result.Iter) == "8 8 1 None None", "The result iterator should be modified"
 
@@ -99,7 +99,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 13 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 13 0 None None", "The incoming iterator should not be modified"
         assert str(result.Iter) == "13 13 1 None None", "The result iterator should be modified"
 
@@ -126,7 +126,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 8 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 8 0 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "8 8 1 None None", "The result iterator should be modified"
 
@@ -153,7 +153,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 9 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 9 0 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "9 9 1 None None", "The result iterator should be modified"
 
@@ -180,7 +180,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 9 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 9 0 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "9 9 1 None None", "The result iterator should be modified"
 
@@ -207,7 +207,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 12 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 12 0 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "12 12 1 None None", "The result iterator should be modified"
 
@@ -234,7 +234,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 9 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 9 0 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "9 9 1 None None", "The result iterator should be modified"
 
@@ -261,7 +261,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 12 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 12 0 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "12 12 1 None None", "The result iterator should be modified"
 
@@ -296,7 +296,7 @@ class TestParseSimple(object):
         # Line 1
         assert str(iter) == "0 19 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 19 0 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "8 19 1 None None", "The result iterator should be modified"
 
@@ -319,7 +319,7 @@ class TestParseSimple(object):
         iter = result.Iter
 
         # Line 2
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "8 19 1 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "19 19 2 None None", "The result iterator should be modified"
 
@@ -348,7 +348,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 17 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 17 0 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "17 17 4 None None", "The result iterator should be modified"
 
@@ -377,7 +377,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "0 14 0 None None"
 
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
         assert str(iter) == "0 14 0 None None",  "The incoming iterator should not be modified"
         assert str(result.Iter) == "7 14 0 None None", "The result iterator should be modified"
 
@@ -419,6 +419,7 @@ class TestParseIndentAndDedent(object):
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -590,6 +591,7 @@ class TestParseIndentAndDedent(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -628,6 +630,7 @@ class TestParseIndentAndDedent(object):
     @pytest.mark.asyncio
     async def test_FinishEarly(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -675,6 +678,7 @@ class TestIgnoreWhitespace(object):
     @pytest.mark.asyncio
     async def test_MatchNoExtra(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -756,6 +760,7 @@ class TestEmbeddedStatements(object):
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator("( one two )"),
             parse_mock,
             single_threaded=True,
@@ -851,7 +856,7 @@ class TestEmbeddedStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatchAllInner(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("( one two"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("( one two"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -875,7 +880,7 @@ class TestEmbeddedStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatchPartialInner(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("( one"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("( one"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -897,7 +902,7 @@ class TestEmbeddedStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatchFirstOnly(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("( "), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("( "), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -954,6 +959,7 @@ class TestDynamicStatements(object):
     @pytest.mark.asyncio
     async def test_Match(self, modified_parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -1386,6 +1392,7 @@ class TestDynamicStatements(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, modified_parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -1466,7 +1473,7 @@ class TestOrStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_WordMatch(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("word"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("word"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -1486,7 +1493,7 @@ class TestOrStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NumberMatch(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("1234"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("1234"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -1506,7 +1513,7 @@ class TestOrStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_UpperMatch(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("WORD"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("WORD"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -1527,6 +1534,7 @@ class TestOrStatements(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator("this is not a match"),
             parse_mock,
             single_threaded=True,
@@ -1586,7 +1594,7 @@ class TestOrStatements(object):
             side_effect=[True, False],
         )
 
-        result = await self._statement.ParseAsync(CreateIterator("word"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("word"), parse_mock)
 
         assert result is None
         assert len(parse_mock.method_calls) == 18
@@ -1615,7 +1623,7 @@ class TestEmbeddedOrStatements(object):
         )
 
         # Line 1
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -1633,7 +1641,7 @@ class TestEmbeddedOrStatements(object):
         iter = result.Iter
 
         # Line 2
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -1651,7 +1659,7 @@ class TestEmbeddedOrStatements(object):
         iter = result.Iter
 
         # Line 3
-        result = await self._statement.ParseAsync(iter, parse_mock)
+        result = await self._statement.ParseAsync(["root"], iter, parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -1686,6 +1694,7 @@ class TestRepeatStatements(object):
     @pytest.mark.asyncio
     async def test_Match1(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -1761,6 +1770,7 @@ class TestRepeatStatements(object):
     @pytest.mark.asyncio
     async def test_Match2(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -1825,6 +1835,7 @@ class TestRepeatStatements(object):
     @pytest.mark.asyncio
     async def test_Match3(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -1889,6 +1900,7 @@ class TestRepeatStatements(object):
     @pytest.mark.asyncio
     async def test_Match4(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -2435,6 +2447,7 @@ class TestRepeatStatements(object):
     @pytest.mark.asyncio
     async def test_NoMatch1(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -2479,6 +2492,7 @@ class TestRepeatStatements(object):
     @pytest.mark.asyncio
     async def test_NoMatch2(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -2533,6 +2547,7 @@ class TestRepeatStatements(object):
         )
 
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -2572,7 +2587,7 @@ class TestRepeatSimilarStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_LargeMatch(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("word 123"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("word 123"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -2593,7 +2608,7 @@ class TestRepeatSimilarStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SmallMatch(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("word"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("word"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -2605,82 +2620,6 @@ class TestRepeatSimilarStatements(object):
                     Repeat: (Word Token, 0, 1)
                         Word Token
                             Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
-            """,
-        )
-
-    # ----------------------------------------------------------------------
-    @pytest.mark.asyncio
-    async def test_IgnoreWhitespace(self, parse_mock):
-        statement = self._statement.Clone(self._statement.UniqueId)
-
-        assert statement.Statements
-
-        statement.Statements.insert(0, TokenStatement(PushIgnoreWhitespaceControlToken()))
-        statement.Statements.append(TokenStatement(PopIgnoreWhitespaceControlToken()))
-
-        result = await statement.ParseAsync(
-            CreateIterator(
-                textwrap.dedent(
-                    """\
-                    one 1
-                        two 2
-                            three 3
-
-                        four 4
-                                    five 5
-                    six
-                    """,
-                ),
-            ),
-            parse_mock,
-        )
-
-        assert str(result) == textwrap.dedent(
-            """\
-            True
-            71
-                Sequence: [Repeat: (Word & Number, 0, None), Repeat: (Word Token, 0, 1)]
-                    Repeat: (Word & Number, 0, None)
-                        Word & Number
-                            Word Token
-                                Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
-                            Number Token
-                                Number Token <<Regex: <_sre.SRE_Match object; span=(4, 5), match='1'>>> ws:(3, 4) [1, 5 -> 1, 6]
-                        Word & Number
-                            Newline+ <<5, 6>> ws:None !Ignored! [1, 6 -> 2, 1]
-                            Indent <<6, 10, (4)>> ws:None !Ignored! [2, 1 -> 2, 5]
-                            Word Token
-                                Word Token <<Regex: <_sre.SRE_Match object; span=(10, 13), match='two'>>> ws:None [2, 5 -> 2, 8]
-                            Number Token
-                                Number Token <<Regex: <_sre.SRE_Match object; span=(14, 15), match='2'>>> ws:(13, 14) [2, 9 -> 2, 10]
-                        Word & Number
-                            Newline+ <<15, 16>> ws:None !Ignored! [2, 10 -> 3, 1]
-                            Indent <<16, 24, (8)>> ws:None !Ignored! [3, 1 -> 3, 9]
-                            Word Token
-                                Word Token <<Regex: <_sre.SRE_Match object; span=(24, 29), match='three'>>> ws:None [3, 9 -> 3, 14]
-                            Number Token
-                                Number Token <<Regex: <_sre.SRE_Match object; span=(30, 31), match='3'>>> ws:(29, 30) [3, 15 -> 3, 16]
-                        Word & Number
-                            Newline+ <<31, 33>> ws:None !Ignored! [3, 16 -> 5, 1]
-                            Dedent <<>> ws:None !Ignored! [5, 1 -> 5, 5]
-                            Word Token
-                                Word Token <<Regex: <_sre.SRE_Match object; span=(37, 41), match='four'>>> ws:None [5, 5 -> 5, 9]
-                            Number Token
-                                Number Token <<Regex: <_sre.SRE_Match object; span=(42, 43), match='4'>>> ws:(41, 42) [5, 10 -> 5, 11]
-                        Word & Number
-                            Newline+ <<43, 44>> ws:None !Ignored! [5, 11 -> 6, 1]
-                            Indent <<44, 60, (16)>> ws:None !Ignored! [6, 1 -> 6, 17]
-                            Word Token
-                                Word Token <<Regex: <_sre.SRE_Match object; span=(60, 64), match='five'>>> ws:None [6, 17 -> 6, 21]
-                            Number Token
-                                Number Token <<Regex: <_sre.SRE_Match object; span=(65, 66), match='5'>>> ws:(64, 65) [6, 22 -> 6, 23]
-                    Newline+ <<66, 67>> ws:None !Ignored! [6, 23 -> 7, 1]
-                    Dedent <<>> ws:None !Ignored! [7, 1 -> 7, 1]
-                    Dedent <<>> ws:None !Ignored! [7, 1 -> 7, 1]
-                    Repeat: (Word Token, 0, 1)
-                        Word Token
-                            Word Token <<Regex: <_sre.SRE_Match object; span=(67, 70), match='six'>>> ws:None [7, 1 -> 7, 4]
-                    Newline+ <<70, 71>> ws:None !Ignored! [7, 4 -> 8, 1]
             """,
         )
 
@@ -2717,6 +2656,7 @@ class TestNamedStatements(object):
     @pytest.mark.asyncio
     async def test_Match(self, modified_parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -2766,6 +2706,7 @@ class TestNamedStatements(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, modified_parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -2836,6 +2777,7 @@ class TestComments(object):
     @pytest.mark.asyncio
     async def test_Multiline(self, parse_mock):
         result = await self._multiline_statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -2958,7 +2900,7 @@ class TestComments(object):
         )
 
         # 1-3
-        result = await self._indent_statement.ParseAsync(iterator, parse_mock)
+        result = await self._indent_statement.ParseAsync(["root"], iterator, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
@@ -2991,7 +2933,7 @@ class TestComments(object):
         iterator = result.Iter
 
         # 4-6
-        result = await self._indent_statement.ParseAsync(iterator, parse_mock)
+        result = await self._indent_statement.ParseAsync(["root"], iterator, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
@@ -3024,7 +2966,7 @@ class TestComments(object):
         iterator = result.Iter
 
         # 7-9
-        result = await self._indent_statement.ParseAsync(iterator, parse_mock)
+        result = await self._indent_statement.ParseAsync(["root"], iterator, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
@@ -3057,7 +2999,7 @@ class TestComments(object):
         iterator = result.Iter
 
         # 10-12
-        result = await self._indent_statement.ParseAsync(iterator, parse_mock)
+        result = await self._indent_statement.ParseAsync(["root"], iterator, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             True
@@ -3097,6 +3039,7 @@ class TestComments(object):
     @pytest.mark.asyncio
     async def test_StandAlone(self, parse_mock):
         result = await self._multiline_statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -3162,7 +3105,7 @@ class TestRecursiveOrStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoRecursion(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("( hello )"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("( hello )"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -3182,7 +3125,7 @@ class TestRecursiveOrStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SingleRecursion(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("((hello))"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("((hello))"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -3208,7 +3151,7 @@ class TestRecursiveOrStatements(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_DoubleRecursion(self, parse_mock):
-        result = await self._statement.ParseAsync(CreateIterator("( ( ( hello)))"), parse_mock)
+        result = await self._statement.ParseAsync(["root"], CreateIterator("( ( ( hello)))"), parse_mock)
 
         assert str(result) == textwrap.dedent(
             """\
@@ -3254,6 +3197,7 @@ class TestRecursiveRepeatStatement(object):
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -3322,6 +3266,7 @@ class TestRecursiveSequenceStatement(object):
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await self._statement.ParseAsync(
+            ["root"],
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -3345,7 +3290,7 @@ class TestRecursiveSequenceStatement(object):
             """\
             True
             55
-                Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Placeholder, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]]
+                Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Recursive, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]]
                     Sequence: [Number Token, Newline+]
                         Number Token
                             Number Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='123'>>> ws:None [1, 1 -> 1, 4]
@@ -3356,8 +3301,8 @@ class TestRecursiveSequenceStatement(object):
                             Upper Token <<Regex: <_sre.SRE_Match object; span=(4, 10), match='UPPERA'>>> ws:None [2, 1 -> 2, 7]
                         Newline+
                             Newline+ <<10, 11>> ws:None [2, 7 -> 3, 1]
-                    Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Placeholder, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}
-                        Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Placeholder, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]]
+                    Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Recursive, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}
+                        Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Recursive, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]]
                             Sequence: [Number Token, Newline+]
                                 Number Token
                                     Number Token <<Regex: <_sre.SRE_Match object; span=(11, 14), match='456'>>> ws:None [3, 1 -> 3, 4]
@@ -3368,8 +3313,8 @@ class TestRecursiveSequenceStatement(object):
                                     Upper Token <<Regex: <_sre.SRE_Match object; span=(15, 21), match='UPPERB'>>> ws:None [4, 1 -> 4, 7]
                                 Newline+
                                     Newline+ <<21, 22>> ws:None [4, 7 -> 5, 1]
-                            Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Placeholder, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}
-                                Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Placeholder, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]]
+                            Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Recursive, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}
+                                Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Recursive, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]]
                                     Sequence: [Number Token, Newline+]
                                         Number Token
                                             Number Token <<Regex: <_sre.SRE_Match object; span=(22, 25), match='789'>>> ws:None [5, 1 -> 5, 4]
@@ -3380,7 +3325,7 @@ class TestRecursiveSequenceStatement(object):
                                             Upper Token <<Regex: <_sre.SRE_Match object; span=(26, 32), match='UPPERC'>>> ws:None [6, 1 -> 6, 7]
                                         Newline+
                                             Newline+ <<32, 33>> ws:None [6, 7 -> 7, 1]
-                                    Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Placeholder, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}
+                                    Or: {Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: {Recursive, Sequence: [Delimiter, Newline+]}, Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]}
                                         Sequence: [Delimiter, Newline+]
                                             Delimiter
                                                 Delimiter <<Regex: <_sre.SRE_Match object; span=(33, 36), match='---'>>> ws:None [7, 1 -> 7, 4]
@@ -3420,6 +3365,7 @@ async def test_IgnoreWhitespace(parse_mock):
     )
 
     result = await statement.ParseAsync(
+        ["root"],
         CreateIterator(
             textwrap.dedent(
                 """\
@@ -3461,7 +3407,7 @@ async def test_NestedStatement(parse_mock):
         item=[TokenStatement(_word_token),],
     )
 
-    result = await statement.ParseAsync(CreateIterator("test"), parse_mock)
+    result = await statement.ParseAsync(["root"], CreateIterator("test"), parse_mock)
 
     assert str(result) == textwrap.dedent(
         """\
