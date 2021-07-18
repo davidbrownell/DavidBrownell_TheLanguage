@@ -37,6 +37,8 @@ with InitRelativeImports():
         Statement,
     )
 
+    from ....ParserImpl.Statements.DynamicStatement import DynamicStatement
+    from ....ParserImpl.Statements.OrStatement import OrStatement
 
 
 # ----------------------------------------------------------------------
@@ -56,3 +58,20 @@ def GetRegexMatch(
         result = result.group(group_value_name)
 
     return result
+
+
+# ----------------------------------------------------------------------
+def ExtractDynamicExpressionNode(
+    node: Node,
+) -> Node:
+    # Drill into the Dynamic Expression node
+    assert isinstance(node.Type, DynamicStatement)
+    assert len(node.Children) == 1
+    node = cast(Node, node.Children[0])
+
+    # Drill into the grammar node
+    assert isinstance(node.Type, OrStatement)
+    assert len(node.Children) == 1
+    node = cast(Node, node.Children[0])
+
+    return node
