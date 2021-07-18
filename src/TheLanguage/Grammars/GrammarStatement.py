@@ -85,6 +85,7 @@ class GrammarStatement(Interface.Interface):
 
         Statement                           = auto()
         Expression                          = auto()
+        Type                                = auto()
 
     # ----------------------------------------------------------------------
     def __init__(

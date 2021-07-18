@@ -1683,10 +1683,10 @@ class TestEmbeddedOrStatements(object):
 class TestRepeatStatements(object):
     _statement                              = CreateStatement(
         [
-            StatementItem([_word_token, NewlineToken()], Arity="*"),
-            StatementItem([_number_token, NewlineToken()], Arity="+"),
-            StatementItem([_upper_token, NewlineToken()], Arity="?"),
-            StatementItem([_word_token, NewlineToken()], Arity="+"),
+            StatementItem([_word_token, NewlineToken()], arity="*"),
+            StatementItem([_number_token, NewlineToken()], arity="+"),
+            StatementItem([_upper_token, NewlineToken()], arity="?"),
+            StatementItem([_word_token, NewlineToken()], arity="+"),
         ],
     )
 
@@ -2573,13 +2573,13 @@ class TestRepeatSimilarStatements(object):
     _statement                              = CreateStatement(
         item=[
             StatementItem(
-                Name="Word & Number",
-                Item=[_word_token, _number_token],
-                Arity="*",
+                name="Word & Number",
+                item=[_word_token, _number_token],
+                arity="*",
             ),
             StatementItem(
-                Item=_word_token,
-                Arity="?",
+                item=_word_token,
+                arity="?",
             ),
         ],
     )
@@ -2633,15 +2633,15 @@ class TestNamedStatements(object):
     _statement                              = CreateStatement(
         name="__Statement__",
         item=[
-            StatementItem(Name="__Dynamic__", Item=DynamicStatements.Statements),
+            StatementItem(name="__Dynamic__", item=DynamicStatements.Statements),
             StatementItem(
-                Name="__Or__",
-                Item=(
+                name="__Or__",
+                item=(
                     _word_line_statement,
-                    StatementItem(Name="Upper Line", Item=[_upper_token, NewlineToken()]),
+                    StatementItem(name="Upper Line", item=[_upper_token, NewlineToken()]),
                 ),
             ),
-            StatementItem(Name="__Repeat__", Item=[_number_token, NewlineToken()], Arity=(2, 2)),
+            StatementItem(name="__Repeat__", item=[_number_token, NewlineToken()], arity=(2, 2)),
         ],
     )
 
@@ -2750,13 +2750,13 @@ class TestNamedStatements(object):
 class TestComments(object):
     _multiline_statement                    = CreateStatement(
         StatementItem(
-            Name="Multiline",
-            Item=[
+            name="Multiline",
+            item=[
                 [_word_token, NewlineToken()],
                 [_upper_token, NewlineToken()],
                 [_number_token, NewlineToken()],
             ],
-            Arity="+",
+            arity="+",
         ),
     )
 
@@ -3187,7 +3187,7 @@ class TestRecursiveRepeatStatement(object):
         item=[
             [_number_token, NewlineToken()],
             (
-                StatementItem(None, Arity=(1, 2)),
+                StatementItem(None, arity=(1, 2)),
                 [_word_token, NewlineToken()]
             ),
         ],

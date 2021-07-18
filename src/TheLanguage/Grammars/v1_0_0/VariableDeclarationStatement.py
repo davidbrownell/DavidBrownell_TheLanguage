@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import GetRegexMatch
+    from .Common.GrammarAST import ExtractLeafValue
     from .Common import GrammarDSL
     from .Common import NamingConventions
     from .Common import Tokens as CommonTokens
@@ -73,7 +73,7 @@ class VariableDeclarationStatement(GrammarStatement):
         assert len(node.Children) > 1, node
         name_leaf = cast(GrammarDSL.Leaf, node.Children[0])
 
-        variable_name = GetRegexMatch(name_leaf)
+        variable_name = ExtractLeafValue(name_leaf)
 
         if not NamingConventions.Variable.Regex.match(variable_name):
             raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, variable_name)

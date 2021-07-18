@@ -71,6 +71,7 @@ class TestSimple(object):
     _statements                             = DynamicStatementInfo(
         (_upper_statement, _lower_statement, _number_statement),
         (),
+        (),
     )
 
     # ----------------------------------------------------------------------
@@ -256,6 +257,7 @@ class TestIndentation(object):
     _statements                             = DynamicStatementInfo(
         (_statement,),
         (),
+        (),
     )
 
     # ----------------------------------------------------------------------
@@ -295,8 +297,8 @@ class TestNewStatements(object):
     _upper_statement                        = CreateStatement(name="Upper Statement", item=_upper_token)
     _lower_statement                        = CreateStatement(name="Lower Statement", item=[_lower_token, NewlineToken()])
 
-    _statements                             = DynamicStatementInfo((_upper_statement,), ())
-    _new_statements                         = DynamicStatementInfo((_lower_statement,), ())
+    _statements                             = DynamicStatementInfo((_upper_statement,), (), ())
+    _new_statements                         = DynamicStatementInfo((_lower_statement,), (), ())
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -379,8 +381,8 @@ class TestNewScopedStatements(object):
     _indent_statement                       = CreateStatement(name="Indent Statement", item=IndentToken())
     _dedent_statement                       = CreateStatement(name="Dedent Statement", item=DedentToken())
 
-    _statements                             = DynamicStatementInfo((_upper_statement, _newline_statement, _indent_statement, _dedent_statement), ())
-    _new_statements                         = DynamicStatementInfo((_lower_statement,), ())
+    _statements                             = DynamicStatementInfo((_upper_statement, _newline_statement, _indent_statement, _dedent_statement), (), ())
+    _new_statements                         = DynamicStatementInfo((_lower_statement,), (), ())
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -516,8 +518,8 @@ class TestNewScopedStatementsComplex(object):
         ],
     )
 
-    _statements                             = DynamicStatementInfo((_newline_statement, _new_scope_statement), ())
-    _new_statements                         = DynamicStatementInfo((_upper_statement, _lower_statement), ())
+    _statements                             = DynamicStatementInfo((_newline_statement, _new_scope_statement), (), ())
+    _new_statements                         = DynamicStatementInfo((_upper_statement, _lower_statement), (), ())
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -574,7 +576,7 @@ class TestEmbeddedStatements(object):
     _uul_statement                          = CreateStatement(name="uul", item=[_upper_token, _upper_lower_statement])
     _lul_statement                          = CreateStatement(name="lul", item=[_lower_token, _upper_lower_statement])
 
-    _statements                             = DynamicStatementInfo((_uul_statement, _lul_statement), ())
+    _statements                             = DynamicStatementInfo((_uul_statement, _lul_statement), (), ())
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -623,6 +625,7 @@ class TestVariedLengthMatches(object):
     _statements                             = DynamicStatementInfo(
         (_upper_statement, _lower_statement, _number_statement),
         (),
+        (),
     )
 
     # ----------------------------------------------------------------------
@@ -670,7 +673,7 @@ class TestVariedLengthMatches(object):
 @pytest.mark.asyncio
 async def test_EmptyDynamicStatementInfo(parse_mock):
     parse_mock.OnStatementCompleteAsync = CoroutineMock(
-        return_value=DynamicStatementInfo((), ()),
+        return_value=DynamicStatementInfo((), (), ()),
     )
 
     result = await ParseAsync(
@@ -679,6 +682,7 @@ async def test_EmptyDynamicStatementInfo(parse_mock):
                 CreateStatement(name="Newline Statement", item=NewlineToken()),
                 CreateStatement(name="Lower Statement", item=[_lower_token, NewlineToken()]),
             ),
+            (),
             (),
         ),
         CreateIterator(
@@ -716,6 +720,7 @@ class TestPreventParentTraversal(object):
     _statements                             = DynamicStatementInfo(
         (_upper_statement, _indent_statement, _dedent_statement),
         (),
+        (),
     )
 
     # ----------------------------------------------------------------------
@@ -724,6 +729,7 @@ class TestPreventParentTraversal(object):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicStatementInfo(
                 (self._lower_statement, self._dedent_statement),
+                (),
                 (),
                 False,
             ),
@@ -789,6 +795,7 @@ class TestPreventParentTraversal(object):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicStatementInfo(
                 (self._lower_statement, self._dedent_statement),
+                (),
                 (),
                 False,
             ),
@@ -870,6 +877,7 @@ async def test_InvalidDynamicTraversalError(parse_mock):
         return_value=DynamicStatementInfo(
             (CreateStatement(name="Newline", item=NewlineToken()),),
             (),
+            (),
             False,
         ),
     )
@@ -878,6 +886,7 @@ async def test_InvalidDynamicTraversalError(parse_mock):
         result = await ParseAsync(
             DynamicStatementInfo(
                 (CreateStatement(name="Newline", item=NewlineToken()),),
+                (),
                 (),
             ),
             CreateIterator(
@@ -922,6 +931,7 @@ async def test_DynamicExpressions(parse_mock):
                     item=_number_token,
                 ),
             ),
+            (),
         ),
         CreateIterator("WORD 1234 lower"),
         parse_mock,
@@ -994,10 +1004,12 @@ class TestCatastrophicInclude(object):
     _statements                             = DynamicStatementInfo(
         (_lower_include_statement, _number_include_statement),
         (),
+        (),
     )
 
     _lower_dynamic_statements               = DynamicStatementInfo(
         (_lower_statement,),
+        (),
         (),
         True,
         # "Lower Dynamic Statements",
@@ -1005,6 +1017,7 @@ class TestCatastrophicInclude(object):
 
     _number_dynamic_statements              = DynamicStatementInfo(
         (_number_statement,),
+        (),
         (),
         True,
         # "Number Dynamic Statements",
