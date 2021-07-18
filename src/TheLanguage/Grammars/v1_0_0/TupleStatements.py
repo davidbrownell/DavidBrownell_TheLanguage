@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import GetRegexMatch, Leaf, Node
+    from .Common.GrammarAST import ExtractLeafValue, Leaf, Node
     from .Common import GrammarDSL
     from .Common import NamingConventions
     from .Common import Tokens as CommonTokens
@@ -101,21 +101,21 @@ class TupleExpression(_TupleBase):
                     # Multiple Elements
                     #   '(' <expr> (',' <expr>)+ '?' ','? ')'
                     GrammarDSL.StatementItem(
-                        Name=self.MULTIPLE_NODE_NAME,
-                        Item=[
+                        name=self.MULTIPLE_NODE_NAME,
+                        item=[
                             CommonTokens.LParen,
                             CommonTokens.PushIgnoreWhitespaceControl,
                             GrammarDSL.DynamicStatements.Expressions,
                             GrammarDSL.StatementItem(
-                                Item=[
+                                item=[
                                     CommonTokens.Comma,
                                     GrammarDSL.DynamicStatements.Expressions,
                                 ],
-                                Arity="+",
+                                arity="+",
                             ),
                             GrammarDSL.StatementItem(
-                                Item=CommonTokens.Comma,
-                                Arity="?",
+                                item=CommonTokens.Comma,
+                                arity="?",
                             ),
                             CommonTokens.PopIgnoreWhitespaceControl,
                             CommonTokens.RParen,
@@ -125,8 +125,8 @@ class TupleExpression(_TupleBase):
                     # Single Element
                     #   '(' <expr> ',' ')'
                     GrammarDSL.StatementItem(
-                        Name=self.SINGLE_NODE_NAME,
-                        Item=[
+                        name=self.SINGLE_NODE_NAME,
+                        item=[
                             CommonTokens.LParen,
                             CommonTokens.PushIgnoreWhitespaceControl,
                             GrammarDSL.DynamicStatements.Expressions,
@@ -158,22 +158,22 @@ class TupleVariableDeclarationStatement(_TupleBase):
                 # Multiple Elements
                 #   '(' <tuple|name> (',' <tuple|name>)+ ','? ')'
                 GrammarDSL.StatementItem(
-                    Name=self.MULTIPLE_NODE_NAME,
-                    Item=[
+                    name=self.MULTIPLE_NODE_NAME,
+                    item=[
                         CommonTokens.LParen,
                         CommonTokens.PushIgnoreWhitespaceControl,
                         tuple_element,
                         GrammarDSL.StatementItem(
-                            Name="Comma and Element",
-                            Item=[
+                            name="Comma and Element",
+                            item=[
                                 CommonTokens.Comma,
                                 tuple_element,
                             ],
-                            Arity="+",
+                            arity="+",
                         ),
                         GrammarDSL.StatementItem(
-                            Item=CommonTokens.Comma,
-                            Arity="?",
+                            item=CommonTokens.Comma,
+                            arity="?",
                         ),
                         CommonTokens.PopIgnoreWhitespaceControl,
                         CommonTokens.RParen,
@@ -183,8 +183,8 @@ class TupleVariableDeclarationStatement(_TupleBase):
                 # Single Element
                 #   '(' <tuple|name> ',' ')'
                 GrammarDSL.StatementItem(
-                    Name=self.SINGLE_NODE_NAME,
-                    Item=[
+                    name=self.SINGLE_NODE_NAME,
+                    item=[
                         CommonTokens.LParen,
                         CommonTokens.PushIgnoreWhitespaceControl,
                         tuple_element,
@@ -233,7 +233,7 @@ class TupleVariableDeclarationStatement(_TupleBase):
             child_node = child_node.Children[0]
 
             if isinstance(child_node, Leaf):
-                yield child_node, cast(str, GetRegexMatch(child_node))
+                yield child_node, cast(str, ExtractLeafValue(child_node))
             else:
                 yield child_node, child_node
 

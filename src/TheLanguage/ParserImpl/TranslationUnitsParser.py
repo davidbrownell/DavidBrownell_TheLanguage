@@ -200,7 +200,7 @@ async def ParseAsync(
                 if final_result is None:
                     del thread_info.source_lookup[fully_qualified_name]
 
-                    final_result = SourceInfo(None, DynamicStatementInfo((), ()))
+                    final_result = SourceInfo(None, DynamicStatementInfo((), (), ()))
 
                 for event in thread_info.source_pending.pop(fully_qualified_name, []):
                     event.set()

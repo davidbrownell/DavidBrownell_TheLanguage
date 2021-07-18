@@ -115,6 +115,7 @@ class TestStandard(object):
     _statements                             = DynamicStatementInfo(
         (_include_statement, _upper_statement, _lower_statement, _number_statement, _new_scope_statement),
         (),
+        (),
     )
 
     _or_statement_name                      = "{Include, Upper, Lower, Number, New Scope}"
@@ -170,9 +171,9 @@ class TestStandard(object):
                     node: RootNode,
                 ) -> DynamicStatementInfo:
                     if fully_qualified_name == "number":
-                        return DynamicStatementInfo((cls._dynamic_number_statement,), ())
+                        return DynamicStatementInfo((cls._dynamic_number_statement,), (), ())
 
-                    return DynamicStatementInfo((), ())
+                    return DynamicStatementInfo((), (), ())
 
                 # ----------------------------------------------------------------------
                 @staticmethod

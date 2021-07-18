@@ -53,8 +53,8 @@ class TestStandard(object):
     _number_statement                       = CreateStatement(name="Number Statement", item=[_number_token, NewlineToken()])
 
     _syntaxes                               = {
-        SemVer("1.0.0") : DynamicStatementInfo((_upper_statement, _lower_statement), ()),
-        SemVer("2.0.0") : DynamicStatementInfo((_upper_statement, _lower_statement, _number_statement), ()),
+        SemVer("1.0.0") : DynamicStatementInfo((_upper_statement, _lower_statement), (), ()),
+        SemVer("2.0.0") : DynamicStatementInfo((_upper_statement, _lower_statement, _number_statement), (), ()),
     }
 
     # ----------------------------------------------------------------------
