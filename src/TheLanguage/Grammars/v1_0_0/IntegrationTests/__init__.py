@@ -20,7 +20,7 @@ import textwrap
 
 from enum import auto, Flag
 from io import StringIO
-from typing import cast, Dict, List, Optional, Union
+from typing import cast, Dict, List, Optional, Tuple, Union
 from unittest.mock import patch
 
 import CommonEnvironment
@@ -139,10 +139,10 @@ def PatchAndExecute(
 
 
 # ----------------------------------------------------------------------
-def Execute(
+def ExecuteEx(
     content: str,
-) -> str:
-    """Runs PatchAndExecute and then returns the string result"""
+) -> Tuple[str, RootNode]:
+    """Runs PatchAndExecute and then returns the string along with the result"""
 
     result = PatchAndExecute(
         {
@@ -154,4 +154,15 @@ def Execute(
         max_num_threads=1,
     )
 
-    return str(result["filename"])
+    result = result["filename"]
+
+    return str(result), result
+
+
+# ----------------------------------------------------------------------
+def Execute(
+    content: str,
+) -> str:
+    """Runs PatchAndExecute and then returns the string result"""
+
+    return ExecuteEx(content)[0]

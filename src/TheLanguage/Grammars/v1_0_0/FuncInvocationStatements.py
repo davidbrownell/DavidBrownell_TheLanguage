@@ -3,7 +3,7 @@
 # |  FuncInvocationStatements.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-15 00:17:59
+# |      2021-07-17 13:43:48
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncInvocationStatement and FuncInvocationExpression objects"""
+"""Contains the FunctionInvocationStatement and FunctionInvocationExpression objects"""
 
 import os
+import textwrap
 
-from typing import List, Optional, Union
+from typing import cast, Optional
 
 from dataclasses import dataclass
 
@@ -32,21 +33,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common import Tokens as CommonTokens
-    from .Common import Statements as CommonStatements
-
-    from ..GrammarStatement import (
-        DynamicStatements,
-        GrammarStatement,
+    from .Common.GrammarAST import (
+        ExtractDynamicExpressionNode,
+        GetRegexMatch,
         Leaf,
         Node,
-        StatementEx,
-        ValidationError,
     )
 
-    from ...ParserImpl.StatementImpl.DynamicStatement import DynamicStatement
-    from ...ParserImpl.StatementImpl.OrStatement import OrStatement
-    from ...ParserImpl.StatementImpl.RepeatStatement import RepeatStatement
+    from .Common import GrammarDSL
+    from .Common import Tokens as CommonTokens
+
+    from ..GrammarStatement import GrammarStatement, ValidationError
+
+    from ...ParserImpl.Statements.DynamicStatement import DynamicStatement
+    from ...ParserImpl.Statements.OrStatement import OrStatement
+    from ...ParserImpl.Statements.RepeatStatement import RepeatStatement
+    from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
+    from ...ParserImpl.Statements.TokenStatement import TokenStatement
 
 
 # ----------------------------------------------------------------------
@@ -63,52 +66,115 @@ class _FuncInvocationBase(GrammarStatement):
     <name> '(' <args> ')'
     """
 
+    NODE_NAME                               = "Function Invocation"
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ArgumentInfo(object):
+        Argument: Node
+
+        # The following values are only valid for keyword arguments
+        Keyword: Optional[str]
+        DefaultValue: Optional[Node]
+
+        # ----------------------------------------------------------------------
+        def __str__(self):
+            return self.ToString()
+
+        # ----------------------------------------------------------------------
+        def ToString(
+            self,
+            verbose=False,
+        ) -> str:
+            return self.Argument.ToString(
+                verbose=verbose,
+            )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     def __init__(
         self,
         grammar_statement_type: GrammarStatement.Type,
     ):
-        argument_statement = [
-            # <name> = <rhs>
-            StatementEx(
-                "Keyword",
-                CommonTokens.Name,
-                CommonTokens.Equal,
-                DynamicStatements.Expressions,
+        argument_statement = (
+            GrammarDSL.StatementItem(
+                Name="Keyword",
+                Item=[
+                    CommonTokens.Name,
+                    CommonTokens.Equal,
+                    GrammarDSL.DynamicStatements.Expressions,
+                ],
             ),
 
-            DynamicStatements.Expressions,
-        ]
+            GrammarDSL.DynamicStatements.Expressions,
+        )
 
-        super(_FuncInvocationBase, self).__init__(
-            grammar_statement_type,
-            StatementEx(
-                "Function Invocation",
-                CommonTokens.Name,
+        suffix_statement = GrammarDSL.CreateStatement(
+            name="Arguments",
+            item=[
+                # '(' ... ')'
                 CommonTokens.LParen,
                 CommonTokens.PushIgnoreWhitespaceControl,
 
-                (
-                    StatementEx(
-                        "Arguments",
+                GrammarDSL.StatementItem(
+                    Name="Optional Arguments",
+                    Item=[
                         argument_statement,
-                        (
-                            StatementEx(
-                                "Comma and Argument",
+                        GrammarDSL.StatementItem(
+                            Item=[
                                 CommonTokens.Comma,
                                 argument_statement,
-                            ),
-                            0,
-                            None,
+                            ],
+                            Arity="*",
                         ),
-                        (CommonTokens.Comma, 0, 1),
-                    ),
-                    0,
-                    1,
+                        GrammarDSL.StatementItem(
+                            Item=CommonTokens.Comma,
+                            Arity="?",
+                        ),
+                    ],
+                    Arity="?",
                 ),
 
                 CommonTokens.PopIgnoreWhitespaceControl,
                 CommonTokens.RParen,
+
+                # TODO: Block statement?
+                # GrammarDSL.StatementItem(
+                #     Name="Suffix Call",
+                #     Item=[
+                #         CommonTokens.PushIgnoreWhitespaceControl,
+                #         (
+                #             CommonTokens.DottedName,
+                #             CommonTokens.ArrowedName,
+                #         ),
+                #         None,
+                #         CommonTokens.PopIgnoreWhitespaceControl,
+                #     ],
+                #     Arity="?",
+                # ),
+            ],
+        )
+
+        statement_items = [
+            CommonTokens.Name,
+            suffix_statement,
+        ]
+
+        if grammar_statement_type == GrammarStatement.Type.Statement:
+            statement_items.append(CommonTokens.Newline)
+
+        super(_FuncInvocationBase, self).__init__(
+            grammar_statement_type,
+            GrammarDSL.CreateStatement(
+                name=self.NODE_NAME,
+                item=statement_items,
             ),
         )
 
@@ -119,53 +185,45 @@ class _FuncInvocationBase(GrammarStatement):
         cls,
         node: Node,
     ):
-        assert len(node.Children) >= 3
-        object.__setattr__(node, "arguments", cls._GetArguments(node.Children[2]))
+        assert len(node.Children) >= 2, node.Children
 
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class _ArgumentInfo(object):
-        Argument: Node
+        func_name = GetRegexMatch(cast(Leaf, node.Children[0]))
 
-        # The following values are only valid for keyword arguments
-        Keyword: Optional[str]
-        DefaultValue: Optional[Node]
+        # Drill into the arguments node
+        assert isinstance(node.Children[1].Type, SequenceStatement)
+        arguments_node = cast(Node, node.Children[1])
 
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _GetArguments(
-        cls,
-        node: Union[Node, Leaf],
-    ) -> List["FuncInvocationHybrid._ArgumentInfo"]:
+        assert len(node.Children) >= 2, arguments_node.Children
+        potential_arguments_node = arguments_node.Children[1]
 
-        if isinstance(node, Leaf):
-            # The leaf is the closing ')' token; this indicates that there aren't any
-            # arguments.
-            return []
+        if isinstance(potential_arguments_node, Leaf):
+            # This leaf is the closing ')' token; this indicates that there aren't
+            # and arguments
+            arguments = []
 
-        # Drill into the Optional node
-        assert isinstance(node.Type, RepeatStatement)
-        assert len(node.Children) == 1
-        node = node.Children[0]
+        else:
+            # Drill into the optional node
+            assert isinstance(potential_arguments_node.Type, RepeatStatement)
+            assert len(potential_arguments_node.Children) == 1
+            arguments_node = cast(Node, potential_arguments_node.Children[0])
 
-        # Get the arguments
-        arguments = []
+            # Get the arguments
+            arguments = []
 
-        arguments.append(cls._CreateArgumentInfo(node.Children[0]))
+            arguments.append(cls._ExtractArgumentInfo(cast(Node, arguments_node.Children[0])))
 
-        if (
-            len(node.Children) >= 2
-            and isinstance(node.Children[1].Type, RepeatStatement)
-            and isinstance(node.Children[1].Type.Statement, StatementEx)
-        ):
-            for argument_node in node.Children[1].Children:
-                # First value is the comma, second is the argument
-                assert len(argument_node.Children) == 2
-                argument_node = argument_node.Children[1]
+            if (
+                len(arguments_node.Children) >= 2
+                and isinstance(arguments_node.Children[1].Type, RepeatStatement)
+                and not isinstance(arguments_node.Children[1].Type.Statement, TokenStatement)
+            ):
+                for argument_node in cast(Node, arguments_node.Children[1]).Children:
+                    argument_node = cast(Node, argument_node)
 
-                arguments.append(cls._CreateArgumentInfo(argument_node))
+                    assert len(argument_node.Children) == 2
+                    argument_node = cast(Node, argument_node.Children[1])
+
+                    arguments.append(cls._ExtractArgumentInfo(argument_node))
 
         # Ensure that all arguments after the first keyword argument
         # are also keyword arguments.
@@ -177,36 +235,35 @@ class _FuncInvocationBase(GrammarStatement):
             elif encountered_keyword:
                 raise PositionalArgumentAfterKeywordArgumentError.FromNode(argument.Argument)
 
-        return arguments
+        # TODO: Persist suffix
+
+        # Persist the info
+        object.__setattr__(node, "func_name", func_name)
+        object.__setattr__(node, "arguments", arguments)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @classmethod
-    def _CreateArgumentInfo(
+    def _ExtractArgumentInfo(
         cls,
         node: Node,
-    ) -> "FuncInvocationHybrid._ArgumentInfo":
+    ) -> "ArgumentInfo":
         # Drill into the Or node
         assert isinstance(node.Type, OrStatement)
         assert len(node.Children) == 1
-        node = node.Children[0]
+        node = cast(Node, node.Children[0])
 
         if isinstance(node.Type, DynamicStatement):
-            return cls._ArgumentInfo(
-                CommonStatements.ExtractDynamicExpressionsNode(node),
-                None,
-                None,
-            )
+            return cls.ArgumentInfo(ExtractDynamicExpressionNode(node), None, None)
 
-        assert node.Type.Name == "Keyword"
         assert len(node.Children) == 3
 
-        return cls._ArgumentInfo(
+        return cls.ArgumentInfo(
             node,
-            node.Children[0].Value.Match.group("value"),
-            CommonStatements.ExtractDynamicExpressionsNode(node.Children[2]),
+            cast(str, GetRegexMatch(cast(Leaf, node.Children[0]))),
+            ExtractDynamicExpressionNode(cast(Node, node.Children[2])),
         )
-
-
 
 
 # ----------------------------------------------------------------------
