@@ -42,7 +42,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-def GetRegexMatch(
+def ExtractLeafValue(
     leaf: Leaf,
     group_value_name: Optional[str]="value",
 ) -> Union[

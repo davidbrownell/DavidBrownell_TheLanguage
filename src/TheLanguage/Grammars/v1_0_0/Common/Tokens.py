@@ -36,6 +36,7 @@ with InitRelativeImports():
         PopIgnoreWhitespaceControlToken,
         PushIgnoreWhitespaceControlToken,
         RegexToken,
+        Token,
     )
 
 # ----------------------------------------------------------------------
@@ -77,6 +78,45 @@ Colon                                       = RegexToken("':'", re.compile(r":")
 Comma                                       = RegexToken("','", re.compile(r","))
 LParen                                      = RegexToken("'('", re.compile(r"\("))
 RParen                                      = RegexToken("')'", re.compile(r"\)"))
+
+#             isolated    shared
+#             --------    ------
+# mutable:      var        ref
+# immutable:    val        view
+#
+# variables:    var, val, view
+# parameters:   isolated, shared, immutable
+# methods:      mutable/mut, immutable/const
+
+Var                                         = RegexToken("'var'", re.compile(r"var\b"))
+Ref                                         = RegexToken("'ref'", re.compile(r"ref\b"))
+Val                                         = RegexToken("'val'", re.compile(r"val\b"))
+View                                        = RegexToken("'view'", re.compile(r"view\b"))
+
+Isolated                                    = RegexToken("'isolated'", re.compile(r"isolated\b"))
+Shared                                      = RegexToken("'shared'", re.compile(r"shared\b"))
+
+Mutable                                     = RegexToken("'mutable'", re.compile(r"mutable\b"))
+Immutable                                   = RegexToken("'immutable'", re.compile(r"immutable\b"))
+
+# ----------------------------------------------------------------------
+# |  FunctionDeclarationStatement
+
+# Traditional Parameters
+FunctionParameterPositionalDelimiter        = RegexToken("'/'", re.compile(r"/"))
+FunctionParameterKeywordDelimiter           = RegexToken("'*'", re.compile(r"/*"))
+
+# New Style Parameters
+FunctionParameterPositional                 = RegexToken("'pos'", re.compile(r"pos\b"))
+FunctionParameterAny                        = RegexToken("'any'", re.compile(r"any\b"))
+FunctionParameterKeyword                    = RegexToken("'key'", re.compile(r"key\b"))
+
+# When declaring a function, new style parameters must be grouped in this order
+AllNewStyleParameters                       = [
+    FunctionParameterPositional,
+    FunctionParameterAny,
+    FunctionParameterKeyword,
+]
 
 # ----------------------------------------------------------------------
 # |  FuncInvocationStatements

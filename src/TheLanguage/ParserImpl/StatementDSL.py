@@ -77,26 +77,28 @@ class StatementItem(object):
         None,                               # Populated at a later time
     ]
 
-    Item: ItemType
-    Name: Optional[str]                     = field(default_factory=lambda: None)
-    Arity: Union[
+    # Note that these attributes are named using camel casing so that they match the parameters
+    # in CreateStatement.
+    item: ItemType
+    name: Optional[str]                     = field(default_factory=lambda: None)
+    arity: Union[
         str,                                # Valid values are "?", "*", "+"
         Tuple[int, Optional[int]],
     ]                                       = field(default_factory=lambda: (1, 1))
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        if isinstance(self.Arity, str):
-            if self.Arity == "?":
+        if isinstance(self.arity, str):
+            if self.arity == "?":
                 value = (0, 1)
-            elif self.Arity == "*":
+            elif self.arity == "*":
                 value = (0, None)
-            elif self.Arity == "+":
+            elif self.arity == "+":
                 value = (1, None)
             else:
-                raise Exception("'{}' is an invalid arity value".format(self.Arity))
+                raise Exception("'{}' is an invalid arity value".format(self.arity))
 
-            object.__setattr__(self, "Arity", value)
+            object.__setattr__(self, "arity", value)
 
 
 # ----------------------------------------------------------------------
@@ -132,7 +134,7 @@ def CreateStatement(
             comment_token,
             StatementItem(
                 item,
-                Name=name,
+                name=name,
             ),
         )
     else:
@@ -160,18 +162,18 @@ def _PopulateItem(
 
     name = None
 
-    if isinstance(item.Item, Statement):
-        statement = item.Item
-        name = item.Name
+    if isinstance(item.item, Statement):
+        statement = item.item
+        name = item.name
 
-    elif isinstance(item.Item, Token):
+    elif isinstance(item.item, Token):
         statement = TokenStatement(
-            item.Item,
-            name=item.Name,
+            item.item,
+            name=item.name,
         )
 
-    elif isinstance(item.Item, DynamicStatements):
-        dynamic_statement_value = item.Item
+    elif isinstance(item.item, DynamicStatements):
+        dynamic_statement_value = item.item
 
         # ----------------------------------------------------------------------
         def GetDynamicStatements(
@@ -184,37 +186,37 @@ def _PopulateItem(
 
         statement = DynamicStatement(
             GetDynamicStatements,
-            name=item.Name or str(item.Item),
+            name=item.name or str(item.item),
         )
 
-    elif isinstance(item.Item, list):
+    elif isinstance(item.item, list):
         statement = SequenceStatement(
             comment_token,
-            *[_PopulateItem(comment_token, i) for i in item.Item],
-            name=item.Name,
+            *[_PopulateItem(comment_token, i) for i in item.item],
+            name=item.name,
         )
 
-    elif isinstance(item.Item, tuple):
+    elif isinstance(item.item, tuple):
         statement = OrStatement(
-            *[_PopulateItem(comment_token, i) for i in item.Item],
-            name=item.Name,
+            *[_PopulateItem(comment_token, i) for i in item.item],
+            name=item.name,
         )
 
-    elif item.Item is None:
+    elif item.item is None:
         statement = RecursivePlaceholderStatement()
-        name = item.Name
+        name = item.name
 
     else:
-        assert False, item.Item  # pragma: no cover
+        assert False, item.item  # pragma: no cover
 
-    assert isinstance(item.Arity, tuple), item.Arity
+    assert isinstance(item.arity, tuple), item.arity
 
-    if item.Arity[0] == 1 and item.Arity[1] == 1:
+    if item.arity[0] == 1 and item.arity[1] == 1:
         return statement
 
     return RepeatStatement(
         statement,
-        item.Arity[0],
-        item.Arity[1],
+        item.arity[0],
+        item.arity[1],
         name=name,
     )

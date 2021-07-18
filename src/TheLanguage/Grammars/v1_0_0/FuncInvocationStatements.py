@@ -16,7 +16,6 @@
 """Contains the FunctionInvocationStatement and FunctionInvocationExpression objects"""
 
 import os
-import textwrap
 
 from typing import cast, Optional
 
@@ -35,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Common.GrammarAST import (
         ExtractDynamicExpressionNode,
-        GetRegexMatch,
+        ExtractLeafValue,
         Leaf,
         Node,
     )
@@ -105,8 +104,8 @@ class _FuncInvocationBase(GrammarStatement):
     ):
         argument_statement = (
             GrammarDSL.StatementItem(
-                Name="Keyword",
-                Item=[
+                name="Keyword",
+                item=[
                     CommonTokens.Name,
                     CommonTokens.Equal,
                     GrammarDSL.DynamicStatements.Expressions,
@@ -124,31 +123,31 @@ class _FuncInvocationBase(GrammarStatement):
                 CommonTokens.PushIgnoreWhitespaceControl,
 
                 GrammarDSL.StatementItem(
-                    Name="Optional Arguments",
-                    Item=[
+                    name="Optional Arguments",
+                    item=[
                         argument_statement,
                         GrammarDSL.StatementItem(
-                            Item=[
+                            item=[
                                 CommonTokens.Comma,
                                 argument_statement,
                             ],
-                            Arity="*",
+                            arity="*",
                         ),
                         GrammarDSL.StatementItem(
-                            Item=CommonTokens.Comma,
-                            Arity="?",
+                            item=CommonTokens.Comma,
+                            arity="?",
                         ),
                     ],
-                    Arity="?",
+                    arity="?",
                 ),
 
                 CommonTokens.PopIgnoreWhitespaceControl,
                 CommonTokens.RParen,
 
-                # TODO: Block statement?
+                # TODO: Chain statement?
                 # GrammarDSL.StatementItem(
-                #     Name="Suffix Call",
-                #     Item=[
+                #     name="Chained Call",
+                #     item=[
                 #         CommonTokens.PushIgnoreWhitespaceControl,
                 #         (
                 #             CommonTokens.DottedName,
@@ -157,7 +156,7 @@ class _FuncInvocationBase(GrammarStatement):
                 #         None,
                 #         CommonTokens.PopIgnoreWhitespaceControl,
                 #     ],
-                #     Arity="?",
+                #     arity="?",
                 # ),
             ],
         )
@@ -187,7 +186,7 @@ class _FuncInvocationBase(GrammarStatement):
     ):
         assert len(node.Children) >= 2, node.Children
 
-        func_name = GetRegexMatch(cast(Leaf, node.Children[0]))
+        func_name = ExtractLeafValue(cast(Leaf, node.Children[0]))
 
         # Drill into the arguments node
         assert isinstance(node.Children[1].Type, SequenceStatement)
@@ -235,7 +234,7 @@ class _FuncInvocationBase(GrammarStatement):
             elif encountered_keyword:
                 raise PositionalArgumentAfterKeywordArgumentError.FromNode(argument.Argument)
 
-        # TODO: Persist suffix
+        # TODO: Persist chain
 
         # Persist the info
         object.__setattr__(node, "func_name", func_name)
@@ -261,7 +260,7 @@ class _FuncInvocationBase(GrammarStatement):
 
         return cls.ArgumentInfo(
             node,
-            cast(str, GetRegexMatch(cast(Leaf, node.Children[0]))),
+            cast(str, ExtractLeafValue(cast(Leaf, node.Children[0]))),
             ExtractDynamicExpressionNode(cast(Node, node.Children[2])),
         )
 
