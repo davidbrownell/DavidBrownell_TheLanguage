@@ -346,6 +346,8 @@ class _StatementObserver(Statement.Observer):
             attribute_name = "Statements"
         elif dynamic_statement_type == DynamicStatements.Expressions:
             attribute_name = "Expressions"
+        elif dynamic_statement_type == DynamicStatements.Types:
+            attribute_name = "Types"
         else:
             assert False, dynamic_statement_type  # pragma: no cover
 
