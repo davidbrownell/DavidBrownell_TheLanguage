@@ -62,7 +62,7 @@ class DynamicStatements(Enum):
 
     Statements                              = auto()    # Statements that do not generate a result
     Expressions                             = auto()    # Statements that generate a result
-
+    Types                                   = auto()    # Statements used in types
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
