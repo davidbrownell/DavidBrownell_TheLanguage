@@ -90,27 +90,33 @@ class DynamicStatementInfo(object):
 
     Statements: Tuple[Statement, ...]
     Expressions: Tuple[Statement, ...]
+    Types: Tuple[Statement, ...]
     AllowParentTraversal: bool              = True      # If False, prevent content from including values from higher-level scope
     Name: Optional[str]                     = None
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        if not isinstance(self.Statements, tuple):
-            raise Exception("'Statements' must be a tuple")
-        if not isinstance(self.Expressions, tuple):
-            raise Exception("'Expressions' must be a tuple")
+        for attribute_name in [
+            "Statements",
+            "Expressions",
+            "Types",
+        ]:
+            if not isinstance(getattr(self, attribute_name), tuple):
+                raise Exception("'{}' must be a tuple".format(attribute_name))
 
     # ----------------------------------------------------------------------
     def Clone(
         self,
         updated_statements=None,
         updated_expressions=None,
+        updated_types=None,
         updated_allow_parent_traversal=None,
         updated_name=None,
     ):
         return self.__class__(
             updated_statements if updated_statements is not None else tuple(self.Statements),
             updated_expressions if updated_expressions is not None else tuple(self.Expressions),
+            updated_types if updated_types is not None else tuple(self.Types),
             updated_allow_parent_traversal if updated_allow_parent_traversal is not None else self.AllowParentTraversal,
             updated_name if updated_name is not None else self.Name,
         )
@@ -340,6 +346,8 @@ class _StatementObserver(Statement.Observer):
             attribute_name = "Statements"
         elif dynamic_statement_type == DynamicStatements.Expressions:
             attribute_name = "Expressions"
+        elif dynamic_statement_type == DynamicStatements.Types:
+            attribute_name = "Types"
         else:
             assert False, dynamic_statement_type  # pragma: no cover
 

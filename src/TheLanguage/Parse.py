@@ -85,12 +85,15 @@ def _LoadDyanmicStatementsFromFile(
 
         statements = []
         expressions = []
+        types = []
 
         for grammar_statement in grammar_statements:
             if grammar_statement.TypeValue == GrammarStatement.Type.Statement:
                 statements.append(grammar_statement.Statement)
             elif grammar_statement.TypeValue == GrammarStatement.Type.Expression:
                 expressions.append(grammar_statement.Statement)
+            elif grammar_statement.TypeValue == GrammarStatement.Type.Type:
+                types.append(grammar_statement.Statement)
             else:
                 assert False, grammar_statement.TypeValue  # pragma: no cover
 
@@ -102,6 +105,7 @@ def _LoadDyanmicStatementsFromFile(
         return DynamicStatementInfo(
             tuple(statements),
             tuple(expressions),
+            tuple(types),
             AllowParentTraversal=False,
         )
 
@@ -238,7 +242,7 @@ class _Observer(TranslationUnitsParserObserver):
         node: RootNode,
     ) -> DynamicStatementInfo:
         # TODO
-        return DynamicStatementInfo((), ())
+        return DynamicStatementInfo((), (), ())
 
     # ----------------------------------------------------------------------
     @Interface.override

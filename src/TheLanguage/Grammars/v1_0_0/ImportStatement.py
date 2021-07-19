@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import GetRegexMatch, Leaf, Node
+    from .Common.GrammarAST import ExtractLeafValue, Leaf, Node
     from .Common import GrammarDSL
     from .Common import Tokens as CommonTokens
     from ..GrammarStatement import ImportGrammarStatement
@@ -105,15 +105,15 @@ class ImportStatement(ImportGrammarStatement):
         content_items_statement = [
             content_item_statement,
             GrammarDSL.StatementItem(
-                Item=[  # type: ignore
+                item=[  # type: ignore
                     CommonTokens.Comma,
                     content_item_statement,
                 ],
-                Arity="*",
+                arity="*",
             ),
             GrammarDSL.StatementItem(
-                Item=CommonTokens.Comma,
-                Arity="?",
+                item=CommonTokens.Comma,
+                arity="?",
             ),
         ]
 
@@ -128,8 +128,8 @@ class ImportStatement(ImportGrammarStatement):
                     (
                         # '(' <content_items_statement> ')'
                         GrammarDSL.StatementItem(
-                            Name="Grouped",
-                            Item=[
+                            name="Grouped",
+                            item=[
                                 CommonTokens.LParen,
                                 CommonTokens.PushIgnoreWhitespaceControl,
                                 content_items_statement,
@@ -171,7 +171,7 @@ class ImportStatement(ImportGrammarStatement):
 
         # Get the source
         source_leaf = cast(Leaf, node.Children[1])
-        importing_source = cast(str, GetRegexMatch(source_leaf))
+        importing_source = cast(str, ExtractLeafValue(source_leaf))
 
         # Handle the all dots scenario specifically
         if all(character if character == "." else None for character in importing_source):
@@ -360,15 +360,15 @@ class ImportStatement(ImportGrammarStatement):
             assert len(leaves) == 3
 
             return (
-                cast(str, GetRegexMatch(leaves[0])),
+                cast(str, ExtractLeafValue(leaves[0])),
                 leaves[0],
-                cast(str, GetRegexMatch(leaves[2])),
+                cast(str, ExtractLeafValue(leaves[2])),
                 leaves[2],
             )
 
         elif isinstance(node, Leaf):
             leaf = cast(Leaf, node)
-            value = cast(str, GetRegexMatch(leaf))
+            value = cast(str, ExtractLeafValue(leaf))
 
             return (value, leaf, value, leaf)
 

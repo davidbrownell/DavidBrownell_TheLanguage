@@ -27,10 +27,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .AsExpression import AsExpression
     from .FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
     from .ImportStatement import ImportStatement
     from .PassStatement import PassStatement
-    from .TupleStatements import TupleExpression, TupleVariableDeclarationStatement
+    from .StandardType import StandardType
+    from .TupleStatements import TupleExpression, TupleType, TupleVariableDeclarationStatement
     from .VariableDeclarationStatement import VariableDeclarationStatement
     from .VariableNameExpression import VariableNameExpression
 
@@ -45,7 +47,12 @@ Statements                                  = [
     VariableDeclarationStatement(),
 
     # Expressions
+    AsExpression(),
     FuncInvocationExpression(),
     TupleExpression(),
     VariableNameExpression(),
+
+    # Types
+    StandardType(),
+    TupleType(),
 ]

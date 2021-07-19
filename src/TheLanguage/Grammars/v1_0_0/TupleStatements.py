@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleDeclarationStatement and the TupleExpression objects"""
+"""Contains the TupleExpression, TupleType, and TupleVariableDeclarationStatement objects"""
 
 import os
 
-from typing import cast, Generator, Tuple, Union
+from typing import cast, Generator, List, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import GetRegexMatch, Leaf, Node
+    from .Common.GrammarAST import ExtractLeafValue, Leaf, Node
     from .Common import GrammarDSL
     from .Common import NamingConventions
     from .Common import Tokens as CommonTokens
@@ -38,6 +38,7 @@ with InitRelativeImports():
 
     from ...ParserImpl.Statements.OrStatement import OrStatement
     from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
+    from ...ParserImpl.Statements.Statement import Statement
 
 
 # ----------------------------------------------------------------------
@@ -45,6 +46,68 @@ class _TupleBase(GrammarStatement):
 
     MULTIPLE_NODE_NAME                     = "Multiple"
     SINGLE_NODE_NAME                       = "Single"
+
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        grammar_statement_type: GrammarStatement.Type,
+        tuple_statement_name: str,
+        tuple_element_item: GrammarDSL.StatementItem.ItemType,
+        additional_sequence_suffix_items: List[GrammarDSL.StatementItem.ItemType],
+    ):
+        tuple_statement = GrammarDSL.CreateStatement(
+            name="Tuple Element" if additional_sequence_suffix_items else tuple_statement_name,
+            item=(
+                # Multiple Elements
+                #   '(' <tuple_element> (',' <tuple_element>)+ ','? ')'
+                GrammarDSL.StatementItem(
+                    name=self.MULTIPLE_NODE_NAME,
+                    item=[
+                        CommonTokens.LParen,
+                        CommonTokens.PushIgnoreWhitespaceControl,
+                        tuple_element_item,
+                        GrammarDSL.StatementItem(
+                            name="Comma and Element",
+                            item=[
+                                CommonTokens.Comma,
+                                tuple_element_item,
+                            ],
+                            arity="+",
+                        ),
+                        GrammarDSL.StatementItem(
+                            item=CommonTokens.Comma,
+                            arity="?",
+                        ),
+                        CommonTokens.PopIgnoreWhitespaceControl,
+                        CommonTokens.RParen,
+                    ],
+                ),
+
+                # Single Element
+                #   '(' <tuple_element> ',' ')'
+                GrammarDSL.StatementItem(
+                    name=self.SINGLE_NODE_NAME,
+                    item=[
+                        CommonTokens.LParen,
+                        CommonTokens.PushIgnoreWhitespaceControl,
+                        tuple_element_item,
+                        CommonTokens.Comma,
+                        CommonTokens.PopIgnoreWhitespaceControl,
+                        CommonTokens.RParen,
+                    ],
+                ),
+            ),
+        )
+
+        if additional_sequence_suffix_items:
+            tuple_statement = GrammarDSL.CreateStatement(
+                name=tuple_statement_name,
+                item=
+                    cast(List[GrammarDSL.StatementItem.ItemType], [tuple_statement])
+                    + additional_sequence_suffix_items,
+            )
+
+        super(_TupleBase, self).__init__(grammar_statement_type, tuple_statement)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -86,57 +149,43 @@ class _TupleBase(GrammarStatement):
 # ----------------------------------------------------------------------
 class TupleExpression(_TupleBase):
     """\
-    Creates a tuple.
+    Creates a tuple that can be used as an expression.
 
     '(' <content> ')'
+
+    Examples:
+        var = (a, b)
+        Func((a, b, c), (a,))
     """
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(TupleExpression, self).__init__(
             GrammarStatement.Type.Expression,
-            GrammarDSL.CreateStatement(
-                name="Tuple Expression",
-                item=(
-                    # Multiple Elements
-                    #   '(' <expr> (',' <expr>)+ '?' ','? ')'
-                    GrammarDSL.StatementItem(
-                        Name=self.MULTIPLE_NODE_NAME,
-                        Item=[
-                            CommonTokens.LParen,
-                            CommonTokens.PushIgnoreWhitespaceControl,
-                            GrammarDSL.DynamicStatements.Expressions,
-                            GrammarDSL.StatementItem(
-                                Item=[
-                                    CommonTokens.Comma,
-                                    GrammarDSL.DynamicStatements.Expressions,
-                                ],
-                                Arity="+",
-                            ),
-                            GrammarDSL.StatementItem(
-                                Item=CommonTokens.Comma,
-                                Arity="?",
-                            ),
-                            CommonTokens.PopIgnoreWhitespaceControl,
-                            CommonTokens.RParen,
-                        ],
-                    ),
+            "Tuple Expression",
+            GrammarDSL.DynamicStatements.Expressions,
+            [],
+        )
 
-                    # Single Element
-                    #   '(' <expr> ',' ')'
-                    GrammarDSL.StatementItem(
-                        Name=self.SINGLE_NODE_NAME,
-                        Item=[
-                            CommonTokens.LParen,
-                            CommonTokens.PushIgnoreWhitespaceControl,
-                            GrammarDSL.DynamicStatements.Expressions,
-                            CommonTokens.Comma,
-                            CommonTokens.PopIgnoreWhitespaceControl,
-                            CommonTokens.RParen,
-                        ],
-                    ),
-                ),
-            ),
+
+# ----------------------------------------------------------------------
+class TupleType(_TupleBase):
+    """\
+    Creates a tuple that can be used as a type.
+
+    '(' <content> ')'
+
+    Examples:
+        var = value as (Foo, Bar)
+    """
+
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        super(TupleType, self).__init__(
+            GrammarStatement.Type.Type,
+            "Tuple Type",
+            GrammarDSL.DynamicStatements.Types,
+            [],
         )
 
 
@@ -146,67 +195,23 @@ class TupleVariableDeclarationStatement(_TupleBase):
     Creates a tuple variable declaration.
 
     '(' <content> ')' '=' <expr>
+
+    Examples:
+        (a, b) = Func()
+        (a,) = value
     """
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        tuple_element = (CommonTokens.Name, None)
-
-        tuple_definition = GrammarDSL.CreateStatement(
-            name="Tuple",
-            item=(
-                # Multiple Elements
-                #   '(' <tuple|name> (',' <tuple|name>)+ ','? ')'
-                GrammarDSL.StatementItem(
-                    Name=self.MULTIPLE_NODE_NAME,
-                    Item=[
-                        CommonTokens.LParen,
-                        CommonTokens.PushIgnoreWhitespaceControl,
-                        tuple_element,
-                        GrammarDSL.StatementItem(
-                            Name="Comma and Element",
-                            Item=[
-                                CommonTokens.Comma,
-                                tuple_element,
-                            ],
-                            Arity="+",
-                        ),
-                        GrammarDSL.StatementItem(
-                            Item=CommonTokens.Comma,
-                            Arity="?",
-                        ),
-                        CommonTokens.PopIgnoreWhitespaceControl,
-                        CommonTokens.RParen,
-                    ],
-                ),
-
-                # Single Element
-                #   '(' <tuple|name> ',' ')'
-                GrammarDSL.StatementItem(
-                    Name=self.SINGLE_NODE_NAME,
-                    Item=[
-                        CommonTokens.LParen,
-                        CommonTokens.PushIgnoreWhitespaceControl,
-                        tuple_element,
-                        CommonTokens.Comma,
-                        CommonTokens.PopIgnoreWhitespaceControl,
-                        CommonTokens.RParen,
-                    ],
-                ),
-            ),
-        )
-
         super(TupleVariableDeclarationStatement, self).__init__(
             GrammarStatement.Type.Statement,
-            GrammarDSL.CreateStatement(
-                name="Tuple Variable Declaration",
-                item=[
-                    tuple_definition,
-                    CommonTokens.Equal,
-                    GrammarDSL.DynamicStatements.Expressions,
-                    CommonTokens.Newline,
-                ],
-            ),
+            "Tuple Variable Declaration",
+            (CommonTokens.Name, None),
+            [
+                CommonTokens.Equal,
+                GrammarDSL.DynamicStatements.Expressions,
+                CommonTokens.Newline,
+            ],
         )
 
     # ----------------------------------------------------------------------
@@ -233,7 +238,7 @@ class TupleVariableDeclarationStatement(_TupleBase):
             child_node = child_node.Children[0]
 
             if isinstance(child_node, Leaf):
-                yield child_node, cast(str, GetRegexMatch(child_node))
+                yield child_node, cast(str, ExtractLeafValue(child_node))
             else:
                 yield child_node, child_node
 
