@@ -696,6 +696,12 @@ def test_TupleTypes():
                         ,
                     c,
             d)
+
+            # Tuple as a variable, expression, and type
+            (a, b, c) = (d, e, f) as (g, h, i)
+
+            # This statement doesn't make sense, but should parse
+            ((a, b), c, d) = (e, (f, g), h) as (i, j, (k, l))
             """,
         ),
     ) == textwrap.dedent(
@@ -857,6 +863,182 @@ def test_TupleTypes():
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(252, 253), match='d'>>> ws:None [17, 1 -> 17, 2]
                                                     ')' <<Regex: <_sre.SRE_Match object; span=(253, 254), match=')'>>> ws:None [17, 2 -> 17, 3]
-                        Newline+ <<254, 255>> ws:None [17, 3 -> 18, 1]
+                        Newline+ <<254, 256>> ws:None [17, 3 -> 19, 1]
+            Dynamic Statements
+                1.0.0 Grammar
+                    Tuple Variable Declaration
+                        Tuple Element
+                            Multiple
+                                '(' <<Regex: <_sre.SRE_Match object; span=(300, 301), match='('>>> ws:None [20, 1 -> 20, 2]
+                                Or: {<name>, Tuple Element}
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(301, 302), match='a'>>> ws:None [20, 2 -> 20, 3]
+                                Repeat: (Comma and Element, 1, None)
+                                    Comma and Element
+                                        ',' <<Regex: <_sre.SRE_Match object; span=(302, 303), match=','>>> ws:None [20, 3 -> 20, 4]
+                                        Or: {<name>, Tuple Element}
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(304, 305), match='b'>>> ws:(303, 304) [20, 5 -> 20, 6]
+                                    Comma and Element
+                                        ',' <<Regex: <_sre.SRE_Match object; span=(305, 306), match=','>>> ws:None [20, 6 -> 20, 7]
+                                        Or: {<name>, Tuple Element}
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(307, 308), match='c'>>> ws:(306, 307) [20, 8 -> 20, 9]
+                                ')' <<Regex: <_sre.SRE_Match object; span=(308, 309), match=')'>>> ws:None [20, 9 -> 20, 10]
+                        '=' <<Regex: <_sre.SRE_Match object; span=(310, 311), match='='>>> ws:(309, 310) [20, 11 -> 20, 12]
+                        DynamicStatements.Expressions
+                            1.0.0 Grammar
+                                As
+                                    DynamicStatements.Expressions
+                                        1.0.0 Grammar
+                                            Tuple Expression
+                                                Multiple
+                                                    '(' <<Regex: <_sre.SRE_Match object; span=(312, 313), match='('>>> ws:(311, 312) [20, 13 -> 20, 14]
+                                                    DynamicStatements.Expressions
+                                                        1.0.0 Grammar
+                                                            Variable Name
+                                                                <name> <<Regex: <_sre.SRE_Match object; span=(313, 314), match='d'>>> ws:None [20, 14 -> 20, 15]
+                                                    Repeat: (Comma and Element, 1, None)
+                                                        Comma and Element
+                                                            ',' <<Regex: <_sre.SRE_Match object; span=(314, 315), match=','>>> ws:None [20, 15 -> 20, 16]
+                                                            DynamicStatements.Expressions
+                                                                1.0.0 Grammar
+                                                                    Variable Name
+                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(316, 317), match='e'>>> ws:(315, 316) [20, 17 -> 20, 18]
+                                                        Comma and Element
+                                                            ',' <<Regex: <_sre.SRE_Match object; span=(317, 318), match=','>>> ws:None [20, 18 -> 20, 19]
+                                                            DynamicStatements.Expressions
+                                                                1.0.0 Grammar
+                                                                    Variable Name
+                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(319, 320), match='f'>>> ws:(318, 319) [20, 20 -> 20, 21]
+                                                    ')' <<Regex: <_sre.SRE_Match object; span=(320, 321), match=')'>>> ws:None [20, 21 -> 20, 22]
+                                    'as' <<Regex: <_sre.SRE_Match object; span=(322, 324), match='as'>>> ws:(321, 322) [20, 23 -> 20, 25]
+                                    DynamicStatements.Types
+                                        1.0.0 Grammar
+                                            Tuple Type
+                                                Multiple
+                                                    '(' <<Regex: <_sre.SRE_Match object; span=(325, 326), match='('>>> ws:(324, 325) [20, 26 -> 20, 27]
+                                                    DynamicStatements.Types
+                                                        1.0.0 Grammar
+                                                            Standard
+                                                                <name> <<Regex: <_sre.SRE_Match object; span=(326, 327), match='g'>>> ws:None [20, 27 -> 20, 28]
+                                                    Repeat: (Comma and Element, 1, None)
+                                                        Comma and Element
+                                                            ',' <<Regex: <_sre.SRE_Match object; span=(327, 328), match=','>>> ws:None [20, 28 -> 20, 29]
+                                                            DynamicStatements.Types
+                                                                1.0.0 Grammar
+                                                                    Standard
+                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(329, 330), match='h'>>> ws:(328, 329) [20, 30 -> 20, 31]
+                                                        Comma and Element
+                                                            ',' <<Regex: <_sre.SRE_Match object; span=(330, 331), match=','>>> ws:None [20, 31 -> 20, 32]
+                                                            DynamicStatements.Types
+                                                                1.0.0 Grammar
+                                                                    Standard
+                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(332, 333), match='i'>>> ws:(331, 332) [20, 33 -> 20, 34]
+                                                    ')' <<Regex: <_sre.SRE_Match object; span=(333, 334), match=')'>>> ws:None [20, 34 -> 20, 35]
+                        Newline+ <<334, 336>> ws:None [20, 35 -> 22, 1]
+            Dynamic Statements
+                1.0.0 Grammar
+                    Tuple Variable Declaration
+                        Tuple Element
+                            Multiple
+                                '(' <<Regex: <_sre.SRE_Match object; span=(390, 391), match='('>>> ws:None [23, 1 -> 23, 2]
+                                Or: {<name>, Tuple Element}
+                                    Tuple Element
+                                        Multiple
+                                            '(' <<Regex: <_sre.SRE_Match object; span=(391, 392), match='('>>> ws:None [23, 2 -> 23, 3]
+                                            Or: {<name>, Tuple Element}
+                                                <name> <<Regex: <_sre.SRE_Match object; span=(392, 393), match='a'>>> ws:None [23, 3 -> 23, 4]
+                                            Repeat: (Comma and Element, 1, None)
+                                                Comma and Element
+                                                    ',' <<Regex: <_sre.SRE_Match object; span=(393, 394), match=','>>> ws:None [23, 4 -> 23, 5]
+                                                    Or: {<name>, Tuple Element}
+                                                        <name> <<Regex: <_sre.SRE_Match object; span=(395, 396), match='b'>>> ws:(394, 395) [23, 6 -> 23, 7]
+                                            ')' <<Regex: <_sre.SRE_Match object; span=(396, 397), match=')'>>> ws:None [23, 7 -> 23, 8]
+                                Repeat: (Comma and Element, 1, None)
+                                    Comma and Element
+                                        ',' <<Regex: <_sre.SRE_Match object; span=(397, 398), match=','>>> ws:None [23, 8 -> 23, 9]
+                                        Or: {<name>, Tuple Element}
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(399, 400), match='c'>>> ws:(398, 399) [23, 10 -> 23, 11]
+                                    Comma and Element
+                                        ',' <<Regex: <_sre.SRE_Match object; span=(400, 401), match=','>>> ws:None [23, 11 -> 23, 12]
+                                        Or: {<name>, Tuple Element}
+                                            <name> <<Regex: <_sre.SRE_Match object; span=(402, 403), match='d'>>> ws:(401, 402) [23, 13 -> 23, 14]
+                                ')' <<Regex: <_sre.SRE_Match object; span=(403, 404), match=')'>>> ws:None [23, 14 -> 23, 15]
+                        '=' <<Regex: <_sre.SRE_Match object; span=(405, 406), match='='>>> ws:(404, 405) [23, 16 -> 23, 17]
+                        DynamicStatements.Expressions
+                            1.0.0 Grammar
+                                As
+                                    DynamicStatements.Expressions
+                                        1.0.0 Grammar
+                                            Tuple Expression
+                                                Multiple
+                                                    '(' <<Regex: <_sre.SRE_Match object; span=(407, 408), match='('>>> ws:(406, 407) [23, 18 -> 23, 19]
+                                                    DynamicStatements.Expressions
+                                                        1.0.0 Grammar
+                                                            Variable Name
+                                                                <name> <<Regex: <_sre.SRE_Match object; span=(408, 409), match='e'>>> ws:None [23, 19 -> 23, 20]
+                                                    Repeat: (Comma and Element, 1, None)
+                                                        Comma and Element
+                                                            ',' <<Regex: <_sre.SRE_Match object; span=(409, 410), match=','>>> ws:None [23, 20 -> 23, 21]
+                                                            DynamicStatements.Expressions
+                                                                1.0.0 Grammar
+                                                                    Tuple Expression
+                                                                        Multiple
+                                                                            '(' <<Regex: <_sre.SRE_Match object; span=(411, 412), match='('>>> ws:(410, 411) [23, 22 -> 23, 23]
+                                                                            DynamicStatements.Expressions
+                                                                                1.0.0 Grammar
+                                                                                    Variable Name
+                                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(412, 413), match='f'>>> ws:None [23, 23 -> 23, 24]
+                                                                            Repeat: (Comma and Element, 1, None)
+                                                                                Comma and Element
+                                                                                    ',' <<Regex: <_sre.SRE_Match object; span=(413, 414), match=','>>> ws:None [23, 24 -> 23, 25]
+                                                                                    DynamicStatements.Expressions
+                                                                                        1.0.0 Grammar
+                                                                                            Variable Name
+                                                                                                <name> <<Regex: <_sre.SRE_Match object; span=(415, 416), match='g'>>> ws:(414, 415) [23, 26 -> 23, 27]
+                                                                            ')' <<Regex: <_sre.SRE_Match object; span=(416, 417), match=')'>>> ws:None [23, 27 -> 23, 28]
+                                                        Comma and Element
+                                                            ',' <<Regex: <_sre.SRE_Match object; span=(417, 418), match=','>>> ws:None [23, 28 -> 23, 29]
+                                                            DynamicStatements.Expressions
+                                                                1.0.0 Grammar
+                                                                    Variable Name
+                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(419, 420), match='h'>>> ws:(418, 419) [23, 30 -> 23, 31]
+                                                    ')' <<Regex: <_sre.SRE_Match object; span=(420, 421), match=')'>>> ws:None [23, 31 -> 23, 32]
+                                    'as' <<Regex: <_sre.SRE_Match object; span=(422, 424), match='as'>>> ws:(421, 422) [23, 33 -> 23, 35]
+                                    DynamicStatements.Types
+                                        1.0.0 Grammar
+                                            Tuple Type
+                                                Multiple
+                                                    '(' <<Regex: <_sre.SRE_Match object; span=(425, 426), match='('>>> ws:(424, 425) [23, 36 -> 23, 37]
+                                                    DynamicStatements.Types
+                                                        1.0.0 Grammar
+                                                            Standard
+                                                                <name> <<Regex: <_sre.SRE_Match object; span=(426, 427), match='i'>>> ws:None [23, 37 -> 23, 38]
+                                                    Repeat: (Comma and Element, 1, None)
+                                                        Comma and Element
+                                                            ',' <<Regex: <_sre.SRE_Match object; span=(427, 428), match=','>>> ws:None [23, 38 -> 23, 39]
+                                                            DynamicStatements.Types
+                                                                1.0.0 Grammar
+                                                                    Standard
+                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(429, 430), match='j'>>> ws:(428, 429) [23, 40 -> 23, 41]
+                                                        Comma and Element
+                                                            ',' <<Regex: <_sre.SRE_Match object; span=(430, 431), match=','>>> ws:None [23, 41 -> 23, 42]
+                                                            DynamicStatements.Types
+                                                                1.0.0 Grammar
+                                                                    Tuple Type
+                                                                        Multiple
+                                                                            '(' <<Regex: <_sre.SRE_Match object; span=(432, 433), match='('>>> ws:(431, 432) [23, 43 -> 23, 44]
+                                                                            DynamicStatements.Types
+                                                                                1.0.0 Grammar
+                                                                                    Standard
+                                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(433, 434), match='k'>>> ws:None [23, 44 -> 23, 45]
+                                                                            Repeat: (Comma and Element, 1, None)
+                                                                                Comma and Element
+                                                                                    ',' <<Regex: <_sre.SRE_Match object; span=(434, 435), match=','>>> ws:None [23, 45 -> 23, 46]
+                                                                                    DynamicStatements.Types
+                                                                                        1.0.0 Grammar
+                                                                                            Standard
+                                                                                                <name> <<Regex: <_sre.SRE_Match object; span=(436, 437), match='l'>>> ws:(435, 436) [23, 47 -> 23, 48]
+                                                                            ')' <<Regex: <_sre.SRE_Match object; span=(437, 438), match=')'>>> ws:None [23, 48 -> 23, 49]
+                                                    ')' <<Regex: <_sre.SRE_Match object; span=(438, 439), match=')'>>> ws:None [23, 49 -> 23, 50]
+                        Newline+ <<439, 440>> ws:None [23, 50 -> 24, 1]
         """,
     )
