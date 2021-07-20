@@ -45,6 +45,11 @@ with InitRelativeImports():
         RegexToken,
     )
 
+# BugBug:
+#   - Push/Pop should either be the first/last or not the first/last
+#   - If push is first statement in the sequence, the indent level should be preserved
+#       and then restored on pop
+#   - A dynamic expression as the first element should prevent recursion
 
 # ----------------------------------------------------------------------
 class SequenceStatement(Statement):
