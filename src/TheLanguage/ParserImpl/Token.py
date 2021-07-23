@@ -179,6 +179,7 @@ class IndentToken(Token):
     def Match(normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.HasNewIndent():
             normalized_iter.SkipPrefix()
+
             return Token.IndentMatch(
                 normalized_iter.LineInfo.OffsetStart,
                 normalized_iter.LineInfo.StartPos,
