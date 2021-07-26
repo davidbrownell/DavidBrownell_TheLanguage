@@ -45,6 +45,10 @@ with InitRelativeImports():
         RegexToken,
     )
 
+# BugBug:
+#   - If push is first statement in the sequence, the indent level should be preserved
+#       and then restored on pop
+#   - A dynamic expression as the first element should prevent recursion
 
 # ----------------------------------------------------------------------
 class SequenceStatement(Statement):
@@ -69,8 +73,14 @@ class SequenceStatement(Statement):
         # Ensure that any control token requiring a pair has a peer
         control_token_tracker = set()
 
-        for statement in statements:
+        for statement_index, statement in enumerate(statements):
             if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
+                if statement_index == 0:
+                    assert (
+                        isinstance(statements[-1], TokenStatement)
+                        and cast(TokenStatement, statements[-1]).Token.IsControlToken
+                    ), "The last statement must be a control token when the first statement is a control token"
+
                 control_token = cast(ControlTokenBase, statement.Token)
 
                 if control_token.ClosingToken is not None:
@@ -87,6 +97,12 @@ class SequenceStatement(Statement):
                         assert False, key
 
                     control_token_tracker.remove(key)
+            else:
+                if statement_index == 0:
+                    assert not (
+                        isinstance(statements[-1], TokenStatement)
+                        and cast(TokenStatement, statements[-1]).Token.IsControlToken
+                    ), "The last statement must not be a control token when the first statement is not a control token"
 
         assert not control_token_tracker, control_token_tracker
 

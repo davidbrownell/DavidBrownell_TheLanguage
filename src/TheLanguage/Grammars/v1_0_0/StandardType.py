@@ -39,12 +39,14 @@ with InitRelativeImports():
     )
 
     from .Common import GrammarDSL
+    from .Common import NamingConventions
     from .Common import Tokens as CommonTokens
 
     from ..GrammarStatement import GrammarStatement
 
     from ...ParserImpl.Token import Token
     from ...ParserImpl.Statements.OrStatement import OrStatement
+    from ...ParserImpl.Statements.RepeatStatement import RepeatStatement
 
 
 # ----------------------------------------------------------------------
@@ -106,13 +108,19 @@ class StandardType(GrammarStatement):
         assert len(node.Children) >= 1
         name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[0])))
 
-        # BugBug: Validate name
+        if not NamingConventions.Type.Regex.match(name):
+            raise NamingConventions.InvalidTypeNameError.FromNode(node.Children[0], name)
 
         if len(node.Children) >= 2:
             modifier_node = cast(Node, node.Children[1])
 
+            # Drill into the Repeat node
+            assert isinstance(modifier_node.Type, RepeatStatement)
+            assert len(modifier_node.Children) == 1
+            modifier_node = cast(Node, modifier_node.Children[0])
+
             # Drill into the Or node
-            assert isinstance(modifier_node, OrStatement)
+            assert isinstance(modifier_node.Type, OrStatement)
             assert len(modifier_node.Children) == 1
             modifier_node = cast(Leaf, modifier_node.Children[0])
 

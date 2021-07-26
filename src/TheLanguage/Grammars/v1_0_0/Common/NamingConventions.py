@@ -60,7 +60,7 @@ Variable                                    = NamingConvention(
     ),
     [
         "Begin with a lowercase letter",
-        "Contain upper-, lower-, numeric-, or underscore-characters",
+        "Contain at least 1 upper-, lower-, numeric-, or underscore-characters",
         "Not end with double underscores",
     ],
 )
@@ -81,5 +81,45 @@ class InvalidVariableNameError(ValidationError):
             """,
         ).format(
             StringHelpers.LeftJustify("\n".join(Variable.Constraints).rstrip(), 4),
+        ),
+    )
+
+
+# ----------------------------------------------------------------------
+Type                                        = NamingConvention(
+    re.compile(
+        textwrap.dedent(
+            r"""(?#
+                Start of Content            )^(?#
+                Uppercase                   )[A-Z](?#
+                Alpha-numeric and under     )[A-Za-z0-9_]+(?#
+                Not end with double under   )(?<!__)(?#
+                End of Content              )$(?#
+            )""",
+        ),
+    ),
+    [
+        "Begin with an uppercase letter",
+        "Contain at least 2 upper-, lower-, numeric-, or underscore-characters",
+        "Not end with double underscores",
+    ],
+)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidTypeNameError(ValidationError):
+    TypeName: str
+
+    MessageTemplate                         = Interface.DerivedProperty(
+        textwrap.dedent(
+            """\
+            '{{TypeName}}' is not a valid type name.
+
+            Type names must:
+                {}
+            """,
+        ).format(
+            StringHelpers.LeftJustify("\n".join(Type.Constraints).rstrip(), 4),
         ),
     )
