@@ -68,7 +68,8 @@ class LineInfo(object):
     StartPos: int
     EndPos: int
 
-    IndentationLevel: int
+    IndentationLevel: int                   # 0-based relative level (not the actual indentation size)
+
     IndentationInfo: Optional[
         Tuple[
             IndentType,
@@ -144,13 +145,7 @@ class NormalizedContent(object):
 def Normalize(
     content: str,
 ) -> NormalizedContent:
-    """\
-    Normalizes the provided content to prevent repeated calculations.
-
-    Note that all content is preserved with the following exceptions:
-        - Trailing whitespace is ignored ("line end   \n" -> "line end\n")
-        - Whitespace in a blank line is ignored ("    \n" -> "\n")
-    """
+    """Normalizes the provided content to prevent repeated calculations"""
 
     # ----------------------------------------------------------------------
     @dataclass
