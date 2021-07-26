@@ -45,6 +45,7 @@ with InitRelativeImports():
 def CreateStatement(
     item: StatementItem.ItemType,
     name: str=None,
+    suffers_from_infinite_recursion=False,
 ) -> Statement:
     # Single tokens don't have the opportunity to participate in node validation,
     # as there won't be a corresponding node emitted. In this case, turn the token
@@ -56,4 +57,5 @@ def CreateStatement(
         item=item,
         name=name,
         comment_token=CommonTokens.Comment,
+        suffers_from_infinite_recursion=suffers_from_infinite_recursion,
     )
