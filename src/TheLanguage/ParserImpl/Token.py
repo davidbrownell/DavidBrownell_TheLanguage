@@ -119,7 +119,10 @@ class Token(Interface.Interface):
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        if self.__dict__ != other.__dict__:
+            return False
+
+        return self.__class__ == other.__class__
 
 
 # ----------------------------------------------------------------------
