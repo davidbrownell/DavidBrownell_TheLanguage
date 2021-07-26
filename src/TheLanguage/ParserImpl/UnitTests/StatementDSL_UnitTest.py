@@ -90,6 +90,8 @@ class TestParseSimple(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
         assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
@@ -116,6 +118,8 @@ class TestParseSimple(object):
                         Newline+ <<12, 13>> ws:None [1, 13 -> 2, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
         assert len(parse_mock.method_calls) == 12
 
@@ -144,6 +148,8 @@ class TestParseSimple(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
         assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
@@ -170,6 +176,8 @@ class TestParseSimple(object):
                         Newline+ <<8, 9>> ws:None [1, 9 -> 2, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
         assert len(parse_mock.method_calls) == 12
 
@@ -198,6 +206,8 @@ class TestParseSimple(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
         assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
@@ -224,6 +234,8 @@ class TestParseSimple(object):
                         Newline+ <<11, 12>> ws:(7, 11) [1, 12 -> 2, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
         assert len(parse_mock.method_calls) == 12
 
@@ -252,6 +264,8 @@ class TestParseSimple(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
         assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
@@ -278,6 +292,8 @@ class TestParseSimple(object):
                         Newline+ <<11, 12>> ws:(7, 11) [1, 12 -> 2, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
         assert len(parse_mock.method_calls) == 12
 
@@ -337,9 +353,9 @@ class TestParseSimple(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 24
-
         assert result.Iter.AtEnd()
+
+        assert len(parse_mock.method_calls) == 24
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -366,9 +382,9 @@ class TestParseSimple(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 12
-
         assert result.Iter.AtEnd()
+
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -396,8 +412,6 @@ class TestParseSimple(object):
         )
 
         assert len(parse_mock.method_calls) == 10
-
-        assert result.Iter.AtEnd() == False
 
 # ----------------------------------------------------------------------
 class TestParseIndentAndDedent(object):
@@ -456,6 +470,8 @@ class TestParseIndentAndDedent(object):
                         Dedent <<>> ws:None [4, 1 -> 4, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -735,6 +751,8 @@ class TestIgnoreWhitespace(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
         assert len(parse_mock.method_calls) == 30
 
 # ----------------------------------------------------------------------
@@ -782,6 +800,8 @@ class TestEmbeddedStatements(object):
                         rpar <<Regex: <_sre.SRE_Match object; span=(10, 11), match=')'>>> ws:(9, 10) [1, 11 -> 1, 12]
             """,
         )
+
+        # assert result.Iter.AtEnd()
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -1003,6 +1023,8 @@ class TestDynamicStatements(object):
                                     Newline+ <<19, 20>> ws:None [3, 4 -> 4, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
         assert MethodCallsToString(modified_parse_mock) == textwrap.dedent(
             """\
@@ -1488,6 +1510,8 @@ class TestOrStatements(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
         assert len(parse_mock.method_calls) == 20
 
     # ----------------------------------------------------------------------
@@ -1508,6 +1532,8 @@ class TestOrStatements(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
         assert len(parse_mock.method_calls) == 20
 
     # ----------------------------------------------------------------------
@@ -1527,6 +1553,8 @@ class TestOrStatements(object):
                             Newline+ <<4, 5>> ws:None [1, 5 -> 2, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
         assert len(parse_mock.method_calls) == 20
 
@@ -1764,6 +1792,8 @@ class TestRepeatStatements(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
         assert len(parse_mock.method_calls) == 95
 
     # ----------------------------------------------------------------------
@@ -1828,6 +1858,8 @@ class TestRepeatStatements(object):
                                 Newline+ <<31, 32>> ws:None [6, 6 -> 7, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
         assert len(parse_mock.method_calls) == 77
 
@@ -1894,6 +1926,8 @@ class TestRepeatStatements(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
         assert len(parse_mock.method_calls) == 81
 
     # ----------------------------------------------------------------------
@@ -1954,6 +1988,8 @@ class TestRepeatStatements(object):
                                 Newline+ <<25, 26>> ws:None [5, 6 -> 6, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -2605,6 +2641,8 @@ class TestRepeatSimilarStatements(object):
             """,
         )
 
+        # assert result.Iter.AtEnd()
+
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SmallMatch(self, parse_mock):
@@ -2622,6 +2660,8 @@ class TestRepeatSimilarStatements(object):
                             Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='word'>>> ws:None [1, 1 -> 1, 5]
             """,
         )
+
+        # assert result.Iter.AtEnd()
 
 # ----------------------------------------------------------------------
 class TestNamedStatements(object):
@@ -2701,6 +2741,8 @@ class TestNamedStatements(object):
                                 Newline+ <<19, 20>> ws:None [4, 4 -> 5, 1]
             """,
         )
+
+        assert result.Iter.AtEnd()
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -2877,6 +2919,8 @@ class TestComments(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Indent(self, parse_mock):
@@ -3033,7 +3077,7 @@ class TestComments(object):
 
         iterator = result.Iter
 
-        assert iterator.AtEnd()
+        assert result.Iter.AtEnd()
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -3091,6 +3135,8 @@ class TestComments(object):
             """,
         )
 
+        assert result.Iter.AtEnd()
+
 # ----------------------------------------------------------------------
 class TestRecursiveOrStatements(object):
     _statement                              = CreateStatement(
@@ -3122,6 +3168,8 @@ class TestRecursiveOrStatements(object):
             """,
         )
 
+        # assert result.Iter.AtEnd()
+
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SingleRecursion(self, parse_mock):
@@ -3147,6 +3195,8 @@ class TestRecursiveOrStatements(object):
                         rpar <<Regex: <_sre.SRE_Match object; span=(8, 9), match=')'>>> ws:None [1, 9 -> 1, 10]
             """,
         )
+
+        # assert result.Iter.AtEnd()
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -3179,6 +3229,8 @@ class TestRecursiveOrStatements(object):
                         rpar <<Regex: <_sre.SRE_Match object; span=(13, 14), match=')'>>> ws:None [1, 14 -> 1, 15]
             """,
         )
+
+        # assert result.Iter.AtEnd()
 
 # ----------------------------------------------------------------------
 class TestRecursiveRepeatStatement(object):
@@ -3399,6 +3451,230 @@ async def test_IgnoreWhitespace(parse_mock):
         """,
     )
 
+    assert result.Iter.AtEnd()
+
+# ----------------------------------------------------------------------
+@pytest.mark.asyncio
+async def test_IgnoreWhitespaceNestedStatement(parse_mock):
+    statement = CreateStatement(
+        name="Statement",
+        item=[
+            _word_token,
+            NewlineToken(),
+            CreateStatement(
+                name="Nested",
+                item=[
+                    PushIgnoreWhitespaceControlToken(),
+                    _word_token,
+                    _word_token,
+                    PopIgnoreWhitespaceControlToken(),
+                ],
+            ),
+            _word_token,
+            NewlineToken(),
+        ],
+    )
+
+    result = await statement.ParseAsync(
+        ["root"],
+        CreateIterator(
+            textwrap.dedent(
+                """\
+                worda
+
+
+                        wordb
+                            wordc
+
+                wordd
+                """,
+            ),
+        ),
+        parse_mock,
+    )
+
+    assert str(result) == textwrap.dedent(
+        """\
+        True
+        47
+            Statement
+                Word Token
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
+                Newline+
+                    Newline+ <<5, 8>> ws:None [1, 6 -> 4, 1]
+                Nested
+                    Indent <<8, 16, (8)>> ws:None !Ignored! [4, 1 -> 4, 9]
+                    Word Token
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(16, 21), match='wordb'>>> ws:None [4, 9 -> 4, 14]
+                    Newline+ <<21, 22>> ws:None !Ignored! [4, 14 -> 5, 1]
+                    Indent <<22, 34, (12)>> ws:None !Ignored! [5, 1 -> 5, 13]
+                    Word Token
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(34, 39), match='wordc'>>> ws:None [5, 13 -> 5, 18]
+                    Newline+ <<39, 41>> ws:None !Ignored! [5, 18 -> 7, 1]
+                    Dedent <<>> ws:None !Ignored! [7, 1 -> 7, 1]
+                    Dedent <<>> ws:None !Ignored! [7, 1 -> 7, 1]
+                Word Token
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(41, 46), match='wordd'>>> ws:None [7, 1 -> 7, 6]
+                Newline+
+                    Newline+ <<46, 47>> ws:None [7, 6 -> 8, 1]
+        """,
+    )
+
+    assert result.Iter.AtEnd()
+
+# ----------------------------------------------------------------------
+@pytest.mark.asyncio
+async def test_IgnoreWhitespaceNestedStatementWithDedents(parse_mock):
+    statement = CreateStatement(
+        name="Statement",
+        item=[
+            _word_token,
+            RegexToken("':'", re.compile(r":")),
+            NewlineToken(),
+            IndentToken(),
+            CreateStatement(
+                name="Nested",
+                item=[
+                    PushIgnoreWhitespaceControlToken(),
+                    _word_token,
+                    _word_token,
+                    PopIgnoreWhitespaceControlToken(),
+                ],
+            ),
+            _word_token,
+            NewlineToken(),
+            DedentToken(),
+            _word_token,
+            NewlineToken(),
+        ],
+    )
+
+    result = await statement.ParseAsync(
+        ["root"],
+        CreateIterator(
+            textwrap.dedent(
+                """\
+                newscope:
+
+
+                    worda
+                        wordb
+
+                    wordc
+                wordd
+                """,
+            ),
+        ),
+        parse_mock,
+    )
+
+    assert str(result) == textwrap.dedent(
+        """\
+        True
+        53
+            Statement
+                Word Token
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='newscope'>>> ws:None [1, 1 -> 1, 9]
+                ':'
+                    ':' <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
+                Newline+
+                    Newline+ <<9, 12>> ws:None [1, 10 -> 4, 1]
+                Indent
+                    Indent <<12, 16, (4)>> ws:None [4, 1 -> 4, 5]
+                Nested
+                    Word Token
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(16, 21), match='worda'>>> ws:None [4, 5 -> 4, 10]
+                    Newline+ <<21, 22>> ws:None !Ignored! [4, 10 -> 5, 1]
+                    Indent <<22, 30, (8)>> ws:None !Ignored! [5, 1 -> 5, 9]
+                    Word Token
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(30, 35), match='wordb'>>> ws:None [5, 9 -> 5, 14]
+                    Newline+ <<35, 37>> ws:None !Ignored! [5, 14 -> 7, 1]
+                    Dedent <<>> ws:None !Ignored! [7, 1 -> 7, 5]
+                Word Token
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(41, 46), match='wordc'>>> ws:None [7, 5 -> 7, 10]
+                Newline+
+                    Newline+ <<46, 47>> ws:None [7, 10 -> 8, 1]
+                Dedent
+                    Dedent <<>> ws:None [8, 1 -> 8, 1]
+                Word Token
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(47, 52), match='wordd'>>> ws:None [8, 1 -> 8, 6]
+                Newline+
+                    Newline+ <<52, 53>> ws:None [8, 6 -> 9, 1]
+        """,
+    )
+
+    assert result.Iter.AtEnd()
+
+# ----------------------------------------------------------------------
+@pytest.mark.asyncio
+async def test_IgnoreWhitespaceNestedStatementEndWithDedents(parse_mock):
+    statement = CreateStatement(
+        name="Statement",
+        item=[
+            _word_token,
+            RegexToken("':'", re.compile(r":")),
+            NewlineToken(),
+            IndentToken(),
+            CreateStatement(
+                name="Nested",
+                item=[
+                    PushIgnoreWhitespaceControlToken(),
+                    _word_token,
+                    _word_token,
+                    PopIgnoreWhitespaceControlToken(),
+                ],
+            ),
+            DedentToken(),
+        ],
+    )
+
+    result = await statement.ParseAsync(
+        ["root"],
+        CreateIterator(
+            textwrap.dedent(
+                """\
+                newscope:
+
+
+                    worda
+                        wordb
+
+
+                """,
+            ),
+        ),
+        parse_mock,
+    )
+
+    assert str(result) == textwrap.dedent(
+        """\
+        True
+        38
+            Statement
+                Word Token
+                    Word Token <<Regex: <_sre.SRE_Match object; span=(0, 8), match='newscope'>>> ws:None [1, 1 -> 1, 9]
+                ':'
+                    ':' <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
+                Newline+
+                    Newline+ <<9, 12>> ws:None [1, 10 -> 4, 1]
+                Indent
+                    Indent <<12, 16, (4)>> ws:None [4, 1 -> 4, 5]
+                Nested
+                    Word Token
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(16, 21), match='worda'>>> ws:None [4, 5 -> 4, 10]
+                    Newline+ <<21, 22>> ws:None !Ignored! [4, 10 -> 5, 1]
+                    Indent <<22, 30, (8)>> ws:None !Ignored! [5, 1 -> 5, 9]
+                    Word Token
+                        Word Token <<Regex: <_sre.SRE_Match object; span=(30, 35), match='wordb'>>> ws:None [5, 9 -> 5, 14]
+                    Newline+ <<35, 38>> ws:None !Ignored! [5, 14 -> 8, 1]
+                    Dedent <<>> ws:None !Ignored! [8, 1 -> 8, 1]
+                Dedent
+                    Dedent <<>> ws:None [8, 1 -> 8, 1]
+        """,
+    )
+
+    assert result.Iter.AtEnd()
+
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio
 async def test_NestedStatement(parse_mock):
@@ -3418,3 +3694,5 @@ async def test_NestedStatement(parse_mock):
                     Word Token <<Regex: <_sre.SRE_Match object; span=(0, 4), match='test'>>> ws:None [1, 1 -> 1, 5]
         """,
     )
+
+    # assert result.Iter.AtEnd()
