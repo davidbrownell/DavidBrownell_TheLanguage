@@ -19,6 +19,8 @@ import os
 
 from typing import cast, Iterable, List, Optional, Tuple, Union
 
+from dataclasses import dataclass
+
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
@@ -69,8 +71,14 @@ class SequenceStatement(Statement):
         # Ensure that any control token requiring a pair has a peer
         control_token_tracker = set()
 
-        for statement in statements:
+        for statement_index, statement in enumerate(statements):
             if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
+                if statement_index == 0:
+                    assert (
+                        isinstance(statements[-1], TokenStatement)
+                        and cast(TokenStatement, statements[-1]).Token.IsControlToken
+                    ), "The last statement must be a control token when the first statement is a control token"
+
                 control_token = cast(ControlTokenBase, statement.Token)
 
                 if control_token.ClosingToken is not None:
@@ -87,6 +95,12 @@ class SequenceStatement(Statement):
                         assert False, key
 
                     control_token_tracker.remove(key)
+            else:
+                if statement_index == 0:
+                    assert not (
+                        isinstance(statements[-1], TokenStatement)
+                        and cast(TokenStatement, statements[-1]).Token.IsControlToken
+                    ), "The last statement must not be a control token when the first statement is not a control token"
 
         assert not control_token_tracker, control_token_tracker
 
@@ -124,17 +138,39 @@ class SequenceStatement(Statement):
 
             ignore_whitespace_ctr = 1 if ignore_whitespace else 0
 
+            # If the first statement is a control token indicating that whitespace should be
+            # ignored, we need to make sure that the trailing dedents aren't greedily consumed
+            # but rather correspond to the number of indents encountered.
+            if (
+                isinstance(self.Statements[0], TokenStatement)
+                and isinstance(self.Statements[0].Token, PushIgnoreWhitespaceControlToken)
+            ):
+                ignored_indentation_level = 0
+            else:
+                ignored_indentation_level = None
+
             # ----------------------------------------------------------------------
-            def ExtractWhitespaceOrComments() -> Optional[
-                Tuple[
-                    List[Statement.TokenParseResultData],
-                    Statement.NormalizedIterator,
-                ]
-            ]:
+            def ExtractWhitespaceOrComments() -> Optional[SequenceStatement.ExtractPotentialResults]:
+                nonlocal ignored_indentation_level
+
                 if ignore_whitespace_ctr:
-                    data_item = self._ExtractPotentialWhitespaceToken(normalized_iter)
+                    data_item = self._ExtractPotentialWhitespaceToken(
+                        normalized_iter,
+                        consume_dedent=ignored_indentation_level != 0,
+                    )
+
                     if data_item is not None:
-                        return [data_item], data_item.IterAfter
+                        if ignored_indentation_level is not None:
+                            if isinstance(data_item.Token, IndentToken):
+                                ignored_indentation_level += 1
+                            elif isinstance(data_item.Token, DedentToken):
+                                assert ignored_indentation_level
+                                ignored_indentation_level -= 1
+
+                        return SequenceStatement.ExtractPotentialResults(
+                            [data_item],
+                            data_item.IterAfter,
+                        )
 
                 return self._ExtractPotentialCommentTokens(normalized_iter)
 
@@ -157,13 +193,14 @@ class SequenceStatement(Statement):
                     if potential_prefix_info is None:
                         break
 
-                    data_items += potential_prefix_info[0]
-                    normalized_iter = potential_prefix_info[1]
+                    data_items += potential_prefix_info.Results
+                    normalized_iter = potential_prefix_info.Iter
 
                 # Process control tokens
                 if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
                     if isinstance(statement.Token, PushIgnoreWhitespaceControlToken):
                         ignore_whitespace_ctr += 1
+
                     elif isinstance(statement.Token, PopIgnoreWhitespaceControlToken):
                         assert ignore_whitespace_ctr != 0
                         ignore_whitespace_ctr -= 1
@@ -218,6 +255,16 @@ class SequenceStatement(Statement):
 
     # ----------------------------------------------------------------------
     # |
+    # |  Private Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ExtractPotentialResults(object):
+        Results: List[Statement.TokenParseResultData]
+        Iter: Statement.NormalizedIterator
+
+    # ----------------------------------------------------------------------
+    # |
     # |  Private Data
     # |
     # ----------------------------------------------------------------------
@@ -234,6 +281,7 @@ class SequenceStatement(Statement):
     def _ExtractPotentialWhitespaceToken(
         cls,
         normalized_iter: Statement.NormalizedIterator,
+        consume_dedent=True,
     ) -> Optional[Statement.TokenParseResultData]:
         """Eats any whitespace token when requested"""
 
@@ -245,6 +293,9 @@ class SequenceStatement(Statement):
             cls._indent_token,
             cls._dedent_token,
         ]:
+            if not consume_dedent and token == cls._dedent_token:
+                continue
+
             result = token.Match(normalized_iter)
             if result is not None:
                 return Statement.TokenParseResultData(
@@ -277,12 +328,7 @@ class SequenceStatement(Statement):
     def _ExtractPotentialCommentTokens(
         self,
         normalized_iter: Statement.NormalizedIterator,
-    ) -> Optional[
-        Tuple[
-            List[Statement.TokenParseResultData],
-            Statement.NormalizedIterator,
-        ]
-    ]:
+    ) -> Optional["ExtractPotentialResults"]:
         """Eats any comment (stand-alone or trailing) when requested"""
 
         normalized_iter = normalized_iter.Clone()
@@ -328,9 +374,9 @@ class SequenceStatement(Statement):
                 result = self._ExtractPotentialWhitespaceToken(results[-1].IterAfter)
                 assert result
 
-                return results, result.IterAfter
+                return SequenceStatement.ExtractPotentialResults(results, result.IterAfter)
 
-        return results, results[-1].IterAfter
+        return SequenceStatement.ExtractPotentialResults(results, results[-1].IterAfter)
 
     # ----------------------------------------------------------------------
     @Interface.override

@@ -90,6 +90,9 @@ class DynamicStatement(Statement):
             ),
         ):
             dynamic_statements = self._get_dynamic_statements_func(unique_id, observer)
+            if not dynamic_statements:
+                return Statement.ParseResult(False, normalized_iter, None)
+
             if isinstance(dynamic_statements, tuple):
                 name = dynamic_statements[0]
                 dynamic_statements = dynamic_statements[1]

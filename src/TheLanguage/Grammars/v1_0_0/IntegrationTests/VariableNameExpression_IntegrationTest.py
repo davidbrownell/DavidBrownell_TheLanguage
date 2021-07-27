@@ -113,7 +113,7 @@ def test_InvalidNames():
 
             Variable names must:
                 Begin with a lowercase letter
-                Contain upper-, lower-, numeric-, or underscore-characters
+                Contain at least 1 upper-, lower-, numeric-, or underscore-characters
                 Not end with double underscores
             """,
         ).format(

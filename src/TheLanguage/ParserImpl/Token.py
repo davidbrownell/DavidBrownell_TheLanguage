@@ -119,7 +119,10 @@ class Token(Interface.Interface):
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        if self.__dict__ != other.__dict__:
+            return False
+
+        return self.__class__ == other.__class__
 
 
 # ----------------------------------------------------------------------
@@ -179,6 +182,7 @@ class IndentToken(Token):
     def Match(normalized_iter):
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.HasNewIndent():
             normalized_iter.SkipPrefix()
+
             return Token.IndentMatch(
                 normalized_iter.LineInfo.OffsetStart,
                 normalized_iter.LineInfo.StartPos,

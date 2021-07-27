@@ -121,10 +121,46 @@ def CreateStatement(
     item: StatementItem.ItemType,
     name: str=None,
     comment_token: RegexToken=None,
+
+    # Most of the time, this flag does not need to be set. However, setting it to True will prevent
+    # infinite recursion errors when the first statement in a sequence is a DynamicStatement that
+    # includes the parent.
+    #
+    # For example, the following statement will suffer from infinite recursion unless this flag is
+    # set:
+    #
+    #   Name:   AsStatement
+    #   Type:   DynamicStatements.Expressions
+    #   DSL:    [
+    #               DynamicStatements.Expressions,
+    #               'as'
+    #               DynamicStatements.Types,
+    #           ]
+    #
+    suffers_from_infinite_recursion=False,
 ) -> Statement:
 
     if comment_token is None:
         comment_token = CommentToken
+
+    if suffers_from_infinite_recursion:
+        # If this is set, we should be looking at a sequence where the first item is a
+        # dynamic expression
+        if isinstance(item, list):
+            first_item = item[0]
+
+        elif isinstance(item, StatementItem):
+            assert isinstance(item.item, list)
+            first_item = item.item[0]
+
+        else:
+            assert False, item  # pragma: no cover
+
+        assert isinstance(first_item, DynamicStatements), first_item
+
+        suffers_from_infinite_recursion_ctr = 1
+    else:
+        suffers_from_infinite_recursion_ctr = None
 
     if name is not None:
         assert item is not None
@@ -136,9 +172,14 @@ def CreateStatement(
                 item,
                 name=name,
             ),
+            suffers_from_infinite_recursion_ctr,
         )
     else:
-        statement = _PopulateItem(comment_token, item)
+        statement = _PopulateItem(
+            comment_token,
+            item,
+            suffers_from_infinite_recursion_ctr,
+        )
 
     statement.PopulateRecursive()
 
@@ -153,6 +194,7 @@ def CreateStatement(
 def _PopulateItem(
     comment_token: RegexToken,
     item: StatementItem.ItemType,
+    suffers_from_infinite_recursion_ctr: Optional[int],
 ) -> Statement:
     if item is None:
         return RecursivePlaceholderStatement()
@@ -175,30 +217,62 @@ def _PopulateItem(
     elif isinstance(item.item, DynamicStatements):
         dynamic_statement_value = item.item
 
-        # ----------------------------------------------------------------------
-        def GetDynamicStatements(
-            unique_id: List[str],
-            observer,
-        ):
-            return observer.GetDynamicStatements(unique_id, dynamic_statement_value)
+        if suffers_from_infinite_recursion_ctr == 0:
+            # ----------------------------------------------------------------------
+            def GetDynamicStatementsWithFilter(
+                unique_id: List[str],
+                observer,
+            ):
+                if unique_id[-1] in unique_id[:-1]:
+                    return []
 
-        # ----------------------------------------------------------------------
+                return observer.GetDynamicStatements(unique_id, dynamic_statement_value)
+
+            # ----------------------------------------------------------------------
+
+            get_dynamic_statements_func = GetDynamicStatementsWithFilter
+
+        else:
+            # ----------------------------------------------------------------------
+            def GetDynamicStatements(
+                unique_id: List[str],
+                observer,
+            ):
+                return observer.GetDynamicStatements(unique_id, dynamic_statement_value)
+
+            # ----------------------------------------------------------------------
+
+            get_dynamic_statements_func = GetDynamicStatements
 
         statement = DynamicStatement(
-            GetDynamicStatements,
+            get_dynamic_statements_func,
             name=item.name or str(item.item),
         )
 
     elif isinstance(item.item, list):
         statement = SequenceStatement(
             comment_token,
-            *[_PopulateItem(comment_token, i) for i in item.item],
+            *[
+                _PopulateItem(
+                    comment_token,
+                    i,
+                    None if suffers_from_infinite_recursion_ctr is None else suffers_from_infinite_recursion_ctr - 1,
+                )
+                for i in item.item
+            ],
             name=item.name,
         )
 
     elif isinstance(item.item, tuple):
         statement = OrStatement(
-            *[_PopulateItem(comment_token, i) for i in item.item],
+            *[
+                _PopulateItem(
+                    comment_token,
+                    i,
+                    None if suffers_from_infinite_recursion_ctr is None else suffers_from_infinite_recursion_ctr - 1,
+                )
+                for i in item.item
+            ],
             name=item.name,
         )
 

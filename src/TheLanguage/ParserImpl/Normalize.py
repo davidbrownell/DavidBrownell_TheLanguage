@@ -68,6 +68,8 @@ class LineInfo(object):
     StartPos: int
     EndPos: int
 
+    IndentationLevel: int                   # 0-based relative level (not the actual indentation size)
+
     IndentationInfo: Optional[
         Tuple[
             IndentType,
@@ -84,6 +86,7 @@ class LineInfo(object):
         assert self.StartPos >= self.OffsetStart, self
         assert self.EndPos <= self.OffsetEnd, self
         assert self.EndPos >= self.StartPos, self
+        assert self.IndentationLevel >= 0, self
 
     # ----------------------------------------------------------------------
     def HasWhitespacePrefix(self):
@@ -142,13 +145,7 @@ class NormalizedContent(object):
 def Normalize(
     content: str,
 ) -> NormalizedContent:
-    """\
-    Normalizes the provided content to prevent repeated calculations.
-
-    Note that all content is preserved with the following exceptions:
-        - Trailing whitespace is ignored ("line end   \n" -> "line end\n")
-        - Whitespace in a blank line is ignored ("    \n" -> "\n")
-    """
+    """Normalizes the provided content to prevent repeated calculations"""
 
     # ----------------------------------------------------------------------
     @dataclass
@@ -259,6 +256,7 @@ def Normalize(
             line_end_offset,
             content_start_offset,
             content_end_offset,
+            len(indentation_stack) - 1,
             indentation_info,
         )
 
@@ -274,6 +272,7 @@ def Normalize(
                 offset,
                 offset,
                 offset,
+                0,
                 (LineInfo.IndentType.Dedent, len(indentation_stack) - 1),
             ),
         )
