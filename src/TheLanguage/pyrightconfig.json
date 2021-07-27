@@ -4,7 +4,6 @@
         "**/site-packages",
 
         "**/*Tests",
-
-        "Grammars/*" // TODO: Restore this once grammars are back
+        "**/_*",
     ]
 }

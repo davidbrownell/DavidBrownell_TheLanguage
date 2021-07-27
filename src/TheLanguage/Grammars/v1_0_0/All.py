@@ -36,6 +36,9 @@ with InitRelativeImports():
     from .VariableDeclarationStatement import VariableDeclarationStatement
     from .VariableNameExpression import VariableNameExpression
 
+# TODO: Check grammar for all statements to determine if syntax errors (bad) or other errors (good)
+#       are most appropriate.
+
 
 # ----------------------------------------------------------------------
 Statements                                  = [

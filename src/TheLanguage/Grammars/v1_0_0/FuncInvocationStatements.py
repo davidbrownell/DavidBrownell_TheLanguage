@@ -144,20 +144,19 @@ class _FuncInvocationBase(GrammarStatement):
                 CommonTokens.PopIgnoreWhitespaceControl,
                 CommonTokens.RParen,
 
-                # TODO: Chain statement?
-                # GrammarDSL.StatementItem(
-                #     name="Chained Call",
-                #     item=[
-                #         CommonTokens.PushIgnoreWhitespaceControl,
-                #         (
-                #             CommonTokens.DottedName,
-                #             CommonTokens.ArrowedName,
-                #         ),
-                #         None,
-                #         CommonTokens.PopIgnoreWhitespaceControl,
-                #     ],
-                #     arity="?",
-                # ),
+                GrammarDSL.StatementItem(
+                    name="Chained Call",
+                    item=[
+                        CommonTokens.PushIgnoreWhitespaceControl,
+                        (
+                            CommonTokens.DottedName,
+                            CommonTokens.ArrowedName,
+                        ),
+                        None,
+                        CommonTokens.PopIgnoreWhitespaceControl,
+                    ],
+                    arity="?",
+                ),
             ],
         )
 
@@ -197,7 +196,7 @@ class _FuncInvocationBase(GrammarStatement):
 
         if isinstance(potential_arguments_node, Leaf):
             # This leaf is the closing ')' token; this indicates that there aren't
-            # and arguments
+            # any arguments
             arguments = []
 
         else:

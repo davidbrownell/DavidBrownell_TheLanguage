@@ -164,7 +164,7 @@ class TupleExpression(_TupleBase):
             GrammarStatement.Type.Expression,
             "Tuple Expression",
             GrammarDSL.DynamicStatements.Expressions,
-            [],
+            additional_sequence_suffix_items=[],
         )
 
 
@@ -185,7 +185,7 @@ class TupleType(_TupleBase):
             GrammarStatement.Type.Type,
             "Tuple Type",
             GrammarDSL.DynamicStatements.Types,
-            [],
+            additional_sequence_suffix_items=[],
         )
 
 
@@ -207,7 +207,7 @@ class TupleVariableDeclarationStatement(_TupleBase):
             GrammarStatement.Type.Statement,
             "Tuple Variable Declaration",
             (CommonTokens.Name, None),
-            [
+            additional_sequence_suffix_items=[
                 CommonTokens.Equal,
                 GrammarDSL.DynamicStatements.Expressions,
                 CommonTokens.Newline,

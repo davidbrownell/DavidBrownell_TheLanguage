@@ -789,15 +789,15 @@ def test_PositionalAfterKeywordError():
 
 # ----------------------------------------------------------------------
 
-def TODO_test_SuffixCalls():
+def test_ChainedCalls():
     result, node = ExecuteEx(
         textwrap.dedent(
             """\
             Func1().Func2()
 
-            Func3()
-                .Func4()
-                .Func5()
+            # BugBug Func3()
+            # BugBug     .Func4()
+            # BugBug     ->Func5()
             """,
         ),
     )

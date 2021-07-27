@@ -67,25 +67,6 @@ Variable                                    = NamingConvention(
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidVariableNameError(ValidationError):
-    VariableName: str
-
-    MessageTemplate                         = Interface.DerivedProperty(
-        textwrap.dedent(
-            """\
-            '{{VariableName}}' is not a valid variable name.
-
-            Variable names must:
-                {}
-            """,
-        ).format(
-            StringHelpers.LeftJustify("\n".join(Variable.Constraints).rstrip(), 4),
-        ),
-    )
-
-
-# ----------------------------------------------------------------------
 Type                                        = NamingConvention(
     re.compile(
         textwrap.dedent(
@@ -104,6 +85,25 @@ Type                                        = NamingConvention(
         "Not end with double underscores",
     ],
 )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidVariableNameError(ValidationError):
+    VariableName: str
+
+    MessageTemplate                         = Interface.DerivedProperty(
+        textwrap.dedent(
+            """\
+            '{{VariableName}}' is not a valid variable name.
+
+            Variable names must:
+                {}
+            """,
+        ).format(
+            StringHelpers.LeftJustify("\n".join(Variable.Constraints).rstrip(), 4),
+        ),
+    )
 
 
 # ----------------------------------------------------------------------

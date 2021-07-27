@@ -104,7 +104,7 @@ Immutable                                   = RegexToken("'immutable'", re.compi
 
 # Traditional Parameters
 FunctionParameterPositionalDelimiter        = RegexToken("'/'", re.compile(r"/"))
-FunctionParameterKeywordDelimiter           = RegexToken("'*'", re.compile(r"/*"))
+FunctionParameterKeywordDelimiter           = RegexToken("'*'", re.compile(r"\*"))
 
 # New Style Parameters
 FunctionParameterPositional                 = RegexToken("'pos'", re.compile(r"pos\b"))
@@ -118,6 +118,8 @@ AllNewStyleParameters                       = [
     FunctionParameterKeyword,
 ]
 
+FunctionParameterVarArgsType                = RegexToken("'*'", re.compile(r"\*"))
+
 # ----------------------------------------------------------------------
 # |  FuncInvocationStatements
 ArrowedName                                 = RegexToken(
@@ -127,7 +129,7 @@ ArrowedName                                 = RegexToken(
             r"""(?P<value>(?#
                 Arrow                                   )\-\>(?#
                 Initial char [not a number or dot]      )[A-Za-z_](?#
-                Alpha numberic, underscore, dot         )[A-Za-z_\.0-9]*(?#
+                Alpha numeric, underscore, dot          )[A-Za-z_\.0-9]*(?#
                 [optional] Trailing ? for funcs         )\??(?#
             ))""",
         ),
@@ -141,7 +143,7 @@ DottedName                                  = RegexToken(
             r"""(?P<value>(?#
                 Dot                                     )\.(?#
                 Initial char [not a number or dot]      )[A-Za-z_](?#
-                Alpha numberic, underscore, dot         )[A-Za-z_\.0-9]*(?#
+                Alpha numeric, underscore, dot          )[A-Za-z_\.0-9]*(?#
                 [optional] Trailing ? for funcs         )\??(?#
             ))""",
         ),
