@@ -53,6 +53,8 @@ with InitRelativeImports():
 
     from ...GrammarStatement import ValidationError
 
+    from ....ParserImpl.Token import Token
+
 
 # ----------------------------------------------------------------------
 # |
@@ -191,6 +193,14 @@ class NonDefaultParameterAfterDefaultValueParameterError(ValidationError):
 @dataclass(frozen=True)
 class NewStyleParameterGroupOrderingError(ValidationError):
     MessageTemplate                         = Interface.DerivedProperty("Parameter groups must appear in the order {}".format(", ".join(token.Name for token in CommonTokens.AllNewStyleParameters)))
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class NewStyleParameterGroupDuplicateError(ValidationError):
+    GroupName: str
+
+    MessageTemplate                         = Interface.DerivedProperty("The parameter group '{GroupName}' has already been specified")
 
 
 # ----------------------------------------------------------------------
@@ -425,20 +435,28 @@ def _ExtractNewStyleParameters(
 
         if the_type.Type == CommonTokens.FunctionParameterPositional:
             parameters_list = pos_parameters
-            has_error = any_parameters or key_parameters
+            has_order_error = any_parameters or key_parameters
 
         elif the_type.Type == CommonTokens.FunctionParameterAny:
             parameters_list = any_parameters
-            has_error = bool(key_parameters)
+            has_order_error = bool(key_parameters)
 
         elif the_type.Type == CommonTokens.FunctionParameterKeyword:
             parameters_list = key_parameters
-            has_error = False
+            has_order_error = False
 
         else:
             assert False, the_type  # pragma: no cover
 
-        if has_error:
+        if parameters_list:
+            regex_match = cast(Token.RegexMatch, the_type.Value).Match
+
+            raise NewStyleParameterGroupDuplicateError.FromNode(
+                the_type,
+                regex_match.string[regex_match.start():regex_match.end()],
+            )
+
+        if has_order_error:
             raise NewStyleParameterGroupOrderingError.FromNode(the_type)
 
         # Get the parameters

@@ -3827,3 +3827,55 @@ def test_InvalidParameterNames():
         )
 
         assert str(ex) == expected_value, invalid_name
+
+# ----------------------------------------------------------------------
+def test_DuplicateNewStyleGroupError():
+    with pytest.raises(FuncParameters.NewStyleParameterGroupDuplicateError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                String Func(
+                    pos:
+                        Int a, Bool b
+                    pos:
+                        Char c
+                ):
+                    pass
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "The parameter group 'pos' has already been specified"
+    assert ex.GroupName == "pos"
+    assert ex.Line == 4
+    assert ex.LineEnd == 4
+    assert ex.Column == 5
+    assert ex.ColumnEnd == 8
+
+    with pytest.raises(FuncParameters.NewStyleParameterGroupDuplicateError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                String Func(
+                    pos:
+                        Int a, Bool b
+                    key:
+                        Char c
+                    key:
+                        Double d, Matrix m,
+                ):
+                    pass
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "The parameter group 'key' has already been specified"
+    assert ex.GroupName == "key"
+    assert ex.Line == 6
+    assert ex.LineEnd == 6
+    assert ex.Column == 5
+    assert ex.ColumnEnd == 8
