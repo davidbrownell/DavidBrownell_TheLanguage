@@ -39,6 +39,7 @@ with InitRelativeImports():
     from .Common.GrammarAST import (
         ExtractDynamicExpressionNode,
         ExtractLeafValue,
+        ExtractOptionalNode,
         Leaf,
         Node,
     )
@@ -48,9 +49,6 @@ with InitRelativeImports():
     from .Common import Tokens as CommonTokens
 
     from ..GrammarStatement import GrammarStatement
-
-    from ...ParserImpl.Statements.RepeatStatement import RepeatStatement
-    from ...ParserImpl.Statements.Statement import Statement
 
 
 # ----------------------------------------------------------------------
@@ -78,6 +76,8 @@ class FuncDeclarationStatement(GrammarStatement):
         Parameters: FuncParameters.Parameters
         Docstring: Optional[str]
         Statements: List[Node]
+
+        # TODO: Add exceptions flag, remove trailing '?'
 
         # ----------------------------------------------------------------------
         def __str__(self):
@@ -182,62 +182,63 @@ class FuncDeclarationStatement(GrammarStatement):
         cls,
         node: Node,
     ):
-        # export
-        assert node.Children
+        child_index = 0
 
-        if (
-            isinstance(node.Children[0].Type, RepeatStatement)
-            and len(cast(Node, node.Children[0]).Children) == 1
-            and isinstance(cast(Node, node.Children[0]).Children[0], Leaf)
-        ):
+        # 'export'?
+        assert len(node.Children) >= child_index + 1
+        if isinstance(ExtractOptionalNode(node, child_index), Leaf):
             export = True
-            child_offset = 1
+            child_index += 1
         else:
             export = False
-            child_offset = 0
 
-        # type
-        assert len(node.Children) > child_offset + 1
-        the_type = ExtractDynamicExpressionNode(cast(Node, node.Children[child_offset]))
+        # <type>
+        assert len(node.Children) >= child_index + 1
+        the_type = ExtractDynamicExpressionNode(cast(Node, node.Children[child_index]))
+        child_index += 1
 
-        # name
-        assert len(node.Children) > child_offset + 2
-        name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[child_offset + 1])))
+        # <name>
+        assert len(node.Children) >= child_index + 1
+        name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[child_index])))
+        child_index += 1
 
         if not NamingConventions.Function.Regex.match(name):
-            raise NamingConventions.InvalidFunctionNameError.FromNode(node.Children[child_offset + 2], name)
+            raise NamingConventions.InvalidFunctionNameError.FromNode(node.Children[child_index], name)
 
-        # parameters
-        assert len(node.Children) > child_offset + 3
-        parameters = FuncParameters.Extract(cast(Node, node.Children[child_offset + 2]))
+        # '(' <parameters> ')'
+        assert len(node.Children) >= child_index + 1
+        parameters = FuncParameters.Extract(cast(Node, node.Children[child_index]))
+        child_index += 1
 
-        # Move past the colon, newline, and indent
-        child_offset += 3
+        # ':' '\n' <indent>
+        assert len(node.Children) >= child_index + 3
+        child_index += 3
 
-        # docstring
-        assert len(node.Children) > child_offset + 4
-        if (
-            isinstance(node.Children[child_offset + 3].Type, RepeatStatement)
-            and len(cast(Node, node.Children[child_offset + 3]).Children) == 1
-            and cast(Statement, cast(Node, node.Children[child_offset + 3]).Children[0].Type).Name == "Docstring"
-        ):
-            # Drill into the optional node
-            docstring_node = cast(Node, cast(Node, node.Children[child_offset + 3]).Children[0])
+        # <docstring>?
+        assert len(node.Children) >= child_index + 1
 
+        docstring_node = ExtractOptionalNode(node, child_index, "Docstring")
+        if docstring_node is not None:
+            child_index += 1
+
+            docstring_node = cast(Node, docstring_node)
             assert len(docstring_node.Children) == 2
             docstring_node = cast(Leaf, docstring_node.Children[0])
 
             docstring = cast(str, ExtractLeafValue(docstring_node))
-            child_offset += 1
         else:
             docstring = None
 
-        # statements
-        assert len(node.Children) > child_offset + 4
+        # <statement>+
+        assert len(node.Children) >= child_index + 1
         statements = [
             ExtractDynamicExpressionNode(cast(Node, child))
-            for child in cast(Node, node.Children[child_offset + 3]).Children
+            for child in cast(Node, node.Children[child_index]).Children
         ]
+        child_index += 1
+
+        # <dedent>
+        assert len(node.Children) == child_index + 1
 
         # Persist the info
         object.__setattr__(

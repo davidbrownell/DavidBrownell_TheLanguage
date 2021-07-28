@@ -39,6 +39,9 @@ with InitRelativeImports():
     from .GrammarAST import (
         ExtractDynamicExpressionNode,
         ExtractLeafValue,
+        ExtractOptionalNode,
+        ExtractOrNode,
+        ExtractRepeatedNodes,
         Leaf,
         Node,
         Statement,
@@ -49,10 +52,6 @@ with InitRelativeImports():
     from . import Tokens as CommonTokens
 
     from ...GrammarStatement import ValidationError
-
-    from ....ParserImpl.Statements.OrStatement import OrStatement
-    from ....ParserImpl.Statements.RepeatStatement import RepeatStatement
-    from ....ParserImpl.Statements.TokenStatement import TokenStatement
 
 
 # ----------------------------------------------------------------------
@@ -282,10 +281,11 @@ def CreateStatement() -> Statement:
     return GrammarDSL.CreateStatement(
         name="Parameters",
         item=[
+            # '('
             CommonTokens.LParen,
             CommonTokens.PushIgnoreWhitespaceControl,
 
-            # Parameters are optional
+            # <parameters>?
             GrammarDSL.StatementItem(
                 item=(
                     # New Style:
@@ -335,6 +335,7 @@ def CreateStatement() -> Statement:
                 arity="?",
             ),
 
+            # ')'
             CommonTokens.PopIgnoreWhitespaceControl,
             CommonTokens.RParen,
         ],
@@ -345,33 +346,36 @@ def CreateStatement() -> Statement:
 def Extract(
     node: Node,
 ) -> Parameters:
-    if len(node.Children) == 2:
-        return Parameters([], [], [])
+    child_index = 0
 
-    assert len(node.Children) == 3
-    node = cast(Node, node.Children[1])
+    # '('
+    assert len(node.Children) >= child_index + 1
+    child_index += 1
 
-    # Drill into the optional node
-    assert isinstance(node.Type, RepeatStatement)
-    assert len(node.Children) == 1
-    node = cast(Node, node.Children[0])
+    # <parameters>?
+    potential_parameters_node = ExtractOptionalNode(node, child_index)
+    if potential_parameters_node is not None:
+        child_index += 1
 
-    # Drill into the or node
-    assert isinstance(node.Type, OrStatement)
-    assert len(node.Children) == 1
-    node = cast(Node, node.Children[0])
+        parameters_node = cast(Node, ExtractOrNode(cast(Node, potential_parameters_node)))
 
-    assert node.Type
+        potential_new_style_children = ExtractRepeatedNodes(
+            parameters_node,
+            name="New Style",
+        )
 
-    if node.Type.Name == "Traditional":
-        parameters = _ExtractTraditionalParameters(node)
-    elif (
-        isinstance(node.Type, RepeatStatement)
-        and node.Type.Statement.Name == "New Style"
-    ):
-        parameters = _ExtractNewStyleParameters(node)
+        if potential_new_style_children is not None:
+            parameters = _ExtractNewStyleParameters(cast(List[Node], potential_new_style_children))
+        else:
+            parameters = _ExtractTraditionalParameters(parameters_node)
     else:
-        assert False, node  # pragma: no cover
+        parameters = Parameters([], [], [])
+
+    # ')'
+    assert len(node.Children) >= child_index
+    child_index += 1
+
+    assert len(node.Children) == child_index
 
     # Check for error conditions
     parameter_names = set()
@@ -405,23 +409,19 @@ def Extract(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def _ExtractNewStyleParameters(
-    node: Node,
+    children: List[Node],
 ) -> Parameters:
     pos_parameters: List[ParameterInfo] = []
     any_parameters: List[ParameterInfo] = []
     key_parameters: List[ParameterInfo] = []
 
-    for child in node.Children:
+    for child in children:
         child = cast(Node, child)
         assert len(child.Children) == 3
 
         # Get the type
         the_type_node = cast(Node, child.Children[0])
-
-        # Drill into the Or node
-        assert isinstance(the_type_node.Type, OrStatement)
-        assert len(the_type_node.Children) == 1
-        the_type = cast(Leaf, the_type_node.Children[0])
+        the_type = cast(Leaf, ExtractOrNode(the_type_node))
 
         if the_type.Type == CommonTokens.FunctionParameterPositional:
             parameters_list = pos_parameters
@@ -475,11 +475,7 @@ def _ExtractTraditionalParameters(
     parameters = list(GrammarDSL.ExtractDelimitedNodes(node))
 
     for parameter_index, parameter in enumerate(parameters):
-        # Drill into the OrStatement
-        assert isinstance(parameter.Type, OrStatement)
-        assert len(parameter.Children) == 1
-        parameter = cast(Node, parameter.Children[0])
-
+        parameter = cast(Node, ExtractOrNode(parameter))
         assert parameter.Type
 
         if parameter.Type == CommonTokens.FunctionParameterPositionalDelimiter:
@@ -542,47 +538,44 @@ def _ExtractParameterInfo(
     node: Node,
 ) -> ParameterInfo:
 
+    child_index = 0
+
     # <type>
-    assert len(node.Children) > 1
-    the_type = ExtractDynamicExpressionNode(cast(Node, node.Children[0]))
+    assert len(node.Children) >= child_index + 1
+    the_type = ExtractDynamicExpressionNode(cast(Node, node.Children[child_index]))
+    child_index += 1
 
     # arity?
-    assert len(node.Children) >= 2
-    if (
-        isinstance(node.Children[1], RepeatStatement)
-        and len(cast(Node, node.Children[1]).Children) == 1
-        and cast(Statement, cast(Node, node.Children[1]).Children[0].Type).Name == "Arity"
-    ):
+    potential_arity_node = ExtractOptionalNode(node, child_index, "Arity")
+    if potential_arity_node is not None:
         raise Exception("TODO")
         arity = "TODO"
-        child_offset = 1
+        child_index += 1
     else:
         arity = None
-        child_offset = 0
 
     # <name>
-    assert len(node.Children) >= 2 + child_offset
-    name_leaf = cast(Leaf, node.Children[1 + child_offset])
+    assert len(node.Children) >= child_index + 1
+    name_leaf = cast(Leaf, node.Children[child_index])
     name = cast(str, ExtractLeafValue(name_leaf))
+    child_index += 1
 
     if not NamingConventions.Parameter.Regex.match(name):
         raise NamingConventions.InvalidParameterNameError.FromNode(name_leaf, name)
 
     # ('=' <expr>)?
-    if (
-        len(node.Children) >= 3 + child_offset
-        and isinstance(node.Children[2 + child_offset].Type, RepeatStatement)
-        and len(cast(Node, node.Children[2 + child_offset]).Children) == 1
-    ):
-        # Drill into the Optional Node
-        default_node = cast(Node, node.Children[2 + child_offset])
-        assert len(default_node.Children) == 1
-        default_node = cast(Node, default_node.Children[0])
+    potential_default_node = ExtractOptionalNode(node, child_index, "With Default")
+    if potential_default_node is not None:
+        child_index += 1
+
+        default_node = cast(Node, potential_default_node)
 
         assert len(default_node.Children) == 2
         default = ExtractDynamicExpressionNode(cast(Node, default_node.Children[1]))
     else:
         default = None
+
+    assert len(node.Children) == child_index
 
     return ParameterInfo(
         node,

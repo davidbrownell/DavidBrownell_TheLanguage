@@ -30,15 +30,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import ExtractLeafValue, Leaf, Node
+    from .Common.GrammarAST import (
+        ExtractLeafValue,
+        ExtractOrNode,
+        Leaf,
+        Node,
+    )
+
     from .Common import GrammarDSL
     from .Common import NamingConventions
     from .Common import Tokens as CommonTokens
     from ..GrammarStatement import GrammarStatement
 
-    from ...ParserImpl.Statements.OrStatement import OrStatement
     from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
-    from ...ParserImpl.Statements.Statement import Statement
 
 
 # ----------------------------------------------------------------------
@@ -114,9 +118,7 @@ class _TupleBase(GrammarStatement):
             assert node.Children
             node = cast(Node, node.Children[0])
 
-        assert isinstance(node.Type, OrStatement)
-        assert len(node.Children) == 1
-        node = cast(Node, node.Children[0])
+        node = cast(Node, ExtractOrNode(node))
         assert node.Type
 
         if node.Type.Name == cls.SINGLE_NODE_NAME:
@@ -213,11 +215,7 @@ class TupleVariableDeclarationStatement(_TupleBase):
         None,
     ]:
         for child_node in super(TupleVariableDeclarationStatement, cls).EnumElements(node):
-            assert isinstance(child_node.Type, OrStatement)
-            child_node = cast(Node, child_node)
-
-            assert len(child_node.Children) == 1
-            child_node = child_node.Children[0]
+            child_node = ExtractOrNode(cast(Node, child_node))
 
             if isinstance(child_node, Leaf):
                 yield child_node, cast(str, ExtractLeafValue(child_node))

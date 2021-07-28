@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  StandardType.py
+# |  VariantType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-18 13:55:37
+# |      2021-07-28 00:55:22
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the StandardType object"""
+"""Contains the VariantType object"""
 
 import os
 
-from typing import cast, Optional
+from typing import cast, List
 
 from dataclasses import dataclass
 
@@ -33,27 +33,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Common.GrammarAST import (
-        ExtractLeafValue,
-        ExtractOptionalNode,
-        ExtractOrNode,
-        Leaf,
+        ExtractDynamicExpressionNode,
+        ExtractRepeatedNodes,
         Node,
     )
 
     from .Common import GrammarDSL
-    from .Common import NamingConventions
     from .Common import Tokens as CommonTokens
 
     from ..GrammarStatement import GrammarStatement
 
-    from ...ParserImpl.Token import Token
-
 
 # ----------------------------------------------------------------------
-class StandardType(GrammarStatement):
-    """<name> <template>? <modifier>?"""
+class VariantType(GrammarStatement):
+    """'(' <type> '|' (<type> '|')* <type> ')'"""
 
-    NODE_NAME                               = "Standard"
+    NODE_NAME                               = "Variant"
 
     # ----------------------------------------------------------------------
     # |
@@ -61,10 +56,8 @@ class StandardType(GrammarStatement):
     # |
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
-    class TypeInfo(object) :
-        Node: Node
-        Name: str
-        Modifier: Optional[CommonTokens.Token]
+    class TypeInfo(object):
+        Types: List[Node]
 
     # ----------------------------------------------------------------------
     # |
@@ -72,28 +65,37 @@ class StandardType(GrammarStatement):
     # |
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(StandardType, self).__init__(
+        super(VariantType, self).__init__(
             GrammarStatement.Type.Type,
             GrammarDSL.CreateStatement(
                 name=self.NODE_NAME,
                 item=[
-                    CommonTokens.Name,
-                    # TODO: Templates
+                    # '('
+                    CommonTokens.LParen,
+                    CommonTokens.PushIgnoreWhitespaceControl,
 
+                    # <type>
+                    GrammarDSL.DynamicStatements.Types,
+
+                    # '|'
+                    CommonTokens.VariantSep,
+
+                    # (<type> '|')*
                     GrammarDSL.StatementItem(
-                        name="Modifier",
-                        item=(
-                            CommonTokens.Var,
-                            CommonTokens.Ref,
-                            CommonTokens.Val,
-                            CommonTokens.View,
-                            CommonTokens.Isolated,
-                            CommonTokens.Shared,
-                            CommonTokens.Immutable,
-                            CommonTokens.Mutable,
-                        ),
-                        arity="?",
+                        name="Sep and Type",
+                        item=[
+                            GrammarDSL.DynamicStatements.Types,
+                            CommonTokens.VariantSep,
+                        ],
+                        arity="*",
                     ),
+
+                    # <type>
+                    GrammarDSL.DynamicStatements.Types,
+
+                    # ')'
+                    CommonTokens.PopIgnoreWhitespaceControl,
+                    CommonTokens.RParen,
                 ],
             ),
         )
@@ -107,30 +109,42 @@ class StandardType(GrammarStatement):
     ):
         child_index = 0
 
-        # <name>
+        types = []
+
+        # '('
         assert len(node.Children) >= child_index + 1
-        name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[child_index])))
         child_index += 1
 
-        if not NamingConventions.Type.Regex.match(name):
-            raise NamingConventions.InvalidTypeNameError.FromNode(node.Children[0], name)
+        # <type>
+        assert len(node.Children) >= child_index + 1
+        types.append(ExtractDynamicExpressionNode(cast(Node, node.Children[child_index])))
+        child_index += 1
 
-        # TODO: <template>?
+        # '|'
+        assert len(node.Children) >= child_index + 1
+        child_index += 1
 
-        # <modifier>?
-        potential_modifier_node = ExtractOptionalNode(node, child_index, "Modifier")
-        if potential_modifier_node is not None:
+        # (<type> '|')*
+        potential_types = ExtractRepeatedNodes(node, child_index, "Sep and Type")
+        if potential_types is not None:
             child_index += 1
 
-            modifier_node = cast(Node, ExtractOrNode(cast(Node, potential_modifier_node)))
-            modifier = cast(Token, modifier_node.Type)
-        else:
-            modifier = None
+            for child in potential_types:
+                child = cast(Node, child)
+
+                assert len(child.Children) == 2
+                types.append(ExtractDynamicExpressionNode(cast(Node, child.Children[0])))
+
+        # <type>
+        assert len(node.Children) >= child_index + 1
+        types.append(ExtractDynamicExpressionNode(cast(Node, node.Children[child_index])))
+        child_index += 1
+
+        # ')'
+        assert len(node.Children) >= child_index + 1
+        child_index += 1
 
         assert len(node.Children) == child_index
 
-        return cls.TypeInfo(
-            node,
-            name,
-            modifier,
-        )
+        # Commit the results
+        object.__setattr__(node, "Info", cls.TypeInfo(types))
