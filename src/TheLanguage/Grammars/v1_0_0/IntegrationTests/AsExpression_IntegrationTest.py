@@ -100,19 +100,20 @@ def test_Tuple():
                                             Tuple Type
                                                 Multiple
                                                     '(' <<Regex: <_sre.SRE_Match object; span=(14, 15), match='('>>> ws:(13, 14) [1, 15 -> 1, 16]
-                                                    DynamicStatements.Types
-                                                        1.0.0 Grammar
-                                                            Standard
-                                                                <name> <<Regex: <_sre.SRE_Match object; span=(15, 18), match='Foo'>>> ws:None [1, 16 -> 1, 19]
-                                                    Repeat: (Comma and Element, 1, None)
-                                                        Comma and Element
-                                                            ',' <<Regex: <_sre.SRE_Match object; span=(18, 19), match=','>>> ws:None [1, 19 -> 1, 20]
-                                                            DynamicStatements.Types
-                                                                1.0.0 Grammar
-                                                                    Standard
-                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(20, 23), match='Bar'>>> ws:(19, 20) [1, 21 -> 1, 24]
-                                                    Repeat: (',', 0, 1)
-                                                        ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [1, 24 -> 1, 25]
+                                                    Delimited Elements
+                                                        DynamicStatements.Types
+                                                            1.0.0 Grammar
+                                                                Standard
+                                                                    <name> <<Regex: <_sre.SRE_Match object; span=(15, 18), match='Foo'>>> ws:None [1, 16 -> 1, 19]
+                                                        Repeat: (Delimiter and Element, 1, None)
+                                                            Delimiter and Element
+                                                                ',' <<Regex: <_sre.SRE_Match object; span=(18, 19), match=','>>> ws:None [1, 19 -> 1, 20]
+                                                                DynamicStatements.Types
+                                                                    1.0.0 Grammar
+                                                                        Standard
+                                                                            <name> <<Regex: <_sre.SRE_Match object; span=(20, 23), match='Bar'>>> ws:(19, 20) [1, 21 -> 1, 24]
+                                                        Repeat: (Trailing Delimiter, 0, 1)
+                                                            ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [1, 24 -> 1, 25]
                                                     ')' <<Regex: <_sre.SRE_Match object; span=(24, 25), match=')'>>> ws:None [1, 25 -> 1, 26]
                         Newline+ <<25, 27>> ws:None [1, 26 -> 3, 1]
             Dynamic Statements
@@ -133,23 +134,24 @@ def test_Tuple():
                                             Tuple Type
                                                 Multiple
                                                     '(' <<Regex: <_sre.SRE_Match object; span=(43, 44), match='('>>> ws:(42, 43) [3, 17 -> 3, 18]
-                                                    DynamicStatements.Types
-                                                        1.0.0 Grammar
-                                                            Standard
-                                                                <name> <<Regex: <_sre.SRE_Match object; span=(50, 53), match='Foo'>>> ws:None [5, 5 -> 5, 8]
-                                                    Repeat: (Comma and Element, 1, None)
-                                                        Comma and Element
-                                                            ',' <<Regex: <_sre.SRE_Match object; span=(53, 54), match=','>>> ws:None [5, 8 -> 5, 9]
-                                                            DynamicStatements.Types
-                                                                1.0.0 Grammar
-                                                                    Standard
-                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(63, 66), match='Bar'>>> ws:None [6, 9 -> 6, 12]
-                                                        Comma and Element
-                                                            ',' <<Regex: <_sre.SRE_Match object; span=(66, 67), match=','>>> ws:None [6, 12 -> 6, 13]
-                                                            DynamicStatements.Types
-                                                                1.0.0 Grammar
-                                                                    Standard
-                                                                        <name> <<Regex: <_sre.SRE_Match object; span=(92, 95), match='Baz'>>> ws:None [7, 25 -> 7, 28]
+                                                    Delimited Elements
+                                                        DynamicStatements.Types
+                                                            1.0.0 Grammar
+                                                                Standard
+                                                                    <name> <<Regex: <_sre.SRE_Match object; span=(50, 53), match='Foo'>>> ws:None [5, 5 -> 5, 8]
+                                                        Repeat: (Delimiter and Element, 1, None)
+                                                            Delimiter and Element
+                                                                ',' <<Regex: <_sre.SRE_Match object; span=(53, 54), match=','>>> ws:None [5, 8 -> 5, 9]
+                                                                DynamicStatements.Types
+                                                                    1.0.0 Grammar
+                                                                        Standard
+                                                                            <name> <<Regex: <_sre.SRE_Match object; span=(63, 66), match='Bar'>>> ws:None [6, 9 -> 6, 12]
+                                                            Delimiter and Element
+                                                                ',' <<Regex: <_sre.SRE_Match object; span=(66, 67), match=','>>> ws:None [6, 12 -> 6, 13]
+                                                                DynamicStatements.Types
+                                                                    1.0.0 Grammar
+                                                                        Standard
+                                                                            <name> <<Regex: <_sre.SRE_Match object; span=(92, 95), match='Baz'>>> ws:None [7, 25 -> 7, 28]
                                                     ')' <<Regex: <_sre.SRE_Match object; span=(96, 97), match=')'>>> ws:None [8, 1 -> 8, 2]
                         Newline+ <<97, 98>> ws:None [8, 2 -> 9, 1]
         """,
