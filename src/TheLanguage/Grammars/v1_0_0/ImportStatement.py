@@ -19,7 +19,7 @@ import os
 
 from collections import OrderedDict
 from enum import auto, Enum
-from typing import cast, Callable, Dict, List, Optional, Tuple
+from typing import cast, Callable, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -79,6 +79,14 @@ class ImportStatement(ImportGrammarStatement):
         SourceIsDirectory                   = auto()
 
     # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class NodeInfo(object):
+        ImportType: "ImportStatement.ImportType"
+        ImportItems: Dict[str, str]
+        ImportItemsLookup: Dict[int, Leaf]
+        SourceFilename: str
+
+    # ----------------------------------------------------------------------
     # |
     # |  Public Methods
     # |
@@ -89,33 +97,23 @@ class ImportStatement(ImportGrammarStatement):
     ):
         assert file_extensions
 
-        content_item_statement = (
-            # <name> as <name>
-            [
-                CommonTokens.Name,
-                CommonTokens.As,
-                CommonTokens.Name,
-            ],
-
-            # <name>
-            CommonTokens.Name,
-        )
-
         # <content_item_statement> (',' <content_item_statement>)* ','?
-        content_items_statement = [
-            content_item_statement,
+        content_items_statement = GrammarDSL.CreateDelimitedStatementItem(
             GrammarDSL.StatementItem(
-                item=[  # type: ignore
-                    CommonTokens.Comma,
-                    content_item_statement,
-                ],
-                arity="*",
+                name="Content Item",
+                item=(
+                    # <name> as <name>
+                    [
+                        CommonTokens.Name,
+                        CommonTokens.As,
+                        CommonTokens.Name,
+                    ],
+
+                    # <name>
+                    CommonTokens.Name,
+                ),
             ),
-            GrammarDSL.StatementItem(
-                item=CommonTokens.Comma,
-                arity="?",
-            ),
-        ]
+        )
 
         super(ImportStatement, self).__init__(
             GrammarDSL.CreateStatement(
@@ -278,10 +276,16 @@ class ImportStatement(ImportGrammarStatement):
         assert import_type
 
         # Cache the values for later
-        object.__setattr__(node, "import_type", import_type)
-        object.__setattr__(node, "import_items", import_items)
-        object.__setattr__(node, "import_items_lookup", import_items_lookup)
-        object.__setattr__(node, "source_filename", source_filename)
+        object.__setattr__(
+            node,
+            "Info",
+            ImportStatement.NodeInfo(
+                import_type,
+                import_items,
+                import_items_lookup,
+                source_filename,
+            ),
+        )
 
         return TranslationUnitsParserObserver.ImportInfo(importing_source, source_filename)
 
@@ -294,83 +298,46 @@ class ImportStatement(ImportGrammarStatement):
         node: Node,
     ) -> Tuple[
         Dict[str, str],                     # Map of values
-        Dict[int, Leaf],         # Map of strings to tokens
+        Dict[int, Leaf],                    # Map of strings to tokens
     ]:
-        assert isinstance(node.Type, SequenceStatement), node
-
-        # Ignore potential whitespace
-        nodes = [child_node for child_node in node.Children if isinstance(child_node, Node)]
-        assert len(nodes) == 3, nodes
-
-        # Extract the import items
         import_items = OrderedDict()
         leaf_lookup = {}
 
-        (
-            key,
-            key_leaf,
-            value,
-            value_leaf,
-        ) = cls._ExtractImportItem(nodes[0])
+        for child in GrammarDSL.ExtractDelimitedNodes(node):
+            # Drill into the Or node
+            assert isinstance(child.Type, OrStatement)
+            assert len(child.Children) == 1
+            child = cast(Union[Node, Leaf], child.Children[0])
 
-        import_items[key] = value
-        leaf_lookup[id(key)] = key_leaf
-        leaf_lookup[id(value)] = value_leaf
+            if isinstance(child, Node):
+                assert isinstance(child.Type, SequenceStatement)
 
-        # We can take some liberties here because this functionality is invoked before pruning;
-        # therefore, we do not need to determine if we are looking at comma delimited values or
-        # just a comma as we do after pruning happens.
-        for child in nodes[1].Children:
-            for child_node in cast(Node, child).Children:
-                if not isinstance(child_node, Node):
-                    continue
+                leaves = [
+                    cast(Leaf, this_child)
+                    for this_child in child.Children
+                    if isinstance(this_child, Leaf)
+                ]
 
-                (
-                    key,
-                    key_leaf,
-                    value,
-                    value_leaf,
-                ) = cls._ExtractImportItem(child_node)
+                assert len(leaves) == 3
 
-                import_items[key] = value
-                leaf_lookup[id(key)] = key_leaf
-                leaf_lookup[id(value)] = value_leaf
+                key = cast(str, ExtractLeafValue(leaves[0]))
+                key_leaf = leaves[0]
 
-                break
+                value = cast(str, ExtractLeafValue(leaves[2]))
+                value_leaf = leaves[2]
+
+            elif isinstance(child, Leaf):
+                key_leaf = cast(Leaf, child)
+                key = cast(str, ExtractLeafValue(key_leaf))
+
+                value_leaf = key_leaf
+                value = key
+
+            else:
+                assert False, node  # pragma: no cover
+
+            import_items[key] = value
+            leaf_lookup[id(key)] = key_leaf
+            leaf_lookup[id(value)] = value_leaf
 
         return import_items, leaf_lookup
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _ExtractImportItem(
-        cls,
-        node: Node,
-    ) -> Tuple[str, Leaf, str, Leaf]:
-
-        # Drill into the Or node
-        assert isinstance(node.Type, OrStatement)
-        assert len(node.Children) == 1
-        node = cast(Node, node.Children[0])
-
-        if isinstance(node, Node):
-            assert isinstance(node.Type, SequenceStatement), node
-
-            # Renamed
-            leaves = [cast(Leaf, child) for child in node.Children if isinstance(child, Leaf) and not child.IsIgnored]
-            assert len(leaves) == 3
-
-            return (
-                cast(str, ExtractLeafValue(leaves[0])),
-                leaves[0],
-                cast(str, ExtractLeafValue(leaves[2])),
-                leaves[2],
-            )
-
-        elif isinstance(node, Leaf):
-            leaf = cast(Leaf, node)
-            value = cast(str, ExtractLeafValue(leaf))
-
-            return (value, leaf, value, leaf)
-
-        else:
-            assert False, node  # pragma: no cover

@@ -66,7 +66,6 @@ Variable                                    = NamingConvention(
 )
 
 
-# ----------------------------------------------------------------------
 Type                                        = NamingConvention(
     re.compile(
         textwrap.dedent(
@@ -85,6 +84,39 @@ Type                                        = NamingConvention(
         "Not end with double underscores",
     ],
 )
+
+
+Function                                    = NamingConvention(
+    re.compile(
+        textwrap.dedent(
+            r"""(?#
+                Start of Content                        )^(?:(?#
+                Dunder                                  )(?:(?#
+                    Double Under                        )__(?#
+                    Uppercase                           )[A-Z](?#
+                    Alpha-numeric and under             )[A-Za-z0-9_]+(?#
+                    Double Under                        )__(?#
+                End                                     ))(?#
+                -or-                                    )|(?#
+                Standard                                )(?:(?#
+                    Uppercase                           )[A-Z](?#
+                    Alpha-numeric and under             )[A-Za-z0-9_]+(?#
+                    Not end with double under           )(?<!__)(?#
+                End                                     ))(?#
+                [Optional] Trailing ?                   )\??(?#
+                End of Content                          ))$(?#
+            )""",
+        ),
+    ),
+    [
+        "Begin with an uppercase letter",
+        "Contain at least 2 upper-, lower-, numeric-, or underscore-characters",
+        "Not end with double underscores (unless starting with double underscores)",
+    ],
+)
+
+
+Parameter                                   = Variable
 
 
 # ----------------------------------------------------------------------
@@ -106,7 +138,6 @@ class InvalidVariableNameError(ValidationError):
     )
 
 
-# ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidTypeNameError(ValidationError):
     TypeName: str
@@ -121,5 +152,41 @@ class InvalidTypeNameError(ValidationError):
             """,
         ).format(
             StringHelpers.LeftJustify("\n".join(Type.Constraints).rstrip(), 4),
+        ),
+    )
+
+
+@dataclass(frozen=True)
+class InvalidFunctionNameError(ValidationError):
+    FunctionName: str
+
+    MessageTemplate                         = Interface.DerivedProperty(
+        textwrap.dedent(
+            """\
+            '{{FunctionName}}' is not a valid function name.
+
+            Function names must:
+                {}
+            """,
+        ).format(
+            StringHelpers.LeftJustify("\n".join(Function.Constraints).rstrip(), 4),
+        ),
+    )
+
+
+@dataclass(frozen=True)
+class InvalidParameterNameError(ValidationError):
+    ParameterName: str
+
+    MessageTemplate                         = Interface.DerivedProperty(
+        textwrap.dedent(
+            """\
+            '{{ParameterName}}' is not a valid parameter name.
+
+            Parameter names must:
+                {}
+            """,
+        ).format(
+            StringHelpers.LeftJustify("\n".join(Parameter.Constraints).rstrip(), 4),
         ),
     )

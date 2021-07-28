@@ -16,13 +16,15 @@
 """Contains the FunctionInvocationStatement and FunctionInvocationExpression objects"""
 
 import os
+import textwrap
 
-from typing import cast, Optional
+from typing import cast, List, Optional
 
 from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -89,8 +91,72 @@ class _FuncInvocationBase(GrammarStatement):
             self,
             verbose=False,
         ) -> str:
-            return self.Argument.ToString(
-                verbose=verbose,
+            return textwrap.dedent(
+                """\
+                Argument:
+                    {arg}
+                Keyword: {keyword}
+                DefaultValue:{default}
+                """,
+            ).format(
+                arg=StringHelpers.LeftJustify(
+                    self.Argument.ToString(
+                        verbose=verbose,
+                    ).rstrip(),
+                    4,
+                ),
+                keyword=self.Keyword or "<No Keyword>",
+                default=" <No Default>" if self.DefaultValue is None else "\n    {}\n".format(
+                    StringHelpers.LeftJustify(
+                        self.DefaultValue.ToString(
+                            verbose=verbose,
+                        ).rstrip(),
+                        4,
+                    ),
+                )
+            )
+
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class NodeInfo(object):
+        Name: str
+        Arguments: List["_FuncInvocationBase.ArgumentInfo"]
+
+        # ----------------------------------------------------------------------
+        def __str__(self):
+            return self.ToString()
+
+        # ----------------------------------------------------------------------
+        def ToString(
+            self,
+            verbose=False,
+        ):
+            return textwrap.dedent(
+                """\
+                {name}
+                    {arguments}
+                """,
+            ).format(
+                name=self.Name,
+                arguments="<No Arguments>" if not self.Arguments else StringHelpers.LeftJustify(
+                    "".join(
+                        [
+                            textwrap.dedent(
+                                """\
+                                {}
+                                {}
+                                """,
+                            ).format(
+                                arg_index,
+                                arg.ToString(
+                                    verbose=verbose,
+                                ),
+                            )
+                            for arg_index, arg in enumerate(self.Arguments)
+                        ],
+                    ).rstrip(),
+                    4,
+                ),
             )
 
     # ----------------------------------------------------------------------
@@ -102,67 +168,67 @@ class _FuncInvocationBase(GrammarStatement):
         self,
         grammar_statement_type: GrammarStatement.Type,
     ):
-        argument_statement = (
+        statement_items = []
+
+        # <name>
+        statement_items += [
+            CommonTokens.Name,
+        ]
+
+        # '(' ... ')'
+        statement_items += [
             GrammarDSL.StatementItem(
-                name="Keyword",
+                name="Arguments",
                 item=[
-                    CommonTokens.Name,
-                    CommonTokens.Equal,
-                    GrammarDSL.DynamicStatements.Expressions,
+                    CommonTokens.LParen,
+                    CommonTokens.PushIgnoreWhitespaceControl,
+
+                    GrammarDSL.StatementItem(
+                        name="Optional Arguments",
+                        item=GrammarDSL.CreateDelimitedStatementItem(
+                            GrammarDSL.StatementItem(
+                                name="Argument",
+                                item=(
+                                    # <name> '=' <expr>
+                                    GrammarDSL.StatementItem(
+                                        name="Keyword Arg",
+                                        item=[
+                                            CommonTokens.Name,
+                                            CommonTokens.Equal,
+                                            GrammarDSL.DynamicStatements.Expressions,
+                                        ],
+                                    ),
+
+                                    # <expr>
+                                    GrammarDSL.DynamicStatements.Expressions,
+                                ),
+                            ),
+                        ),
+                        arity="?",
+                    ),
+
+                    CommonTokens.PopIgnoreWhitespaceControl,
+                    CommonTokens.RParen,
+
+                    # TODO: Chained Call
+                    #    Note: May need to implement this by parsing the trailing content
+                    #          as a block based on indentation.
+                    #
+                    # GrammarDSL.StatementItem(
+                    #     name="Chained Call",
+                    #     item=[
+                    #         CommonTokens.PushIgnoreWhitespaceControl,
+                    #         (
+                    #             CommonTokens.DottedName,
+                    #             CommonTokens.ArrowedName,
+                    #         ),
+                    #         None,
+                    #         CommonTokens.PopIgnoreWhitespaceControl,
+                    #     ],
+                    #     arity="?",
+                    # ),
                 ],
             ),
-
-            GrammarDSL.DynamicStatements.Expressions,
-        )
-
-        suffix_statement = GrammarDSL.CreateStatement(
-            name="Arguments",
-            item=[
-                # '(' ... ')'
-                CommonTokens.LParen,
-                CommonTokens.PushIgnoreWhitespaceControl,
-
-                GrammarDSL.StatementItem(
-                    name="Optional Arguments",
-                    item=[
-                        argument_statement,
-                        GrammarDSL.StatementItem(
-                            item=[
-                                CommonTokens.Comma,
-                                argument_statement,
-                            ],
-                            arity="*",
-                        ),
-                        GrammarDSL.StatementItem(
-                            item=CommonTokens.Comma,
-                            arity="?",
-                        ),
-                    ],
-                    arity="?",
-                ),
-
-                CommonTokens.PopIgnoreWhitespaceControl,
-                CommonTokens.RParen,
-
-                GrammarDSL.StatementItem(
-                    name="Chained Call",
-                    item=[
-                        CommonTokens.PushIgnoreWhitespaceControl,
-                        (
-                            CommonTokens.DottedName,
-                            CommonTokens.ArrowedName,
-                        ),
-                        None,
-                        CommonTokens.PopIgnoreWhitespaceControl,
-                    ],
-                    arity="?",
-                ),
-            ],
-        )
-
-        statement_items = [
-            CommonTokens.Name,
-            suffix_statement,
         ]
 
         if grammar_statement_type == GrammarStatement.Type.Statement:
@@ -185,7 +251,7 @@ class _FuncInvocationBase(GrammarStatement):
     ):
         assert len(node.Children) >= 2, node.Children
 
-        func_name = ExtractLeafValue(cast(Leaf, node.Children[0]))
+        func_name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[0])))
 
         # Drill into the arguments node
         assert isinstance(node.Children[1].Type, SequenceStatement)
@@ -208,20 +274,28 @@ class _FuncInvocationBase(GrammarStatement):
             # Get the arguments
             arguments = []
 
-            arguments.append(cls._ExtractArgumentInfo(cast(Node, arguments_node.Children[0])))
+            for argument_node in GrammarDSL.ExtractDelimitedNodes(arguments_node):
+                # Drill into the arg node
+                assert isinstance(argument_node.Type, OrStatement)
+                assert len(argument_node.Children) == 1
+                argument_node = cast(Node, argument_node.Children[0])
 
-            if (
-                len(arguments_node.Children) >= 2
-                and isinstance(arguments_node.Children[1].Type, RepeatStatement)
-                and not isinstance(arguments_node.Children[1].Type.Statement, TokenStatement)
-            ):
-                for argument_node in cast(Node, arguments_node.Children[1]).Children:
-                    argument_node = cast(Node, argument_node)
+                if isinstance(argument_node.Type, DynamicStatement):
+                    argument_info = _FuncInvocationBase.ArgumentInfo(
+                        ExtractDynamicExpressionNode(argument_node),
+                        None,
+                        None,
+                    )
+                else:
+                    assert len(argument_node.Children) == 3
 
-                    assert len(argument_node.Children) == 2
-                    argument_node = cast(Node, argument_node.Children[1])
+                    argument_info = _FuncInvocationBase.ArgumentInfo(
+                        argument_node,
+                        cast(str, ExtractLeafValue(cast(Leaf, argument_node.Children[0]))),
+                        ExtractDynamicExpressionNode(cast(Node, argument_node.Children[2])),
+                    )
 
-                    arguments.append(cls._ExtractArgumentInfo(argument_node))
+                arguments.append(argument_info)
 
         # Ensure that all arguments after the first keyword argument
         # are also keyword arguments.
@@ -236,32 +310,7 @@ class _FuncInvocationBase(GrammarStatement):
         # TODO: Persist chain
 
         # Persist the info
-        object.__setattr__(node, "func_name", func_name)
-        object.__setattr__(node, "arguments", arguments)
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _ExtractArgumentInfo(
-        cls,
-        node: Node,
-    ) -> "ArgumentInfo":
-        # Drill into the Or node
-        assert isinstance(node.Type, OrStatement)
-        assert len(node.Children) == 1
-        node = cast(Node, node.Children[0])
-
-        if isinstance(node.Type, DynamicStatement):
-            return cls.ArgumentInfo(ExtractDynamicExpressionNode(node), None, None)
-
-        assert len(node.Children) == 3
-
-        return cls.ArgumentInfo(
-            node,
-            cast(str, ExtractLeafValue(cast(Leaf, node.Children[0]))),
-            ExtractDynamicExpressionNode(cast(Node, node.Children[2])),
-        )
+        object.__setattr__(node, "Info", cls.NodeInfo(func_name, arguments))
 
 
 # ----------------------------------------------------------------------

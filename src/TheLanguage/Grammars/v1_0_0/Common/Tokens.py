@@ -79,6 +79,15 @@ Comma                                       = RegexToken("','", re.compile(r",")
 LParen                                      = RegexToken("'('", re.compile(r"\("))
 RParen                                      = RegexToken("')'", re.compile(r"\)"))
 
+DocString                                   = RegexToken(
+    "<docstring>",
+    re.compile(
+        r'"""\n(?P<value>.+?)\n\s*"""',
+        re.DOTALL | re.MULTILINE,
+    ),
+    is_multiline=True,
+)
+
 #             isolated    shared
 #             --------    ------
 # mutable:      var        ref
@@ -102,6 +111,9 @@ Immutable                                   = RegexToken("'immutable'", re.compi
 # ----------------------------------------------------------------------
 # |  FunctionDeclarationStatement
 
+
+# ----------------------------------------------------------------------
+# |  FuncInvocationStatements
 # Traditional Parameters
 FunctionParameterPositionalDelimiter        = RegexToken("'/'", re.compile(r"/"))
 FunctionParameterKeywordDelimiter           = RegexToken("'*'", re.compile(r"\*"))
@@ -120,8 +132,6 @@ AllNewStyleParameters                       = [
 
 FunctionParameterVarArgsType                = RegexToken("'*'", re.compile(r"\*"))
 
-# ----------------------------------------------------------------------
-# |  FuncInvocationStatements
 ArrowedName                                 = RegexToken(
     "<arrowed_name>",
     re.compile(
@@ -155,6 +165,8 @@ DottedName                                  = RegexToken(
 From                                        = RegexToken("'from'", re.compile(r"from\b"))
 Import                                      = RegexToken("'import'", re.compile(r"import\b"))
 As                                          = RegexToken("'as'", re.compile(r"as\b"))
+
+Export                                      = RegexToken("'export'", re.compile(r"export\b"))
 
 # ----------------------------------------------------------------------
 # |  PassStatement

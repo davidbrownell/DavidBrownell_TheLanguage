@@ -266,7 +266,6 @@ class SequenceStatement(Statement):
     # ----------------------------------------------------------------------
     _indent_token                           = IndentToken()
     _dedent_token                           = DedentToken()
-    # BugBug _newline_token                          = NewlineToken(capture_many=False) # BugBug
     _newline_token                          = NewlineToken()
 
     # ----------------------------------------------------------------------
@@ -310,10 +309,6 @@ class SequenceStatement(Statement):
 
         result = cls._newline_token.Match(normalized_iter)
         if result is not None:
-            # Never capture the final newline as arbitrary whitespace
-            # BugBug if normalized_iter.AtEnd():
-            # BugBug     return None
-
             return Statement.TokenParseResultData(
                 cls._newline_token,
                 potential_whitespace,
