@@ -28,6 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .AsExpression import AsExpression
+    from .FuncDeclarationStatement import FuncDeclarationStatement
     from .FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
     from .ImportStatement import ImportStatement
     from .PassStatement import PassStatement
@@ -36,10 +37,13 @@ with InitRelativeImports():
     from .VariableDeclarationStatement import VariableDeclarationStatement
     from .VariableNameExpression import VariableNameExpression
 
+# TODO: Check grammar for all statements to determine if syntax errors (bad) or other errors (good)
+#       are most appropriate.
 
 # ----------------------------------------------------------------------
 Statements                                  = [
     # Statements
+    FuncDeclarationStatement(),
     FuncInvocationStatement(),
     ImportStatement(".TheLanguage"),        # TODO: Change this once the language name is finalized
     PassStatement(),

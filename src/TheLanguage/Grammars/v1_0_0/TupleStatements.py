@@ -65,18 +65,9 @@ class _TupleBase(GrammarStatement):
                     item=[
                         CommonTokens.LParen,
                         CommonTokens.PushIgnoreWhitespaceControl,
-                        tuple_element_item,
-                        GrammarDSL.StatementItem(
-                            name="Comma and Element",
-                            item=[
-                                CommonTokens.Comma,
-                                tuple_element_item,
-                            ],
-                            arity="+",
-                        ),
-                        GrammarDSL.StatementItem(
-                            item=CommonTokens.Comma,
-                            arity="?",
+                        GrammarDSL.CreateDelimitedStatementItem(
+                            tuple_element_item,
+                            are_multiple_items_required=True,
                         ),
                         CommonTokens.PopIgnoreWhitespaceControl,
                         CommonTokens.RParen,
@@ -133,14 +124,8 @@ class _TupleBase(GrammarStatement):
             yield node.Children[1]
 
         elif node.Type.Name == cls.MULTIPLE_NODE_NAME:
-            assert len(node.Children) > 3
-            yield node.Children[1]
-
-            for child in cast(Node, node.Children[2]).Children:
-                child = cast(Node, child)
-
-                assert len(child.Children) == 2
-                yield child.Children[1]
+            assert len(node.Children) == 3
+            yield from GrammarDSL.ExtractDelimitedNodes(cast(Node, node.Children[1]))
 
         else:
             assert False, node.Type.Name  # pragma: no cover
@@ -164,7 +149,7 @@ class TupleExpression(_TupleBase):
             GrammarStatement.Type.Expression,
             "Tuple Expression",
             GrammarDSL.DynamicStatements.Expressions,
-            [],
+            additional_sequence_suffix_items=[],
         )
 
 
@@ -185,7 +170,7 @@ class TupleType(_TupleBase):
             GrammarStatement.Type.Type,
             "Tuple Type",
             GrammarDSL.DynamicStatements.Types,
-            [],
+            additional_sequence_suffix_items=[],
         )
 
 
@@ -207,7 +192,7 @@ class TupleVariableDeclarationStatement(_TupleBase):
             GrammarStatement.Type.Statement,
             "Tuple Variable Declaration",
             (CommonTokens.Name, None),
-            [
+            additional_sequence_suffix_items=[
                 CommonTokens.Equal,
                 GrammarDSL.DynamicStatements.Expressions,
                 CommonTokens.Newline,
@@ -220,12 +205,9 @@ class TupleVariableDeclarationStatement(_TupleBase):
         cls,
         node: Node,
     ) -> Generator[
-        Tuple[
-            Union[Leaf, Node],              # Tuple Element
-            Union[
-                str,                        # <name>
-                Node,                       # Tuple
-            ],
+        Union[
+            Tuple[Leaf, str],
+            Tuple[Node, Node],
         ],
         None,
         None,

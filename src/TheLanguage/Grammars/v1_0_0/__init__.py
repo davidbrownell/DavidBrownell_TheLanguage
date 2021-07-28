@@ -1,5 +1,4 @@
 # TODO:
-#   docstrings in function decl
 #   Function type
 #   Variant/Union
 #       String Func():
@@ -13,6 +12,7 @@
 
 
 #   Classes / Interfaces / Mixins
+#       Include docstrings
 #   Exceptions
 #   Async/Await (Possibly "FuncName..." suffix?)
 #   Generators
@@ -23,15 +23,17 @@
 #   Conditional
 #   Pattern Matching / Super case statements
 #   Templates
-#   Docstrings
 #   Lambdas / Capture scope
 #   "with" statements (context generators)
 #   dunder methods
 #   type aliases
 #   Enumerations
-#   None
+#       Standard
+#       Flags
+#   Variadic function parameters
 
 #   Class library
+#       None
 #       String
 #       List
 #       Dict

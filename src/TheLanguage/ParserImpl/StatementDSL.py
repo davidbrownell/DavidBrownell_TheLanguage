@@ -204,7 +204,11 @@ def _PopulateItem(
 
     name = None
 
-    if isinstance(item.item, Statement):
+    if isinstance(item.item, StatementItem):
+        statement = _PopulateItem(comment_token, item.item, suffers_from_infinite_recursion_ctr)
+        name = item.name
+
+    elif isinstance(item.item, Statement):
         statement = item.item
         name = item.name
 

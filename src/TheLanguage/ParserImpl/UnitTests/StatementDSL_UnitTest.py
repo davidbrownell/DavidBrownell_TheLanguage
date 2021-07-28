@@ -666,10 +666,12 @@ class TestParseIndentAndDedent(object):
                         Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 4]
                     Newline+
                         Newline+ <<3, 4>> ws:None [1, 4 -> 2, 1]
+                    Indent
+                        <No Data>
             """,
         )
 
-        assert len(parse_mock.method_calls) == 8
+        assert len(parse_mock.method_calls) == 10
 
 # ----------------------------------------------------------------------
 class TestIgnoreWhitespace(object):
