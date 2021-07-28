@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Iterable, List, Optional, Tuple, Union
+from typing import cast, Iterable, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -208,10 +208,6 @@ class SequenceStatement(Statement):
                         assert False, statement.Token  # pragma: no cover
 
                     continue
-
-                if normalized_iter.AtEnd():
-                    success = False
-                    break
 
                 # Process the statement
                 result = await statement.ParseAsync(

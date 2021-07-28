@@ -79,6 +79,15 @@ Comma                                       = RegexToken("','", re.compile(r",")
 LParen                                      = RegexToken("'('", re.compile(r"\("))
 RParen                                      = RegexToken("')'", re.compile(r"\)"))
 
+DocString                                   = RegexToken(
+    "<docstring>",
+    re.compile(
+        r'"""\n(?P<value>.+?)\n\s*"""',
+        re.DOTALL | re.MULTILINE,
+    ),
+    is_multiline=True,
+)
+
 #             isolated    shared
 #             --------    ------
 # mutable:      var        ref
@@ -102,9 +111,12 @@ Immutable                                   = RegexToken("'immutable'", re.compi
 # ----------------------------------------------------------------------
 # |  FunctionDeclarationStatement
 
+
+# ----------------------------------------------------------------------
+# |  FuncInvocationStatements
 # Traditional Parameters
 FunctionParameterPositionalDelimiter        = RegexToken("'/'", re.compile(r"/"))
-FunctionParameterKeywordDelimiter           = RegexToken("'*'", re.compile(r"/*"))
+FunctionParameterKeywordDelimiter           = RegexToken("'*'", re.compile(r"\*"))
 
 # New Style Parameters
 FunctionParameterPositional                 = RegexToken("'pos'", re.compile(r"pos\b"))
@@ -118,8 +130,8 @@ AllNewStyleParameters                       = [
     FunctionParameterKeyword,
 ]
 
-# ----------------------------------------------------------------------
-# |  FuncInvocationStatements
+FunctionParameterVarArgsType                = RegexToken("'*'", re.compile(r"\*"))
+
 ArrowedName                                 = RegexToken(
     "<arrowed_name>",
     re.compile(
@@ -127,7 +139,7 @@ ArrowedName                                 = RegexToken(
             r"""(?P<value>(?#
                 Arrow                                   )\-\>(?#
                 Initial char [not a number or dot]      )[A-Za-z_](?#
-                Alpha numberic, underscore, dot         )[A-Za-z_\.0-9]*(?#
+                Alpha numeric, underscore, dot          )[A-Za-z_\.0-9]*(?#
                 [optional] Trailing ? for funcs         )\??(?#
             ))""",
         ),
@@ -141,7 +153,7 @@ DottedName                                  = RegexToken(
             r"""(?P<value>(?#
                 Dot                                     )\.(?#
                 Initial char [not a number or dot]      )[A-Za-z_](?#
-                Alpha numberic, underscore, dot         )[A-Za-z_\.0-9]*(?#
+                Alpha numeric, underscore, dot          )[A-Za-z_\.0-9]*(?#
                 [optional] Trailing ? for funcs         )\??(?#
             ))""",
         ),
@@ -153,6 +165,8 @@ DottedName                                  = RegexToken(
 From                                        = RegexToken("'from'", re.compile(r"from\b"))
 Import                                      = RegexToken("'import'", re.compile(r"import\b"))
 As                                          = RegexToken("'as'", re.compile(r"as\b"))
+
+Export                                      = RegexToken("'export'", re.compile(r"export\b"))
 
 # ----------------------------------------------------------------------
 # |  PassStatement

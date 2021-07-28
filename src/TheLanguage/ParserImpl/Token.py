@@ -149,9 +149,9 @@ class NewlineToken(Token):
     @Interface.override
     def Match(self, normalized_iter):
         if (
-            normalized_iter.Offset == normalized_iter.LineInfo.OffsetEnd
+            not normalized_iter.AtEnd()
+            and normalized_iter.Offset == normalized_iter.LineInfo.OffsetEnd
             and normalized_iter.HasConsumedAllDedents()
-            and not normalized_iter.AtEnd()
         ):
             newline_start = normalized_iter.Offset
 
@@ -180,6 +180,9 @@ class IndentToken(Token):
     @staticmethod
     @Interface.override
     def Match(normalized_iter):
+        if normalized_iter.AtEnd():
+            return None
+
         if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.HasNewIndent():
             normalized_iter.SkipPrefix()
 
@@ -203,6 +206,9 @@ class DedentToken(Token):
     @staticmethod
     @Interface.override
     def Match(normalized_iter):
+        if normalized_iter.AtEnd():
+            return None
+
         if (
             normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
             and not normalized_iter.HasConsumedAllDedents()
@@ -249,6 +255,9 @@ class RegexToken(Token):
     # ----------------------------------------------------------------------
     @Interface.override
     def Match(self, normalized_iter):
+        if normalized_iter.AtEnd():
+            return None
+
         if not normalized_iter.HasConsumedAllDedents():
             return None
 
@@ -299,6 +308,9 @@ class MultilineRegexToken(Token):
     # ----------------------------------------------------------------------
     @Interface.override
     def Match(self, normalized_iter):
+        if normalized_iter.AtEnd():
+            return None
+
         matches = []
 
         for regex in self.RegexDelimiters:

@@ -61,6 +61,20 @@ class ValidationError(Error):
         node: Union[Node, Leaf],
         *args,
     ):
+        if isinstance(node, Leaf):
+            assert node.IterBefore.Line == node.IterAfter.Line
+
+            return cls(
+                node.IterBefore.Line,
+                node.IterBefore.Column + (
+                    node.Whitespace[1] - node.Whitespace[0] - 1
+                    if node.Whitespace else 0
+                ),
+                node.IterAfter.Line,
+                node.IterAfter.Column,
+                *args,
+            )
+
         return cls(
             node.IterBefore.Line,
             node.IterBefore.Column,
