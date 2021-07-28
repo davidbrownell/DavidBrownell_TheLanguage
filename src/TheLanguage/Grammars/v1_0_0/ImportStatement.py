@@ -19,7 +19,7 @@ import os
 
 from collections import OrderedDict
 from enum import auto, Enum
-from typing import cast, Callable, Dict, List, Optional, Tuple, Union
+from typing import cast, Callable, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -34,14 +34,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import ExtractLeafValue, Leaf, Node
+    from .Common.GrammarAST import (
+        ExtractLeafValue,
+        ExtractOrNode,
+        Leaf,
+        Node,
+    )
+
     from .Common import GrammarDSL
     from .Common import Tokens as CommonTokens
     from ..GrammarStatement import ImportGrammarStatement
 
-    from ...ParserImpl.Statements.OrStatement import OrStatement
     from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
-    from ...ParserImpl.Token import Token
 
     from ...ParserImpl.TranslationUnitsParser import (
         Observer as TranslationUnitsParserObserver,
@@ -204,12 +208,7 @@ class ImportStatement(ImportGrammarStatement):
             source_roots = [importing_root]
 
         # Get the items to import
-        items_node = cast(GrammarDSL.Node, node.Children[3])
-
-        # Drill into the Or Node
-        assert isinstance(items_node.Type, OrStatement)
-        assert len(items_node.Children) == 1
-        items_node = cast(GrammarDSL.Node, items_node.Children[0])
+        items_node = cast(Node, ExtractOrNode(cast(Node, node.Children[3])))
 
         import_items = None
         import_items_lookup = None
@@ -304,10 +303,7 @@ class ImportStatement(ImportGrammarStatement):
         leaf_lookup = {}
 
         for child in GrammarDSL.ExtractDelimitedNodes(node):
-            # Drill into the Or node
-            assert isinstance(child.Type, OrStatement)
-            assert len(child.Children) == 1
-            child = cast(Union[Node, Leaf], child.Children[0])
+            child = ExtractOrNode(child)
 
             if isinstance(child, Node):
                 assert isinstance(child.Type, SequenceStatement)

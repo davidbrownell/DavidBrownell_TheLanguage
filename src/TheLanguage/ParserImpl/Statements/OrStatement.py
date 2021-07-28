@@ -80,6 +80,8 @@ class OrStatement(Statement):
         Statement.ParseResult,
         None,
     ]:
+        # TODO: This really should use multiple threads
+
         best_result: Optional[Statement.ParseResult] = None
 
         observer.StartStatement(unique_id, [self])

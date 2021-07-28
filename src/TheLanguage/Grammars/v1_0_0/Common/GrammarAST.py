@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Match, Optional, Union
+from typing import cast, List, Match, Optional, Union
 
 import CommonEnvironment
 
@@ -29,16 +29,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....ParserImpl.Token import Token
-
     from ...GrammarStatement import (
         Leaf,
         Node,
+        RootNode,
         Statement,
     )
 
     from ....ParserImpl.Statements.DynamicStatement import DynamicStatement
     from ....ParserImpl.Statements.OrStatement import OrStatement
+    from ....ParserImpl.Statements.RepeatStatement import RepeatStatement
+
+    from ....ParserImpl.Token import Token
 
 
 # ----------------------------------------------------------------------
@@ -75,3 +77,58 @@ def ExtractDynamicExpressionNode(
     node = cast(Node, node.Children[0])
 
     return node
+
+
+# ----------------------------------------------------------------------
+def ExtractOptionalNode(
+    parent: Node,
+    child_index: int,
+    name: Optional[str]=None,
+) -> Optional[Union[Leaf, Node]]:
+    children = ExtractRepeatedNodes(
+        parent,
+        child_index=child_index,
+        name=name,
+    )
+
+    if children is None:
+        return None
+
+    assert len(children) == 1
+    return children[0]
+
+
+# ----------------------------------------------------------------------
+def ExtractRepeatedNodes(
+    parent: Node,
+    child_index: Optional[int]=None,
+    name: Optional[str]=None,
+) -> Optional[List[Union[Leaf, Node]]]:
+    if child_index is None:
+        node = parent
+    else:
+        if len(parent.Children) <= child_index:
+            return None
+
+        node = parent.Children[child_index]
+
+    if not isinstance(node.Type, RepeatStatement):
+        return None
+
+    statement = cast(RepeatStatement, node.Type)
+
+    if name and statement.Statement.Name != name:
+        return None
+
+    node = cast(Node, node)
+
+    return node.Children
+
+
+# ----------------------------------------------------------------------
+def ExtractOrNode(
+    node: Node,
+) -> Union[Leaf, Node]:
+    assert isinstance(node.Type, OrStatement)
+    assert len(node.Children) == 1
+    return node.Children[0]
