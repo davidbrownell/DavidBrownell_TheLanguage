@@ -37,6 +37,8 @@ with InitRelativeImports():
     from .Common.GrammarAST import (
         ExtractDynamicExpressionNode,
         ExtractLeafValue,
+        ExtractOptionalNode,
+        ExtractOrNode,
         Leaf,
         Node,
     )
@@ -47,10 +49,8 @@ with InitRelativeImports():
     from ..GrammarStatement import GrammarStatement, ValidationError
 
     from ...ParserImpl.Statements.DynamicStatement import DynamicStatement
-    from ...ParserImpl.Statements.OrStatement import OrStatement
-    from ...ParserImpl.Statements.RepeatStatement import RepeatStatement
     from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
-    from ...ParserImpl.Statements.TokenStatement import TokenStatement
+    from ...ParserImpl.Statements.TokenStatement import NewlineToken
 
 
 # ----------------------------------------------------------------------
@@ -81,6 +81,8 @@ class _FuncInvocationBase(GrammarStatement):
         # The following values are only valid for keyword arguments
         Keyword: Optional[str]
         DefaultValue: Optional[Node]
+
+        # TODO: Add exceptions flag, remove trailing '?'
 
         # ----------------------------------------------------------------------
         def __str__(self):
@@ -175,7 +177,10 @@ class _FuncInvocationBase(GrammarStatement):
             CommonTokens.Name,
         ]
 
-        # '(' ... ')'
+        # '(' <args> ')'
+        #
+        # Note that this statement is declared separately, as it is
+        # recursive outside of the function name.
         statement_items += [
             GrammarDSL.StatementItem(
                 name="Arguments",
@@ -249,53 +254,81 @@ class _FuncInvocationBase(GrammarStatement):
         cls,
         node: Node,
     ):
-        assert len(node.Children) >= 2, node.Children
+        child_index = 0
 
-        func_name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[0])))
+        # <name>
+        assert len(node.Children) >= child_index + 1
+        func_name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[child_index])))
+        child_index += 1
 
-        # Drill into the arguments node
-        assert isinstance(node.Children[1].Type, SequenceStatement)
-        arguments_node = cast(Node, node.Children[1])
+        # Do not validate the function name here, as we may be looking at a
+        # dot-delimited name. The name will be validated when we attempt to
+        # find the referenced value.
 
-        assert len(node.Children) >= 2, arguments_node.Children
-        potential_arguments_node = arguments_node.Children[1]
+        # Arguments sub-statement
 
-        if isinstance(potential_arguments_node, Leaf):
-            # This leaf is the closing ')' token; this indicates that there aren't
-            # any arguments
+        # ----------------------------------------------------------------------
+        def ExtractArguments(
+            node: Node,
+        ) -> List["_FuncInvocationBase.ArgumentInfo"]:
+            child_index = 0
+
+            # '('
+            assert len(node.Children) >= child_index + 1
+            child_index += 1
+
+            # <args>
             arguments = []
 
-        else:
-            # Drill into the optional node
-            assert isinstance(potential_arguments_node.Type, RepeatStatement)
-            assert len(potential_arguments_node.Children) == 1
-            arguments_node = cast(Node, potential_arguments_node.Children[0])
+            potential_arguments_node = ExtractOptionalNode(node, 1)
+            if potential_arguments_node:
+                child_index += 1
 
-            # Get the arguments
-            arguments = []
+                # Get the arguments
+                for argument_node in GrammarDSL.ExtractDelimitedNodes(
+                    cast(Node, potential_arguments_node),
+                ):
+                    argument_node = cast(Node, ExtractOrNode(argument_node))
 
-            for argument_node in GrammarDSL.ExtractDelimitedNodes(arguments_node):
-                # Drill into the arg node
-                assert isinstance(argument_node.Type, OrStatement)
-                assert len(argument_node.Children) == 1
-                argument_node = cast(Node, argument_node.Children[0])
+                    if isinstance(argument_node.Type, DynamicStatement):
+                        argument_info = _FuncInvocationBase.ArgumentInfo(
+                            ExtractDynamicExpressionNode(argument_node),
+                            None,
+                            None,
+                        )
+                    else:
+                        assert len(argument_node.Children) == 3
 
-                if isinstance(argument_node.Type, DynamicStatement):
-                    argument_info = _FuncInvocationBase.ArgumentInfo(
-                        ExtractDynamicExpressionNode(argument_node),
-                        None,
-                        None,
-                    )
-                else:
-                    assert len(argument_node.Children) == 3
+                        argument_info = _FuncInvocationBase.ArgumentInfo(
+                            argument_node,
+                            cast(str, ExtractLeafValue(cast(Leaf, argument_node.Children[0]))),
+                            ExtractDynamicExpressionNode(cast(Node, argument_node.Children[2])),
+                        )
 
-                    argument_info = _FuncInvocationBase.ArgumentInfo(
-                        argument_node,
-                        cast(str, ExtractLeafValue(cast(Leaf, argument_node.Children[0]))),
-                        ExtractDynamicExpressionNode(cast(Node, argument_node.Children[2])),
-                    )
+                    arguments.append(argument_info)
 
-                arguments.append(argument_info)
+            # ')'
+            assert len(node.Children) >= child_index + 1
+            child_index += 1
+
+            assert len(node.Children) == child_index
+            return arguments
+
+        # ----------------------------------------------------------------------
+
+        assert len(node.Children) >= child_index + 1
+        assert isinstance(node.Children[child_index].Type, SequenceStatement)
+        arguments = ExtractArguments(cast(Node, node.Children[child_index]))
+        child_index += 1
+
+        # TODO: Extract the chain info
+
+        # Statements will have a trailing newline
+        if len(node.Children) > child_index:
+            assert isinstance(node.Children[child_index].Type, NewlineToken)
+            child_index += 1
+
+        assert len(node.Children) == child_index
 
         # Ensure that all arguments after the first keyword argument
         # are also keyword arguments.
@@ -306,8 +339,6 @@ class _FuncInvocationBase(GrammarStatement):
                 encountered_keyword = True
             elif encountered_keyword:
                 raise PositionalArgumentAfterKeywordArgumentError.FromNode(argument.Argument)
-
-        # TODO: Persist chain
 
         # Persist the info
         object.__setattr__(node, "Info", cls.NodeInfo(func_name, arguments))

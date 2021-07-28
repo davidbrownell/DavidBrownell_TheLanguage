@@ -36,6 +36,7 @@ with InitRelativeImports():
     from ..ParserImpl.AST import (
         Leaf,                               # This is here as a convenience for files that import this one; please do not remove
         Node,
+        RootNode,
     )
 
     from ..ParserImpl.Error import Error

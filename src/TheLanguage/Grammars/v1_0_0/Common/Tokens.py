@@ -171,3 +171,7 @@ Export                                      = RegexToken("'export'", re.compile(
 # ----------------------------------------------------------------------
 # |  PassStatement
 Pass                                        = RegexToken("'pass'", re.compile(r"pass\b"))
+
+# ----------------------------------------------------------------------
+# |  VariantType
+VariantSep                                  = RegexToken("'|'", re.compile(r"\|"))
