@@ -1,13 +1,5 @@
 # TODO:
 #   Function type
-#   Variant/Union
-#       String Func():
-#           return "Hi"
-#       var variant = (String | None)(Func())
-#       var variant = (String | None)Func()
-#       var variant = Func() as (String | None)
-#       var string = Func()
-#
 #   scoped ref syntax (can be similar to with statements?)
 
 
@@ -24,7 +16,6 @@
 #   Pattern Matching / Super case statements
 #   Templates
 #   Lambdas / Capture scope
-#   "with" statements (context generators)
 #   dunder methods
 #   type aliases
 #   Enumerations

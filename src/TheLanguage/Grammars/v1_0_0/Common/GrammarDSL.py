@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Callable, Generator, List, Optional, Tuple
+from typing import cast, Generator, Optional
 
 import CommonEnvironment
 
@@ -29,6 +29,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .GrammarAST import (
+        ExtractRepeatedNodes,
+    )
+
     # Convenience imports for other files, please do not remove
     from ....ParserImpl.AST import Leaf, Node, RootNode
     from ....ParserImpl.StatementDSL import (
@@ -41,7 +45,6 @@ with InitRelativeImports():
     from . import Tokens as CommonTokens
     from ....ParserImpl import StatementDSL
     from ....ParserImpl.Token import Token
-    from ....ParserImpl.Statements.RepeatStatement import RepeatStatement
 
 
 # ----------------------------------------------------------------------
@@ -98,18 +101,16 @@ def CreateDelimitedStatementItem(
 def ExtractDelimitedNodes(
     node: Node,
 ) -> Generator[Node, None, None]:
+    # <item>
     assert len(node.Children) >= 1
     yield cast(Node, node.Children[0])
 
-    if (
-        len(node.Children) >= 2
-        and isinstance(node.Children[1].Type, RepeatStatement)
-        and node.Children[1].Type.Statement.Name == "Delimiter and Element"
-    ):
-        for child in cast(Node, node.Children[1]).Children:
-            # Leaf nodes can be children if the caller is ignoring whitespace; skip them here.
-            if not isinstance(child, Node):
-                continue
+    # (<delimiter> <item>)+|*
+    potential_items = ExtractRepeatedNodes(node, 1, "Delimiter and Element")
+    for child in (potential_items or []):
+        # Leaf nodes can be children if the caller is ignoring whitespace; skip them here.
+        if not isinstance(child, Node):
+            continue
 
-            assert len(child.Children) >= 2, child
-            yield cast(Node, child.Children[-1])
+        assert len(child.Children) >= 2, child
+        yield cast(Node, child.Children[-1])

@@ -36,6 +36,7 @@ with InitRelativeImports():
     from .TupleStatements import TupleExpression, TupleType, TupleVariableDeclarationStatement
     from .VariableDeclarationStatement import VariableDeclarationStatement
     from .VariableNameExpression import VariableNameExpression
+    from .VariantType import VariantType
 
 # TODO: Check grammar for all statements to determine if syntax errors (bad) or other errors (good)
 #       are most appropriate.
@@ -59,4 +60,5 @@ Statements                                  = [
     # Types
     StandardType(),
     TupleType(),
+    VariantType(),
 ]
