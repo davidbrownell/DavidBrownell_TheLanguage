@@ -83,6 +83,7 @@ class _FuncInvocationBase(GrammarStatement):
         DefaultValue: Optional[Node]
 
         # TODO: Add exceptions flag, remove trailing '?'
+        # TODO: Add coroutine flags, remove trailing '...'
 
         # ----------------------------------------------------------------------
         def __str__(self):
@@ -258,7 +259,7 @@ class _FuncInvocationBase(GrammarStatement):
 
         # <name>
         assert len(node.Children) >= child_index + 1
-        func_name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[child_index])))
+        func_name = ExtractLeafValue(cast(Leaf, node.Children[child_index]))
         child_index += 1
 
         # Do not validate the function name here, as we may be looking at a
@@ -301,7 +302,7 @@ class _FuncInvocationBase(GrammarStatement):
 
                         argument_info = _FuncInvocationBase.ArgumentInfo(
                             argument_node,
-                            cast(str, ExtractLeafValue(cast(Leaf, argument_node.Children[0]))),
+                            ExtractLeafValue(cast(Leaf, argument_node.Children[0])),
                             ExtractDynamicExpressionNode(cast(Node, argument_node.Children[2])),
                         )
 

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncDeclarationStatement.py
+# |  ClassDeclarationStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-27 00:47:13
+# |      2021-07-28 15:41:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncDeclarationStatement object"""
+"""Contains the ClassDeclarationStatement object"""
 
 import os
 import textwrap
 
-from typing import cast, List, Optional
+from typing import cast, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -34,12 +34,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common import FuncParameters
-
     from .Common.GrammarAST import (
         ExtractDynamicExpressionNode,
         ExtractLeafValue,
         ExtractOptionalNode,
+        ExtractOrNode,
+        ExtractRepeatedNodes,
         Leaf,
         Node,
     )
@@ -52,16 +52,21 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class FuncDeclarationStatement(GrammarStatement):
+class ClassDeclarationStatement(GrammarStatement):
     """\
-    Declares a function.
+    Class definition.
 
-    'export'? <type> <name> '(' <parameters> ')' ':'
+    'public'|'protected'|'private'?
+        'class'|'interface'|'mixin' <name>
+            ('public'|'protected'|'private' <name>)?
+            ('implements' <name>)*
+            ('uses' <name>)*
+    ':'
         <docstring>?
         <statement>+
     """
 
-    NODE_NAME                               = "Function Declaration"
+    NODE_NAME                               = "Class Declaration"
 
     # ----------------------------------------------------------------------
     # |
@@ -70,15 +75,14 @@ class FuncDeclarationStatement(GrammarStatement):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class Info(object):
-        Export: bool                        # TODO: Use 'public'|'private'|'protected'
-        Type: Node                          # TODO: Rename to 'ReturnType'
+        Visibility: Optional[str]           # TODO: This should be an enum
+        Type: str                           # TODO: This should be an enum
         Name: str
-        Parameters: FuncParameters.Parameters
+        Base: Optional[Tuple[str, str]]
+        Interfaces: List[str]
+        Mixins: List[str]
         Docstring: Optional[str]
         Statements: List[Node]
-
-        # TODO: Add exceptions flag, remove trailing '?'
-        # TODO: Add coroutine flags, remove trailing '...'
 
         # ----------------------------------------------------------------------
         def __str__(self):
@@ -91,31 +95,26 @@ class FuncDeclarationStatement(GrammarStatement):
         ) -> str:
             return textwrap.dedent(
                 """\
-                {name}
-                    Export: {export}
+                {name} {the_type}
+                    Visibility: {visibility}
                     Statements: {num_statements}
-                    Type:
-                        {the_type}
-                    Parameters:
-                        {parameters}
+                    Base: {base}
+                    Interfaces:{interfaces}
+                    Mixins:{mixins}
                     Docstring:
                         {docstring}
                 """,
             ).format(
                 name=self.Name,
-                export=self.Export,
+                the_type=self.Type,
+                visibility=self.Visibility,
                 num_statements=len(self.Statements),
-                the_type=StringHelpers.LeftJustify(
-                    self.Type.ToString(
-                        verbose=verbose,
-                    ).rstrip(),
-                    8,
+                base="<None>" if not self.Base else "{} {}".format(*self.Base),
+                interfaces=" <None>" if not self.Interfaces else "\n    {}".format(
+                    StringHelpers.LeftJustify("\n".join(self.Interfaces), 8).rstrip(),
                 ),
-                parameters=StringHelpers.LeftJustify(
-                    self.Parameters.ToString(
-                        verbose=verbose,
-                    ).rstrip(),
-                    8,
+                mixins=" <None>" if not self.Mixins else "\n    {}".format(
+                    StringHelpers.LeftJustify("\n".join(self.Mixins), 8).rstrip(),
                 ),
                 docstring=StringHelpers.LeftJustify(
                     (self.Docstring or "<No Data>").rstrip(),
@@ -129,34 +128,70 @@ class FuncDeclarationStatement(GrammarStatement):
     # |
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(FuncDeclarationStatement, self).__init__(
+        super(ClassDeclarationStatement, self).__init__(
             GrammarStatement.Type.Statement,
             GrammarDSL.CreateStatement(
                 name=self.NODE_NAME,
                 item=[
-                    # TODO: Change this to public|protected|private
-                    # 'export'?
+                    # 'public'|'protected'|'private'?
                     GrammarDSL.StatementItem(
-                        CommonTokens.Export,
+                        name="Visibility",
+                        item=tuple(CommonTokens.AllAccessModifiers),
                         arity="?",
                     ),
 
-                    # <type>
-                    GrammarDSL.DynamicStatements.Types,
+                    # 'class'|'interface'|'mixin'
+                    (
+                        CommonTokens.Class,
+                        CommonTokens.Interface,
+                        CommonTokens.Mixin,
+                    ),
 
                     # <name>
                     CommonTokens.Name,
 
-                    # '(' <parameters> ')'
-                    FuncParameters.CreateStatement(),
+                    # Bases
+                    CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # ':'
+                    # Base Class
+                    GrammarDSL.StatementItem(
+                        name="Base",
+                        item=[
+                            # 'public'|'protected'|'private'
+                            tuple(CommonTokens.AllAccessModifiers),
+                            CommonTokens.Name
+                        ],
+                        arity="?",
+                    ),
+
+                    # Interfaces
+                    GrammarDSL.StatementItem(
+                        name="Interfaces",
+                        item=[
+                            CommonTokens.Implements,
+                            CommonTokens.Name,
+                        ],
+                        arity="*",
+                    ),
+
+                    # Mixins
+                    GrammarDSL.StatementItem(
+                        name="Mixins",
+                        item=[
+                            CommonTokens.Uses,
+                            CommonTokens.Name,
+                        ],
+                        arity="*",
+                    ),
+
+                    CommonTokens.PopIgnoreWhitespaceControl,
+
+                    # ':', <newline>, <indent>
                     CommonTokens.Colon,
                     CommonTokens.Newline,
                     CommonTokens.Indent,
 
                     # <docstring>?
-                    # TODO: Move this to a common location
                     GrammarDSL.StatementItem(
                         name="Docstring",
                         item=[
@@ -186,34 +221,81 @@ class FuncDeclarationStatement(GrammarStatement):
     ):
         child_index = 0
 
-        # 'export'?
+        # 'public'|'protected'|'private'?
         assert len(node.Children) >= child_index + 1
-        if isinstance(ExtractOptionalNode(node, child_index), Leaf):
-            export = True
-            child_index += 1
-        else:
-            export = False
 
-        # <type>
+        potential_visibility_node = ExtractOptionalNode(node, child_index, "Visibility")
+        if potential_visibility_node is not None:
+            child_index += 1
+
+            visibility = ExtractLeafValue(
+                cast(Leaf, potential_visibility_node),
+                group_value_name=None,
+            )
+        else:
+            visibility = None
+
+        # 'class'|'interface'|'mixin'
         assert len(node.Children) >= child_index + 1
-        the_type = ExtractDynamicExpressionNode(cast(Node, node.Children[child_index]))
+        the_type = ExtractLeafValue(
+            cast(Leaf, node.Children[child_index]),
+            group_value_name=None,
+        )
         child_index += 1
 
         # <name>
         assert len(node.Children) >= child_index + 1
         name = ExtractLeafValue(cast(Leaf, node.Children[child_index]))
 
-        if not NamingConventions.Function.Regex.match(name):
-            raise NamingConventions.InvalidFunctionNameError.FromNode(node.Children[child_index], name)
+        if not NamingConventions.Type.Regex.match(name):
+            raise NamingConventions.InvalidTypeNameError.FromNode(node.Children[child_index], name)
 
         child_index += 1
 
-        # '(' <parameters> ')'
-        assert len(node.Children) >= child_index + 1
-        parameters = FuncParameters.Extract(cast(Node, node.Children[child_index]))
-        child_index += 1
+        # Base Class
+        potential_base_node = ExtractOptionalNode(node, child_index, "Base")
+        if potential_base_node is not None:
+            child_index += 1
 
-        # ':' '\n' <indent>
+            potential_base_node = cast(Node, potential_base_node)
+            assert len(potential_base_node.Children) == 2
+
+            base_info = (
+                ExtractLeafValue(
+                    cast(Leaf, ExtractOrNode(cast(Node, potential_base_node.Children[0]))),
+                ),
+                ExtractLeafValue(cast(Leaf, potential_base_node.Children[1])),
+            )
+        else:
+            base_info = None
+
+        # Interfaces
+        interfaces = []
+
+        potential_interface_nodes = ExtractRepeatedNodes(node, child_index, "Interfaces")
+        if potential_interface_nodes is not None:
+            child_index += 1
+
+            for interface_node in potential_interface_nodes:
+                interface_node = cast(Node, interface_node)
+
+                assert len(interface_node.Children) == 2
+                interfaces.append(ExtractLeafValue(cast(Leaf, interface_node.Children[1])))
+
+        # Mixins
+        mixins = []
+
+        potential_mixin_nodes = ExtractRepeatedNodes(node, child_index, "Mixins")
+        if potential_mixin_nodes is not None:
+            child_index += 1
+
+            for mixin_node in potential_mixin_nodes:
+                mixin_node = cast(Node, mixin_node)
+
+                assert len(mixin_node.Children) == 2
+                mixins.append(ExtractLeafValue(cast(Leaf, mixin_node.Children[1])))
+
+        # ':', <newline>, <indent>
         assert len(node.Children) >= child_index + 3
         child_index += 3
 
@@ -248,10 +330,12 @@ class FuncDeclarationStatement(GrammarStatement):
             node,
             "Info",
             cls.Info(
-                export,
-                the_type,
+                visibility,
                 name,
-                parameters,
+                the_type,
+                base_info,
+                interfaces,
+                mixins,
                 docstring,
                 statements,
             ),

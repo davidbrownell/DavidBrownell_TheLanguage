@@ -109,7 +109,7 @@ class StandardType(GrammarStatement):
 
         # <name>
         assert len(node.Children) >= child_index + 1
-        name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[child_index])))
+        name = ExtractLeafValue(cast(Leaf, node.Children[child_index]))
         child_index += 1
 
         if not NamingConventions.Type.Regex.match(name):

@@ -47,10 +47,7 @@ with InitRelativeImports():
 def ExtractLeafValue(
     leaf: Leaf,
     group_value_name: Optional[str]="value",
-) -> Union[
-    Match,                                  # When `group_value_name` is None
-    str,                                    # When `group_value_name` is a string
-]:
+) -> str:
     result = cast(
         Token.RegexMatch,
         leaf.Value,
@@ -58,6 +55,8 @@ def ExtractLeafValue(
 
     if group_value_name is not None:
         result = result.group(group_value_name)
+    else:
+        result = result.string[result.start() : result.end()]
 
     return result
 
