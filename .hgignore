@@ -26,5 +26,3 @@ coverage.xml
 .vscode/*
 
 .pytest_cache
-
-**/_*
