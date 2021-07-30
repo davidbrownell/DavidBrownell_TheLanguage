@@ -53,10 +53,21 @@ class FunctionCallType(Enum):
     TODO: Comment
     """
 
+    # Example: obj.Func()
+    #              ^^^^^^
     Standard                                = auto()
+
+    # Example: obj.Foo().Bar()
+    #                   ^^^^^^
     Chained                                 = auto()
+
+    # Example: obj.Foo()->Bar() == obj.Foo(); obj.Bar()
+    #                   ^^^^^^^               ^^^^^^^^^
     Self                                    = auto()
 
+    # Example: obj[0]
+    #             ^^^
+    Index                                   = auto()
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -73,6 +84,8 @@ class FuncInvocationNode(Node):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        super(FuncInvocationNode, self).__post_init__()
+
         self.ValidateTypes(
             Arguments=self.Type,
         )

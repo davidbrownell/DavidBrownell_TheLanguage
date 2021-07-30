@@ -85,6 +85,8 @@ class BinaryExpression(Node):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        super(BinaryExpression, self).__post_init__()
+
         self.ValidateTypes(
             Left=Node.NodeType.Expression,
             Right=Node.NodeType.Expression,

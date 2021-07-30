@@ -48,24 +48,25 @@ class FuncDefinitionStatement(Node):
     Visibility: Flags.VisibilityType
 
     Name: str
+    CapturedVars: List[str]
     ReturnType: Node
     Parameters: ParametersNode
     Statements: List[Node]
 
-    # TODO: Add captures
-
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        super(FuncDefinitionStatement, self).__post_init__()
+
         if self.Type not in [
             Node.NodeType.Statement,        # Standard function
             Node.NodeType.Expression,       # Lambda
         ]:
-            raise Exception("FunctionDefinitionNodes must be a 'Statement' or 'Expression' type")
+            raise Exception("FuncDefinitionNodes must be a 'Statement' or 'Expression' type")
+
+        if self.Type == Node.NodeType.Expression and self.Visibility != Flags.VisibilityType.Private:
+            raise Exception("The visibility of a FuncDefinitionNode expression must be 'Private'")
 
         self.ValidateTypes(
             ReturnType=Node.NodeType.Type,
             Statements=self.Type,
         )
-
-        # TODO: Visibility should be private for anything other than Standard
-        # TODO: Captures should be empty for Standard

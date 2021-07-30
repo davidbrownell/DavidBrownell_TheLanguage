@@ -54,6 +54,8 @@ class FirstClassFunctionType(Node):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        super(FirstClassFunctionType, self).__post_init__()
+
         self.ValidateTypes(
             ReturnType=Node.NodeType.Type,
             Parameters=Node.NodeType.Type,

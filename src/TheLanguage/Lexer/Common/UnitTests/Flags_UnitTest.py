@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  Flags_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:16:09
+# |      2021-07-30 16:29:27
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Unit tests for Flags.py"""
 
 import os
 
-from dataclasses import dataclass
-
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,29 +27,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..Flags import *
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
-)
-@dataclass(frozen=True)
-class TernaryExpression(Node):
-    """\
-    TODO: Comment
-    """
-
-    Condition: Node
-    TrueNode: Node
-    FalseNode: Node
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(TernaryExpression, self).__post_init__()
-
-        self.ValidateTypes(
-            Condition=Node.NodeType.Expression,
-            TrueNode=Node.NodeType.Expression,
-            FalseNode=Node.NodeType.Expression,
-        )
+def test_BugBug():
+    assert True

@@ -41,7 +41,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class SourceLocation(object):
+class SourceRange(object):
     """\
     Human-consumable location within a source file.
 
@@ -82,8 +82,8 @@ class SourceRange(object):
     This is generally used to display errors.
     """
 
-    Start: SourceLocation
-    End: SourceLocation
+    Start: SourceRange
+    End: SourceRange
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -124,8 +124,8 @@ class SourceRange(object):
 
         # ----------------------------------------------------------------------
         def Compare(
-            a: SourceLocation,
-            b: SourceLocation,
+            a: SourceRange,
+            b: SourceRange,
         ) -> int:
             result = a.Line - b.Line
             if result != 0:
@@ -156,10 +156,10 @@ class Node(object):
         Type                                = auto()
 
     # ----------------------------------------------------------------------
-    SourceLocationsItemType                 = Union[
+    SourceRangesItemType                    = Union[
         None,                                                               # The corresponding value is a flag or optional (note that this value does not need to appear with the dict)
-        SourceRange,                                                        # The corresponding value is an Enum or string
-        Tuple[SourceRange, List["SourceLocationsItemType"]],                # The corresponding value is a list
+        SourceRange,                                                        # The corresponding value is an enum or string
+        Tuple[SourceRange, List["SourceRangesItemType"]],                   # The corresponding value is a list
     ]
 
     # ----------------------------------------------------------------------
@@ -168,8 +168,8 @@ class Node(object):
     # |
     # ----------------------------------------------------------------------
     Type: "NodeType"
-    SourceLocation: SourceRange
-    SourceLocations: Optional[Dict[str, SourceLocationsItemType]]
+    SourceRange: SourceRange
+    SourceRanges: Optional[Dict[str, SourceRangesItemType]]
     Parent: Optional["Node"]                = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
@@ -179,15 +179,15 @@ class Node(object):
     # ----------------------------------------------------------------------
     def __post_init__(self):
         # Ensure that every data item has a corresponding location
-        source_locations = self.SourceLocations or {}
+        source_locations = self.SourceRanges or {}
 
         d = {}
 
         for k, v in self.__dict__.items():
             if k in [
                 "Type",
-                "SourceLocation",
-                "SourceLocations",
+                "SourceRange",
+                "SourceRanges",
                 "Parent",
             ]:
                 continue
@@ -198,14 +198,14 @@ class Node(object):
             d[k] = v
 
         # If we only have a single value and that value is a string or Enum we don't need to have
-        # additional SourceLocations values as SourceLocation is sufficient.
+        # additional SourceRanges values as SourceRange is sufficient.
         if len(d) == 1 and isinstance(next(iter(d.values())), (str, Enum)):
             return
 
         for k, v in d.items():
             self._EnsureValidLocations(
                 [k],
-                self.SourceLocation,
+                self.SourceRange,
                 v,
                 source_locations.get(k, None),
             )
@@ -294,9 +294,9 @@ class Node(object):
     def _EnsureValidLocations(
         cls,
         name_stack: List[Any],
-        containing_location: SourceRange,
+        containing_range: SourceRange,
         value: _EnsureValidLocationsValueType,
-        location_value: SourceLocationsItemType,
+        range_value: SourceRangesItemType,
     ):
         if value is None or isinstance(value, Flag):
             return
@@ -319,84 +319,71 @@ class Node(object):
             )
 
         # ----------------------------------------------------------------------
+        def EnsureContains(
+            outer_range: SourceRange,
+            inner_range: SourceRange,
+            item_desc: str,
+        ):
+            if outer_range.Start.Filename != inner_range.Start.Filename:
+                # TODO: This should only happen for certain node types; not sure what those are right now
+                return
 
-        # TODO: Update the use of Contains to account for code in different modules
+            if not outer_range.Contains(inner_range):
+                raise CreateException(
+                    textwrap.dedent(
+                        """\
+                        The {item_desc_lower} is not contained within the parent node:
+
+                            Parent: {outer}
+                            {item_desc:<7} {inner}
+                        """,
+                    ).format(
+                        item_desc_lower=item_desc.lower(),
+                        item_desc="{}:".format(item_desc),
+                        outer=outer_range.ToString(),
+                        inner=inner_range.ToString(),
+                    ),
+                )
+
+        # ----------------------------------------------------------------------
 
         if isinstance(value, Node):
-            if not containing_location.Contains(value.SourceLocation):
-                raise CreateException(
-                    textwrap.dedent(
-                        """\
-                        The node is not contained within the parent node:
-
-                            Parent: {}
-                            Node:   {}
-                        """,
-                    ).format(
-                        containing_location.ToString(),
-                        value.SourceLocation.ToString(),
-                    ),
-                )
+            EnsureContains(containing_range,value.SourceRange, "Node")
 
         elif isinstance(value, (Enum, str)):
-            if not isinstance(location_value, SourceRange):
-                raise CreateException("Invalid type ('{}')".format(type(location_value)))
+            if not isinstance(range_value, SourceRange):
+                raise CreateException("Invalid type ('{}')".format(type(range_value)))
 
-            if not containing_location.Contains(location_value):
-                raise CreateException(
-                    textwrap.dedent(
-                        """\
-                        The value is not contained with the parent node:
-
-                            Parent: {}
-                            Value:  {}
-                        """,
-                    ).format(
-                        containing_location.ToString(),
-                        location_value.ToString(),
-                    ),
-                )
+            EnsureContains(containing_range, range_value, "Value")
 
         elif isinstance(value, list):
             if (
-                not isinstance(location_value, tuple)
-                or len(location_value) != 2
-                or not isinstance(location_value[0], SourceRange)
-                or not isinstance(location_value[1], List)
+                not isinstance(range_value, tuple)
+                or len(range_value) != 2
+                or not isinstance(range_value[0], SourceRange)
+                or not isinstance(range_value[1], List)
             ):
-                raise CreateException("Invalid type ('{}')".format(type(location_value)))
+                raise CreateException("Invalid type ('{}')".format(type(range_value)))
 
-            location_value, location_values = location_value
+            range_value, range_values = range_value
 
-            if not containing_location.Contains(location_value):
-                raise CreateException(
-                    textwrap.dedent(
-                        """\
-                        The list is not contained within the parent node:
+            if not containing_range.Contains(range_value):
+                EnsureContains(containing_range, range_value, "List")
 
-                            Parent: {}
-                            List:   {}
-                        """,
-                    ).format(
-                        containing_location.ToString(),
-                        location_value.ToString(),
-                    ),
-                )
-
-            if len(value) != len(location_values):
+            if len(value) != len(range_values):
                 raise CreateException(
                     "The list lengths do not match ('{}' vs. '{}')".format(
                         len(value),
-                        len(location_values),
+                        len(range_values),
                     ),
                 )
 
-            for item_index, (item, location_item) in enumerate(zip(value, location_values)):
+            for item_index, (item, range_item) in enumerate(zip(value, range_values)):
                 cls._EnsureValidLocations(
                     name_stack + [item_index],
-                    location_value,
+                    range_value,
                     item,
-                    location_item,
+                    range_item,
                 )
 
         else:

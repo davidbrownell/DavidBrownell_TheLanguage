@@ -45,6 +45,8 @@ class TupleNode(Node):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        super(TupleNode, self).__post_init__()
+
         self.ValidateTypes(
             Elements=self.Type,
         )

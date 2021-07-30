@@ -49,6 +49,8 @@ class VariantType(Node):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        super(VariantType, self).__post_init__()
+
         self.ValidateTypes(
             Types=Node.NodeType.Type,
         )

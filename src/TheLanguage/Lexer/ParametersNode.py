@@ -47,6 +47,8 @@ class ParameterNode(Node):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        super(ParameterNode, self).__post_init__()
+
         self.ValidateTypes(
             Type=Node.NodeType.Type,
             DefaultValue=Node.NodeType.Expression,

@@ -62,6 +62,8 @@ class UnaryExpression(Node):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        super(UnaryExpression, self).__post_init__()
+
         self.ValidateTypes(
             Expression=Node.NodeType.Expression,
         )

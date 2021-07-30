@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  QuickRefExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:16:09
+# |      2021-07-30 16:17:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the QuickRefExpression object"""
 
 import os
 
@@ -38,21 +38,20 @@ with InitRelativeImports():
     Type=Node.NodeType.Expression,  # type: ignore
 )
 @dataclass(frozen=True)
-class TernaryExpression(Node):
+class QuickRefExpression(Node):
     """\
     TODO: Comment
     """
 
-    Condition: Node
-    TrueNode: Node
-    FalseNode: Node
+    Ref: Node
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(TernaryExpression, self).__post_init__()
+        super(QuickRefExpression, self).__post_init__()
 
         self.ValidateTypes(
-            Condition=Node.NodeType.Expression,
-            TrueNode=Node.NodeType.Expression,
-            FalseNode=Node.NodeType.Expression,
+            Ref=Node.NodeType.Expression,
         )
+
+        # TODO: Validate only used in func invocation where return value is not a ref. Also needs
+        #       to match parameter.

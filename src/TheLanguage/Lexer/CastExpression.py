@@ -48,6 +48,8 @@ class CastExpression(Node):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        super(CastExpression, self).__post_init__()
+
         self.ValidateTypes(
             Expression=Node.NodeType.Expression,
             Type=Node.NodeType.Type,
