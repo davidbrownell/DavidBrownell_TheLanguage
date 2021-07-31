@@ -88,6 +88,16 @@ DocString                                   = RegexToken(
     is_multiline=True,
 )
 
+Public                                      = RegexToken("'public'", re.compile(r"public\b"))
+Protected                                   = RegexToken("'protected'", re.compile(r"protected\b"))
+Private                                     = RegexToken("'private'", re.compile(r"private\b"))
+
+AllAccessModifiers                          = [
+    Public,
+    Protected,
+    Private,
+]
+
 #             isolated    shared
 #             --------    ------
 # mutable:      var        ref
@@ -109,11 +119,17 @@ Mutable                                     = RegexToken("'mutable'", re.compile
 Immutable                                   = RegexToken("'immutable'", re.compile(r"immutable\b"))
 
 # ----------------------------------------------------------------------
-# |  FunctionDeclarationStatement
+# |  ClassDeclarationStatement
+Class                                       = RegexToken("'class'", re.compile(r"class\b"))
+Interface                                   = RegexToken("'interface'", re.compile(r"interface\b"))
+Mixin                                       = RegexToken("'mixin'", re.compile(r"mixin\b"))
 
+Implements                                  = RegexToken("'implements'", re.compile(r"implements\b"))
+Uses                                        = RegexToken("'uses'", re.compile(r"uses\b"))
 
 # ----------------------------------------------------------------------
-# |  FuncInvocationStatements
+# |  FunctionDeclarationStatement
+
 # Traditional Parameters
 FunctionParameterPositionalDelimiter        = RegexToken("'/'", re.compile(r"/"))
 FunctionParameterKeywordDelimiter           = RegexToken("'*'", re.compile(r"\*"))
@@ -132,6 +148,8 @@ AllNewStyleParameters                       = [
 
 FunctionParameterVarArgsType                = RegexToken("'*'", re.compile(r"\*"))
 
+# ----------------------------------------------------------------------
+# |  FuncInvocationStatement
 ArrowedName                                 = RegexToken(
     "<arrowed_name>",
     re.compile(
@@ -166,6 +184,7 @@ From                                        = RegexToken("'from'", re.compile(r"
 Import                                      = RegexToken("'import'", re.compile(r"import\b"))
 As                                          = RegexToken("'as'", re.compile(r"as\b"))
 
+# TODO: Remove export
 Export                                      = RegexToken("'export'", re.compile(r"export\b"))
 
 # ----------------------------------------------------------------------

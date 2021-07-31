@@ -3793,6 +3793,11 @@ def test_InvalidFunctionNames():
         )
 
         assert str(ex) == expected_value, invalid_name
+        assert ex.FunctionName == invalid_name
+        assert ex.Line == 1
+        assert ex.LineEnd == 1
+        assert ex.Column == 8
+        assert ex.ColumnEnd == 8 + len(invalid_name)
 
 # ----------------------------------------------------------------------
 def test_InvalidParameterNames():
@@ -3827,6 +3832,11 @@ def test_InvalidParameterNames():
         )
 
         assert str(ex) == expected_value, invalid_name
+        assert ex.ParameterName == invalid_name
+        assert ex.Line == 1
+        assert ex.LineEnd == 1
+        assert ex.Column == 17
+        assert ex.ColumnEnd == 17 + len(invalid_name)
 
 # ----------------------------------------------------------------------
 def test_DuplicateNewStyleGroupError():

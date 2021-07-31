@@ -46,6 +46,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+# TODO: Change this name to DynamicStatementType
 class DynamicStatements(Enum):
     """\
     Value that can be used in statements as a placeholder that will be populated dynamically at runtime with statements of the corresponding type.
