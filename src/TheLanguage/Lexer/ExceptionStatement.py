@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GeneratorExpression.py
+# |  ExceptionStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 13:53:00
+# |      2021-07-30 17:14:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GeneratorExpression object"""
+"""Contains the ExceptionStatement object"""
 
 import os
-
-from typing import Optional
 
 from dataclasses import dataclass
 
@@ -37,30 +35,20 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
+    Expression=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class GeneratorExpression(Node):
+class ExceptionStatement(Node):
     """\
     TODO: Comment
-
-    Hypothetical syntax:
-
-        <item_decorator> for <item_var> in <source> [if <condition>]?
     """
 
-    ItemDecorator: Node
-    ItemVar: Node
-    Source: Node
-    Condition: Optional[Node]
+    Expression: Node
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(GeneratorExpression, self).__post_init__()
+        super(ExceptionStatement, self).__post_init__()
 
         self.ValidateTypes(
-            ItemDecorator=Node.NodeType.Expression,
-            ItemVar=Node.NodeType.Expression,
-            Source=Node.NodeType.Expression,
-            Condition=Node.NodeType.Expression, # TODO: Validate that this is a logical statement
+            Expression=Node.NodeType.Expression,
         )

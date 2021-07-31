@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GeneratorExpression.py
+# |  YieldStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 13:53:00
+# |      2021-07-30 20:20:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GeneratorExpression object"""
+"""Contains the YieldStatement object"""
 
 import os
 
+from enum import auto, Enum
 from typing import Optional
 
 from dataclasses import dataclass
@@ -36,31 +37,35 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
-)
-@dataclass(frozen=True)
-class GeneratorExpression(Node):
+class YieldType(Enum):
     """\
     TODO: Comment
-
-    Hypothetical syntax:
-
-        <item_decorator> for <item_var> in <source> [if <condition>]?
     """
 
-    ItemDecorator: Node
-    ItemVar: Node
-    Source: Node
-    Condition: Optional[Node]
+    Standard                                = auto()
+    From                                    = auto()
+
+
+# ----------------------------------------------------------------------
+@DataclassDefaultValues(
+    Type=Node.NodeType.Statement,  # type: ignore
+)
+@dataclass(frozen=True)
+class YieldStatement(Node):
+    """\
+    TODO: Comment
+    """
+
+    Yield: YieldType
+    Expression: Optional[Node]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(GeneratorExpression, self).__post_init__()
+        super(YieldStatement, self).__post_init__()
 
         self.ValidateTypes(
-            ItemDecorator=Node.NodeType.Expression,
-            ItemVar=Node.NodeType.Expression,
-            Source=Node.NodeType.Expression,
-            Condition=Node.NodeType.Expression, # TODO: Validate that this is a logical statement
+            Expression=Node.NodeType.Expression,
         )
+
+        if self.Yield == YieldType.From and not self.Expression:
+            raise Exception("'From' YieldStatements must have an 'Expression'")

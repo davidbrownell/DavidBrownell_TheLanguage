@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GeneratorExpression.py
+# |  WhileStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 13:53:00
+# |      2021-07-30 20:05:38
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GeneratorExpression object"""
+"""Contains the WhileStatement object"""
 
 import os
 
-from typing import Optional
+from typing import List
 
 from dataclasses import dataclass
 
@@ -37,30 +37,22 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
+    Type=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class GeneratorExpression(Node):
+class WhileStatement(Node):
     """\
     TODO: Comment
-
-    Hypothetical syntax:
-
-        <item_decorator> for <item_var> in <source> [if <condition>]?
     """
 
-    ItemDecorator: Node
-    ItemVar: Node
-    Source: Node
-    Condition: Optional[Node]
+    Condition: Node
+    Statements: List[Node]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(GeneratorExpression, self).__post_init__()
+        super(WhileStatement, self).__post_init__()
 
         self.ValidateTypes(
-            ItemDecorator=Node.NodeType.Expression,
-            ItemVar=Node.NodeType.Expression,
-            Source=Node.NodeType.Expression,
-            Condition=Node.NodeType.Expression, # TODO: Validate that this is a logical statement
+            Condition=Node.NodeType.Expression,
+            Statements=Node.NodeType.Statement,
         )

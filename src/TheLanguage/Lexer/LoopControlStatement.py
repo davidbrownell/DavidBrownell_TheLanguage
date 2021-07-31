@@ -54,4 +54,4 @@ class LoopControlStatement(Node):
     TODO: Comment
     """
 
-    Type: LoopControlType
+    ControlType: LoopControlType
