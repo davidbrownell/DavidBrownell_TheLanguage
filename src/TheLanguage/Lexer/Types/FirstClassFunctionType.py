@@ -22,7 +22,6 @@ from typing import List
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,16 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..Common.AST import TypeNode
     from ..Common import Flags
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Type,  # type: ignore
-)
 @dataclass(frozen=True)
-class FirstClassFunctionType(Node):
+class FirstClassFunctionType(TypeNode):
     """\
     TODO: Comment
     """
@@ -49,14 +45,5 @@ class FirstClassFunctionType(Node):
     Flags: Flags.FunctionFlags
 
     Name: str
-    ReturnType: Node
-    Parameters: List[Node]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(FirstClassFunctionType, self).__post_init__()
-
-        self.ValidateTypes(
-            ReturnType=Node.NodeType.Type,
-            Parameters=Node.NodeType.Type,
-        )
+    ReturnType: TypeNode
+    Parameters: List[TypeNode]

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ExceptionStatement.py
+# |  DeleteStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 17:14:06
+# |      2021-07-31 12:57:38
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ExceptionStatement object"""
+"""Contains the DeleteStatement object"""
 
 import os
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,25 +29,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from .VariableStatement import VariableStatement
+    from ..Common.AST import StatementNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Expression=Node.NodeType.Statement,  # type: ignore
-)
 @dataclass(frozen=True)
-class ExceptionStatement(Node):
+class DeleteStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Expression: Node
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(ExceptionStatement, self).__post_init__()
-
-        self.ValidateTypes(
-            Expression=Node.NodeType.Expression,
-        )
+    Variable: VariableStatement

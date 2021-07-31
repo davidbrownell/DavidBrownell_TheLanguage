@@ -19,10 +19,10 @@ import os
 
 from dataclasses import dataclass
 
-from enum import Enum
+from enum import IntFlag
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,12 +32,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..Common.AST import ExpressionNode
     from ..Common.Flags import OperatorCategory
 
 
 # ----------------------------------------------------------------------
-class UnaryOperator(Enum):
+class UnaryOperator(IntFlag):
     """\
     TODO: Comment
     """
@@ -48,22 +48,19 @@ class UnaryOperator(Enum):
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
-)
 @dataclass(frozen=True)
-class UnaryExpression(Node):
+class UnaryExpression(ExpressionNode):
     """\
     TODO: Comment
     """
 
     Operator: UnaryOperator
-    Expression: Node
+    Expression: ExpressionNode
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(UnaryExpression, self).__post_init__()
+    @Interface.override
+    def IsBoolean(self) -> bool:
+        if self.Operator & OperatorCategory.Logical:
+            return True
 
-        self.ValidateTypes(
-            Expression=Node.NodeType.Expression,
-        )
+        return super(UnaryExpression, self).IsBoolean()

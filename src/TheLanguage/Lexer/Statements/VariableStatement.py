@@ -20,7 +20,6 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,26 +29,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..Common.AST import ExpressionNode, StatementNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
-)
 @dataclass(frozen=True)
-class VariableStatement(Node):
+class VariableStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Name: str
-    Expression: Node
+    Variable: ExpressionNode
+    Expression: ExpressionNode
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         super(VariableStatement, self).__post_init__()
 
-        self.ValidateTypes(
-            Expression=Node.NodeType.Expression,
-        )
+        assert self.Variable.IsVariable(), self.Variable

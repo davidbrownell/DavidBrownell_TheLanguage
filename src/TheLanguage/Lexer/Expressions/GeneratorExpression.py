@@ -22,7 +22,6 @@ from typing import Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,15 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..Common.AST import ExpressionNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
-)
 @dataclass(frozen=True)
-class GeneratorExpression(Node):
+class GeneratorExpression(ExpressionNode):
     """\
     TODO: Comment
 
@@ -49,18 +45,14 @@ class GeneratorExpression(Node):
         <item_decorator> for <item_var> in <source> [if <condition>]?
     """
 
-    ItemDecorator: Node
-    ItemVar: Node
-    Source: Node
-    Condition: Optional[Node]
+    VariableDecorator: ExpressionNode
+    Variable: ExpressionNode
+    Source: ExpressionNode
+    Condition: Optional[ExpressionNode]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         super(GeneratorExpression, self).__post_init__()
 
-        self.ValidateTypes(
-            ItemDecorator=Node.NodeType.Expression,
-            ItemVar=Node.NodeType.Expression,
-            Source=Node.NodeType.Expression,
-            Condition=Node.NodeType.Expression, # TODO: Validate that this is a logical statement
-        )
+        assert self.Variable.IsVariable(), self.Variable
+        assert self.Condition is None or self.Condition.IsBoolean(), self.Condition

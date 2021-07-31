@@ -21,7 +21,6 @@ from enum import auto, Enum
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..Common.AST import StatementNode
 
 
 # ----------------------------------------------------------------------
@@ -45,11 +44,8 @@ class LoopControlType(Enum):
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
-)
 @dataclass(frozen=True)
-class LoopControlStatement(Node):
+class LoopControlStatement(StatementNode):
     """\
     TODO: Comment
     """

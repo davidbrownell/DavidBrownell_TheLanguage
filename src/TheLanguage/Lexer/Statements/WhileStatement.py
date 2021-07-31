@@ -22,7 +22,6 @@ from typing import List
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,27 +31,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..Common.AST import ExpressionNode, StatementNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
-)
 @dataclass(frozen=True)
-class WhileStatement(Node):
+class WhileStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Condition: Node
-    Statements: List[Node]
+    Condition: ExpressionNode
+    Statements: List[StatementNode]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         super(WhileStatement, self).__post_init__()
 
-        self.ValidateTypes(
-            Condition=Node.NodeType.Expression,
-            Statements=Node.NodeType.Statement,
-        )
+        assert self.Condition.IsBoolean(), self.Condition

@@ -22,7 +22,6 @@ from typing import List
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,25 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..Common.AST import TypeNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Type,  # type: ignore
-)
 @dataclass(frozen=True)
-class VariantType(Node):
+class VariantType(TypeNode):
     """\
     TODO: Comment
     """
 
-    Types: List[Node]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(VariantType, self).__post_init__()
-
-        self.ValidateTypes(
-            Types=Node.NodeType.Type,
-        )
+    Types: List[TypeNode]

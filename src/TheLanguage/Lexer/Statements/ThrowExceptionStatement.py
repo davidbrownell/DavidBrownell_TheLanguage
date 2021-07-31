@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  ThrowExceptionStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:16:09
+# |      2021-07-30 17:14:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the ThrowExceptionStatement object"""
 
 import os
 
@@ -29,22 +29,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import ExpressionNode
+    from ..Common.AST import ExpressionNode, StatementNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TernaryExpression(ExpressionNode):
+class ThrowExceptionStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Condition: ExpressionNode
-    TrueNode: ExpressionNode
-    FalseNode: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(TernaryExpression, self).__post_init__()
-
-        assert self.Condition.IsBoolean(), self.Condition
+    Exception: ExpressionNode

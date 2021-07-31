@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  TryCatchExceptionStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:16:09
+# |      2021-07-31 14:11:23
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the TryCatchExceptionStatement object"""
 
 import os
+
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -29,22 +31,36 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import ExpressionNode
+    from ..Common.AST import StatementNode
+    from ..Types.StandardType import StandardType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TernaryExpression(ExpressionNode):
+class TryCatchExceptionStatement(StatementNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Condition: ExpressionNode
-    TrueNode: ExpressionNode
-    FalseNode: ExpressionNode
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class CatchStatement(StatementNode):
+        """\
+        TODO: Describe
+        """
+
+        Exception: StandardType
+        Statements: List[StatementNode]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(TernaryExpression, self).__post_init__()
-
-        assert self.Condition.IsBoolean(), self.Condition
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
+    TryStatements: List[StatementNode]
+    CatchStatements: List[CatchStatement]
+    FinallyStatements: Optional[List[StatementNode]]

@@ -21,7 +21,6 @@ from enum import auto, Enum
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..Common.AST import StatementNode
     from ..Common import Flags
     from ..FuncDefinitionNode import FuncDefinitionNode
 
@@ -52,9 +51,7 @@ class MethodType(Enum):
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
-)
+# BugBug: StatementNode
 @dataclass(frozen=True)
 class MethodDefinitionStatement(FuncDefinitionNode):
     """\

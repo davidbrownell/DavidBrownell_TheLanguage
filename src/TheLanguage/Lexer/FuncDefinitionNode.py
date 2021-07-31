@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -48,10 +48,12 @@ class FuncDefinitionNode(Node):
     Visibility: Flags.VisibilityType
 
     Name: str
-    CapturedVars: List[str]
-    ReturnType: Node
+    CapturedVars: Optional[List[str]]
+    ReturnType: Optional[Node]
     Parameters: ParametersNode
     Statements: List[Node]
+
+    # TODO: Attributes when Type==Statement
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -63,8 +65,12 @@ class FuncDefinitionNode(Node):
         ]:
             raise Exception("FuncDefinitionNodes must be a 'Statement' or 'Expression' type")
 
-        if self.Type == Node.NodeType.Expression and self.Visibility != Flags.VisibilityType.Private:
-            raise Exception("The visibility of a FuncDefinitionNode expression must be 'Private'")
+        if self.Type == Node.NodeType.Expression:
+            if self.Visibility != Flags.VisibilityType.Private:
+                raise Exception("'Expression' FuncDefinitionNodes must be 'Private'")
+
+            if len(self.Statements) != 1:
+                raise Exception("'Expression' FuncDefinitionNodes must only have a single statement")
 
         self.ValidateTypes(
             ReturnType=Node.NodeType.Type,

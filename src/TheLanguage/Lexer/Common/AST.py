@@ -22,11 +22,12 @@ import os
 import textwrap
 
 from enum import auto, Enum, Flag
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import cast, Any, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -140,7 +141,7 @@ class SourceRange(object):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class Node(object):
+class Node(Interface.Interface):
     """\
     TODO: Comment
     """
@@ -149,12 +150,6 @@ class Node(object):
     # |
     # |  Public Types
     # |
-    # ----------------------------------------------------------------------
-    class NodeType(Enum):
-        Statement                           = auto()
-        Expression                          = auto()
-        Type                                = auto()
-
     # ----------------------------------------------------------------------
     SourceRangesItemType                    = Union[
         None,                                                               # The corresponding value is a flag or optional (note that this value does not need to appear with the dict)
@@ -167,7 +162,6 @@ class Node(object):
     # |  Public Data
     # |
     # ----------------------------------------------------------------------
-    Type: "NodeType"
     SourceRange: SourceRange
     SourceRanges: Optional[Dict[str, SourceRangesItemType]]
     Parent: Optional["Node"]                = field(init=False, default=None)
@@ -203,7 +197,7 @@ class Node(object):
             return
 
         for k, v in d.items():
-            self._EnsureValidLocations(
+            self._EnsureValidMembers(
                 [k],
                 self.SourceRange,
                 v,
@@ -239,17 +233,20 @@ class Node(object):
     # |  Protected Methods
     # |
     # ----------------------------------------------------------------------
+    # BugBug: May not be necessary
     def ValidateTypes(
         self,
-        **kwargs: NodeType,
+        **kwargs: "Node",
     ):
         for attribute_name, expected_type in kwargs.items():
+            is_expected_func = lambda item: isinstance(item, expected_type)
+
             value = getattr(self, attribute_name)
             if value is None:
                 continue
 
             if isinstance(value, Node):
-                if value.Type != expected_type:
+                if not is_expected_func(value):
                     raise Exception(
                         "The '{}' node must be a '{}' type".format(
                             attribute_name,
@@ -259,7 +256,7 @@ class Node(object):
 
             elif isinstance(value, list) and all(isinstance(item, Node) for item in value):
                 for node_index, node in enumerate(value):
-                    if node.Type != expected_type:
+                    if not is_expected_func(node.Type):
                         raise Exception(
                             "The '{}' node at index '{}' must be a '{}' type".format(
                                 attribute_name,
@@ -276,13 +273,13 @@ class Node(object):
     # |  Private Types
     # |
     # ----------------------------------------------------------------------
-    _EnsureValidLocationsValueType          = Union[
+    _EnsureValidMembersValueType          = Union[
         None,                                           # No location value expected
         Flag,                                           # No location value expected
         "Node",                                         # No location value expected (will use the information in the Node)
         Enum,                                           # SourceRange expected
         str,                                            # SourceRange expected
-        List["_EnsureValidLocationsValueType"],         # Tuple[SourceRange, List[...]] expected
+        List["_EnsureValidMembersValueType"],         # Tuple[SourceRange, List[...]] expected
     ]
 
     # ----------------------------------------------------------------------
@@ -291,11 +288,11 @@ class Node(object):
     # |
     # ----------------------------------------------------------------------
     @classmethod
-    def _EnsureValidLocations(
+    def _EnsureValidMembers(
         cls,
         name_stack: List[Any],
         containing_range: SourceRange,
-        value: _EnsureValidLocationsValueType,
+        value: _EnsureValidMembersValueType,
         range_value: SourceRangesItemType,
     ):
         if value is None or isinstance(value, Flag):
@@ -357,6 +354,9 @@ class Node(object):
             EnsureContains(containing_range, range_value, "Value")
 
         elif isinstance(value, list):
+            if not value:
+                raise CreateException("'list' values may not be empty; consider declaring them as 'Optional[List[...]]'")
+
             if (
                 not isinstance(range_value, tuple)
                 or len(range_value) != 2
@@ -379,7 +379,7 @@ class Node(object):
                 )
 
             for item_index, (item, range_item) in enumerate(zip(value, range_values)):
-                cls._EnsureValidLocations(
+                cls._EnsureValidMembers(
                     name_stack + [item_index],
                     range_value,
                     item,
@@ -388,3 +388,43 @@ class Node(object):
 
         else:
             assert False, value  # pragma: no cover
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class ExpressionNode(Node):
+    """\
+    TODO: Comment
+    """
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def IsBoolean() -> bool:
+        """Returns True if the expression is a boolean expression"""
+        return False
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def IsVariable() -> bool:
+        """Returns True if the expression can be considered a variable name"""
+        return False
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class StatementNode(Node):
+    """\
+    TODO: Comment
+    """
+    pass
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class TypeNode(Node):
+    """\
+    TODO: Comment
+    """
+    pass

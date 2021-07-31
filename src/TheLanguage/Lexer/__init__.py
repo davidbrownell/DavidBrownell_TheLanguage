@@ -1,3 +1,5 @@
+# BugBug: - Validate how enum and flag values are used to ensure consistency
+
 # TODO
 
 # Types
@@ -19,7 +21,7 @@
 # [DONE] - Generator/Comprehension: GeneratorExpression
 # [DONE] - lambda: FuncDefinitionNode
 # [DONE] - comparison (<, <=, ==, !=, >, >=): BinaryExpression
-# [DONE] - math (+, -, *, /, //, **, %): MathBinaryNode: BinaryExpression
+# [DONE] - math (+, -, *, /, //, **, %): BinaryExpression
 # [DONE] - binary logical (and, or, in?, is?): BinaryExpression
 # [DONE] - unary logical (not): UnaryExpression
 # [DONE] - Quick Ref: QuickRefExpression
@@ -29,8 +31,9 @@
 # Statements
 # ----------
 # - Class/Interface/Mixin/Exception Declaration
-# - try/catch/finally
-# - if/elif/else
+# -       attributes
+# [DONE] - try/catch/finally: TryCatchExceptionStatement
+# [DONE] - if/elif/else: IfStatement
 # - Pattern Matching/super else
 # [DONE] - Method Declaration: MethodDefinitionNode
 # [DONE] - Func Declaration: FuncDefinitionNode
@@ -38,18 +41,16 @@
 # [DONE] - Noop: NoopStatement
 # [DONE] - Tuple Var Decl: TupleNode
 # [DONE] - Var Decl: VariableStatement
-# [DONE] - throw: ExceptionStatement
+# [DONE] - throw: ThrowExceptionStatement
 # [DONE] - while: WhileStatement
 # [DONE] - for: ForStatement
 # [DONE] - Scoped Ref: ScopedRefStatement
-# [DONT] - type alias: TypeAliasStatement
+# [DONE] - type alias: TypeAliasStatement
 # [DONE] - return: ReturnStatement
 # [DONE] - yield: YieldStatement
 # [DONE] - yield from: YieldStatement
-# - delete?
+# [DONT] - delete: DeleteStatement
 # [DONE] - break: LoopControlStatement
 # [DONE] - continue: LoopControlStatement
-# - attributes
-# - decorator?
 # [DONE] - docstring: DocstringStatement
-# - assign (<math> and <bitwise>)
+# [DONE] - assign (<math> and <bitwise>): BinaryStatement
