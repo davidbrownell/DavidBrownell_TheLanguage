@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CastExpression.py
+# |  ScopedRefsStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:12:29
+# |      2021-07-30 16:47:27
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CastExpression object"""
+"""Contains the ScopedRefsStatement object"""
 
 import os
+
+from typing import List
 
 from dataclasses import dataclass
 
@@ -30,27 +32,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
+    Type=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class CastExpression(Node):
+class ScopedRefsStatement(Node):
     """\
     TODO: Comment
     """
 
-    Expression: Node
-    Type: Node
+    Refs: List[str]
+    Statements: List[Node]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(CastExpression, self).__post_init__()
+        super(ScopedRefsStatement, self).__post_init__()
 
         self.ValidateTypes(
-            Expression=Node.NodeType.Expression,
-            Type=Node.NodeType.Type,
+            Statements=Node.NodeType.Statement,
         )

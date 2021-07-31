@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableStatement.py
+# |  TypeAliasStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:53:19
+# |      2021-07-30 20:16:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableStatement object"""
+"""Contains the TypeAliasStatement object"""
 
 import os
 
@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
@@ -38,18 +38,18 @@ with InitRelativeImports():
     Type=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class VariableStatement(Node):
+class TypeAliasStatement(Node):
     """\
     TODO: Comment
     """
 
     Name: str
-    Expression: Node
+    Type: Node
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(VariableStatement, self).__post_init__()
+        super(TypeAliasStatement, self).__post_init__()
 
         self.ValidateTypes(
-            Expression=Node.NodeType.Expression,
+            Type=Node.NodeType.Type,
         )

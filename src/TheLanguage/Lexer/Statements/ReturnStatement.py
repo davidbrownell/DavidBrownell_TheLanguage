@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GeneratorExpression.py
+# |  ReturnStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 13:53:00
+# |      2021-07-30 20:08:21
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GeneratorExpression object"""
+"""Contains the ReturnStatement object"""
 
 import os
 
@@ -32,35 +32,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
+    Type=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class GeneratorExpression(Node):
+class ReturnStatement(Node):
     """\
     TODO: Comment
-
-    Hypothetical syntax:
-
-        <item_decorator> for <item_var> in <source> [if <condition>]?
     """
 
-    ItemDecorator: Node
-    ItemVar: Node
-    Source: Node
-    Condition: Optional[Node]
+    Result: Optional[Node]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(GeneratorExpression, self).__post_init__()
+        super(ReturnStatement, self).__post_init__()
 
         self.ValidateTypes(
-            ItemDecorator=Node.NodeType.Expression,
-            ItemVar=Node.NodeType.Expression, # TODO: Validate that this is a var name
-            Source=Node.NodeType.Expression,
-            Condition=Node.NodeType.Expression, # TODO: Validate that this is a logical statement
+            Result=Node.NodeType.Expression,
         )

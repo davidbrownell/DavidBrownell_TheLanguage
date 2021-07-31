@@ -68,7 +68,8 @@ class FunctionFlags(IntFlag):
     """
 
     IsPartial                               = auto()    # Flag set if the function generates exceptions.
-    IsCoroutine                             = auto()    # Flag set if the function is a coroutine/generator.
+    IsCoroutine                             = auto()    # Flag set if the function is a coroutine (reentrant within a future task).
+    IsGenerator                             = auto()    # Flag set if the function is a generator (reentrant within the same task).
 
 
 # ----------------------------------------------------------------------

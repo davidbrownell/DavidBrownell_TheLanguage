@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  MethodDefinitionNode.py
+# |  DocstringStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:40:19
+# |      2021-07-30 16:38:01
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the MethodDefinitionNode object"""
+"""Contains the DocstringStatement object"""
 
 import os
-from enum import auto, Enum
 
 from dataclasses import dataclass
 
@@ -31,24 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-    from .Common import Flags
-    from .FuncDefinitionNode import FuncDefinitionNode
-
-
-# ----------------------------------------------------------------------
-class MethodType(Enum):
-    """\
-    TODO: Comment
-    """
-
-    Standard                                = auto()
-    Replace                                 = auto()
-    Abstract                                = auto()
-    Virtual                                 = auto()
-    Override                                = auto()
-    Final                                   = auto()
-    Static                                  = auto()
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
@@ -56,10 +38,9 @@ class MethodType(Enum):
     Type=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class MethodDefinitionNode(FuncDefinitionNode):
+class DocstringStatement(Node):
     """\
     TODO: Comment
     """
 
-    Method: MethodType
-    InstanceType: Flags.TypeFlags
+    Content: str

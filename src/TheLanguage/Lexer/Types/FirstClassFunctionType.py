@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ParametersNode.py
+# |  FirstClassFunctionType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 10:37:47
+# |      2021-07-29 21:00:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ParameterNode and ParametersNode objects"""
+"""Contains the FirstClassFunctionType object"""
 
 import os
 
-from typing import List, Optional
+from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,39 +32,31 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-
-# TODO: Move this to the file that uses it and delete this file
+    from ..Common.AST import Node
+    from ..Common import Flags
 
 
 # ----------------------------------------------------------------------
+@DataclassDefaultValues(
+    Type=Node.NodeType.Type,  # type: ignore
+)
 @dataclass(frozen=True)
-class ParameterNode(Node):
+class FirstClassFunctionType(Node):
     """\
     TODO: Comment
     """
 
+    Flags: Flags.FunctionFlags
+
     Name: str
-    Type: Node
-    DefaultValue: Optional[Node]
+    ReturnType: Node
+    Parameters: List[Node]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(ParameterNode, self).__post_init__()
+        super(FirstClassFunctionType, self).__post_init__()
 
         self.ValidateTypes(
-            Type=Node.NodeType.Type,
-            DefaultValue=Node.NodeType.Expression,
+            ReturnType=Node.NodeType.Type,
+            Parameters=Node.NodeType.Type,
         )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ParametersNode(Node):
-    """\
-    TODO: Comment
-    """
-
-    Positional: List[ParameterNode]
-    Any: List[ParameterNode]
-    Keyword: List[ParameterNode]
