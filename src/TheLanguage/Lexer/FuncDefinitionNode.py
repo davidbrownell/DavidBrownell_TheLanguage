@@ -43,11 +43,10 @@ class FuncDefinitionNode(Node):
     TODO: Comment
     """
 
+    Visibility: Flags.VisibilityType
     Flags: Flags.FunctionFlags
 
-    Visibility: Flags.VisibilityType
-
-    Name: str
+    Name: str # BugBug: StandardType
     CapturedVars: Optional[List[str]]
     ReturnType: Optional[Node]
     Parameters: ParametersNode

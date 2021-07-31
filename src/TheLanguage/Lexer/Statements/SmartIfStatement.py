@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IfStatement.py
+# |  SmartIfStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-31 13:14:07
+# |      2021-07-31 14:22:50
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IfStatement object"""
+"""Contains the SmartIfStatement object"""
 
 import os
 
-from typing import List, Optional
+from typing import List
 
 from dataclasses import dataclass
 
@@ -36,20 +36,20 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class IfStatement(StatementNode):
+class SmartIfStatement(StatementNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
     # ----------------------------------------------------------------------
     # |
-    # |  Public Data
+    # |  Public Types
     # |
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
-    class ElseIfStatement(StatementNode):
+    class ConditionAndStatements(StatementNode):
         """\
-        TODO: Document
+        TODO: Describe
         """
 
         Condition: ExpressionNode
@@ -57,7 +57,7 @@ class IfStatement(StatementNode):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            super(IfStatement.ElseIfStatement, self).__post_init__()
+            super(SmartIfStatement.ConditionAndStatements, self).__post_init__()
 
             assert self.Condition.IsBoolean(), self.Condition
 
@@ -66,13 +66,4 @@ class IfStatement(StatementNode):
     # |  Public Data
     # |
     # ----------------------------------------------------------------------
-    Condition: ExpressionNode
-    Statements: List[StatementNode]
-    ElseIf: Optional[List[ElseIfStatement]]
-    ElseStatements: Optional[List[StatementNode]]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(IfStatement, self).__post_init__()
-
-        assert self.Condition.IsBoolean(), self.Condition
+    Elements: List[ConditionAndStatements]
