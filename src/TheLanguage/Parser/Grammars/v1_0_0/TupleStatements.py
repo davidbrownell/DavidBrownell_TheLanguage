@@ -218,7 +218,7 @@ class TupleVariableDeclarationStatement(_TupleBase):
             child_node = ExtractOrNode(cast(Node, child_node))
 
             if isinstance(child_node, Leaf):
-                yield child_node, cast(str, ExtractLeafValue(child_node))
+                yield child_node, ExtractLeafValue(child_node)
             else:
                 yield child_node, child_node
 
