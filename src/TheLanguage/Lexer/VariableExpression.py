@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  QuickRefExpression.py
+# |  VariableExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:17:56
+# |      2021-07-30 16:55:43
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the QuickRefExpression object"""
+"""Contains the VariableExpression object"""
 
 import os
 
@@ -38,16 +38,9 @@ with InitRelativeImports():
     Type=Node.NodeType.Expression,  # type: ignore
 )
 @dataclass(frozen=True)
-class QuickRefExpression(Node):
+class VariableExpression(Node):
     """\
     TODO: Comment
     """
 
-    Ref: str
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(QuickRefExpression, self).__post_init__()
-
-        # TODO: Validate only used in func invocation where return value is not a ref. Also needs
-        #       to match parameter.
+    Name: str

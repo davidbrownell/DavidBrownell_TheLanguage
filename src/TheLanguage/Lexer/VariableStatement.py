@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncDefinitionNode.py
+# |  VariableStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 10:29:36
+# |      2021-07-30 16:53:19
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncDefinitionNode object"""
+"""Contains the VariableStatement object"""
 
 import os
-
-from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,41 +31,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Common.AST import Node
-    from .Common import Flags
-    from .ParametersNode import ParametersNode
 
 
 # ----------------------------------------------------------------------
+@DataclassDefaultValues(
+    Type=Node.NodeType.Statement,  # type: ignore
+)
 @dataclass(frozen=True)
-class FuncDefinitionNode(Node):
+class VariableStatement(Node):
     """\
     TODO: Comment
     """
 
-    Flags: Flags.FunctionFlags
-
-    Visibility: Flags.VisibilityType
-
     Name: str
-    CapturedVars: List[str]
-    ReturnType: Node
-    Parameters: ParametersNode
-    Statements: List[Node]
+    Expression: Node
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(FuncDefinitionNode, self).__post_init__()
-
-        if self.Type not in [
-            Node.NodeType.Statement,        # Standard function
-            Node.NodeType.Expression,       # Lambda
-        ]:
-            raise Exception("FuncDefinitionNodes must be a 'Statement' or 'Expression' type")
-
-        if self.Type == Node.NodeType.Expression and self.Visibility != Flags.VisibilityType.Private:
-            raise Exception("The visibility of a FuncDefinitionNode expression must be 'Private'")
+        super(VariableStatement, self).__post_init__()
 
         self.ValidateTypes(
-            ReturnType=Node.NodeType.Type,
-            Statements=self.Type,
+            Expression=Node.NodeType.Expression,
         )

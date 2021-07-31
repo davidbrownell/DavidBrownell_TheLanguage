@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  QuickRefExpression.py
+# |  MethodDefinitionNode.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:17:56
+# |      2021-07-30 16:40:19
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the QuickRefExpression object"""
+"""Contains the MethodDefinitionNode object"""
 
 import os
+from enum import auto, Enum
 
 from dataclasses import dataclass
 
@@ -31,23 +32,34 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Common.AST import Node
+    from .Common import Flags
+    from .FuncDefinitionNode import FuncDefinitionNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
-)
-@dataclass(frozen=True)
-class QuickRefExpression(Node):
+class MethodType(Enum):
     """\
     TODO: Comment
     """
 
-    Ref: str
+    Standard                                = auto()
+    Replace                                 = auto()
+    Abstract                                = auto()
+    Virtual                                 = auto()
+    Override                                = auto()
+    Final                                   = auto()
+    Static                                  = auto()
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(QuickRefExpression, self).__post_init__()
 
-        # TODO: Validate only used in func invocation where return value is not a ref. Also needs
-        #       to match parameter.
+# ----------------------------------------------------------------------
+@DataclassDefaultValues(
+    Type=Node.NodeType.Statement,  # type: ignore
+)
+@dataclass(frozen=True)
+class MethodDefinitionNode(FuncDefinitionNode):
+    """\
+    TODO: Comment
+    """
+
+    Method: MethodType
+    InstanceType: Flags.TypeFlags

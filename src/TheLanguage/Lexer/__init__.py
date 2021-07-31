@@ -23,33 +23,33 @@
 # [DONE] - binary logical (and, or, in?, is?): BinaryExpression
 # [DONE] - unary logical (not): UnaryExpression
 # [DONE] - Quick Ref: QuickRefExpression
+# [DONE] - Variable: VariableExpression
 
 
 # Statements
 # ----------
 # - Class/Interface/Mixin/Exception Declaration
-# - Method Declaration
+# [DONE] - Method Declaration: MethodDefinitionNode
 # [DONE] - Func Declaration: FuncDefinitionNode
 # [DONE] - Func Invocation: FuncInvocationNode
-# - assign (<math> and <bitwise>)
-# <not necessary> - Import
-# - Noop
+# [DONE] - Noop: NoopStatement
 # [DONE] - Tuple Var Decl: TupleNode
-# - Var Decl
+# [DONE] - Var Decl: VariableStatement
 # - try/catch/finally
 # - throw
 # - if/elif/else
 # - while
 # - for
-# - Scoped Ref
+# [DONE] - Scoped Ref: ScopedRefStatement
 # - Pattern Matching/super else
 # - type alias
 # - return
 # - yield
 # - yield from
 # - delete?
-# - break
-# - continue
+# [DONE] - break: LoopControlStatement
+# [DONE] - continue: LoopControlStatement
 # - attributes
 # - decorator?
-# - docstring
+# [DONE] - docstring: DocstringStatement
+# - assign (<math> and <bitwise>)

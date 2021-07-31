@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  QuickRefExpression.py
+# |  LoopControlStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:17:56
+# |      2021-07-30 16:58:09
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the QuickRefExpression object"""
+"""Contains the LoopControlStatement object"""
 
 import os
+from enum import auto, Enum
 
 from dataclasses import dataclass
 
@@ -34,20 +35,23 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
-)
-@dataclass(frozen=True)
-class QuickRefExpression(Node):
+class LoopControlType(Enum):
     """\
     TODO: Comment
     """
 
-    Ref: str
+    Break                                   = auto()
+    Continue                                = auto()
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(QuickRefExpression, self).__post_init__()
 
-        # TODO: Validate only used in func invocation where return value is not a ref. Also needs
-        #       to match parameter.
+# ----------------------------------------------------------------------
+@DataclassDefaultValues(
+    Type=Node.NodeType.Statement,  # type: ignore
+)
+@dataclass(frozen=True)
+class LoopControlStatement(Node):
+    """\
+    TODO: Comment
+    """
+
+    Type: LoopControlType

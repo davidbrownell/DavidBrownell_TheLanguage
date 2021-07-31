@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  QuickRefExpression.py
+# |  NoopStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:17:56
+# |      2021-07-30 16:50:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the QuickRefExpression object"""
+"""Contains the NoopStatement object"""
 
 import os
 
@@ -35,19 +35,12 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
+    Type=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class QuickRefExpression(Node):
+class NoopStatement(Node):
     """\
     TODO: Comment
     """
 
-    Ref: str
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(QuickRefExpression, self).__post_init__()
-
-        # TODO: Validate only used in func invocation where return value is not a ref. Also needs
-        #       to match parameter.
+    pass

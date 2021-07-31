@@ -41,7 +41,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class SourceRange(object):
+class SourceLocation(object):
     """\
     Human-consumable location within a source file.
 
@@ -82,8 +82,8 @@ class SourceRange(object):
     This is generally used to display errors.
     """
 
-    Start: SourceRange
-    End: SourceRange
+    Start: SourceLocation
+    End: SourceLocation
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -124,8 +124,8 @@ class SourceRange(object):
 
         # ----------------------------------------------------------------------
         def Compare(
-            a: SourceRange,
-            b: SourceRange,
+            a: SourceLocation,
+            b: SourceLocation,
         ) -> int:
             result = a.Line - b.Line
             if result != 0:

@@ -57,43 +57,31 @@ def test_Standard():
 
     assert str(node) == textwrap.dedent(
         """\
-        Parent          : None
-        SourceLocation  : End   : Column   : 40
-                                  Filename : Filename1
-                                  Line     : 1
-                                  Offset   : 40
-                          Start : Column   : 1
-                                  Filename : Filename1
-                                  Line     : 1
-                                  Offset   : 0
-        SourceLocations : one : End   : Column   : 25
-                                        Filename : Filename1
-                                        Line     : 10
-                                        Offset   : 35
-                                Start : Column   : 20
-                                        Filename : Filename1
-                                        Line     : 10
-                                        Offset   : 30
-                          two : End   : Column   : 30
-                                        Filename : Filename1
-                                        Line     : 10
-                                        Offset   : 40
-                                Start : Column   : 20
-                                        Filename : Filename1
-                                        Line     : 10
-                                        Offset   : 30
-        Type            : NodeType.Statement
+        Parent       : None
+        SourceRange  : End   : Column   : 40
+                               Filename : Filename1
+                               Line     : 1
+                               Offset   : 40
+                       Start : Column   : 1
+                               Filename : Filename1
+                               Line     : 1
+                               Offset   : 0
+        SourceRanges : one : End   : Column   : 25
+                                     Filename : Filename1
+                                     Line     : 10
+                                     Offset   : 35
+                             Start : Column   : 20
+                                     Filename : Filename1
+                                     Line     : 10
+                                     Offset   : 30
+                       two : End   : Column   : 30
+                                     Filename : Filename1
+                                     Line     : 10
+                                     Offset   : 40
+                             Start : Column   : 20
+                                     Filename : Filename1
+                                     Line     : 10
+                                     Offset   : 30
+        Type         : NodeType.Statement
         """,
-    )
-
-    data3 = Mock()
-    data3.ToString = Mock(
-        return_value=textwrap.dedent(
-            """\
-            This is the
-
-            resulting data
-
-            """,
-        ),
     )
