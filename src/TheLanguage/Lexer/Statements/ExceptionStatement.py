@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  LoopControlStatement.py
+# |  ExceptionStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:58:09
+# |      2021-07-30 17:14:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LoopControlStatement object"""
+"""Contains the ExceptionStatement object"""
 
 import os
-from enum import auto, Enum
 
 from dataclasses import dataclass
 
@@ -31,27 +30,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-
-
-# ----------------------------------------------------------------------
-class LoopControlType(Enum):
-    """\
-    TODO: Comment
-    """
-
-    Break                                   = auto()
-    Continue                                = auto()
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
+    Expression=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class LoopControlStatement(Node):
+class ExceptionStatement(Node):
     """\
     TODO: Comment
     """
 
-    Type: LoopControlType
+    Expression: Node
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        super(ExceptionStatement, self).__post_init__()
+
+        self.ValidateTypes(
+            Expression=Node.NodeType.Expression,
+        )

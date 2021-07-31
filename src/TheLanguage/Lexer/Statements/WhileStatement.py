@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoopStatement.py
+# |  WhileStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:50:37
+# |      2021-07-30 20:05:38
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NoopStatement object"""
+"""Contains the WhileStatement object"""
 
 import os
+
+from typing import List
 
 from dataclasses import dataclass
 
@@ -30,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
@@ -38,9 +40,19 @@ with InitRelativeImports():
     Type=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class NoopStatement(Node):
+class WhileStatement(Node):
     """\
     TODO: Comment
     """
 
-    pass
+    Condition: Node
+    Statements: List[Node]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        super(WhileStatement, self).__post_init__()
+
+        self.ValidateTypes(
+            Condition=Node.NodeType.Expression,
+            Statements=Node.NodeType.Statement,
+        )

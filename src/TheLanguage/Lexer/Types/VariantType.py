@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DocstringStatement.py
+# |  VariantType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:38:01
+# |      2021-07-29 20:34:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the DocstringStatement object"""
+"""Contains the VariantType object"""
 
 import os
+
+from typing import List
 
 from dataclasses import dataclass
 
@@ -30,17 +32,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
+    Type=Node.NodeType.Type,  # type: ignore
 )
 @dataclass(frozen=True)
-class DocstringStatement(Node):
+class VariantType(Node):
     """\
     TODO: Comment
     """
 
-    Content: str
+    Types: List[Node]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        super(VariantType, self).__post_init__()
+
+        self.ValidateTypes(
+            Types=Node.NodeType.Type,
+        )

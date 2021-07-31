@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncInvocationNode.py
+# |  YieldStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 12:04:57
+# |      2021-07-30 20:20:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,17 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncInvocationNodeNode object"""
+"""Contains the YieldStatement object"""
 
 import os
 
 from enum import auto, Enum
-from typing import List, Optional
+from typing import Optional
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,61 +33,39 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-    from .Common import Flags
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ArgumentNode(Node):
+class YieldType(Enum):
     """\
     TODO: Comment
     """
 
-    Argument: Node
-    Keyword: Optional[str]
-
-
-# ----------------------------------------------------------------------
-class FunctionCallType(Enum):
-    """\
-    TODO: Comment
-    """
-
-    # Example: obj.Func()
-    #              ^^^^^^
     Standard                                = auto()
-
-    # Example: obj.Foo().Bar()
-    #                   ^^^^^^
-    Chained                                 = auto()
-
-    # Example: obj.Foo()->Bar() == obj.Foo(); obj.Bar()
-    #                   ^^^^^^^               ^^^^^^^^^
-    Self                                    = auto()
-
-    # Example: obj[0]
-    #             ^^^
-    Index                                   = auto()
+    From                                    = auto()
 
 
 # ----------------------------------------------------------------------
+@DataclassDefaultValues(
+    Type=Node.NodeType.Statement,  # type: ignore
+)
 @dataclass(frozen=True)
-class FuncInvocationNode(Node):
+class YieldStatement(Node):
     """\
     TODO: Comment
     """
 
-    Flags: Flags.FunctionFlags
-    CallType: FunctionCallType
-
-    Name: List[str]
-    Arguments: List[ArgumentNode]
+    Yield: YieldType
+    Expression: Optional[Node]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(FuncInvocationNode, self).__post_init__()
+        super(YieldStatement, self).__post_init__()
 
         self.ValidateTypes(
-            Arguments=self.Type,
+            Expression=Node.NodeType.Expression,
         )
+
+        if self.Yield == YieldType.From and not self.Expression:
+            raise Exception("'From' YieldStatements must have an 'Expression'")

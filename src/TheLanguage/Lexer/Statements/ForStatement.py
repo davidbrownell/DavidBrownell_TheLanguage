@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ParametersNode.py
+# |  ForStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 10:37:47
+# |      2021-07-30 20:12:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ParameterNode and ParametersNode objects"""
+"""Contains the ForStatement object"""
 
 import os
 
-from typing import List, Optional
+from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,39 +32,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-
-# TODO: Move this to the file that uses it and delete this file
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
+@DataclassDefaultValues(
+    Type=Node.NodeType.Statement,  # type: ignore
+)
 @dataclass(frozen=True)
-class ParameterNode(Node):
+class ForStatement(Node):
     """\
     TODO: Comment
     """
 
-    Name: str
-    Type: Node
-    DefaultValue: Optional[Node]
+    ItemVar: Node
+    Source: Node
+    Statements: List[Node]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(ParameterNode, self).__post_init__()
+        super(ForStatement, self).__post_init__()
 
         self.ValidateTypes(
-            Type=Node.NodeType.Type,
-            DefaultValue=Node.NodeType.Expression,
+            ItemVar=Node.NodeType.Expression,
+            Source=Node.NodeType.Expression,
+            Statements=Node.NodeType.Statement,
         )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ParametersNode(Node):
-    """\
-    TODO: Comment
-    """
-
-    Positional: List[ParameterNode]
-    Any: List[ParameterNode]
-    Keyword: List[ParameterNode]

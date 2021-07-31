@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ScopedRefsStatement.py
+# |  VariableExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:47:27
+# |      2021-07-30 16:55:43
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ScopedRefsStatement object"""
+"""Contains the VariableExpression object"""
 
 import os
-
-from typing import List
 
 from dataclasses import dataclass
 
@@ -32,26 +30,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
+    Type=Node.NodeType.Expression,  # type: ignore
 )
 @dataclass(frozen=True)
-class ScopedRefsStatement(Node):
+class VariableExpression(Node):
     """\
     TODO: Comment
     """
 
-    Refs: List[str]
-    Statements: List[Node]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(ScopedRefsStatement, self).__post_init__()
-
-        self.ValidateTypes(
-            Statements=Node.NodeType.Statement,
-        )
+    Name: str

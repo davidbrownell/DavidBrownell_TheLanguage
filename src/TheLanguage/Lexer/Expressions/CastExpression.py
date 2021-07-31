@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FirstClassFunctionType.py
+# |  CastExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 21:00:41
+# |      2021-07-30 10:12:29
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FirstClassFunctionType object"""
+"""Contains the CastExpression object"""
 
 import os
-
-from typing import List
 
 from dataclasses import dataclass
 
@@ -32,31 +30,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-    from .Common import Flags
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Type,  # type: ignore
+    Type=Node.NodeType.Expression,  # type: ignore
 )
 @dataclass(frozen=True)
-class FirstClassFunctionType(Node):
+class CastExpression(Node):
     """\
     TODO: Comment
     """
 
-    Flags: Flags.FunctionFlags
-
-    Name: str
-    ReturnType: Node
-    Parameters: List[Node]
+    Expression: Node
+    Type: Node
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(FirstClassFunctionType, self).__post_init__()
+        super(CastExpression, self).__post_init__()
 
         self.ValidateTypes(
-            ReturnType=Node.NodeType.Type,
-            Parameters=Node.NodeType.Type,
+            Expression=Node.NodeType.Expression,
+            Type=Node.NodeType.Type,
         )

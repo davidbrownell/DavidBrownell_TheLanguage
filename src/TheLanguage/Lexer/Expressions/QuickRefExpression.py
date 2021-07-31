@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariantType.py
+# |  QuickRefExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 20:34:06
+# |      2021-07-30 16:17:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariantType object"""
+"""Contains the QuickRefExpression object"""
 
 import os
-
-from typing import List
 
 from dataclasses import dataclass
 
@@ -32,25 +30,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Type,  # type: ignore
+    Type=Node.NodeType.Expression,  # type: ignore
 )
 @dataclass(frozen=True)
-class VariantType(Node):
+class QuickRefExpression(Node):
     """\
     TODO: Comment
     """
 
-    Types: List[Node]
+    Ref: str
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(VariantType, self).__post_init__()
+        super(QuickRefExpression, self).__post_init__()
 
-        self.ValidateTypes(
-            Types=Node.NodeType.Type,
-        )
+        # TODO: Validate only used in func invocation where return value is not a ref. Also needs
+        #       to match parameter.

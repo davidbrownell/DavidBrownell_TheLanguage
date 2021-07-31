@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpression.py
+# |  NoopStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:55:43
+# |      2021-07-30 16:50:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpression object"""
+"""Contains the NoopStatement object"""
 
 import os
 
@@ -30,17 +30,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..Common.AST import Node
 
 
 # ----------------------------------------------------------------------
 @DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
+    Type=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class VariableExpression(Node):
+class NoopStatement(Node):
     """\
     TODO: Comment
     """
 
-    Name: str
+    pass

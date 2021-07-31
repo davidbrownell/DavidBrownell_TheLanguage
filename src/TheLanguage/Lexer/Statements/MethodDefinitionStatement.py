@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncInvocationNode.py
+# |  MethodDefinitionStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 12:04:57
+# |      2021-07-30 16:40:19
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncInvocationNodeNode object"""
+"""Contains the MethodDefinitionStatement object"""
 
 import os
-
 from enum import auto, Enum
-from typing import List, Optional
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,61 +31,35 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-    from .Common import Flags
+    from ..Common.AST import Node
+    from ..Common import Flags
+    from ..FuncDefinitionNode import FuncDefinitionNode
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ArgumentNode(Node):
+class MethodType(Enum):
     """\
     TODO: Comment
     """
 
-    Argument: Node
-    Keyword: Optional[str]
-
-
-# ----------------------------------------------------------------------
-class FunctionCallType(Enum):
-    """\
-    TODO: Comment
-    """
-
-    # Example: obj.Func()
-    #              ^^^^^^
     Standard                                = auto()
-
-    # Example: obj.Foo().Bar()
-    #                   ^^^^^^
-    Chained                                 = auto()
-
-    # Example: obj.Foo()->Bar() == obj.Foo(); obj.Bar()
-    #                   ^^^^^^^               ^^^^^^^^^
-    Self                                    = auto()
-
-    # Example: obj[0]
-    #             ^^^
-    Index                                   = auto()
+    Replace                                 = auto()
+    Abstract                                = auto()
+    Virtual                                 = auto()
+    Override                                = auto()
+    Final                                   = auto()
+    Static                                  = auto()
 
 
 # ----------------------------------------------------------------------
+@DataclassDefaultValues(
+    Type=Node.NodeType.Statement,  # type: ignore
+)
 @dataclass(frozen=True)
-class FuncInvocationNode(Node):
+class MethodDefinitionStatement(FuncDefinitionNode):
     """\
     TODO: Comment
     """
 
-    Flags: Flags.FunctionFlags
-    CallType: FunctionCallType
-
-    Name: List[str]
-    Arguments: List[ArgumentNode]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(FuncInvocationNode, self).__post_init__()
-
-        self.ValidateTypes(
-            Arguments=self.Type,
-        )
+    Method: MethodType
+    InstanceType: Flags.TypeFlags
