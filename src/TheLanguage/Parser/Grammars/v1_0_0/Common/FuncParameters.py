@@ -20,7 +20,7 @@ import os
 import textwrap
 
 from enum import auto, Enum
-from typing import cast, List, Optional
+from typing import cast, List, Match, Optional
 
 from dataclasses import dataclass
 
@@ -449,11 +449,12 @@ def _ExtractNewStyleParameters(
             assert False, the_type  # pragma: no cover
 
         if parameters_list:
-            regex_match = cast(Token.RegexMatch, the_type.Value).Match
-
             raise NewStyleParameterGroupDuplicateError.FromNode(
                 the_type,
-                regex_match.string[regex_match.start():regex_match.end()],
+                ExtractLeafValue(
+                    the_type,
+                    group_value_name=None,
+                ),
             )
 
         if has_order_error:
@@ -575,7 +576,7 @@ def _ExtractParameterInfo(
     # <name>
     assert len(node.Children) >= child_index + 1
     name_leaf = cast(Leaf, node.Children[child_index])
-    name = cast(str, ExtractLeafValue(name_leaf))
+    name = ExtractLeafValue(name_leaf)
     child_index += 1
 
     if not NamingConventions.Parameter.Regex.match(name):

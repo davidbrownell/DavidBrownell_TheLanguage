@@ -69,15 +69,16 @@ class FuncDeclarationStatement(GrammarStatement):
     # |
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
-    class NodeInfo(object):
-        Export: bool
-        Type: Node
+    class Info(object):
+        Export: bool                        # TODO: Use 'public'|'private'|'protected'
+        Type: Node                          # TODO: Rename to 'ReturnType'
         Name: str
         Parameters: FuncParameters.Parameters
         Docstring: Optional[str]
         Statements: List[Node]
 
         # TODO: Add exceptions flag, remove trailing '?'
+        # TODO: Add coroutine flags, remove trailing '...'
 
         # ----------------------------------------------------------------------
         def __str__(self):
@@ -133,6 +134,7 @@ class FuncDeclarationStatement(GrammarStatement):
             GrammarDSL.CreateStatement(
                 name=self.NODE_NAME,
                 item=[
+                    # TODO: Change this to public|protected|private
                     # 'export'?
                     GrammarDSL.StatementItem(
                         CommonTokens.Export,
@@ -199,11 +201,12 @@ class FuncDeclarationStatement(GrammarStatement):
 
         # <name>
         assert len(node.Children) >= child_index + 1
-        name = cast(str, ExtractLeafValue(cast(Leaf, node.Children[child_index])))
-        child_index += 1
+        name = ExtractLeafValue(cast(Leaf, node.Children[child_index]))
 
         if not NamingConventions.Function.Regex.match(name):
             raise NamingConventions.InvalidFunctionNameError.FromNode(node.Children[child_index], name)
+
+        child_index += 1
 
         # '(' <parameters> ')'
         assert len(node.Children) >= child_index + 1
@@ -215,8 +218,6 @@ class FuncDeclarationStatement(GrammarStatement):
         child_index += 3
 
         # <docstring>?
-        assert len(node.Children) >= child_index + 1
-
         docstring_node = ExtractOptionalNode(node, child_index, "Docstring")
         if docstring_node is not None:
             child_index += 1
@@ -225,7 +226,7 @@ class FuncDeclarationStatement(GrammarStatement):
             assert len(docstring_node.Children) == 2
             docstring_node = cast(Leaf, docstring_node.Children[0])
 
-            docstring = cast(str, ExtractLeafValue(docstring_node))
+            docstring = ExtractLeafValue(docstring_node)
         else:
             docstring = None
 
@@ -238,13 +239,15 @@ class FuncDeclarationStatement(GrammarStatement):
         child_index += 1
 
         # <dedent>
-        assert len(node.Children) == child_index + 1
+        child_index += 1
+
+        assert len(node.Children) == child_index
 
         # Persist the info
         object.__setattr__(
             node,
             "Info",
-            cls.NodeInfo(
+            cls.Info(
                 export,
                 the_type,
                 name,

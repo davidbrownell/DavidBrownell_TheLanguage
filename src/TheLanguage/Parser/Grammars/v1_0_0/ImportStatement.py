@@ -173,7 +173,7 @@ class ImportStatement(ImportGrammarStatement):
 
         # Get the source
         source_leaf = cast(Leaf, node.Children[1])
-        importing_source = cast(str, ExtractLeafValue(source_leaf))
+        importing_source = ExtractLeafValue(source_leaf)
 
         # Handle the all dots scenario specifically
         if all(character if character == "." else None for character in importing_source):
@@ -316,15 +316,15 @@ class ImportStatement(ImportGrammarStatement):
 
                 assert len(leaves) == 3
 
-                key = cast(str, ExtractLeafValue(leaves[0]))
+                key = ExtractLeafValue(leaves[0])
                 key_leaf = leaves[0]
 
-                value = cast(str, ExtractLeafValue(leaves[2]))
+                value = ExtractLeafValue(leaves[2])
                 value_leaf = leaves[2]
 
             elif isinstance(child, Leaf):
                 key_leaf = cast(Leaf, child)
-                key = cast(str, ExtractLeafValue(key_leaf))
+                key = ExtractLeafValue(key_leaf)
 
                 value_leaf = key_leaf
                 value = key
