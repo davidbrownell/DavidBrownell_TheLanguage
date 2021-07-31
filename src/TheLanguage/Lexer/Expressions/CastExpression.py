@@ -29,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import ExpressionNode, TypeNode
+    from ..AST import ExpressionNode, TypeNode
 
 
 # ----------------------------------------------------------------------

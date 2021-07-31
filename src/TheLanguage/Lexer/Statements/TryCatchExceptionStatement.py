@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import StatementNode
+    from ..AST import StatementNode
     from ..Types.StandardType import StandardType
 
 

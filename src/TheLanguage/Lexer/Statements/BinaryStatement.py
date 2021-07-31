@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .VariableStatement import VariableStatement
 
-    from ..Common.AST import ExpressionNode, StatementNode
+    from ..AST import ExpressionNode, StatementNode
     from ..Common.Flags import OperatorCategory
 
 
