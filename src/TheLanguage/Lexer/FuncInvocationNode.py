@@ -69,6 +69,7 @@ class FunctionCallType(Enum):
     #             ^^^
     Index                                   = auto()
 
+
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class FuncInvocationNode(Node):

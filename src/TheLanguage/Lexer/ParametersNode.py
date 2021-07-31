@@ -33,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Common.AST import Node
 
+# TODO: Move this to the file that uses it and delete this file
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)

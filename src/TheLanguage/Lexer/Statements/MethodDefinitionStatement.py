@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  MethodDefinitionNode.py
+# |  MethodDefinitionStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-07-30 16:40:19
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the MethodDefinitionNode object"""
+"""Contains the MethodDefinitionStatement object"""
 
 import os
 from enum import auto, Enum
@@ -31,9 +31,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-    from .Common import Flags
-    from .FuncDefinitionNode import FuncDefinitionNode
+    from ..Common.AST import Node
+    from ..Common import Flags
+    from ..FuncDefinitionNode import FuncDefinitionNode
 
 
 # ----------------------------------------------------------------------
@@ -56,7 +56,7 @@ class MethodType(Enum):
     Type=Node.NodeType.Statement,  # type: ignore
 )
 @dataclass(frozen=True)
-class MethodDefinitionNode(FuncDefinitionNode):
+class MethodDefinitionStatement(FuncDefinitionNode):
     """\
     TODO: Comment
     """
