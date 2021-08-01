@@ -38,7 +38,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 def test_Standard():
     node = Node(
-        Node.NodeType.Statement,
         SourceRange(
             SourceLocation("Filename1", 1, 1, 0),
             SourceLocation("Filename1", 1, 40, 40),
@@ -82,6 +81,5 @@ def test_Standard():
                                      Filename : Filename1
                                      Line     : 10
                                      Offset   : 30
-        Type         : NodeType.Statement
         """,
     )
