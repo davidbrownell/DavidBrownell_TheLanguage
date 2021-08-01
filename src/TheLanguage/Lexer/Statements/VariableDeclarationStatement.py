@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  VariableDeclarationStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:16:09
+# |      2021-07-30 16:53:19
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the VariableDeclarationStatement object"""
 
 import os
 
@@ -29,22 +29,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
+    from ..AST import ExpressionNode, StatementNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TernaryExpression(ExpressionNode):
+class VariableDeclarationStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Condition: ExpressionNode
-    TrueNode: ExpressionNode
-    FalseNode: ExpressionNode
+    Variable: ExpressionNode
+    Expression: ExpressionNode
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(TernaryExpression, self).__post_init__()
+        super(VariableDeclarationStatement, self).__post_init__()
 
-        assert self.Condition.IsBoolean(), self.Condition
+        assert self.Variable.IsVariable(), self.Variable

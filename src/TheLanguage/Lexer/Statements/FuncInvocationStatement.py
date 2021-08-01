@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Flags_UnitTest.py
+# |  FuncInvocationStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:29:27
+# |      2021-07-31 18:35:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit tests for Flags.py"""
+"""Contains the FuncInvocationStatement object"""
 
 import os
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -27,9 +29,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Flags import *
+    from ..AST import StatementNode
+
+    from ..Common.FuncInvocationNode import (
+        FunctionCallType,                               # Not used directly, but here as a convenience to callers
+        FuncInvocationNode as _FuncInvocationNode,
+    )
 
 
 # ----------------------------------------------------------------------
-def test_BugBug():
-    assert True
+@dataclass(frozen=True)
+class FuncInvocationStatement(StatementNode, _FuncInvocationNode):
+    """\
+    TODO: Describe
+    """
+
+    pass

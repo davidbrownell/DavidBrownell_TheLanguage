@@ -32,19 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-    from .Common import Flags
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ArgumentNode(Node):
-    """\
-    TODO: Comment
-    """
-
-    Argument: Node
-    Keyword: Optional[str]
+    from . import Flags
+    from ..AST import Node, TypeNode
 
 
 # ----------------------------------------------------------------------
@@ -77,16 +66,27 @@ class FuncInvocationNode(Node):
     TODO: Comment
     """
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ArgumentNode(Node):
+        """\
+        TODO: Comment
+        """
+
+        Argument: TypeNode
+        Keyword: Optional[str]
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
     Flags: Flags.FunctionFlags
     CallType: FunctionCallType
 
     Name: List[str]
     Arguments: List[ArgumentNode]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(FuncInvocationNode, self).__post_init__()
-
-        self.ValidateTypes(
-            Arguments=self.Type,
-        )

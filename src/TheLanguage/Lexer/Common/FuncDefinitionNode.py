@@ -31,9 +31,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-    from .Common import Flags
-    from .ParametersNode import ParametersNode
+    from . import Flags
+    from ..AST import Node, ExpressionNode, TypeNode
 
 
 # ----------------------------------------------------------------------
@@ -43,35 +42,34 @@ class FuncDefinitionNode(Node):
     TODO: Comment
     """
 
-    Visibility: Flags.VisibilityType
-    Flags: Flags.FunctionFlags
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ParameterNode(Node):
+        """\
+        TODO: Comment
+        """
 
-    Name: str # BugBug: StandardType
-    CapturedVars: Optional[List[str]]
-    ReturnType: Optional[Node]
-    Parameters: ParametersNode
-    Statements: List[Node]
-
-    # TODO: Attributes when Type==Statement
+        Name: str
+        Type: TypeNode
+        DefaultValue: Optional[ExpressionNode]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(FuncDefinitionNode, self).__post_init__()
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
+    Flags: Flags.FunctionFlags
 
-        if self.Type not in [
-            Node.NodeType.Statement,        # Standard function
-            Node.NodeType.Expression,       # Lambda
-        ]:
-            raise Exception("FuncDefinitionNodes must be a 'Statement' or 'Expression' type")
+    Name: str
+    CapturedVars: Optional[List[str]]
+    ReturnType: Optional[Node]
 
-        if self.Type == Node.NodeType.Expression:
-            if self.Visibility != Flags.VisibilityType.Private:
-                raise Exception("'Expression' FuncDefinitionNodes must be 'Private'")
+    PositionalParameters: Optional[List[ParameterNode]]
+    AnyParameters: Optional[List[ParameterNode]]
+    KeywordParameters: Optional[List[ParameterNode]]
 
-            if len(self.Statements) != 1:
-                raise Exception("'Expression' FuncDefinitionNodes must only have a single statement")
-
-        self.ValidateTypes(
-            ReturnType=Node.NodeType.Type,
-            Statements=self.Type,
-        )
+    # TODO: Attributes when Type==Statement

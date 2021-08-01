@@ -58,7 +58,6 @@ class ClassStatement(StatementNode):
     Visibility: Flags.VisibilityType
     Type: ClassType
 
-    # BugBug: Resolve used of Type name vs. StandardType
     Name: str
     BaseClasses: Optional[List[str]]
     Interfaces: Optional[List[str]]

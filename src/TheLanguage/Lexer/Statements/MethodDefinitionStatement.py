@@ -30,9 +30,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import StatementNode
     from ..Common import Flags
-    from ..FuncDefinitionNode import FuncDefinitionNode
+    from .FuncDefinitionStatement import FuncDefinitionStatement
 
 
 # ----------------------------------------------------------------------
@@ -51,9 +50,8 @@ class MethodType(Enum):
 
 
 # ----------------------------------------------------------------------
-# BugBug: StatementNode
 @dataclass(frozen=True)
-class MethodDefinitionStatement(FuncDefinitionNode):
+class MethodDefinitionStatement(FuncDefinitionStatement):
     """\
     TODO: Comment
     """

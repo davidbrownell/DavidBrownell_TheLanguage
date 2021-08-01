@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  TupleExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:16:09
+# |      2021-07-31 18:42:20
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the TupleExpression object"""
 
 import os
+
+from typing import List
 
 from dataclasses import dataclass
 
@@ -34,17 +36,9 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TernaryExpression(ExpressionNode):
+class TupleExpression(ExpressionNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Condition: ExpressionNode
-    TrueNode: ExpressionNode
-    FalseNode: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(TernaryExpression, self).__post_init__()
-
-        assert self.Condition.IsBoolean(), self.Condition
+    Expressions: List[ExpressionNode]

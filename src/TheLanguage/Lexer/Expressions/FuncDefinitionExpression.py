@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  FuncDefinitionExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:16:09
+# |      2021-07-31 18:16:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the FuncDefinitionExpression object"""
 
 import os
 
@@ -30,21 +30,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..AST import ExpressionNode
+    from ..Common.FuncDefinitionNode import FuncDefinitionNode as _FuncDefinitionNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TernaryExpression(ExpressionNode):
+class FuncDefinitionExpression(ExpressionNode, _FuncDefinitionNode):
     """\
     TODO: Comment
     """
 
-    Condition: ExpressionNode
-    TrueNode: ExpressionNode
-    FalseNode: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(TernaryExpression, self).__post_init__()
-
-        assert self.Condition.IsBoolean(), self.Condition
+    Expression: ExpressionNode

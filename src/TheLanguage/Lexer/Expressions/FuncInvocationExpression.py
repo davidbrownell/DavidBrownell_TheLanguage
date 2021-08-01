@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableStatement.py
+# |  FuncInvocationExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:53:19
+# |      2021-07-31 18:35:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableStatement object"""
+"""Contains the FuncInvocationExpression object"""
 
 import os
 
@@ -29,21 +29,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import ExpressionNode, StatementNode
+    from ..AST import ExpressionNode
+
+    from ..Common.FuncInvocationNode import (
+        FunctionCallType,                               # Not used directly, but here as a convenience to callers
+        FuncInvocationNode as _FuncInvocationNode,
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class VariableStatement(StatementNode):
+class FuncInvocationExpression(ExpressionNode, _FuncInvocationNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Variable: ExpressionNode
-    Expression: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(VariableStatement, self).__post_init__()
-
-        assert self.Variable.IsVariable(), self.Variable
+    pass

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNode.py
+# |  TupleType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 20:34:06
+# |      2021-07-31 18:42:20
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNode object"""
+"""Contains the TupleType object"""
 
 import os
 
@@ -31,22 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from ..AST import TypeNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TupleNode(Node):
+class TupleType(TypeNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Elements: List[Node]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(TupleNode, self).__post_init__()
-
-        self.ValidateTypes(
-            Elements=self.Type,
-        )
+    Types: List[TypeNode]
