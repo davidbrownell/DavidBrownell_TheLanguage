@@ -1,2 +1,2 @@
-# BugBug: - Validate how enum and flag values are used to ensure consistency
-# BugBug: Validate use of str and StandardType
+# TODO: Add
+#   - Enum/Flag Statement

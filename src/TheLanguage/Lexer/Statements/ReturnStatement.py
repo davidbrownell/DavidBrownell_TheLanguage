@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode, StatementNode
+    from ..AST import StatementNode, VariableNode
 
 
 # ----------------------------------------------------------------------
@@ -41,4 +41,4 @@ class ReturnStatement(StatementNode):
     TODO: Comment
     """
 
-    Result: Optional[ExpressionNode]
+    Result: Optional[VariableNode]

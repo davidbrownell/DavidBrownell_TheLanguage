@@ -31,9 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .VariableStatement import VariableStatement
-
-    from ..AST import ExpressionNode, StatementNode
+    from ..AST import ExpressionNode, StatementNode, VariableNode
     from ..Common.Flags import OperatorCategory
 
 
@@ -67,5 +65,5 @@ class BinaryStatement(StatementNode):
     """
 
     Operator: BinaryStatementOperator
-    Variable: VariableStatement
+    Variable: VariableNode
     Right: ExpressionNode

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DeleteStatement.py
+# |  Visitor_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-31 12:57:38
+# |      2021-08-01 12:44:58
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the DeleteStatement object"""
+"""Unit test for Visitor.py"""
 
 import os
-
-from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -29,14 +27,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import StatementNode, VariableNode
+    from ..Visitor import *
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class DeleteStatement(StatementNode):
-    """\
-    TODO: Comment
-    """
-
-    Variable: VariableNode
+def test_BugBug():
+    assert True

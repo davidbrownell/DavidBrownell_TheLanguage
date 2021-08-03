@@ -37,7 +37,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class TypeModifier(Enum):
+class ModifierType(Enum):
     """\
     TODO: Comment
     """
@@ -75,4 +75,4 @@ class StandardType(TypeNode):
 
     # If this value is None, use context to determine the most appropriate value; default to Var if
     # the context is ambiguous.
-    Modifier: Optional[TypeModifier]
+    Modifier: Optional[ModifierType]

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DeleteStatement.py
+# |  TransferExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-31 12:57:38
+# |      2021-08-01 18:53:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the DeleteStatement object"""
+"""Contains the TransferExpression object"""
 
 import os
+
+from enum import auto, Enum
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,14 +32,31 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import StatementNode, VariableNode
+    from ..AST import ExpressionNode, VariableNode
+
+
+# ----------------------------------------------------------------------
+class TransferType(Enum):
+    """
+    TODO: Document
+    """
+
+    Copy                                    = auto()
+    Move                                    = auto()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class DeleteStatement(StatementNode):
+class TransferExpression(ExpressionNode):
     """\
-    TODO: Comment
+    TODO: Document
     """
 
+    Type: TransferType
     Variable: VariableNode
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    @property
+    def ExpressionResultType(self):
+        return None # BugBug

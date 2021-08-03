@@ -22,6 +22,7 @@ from typing import List
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,6 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Interfaces.IDocstring import IDocstring
+
     from ..AST import StatementNode
 
     from ..Common import Flags
@@ -39,10 +42,20 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class FuncDefinitionStatement(StatementNode, _FuncDefinitionNode):
+class FuncDefinitionStatement(
+    StatementNode,
+    _FuncDefinitionNode,
+    IDocstring,
+):
     """\
     TODO: Comment
     """
 
     Visibility: Flags.VisibilityType
     Statements: List[StatementNode]
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetTypeDescriptions() -> List[str]:
+        return ["function"]

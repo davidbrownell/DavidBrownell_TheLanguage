@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DeleteStatement.py
+# |  TupleVariable.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-31 12:57:38
+# |      2021-08-02 13:06:40
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the DeleteStatement object"""
+"""Contains the TupleVariable object"""
 
 import os
+
+from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,14 +32,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import StatementNode, VariableNode
+    from ..AST import VariableNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class DeleteStatement(StatementNode):
+class TupleVariable(VariableNode):
     """\
-    TODO: Comment
+    TODO: Document
     """
 
-    Variable: VariableNode
+    Names: List[VariableNode]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def VarNames(self) -> List[str]:
+        return self.Names
