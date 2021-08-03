@@ -80,6 +80,8 @@ class FuncDefinitionNode(Node):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        # BugBug: Are the captures valid?
+
         # ----------------------------------------------------------------------
         def ToFirstClassFunctionParameters(
             parameters: Optional[List[FuncDefinitionNode.ParameterNode]],

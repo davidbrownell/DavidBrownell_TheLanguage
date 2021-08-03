@@ -107,14 +107,14 @@ class ClassStatement(StatementNode, IDocstring):
     BitManipulationMethods: BitManipulationMethodsType  = field(init=False)
     DynamicMethods: DynamicMethodsType                  = field(init=False)
 
-    requiredMethods: InitVar[Optional[RequiredMethodsType]]                 = None
-    initMethods: InitVar[Optional[InitMethodsType]]                         = None
-    logicalMethods: InitVar[Optional[LogicalMethodsType]]                   = None
-    containerMethods: InitVar[Optional[ContainerMethodsType]]               = None
-    comparisonMethods: InitVar[Optional[ComparisonMethodsType]]             = None
-    mathematicalMethods: InitVar[Optional[MathematicalMethodsType]]         = None
-    bitManipulationMethods: InitVar[Optional[BitManipulationMethodsType]]   = None
-    dynamicMethods: InitVar[Optional[DynamicMethodsType]]                   = None
+    requiredMethods: InitVar[Optional[RequiredMethodsType]]
+    initMethods: InitVar[Optional[InitMethodsType]]
+    logicalMethods: InitVar[Optional[LogicalMethodsType]]
+    containerMethods: InitVar[Optional[ContainerMethodsType]]
+    comparisonMethods: InitVar[Optional[ComparisonMethodsType]]
+    mathematicalMethods: InitVar[Optional[MathematicalMethodsType]]
+    bitManipulationMethods: InitVar[Optional[BitManipulationMethodsType]]
+    dynamicMethods: InitVar[Optional[DynamicMethodsType]]
 
     # ----------------------------------------------------------------------
     def __post_init__(
@@ -128,29 +128,37 @@ class ClassStatement(StatementNode, IDocstring):
         bitManipulationMethods,
         dynamicMethods,
     ):
-        object.__setattr__(self, "RequiredMethods", requiredMethods or RequiredMethodsType())
-        cast(RequiredMethodsType, self.RequiredMethods).__class_init__(self)
+        requiredMethods = requiredMethods or RequiredMethodsType()
+        requiredMethods.Init(self)
+        object.__setattr__(self, "RequiredMethods", requiredMethods)
 
-        object.__setattr__(self, "InitMethods", initMethods or InitMethodsType())
-        cast(InitMethodsType, self.InitMethods).__class_init__(self)
+        initMethods = initMethods or InitMethodsType()
+        initMethods.Init(self)
+        object.__setattr__(self, "InitMethods", initMethods)
 
-        object.__setattr__(self, "LogicalMethods", logicalMethods or LogicalMethodsType())
-        cast(LogicalMethodsType, self.LogicalMethods).__class_init__(self)
+        logicalMethods = logicalMethods or LogicalMethodsType()
+        logicalMethods.Init(self)
+        object.__setattr__(self, "LogicalMethods", logicalMethods)
 
+        containerMethods = containerMethods or ContainerMethodsType()
+        containerMethods.Init(self)
         object.__setattr__(self, "ContainerMethods", containerMethods)
-        cast(ContainerMethodsType, self.ContainerMethods).__class_init__(self)
 
-        object.__setattr__(self, "ComparisonMethods", comparisonMethods or ComparisonMethodsType())
-        cast(ComparisonMethodsType, self.ComparisonMethods).__class_init__(self)
+        comparisonMethods = comparisonMethods or ComparisonMethodsType()
+        comparisonMethods.Init(self)
+        object.__setattr__(self, "ComparisonMethods", comparisonMethods)
 
-        object.__setattr__(self, "MathematicalMethods", mathematicalMethods or MathematicalMethodsType())
-        cast(MathematicalMethodsType, self.MathematicalMethods).__class_init__(self)
+        mathematicalMethods = mathematicalMethods or MathematicalMethodsType()
+        mathematicalMethods.Init(self)
+        object.__setattr__(self, "MathematicalMethods", mathematicalMethods)
 
-        object.__setattr__(self, "BitManiuplationMethods", bitManipulationMethods or BitManipulationMethodsType())
-        cast(BitManipulationMethodsType, self.BitManipulationMethods).__class_init__(self)
+        bitManipulationMethods = bitManipulationMethods or BitManipulationMethodsType()
+        bitManipulationMethods.Init(self)
+        object.__setattr__(self, "BitManipulationMethods", bitManipulationMethods)
 
-        object.__setattr__(self, "DynamicMethods", dynamicMethods or DynamicMethodsType())
-        cast(DynamicMethodsType, self.DynamicMethods).__class_init__(self)
+        dynamicMethods = dynamicMethods or DynamicMethodsType()
+        dynamicMethods.Init(self)
+        object.__setattr__(self, "DynamicMethods", dynamicMethods)
 
     # ----------------------------------------------------------------------
     @staticmethod

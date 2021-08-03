@@ -44,6 +44,11 @@ class CastExpression(ExpressionNode):
     Type: TypeNode
 
     # ----------------------------------------------------------------------
+    def __post_init__(self):
+        # BugBug: Is the cast valid?
+        pass # BugBug
+
+    # ----------------------------------------------------------------------
     @Interface.override
     @property
     def ExpressionResultType(self):

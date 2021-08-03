@@ -54,7 +54,7 @@ class ContainerMethods(object):
         self._atIterEndMethod               = atIterEndMethod
 
     # ----------------------------------------------------------------------
-    def __class_init__(
+    def Init(
         self,
         class_stmt: Any, # Not 'ClassStatement' to avoid circular imports
     ):

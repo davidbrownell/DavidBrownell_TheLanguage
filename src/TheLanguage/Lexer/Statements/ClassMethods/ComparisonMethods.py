@@ -61,7 +61,7 @@ class ComparisonMethods(object):
         self._notEqualMethods               = notEqualMethods
 
     # ----------------------------------------------------------------------
-    def __class_init__(
+    def Init(
         self,
         class_stmt: Any, # Not 'ClassStatement' to avoid circular imports
     ):
