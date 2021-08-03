@@ -53,7 +53,7 @@ with InitRelativeImports():
 
     from ...GrammarStatement import ValidationError
 
-    from ....ParserImpl.Token import Token
+    from ....Components.Token import Token
 
 
 # ----------------------------------------------------------------------

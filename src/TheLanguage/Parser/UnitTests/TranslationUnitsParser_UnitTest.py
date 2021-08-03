@@ -38,19 +38,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 # ----------------------------------------------------------------------
 with InitRelativeImports():
-    from ..AST import Node
-    from ..StatementDSL import CreateStatement, DynamicStatements
+    from ..Components.AST import Node
 
-    from ..Token import (
+    from ..Components.Token import (
         DedentToken,
         IndentToken,
         NewlineToken,
         RegexToken,
     )
 
+    from ..Components.UnitTests import MethodCallsToString
+
     from ..TranslationUnitsParser import *
 
-    from ..Statements.UnitTests import MethodCallsToString
+    from ..Statements.StatementDSL import CreateStatement, DynamicStatements
 
 
 # ----------------------------------------------------------------------

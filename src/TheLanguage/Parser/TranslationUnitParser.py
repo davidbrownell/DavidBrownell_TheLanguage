@@ -34,12 +34,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import AST
-    from .Error import Error
-    from .StatementDSL import DynamicStatements
+    from .Components import AST
+    from .Components.Error import Error
+    from .Components.Statement import Statement
 
     from .Statements.DynamicStatement import DynamicStatement
-    from .Statements.Statement import Statement
+    from .Statements.StatementDSL import DynamicStatements
     from .Statements.TokenStatement import TokenStatement
 
 

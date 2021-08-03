@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .OrStatement import OrStatement
-    from .Statement import Statement
+    from ..Components.Statement import Statement
 
 
 # ----------------------------------------------------------------------

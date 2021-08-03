@@ -37,12 +37,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .AST import Leaf, Node, RootNode
-    from .Error import Error
-    from .Normalize import Normalize
-    from .NormalizedIterator import NormalizedIterator
-
-    from .Statements.Statement import Statement
+    from .Components.AST import Leaf, Node, RootNode
+    from .Components.Error import Error
+    from .Components.Normalize import Normalize
+    from .Components.NormalizedIterator import NormalizedIterator
+    from .Components.Statement import Statement
 
     from .TranslationUnitParser import (
         DynamicStatementInfo,

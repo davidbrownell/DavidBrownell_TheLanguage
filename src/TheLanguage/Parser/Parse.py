@@ -38,15 +38,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Grammars.GrammarStatement import GrammarStatement, ImportGrammarStatement
-
-    from .ParserImpl.NormalizedIterator import NormalizedIterator
-
-    from .ParserImpl.Syntax import (
+    from .Syntax import (
         Observer as SyntaxObserver
     )
 
-    from .ParserImpl.TranslationUnitsParser import (
+    from .TranslationUnitsParser import (
         DynamicStatementInfo,
         Leaf,
         Node,
@@ -55,6 +51,10 @@ with InitRelativeImports():
         RootNode,
         Statement,
     )
+
+    from .Grammars.GrammarStatement import GrammarStatement, ImportGrammarStatement
+
+    from .Components.NormalizedIterator import NormalizedIterator
 
 
 # ----------------------------------------------------------------------

@@ -34,8 +34,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Error import Error
-    from .StatementDSL import CreateStatement, DynamicStatements, StatementItem
+    from .Components.Error import Error
+    from .Statements.StatementDSL import CreateStatement, DynamicStatements, StatementItem
+
     from .TranslationUnitParser import DynamicStatementInfo
 
     from .TranslationUnitsParser import (
@@ -44,7 +45,7 @@ with InitRelativeImports():
         Statement,
     )
 
-    from .Token import (
+    from .Components.Token import (
         DedentToken,
         IndentToken,
         NewlineToken,

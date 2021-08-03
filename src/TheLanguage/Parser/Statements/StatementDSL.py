@@ -34,15 +34,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Token import RegexToken, Token
+    from .DynamicStatement import DynamicStatement
+    from .OrStatement import OrStatement
+    from .RecursivePlaceholderStatement import RecursivePlaceholderStatement
+    from .RepeatStatement import RepeatStatement
+    from .SequenceStatement import SequenceStatement
+    from .TokenStatement import TokenStatement
 
-    from .Statements.DynamicStatement import DynamicStatement
-    from .Statements.OrStatement import OrStatement
-    from .Statements.RecursivePlaceholderStatement import RecursivePlaceholderStatement
-    from .Statements.RepeatStatement import RepeatStatement
-    from .Statements.SequenceStatement import SequenceStatement
-    from .Statements.Statement import Statement
-    from .Statements.TokenStatement import TokenStatement
+    from ..Components.Statement import Statement
+    from ..Components.Token import RegexToken, Token
 
 
 # ----------------------------------------------------------------------

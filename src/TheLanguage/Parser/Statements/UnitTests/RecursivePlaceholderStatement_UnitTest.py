@@ -29,12 +29,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import (
+    from ..RecursivePlaceholderStatement import *
+
+    from ...Components.UnitTests import (
         CreateIterator,
         parse_mock,
     )
-
-    from ..RecursivePlaceholderStatement import *
 
 
 # ----------------------------------------------------------------------

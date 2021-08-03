@@ -46,7 +46,7 @@ with InitRelativeImports():
 
     from ..GrammarStatement import GrammarStatement
 
-    from ...ParserImpl.Token import Token
+    from ...Components.Token import Token
 
 
 # ----------------------------------------------------------------------

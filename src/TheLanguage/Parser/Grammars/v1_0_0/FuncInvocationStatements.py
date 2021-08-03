@@ -48,9 +48,9 @@ with InitRelativeImports():
 
     from ..GrammarStatement import GrammarStatement, ValidationError
 
-    from ...ParserImpl.Statements.DynamicStatement import DynamicStatement
-    from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
-    from ...ParserImpl.Statements.TokenStatement import NewlineToken
+    from ...Statements.DynamicStatement import DynamicStatement
+    from ...Statements.SequenceStatement import SequenceStatement
+    from ...Statements.TokenStatement import NewlineToken
 
 
 # ----------------------------------------------------------------------

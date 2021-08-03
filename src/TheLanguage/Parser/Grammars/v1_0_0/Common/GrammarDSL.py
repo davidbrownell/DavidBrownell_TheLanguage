@@ -34,8 +34,9 @@ with InitRelativeImports():
     )
 
     # Convenience imports for other files, please do not remove
-    from ....ParserImpl.AST import Leaf, Node, RootNode
-    from ....ParserImpl.StatementDSL import (
+    from ....Components.AST import Leaf, Node, RootNode
+
+    from ....Statements.StatementDSL import (
         DynamicStatements,
         Statement,
         StatementItem,
@@ -43,8 +44,8 @@ with InitRelativeImports():
 
     # Standard imports
     from . import Tokens as CommonTokens
-    from ....ParserImpl import StatementDSL
-    from ....ParserImpl.Token import Token
+    from ....Statements import StatementDSL
+    from ....Components.Token import Token
 
 
 # ----------------------------------------------------------------------

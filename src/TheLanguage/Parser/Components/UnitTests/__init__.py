@@ -3,7 +3,7 @@
 # |  __init__.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-28 07:38:56
+# |      2021-08-03 09:33:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -35,10 +35,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Normalize import Normalize
+    from ..NormalizedIterator import NormalizedIterator
     from ..Statement import Statement
-
-    from ...Normalize import Normalize
-    from ...NormalizedIterator import NormalizedIterator
 
 
 # ----------------------------------------------------------------------

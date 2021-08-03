@@ -34,8 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..NormalizedIterator import NormalizedIterator
-    from ..Token import Token as TokenClass
+    from .NormalizedIterator import NormalizedIterator
+    from .Token import Token as TokenClass
 
 
 # ----------------------------------------------------------------------

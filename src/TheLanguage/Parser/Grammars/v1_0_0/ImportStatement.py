@@ -45,9 +45,9 @@ with InitRelativeImports():
     from .Common import Tokens as CommonTokens
     from ..GrammarStatement import ImportGrammarStatement
 
-    from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
+    from ...Statements.SequenceStatement import SequenceStatement
 
-    from ...ParserImpl.TranslationUnitsParser import (
+    from ...TranslationUnitsParser import (
         Observer as TranslationUnitsParserObserver,
         UnknownSourceError,
     )

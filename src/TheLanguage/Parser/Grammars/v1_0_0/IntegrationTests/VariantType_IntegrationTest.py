@@ -37,7 +37,7 @@ with InitRelativeImports():
     from ..Common.GrammarAST import RootNode
     from ..Common.NamingConventions import InvalidTypeNameError
 
-    from ....ParserImpl.Statements.Statement import Statement
+    from ....Components.Statement import Statement
 
 
 # ----------------------------------------------------------------------

@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .RecursivePlaceholderStatement import RecursivePlaceholderStatement
-    from .Statement import Statement
+    from ..Components.Statement import Statement
 
 
 # ----------------------------------------------------------------------

@@ -31,14 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import (
+    from ..DynamicStatement import *
+    from ..TokenStatement import TokenStatement, RegexToken
+
+    from ...Components.UnitTests import (
         CreateIterator,
         MethodCallsToString,
         parse_mock,
     )
-
-    from ..DynamicStatement import *
-    from ..TokenStatement import TokenStatement, RegexToken
 
 
 # ----------------------------------------------------------------------

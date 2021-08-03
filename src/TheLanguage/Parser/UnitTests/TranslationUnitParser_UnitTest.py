@@ -31,24 +31,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import Node
-    from ..StatementDSL import CreateStatement, DynamicStatements, StatementItem
+    from ..TranslationUnitParser import *
 
-    from ..Token import (
+    from ..Components.UnitTests import (
+        CoroutineMock,
+        CreateIterator,
+        MethodCallsToString,
+        parse_mock as parse_mock_impl,
+    )
+
+    from ..Components.AST import Node
+
+    from ..Components.Token import (
         DedentToken,
         IndentToken,
         NewlineToken,
         RegexToken,
     )
 
-    from ..TranslationUnitParser import *
+    from ..Statements.StatementDSL import CreateStatement, DynamicStatements, StatementItem
 
-    from ..Statements.UnitTests import (
-        CoroutineMock,
-        CreateIterator,
-        MethodCallsToString,
-        parse_mock as parse_mock_impl,
-    )
 
 # ----------------------------------------------------------------------
 @pytest.fixture

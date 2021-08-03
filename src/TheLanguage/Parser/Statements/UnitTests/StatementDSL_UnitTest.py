@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..StatementDSL import *
 
-    from ..Token import (
+    from ...Components.Token import (
         DedentToken,
         IndentToken,
         NewlineToken,
@@ -40,12 +40,13 @@ with InitRelativeImports():
         RegexToken,
     )
 
-    from ..Statements.UnitTests import (
+    from ...Components.UnitTests import (
         CoroutineMock,
         CreateIterator,
         parse_mock,
         MethodCallsToString,
     )
+
 
 # ----------------------------------------------------------------------
 _word_token                                 = RegexToken("Word Token", re.compile(r"(?P<value>[a-z]+)"))

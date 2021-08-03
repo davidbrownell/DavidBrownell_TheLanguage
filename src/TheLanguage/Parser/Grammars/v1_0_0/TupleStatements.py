@@ -42,7 +42,7 @@ with InitRelativeImports():
     from .Common import Tokens as CommonTokens
     from ..GrammarStatement import GrammarStatement
 
-    from ...ParserImpl.Statements.SequenceStatement import SequenceStatement
+    from ...Statements.SequenceStatement import SequenceStatement
 
 
 # ----------------------------------------------------------------------

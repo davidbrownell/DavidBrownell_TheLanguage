@@ -35,8 +35,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ....Parse import Parse, Prune, Validate
 
-    from ....ParserImpl.AST import RootNode
-    from ....ParserImpl.TranslationUnitParser import SyntaxInvalidError
+    from ....Components.AST import RootNode
+    from ....TranslationUnitParser import SyntaxInvalidError
 
 
 # ----------------------------------------------------------------------

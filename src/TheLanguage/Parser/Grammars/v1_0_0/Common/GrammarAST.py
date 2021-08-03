@@ -36,11 +36,11 @@ with InitRelativeImports():
         Statement,
     )
 
-    from ....ParserImpl.Statements.DynamicStatement import DynamicStatement
-    from ....ParserImpl.Statements.OrStatement import OrStatement
-    from ....ParserImpl.Statements.RepeatStatement import RepeatStatement
+    from ....Components.Token import Token
 
-    from ....ParserImpl.Token import Token
+    from ....Statements.DynamicStatement import DynamicStatement
+    from ....Statements.OrStatement import OrStatement
+    from ....Statements.RepeatStatement import RepeatStatement
 
 
 # ----------------------------------------------------------------------

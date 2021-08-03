@@ -33,19 +33,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import (
-        CoroutineMock,
-        CreateIterator,
-        MethodCallsToString,
-        parse_mock,
-    )
-
     from ..OrStatement import OrStatement
     from ..RepeatStatement import *
     from ..TokenStatement import (
         NewlineToken,
         RegexToken,
         TokenStatement,
+    )
+
+    from ...Components.UnitTests import (
+        CoroutineMock,
+        CreateIterator,
+        MethodCallsToString,
+        parse_mock,
     )
 
 

@@ -36,11 +36,11 @@ with InitRelativeImports():
     from . import CreateIterator, parse_mock
 
     from ..Statement import *
-    from ..TokenStatement import RegexToken, TokenStatement
+    from ...Statements.TokenStatement import RegexToken, TokenStatement
 
-    from ...Normalize import Normalize
-    from ...NormalizedIterator import NormalizedIterator
-    from ...Token import Token
+    from ..Normalize import Normalize
+    from ..NormalizedIterator import NormalizedIterator
+    from ..Token import Token
 
 
 # ----------------------------------------------------------------------

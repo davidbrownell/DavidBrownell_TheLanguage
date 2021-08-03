@@ -33,11 +33,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Statement import Statement
     from .RecursivePlaceholderStatement import RecursivePlaceholderStatement
     from .TokenStatement import TokenStatement
 
-    from ..Token import (
+    from ..Components.Statement import Statement
+
+    from ..Components.Token import (
         ControlTokenBase,
         DedentToken,
         IndentToken,
