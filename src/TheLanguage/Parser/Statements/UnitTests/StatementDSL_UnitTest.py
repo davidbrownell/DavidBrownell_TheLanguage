@@ -964,9 +964,9 @@ class TestDynamicStatements(object):
     _statement                              = CreateStatement(
         name="Statement",
         item=[
-            DynamicStatements.Statements,
-            DynamicStatements.Statements,
-            DynamicStatements.Expressions,
+            DynamicStatementsType.Statements,
+            DynamicStatementsType.Statements,
+            DynamicStatementsType.Expressions,
         ],
     )
 
@@ -974,7 +974,7 @@ class TestDynamicStatements(object):
     @staticmethod
     @pytest.fixture
     def modified_parse_mock(parse_mock):
-        parse_mock.GetDynamicStatements.side_effect = lambda unique_id, value: [TestDynamicStatements._word_statement, TestDynamicStatements._number_statement] if value == DynamicStatements.Statements else [TestDynamicStatements._number_statement]
+        parse_mock.GetDynamicStatements.side_effect = lambda unique_id, value: [TestDynamicStatements._word_statement, TestDynamicStatements._number_statement] if value == DynamicStatementsType.Statements else [TestDynamicStatements._number_statement]
 
         return parse_mock
 
@@ -1001,7 +1001,7 @@ class TestDynamicStatements(object):
             True
             20
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1010,14 +1010,14 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Number Statement
                                 Number Token
                                     Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                                 Newline+
                                     Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         Or: {Number Statement}
                             Number Statement
                                 Number Token
@@ -1032,11 +1032,11 @@ class TestDynamicStatements(object):
         assert MethodCallsToString(modified_parse_mock) == textwrap.dedent(
             """\
             0) StartStatement, "Statement"
-            1) StartStatement, "DynamicStatements.Statements", "Statement"
+            1) StartStatement, "DynamicStatementsType.Statements", "Statement"
             2) GetDynamicStatements, e
-            3) StartStatement, "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
-            4) StartStatement, "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
-            5) StartStatement, "Word Token", "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
+            3) StartStatement, "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
+            4) StartStatement, "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
+            5) StartStatement, "Word Token", "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
             6) OnInternalStatementAsync, 0, 5
                 Word Token
                     Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
@@ -1044,12 +1044,12 @@ class TestDynamicStatements(object):
                     <No Items>
                 Or: {Word Statement, Number Statement}
                     <No Items>
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     <No Data>
                 Statement
                     <No Items>
-            7) EndStatement, "Word Token" [True], "Word Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
-            8) StartStatement, "Word Token", "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
+            7) EndStatement, "Word Token" [True], "Word Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
+            8) StartStatement, "Word Token", "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
             9) OnInternalStatementAsync, 6, 11
                 Word Token
                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
@@ -1058,12 +1058,12 @@ class TestDynamicStatements(object):
                         Word Token <<Regex: <_sre.SRE_Match object; span=(0, 5), match='worda'>>> ws:None [1, 1 -> 1, 6]
                 Or: {Word Statement, Number Statement}
                     <No Items>
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     <No Data>
                 Statement
                     <No Items>
-            10) EndStatement, "Word Token" [True], "Word Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
-            11) StartStatement, "Newline+", "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
+            10) EndStatement, "Word Token" [True], "Word Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
+            11) StartStatement, "Newline+", "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
             12) OnInternalStatementAsync, 11, 12
                 Newline+
                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
@@ -1074,11 +1074,11 @@ class TestDynamicStatements(object):
                         Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                 Or: {Word Statement, Number Statement}
                     <No Items>
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     <No Data>
                 Statement
                     <No Items>
-            13) EndStatement, "Newline+" [True], "Word Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
+            13) EndStatement, "Newline+" [True], "Word Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
             14) OnInternalStatementAsync, 0, 12
                 Word Statement
                     Word Token
@@ -1089,15 +1089,15 @@ class TestDynamicStatements(object):
                         Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
                 Or: {Word Statement, Number Statement}
                     <No Items>
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     <No Data>
                 Statement
                     <No Items>
-            15) EndStatement, "Word Statement" [True], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
-            16) StartStatement, "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
-            17) StartStatement, "Number Token", "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
-            18) EndStatement, "Number Token" [False], "Number Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
-            19) EndStatement, "Number Statement" [False], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
+            15) EndStatement, "Word Statement" [True], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
+            16) StartStatement, "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
+            17) StartStatement, "Number Token", "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
+            18) EndStatement, "Number Token" [False], "Number Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
+            19) EndStatement, "Number Statement" [False], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
             20) OnInternalStatementAsync, 0, 12
                 Or: {Word Statement, Number Statement}
                     Word Statement
@@ -1107,13 +1107,13 @@ class TestDynamicStatements(object):
                             Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                         Newline+
                             Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     <No Data>
                 Statement
                     <No Items>
-            21) EndStatement, "Or: {Word Statement, Number Statement}" [True], "DynamicStatements.Statements" [None], "Statement" [None]
+            21) EndStatement, "Or: {Word Statement, Number Statement}" [True], "DynamicStatementsType.Statements" [None], "Statement" [None]
             22) OnInternalStatementAsync, 0, 12
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     Or: {Word Statement, Number Statement}
                         Word Statement
                             Word Token
@@ -1124,16 +1124,16 @@ class TestDynamicStatements(object):
                                 Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
                 Statement
                     <No Items>
-            23) EndStatement, "DynamicStatements.Statements" [True], "Statement" [None]
-            24) StartStatement, "DynamicStatements.Statements", "Statement"
+            23) EndStatement, "DynamicStatementsType.Statements" [True], "Statement" [None]
+            24) StartStatement, "DynamicStatementsType.Statements", "Statement"
             25) GetDynamicStatements, e
-            26) StartStatement, "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
-            27) StartStatement, "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
-            28) StartStatement, "Word Token", "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
-            29) EndStatement, "Word Token" [False], "Word Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
-            30) EndStatement, "Word Statement" [False], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
-            31) StartStatement, "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
-            32) StartStatement, "Number Token", "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
+            26) StartStatement, "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
+            27) StartStatement, "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
+            28) StartStatement, "Word Token", "Word Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
+            29) EndStatement, "Word Token" [False], "Word Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
+            30) EndStatement, "Word Statement" [False], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
+            31) StartStatement, "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
+            32) StartStatement, "Number Token", "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
             33) OnInternalStatementAsync, 12, 15
                 Number Token
                     Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
@@ -1143,10 +1143,10 @@ class TestDynamicStatements(object):
                     Word Statement
                         Word Token
                             <No Data>
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     <No Data>
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1155,8 +1155,8 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-            34) EndStatement, "Number Token" [True], "Number Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
-            35) StartStatement, "Newline+", "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatements.Statements", "Statement"
+            34) EndStatement, "Number Token" [True], "Number Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
+            35) StartStatement, "Newline+", "Number Statement", "Or: {Word Statement, Number Statement}", "DynamicStatementsType.Statements", "Statement"
             36) OnInternalStatementAsync, 15, 16
                 Newline+
                     Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
@@ -1167,10 +1167,10 @@ class TestDynamicStatements(object):
                     Word Statement
                         Word Token
                             <No Data>
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     <No Data>
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1179,7 +1179,7 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-            37) EndStatement, "Newline+" [True], "Number Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
+            37) EndStatement, "Newline+" [True], "Number Statement" [None], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
             38) OnInternalStatementAsync, 12, 16
                 Number Statement
                     Number Token
@@ -1190,10 +1190,10 @@ class TestDynamicStatements(object):
                     Word Statement
                         Word Token
                             <No Data>
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     <No Data>
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1202,7 +1202,7 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-            39) EndStatement, "Number Statement" [True], "Or: {Word Statement, Number Statement}" [None], "DynamicStatements.Statements" [None], "Statement" [None]
+            39) EndStatement, "Number Statement" [True], "Or: {Word Statement, Number Statement}" [None], "DynamicStatementsType.Statements" [None], "Statement" [None]
             40) OnInternalStatementAsync, 12, 16
                 Or: {Word Statement, Number Statement}
                     Number Statement
@@ -1210,10 +1210,10 @@ class TestDynamicStatements(object):
                             Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                         Newline+
                             Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     <No Data>
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1222,9 +1222,9 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-            41) EndStatement, "Or: {Word Statement, Number Statement}" [True], "DynamicStatements.Statements" [None], "Statement" [None]
+            41) EndStatement, "Or: {Word Statement, Number Statement}" [True], "DynamicStatementsType.Statements" [None], "Statement" [None]
             42) OnInternalStatementAsync, 12, 16
-                DynamicStatements.Statements
+                DynamicStatementsType.Statements
                     Or: {Word Statement, Number Statement}
                         Number Statement
                             Number Token
@@ -1232,7 +1232,7 @@ class TestDynamicStatements(object):
                             Newline+
                                 Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1241,12 +1241,12 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-            43) EndStatement, "DynamicStatements.Statements" [True], "Statement" [None]
-            44) StartStatement, "DynamicStatements.Expressions", "Statement"
+            43) EndStatement, "DynamicStatementsType.Statements" [True], "Statement" [None]
+            44) StartStatement, "DynamicStatementsType.Expressions", "Statement"
             45) GetDynamicStatements, e
-            46) StartStatement, "Or: {Number Statement}", "DynamicStatements.Expressions", "Statement"
-            47) StartStatement, "Number Statement", "Or: {Number Statement}", "DynamicStatements.Expressions", "Statement"
-            48) StartStatement, "Number Token", "Number Statement", "Or: {Number Statement}", "DynamicStatements.Expressions", "Statement"
+            46) StartStatement, "Or: {Number Statement}", "DynamicStatementsType.Expressions", "Statement"
+            47) StartStatement, "Number Statement", "Or: {Number Statement}", "DynamicStatementsType.Expressions", "Statement"
+            48) StartStatement, "Number Token", "Number Statement", "Or: {Number Statement}", "DynamicStatementsType.Expressions", "Statement"
             49) OnInternalStatementAsync, 16, 19
                 Number Token
                     Number Token <<Regex: <_sre.SRE_Match object; span=(16, 19), match='456'>>> ws:None [3, 1 -> 3, 4]
@@ -1254,10 +1254,10 @@ class TestDynamicStatements(object):
                     <No Items>
                 Or: {Number Statement}
                     <No Items>
-                DynamicStatements.Expressions
+                DynamicStatementsType.Expressions
                     <No Data>
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1266,15 +1266,15 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Number Statement
                                 Number Token
                                     Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                                 Newline+
                                     Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-            50) EndStatement, "Number Token" [True], "Number Statement" [None], "Or: {Number Statement}" [None], "DynamicStatements.Expressions" [None], "Statement" [None]
-            51) StartStatement, "Newline+", "Number Statement", "Or: {Number Statement}", "DynamicStatements.Expressions", "Statement"
+            50) EndStatement, "Number Token" [True], "Number Statement" [None], "Or: {Number Statement}" [None], "DynamicStatementsType.Expressions" [None], "Statement" [None]
+            51) StartStatement, "Newline+", "Number Statement", "Or: {Number Statement}", "DynamicStatementsType.Expressions", "Statement"
             52) OnInternalStatementAsync, 19, 20
                 Newline+
                     Newline+ <<19, 20>> ws:None [3, 4 -> 4, 1]
@@ -1283,10 +1283,10 @@ class TestDynamicStatements(object):
                         Number Token <<Regex: <_sre.SRE_Match object; span=(16, 19), match='456'>>> ws:None [3, 1 -> 3, 4]
                 Or: {Number Statement}
                     <No Items>
-                DynamicStatements.Expressions
+                DynamicStatementsType.Expressions
                     <No Data>
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1295,14 +1295,14 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Number Statement
                                 Number Token
                                     Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                                 Newline+
                                     Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-            53) EndStatement, "Newline+" [True], "Number Statement" [None], "Or: {Number Statement}" [None], "DynamicStatements.Expressions" [None], "Statement" [None]
+            53) EndStatement, "Newline+" [True], "Number Statement" [None], "Or: {Number Statement}" [None], "DynamicStatementsType.Expressions" [None], "Statement" [None]
             54) OnInternalStatementAsync, 16, 20
                 Number Statement
                     Number Token
@@ -1311,10 +1311,10 @@ class TestDynamicStatements(object):
                         Newline+ <<19, 20>> ws:None [3, 4 -> 4, 1]
                 Or: {Number Statement}
                     <No Items>
-                DynamicStatements.Expressions
+                DynamicStatementsType.Expressions
                     <No Data>
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1323,14 +1323,14 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Number Statement
                                 Number Token
                                     Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                                 Newline+
                                     Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-            55) EndStatement, "Number Statement" [True], "Or: {Number Statement}" [None], "DynamicStatements.Expressions" [None], "Statement" [None]
+            55) EndStatement, "Number Statement" [True], "Or: {Number Statement}" [None], "DynamicStatementsType.Expressions" [None], "Statement" [None]
             56) OnInternalStatementAsync, 16, 20
                 Or: {Number Statement}
                     Number Statement
@@ -1338,10 +1338,10 @@ class TestDynamicStatements(object):
                             Number Token <<Regex: <_sre.SRE_Match object; span=(16, 19), match='456'>>> ws:None [3, 1 -> 3, 4]
                         Newline+
                             Newline+ <<19, 20>> ws:None [3, 4 -> 4, 1]
-                DynamicStatements.Expressions
+                DynamicStatementsType.Expressions
                     <No Data>
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1350,16 +1350,16 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Number Statement
                                 Number Token
                                     Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                                 Newline+
                                     Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-            57) EndStatement, "Or: {Number Statement}" [True], "DynamicStatements.Expressions" [None], "Statement" [None]
+            57) EndStatement, "Or: {Number Statement}" [True], "DynamicStatementsType.Expressions" [None], "Statement" [None]
             58) OnInternalStatementAsync, 16, 20
-                DynamicStatements.Expressions
+                DynamicStatementsType.Expressions
                     Or: {Number Statement}
                         Number Statement
                             Number Token
@@ -1367,7 +1367,7 @@ class TestDynamicStatements(object):
                             Newline+
                                 Newline+ <<19, 20>> ws:None [3, 4 -> 4, 1]
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1376,17 +1376,17 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Number Statement
                                 Number Token
                                     Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                                 Newline+
                                     Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-            59) EndStatement, "DynamicStatements.Expressions" [True], "Statement" [None]
+            59) EndStatement, "DynamicStatementsType.Expressions" [True], "Statement" [None]
             60) OnInternalStatementAsync, 0, 20
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1395,14 +1395,14 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Number Statement
                                 Number Token
                                     Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                                 Newline+
                                     Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         Or: {Number Statement}
                             Number Statement
                                 Number Token
@@ -1435,7 +1435,7 @@ class TestDynamicStatements(object):
             False
             16
                 Statement
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Word Statement
                                 Word Token
@@ -1444,14 +1444,14 @@ class TestDynamicStatements(object):
                                     Word Token <<Regex: <_sre.SRE_Match object; span=(6, 11), match='wordb'>>> ws:(5, 6) [1, 7 -> 1, 12]
                                 Newline+
                                     Newline+ <<11, 12>> ws:None [1, 12 -> 2, 1]
-                    DynamicStatements.Statements
+                    DynamicStatementsType.Statements
                         Or: {Word Statement, Number Statement}
                             Number Statement
                                 Number Token
                                     Number Token <<Regex: <_sre.SRE_Match object; span=(12, 15), match='123'>>> ws:None [2, 1 -> 2, 4]
                                 Newline+
                                     Newline+ <<15, 16>> ws:None [2, 4 -> 3, 1]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         Or: {Number Statement}
                             Number Statement
                                 Number Token
@@ -2676,7 +2676,7 @@ class TestNamedStatements(object):
     _statement                              = CreateStatement(
         name="__Statement__",
         item=[
-            StatementItem(name="__Dynamic__", item=DynamicStatements.Statements),
+            StatementItem(name="__Dynamic__", item=DynamicStatementsType.Statements),
             StatementItem(
                 name="__Or__",
                 item=(

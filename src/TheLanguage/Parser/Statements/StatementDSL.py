@@ -46,8 +46,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-# TODO: Change this name to DynamicStatementType
-class DynamicStatements(Enum):
+class DynamicStatementsType(Enum):
     """\
     Value that can be used in statements as a placeholder that will be populated dynamically at runtime with statements of the corresponding type.
 
@@ -56,7 +55,7 @@ class DynamicStatements(Enum):
             some_keyword_token,
             newline_token,
             indent_token,
-            DynamicStatements.Statements,
+            DynamicStatementsType.Statements,
             dedent_token,
         ]
     """
@@ -72,7 +71,7 @@ class StatementItem(object):
         "StatementItem",
         Statement,
         Token,
-        DynamicStatements,
+        DynamicStatementsType,
         List["ItemType"],                   # Converts to an SequenceStatement
         Tuple["ItemType", ...],             # Converts to an OrStatement
         None,                               # Populated at a later time
@@ -131,11 +130,11 @@ def CreateStatement(
     # set:
     #
     #   Name:   AsStatement
-    #   Type:   DynamicStatements.Expressions
+    #   Type:   DynamicStatementsType.Expressions
     #   DSL:    [
-    #               DynamicStatements.Expressions,
+    #               DynamicStatementsType.Expressions,
     #               'as'
-    #               DynamicStatements.Types,
+    #               DynamicStatementsType.Types,
     #           ]
     #
     suffers_from_infinite_recursion=False,
@@ -157,7 +156,7 @@ def CreateStatement(
         else:
             assert False, item  # pragma: no cover
 
-        assert isinstance(first_item, DynamicStatements), first_item
+        assert isinstance(first_item, DynamicStatementsType), first_item
 
         suffers_from_infinite_recursion_ctr = 1
     else:
@@ -219,7 +218,7 @@ def _PopulateItem(
             name=item.name,
         )
 
-    elif isinstance(item.item, DynamicStatements):
+    elif isinstance(item.item, DynamicStatementsType):
         dynamic_statement_value = item.item
 
         if suffers_from_infinite_recursion_ctr == 0:

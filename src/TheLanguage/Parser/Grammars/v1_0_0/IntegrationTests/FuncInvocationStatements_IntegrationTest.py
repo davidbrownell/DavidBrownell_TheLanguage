@@ -115,7 +115,7 @@ def test_SingleArg():
                             Optional Arguments
                                 Delimited Elements
                                     Argument
-                                        DynamicStatements.Expressions
+                                        DynamicStatementsType.Expressions
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(6, 7), match='a'>>> ws:None [1, 7 -> 1, 8]
@@ -130,7 +130,7 @@ def test_SingleArg():
                             Optional Arguments
                                 Delimited Elements
                                     Argument
-                                        DynamicStatements.Expressions
+                                        DynamicStatementsType.Expressions
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(21, 22), match='a'>>> ws:None [4, 5 -> 4, 6]
@@ -148,7 +148,7 @@ def test_SingleArg():
                                         Keyword Arg
                                             <name> <<Regex: <_sre.SRE_Match object; span=(32, 33), match='a'>>> ws:None [7, 7 -> 7, 8]
                                             '=' <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> ws:None [7, 8 -> 7, 9]
-                                            DynamicStatements.Expressions
+                                            DynamicStatementsType.Expressions
                                                 1.0.0 Grammar
                                                     Variable Name
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(34, 39), match='value'>>> ws:None [7, 9 -> 7, 14]
@@ -166,7 +166,7 @@ def test_SingleArg():
                                         Keyword Arg
                                             <name> <<Regex: <_sre.SRE_Match object; span=(52, 53), match='a'>>> ws:None [9, 5 -> 9, 6]
                                             '=' <<Regex: <_sre.SRE_Match object; span=(53, 54), match='='>>> ws:None [9, 6 -> 9, 7]
-                                            DynamicStatements.Expressions
+                                            DynamicStatementsType.Expressions
                                                 1.0.0 Grammar
                                                     Variable Name
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(63, 68), match='value'>>> ws:None [10, 9 -> 10, 14]
@@ -209,7 +209,7 @@ def test_SingleArg():
                 Keyword Arg
                     <name> <<Regex: <_sre.SRE_Match object; span=(32, 33), match='a'>>> ws:None [7, 7 -> 7, 8]
                     '=' <<Regex: <_sre.SRE_Match object; span=(33, 34), match='='>>> ws:None [7, 8 -> 7, 9]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         1.0.0 Grammar
                             Variable Name
                                 <name> <<Regex: <_sre.SRE_Match object; span=(34, 39), match='value'>>> ws:None [7, 9 -> 7, 14]
@@ -228,7 +228,7 @@ def test_SingleArg():
                 Keyword Arg
                     <name> <<Regex: <_sre.SRE_Match object; span=(52, 53), match='a'>>> ws:None [9, 5 -> 9, 6]
                     '=' <<Regex: <_sre.SRE_Match object; span=(53, 54), match='='>>> ws:None [9, 6 -> 9, 7]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         1.0.0 Grammar
                             Variable Name
                                 <name> <<Regex: <_sre.SRE_Match object; span=(63, 68), match='value'>>> ws:None [10, 9 -> 10, 14]
@@ -277,7 +277,7 @@ def test_MultipleArgs():
                             Optional Arguments
                                 Delimited Elements
                                     Argument
-                                        DynamicStatements.Expressions
+                                        DynamicStatementsType.Expressions
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(6, 7), match='a'>>> ws:None [1, 7 -> 1, 8]
@@ -285,14 +285,14 @@ def test_MultipleArgs():
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(7, 8), match=','>>> ws:None [1, 8 -> 1, 9]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(9, 10), match='b'>>> ws:(8, 9) [1, 10 -> 1, 11]
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(10, 11), match=','>>> ws:None [1, 11 -> 1, 12]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(12, 13), match='c'>>> ws:(11, 12) [1, 13 -> 1, 14]
@@ -307,7 +307,7 @@ def test_MultipleArgs():
                             Optional Arguments
                                 Delimited Elements
                                     Argument
-                                        DynamicStatements.Expressions
+                                        DynamicStatementsType.Expressions
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(22, 23), match='a'>>> ws:None [3, 7 -> 3, 8]
@@ -315,14 +315,14 @@ def test_MultipleArgs():
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [3, 8 -> 3, 9]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(25, 26), match='b'>>> ws:(24, 25) [3, 10 -> 3, 11]
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(26, 27), match=','>>> ws:None [3, 11 -> 3, 12]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(28, 29), match='c'>>> ws:(27, 28) [3, 13 -> 3, 14]
@@ -332,7 +332,7 @@ def test_MultipleArgs():
                                                 Keyword Arg
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(31, 32), match='d'>>> ws:(30, 31) [3, 16 -> 3, 17]
                                                     '=' <<Regex: <_sre.SRE_Match object; span=(32, 33), match='='>>> ws:None [3, 17 -> 3, 18]
-                                                    DynamicStatements.Expressions
+                                                    DynamicStatementsType.Expressions
                                                         1.0.0 Grammar
                                                             Variable Name
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(33, 36), match='one'>>> ws:None [3, 18 -> 3, 21]
@@ -342,7 +342,7 @@ def test_MultipleArgs():
                                                 Keyword Arg
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(38, 39), match='e'>>> ws:(37, 38) [3, 23 -> 3, 24]
                                                     '=' <<Regex: <_sre.SRE_Match object; span=(39, 40), match='='>>> ws:None [3, 24 -> 3, 25]
-                                                    DynamicStatements.Expressions
+                                                    DynamicStatementsType.Expressions
                                                         1.0.0 Grammar
                                                             Variable Name
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(40, 43), match='two'>>> ws:None [3, 25 -> 3, 28]
@@ -357,7 +357,7 @@ def test_MultipleArgs():
                             Optional Arguments
                                 Delimited Elements
                                     Argument
-                                        DynamicStatements.Expressions
+                                        DynamicStatementsType.Expressions
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(57, 58), match='a'>>> ws:None [6, 5 -> 6, 6]
@@ -365,14 +365,14 @@ def test_MultipleArgs():
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(58, 59), match=','>>> ws:None [6, 6 -> 6, 7]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(60, 61), match='b'>>> ws:(59, 60) [6, 8 -> 6, 9]
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(61, 62), match=','>>> ws:None [6, 9 -> 6, 10]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(63, 64), match='c'>>> ws:(62, 63) [6, 11 -> 6, 12]
@@ -382,7 +382,7 @@ def test_MultipleArgs():
                                                 Keyword Arg
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(70, 71), match='d'>>> ws:None [7, 5 -> 7, 6]
                                                     '=' <<Regex: <_sre.SRE_Match object; span=(71, 72), match='='>>> ws:None [7, 6 -> 7, 7]
-                                                    DynamicStatements.Expressions
+                                                    DynamicStatementsType.Expressions
                                                         1.0.0 Grammar
                                                             Variable Name
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(72, 75), match='one'>>> ws:None [7, 7 -> 7, 10]
@@ -392,7 +392,7 @@ def test_MultipleArgs():
                                                 Keyword Arg
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(81, 82), match='e'>>> ws:None [8, 5 -> 8, 6]
                                                     '=' <<Regex: <_sre.SRE_Match object; span=(82, 83), match='='>>> ws:None [8, 6 -> 8, 7]
-                                                    DynamicStatements.Expressions
+                                                    DynamicStatementsType.Expressions
                                                         1.0.0 Grammar
                                                             Variable Name
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(83, 86), match='two'>>> ws:None [8, 7 -> 8, 10]
@@ -409,7 +409,7 @@ def test_MultipleArgs():
                             Optional Arguments
                                 Delimited Elements
                                     Argument
-                                        DynamicStatements.Expressions
+                                        DynamicStatementsType.Expressions
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(102, 103), match='a'>>> ws:None [12, 5 -> 12, 6]
@@ -417,14 +417,14 @@ def test_MultipleArgs():
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(103, 104), match=','>>> ws:None [12, 6 -> 12, 7]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(109, 110), match='b'>>> ws:None [13, 5 -> 13, 6]
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(110, 111), match=','>>> ws:None [13, 6 -> 13, 7]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(116, 117), match='c'>>> ws:None [14, 5 -> 14, 6]
@@ -434,7 +434,7 @@ def test_MultipleArgs():
                                                 Keyword Arg
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(123, 124), match='d'>>> ws:None [15, 5 -> 15, 6]
                                                     '=' <<Regex: <_sre.SRE_Match object; span=(124, 125), match='='>>> ws:None [15, 6 -> 15, 7]
-                                                    DynamicStatements.Expressions
+                                                    DynamicStatementsType.Expressions
                                                         1.0.0 Grammar
                                                             Variable Name
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(125, 128), match='one'>>> ws:None [15, 7 -> 15, 10]
@@ -444,7 +444,7 @@ def test_MultipleArgs():
                                                 Keyword Arg
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(134, 135), match='e'>>> ws:None [16, 5 -> 16, 6]
                                                     '=' <<Regex: <_sre.SRE_Match object; span=(135, 136), match='='>>> ws:None [16, 6 -> 16, 7]
-                                                    DynamicStatements.Expressions
+                                                    DynamicStatementsType.Expressions
                                                         1.0.0 Grammar
                                                             Variable Name
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(136, 139), match='two'>>> ws:None [16, 7 -> 16, 10]
@@ -510,7 +510,7 @@ def test_MultipleArgs():
                 Keyword Arg
                     <name> <<Regex: <_sre.SRE_Match object; span=(31, 32), match='d'>>> ws:(30, 31) [3, 16 -> 3, 17]
                     '=' <<Regex: <_sre.SRE_Match object; span=(32, 33), match='='>>> ws:None [3, 17 -> 3, 18]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         1.0.0 Grammar
                             Variable Name
                                 <name> <<Regex: <_sre.SRE_Match object; span=(33, 36), match='one'>>> ws:None [3, 18 -> 3, 21]
@@ -525,7 +525,7 @@ def test_MultipleArgs():
                 Keyword Arg
                     <name> <<Regex: <_sre.SRE_Match object; span=(38, 39), match='e'>>> ws:(37, 38) [3, 23 -> 3, 24]
                     '=' <<Regex: <_sre.SRE_Match object; span=(39, 40), match='='>>> ws:None [3, 24 -> 3, 25]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         1.0.0 Grammar
                             Variable Name
                                 <name> <<Regex: <_sre.SRE_Match object; span=(40, 43), match='two'>>> ws:None [3, 25 -> 3, 28]
@@ -565,7 +565,7 @@ def test_MultipleArgs():
                 Keyword Arg
                     <name> <<Regex: <_sre.SRE_Match object; span=(70, 71), match='d'>>> ws:None [7, 5 -> 7, 6]
                     '=' <<Regex: <_sre.SRE_Match object; span=(71, 72), match='='>>> ws:None [7, 6 -> 7, 7]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         1.0.0 Grammar
                             Variable Name
                                 <name> <<Regex: <_sre.SRE_Match object; span=(72, 75), match='one'>>> ws:None [7, 7 -> 7, 10]
@@ -580,7 +580,7 @@ def test_MultipleArgs():
                 Keyword Arg
                     <name> <<Regex: <_sre.SRE_Match object; span=(81, 82), match='e'>>> ws:None [8, 5 -> 8, 6]
                     '=' <<Regex: <_sre.SRE_Match object; span=(82, 83), match='='>>> ws:None [8, 6 -> 8, 7]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         1.0.0 Grammar
                             Variable Name
                                 <name> <<Regex: <_sre.SRE_Match object; span=(83, 86), match='two'>>> ws:None [8, 7 -> 8, 10]
@@ -620,7 +620,7 @@ def test_MultipleArgs():
                 Keyword Arg
                     <name> <<Regex: <_sre.SRE_Match object; span=(123, 124), match='d'>>> ws:None [15, 5 -> 15, 6]
                     '=' <<Regex: <_sre.SRE_Match object; span=(124, 125), match='='>>> ws:None [15, 6 -> 15, 7]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         1.0.0 Grammar
                             Variable Name
                                 <name> <<Regex: <_sre.SRE_Match object; span=(125, 128), match='one'>>> ws:None [15, 7 -> 15, 10]
@@ -635,7 +635,7 @@ def test_MultipleArgs():
                 Keyword Arg
                     <name> <<Regex: <_sre.SRE_Match object; span=(134, 135), match='e'>>> ws:None [16, 5 -> 16, 6]
                     '=' <<Regex: <_sre.SRE_Match object; span=(135, 136), match='='>>> ws:None [16, 6 -> 16, 7]
-                    DynamicStatements.Expressions
+                    DynamicStatementsType.Expressions
                         1.0.0 Grammar
                             Variable Name
                                 <name> <<Regex: <_sre.SRE_Match object; span=(136, 139), match='two'>>> ws:None [16, 7 -> 16, 10]
@@ -669,7 +669,7 @@ def test_MethodName():
                             Optional Arguments
                                 Delimited Elements
                                     Argument
-                                        DynamicStatements.Expressions
+                                        DynamicStatementsType.Expressions
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(14, 18), match='arg1'>>> ws:None [1, 15 -> 1, 19]
@@ -677,14 +677,14 @@ def test_MethodName():
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(18, 19), match=','>>> ws:None [1, 19 -> 1, 20]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(20, 24), match='arg2'>>> ws:(19, 20) [1, 21 -> 1, 25]
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(24, 25), match=','>>> ws:None [1, 25 -> 1, 26]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Variable Name
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(26, 30), match='arg3'>>> ws:(25, 26) [1, 27 -> 1, 31]
@@ -760,7 +760,7 @@ def test_FuncsAsArgs():
                             Optional Arguments
                                 Delimited Elements
                                     Argument
-                                        DynamicStatements.Expressions
+                                        DynamicStatementsType.Expressions
                                             1.0.0 Grammar
                                                 Function Invocation
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(10, 15), match='Func1'>>> ws:None [2, 5 -> 2, 10]
@@ -771,7 +771,7 @@ def test_FuncsAsArgs():
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(17, 18), match=','>>> ws:None [2, 12 -> 2, 13]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Function Invocation
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(23, 28), match='Func2'>>> ws:None [3, 5 -> 3, 10]
@@ -781,7 +781,7 @@ def test_FuncsAsArgs():
                                         Delimiter and Element
                                             ',' <<Regex: <_sre.SRE_Match object; span=(30, 31), match=','>>> ws:None [3, 12 -> 3, 13]
                                             Argument
-                                                DynamicStatements.Expressions
+                                                DynamicStatementsType.Expressions
                                                     1.0.0 Grammar
                                                         Function Invocation
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(36, 41), match='Func3'>>> ws:None [4, 5 -> 4, 10]
@@ -790,7 +790,7 @@ def test_FuncsAsArgs():
                                                                 Optional Arguments
                                                                     Delimited Elements
                                                                         Argument
-                                                                            DynamicStatements.Expressions
+                                                                            DynamicStatementsType.Expressions
                                                                                 1.0.0 Grammar
                                                                                     Variable Name
                                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(42, 45), match='one'>>> ws:None [4, 11 -> 4, 14]
@@ -798,7 +798,7 @@ def test_FuncsAsArgs():
                                                                             Delimiter and Element
                                                                                 ',' <<Regex: <_sre.SRE_Match object; span=(45, 46), match=','>>> ws:None [4, 14 -> 4, 15]
                                                                                 Argument
-                                                                                    DynamicStatements.Expressions
+                                                                                    DynamicStatementsType.Expressions
                                                                                         1.0.0 Grammar
                                                                                             Function Invocation
                                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(47, 52), match='Func4'>>> ws:(46, 47) [4, 16 -> 4, 21]
@@ -807,7 +807,7 @@ def test_FuncsAsArgs():
                                                                                                     Optional Arguments
                                                                                                         Delimited Elements
                                                                                                             Argument
-                                                                                                                DynamicStatements.Expressions
+                                                                                                                DynamicStatementsType.Expressions
                                                                                                                     1.0.0 Grammar
                                                                                                                         Variable Name
                                                                                                                             <name> <<Regex: <_sre.SRE_Match object; span=(53, 56), match='two'>>> ws:None [4, 22 -> 4, 25]
@@ -818,7 +818,7 @@ def test_FuncsAsArgs():
                                                                                                                         Keyword Arg
                                                                                                                             <name> <<Regex: <_sre.SRE_Match object; span=(58, 63), match='three'>>> ws:(57, 58) [4, 27 -> 4, 32]
                                                                                                                             '=' <<Regex: <_sre.SRE_Match object; span=(63, 64), match='='>>> ws:None [4, 32 -> 4, 33]
-                                                                                                                            DynamicStatements.Expressions
+                                                                                                                            DynamicStatementsType.Expressions
                                                                                                                                 1.0.0 Grammar
                                                                                                                                     Variable Name
                                                                                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(64, 69), match='value'>>> ws:None [4, 33 -> 4, 38]
@@ -826,7 +826,7 @@ def test_FuncsAsArgs():
                                                                             Delimiter and Element
                                                                                 ',' <<Regex: <_sre.SRE_Match object; span=(70, 71), match=','>>> ws:None [4, 39 -> 4, 40]
                                                                                 Argument
-                                                                                    DynamicStatements.Expressions
+                                                                                    DynamicStatementsType.Expressions
                                                                                         1.0.0 Grammar
                                                                                             Variable Name
                                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(72, 76), match='four'>>> ws:(71, 72) [4, 41 -> 4, 45]
@@ -871,7 +871,7 @@ def test_FuncsAsArgs():
                         Optional Arguments
                             Delimited Elements
                                 Argument
-                                    DynamicStatements.Expressions
+                                    DynamicStatementsType.Expressions
                                         1.0.0 Grammar
                                             Variable Name
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(42, 45), match='one'>>> ws:None [4, 11 -> 4, 14]
@@ -879,7 +879,7 @@ def test_FuncsAsArgs():
                                     Delimiter and Element
                                         ',' <<Regex: <_sre.SRE_Match object; span=(45, 46), match=','>>> ws:None [4, 14 -> 4, 15]
                                         Argument
-                                            DynamicStatements.Expressions
+                                            DynamicStatementsType.Expressions
                                                 1.0.0 Grammar
                                                     Function Invocation
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(47, 52), match='Func4'>>> ws:(46, 47) [4, 16 -> 4, 21]
@@ -888,7 +888,7 @@ def test_FuncsAsArgs():
                                                             Optional Arguments
                                                                 Delimited Elements
                                                                     Argument
-                                                                        DynamicStatements.Expressions
+                                                                        DynamicStatementsType.Expressions
                                                                             1.0.0 Grammar
                                                                                 Variable Name
                                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(53, 56), match='two'>>> ws:None [4, 22 -> 4, 25]
@@ -899,7 +899,7 @@ def test_FuncsAsArgs():
                                                                                 Keyword Arg
                                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(58, 63), match='three'>>> ws:(57, 58) [4, 27 -> 4, 32]
                                                                                     '=' <<Regex: <_sre.SRE_Match object; span=(63, 64), match='='>>> ws:None [4, 32 -> 4, 33]
-                                                                                    DynamicStatements.Expressions
+                                                                                    DynamicStatementsType.Expressions
                                                                                         1.0.0 Grammar
                                                                                             Variable Name
                                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(64, 69), match='value'>>> ws:None [4, 33 -> 4, 38]
@@ -907,7 +907,7 @@ def test_FuncsAsArgs():
                                     Delimiter and Element
                                         ',' <<Regex: <_sre.SRE_Match object; span=(70, 71), match=','>>> ws:None [4, 39 -> 4, 40]
                                         Argument
-                                            DynamicStatements.Expressions
+                                            DynamicStatementsType.Expressions
                                                 1.0.0 Grammar
                                                     Variable Name
                                                         <name> <<Regex: <_sre.SRE_Match object; span=(72, 76), match='four'>>> ws:(71, 72) [4, 41 -> 4, 45]

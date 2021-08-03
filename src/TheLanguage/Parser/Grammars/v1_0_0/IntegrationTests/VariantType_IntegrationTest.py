@@ -63,24 +63,24 @@ def test_TwoTypes():
                     Variable Declaration
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='var1'>>> ws:None [1, 1 -> 1, 5]
                         '=' <<Regex: <_sre.SRE_Match object; span=(5, 6), match='='>>> ws:(4, 5) [1, 6 -> 1, 7]
-                        DynamicStatements.Expressions
+                        DynamicStatementsType.Expressions
                             1.0.0 Grammar
                                 As
-                                    DynamicStatements.Expressions
+                                    DynamicStatementsType.Expressions
                                         1.0.0 Grammar
                                             Variable Name
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(7, 13), match='value1'>>> ws:(6, 7) [1, 8 -> 1, 14]
                                     'as' <<Regex: <_sre.SRE_Match object; span=(14, 16), match='as'>>> ws:(13, 14) [1, 15 -> 1, 17]
-                                    DynamicStatements.Types
+                                    DynamicStatementsType.Types
                                         1.0.0 Grammar
                                             Variant
                                                 '(' <<Regex: <_sre.SRE_Match object; span=(17, 18), match='('>>> ws:(16, 17) [1, 18 -> 1, 19]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(18, 21), match='Int'>>> ws:None [1, 19 -> 1, 22]
                                                 '|' <<Regex: <_sre.SRE_Match object; span=(22, 23), match='|'>>> ws:(21, 22) [1, 23 -> 1, 24]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(24, 29), match='Float'>>> ws:(23, 24) [1, 25 -> 1, 30]
@@ -91,24 +91,24 @@ def test_TwoTypes():
                     Variable Declaration
                         <name> <<Regex: <_sre.SRE_Match object; span=(32, 36), match='var2'>>> ws:None [3, 1 -> 3, 5]
                         '=' <<Regex: <_sre.SRE_Match object; span=(37, 38), match='='>>> ws:(36, 37) [3, 6 -> 3, 7]
-                        DynamicStatements.Expressions
+                        DynamicStatementsType.Expressions
                             1.0.0 Grammar
                                 As
-                                    DynamicStatements.Expressions
+                                    DynamicStatementsType.Expressions
                                         1.0.0 Grammar
                                             Variable Name
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(39, 45), match='value2'>>> ws:(38, 39) [3, 8 -> 3, 14]
                                     'as' <<Regex: <_sre.SRE_Match object; span=(46, 48), match='as'>>> ws:(45, 46) [3, 15 -> 3, 17]
-                                    DynamicStatements.Types
+                                    DynamicStatementsType.Types
                                         1.0.0 Grammar
                                             Variant
                                                 '(' <<Regex: <_sre.SRE_Match object; span=(49, 50), match='('>>> ws:(48, 49) [3, 18 -> 3, 19]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(55, 61), match='String'>>> ws:None [4, 5 -> 4, 11]
                                                 '|' <<Regex: <_sre.SRE_Match object; span=(66, 67), match='|'>>> ws:None [5, 5 -> 5, 6]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(68, 72), match='Char'>>> ws:(67, 68) [5, 7 -> 5, 11]
@@ -165,37 +165,37 @@ def test_FourTypes():
                     Variable Declaration
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='var1'>>> ws:None [1, 1 -> 1, 5]
                         '=' <<Regex: <_sre.SRE_Match object; span=(5, 6), match='='>>> ws:(4, 5) [1, 6 -> 1, 7]
-                        DynamicStatements.Expressions
+                        DynamicStatementsType.Expressions
                             1.0.0 Grammar
                                 As
-                                    DynamicStatements.Expressions
+                                    DynamicStatementsType.Expressions
                                         1.0.0 Grammar
                                             Variable Name
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(7, 13), match='value1'>>> ws:(6, 7) [1, 8 -> 1, 14]
                                     'as' <<Regex: <_sre.SRE_Match object; span=(14, 16), match='as'>>> ws:(13, 14) [1, 15 -> 1, 17]
-                                    DynamicStatements.Types
+                                    DynamicStatementsType.Types
                                         1.0.0 Grammar
                                             Variant
                                                 '(' <<Regex: <_sre.SRE_Match object; span=(17, 18), match='('>>> ws:(16, 17) [1, 18 -> 1, 19]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(18, 21), match='Int'>>> ws:None [1, 19 -> 1, 22]
                                                 '|' <<Regex: <_sre.SRE_Match object; span=(22, 23), match='|'>>> ws:(21, 22) [1, 23 -> 1, 24]
                                                 Repeat: (Sep and Type, 0, None)
                                                     Sep and Type
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(24, 29), match='Float'>>> ws:(23, 24) [1, 25 -> 1, 30]
                                                         '|' <<Regex: <_sre.SRE_Match object; span=(30, 31), match='|'>>> ws:(29, 30) [1, 31 -> 1, 32]
                                                     Sep and Type
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(32, 38), match='String'>>> ws:(31, 32) [1, 33 -> 1, 39]
                                                         '|' <<Regex: <_sre.SRE_Match object; span=(39, 40), match='|'>>> ws:(38, 39) [1, 40 -> 1, 41]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(41, 45), match='Char'>>> ws:(40, 41) [1, 42 -> 1, 46]
@@ -206,37 +206,37 @@ def test_FourTypes():
                     Variable Declaration
                         <name> <<Regex: <_sre.SRE_Match object; span=(48, 52), match='var2'>>> ws:None [3, 1 -> 3, 5]
                         '=' <<Regex: <_sre.SRE_Match object; span=(53, 54), match='='>>> ws:(52, 53) [3, 6 -> 3, 7]
-                        DynamicStatements.Expressions
+                        DynamicStatementsType.Expressions
                             1.0.0 Grammar
                                 As
-                                    DynamicStatements.Expressions
+                                    DynamicStatementsType.Expressions
                                         1.0.0 Grammar
                                             Variable Name
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(55, 61), match='value2'>>> ws:(54, 55) [3, 8 -> 3, 14]
                                     'as' <<Regex: <_sre.SRE_Match object; span=(62, 64), match='as'>>> ws:(61, 62) [3, 15 -> 3, 17]
-                                    DynamicStatements.Types
+                                    DynamicStatementsType.Types
                                         1.0.0 Grammar
                                             Variant
                                                 '(' <<Regex: <_sre.SRE_Match object; span=(65, 66), match='('>>> ws:(64, 65) [3, 18 -> 3, 19]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(71, 73), match='A1'>>> ws:None [4, 5 -> 4, 7]
                                                 '|' <<Regex: <_sre.SRE_Match object; span=(78, 79), match='|'>>> ws:None [5, 5 -> 5, 6]
                                                 Repeat: (Sep and Type, 0, None)
                                                     Sep and Type
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(80, 83), match='B22'>>> ws:(79, 80) [5, 7 -> 5, 10]
                                                         '|' <<Regex: <_sre.SRE_Match object; span=(88, 89), match='|'>>> ws:None [6, 5 -> 6, 6]
                                                     Sep and Type
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(90, 94), match='C333'>>> ws:(89, 90) [6, 7 -> 6, 11]
                                                         '|' <<Regex: <_sre.SRE_Match object; span=(99, 100), match='|'>>> ws:None [7, 5 -> 7, 6]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(101, 106), match='D4444'>>> ws:(100, 101) [7, 7 -> 7, 12]
@@ -306,35 +306,35 @@ def test_NestedVariant():
                     Variable Declaration
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='var1'>>> ws:None [1, 1 -> 1, 5]
                         '=' <<Regex: <_sre.SRE_Match object; span=(5, 6), match='='>>> ws:(4, 5) [1, 6 -> 1, 7]
-                        DynamicStatements.Expressions
+                        DynamicStatementsType.Expressions
                             1.0.0 Grammar
                                 As
-                                    DynamicStatements.Expressions
+                                    DynamicStatementsType.Expressions
                                         1.0.0 Grammar
                                             Variable Name
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(7, 13), match='value1'>>> ws:(6, 7) [1, 8 -> 1, 14]
                                     'as' <<Regex: <_sre.SRE_Match object; span=(14, 16), match='as'>>> ws:(13, 14) [1, 15 -> 1, 17]
-                                    DynamicStatements.Types
+                                    DynamicStatementsType.Types
                                         1.0.0 Grammar
                                             Variant
                                                 '(' <<Regex: <_sre.SRE_Match object; span=(17, 18), match='('>>> ws:(16, 17) [1, 18 -> 1, 19]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Variant
                                                             '(' <<Regex: <_sre.SRE_Match object; span=(18, 19), match='('>>> ws:None [1, 19 -> 1, 20]
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(19, 24), match='Bool1'>>> ws:None [1, 20 -> 1, 25]
                                                             '|' <<Regex: <_sre.SRE_Match object; span=(25, 26), match='|'>>> ws:(24, 25) [1, 26 -> 1, 27]
                                                             Repeat: (Sep and Type, 0, None)
                                                                 Sep and Type
-                                                                    DynamicStatements.Types
+                                                                    DynamicStatementsType.Types
                                                                         1.0.0 Grammar
                                                                             Standard
                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(27, 32), match='Char1'>>> ws:(26, 27) [1, 28 -> 1, 33]
                                                                     '|' <<Regex: <_sre.SRE_Match object; span=(33, 34), match='|'>>> ws:(32, 33) [1, 34 -> 1, 35]
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(35, 42), match='Double1'>>> ws:(34, 35) [1, 36 -> 1, 43]
@@ -342,12 +342,12 @@ def test_NestedVariant():
                                                 '|' <<Regex: <_sre.SRE_Match object; span=(44, 45), match='|'>>> ws:(43, 44) [1, 45 -> 1, 46]
                                                 Repeat: (Sep and Type, 0, None)
                                                     Sep and Type
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(46, 52), match='Float1'>>> ws:(45, 46) [1, 47 -> 1, 53]
                                                         '|' <<Regex: <_sre.SRE_Match object; span=(53, 54), match='|'>>> ws:(52, 53) [1, 54 -> 1, 55]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(55, 62), match='Matrix1'>>> ws:(54, 55) [1, 56 -> 1, 63]
@@ -358,47 +358,47 @@ def test_NestedVariant():
                     Variable Declaration
                         <name> <<Regex: <_sre.SRE_Match object; span=(65, 69), match='var2'>>> ws:None [3, 1 -> 3, 5]
                         '=' <<Regex: <_sre.SRE_Match object; span=(70, 71), match='='>>> ws:(69, 70) [3, 6 -> 3, 7]
-                        DynamicStatements.Expressions
+                        DynamicStatementsType.Expressions
                             1.0.0 Grammar
                                 As
-                                    DynamicStatements.Expressions
+                                    DynamicStatementsType.Expressions
                                         1.0.0 Grammar
                                             Variable Name
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(72, 78), match='value2'>>> ws:(71, 72) [3, 8 -> 3, 14]
                                     'as' <<Regex: <_sre.SRE_Match object; span=(79, 81), match='as'>>> ws:(78, 79) [3, 15 -> 3, 17]
-                                    DynamicStatements.Types
+                                    DynamicStatementsType.Types
                                         1.0.0 Grammar
                                             Variant
                                                 '(' <<Regex: <_sre.SRE_Match object; span=(82, 83), match='('>>> ws:(81, 82) [3, 18 -> 3, 19]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(88, 93), match='Bool2'>>> ws:None [4, 5 -> 4, 10]
                                                 '|' <<Regex: <_sre.SRE_Match object; span=(98, 99), match='|'>>> ws:None [5, 5 -> 5, 6]
                                                 Repeat: (Sep and Type, 0, None)
                                                     Sep and Type
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Variant
                                                                     '(' <<Regex: <_sre.SRE_Match object; span=(100, 101), match='('>>> ws:(99, 100) [5, 7 -> 5, 8]
-                                                                    DynamicStatements.Types
+                                                                    DynamicStatementsType.Types
                                                                         1.0.0 Grammar
                                                                             Standard
                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(101, 106), match='Char2'>>> ws:None [5, 8 -> 5, 13]
                                                                     '|' <<Regex: <_sre.SRE_Match object; span=(107, 108), match='|'>>> ws:(106, 107) [5, 14 -> 5, 15]
-                                                                    DynamicStatements.Types
+                                                                    DynamicStatementsType.Types
                                                                         1.0.0 Grammar
                                                                             Standard
                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(109, 116), match='Double2'>>> ws:(108, 109) [5, 16 -> 5, 23]
                                                                     ')' <<Regex: <_sre.SRE_Match object; span=(116, 117), match=')'>>> ws:None [5, 23 -> 5, 24]
                                                         '|' <<Regex: <_sre.SRE_Match object; span=(122, 123), match='|'>>> ws:None [6, 5 -> 6, 6]
                                                     Sep and Type
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(124, 130), match='Float2'>>> ws:(123, 124) [6, 7 -> 6, 13]
                                                         '|' <<Regex: <_sre.SRE_Match object; span=(135, 136), match='|'>>> ws:None [7, 5 -> 7, 6]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(137, 144), match='Matrix2'>>> ws:(136, 137) [7, 7 -> 7, 14]
@@ -409,47 +409,47 @@ def test_NestedVariant():
                     Variable Declaration
                         <name> <<Regex: <_sre.SRE_Match object; span=(148, 152), match='var3'>>> ws:None [10, 1 -> 10, 5]
                         '=' <<Regex: <_sre.SRE_Match object; span=(153, 154), match='='>>> ws:(152, 153) [10, 6 -> 10, 7]
-                        DynamicStatements.Expressions
+                        DynamicStatementsType.Expressions
                             1.0.0 Grammar
                                 As
-                                    DynamicStatements.Expressions
+                                    DynamicStatementsType.Expressions
                                         1.0.0 Grammar
                                             Variable Name
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(155, 161), match='value3'>>> ws:(154, 155) [10, 8 -> 10, 14]
                                     'as' <<Regex: <_sre.SRE_Match object; span=(162, 164), match='as'>>> ws:(161, 162) [10, 15 -> 10, 17]
-                                    DynamicStatements.Types
+                                    DynamicStatementsType.Types
                                         1.0.0 Grammar
                                             Variant
                                                 '(' <<Regex: <_sre.SRE_Match object; span=(165, 166), match='('>>> ws:(164, 165) [10, 18 -> 10, 19]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(171, 176), match='Bool3'>>> ws:None [11, 5 -> 11, 10]
                                                 '|' <<Regex: <_sre.SRE_Match object; span=(177, 178), match='|'>>> ws:(176, 177) [11, 11 -> 11, 12]
                                                 Repeat: (Sep and Type, 0, None)
                                                     Sep and Type
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(179, 184), match='Char3'>>> ws:(178, 179) [11, 13 -> 11, 18]
                                                         '|' <<Regex: <_sre.SRE_Match object; span=(189, 190), match='|'>>> ws:None [12, 5 -> 12, 6]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Variant
                                                             '(' <<Regex: <_sre.SRE_Match object; span=(191, 192), match='('>>> ws:(190, 191) [12, 7 -> 12, 8]
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(192, 199), match='Double3'>>> ws:None [12, 8 -> 12, 15]
                                                             '|' <<Regex: <_sre.SRE_Match object; span=(200, 201), match='|'>>> ws:(199, 200) [12, 16 -> 12, 17]
                                                             Repeat: (Sep and Type, 0, None)
                                                                 Sep and Type
-                                                                    DynamicStatements.Types
+                                                                    DynamicStatementsType.Types
                                                                         1.0.0 Grammar
                                                                             Standard
                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(202, 208), match='Float3'>>> ws:(201, 202) [12, 18 -> 12, 24]
                                                                     '|' <<Regex: <_sre.SRE_Match object; span=(209, 210), match='|'>>> ws:(208, 209) [12, 25 -> 12, 26]
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(211, 218), match='Matrix3'>>> ws:(210, 211) [12, 27 -> 12, 34]
@@ -467,19 +467,19 @@ def test_NestedVariant():
         """\
         Variant
             '(' <<Regex: <_sre.SRE_Match object; span=(18, 19), match='('>>> ws:None [1, 19 -> 1, 20]
-            DynamicStatements.Types
+            DynamicStatementsType.Types
                 1.0.0 Grammar
                     Standard
                         <name> <<Regex: <_sre.SRE_Match object; span=(19, 24), match='Bool1'>>> ws:None [1, 20 -> 1, 25]
             '|' <<Regex: <_sre.SRE_Match object; span=(25, 26), match='|'>>> ws:(24, 25) [1, 26 -> 1, 27]
             Repeat: (Sep and Type, 0, None)
                 Sep and Type
-                    DynamicStatements.Types
+                    DynamicStatementsType.Types
                         1.0.0 Grammar
                             Standard
                                 <name> <<Regex: <_sre.SRE_Match object; span=(27, 32), match='Char1'>>> ws:(26, 27) [1, 28 -> 1, 33]
                     '|' <<Regex: <_sre.SRE_Match object; span=(33, 34), match='|'>>> ws:(32, 33) [1, 34 -> 1, 35]
-            DynamicStatements.Types
+            DynamicStatementsType.Types
                 1.0.0 Grammar
                     Standard
                         <name> <<Regex: <_sre.SRE_Match object; span=(35, 42), match='Double1'>>> ws:(34, 35) [1, 36 -> 1, 43]
@@ -510,12 +510,12 @@ def test_NestedVariant():
             <name> <<Regex: <_sre.SRE_Match object; span=(88, 93), match='Bool2'>>> ws:None [4, 5 -> 4, 10]
         Variant
             '(' <<Regex: <_sre.SRE_Match object; span=(100, 101), match='('>>> ws:(99, 100) [5, 7 -> 5, 8]
-            DynamicStatements.Types
+            DynamicStatementsType.Types
                 1.0.0 Grammar
                     Standard
                         <name> <<Regex: <_sre.SRE_Match object; span=(101, 106), match='Char2'>>> ws:None [5, 8 -> 5, 13]
             '|' <<Regex: <_sre.SRE_Match object; span=(107, 108), match='|'>>> ws:(106, 107) [5, 14 -> 5, 15]
-            DynamicStatements.Types
+            DynamicStatementsType.Types
                 1.0.0 Grammar
                     Standard
                         <name> <<Regex: <_sre.SRE_Match object; span=(109, 116), match='Double2'>>> ws:(108, 109) [5, 16 -> 5, 23]
@@ -546,19 +546,19 @@ def test_NestedVariant():
             <name> <<Regex: <_sre.SRE_Match object; span=(179, 184), match='Char3'>>> ws:(178, 179) [11, 13 -> 11, 18]
         Variant
             '(' <<Regex: <_sre.SRE_Match object; span=(191, 192), match='('>>> ws:(190, 191) [12, 7 -> 12, 8]
-            DynamicStatements.Types
+            DynamicStatementsType.Types
                 1.0.0 Grammar
                     Standard
                         <name> <<Regex: <_sre.SRE_Match object; span=(192, 199), match='Double3'>>> ws:None [12, 8 -> 12, 15]
             '|' <<Regex: <_sre.SRE_Match object; span=(200, 201), match='|'>>> ws:(199, 200) [12, 16 -> 12, 17]
             Repeat: (Sep and Type, 0, None)
                 Sep and Type
-                    DynamicStatements.Types
+                    DynamicStatementsType.Types
                         1.0.0 Grammar
                             Standard
                                 <name> <<Regex: <_sre.SRE_Match object; span=(202, 208), match='Float3'>>> ws:(201, 202) [12, 18 -> 12, 24]
                     '|' <<Regex: <_sre.SRE_Match object; span=(209, 210), match='|'>>> ws:(208, 209) [12, 25 -> 12, 26]
-            DynamicStatements.Types
+            DynamicStatementsType.Types
                 1.0.0 Grammar
                     Standard
                         <name> <<Regex: <_sre.SRE_Match object; span=(211, 218), match='Matrix3'>>> ws:(210, 211) [12, 27 -> 12, 34]
@@ -596,51 +596,51 @@ def test_Tuple():
                     Variable Declaration
                         <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='var1'>>> ws:None [1, 1 -> 1, 5]
                         '=' <<Regex: <_sre.SRE_Match object; span=(5, 6), match='='>>> ws:(4, 5) [1, 6 -> 1, 7]
-                        DynamicStatements.Expressions
+                        DynamicStatementsType.Expressions
                             1.0.0 Grammar
                                 As
-                                    DynamicStatements.Expressions
+                                    DynamicStatementsType.Expressions
                                         1.0.0 Grammar
                                             Variable Name
                                                 <name> <<Regex: <_sre.SRE_Match object; span=(7, 13), match='value1'>>> ws:(6, 7) [1, 8 -> 1, 14]
                                     'as' <<Regex: <_sre.SRE_Match object; span=(14, 16), match='as'>>> ws:(13, 14) [1, 15 -> 1, 17]
-                                    DynamicStatements.Types
+                                    DynamicStatementsType.Types
                                         1.0.0 Grammar
                                             Variant
                                                 '(' <<Regex: <_sre.SRE_Match object; span=(17, 18), match='('>>> ws:(16, 17) [1, 18 -> 1, 19]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(18, 21), match='Int'>>> ws:None [1, 19 -> 1, 22]
                                                 '|' <<Regex: <_sre.SRE_Match object; span=(22, 23), match='|'>>> ws:(21, 22) [1, 23 -> 1, 24]
                                                 Repeat: (Sep and Type, 0, None)
                                                     Sep and Type
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Tuple Type
                                                                     Multiple
                                                                         '(' <<Regex: <_sre.SRE_Match object; span=(24, 25), match='('>>> ws:(23, 24) [1, 25 -> 1, 26]
                                                                         Delimited Elements
-                                                                            DynamicStatements.Types
+                                                                            DynamicStatementsType.Types
                                                                                 1.0.0 Grammar
                                                                                     Standard
                                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(25, 29), match='Char'>>> ws:None [1, 26 -> 1, 30]
                                                                             Repeat: (Delimiter and Element, 1, None)
                                                                                 Delimiter and Element
                                                                                     ',' <<Regex: <_sre.SRE_Match object; span=(29, 30), match=','>>> ws:None [1, 30 -> 1, 31]
-                                                                                    DynamicStatements.Types
+                                                                                    DynamicStatementsType.Types
                                                                                         1.0.0 Grammar
                                                                                             Standard
                                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(31, 37), match='Double'>>> ws:(30, 31) [1, 32 -> 1, 38]
                                                                                 Delimiter and Element
                                                                                     ',' <<Regex: <_sre.SRE_Match object; span=(37, 38), match=','>>> ws:None [1, 38 -> 1, 39]
-                                                                                    DynamicStatements.Types
+                                                                                    DynamicStatementsType.Types
                                                                                         1.0.0 Grammar
                                                                                             Standard
                                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(39, 44), match='Float'>>> ws:(38, 39) [1, 40 -> 1, 45]
                                                                         ')' <<Regex: <_sre.SRE_Match object; span=(44, 45), match=')'>>> ws:None [1, 45 -> 1, 46]
                                                         '|' <<Regex: <_sre.SRE_Match object; span=(46, 47), match='|'>>> ws:(45, 46) [1, 47 -> 1, 48]
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(48, 54), match='Matrix'>>> ws:(47, 48) [1, 49 -> 1, 55]
@@ -661,20 +661,20 @@ def test_Tuple():
             Multiple
                 '(' <<Regex: <_sre.SRE_Match object; span=(24, 25), match='('>>> ws:(23, 24) [1, 25 -> 1, 26]
                 Delimited Elements
-                    DynamicStatements.Types
+                    DynamicStatementsType.Types
                         1.0.0 Grammar
                             Standard
                                 <name> <<Regex: <_sre.SRE_Match object; span=(25, 29), match='Char'>>> ws:None [1, 26 -> 1, 30]
                     Repeat: (Delimiter and Element, 1, None)
                         Delimiter and Element
                             ',' <<Regex: <_sre.SRE_Match object; span=(29, 30), match=','>>> ws:None [1, 30 -> 1, 31]
-                            DynamicStatements.Types
+                            DynamicStatementsType.Types
                                 1.0.0 Grammar
                                     Standard
                                         <name> <<Regex: <_sre.SRE_Match object; span=(31, 37), match='Double'>>> ws:(30, 31) [1, 32 -> 1, 38]
                         Delimiter and Element
                             ',' <<Regex: <_sre.SRE_Match object; span=(37, 38), match=','>>> ws:None [1, 38 -> 1, 39]
-                            DynamicStatements.Types
+                            DynamicStatementsType.Types
                                 1.0.0 Grammar
                                     Standard
                                         <name> <<Regex: <_sre.SRE_Match object; span=(39, 44), match='Float'>>> ws:(38, 39) [1, 40 -> 1, 45]

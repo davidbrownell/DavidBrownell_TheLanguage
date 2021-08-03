@@ -150,7 +150,7 @@ class TupleExpression(_TupleBase):
         super(TupleExpression, self).__init__(
             GrammarStatement.Type.Expression,
             "Tuple Expression",
-            GrammarDSL.DynamicStatements.Expressions,
+            GrammarDSL.DynamicStatementsType.Expressions,
             additional_sequence_suffix_items=[],
         )
 
@@ -171,7 +171,7 @@ class TupleType(_TupleBase):
         super(TupleType, self).__init__(
             GrammarStatement.Type.Type,
             "Tuple Type",
-            GrammarDSL.DynamicStatements.Types,
+            GrammarDSL.DynamicStatementsType.Types,
             additional_sequence_suffix_items=[],
         )
 
@@ -196,7 +196,7 @@ class TupleVariableDeclarationStatement(_TupleBase):
             (CommonTokens.Name, None),
             additional_sequence_suffix_items=[
                 CommonTokens.Equal,
-                GrammarDSL.DynamicStatements.Expressions,
+                GrammarDSL.DynamicStatementsType.Expressions,
                 CommonTokens.Newline,
             ],
         )

@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Components.Error import Error
-    from .Statements.StatementDSL import CreateStatement, DynamicStatements, StatementItem
+    from .Statements.StatementDSL import CreateStatement, DynamicStatementsType, StatementItem
 
     from .TranslationUnitParser import DynamicStatementInfo
 
@@ -84,7 +84,7 @@ SetSyntaxStatement                          = CreateStatement(
         RegexToken("':'", re.compile(r"(?P<value>:)")),
         NewlineToken(),
         IndentToken(),
-        StatementItem(DynamicStatements.Statements, arity="+"),
+        StatementItem(DynamicStatementsType.Statements, arity="+"),
         DedentToken(),
     ],
 )

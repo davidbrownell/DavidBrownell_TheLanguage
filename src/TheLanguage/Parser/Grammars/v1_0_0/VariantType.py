@@ -75,7 +75,7 @@ class VariantType(GrammarStatement):
                     CommonTokens.PushIgnoreWhitespaceControl,
 
                     # <type>
-                    GrammarDSL.DynamicStatements.Types,
+                    GrammarDSL.DynamicStatementsType.Types,
 
                     # '|'
                     CommonTokens.VariantSep,
@@ -84,14 +84,14 @@ class VariantType(GrammarStatement):
                     GrammarDSL.StatementItem(
                         name="Sep and Type",
                         item=[
-                            GrammarDSL.DynamicStatements.Types,
+                            GrammarDSL.DynamicStatementsType.Types,
                             CommonTokens.VariantSep,
                         ],
                         arity="*",
                     ),
 
                     # <type>
-                    GrammarDSL.DynamicStatements.Types,
+                    GrammarDSL.DynamicStatementsType.Types,
 
                     # ')'
                     CommonTokens.PopIgnoreWhitespaceControl,

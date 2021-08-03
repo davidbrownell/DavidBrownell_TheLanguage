@@ -51,7 +51,7 @@ def test_NoArgs():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='Type'>>> ws:None [1, 1 -> 1, 5]
@@ -62,8 +62,8 @@ def test_NoArgs():
                         ':' <<Regex: <_sre.SRE_Match object; span=(11, 12), match=':'>>> ws:None [1, 12 -> 1, 13]
                         Newline+ <<12, 13>> ws:None [1, 13 -> 2, 1]
                         Indent <<13, 17, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(17, 21), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -114,7 +114,7 @@ def test_MultipleNoArgStatementsAndFuncs():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 5), match='Type1'>>> ws:None [1, 1 -> 1, 6]
@@ -125,18 +125,18 @@ def test_MultipleNoArgStatementsAndFuncs():
                         ':' <<Regex: <_sre.SRE_Match object; span=(13, 14), match=':'>>> ws:None [1, 14 -> 1, 15]
                         Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
                         Indent <<15, 19, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Variable Declaration
                                         <name> <<Regex: <_sre.SRE_Match object; span=(19, 23), match='vara'>>> ws:None [2, 5 -> 2, 9]
                                         '=' <<Regex: <_sre.SRE_Match object; span=(24, 25), match='='>>> ws:(23, 24) [2, 10 -> 2, 11]
-                                        DynamicStatements.Expressions
+                                        DynamicStatementsType.Expressions
                                             1.0.0 Grammar
                                                 Variable Name
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(26, 30), match='varb'>>> ws:(25, 26) [2, 12 -> 2, 16]
                                         Newline+ <<30, 31>> ws:None [2, 16 -> 3, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(35, 39), match='pass'>>> ws:None [3, 5 -> 3, 9]
@@ -145,7 +145,7 @@ def test_MultipleNoArgStatementsAndFuncs():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(41, 46), match='Type2'>>> ws:None [5, 1 -> 5, 6]
@@ -156,13 +156,13 @@ def test_MultipleNoArgStatementsAndFuncs():
                         ':' <<Regex: <_sre.SRE_Match object; span=(54, 55), match=':'>>> ws:None [5, 14 -> 5, 15]
                         Newline+ <<55, 56>> ws:None [5, 15 -> 6, 1]
                         Indent <<56, 60, (4)>> ws:None [6, 1 -> 6, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(60, 64), match='pass'>>> ws:None [6, 5 -> 6, 9]
                                         Newline+ <<64, 65>> ws:None [6, 9 -> 7, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(69, 73), match='pass'>>> ws:None [7, 5 -> 7, 9]
@@ -231,7 +231,7 @@ def test_Export():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -243,7 +243,7 @@ def test_Export():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(16, 19), match='Int'>>> ws:None [1, 17 -> 1, 20]
@@ -252,8 +252,8 @@ def test_Export():
                         ':' <<Regex: <_sre.SRE_Match object; span=(22, 23), match=':'>>> ws:None [1, 23 -> 1, 24]
                         Newline+ <<23, 24>> ws:None [1, 24 -> 2, 1]
                         Indent <<24, 28, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(28, 32), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -264,7 +264,7 @@ def test_Export():
                     Function Declaration
                         Repeat: ('export', 0, 1)
                             'export' <<Regex: <_sre.SRE_Match object; span=(34, 40), match='export'>>> ws:None [4, 1 -> 4, 7]
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(41, 47), match='String'>>> ws:(40, 41) [4, 8 -> 4, 14]
@@ -276,7 +276,7 @@ def test_Export():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(59, 62), match='Int'>>> ws:None [4, 26 -> 4, 29]
@@ -285,8 +285,8 @@ def test_Export():
                         ':' <<Regex: <_sre.SRE_Match object; span=(65, 66), match=':'>>> ws:None [4, 32 -> 4, 33]
                         Newline+ <<66, 67>> ws:None [4, 33 -> 5, 1]
                         Indent <<67, 71, (4)>> ws:None [5, 1 -> 5, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(71, 75), match='pass'>>> ws:None [5, 5 -> 5, 9]
@@ -383,7 +383,7 @@ def test_DocString():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='Bool'>>> ws:None [1, 1 -> 1, 5]
@@ -395,7 +395,7 @@ def test_DocString():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(21, 24), match='Int'>>> ws:None [1, 22 -> 1, 25]
@@ -408,8 +408,8 @@ def test_DocString():
                             Docstring
                                 <docstring> <<Regex: <_sre.SRE_Match object; span=(33, 75), match='"""\\n    This is the\\n    doc string\\n    """'>>> ws:None [2, 5 -> 5, 8]
                                 Newline+ <<75, 76>> ws:None [5, 8 -> 6, 1]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(80, 84), match='pass'>>> ws:None [6, 5 -> 6, 9]
@@ -418,7 +418,7 @@ def test_DocString():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(86, 92), match='String'>>> ws:None [8, 1 -> 8, 7]
@@ -430,7 +430,7 @@ def test_DocString():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(109, 112), match='Int'>>> ws:None [8, 24 -> 8, 27]
@@ -443,13 +443,13 @@ def test_DocString():
                             Docstring
                                 <docstring> <<Regex: <_sre.SRE_Match object; span=(121, 159), match='"""\\n    This is the doc string\\n    """'>>> ws:None [9, 5 -> 11, 8]
                                 Newline+ <<159, 160>> ws:None [11, 8 -> 12, 1]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(164, 168), match='pass'>>> ws:None [12, 5 -> 12, 9]
                                         Newline+ <<168, 169>> ws:None [12, 9 -> 13, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(173, 177), match='pass'>>> ws:None [13, 5 -> 13, 9]
@@ -460,7 +460,7 @@ def test_DocString():
                     Function Declaration
                         Repeat: ('export', 0, 1)
                             'export' <<Regex: <_sre.SRE_Match object; span=(179, 185), match='export'>>> ws:None [15, 1 -> 15, 7]
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(186, 189), match='Int'>>> ws:(185, 186) [15, 8 -> 15, 11]
@@ -472,7 +472,7 @@ def test_DocString():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(201, 204), match='Int'>>> ws:None [15, 23 -> 15, 26]
@@ -482,7 +482,7 @@ def test_DocString():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(206, 207), match=','>>> ws:None [15, 28 -> 15, 29]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(208, 212), match='Bool'>>> ws:(207, 208) [15, 30 -> 15, 34]
@@ -491,7 +491,7 @@ def test_DocString():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(214, 215), match=','>>> ws:None [15, 36 -> 15, 37]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(216, 220), match='Char'>>> ws:(215, 216) [15, 38 -> 15, 42]
@@ -504,18 +504,18 @@ def test_DocString():
                             Docstring
                                 <docstring> <<Regex: <_sre.SRE_Match object; span=(229, 269), match='"""\\n    A\\n        doc\\n    string\\n    """'>>> ws:None [16, 5 -> 20, 8]
                                 Newline+ <<269, 270>> ws:None [20, 8 -> 21, 1]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(274, 278), match='pass'>>> ws:None [21, 5 -> 21, 9]
                                         Newline+ <<278, 279>> ws:None [21, 9 -> 22, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(283, 287), match='pass'>>> ws:None [22, 5 -> 22, 9]
                                         Newline+ <<287, 288>> ws:None [22, 9 -> 23, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(292, 296), match='pass'>>> ws:None [23, 5 -> 23, 9]
@@ -636,7 +636,7 @@ def test_TraditionalSingleArg():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(20, 25), match='Type1'>>> ws:None [2, 1 -> 2, 6]
@@ -648,7 +648,7 @@ def test_TraditionalSingleArg():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(32, 35), match='Int'>>> ws:None [2, 13 -> 2, 16]
@@ -660,8 +660,8 @@ def test_TraditionalSingleArg():
                         ':' <<Regex: <_sre.SRE_Match object; span=(42, 43), match=':'>>> ws:None [2, 23 -> 2, 24]
                         Newline+ <<43, 44>> ws:None [2, 24 -> 3, 1]
                         Indent <<44, 48, (4)>> ws:None [3, 1 -> 3, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(48, 52), match='pass'>>> ws:None [3, 5 -> 3, 9]
@@ -670,7 +670,7 @@ def test_TraditionalSingleArg():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(71, 76), match='Type2'>>> ws:None [6, 1 -> 6, 6]
@@ -685,7 +685,7 @@ def test_TraditionalSingleArg():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(87, 90), match='Int'>>> ws:None [6, 17 -> 6, 20]
@@ -699,8 +699,8 @@ def test_TraditionalSingleArg():
                         ':' <<Regex: <_sre.SRE_Match object; span=(98, 99), match=':'>>> ws:None [6, 28 -> 6, 29]
                         Newline+ <<99, 100>> ws:None [6, 29 -> 7, 1]
                         Indent <<100, 104, (4)>> ws:None [7, 1 -> 7, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(104, 108), match='pass'>>> ws:None [7, 5 -> 7, 9]
@@ -794,7 +794,7 @@ def test_TraditionalMultipleArgs():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(20, 26), match='String'>>> ws:None [2, 1 -> 2, 7]
@@ -809,7 +809,7 @@ def test_TraditionalMultipleArgs():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(38, 41), match='Int'>>> ws:None [2, 19 -> 2, 22]
@@ -822,7 +822,7 @@ def test_TraditionalMultipleArgs():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(47, 48), match=','>>> ws:None [2, 28 -> 2, 29]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(49, 53), match='Bool'>>> ws:(48, 49) [2, 30 -> 2, 34]
@@ -834,7 +834,7 @@ def test_TraditionalMultipleArgs():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(59, 60), match=','>>> ws:None [2, 40 -> 2, 41]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(61, 65), match='Char'>>> ws:(60, 61) [2, 42 -> 2, 46]
@@ -846,7 +846,7 @@ def test_TraditionalMultipleArgs():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(71, 72), match=','>>> ws:None [2, 52 -> 2, 53]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(73, 79), match='Double'>>> ws:(72, 73) [2, 54 -> 2, 60]
@@ -858,8 +858,8 @@ def test_TraditionalMultipleArgs():
                         ':' <<Regex: <_sre.SRE_Match object; span=(89, 90), match=':'>>> ws:None [2, 70 -> 2, 71]
                         Newline+ <<90, 91>> ws:None [2, 71 -> 3, 1]
                         Indent <<91, 95, (4)>> ws:None [3, 1 -> 3, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(95, 99), match='pass'>>> ws:None [3, 5 -> 3, 9]
@@ -868,7 +868,7 @@ def test_TraditionalMultipleArgs():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(118, 124), match='String'>>> ws:None [6, 1 -> 6, 7]
@@ -883,7 +883,7 @@ def test_TraditionalMultipleArgs():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(136, 139), match='Int'>>> ws:None [6, 19 -> 6, 22]
@@ -896,7 +896,7 @@ def test_TraditionalMultipleArgs():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(145, 146), match=','>>> ws:None [6, 28 -> 6, 29]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(147, 151), match='Bool'>>> ws:(146, 147) [6, 30 -> 6, 34]
@@ -908,7 +908,7 @@ def test_TraditionalMultipleArgs():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(157, 158), match=','>>> ws:None [6, 40 -> 6, 41]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(159, 163), match='Char'>>> ws:(158, 159) [6, 42 -> 6, 46]
@@ -920,7 +920,7 @@ def test_TraditionalMultipleArgs():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(169, 170), match=','>>> ws:None [6, 52 -> 6, 53]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(171, 177), match='Double'>>> ws:(170, 171) [6, 54 -> 6, 60]
@@ -934,8 +934,8 @@ def test_TraditionalMultipleArgs():
                         ':' <<Regex: <_sre.SRE_Match object; span=(188, 189), match=':'>>> ws:None [6, 71 -> 6, 72]
                         Newline+ <<189, 190>> ws:None [6, 72 -> 7, 1]
                         Indent <<190, 194, (4)>> ws:None [7, 1 -> 7, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(194, 198), match='pass'>>> ws:None [7, 5 -> 7, 9]
@@ -944,7 +944,7 @@ def test_TraditionalMultipleArgs():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(212, 218), match='String'>>> ws:None [10, 1 -> 10, 7]
@@ -959,7 +959,7 @@ def test_TraditionalMultipleArgs():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(235, 238), match='Int'>>> ws:None [11, 5 -> 11, 8]
@@ -972,7 +972,7 @@ def test_TraditionalMultipleArgs():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(244, 245), match=','>>> ws:None [11, 14 -> 11, 15]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(250, 254), match='Bool'>>> ws:None [12, 5 -> 12, 9]
@@ -984,7 +984,7 @@ def test_TraditionalMultipleArgs():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(260, 261), match=','>>> ws:None [12, 15 -> 12, 16]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(270, 274), match='Char'>>> ws:None [13, 9 -> 13, 13]
@@ -996,7 +996,7 @@ def test_TraditionalMultipleArgs():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(280, 281), match=','>>> ws:None [13, 19 -> 13, 20]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(287, 293), match='Double'>>> ws:None [15, 5 -> 15, 11]
@@ -1010,8 +1010,8 @@ def test_TraditionalMultipleArgs():
                         ':' <<Regex: <_sre.SRE_Match object; span=(305, 306), match=':'>>> ws:None [16, 2 -> 16, 3]
                         Newline+ <<306, 307>> ws:None [16, 3 -> 17, 1]
                         Indent <<307, 311, (4)>> ws:None [17, 1 -> 17, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(311, 315), match='pass'>>> ws:None [17, 5 -> 17, 9]
@@ -1175,7 +1175,7 @@ def test_TraditionalWithDefaults():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -1187,7 +1187,7 @@ def test_TraditionalWithDefaults():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(12, 15), match='Int'>>> ws:None [1, 13 -> 1, 16]
@@ -1197,7 +1197,7 @@ def test_TraditionalWithDefaults():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(17, 18), match=','>>> ws:None [1, 18 -> 1, 19]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(19, 23), match='Bool'>>> ws:(18, 19) [1, 20 -> 1, 24]
@@ -1205,7 +1205,7 @@ def test_TraditionalWithDefaults():
                                                         Repeat: (With Default, 0, 1)
                                                             With Default
                                                                 '=' <<Regex: <_sre.SRE_Match object; span=(27, 28), match='='>>> ws:None [1, 28 -> 1, 29]
-                                                                DynamicStatements.Expressions
+                                                                DynamicStatementsType.Expressions
                                                                     1.0.0 Grammar
                                                                         Variable Name
                                                                             <name> <<Regex: <_sre.SRE_Match object; span=(28, 32), match='true'>>> ws:None [1, 29 -> 1, 33]
@@ -1213,8 +1213,8 @@ def test_TraditionalWithDefaults():
                         ':' <<Regex: <_sre.SRE_Match object; span=(33, 34), match=':'>>> ws:None [1, 34 -> 1, 35]
                         Newline+ <<34, 35>> ws:None [1, 35 -> 2, 1]
                         Indent <<35, 39, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(39, 43), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -1276,7 +1276,7 @@ def test_TraditionalWithPositional():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 3), match='Int'>>> ws:None [1, 1 -> 1, 4]
@@ -1288,7 +1288,7 @@ def test_TraditionalWithPositional():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(10, 13), match='Int'>>> ws:None [1, 11 -> 1, 14]
@@ -1302,7 +1302,7 @@ def test_TraditionalWithPositional():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(18, 19), match=','>>> ws:None [1, 19 -> 1, 20]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(20, 24), match='Bool'>>> ws:(19, 20) [1, 21 -> 1, 25]
@@ -1311,8 +1311,8 @@ def test_TraditionalWithPositional():
                         ':' <<Regex: <_sre.SRE_Match object; span=(27, 28), match=':'>>> ws:None [1, 28 -> 1, 29]
                         Newline+ <<28, 29>> ws:None [1, 29 -> 2, 1]
                         Indent <<29, 33, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(33, 37), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -1321,7 +1321,7 @@ def test_TraditionalWithPositional():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(39, 45), match='String'>>> ws:None [4, 1 -> 4, 7]
@@ -1333,7 +1333,7 @@ def test_TraditionalWithPositional():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(52, 55), match='Int'>>> ws:None [4, 14 -> 4, 17]
@@ -1347,8 +1347,8 @@ def test_TraditionalWithPositional():
                         ':' <<Regex: <_sre.SRE_Match object; span=(61, 62), match=':'>>> ws:None [4, 23 -> 4, 24]
                         Newline+ <<62, 63>> ws:None [4, 24 -> 5, 1]
                         Indent <<63, 67, (4)>> ws:None [5, 1 -> 5, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(67, 71), match='pass'>>> ws:None [5, 5 -> 5, 9]
@@ -1428,7 +1428,7 @@ def test_TraditionalWithKeyword():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 3), match='Int'>>> ws:None [1, 1 -> 1, 4]
@@ -1440,7 +1440,7 @@ def test_TraditionalWithKeyword():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(9, 12), match='Int'>>> ws:None [1, 10 -> 1, 13]
@@ -1454,7 +1454,7 @@ def test_TraditionalWithKeyword():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(17, 18), match=','>>> ws:None [1, 18 -> 1, 19]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(19, 23), match='Bool'>>> ws:(18, 19) [1, 20 -> 1, 24]
@@ -1463,8 +1463,8 @@ def test_TraditionalWithKeyword():
                         ':' <<Regex: <_sre.SRE_Match object; span=(26, 27), match=':'>>> ws:None [1, 27 -> 1, 28]
                         Newline+ <<27, 28>> ws:None [1, 28 -> 2, 1]
                         Indent <<28, 32, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(32, 36), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -1519,7 +1519,7 @@ def test_TraditionalWithPositionalAndKeyword():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -1531,7 +1531,7 @@ def test_TraditionalWithPositionalAndKeyword():
                                     Traditional
                                         Or: {Parameter, '/', '*'}
                                             Parameter
-                                                DynamicStatements.Types
+                                                DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
                                                             <name> <<Regex: <_sre.SRE_Match object; span=(16, 19), match='Int'>>> ws:None [1, 17 -> 1, 20]
@@ -1545,7 +1545,7 @@ def test_TraditionalWithPositionalAndKeyword():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(24, 25), match=','>>> ws:None [1, 25 -> 1, 26]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(26, 29), match='Int'>>> ws:(25, 26) [1, 27 -> 1, 30]
@@ -1558,7 +1558,7 @@ def test_TraditionalWithPositionalAndKeyword():
                                                 ',' <<Regex: <_sre.SRE_Match object; span=(34, 35), match=','>>> ws:None [1, 35 -> 1, 36]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
-                                                        DynamicStatements.Types
+                                                        DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(36, 39), match='Int'>>> ws:(35, 36) [1, 37 -> 1, 40]
@@ -1567,8 +1567,8 @@ def test_TraditionalWithPositionalAndKeyword():
                         ':' <<Regex: <_sre.SRE_Match object; span=(42, 43), match=':'>>> ws:None [1, 43 -> 1, 44]
                         Newline+ <<43, 44>> ws:None [1, 44 -> 2, 1]
                         Indent <<44, 48, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(48, 52), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -1635,7 +1635,7 @@ def test_NewStyleSingleArg():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -1651,7 +1651,7 @@ def test_NewStyleSingleArg():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(16, 17), match=':'>>> ws:None [1, 17 -> 1, 18]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(18, 21), match='Int'>>> ws:(17, 18) [1, 19 -> 1, 22]
@@ -1660,8 +1660,8 @@ def test_NewStyleSingleArg():
                         ':' <<Regex: <_sre.SRE_Match object; span=(24, 25), match=':'>>> ws:None [1, 25 -> 1, 26]
                         Newline+ <<25, 26>> ws:None [1, 26 -> 2, 1]
                         Indent <<26, 30, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(30, 34), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -1670,7 +1670,7 @@ def test_NewStyleSingleArg():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(36, 42), match='String'>>> ws:None [4, 1 -> 4, 7]
@@ -1686,7 +1686,7 @@ def test_NewStyleSingleArg():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(57, 58), match=':'>>> ws:None [5, 8 -> 5, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(59, 63), match='Bool'>>> ws:(58, 59) [5, 10 -> 5, 14]
@@ -1697,8 +1697,8 @@ def test_NewStyleSingleArg():
                         ':' <<Regex: <_sre.SRE_Match object; span=(68, 69), match=':'>>> ws:None [6, 2 -> 6, 3]
                         Newline+ <<69, 70>> ws:None [6, 3 -> 7, 1]
                         Indent <<70, 74, (4)>> ws:None [7, 1 -> 7, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(74, 78), match='pass'>>> ws:None [7, 5 -> 7, 9]
@@ -1707,7 +1707,7 @@ def test_NewStyleSingleArg():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(80, 83), match='Int'>>> ws:None [9, 1 -> 9, 4]
@@ -1723,7 +1723,7 @@ def test_NewStyleSingleArg():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(93, 94), match=':'>>> ws:None [9, 14 -> 9, 15]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(95, 99), match='Char'>>> ws:(94, 95) [9, 16 -> 9, 20]
@@ -1734,8 +1734,8 @@ def test_NewStyleSingleArg():
                         ':' <<Regex: <_sre.SRE_Match object; span=(103, 104), match=':'>>> ws:None [9, 24 -> 9, 25]
                         Newline+ <<104, 105>> ws:None [9, 25 -> 10, 1]
                         Indent <<105, 109, (4)>> ws:None [10, 1 -> 10, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(109, 113), match='pass'>>> ws:None [10, 5 -> 10, 9]
@@ -1848,7 +1848,7 @@ def test_NewStylePos():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -1864,7 +1864,7 @@ def test_NewStylePos():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(16, 17), match=':'>>> ws:None [1, 17 -> 1, 18]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(18, 21), match='Int'>>> ws:(17, 18) [1, 19 -> 1, 22]
@@ -1873,7 +1873,7 @@ def test_NewStylePos():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [1, 24 -> 1, 25]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(25, 29), match='Bool'>>> ws:(24, 25) [1, 26 -> 1, 30]
@@ -1882,8 +1882,8 @@ def test_NewStylePos():
                         ':' <<Regex: <_sre.SRE_Match object; span=(32, 33), match=':'>>> ws:None [1, 33 -> 1, 34]
                         Newline+ <<33, 34>> ws:None [1, 34 -> 2, 1]
                         Indent <<34, 38, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(38, 42), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -1892,7 +1892,7 @@ def test_NewStylePos():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(44, 50), match='String'>>> ws:None [4, 1 -> 4, 7]
@@ -1908,7 +1908,7 @@ def test_NewStylePos():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(65, 66), match=':'>>> ws:None [5, 8 -> 5, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(67, 70), match='Int'>>> ws:(66, 67) [5, 10 -> 5, 13]
@@ -1917,7 +1917,7 @@ def test_NewStylePos():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(72, 73), match=','>>> ws:None [5, 15 -> 5, 16]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(74, 78), match='Bool'>>> ws:(73, 74) [5, 17 -> 5, 21]
@@ -1926,8 +1926,8 @@ def test_NewStylePos():
                         ':' <<Regex: <_sre.SRE_Match object; span=(82, 83), match=':'>>> ws:None [6, 2 -> 6, 3]
                         Newline+ <<83, 84>> ws:None [6, 3 -> 7, 1]
                         Indent <<84, 88, (4)>> ws:None [7, 1 -> 7, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(88, 92), match='pass'>>> ws:None [7, 5 -> 7, 9]
@@ -1936,7 +1936,7 @@ def test_NewStylePos():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(94, 97), match='Int'>>> ws:None [9, 1 -> 9, 4]
@@ -1952,7 +1952,7 @@ def test_NewStylePos():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(112, 113), match=':'>>> ws:None [10, 8 -> 10, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(122, 125), match='Int'>>> ws:None [11, 9 -> 11, 12]
@@ -1961,7 +1961,7 @@ def test_NewStylePos():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(127, 128), match=','>>> ws:None [11, 14 -> 11, 15]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(137, 141), match='Bool'>>> ws:None [12, 9 -> 12, 13]
@@ -1972,8 +1972,8 @@ def test_NewStylePos():
                         ':' <<Regex: <_sre.SRE_Match object; span=(146, 147), match=':'>>> ws:None [13, 2 -> 13, 3]
                         Newline+ <<147, 148>> ws:None [13, 3 -> 14, 1]
                         Indent <<148, 152, (4)>> ws:None [14, 1 -> 14, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(152, 156), match='pass'>>> ws:None [14, 5 -> 14, 9]
@@ -2104,7 +2104,7 @@ def test_NewStyleKey():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -2120,7 +2120,7 @@ def test_NewStyleKey():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(16, 17), match=':'>>> ws:None [1, 17 -> 1, 18]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(18, 21), match='Int'>>> ws:(17, 18) [1, 19 -> 1, 22]
@@ -2129,7 +2129,7 @@ def test_NewStyleKey():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [1, 24 -> 1, 25]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(25, 29), match='Bool'>>> ws:(24, 25) [1, 26 -> 1, 30]
@@ -2138,8 +2138,8 @@ def test_NewStyleKey():
                         ':' <<Regex: <_sre.SRE_Match object; span=(32, 33), match=':'>>> ws:None [1, 33 -> 1, 34]
                         Newline+ <<33, 34>> ws:None [1, 34 -> 2, 1]
                         Indent <<34, 38, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(38, 42), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -2148,7 +2148,7 @@ def test_NewStyleKey():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(44, 50), match='String'>>> ws:None [4, 1 -> 4, 7]
@@ -2164,7 +2164,7 @@ def test_NewStyleKey():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(65, 66), match=':'>>> ws:None [5, 8 -> 5, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(67, 70), match='Int'>>> ws:(66, 67) [5, 10 -> 5, 13]
@@ -2173,7 +2173,7 @@ def test_NewStyleKey():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(72, 73), match=','>>> ws:None [5, 15 -> 5, 16]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(74, 78), match='Bool'>>> ws:(73, 74) [5, 17 -> 5, 21]
@@ -2182,8 +2182,8 @@ def test_NewStyleKey():
                         ':' <<Regex: <_sre.SRE_Match object; span=(82, 83), match=':'>>> ws:None [6, 2 -> 6, 3]
                         Newline+ <<83, 84>> ws:None [6, 3 -> 7, 1]
                         Indent <<84, 88, (4)>> ws:None [7, 1 -> 7, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(88, 92), match='pass'>>> ws:None [7, 5 -> 7, 9]
@@ -2192,7 +2192,7 @@ def test_NewStyleKey():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(94, 97), match='Int'>>> ws:None [9, 1 -> 9, 4]
@@ -2208,7 +2208,7 @@ def test_NewStyleKey():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(112, 113), match=':'>>> ws:None [10, 8 -> 10, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(122, 125), match='Int'>>> ws:None [11, 9 -> 11, 12]
@@ -2217,7 +2217,7 @@ def test_NewStyleKey():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(127, 128), match=','>>> ws:None [11, 14 -> 11, 15]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(137, 141), match='Bool'>>> ws:None [12, 9 -> 12, 13]
@@ -2228,8 +2228,8 @@ def test_NewStyleKey():
                         ':' <<Regex: <_sre.SRE_Match object; span=(146, 147), match=':'>>> ws:None [13, 2 -> 13, 3]
                         Newline+ <<147, 148>> ws:None [13, 3 -> 14, 1]
                         Indent <<148, 152, (4)>> ws:None [14, 1 -> 14, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(152, 156), match='pass'>>> ws:None [14, 5 -> 14, 9]
@@ -2360,7 +2360,7 @@ def test_NewStyleAny():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -2376,7 +2376,7 @@ def test_NewStyleAny():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(16, 17), match=':'>>> ws:None [1, 17 -> 1, 18]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(18, 21), match='Int'>>> ws:(17, 18) [1, 19 -> 1, 22]
@@ -2385,7 +2385,7 @@ def test_NewStyleAny():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [1, 24 -> 1, 25]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(25, 29), match='Bool'>>> ws:(24, 25) [1, 26 -> 1, 30]
@@ -2394,8 +2394,8 @@ def test_NewStyleAny():
                         ':' <<Regex: <_sre.SRE_Match object; span=(32, 33), match=':'>>> ws:None [1, 33 -> 1, 34]
                         Newline+ <<33, 34>> ws:None [1, 34 -> 2, 1]
                         Indent <<34, 38, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(38, 42), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -2404,7 +2404,7 @@ def test_NewStyleAny():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(44, 50), match='String'>>> ws:None [4, 1 -> 4, 7]
@@ -2420,7 +2420,7 @@ def test_NewStyleAny():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(65, 66), match=':'>>> ws:None [5, 8 -> 5, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(67, 70), match='Int'>>> ws:(66, 67) [5, 10 -> 5, 13]
@@ -2429,7 +2429,7 @@ def test_NewStyleAny():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(72, 73), match=','>>> ws:None [5, 15 -> 5, 16]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(74, 78), match='Bool'>>> ws:(73, 74) [5, 17 -> 5, 21]
@@ -2438,8 +2438,8 @@ def test_NewStyleAny():
                         ':' <<Regex: <_sre.SRE_Match object; span=(82, 83), match=':'>>> ws:None [6, 2 -> 6, 3]
                         Newline+ <<83, 84>> ws:None [6, 3 -> 7, 1]
                         Indent <<84, 88, (4)>> ws:None [7, 1 -> 7, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(88, 92), match='pass'>>> ws:None [7, 5 -> 7, 9]
@@ -2448,7 +2448,7 @@ def test_NewStyleAny():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(94, 97), match='Int'>>> ws:None [9, 1 -> 9, 4]
@@ -2464,7 +2464,7 @@ def test_NewStyleAny():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(112, 113), match=':'>>> ws:None [10, 8 -> 10, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(122, 125), match='Int'>>> ws:None [11, 9 -> 11, 12]
@@ -2473,7 +2473,7 @@ def test_NewStyleAny():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(127, 128), match=','>>> ws:None [11, 14 -> 11, 15]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(137, 141), match='Bool'>>> ws:None [12, 9 -> 12, 13]
@@ -2484,8 +2484,8 @@ def test_NewStyleAny():
                         ':' <<Regex: <_sre.SRE_Match object; span=(146, 147), match=':'>>> ws:None [13, 2 -> 13, 3]
                         Newline+ <<147, 148>> ws:None [13, 3 -> 14, 1]
                         Indent <<148, 152, (4)>> ws:None [14, 1 -> 14, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(152, 156), match='pass'>>> ws:None [14, 5 -> 14, 9]
@@ -2619,7 +2619,7 @@ def test_NewStylePosKey():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -2635,7 +2635,7 @@ def test_NewStylePosKey():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(16, 17), match=':'>>> ws:None [1, 17 -> 1, 18]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(18, 21), match='Int'>>> ws:(17, 18) [1, 19 -> 1, 22]
@@ -2644,7 +2644,7 @@ def test_NewStylePosKey():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [1, 24 -> 1, 25]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(25, 29), match='Bool'>>> ws:(24, 25) [1, 26 -> 1, 30]
@@ -2657,7 +2657,7 @@ def test_NewStylePosKey():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(36, 37), match=':'>>> ws:None [1, 37 -> 1, 38]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(38, 42), match='Char'>>> ws:(37, 38) [1, 39 -> 1, 43]
@@ -2668,8 +2668,8 @@ def test_NewStylePosKey():
                         ':' <<Regex: <_sre.SRE_Match object; span=(46, 47), match=':'>>> ws:None [1, 47 -> 1, 48]
                         Newline+ <<47, 48>> ws:None [1, 48 -> 2, 1]
                         Indent <<48, 52, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(52, 56), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -2678,7 +2678,7 @@ def test_NewStylePosKey():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(58, 64), match='String'>>> ws:None [4, 1 -> 4, 7]
@@ -2694,7 +2694,7 @@ def test_NewStylePosKey():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(79, 80), match=':'>>> ws:None [5, 8 -> 5, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(81, 84), match='Int'>>> ws:(80, 81) [5, 10 -> 5, 13]
@@ -2703,7 +2703,7 @@ def test_NewStylePosKey():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(86, 87), match=','>>> ws:None [5, 15 -> 5, 16]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(88, 92), match='Bool'>>> ws:(87, 88) [5, 17 -> 5, 21]
@@ -2714,7 +2714,7 @@ def test_NewStylePosKey():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(102, 103), match=':'>>> ws:None [6, 8 -> 6, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(104, 108), match='Char'>>> ws:(103, 104) [6, 10 -> 6, 14]
@@ -2723,8 +2723,8 @@ def test_NewStylePosKey():
                         ':' <<Regex: <_sre.SRE_Match object; span=(112, 113), match=':'>>> ws:None [7, 2 -> 7, 3]
                         Newline+ <<113, 114>> ws:None [7, 3 -> 8, 1]
                         Indent <<114, 118, (4)>> ws:None [8, 1 -> 8, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(118, 122), match='pass'>>> ws:None [8, 5 -> 8, 9]
@@ -2733,7 +2733,7 @@ def test_NewStylePosKey():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(124, 130), match='String'>>> ws:None [10, 1 -> 10, 7]
@@ -2749,7 +2749,7 @@ def test_NewStylePosKey():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(145, 146), match=':'>>> ws:None [11, 8 -> 11, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(155, 158), match='Int'>>> ws:None [12, 9 -> 12, 12]
@@ -2758,7 +2758,7 @@ def test_NewStylePosKey():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(160, 161), match=','>>> ws:None [12, 14 -> 12, 15]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(170, 174), match='Bool'>>> ws:None [13, 9 -> 13, 13]
@@ -2771,7 +2771,7 @@ def test_NewStylePosKey():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(185, 186), match=':'>>> ws:None [14, 8 -> 14, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(195, 199), match='Char'>>> ws:None [15, 9 -> 15, 13]
@@ -2782,8 +2782,8 @@ def test_NewStylePosKey():
                         ':' <<Regex: <_sre.SRE_Match object; span=(204, 205), match=':'>>> ws:None [16, 2 -> 16, 3]
                         Newline+ <<205, 206>> ws:None [16, 3 -> 17, 1]
                         Indent <<206, 210, (4)>> ws:None [17, 1 -> 17, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(210, 214), match='pass'>>> ws:None [17, 5 -> 17, 9]
@@ -2930,7 +2930,7 @@ def test_NewStyleWithDefaults():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -2946,7 +2946,7 @@ def test_NewStyleWithDefaults():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(16, 17), match=':'>>> ws:None [1, 17 -> 1, 18]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(18, 21), match='Int'>>> ws:(17, 18) [1, 19 -> 1, 22]
@@ -2955,7 +2955,7 @@ def test_NewStyleWithDefaults():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(23, 24), match=','>>> ws:None [1, 24 -> 1, 25]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(25, 29), match='Bool'>>> ws:(24, 25) [1, 26 -> 1, 30]
@@ -2963,7 +2963,7 @@ def test_NewStyleWithDefaults():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(33, 34), match=','>>> ws:None [1, 34 -> 1, 35]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(35, 39), match='Char'>>> ws:(34, 35) [1, 36 -> 1, 40]
@@ -2971,7 +2971,7 @@ def test_NewStyleWithDefaults():
                                                             Repeat: (With Default, 0, 1)
                                                                 With Default
                                                                     '=' <<Regex: <_sre.SRE_Match object; span=(41, 42), match='='>>> ws:None [1, 42 -> 1, 43]
-                                                                    DynamicStatements.Expressions
+                                                                    DynamicStatementsType.Expressions
                                                                         1.0.0 Grammar
                                                                             Variable Name
                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(42, 56), match='default_value1'>>> ws:None [1, 43 -> 1, 57]
@@ -2983,7 +2983,7 @@ def test_NewStyleWithDefaults():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(61, 62), match=':'>>> ws:None [1, 62 -> 1, 63]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(63, 69), match='Double'>>> ws:(62, 63) [1, 64 -> 1, 70]
@@ -2991,7 +2991,7 @@ def test_NewStyleWithDefaults():
                                                     Repeat: (With Default, 0, 1)
                                                         With Default
                                                             '=' <<Regex: <_sre.SRE_Match object; span=(71, 72), match='='>>> ws:None [1, 72 -> 1, 73]
-                                                            DynamicStatements.Expressions
+                                                            DynamicStatementsType.Expressions
                                                                 1.0.0 Grammar
                                                                     Variable Name
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(72, 86), match='default_value2'>>> ws:None [1, 73 -> 1, 87]
@@ -2999,8 +2999,8 @@ def test_NewStyleWithDefaults():
                         ':' <<Regex: <_sre.SRE_Match object; span=(87, 88), match=':'>>> ws:None [1, 88 -> 1, 89]
                         Newline+ <<88, 89>> ws:None [1, 89 -> 2, 1]
                         Indent <<89, 93, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(93, 97), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -3009,7 +3009,7 @@ def test_NewStyleWithDefaults():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(99, 102), match='Int'>>> ws:None [4, 1 -> 4, 4]
@@ -3025,7 +3025,7 @@ def test_NewStyleWithDefaults():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(117, 118), match=':'>>> ws:None [5, 8 -> 5, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(119, 122), match='Int'>>> ws:(118, 119) [5, 10 -> 5, 13]
@@ -3034,7 +3034,7 @@ def test_NewStyleWithDefaults():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(124, 125), match=','>>> ws:None [5, 15 -> 5, 16]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(126, 130), match='Bool'>>> ws:(125, 126) [5, 17 -> 5, 21]
@@ -3047,7 +3047,7 @@ def test_NewStyleWithDefaults():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(141, 142), match=':'>>> ws:None [6, 8 -> 6, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(143, 147), match='Char'>>> ws:(142, 143) [6, 10 -> 6, 14]
@@ -3055,7 +3055,7 @@ def test_NewStyleWithDefaults():
                                                     Repeat: (With Default, 0, 1)
                                                         With Default
                                                             '=' <<Regex: <_sre.SRE_Match object; span=(149, 150), match='='>>> ws:None [6, 16 -> 6, 17]
-                                                            DynamicStatements.Expressions
+                                                            DynamicStatementsType.Expressions
                                                                 1.0.0 Grammar
                                                                     Variable Name
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(150, 156), match='value1'>>> ws:None [6, 17 -> 6, 23]
@@ -3065,8 +3065,8 @@ def test_NewStyleWithDefaults():
                         ':' <<Regex: <_sre.SRE_Match object; span=(159, 160), match=':'>>> ws:None [7, 2 -> 7, 3]
                         Newline+ <<160, 161>> ws:None [7, 3 -> 8, 1]
                         Indent <<161, 165, (4)>> ws:None [8, 1 -> 8, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(165, 169), match='pass'>>> ws:None [8, 5 -> 8, 9]
@@ -3075,7 +3075,7 @@ def test_NewStyleWithDefaults():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(171, 175), match='Char'>>> ws:None [10, 1 -> 10, 5]
@@ -3091,7 +3091,7 @@ def test_NewStyleWithDefaults():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(190, 191), match=':'>>> ws:None [11, 8 -> 11, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(200, 203), match='Int'>>> ws:None [12, 9 -> 12, 12]
@@ -3099,7 +3099,7 @@ def test_NewStyleWithDefaults():
                                                     Repeat: (With Default, 0, 1)
                                                         With Default
                                                             '=' <<Regex: <_sre.SRE_Match object; span=(205, 206), match='='>>> ws:None [12, 14 -> 12, 15]
-                                                            DynamicStatements.Expressions
+                                                            DynamicStatementsType.Expressions
                                                                 1.0.0 Grammar
                                                                     Variable Name
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(206, 212), match='value1'>>> ws:None [12, 15 -> 12, 21]
@@ -3107,7 +3107,7 @@ def test_NewStyleWithDefaults():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(212, 213), match=','>>> ws:None [12, 21 -> 12, 22]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(222, 226), match='Bool'>>> ws:None [13, 9 -> 13, 13]
@@ -3115,7 +3115,7 @@ def test_NewStyleWithDefaults():
                                                             Repeat: (With Default, 0, 1)
                                                                 With Default
                                                                     '=' <<Regex: <_sre.SRE_Match object; span=(228, 229), match='='>>> ws:None [13, 15 -> 13, 16]
-                                                                    DynamicStatements.Expressions
+                                                                    DynamicStatementsType.Expressions
                                                                         1.0.0 Grammar
                                                                             Variable Name
                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(229, 235), match='value2'>>> ws:None [13, 16 -> 13, 22]
@@ -3125,7 +3125,7 @@ def test_NewStyleWithDefaults():
                                             ':' <<Regex: <_sre.SRE_Match object; span=(243, 244), match=':'>>> ws:None [14, 8 -> 14, 9]
                                             Delimited Elements
                                                 Parameter
-                                                    DynamicStatements.Types
+                                                    DynamicStatementsType.Types
                                                         1.0.0 Grammar
                                                             Standard
                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(253, 257), match='Char'>>> ws:None [15, 9 -> 15, 13]
@@ -3133,7 +3133,7 @@ def test_NewStyleWithDefaults():
                                                     Repeat: (With Default, 0, 1)
                                                         With Default
                                                             '=' <<Regex: <_sre.SRE_Match object; span=(259, 260), match='='>>> ws:None [15, 15 -> 15, 16]
-                                                            DynamicStatements.Expressions
+                                                            DynamicStatementsType.Expressions
                                                                 1.0.0 Grammar
                                                                     Variable Name
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(260, 266), match='value3'>>> ws:None [15, 16 -> 15, 22]
@@ -3141,7 +3141,7 @@ def test_NewStyleWithDefaults():
                                                     Delimiter and Element
                                                         ',' <<Regex: <_sre.SRE_Match object; span=(266, 267), match=','>>> ws:None [15, 22 -> 15, 23]
                                                         Parameter
-                                                            DynamicStatements.Types
+                                                            DynamicStatementsType.Types
                                                                 1.0.0 Grammar
                                                                     Standard
                                                                         <name> <<Regex: <_sre.SRE_Match object; span=(276, 282), match='Double'>>> ws:None [16, 9 -> 16, 15]
@@ -3149,7 +3149,7 @@ def test_NewStyleWithDefaults():
                                                             Repeat: (With Default, 0, 1)
                                                                 With Default
                                                                     '=' <<Regex: <_sre.SRE_Match object; span=(284, 285), match='='>>> ws:None [16, 17 -> 16, 18]
-                                                                    DynamicStatements.Expressions
+                                                                    DynamicStatementsType.Expressions
                                                                         1.0.0 Grammar
                                                                             Variable Name
                                                                                 <name> <<Regex: <_sre.SRE_Match object; span=(285, 291), match='value4'>>> ws:None [16, 18 -> 16, 24]
@@ -3157,8 +3157,8 @@ def test_NewStyleWithDefaults():
                         ':' <<Regex: <_sre.SRE_Match object; span=(293, 294), match=':'>>> ws:None [17, 2 -> 17, 3]
                         Newline+ <<294, 295>> ws:None [17, 3 -> 18, 1]
                         Indent <<295, 299, (4)>> ws:None [18, 1 -> 18, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(299, 303), match='pass'>>> ws:None [18, 5 -> 18, 9]
@@ -3318,7 +3318,7 @@ def test_NestedFunc():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -3329,11 +3329,11 @@ def test_NestedFunc():
                         ':' <<Regex: <_sre.SRE_Match object; span=(14, 15), match=':'>>> ws:None [1, 15 -> 1, 16]
                         Newline+ <<15, 16>> ws:None [1, 16 -> 2, 1]
                         Indent <<16, 20, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Function Declaration
-                                        DynamicStatements.Types
+                                        DynamicStatementsType.Types
                                             1.0.0 Grammar
                                                 Standard
                                                     <name> <<Regex: <_sre.SRE_Match object; span=(20, 23), match='Int'>>> ws:None [2, 5 -> 2, 8]
@@ -3345,7 +3345,7 @@ def test_NestedFunc():
                                                     Traditional
                                                         Or: {Parameter, '/', '*'}
                                                             Parameter
-                                                                DynamicStatements.Types
+                                                                DynamicStatementsType.Types
                                                                     1.0.0 Grammar
                                                                         Standard
                                                                             <name> <<Regex: <_sre.SRE_Match object; span=(31, 34), match='Int'>>> ws:None [2, 16 -> 2, 19]
@@ -3355,7 +3355,7 @@ def test_NestedFunc():
                                                                 ',' <<Regex: <_sre.SRE_Match object; span=(36, 37), match=','>>> ws:None [2, 21 -> 2, 22]
                                                                 Or: {Parameter, '/', '*'}
                                                                     Parameter
-                                                                        DynamicStatements.Types
+                                                                        DynamicStatementsType.Types
                                                                             1.0.0 Grammar
                                                                                 Standard
                                                                                     <name> <<Regex: <_sre.SRE_Match object; span=(38, 42), match='Bool'>>> ws:(37, 38) [2, 23 -> 2, 27]
@@ -3364,8 +3364,8 @@ def test_NestedFunc():
                                         ':' <<Regex: <_sre.SRE_Match object; span=(45, 46), match=':'>>> ws:None [2, 30 -> 2, 31]
                                         Newline+ <<46, 47>> ws:None [2, 31 -> 3, 1]
                                         Indent <<47, 55, (8)>> ws:None [3, 1 -> 3, 9]
-                                        Repeat: (DynamicStatements.Statements, 1, None)
-                                            DynamicStatements.Statements
+                                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                                            DynamicStatementsType.Statements
                                                 1.0.0 Grammar
                                                     Pass
                                                         'pass' <<Regex: <_sre.SRE_Match object; span=(55, 59), match='pass'>>> ws:None [3, 9 -> 3, 13]
@@ -3451,7 +3451,7 @@ def test_FunctionNames():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
@@ -3462,8 +3462,8 @@ def test_FunctionNames():
                         ':' <<Regex: <_sre.SRE_Match object; span=(14, 15), match=':'>>> ws:None [1, 15 -> 1, 16]
                         Newline+ <<15, 16>> ws:None [1, 16 -> 2, 1]
                         Indent <<16, 20, (4)>> ws:None [2, 1 -> 2, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(20, 24), match='pass'>>> ws:None [2, 5 -> 2, 9]
@@ -3472,7 +3472,7 @@ def test_FunctionNames():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        DynamicStatements.Types
+                        DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
                                     <name> <<Regex: <_sre.SRE_Match object; span=(26, 32), match='String'>>> ws:None [4, 1 -> 4, 7]
@@ -3483,8 +3483,8 @@ def test_FunctionNames():
                         ':' <<Regex: <_sre.SRE_Match object; span=(45, 46), match=':'>>> ws:None [4, 20 -> 4, 21]
                         Newline+ <<46, 47>> ws:None [4, 21 -> 5, 1]
                         Indent <<47, 51, (4)>> ws:None [5, 1 -> 5, 5]
-                        Repeat: (DynamicStatements.Statements, 1, None)
-                            DynamicStatements.Statements
+                        Repeat: (DynamicStatementsType.Statements, 1, None)
+                            DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
                                         'pass' <<Regex: <_sre.SRE_Match object; span=(51, 55), match='pass'>>> ws:None [5, 5 -> 5, 9]

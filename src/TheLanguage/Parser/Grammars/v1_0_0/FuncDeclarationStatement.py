@@ -142,7 +142,7 @@ class FuncDeclarationStatement(GrammarStatement):
                     ),
 
                     # <type>
-                    GrammarDSL.DynamicStatements.Types,
+                    GrammarDSL.DynamicStatementsType.Types,
 
                     # <name>
                     CommonTokens.Name,
@@ -168,7 +168,7 @@ class FuncDeclarationStatement(GrammarStatement):
 
                     # <statement>+
                     GrammarDSL.StatementItem(
-                        GrammarDSL.DynamicStatements.Statements,
+                        GrammarDSL.DynamicStatementsType.Statements,
                         arity="+",
                     ),
 

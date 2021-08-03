@@ -270,7 +270,7 @@ def CreateStatement() -> Statement:
         name="Parameter",
         item=[
             # <type> '*'? <name> ('=' <expr>)?
-            GrammarDSL.DynamicStatements.Types,
+            GrammarDSL.DynamicStatementsType.Types,
             GrammarDSL.StatementItem(
                 name="Arity",
                 item=CommonTokens.FunctionParameterVarArgsType,
@@ -281,7 +281,7 @@ def CreateStatement() -> Statement:
                 name="With Default",
                 item=[
                     CommonTokens.Equal,
-                    GrammarDSL.DynamicStatements.Expressions,
+                    GrammarDSL.DynamicStatementsType.Expressions,
                 ],
                 arity="?",
             ),

@@ -203,7 +203,7 @@ class ClassDeclarationStatement(GrammarStatement):
 
                     # <statement>+
                     GrammarDSL.StatementItem(
-                        GrammarDSL.DynamicStatements.Statements,
+                        GrammarDSL.DynamicStatementsType.Statements,
                         arity="+",
                     ),
 

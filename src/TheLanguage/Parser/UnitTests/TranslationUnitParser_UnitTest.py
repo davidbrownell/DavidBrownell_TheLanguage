@@ -49,7 +49,7 @@ with InitRelativeImports():
         RegexToken,
     )
 
-    from ..Statements.StatementDSL import CreateStatement, DynamicStatements, StatementItem
+    from ..Statements.StatementDSL import CreateStatement, DynamicStatementsType, StatementItem
 
 
 # ----------------------------------------------------------------------
@@ -512,10 +512,10 @@ class TestNewScopedStatementsComplex(object):
             RegexToken("Colon", re.compile(r":")),
             NewlineToken(),
             IndentToken(),
-            DynamicStatements.Statements,
-            DynamicStatements.Statements,
-            DynamicStatements.Statements,
-            DynamicStatements.Statements,
+            DynamicStatementsType.Statements,
+            DynamicStatementsType.Statements,
+            DynamicStatementsType.Statements,
+            DynamicStatementsType.Statements,
             DedentToken(),
         ],
     )
@@ -555,16 +555,16 @@ class TestNewScopedStatementsComplex(object):
                             Colon <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
                             Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
                             Indent <<10, 14, (4)>> ws:None [2, 1 -> 2, 5]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Newline Statement, New Scope} / {Upper Statement, Lower Statement}
                                     Upper <<Regex: <_sre.SRE_Match object; span=(14, 19), match='UPPER'>>> ws:None [2, 5 -> 2, 10]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Newline Statement, New Scope} / {Upper Statement, Lower Statement}
                                     Newline+ <<19, 21>> ws:None [2, 10 -> 4, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Newline Statement, New Scope} / {Upper Statement, Lower Statement}
                                     Lower <<Regex: <_sre.SRE_Match object; span=(25, 30), match='lower'>>> ws:None [4, 5 -> 4, 10]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Newline Statement, New Scope} / {Upper Statement, Lower Statement}
                                     Newline+ <<30, 31>> ws:None [4, 10 -> 5, 1]
                             Dedent <<>> ws:None [5, 1 -> 5, 1]
@@ -921,7 +921,7 @@ async def test_DynamicExpressions(parse_mock):
                     name="Statement",
                     item=[
                         _upper_token,
-                        DynamicStatements.Expressions,
+                        DynamicStatementsType.Expressions,
                         _lower_token,
                         NewlineToken(),
                     ],
@@ -946,7 +946,7 @@ async def test_DynamicExpressions(parse_mock):
                 {Statement}
                     Statement
                         Upper <<Regex: <_sre.SRE_Match object; span=(0, 4), match='WORD'>>> ws:None [1, 1 -> 1, 5]
-                        DynamicStatements.Expressions
+                        DynamicStatementsType.Expressions
                             {Expression}
                                 Number <<Regex: <_sre.SRE_Match object; span=(5, 9), match='1234'>>> ws:(4, 5) [1, 6 -> 1, 10]
                         Lower <<Regex: <_sre.SRE_Match object; span=(10, 15), match='lower'>>> ws:(9, 10) [1, 11 -> 1, 16]
@@ -972,8 +972,8 @@ class TestCatastrophicInclude(object):
         name="Lower Include Statement",
         item=[
             _include_statement,
-            DynamicStatements.Statements,
-            DynamicStatements.Statements,
+            DynamicStatementsType.Statements,
+            DynamicStatementsType.Statements,
         ],
     )
 
@@ -981,9 +981,9 @@ class TestCatastrophicInclude(object):
         name="Number Include Statement",
         item=[
             _include_statement,
-            DynamicStatements.Statements,
-            DynamicStatements.Statements,
-            DynamicStatements.Statements,
+            DynamicStatementsType.Statements,
+            DynamicStatementsType.Statements,
+            DynamicStatementsType.Statements,
         ],
     )
 
@@ -1081,12 +1081,12 @@ class TestCatastrophicInclude(object):
                                 include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
                                 Upper <<Regex: <_sre.SRE_Match object; span=(8, 13), match='LOWER'>>> ws:(7, 8) [1, 9 -> 1, 14]
                                 Newline+ <<13, 14>> ws:None [1, 14 -> 2, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Lower Statement}
                                     Lower Statement
                                         Lower <<Regex: <_sre.SRE_Match object; span=(14, 17), match='one'>>> ws:None [2, 1 -> 2, 4]
                                         Newline+ <<17, 18>> ws:None [2, 4 -> 3, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Lower Statement}
                                     Lower Statement
                                         Lower <<Regex: <_sre.SRE_Match object; span=(18, 21), match='two'>>> ws:None [3, 1 -> 3, 4]
@@ -1126,17 +1126,17 @@ class TestCatastrophicInclude(object):
                                 include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
                                 Upper <<Regex: <_sre.SRE_Match object; span=(8, 13), match='LOWER'>>> ws:(7, 8) [1, 9 -> 1, 14]
                                 Newline+ <<13, 14>> ws:None [1, 14 -> 2, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Lower Statement}
                                     Lower Statement
                                         Lower <<Regex: <_sre.SRE_Match object; span=(14, 17), match='one'>>> ws:None [2, 1 -> 2, 4]
                                         Newline+ <<17, 18>> ws:None [2, 4 -> 3, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Lower Statement}
                                     Lower Statement
                                         Lower <<Regex: <_sre.SRE_Match object; span=(18, 21), match='two'>>> ws:None [3, 1 -> 3, 4]
                                         Newline+ <<21, 23>> ws:None [3, 4 -> 5, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Lower Statement}
                                     Lower Statement
                                         Lower <<Regex: <_sre.SRE_Match object; span=(23, 28), match='three'>>> ws:None [5, 1 -> 5, 6]
@@ -1179,17 +1179,17 @@ class TestCatastrophicInclude(object):
                                 include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
                                 Upper <<Regex: <_sre.SRE_Match object; span=(8, 14), match='NUMBER'>>> ws:(7, 8) [1, 9 -> 1, 15]
                                 Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Number Statement}
                                     Number Statement
                                         Number <<Regex: <_sre.SRE_Match object; span=(15, 16), match='1'>>> ws:None [2, 1 -> 2, 2]
                                         Newline+ <<16, 17>> ws:None [2, 2 -> 3, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Number Statement}
                                     Number Statement
                                         Number <<Regex: <_sre.SRE_Match object; span=(17, 18), match='2'>>> ws:None [3, 1 -> 3, 2]
                                         Newline+ <<18, 19>> ws:None [3, 2 -> 4, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Number Statement}
                                     Number Statement
                                         Number <<Regex: <_sre.SRE_Match object; span=(19, 20), match='3'>>> ws:None [4, 1 -> 4, 2]
@@ -1230,17 +1230,17 @@ class TestCatastrophicInclude(object):
                                 include <<Regex: <_sre.SRE_Match object; span=(0, 7), match='include'>>> ws:None [1, 1 -> 1, 8]
                                 Upper <<Regex: <_sre.SRE_Match object; span=(8, 14), match='NUMBER'>>> ws:(7, 8) [1, 9 -> 1, 15]
                                 Newline+ <<14, 15>> ws:None [1, 15 -> 2, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Number Statement}
                                     Number Statement
                                         Number <<Regex: <_sre.SRE_Match object; span=(15, 16), match='1'>>> ws:None [2, 1 -> 2, 2]
                                         Newline+ <<16, 17>> ws:None [2, 2 -> 3, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Number Statement}
                                     Number Statement
                                         Number <<Regex: <_sre.SRE_Match object; span=(17, 18), match='2'>>> ws:None [3, 1 -> 3, 2]
                                         Newline+ <<18, 19>> ws:None [3, 2 -> 4, 1]
-                            DynamicStatements.Statements
+                            DynamicStatementsType.Statements
                                 {Lower Include Statement, Number Include Statement} / {Number Statement}
                                     Number Statement
                                         Number <<Regex: <_sre.SRE_Match object; span=(19, 20), match='3'>>> ws:None [4, 1 -> 4, 2]

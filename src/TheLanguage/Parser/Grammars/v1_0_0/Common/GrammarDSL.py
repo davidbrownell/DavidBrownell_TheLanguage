@@ -37,7 +37,7 @@ with InitRelativeImports():
     from ....Components.AST import Leaf, Node, RootNode
 
     from ....Statements.StatementDSL import (
-        DynamicStatements,
+        DynamicStatementsType,
         Statement,
         StatementItem,
     )

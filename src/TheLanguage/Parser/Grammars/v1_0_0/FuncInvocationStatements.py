@@ -201,12 +201,12 @@ class _FuncInvocationBase(GrammarStatement):
                                         item=[
                                             CommonTokens.Name,
                                             CommonTokens.Equal,
-                                            GrammarDSL.DynamicStatements.Expressions,
+                                            GrammarDSL.DynamicStatementsType.Expressions,
                                         ],
                                     ),
 
                                     # <expr>
-                                    GrammarDSL.DynamicStatements.Expressions,
+                                    GrammarDSL.DynamicStatementsType.Expressions,
                                 ),
                             ),
                         ),

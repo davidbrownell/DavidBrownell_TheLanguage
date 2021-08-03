@@ -57,7 +57,7 @@ class VariableDeclarationStatement(GrammarStatement):
                 item=[
                     CommonTokens.Name,
                     CommonTokens.Equal,
-                    GrammarDSL.DynamicStatements.Expressions,
+                    GrammarDSL.DynamicStatementsType.Expressions,
                     CommonTokens.Newline,
                 ],
             ),

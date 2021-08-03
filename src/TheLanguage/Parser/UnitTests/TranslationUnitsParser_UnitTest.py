@@ -51,7 +51,7 @@ with InitRelativeImports():
 
     from ..TranslationUnitsParser import *
 
-    from ..Statements.StatementDSL import CreateStatement, DynamicStatements
+    from ..Statements.StatementDSL import CreateStatement, DynamicStatementsType
 
 
 # ----------------------------------------------------------------------
@@ -97,8 +97,8 @@ class TestStandard(object):
             RegexToken("Colon Token", re.compile(r":")),
             NewlineToken(),
             IndentToken(),
-            DynamicStatements.Statements,
-            DynamicStatements.Statements,
+            DynamicStatementsType.Statements,
+            DynamicStatementsType.Statements,
             DedentToken(),
         ],
     )
@@ -1081,13 +1081,13 @@ class TestStandard(object):
                                 Colon Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
                                 Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
                                 Indent <<10, 14, (4)>> ws:None [2, 1 -> 2, 5]
-                                DynamicStatements.Statements
+                                DynamicStatementsType.Statements
                                     {Include, Upper, Lower, Number, New Scope}
                                         Include
                                             Include Token <<Regex: <_sre.SRE_Match object; span=(14, 21), match='include'>>> ws:None [2, 5 -> 2, 12]
                                             Lower Token <<Regex: <_sre.SRE_Match object; span=(22, 28), match='number'>>> ws:(21, 22) [2, 13 -> 2, 19]
                                             Newline+ <<28, 29>> ws:None [2, 19 -> 3, 1]
-                                DynamicStatements.Statements
+                                DynamicStatementsType.Statements
                                     {Include, Upper, Lower, Number, New Scope} / {Dynamic Number}
                                         Dynamic Number
                                             Number Token <<Regex: <_sre.SRE_Match object; span=(33, 34), match='4'>>> ws:None [3, 5 -> 3, 6]
@@ -1152,13 +1152,13 @@ class TestStandard(object):
                                 Colon Token <<Regex: <_sre.SRE_Match object; span=(8, 9), match=':'>>> ws:None [1, 9 -> 1, 10]
                                 Newline+ <<9, 10>> ws:None [1, 10 -> 2, 1]
                                 Indent <<10, 14, (4)>> ws:None [2, 1 -> 2, 5]
-                                DynamicStatements.Statements
+                                DynamicStatementsType.Statements
                                     {Include, Upper, Lower, Number, New Scope}
                                         Include
                                             Include Token <<Regex: <_sre.SRE_Match object; span=(14, 21), match='include'>>> ws:None [2, 5 -> 2, 12]
                                             Lower Token <<Regex: <_sre.SRE_Match object; span=(22, 28), match='number'>>> ws:(21, 22) [2, 13 -> 2, 19]
                                             Newline+ <<28, 29>> ws:None [2, 19 -> 3, 1]
-                                DynamicStatements.Statements
+                                DynamicStatementsType.Statements
                                     {Include, Upper, Lower, Number, New Scope} / {Dynamic Number}
                                         Dynamic Number
                                             Number Token <<Regex: <_sre.SRE_Match object; span=(33, 34), match='1'>>> ws:None [3, 5 -> 3, 6]

@@ -39,7 +39,7 @@ with InitRelativeImports():
     from .Components.Statement import Statement
 
     from .Statements.DynamicStatement import DynamicStatement
-    from .Statements.StatementDSL import DynamicStatements
+    from .Statements.StatementDSL import DynamicStatementsType
     from .Statements.TokenStatement import TokenStatement
 
 
@@ -189,7 +189,7 @@ async def ParseAsync(
     statement_observer = _StatementObserver(observer, all_statement_infos)
 
     statement = DynamicStatement(
-        lambda unique_id, observer: cast(_StatementObserver, observer).GetDynamicStatements(unique_id, DynamicStatements.Statements),
+        lambda unique_id, observer: cast(_StatementObserver, observer).GetDynamicStatements(unique_id, DynamicStatementsType.Statements),
         name=name,
     )
 
@@ -337,16 +337,16 @@ class _StatementObserver(Statement.Observer):
     def GetDynamicStatements(
         self,
         unique_id: List[str],
-        dynamic_statement_type: DynamicStatements,
+        dynamic_statement_type: DynamicStatementsType,
     ) -> Union[
         Tuple[str, List[Statement]],
         List[Statement],
     ]:
-        if dynamic_statement_type == DynamicStatements.Statements:
+        if dynamic_statement_type == DynamicStatementsType.Statements:
             attribute_name = "Statements"
-        elif dynamic_statement_type == DynamicStatements.Expressions:
+        elif dynamic_statement_type == DynamicStatementsType.Expressions:
             attribute_name = "Expressions"
-        elif dynamic_statement_type == DynamicStatements.Types:
+        elif dynamic_statement_type == DynamicStatementsType.Types:
             attribute_name = "Types"
         else:
             assert False, dynamic_statement_type  # pragma: no cover

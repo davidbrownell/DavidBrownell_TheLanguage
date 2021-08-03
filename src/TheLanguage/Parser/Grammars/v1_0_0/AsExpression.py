@@ -46,9 +46,9 @@ class AsExpression(GrammarStatement):
             GrammarDSL.CreateStatement(
                 name=self.NODE_NAME,
                 item=[
-                    GrammarDSL.DynamicStatements.Expressions,
+                    GrammarDSL.DynamicStatementsType.Expressions,
                     CommonTokens.As,
-                    GrammarDSL.DynamicStatements.Types,
+                    GrammarDSL.DynamicStatementsType.Types,
                 ],
                 suffers_from_infinite_recursion=True,
             ),
