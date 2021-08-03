@@ -123,6 +123,8 @@ Immutable                                   = RegexToken("'immutable'", re.compi
 Class                                       = RegexToken("'class'", re.compile(r"class\b"))
 Interface                                   = RegexToken("'interface'", re.compile(r"interface\b"))
 Mixin                                       = RegexToken("'mixin'", re.compile(r"mixin\b"))
+Enum                                        = RegexToken("'enum'", re.compile(r"enum\b"))
+Exception                                   = RegexToken("'exception'", re.compile(r"exception\b"))
 
 Implements                                  = RegexToken("'implements'", re.compile(r"implements\b"))
 Uses                                        = RegexToken("'uses'", re.compile(r"uses\b"))

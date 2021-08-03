@@ -57,7 +57,7 @@ class ClassDeclarationStatement(GrammarStatement):
     Class definition.
 
     'public'|'protected'|'private'?
-        'class'|'interface'|'mixin' <name>
+        'class'|'interface'|'mixin'|'enum'|'exception' <name>
             ('public'|'protected'|'private' <name>)?
             ('implements' <name>)*
             ('uses' <name>)*
@@ -65,6 +65,10 @@ class ClassDeclarationStatement(GrammarStatement):
         <docstring>?
         <statement>+
     """
+
+    # TODO: Functionality to extract:
+    #             - Custom DSL
+    #             - Class functionality decorators
 
     NODE_NAME                               = "Class Declaration"
 
@@ -75,8 +79,8 @@ class ClassDeclarationStatement(GrammarStatement):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class Info(object):
-        Visibility: Optional[str]           # TODO: This should be an enum
-        Type: str                           # TODO: This should be an enum
+        Visibility: Optional[str]
+        Type: str
         Name: str
         Base: Optional[Tuple[str, str]]
         Interfaces: List[str]
@@ -95,7 +99,7 @@ class ClassDeclarationStatement(GrammarStatement):
         ) -> str:
             return textwrap.dedent(
                 """\
-                {name} {the_type}
+                {name} <{the_type}>
                     Visibility: {visibility}
                     Statements: {num_statements}
                     Base: {base}
@@ -140,11 +144,13 @@ class ClassDeclarationStatement(GrammarStatement):
                         arity="?",
                     ),
 
-                    # 'class'|'interface'|'mixin'
+                    # 'class'|'interface'|'mixin'|'enum'|'exception'
                     (
                         CommonTokens.Class,
                         CommonTokens.Interface,
                         CommonTokens.Mixin,
+                        CommonTokens.Enum,
+                        CommonTokens.Exception,
                     ),
 
                     # <name>
@@ -235,7 +241,7 @@ class ClassDeclarationStatement(GrammarStatement):
         else:
             visibility = None
 
-        # 'class'|'interface'|'mixin'
+        # 'class'|'interface'|'mixin'|'enum'|'exception'
         assert len(node.Children) >= child_index + 1
         the_type = ExtractLeafValue(
             cast(Leaf, node.Children[child_index]),

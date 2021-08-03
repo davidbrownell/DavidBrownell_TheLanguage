@@ -75,9 +75,9 @@ def test_NoArgs():
     assert str(node.Children[0].Children[0].Children[0].Info) == textwrap.dedent(
         """\
         Func
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='Type'>>> ws:None [1, 1 -> 1, 5]
             Parameters:
@@ -174,9 +174,9 @@ def test_MultipleNoArgStatementsAndFuncs():
     assert str(node.Children[0].Children[0].Children[0].Info) == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 2
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 5), match='Type1'>>> ws:None [1, 1 -> 1, 6]
             Parameters:
@@ -194,9 +194,9 @@ def test_MultipleNoArgStatementsAndFuncs():
     assert str(node.Children[1].Children[0].Children[0].Info) == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 2
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(41, 46), match='Type2'>>> ws:None [5, 1 -> 5, 6]
             Parameters:
@@ -212,14 +212,14 @@ def test_MultipleNoArgStatementsAndFuncs():
     )
 
 # ----------------------------------------------------------------------
-def test_Export():
+def test_Visibility():
     result, node = ExecuteEx(
         textwrap.dedent(
             """\
             String NoExport(Int a):
                 pass
 
-            export String WithExport(Int a):
+            protected String WithExport(Int a):
                 pass
             """,
         ),
@@ -262,15 +262,16 @@ def test_Export():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        Repeat: ('export', 0, 1)
-                            'export' <<Regex: <_sre.SRE_Match object; span=(34, 40), match='export'>>> ws:None [4, 1 -> 4, 7]
+                        Repeat: (Visibility, 0, 1)
+                            Visibility
+                                'protected' <<Regex: <_sre.SRE_Match object; span=(34, 43), match='protected'>>> ws:None [4, 1 -> 4, 10]
                         DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
-                                    <name> <<Regex: <_sre.SRE_Match object; span=(41, 47), match='String'>>> ws:(40, 41) [4, 8 -> 4, 14]
-                        <name> <<Regex: <_sre.SRE_Match object; span=(48, 58), match='WithExport'>>> ws:(47, 48) [4, 15 -> 4, 25]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(44, 50), match='String'>>> ws:(43, 44) [4, 11 -> 4, 17]
+                        <name> <<Regex: <_sre.SRE_Match object; span=(51, 61), match='WithExport'>>> ws:(50, 51) [4, 18 -> 4, 28]
                         Parameters
-                            '(' <<Regex: <_sre.SRE_Match object; span=(58, 59), match='('>>> ws:None [4, 25 -> 4, 26]
+                            '(' <<Regex: <_sre.SRE_Match object; span=(61, 62), match='('>>> ws:None [4, 28 -> 4, 29]
                             Repeat: (Or: {Repeat: (New Style, 1, 3), Traditional}, 0, 1)
                                 Or: {Repeat: (New Style, 1, 3), Traditional}
                                     Traditional
@@ -279,18 +280,18 @@ def test_Export():
                                                 DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
-                                                            <name> <<Regex: <_sre.SRE_Match object; span=(59, 62), match='Int'>>> ws:None [4, 26 -> 4, 29]
-                                                <name> <<Regex: <_sre.SRE_Match object; span=(63, 64), match='a'>>> ws:(62, 63) [4, 30 -> 4, 31]
-                            ')' <<Regex: <_sre.SRE_Match object; span=(64, 65), match=')'>>> ws:None [4, 31 -> 4, 32]
-                        ':' <<Regex: <_sre.SRE_Match object; span=(65, 66), match=':'>>> ws:None [4, 32 -> 4, 33]
-                        Newline+ <<66, 67>> ws:None [4, 33 -> 5, 1]
-                        Indent <<67, 71, (4)>> ws:None [5, 1 -> 5, 5]
+                                                            <name> <<Regex: <_sre.SRE_Match object; span=(62, 65), match='Int'>>> ws:None [4, 29 -> 4, 32]
+                                                <name> <<Regex: <_sre.SRE_Match object; span=(66, 67), match='a'>>> ws:(65, 66) [4, 33 -> 4, 34]
+                            ')' <<Regex: <_sre.SRE_Match object; span=(67, 68), match=')'>>> ws:None [4, 34 -> 4, 35]
+                        ':' <<Regex: <_sre.SRE_Match object; span=(68, 69), match=':'>>> ws:None [4, 35 -> 4, 36]
+                        Newline+ <<69, 70>> ws:None [4, 36 -> 5, 1]
+                        Indent <<70, 74, (4)>> ws:None [5, 1 -> 5, 5]
                         Repeat: (DynamicStatementsType.Statements, 1, None)
                             DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
-                                        'pass' <<Regex: <_sre.SRE_Match object; span=(71, 75), match='pass'>>> ws:None [5, 5 -> 5, 9]
-                                        Newline+ <<75, 76>> ws:None [5, 9 -> 6, 1]
+                                        'pass' <<Regex: <_sre.SRE_Match object; span=(74, 78), match='pass'>>> ws:None [5, 5 -> 5, 9]
+                                        Newline+ <<78, 79>> ws:None [5, 9 -> 6, 1]
                         Dedent <<>> ws:None [6, 1 -> 6, 1]
         """,
     )
@@ -299,9 +300,9 @@ def test_Export():
     assert value == textwrap.dedent(
         """\
         NoExport
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -324,19 +325,19 @@ def test_Export():
     assert value == textwrap.dedent(
         """\
         WithExport
-            Export: True
+            Visibility: protected
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
-                    <name> <<Regex: <_sre.SRE_Match object; span=(41, 47), match='String'>>> ws:(40, 41) [4, 8 -> 4, 14]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(44, 50), match='String'>>> ws:(43, 44) [4, 11 -> 4, 17]
             Parameters:
                 Positional:
                     <No Parameters>
                 Any:
                     a
-                        Parameter: [4, 26 -> 4, 31]
-                        Type: [4, 26 -> 4, 29]
-                        Name: [4, 30 -> 4, 31]
+                        Parameter: [4, 29 -> 4, 34]
+                        Type: [4, 29 -> 4, 32]
+                        Name: [4, 33 -> 4, 34]
                         Default: <No Default>
                 Keyword:
                     <No Parameters>
@@ -364,7 +365,7 @@ def test_DocString():
                 pass
                 pass
 
-            export Int WithExport(Int a, Bool b, Char c):
+            private Int WithExport(Int a, Bool b, Char c):
                 """
                 A
                     doc
@@ -458,15 +459,16 @@ def test_DocString():
             Dynamic Statements
                 1.0.0 Grammar
                     Function Declaration
-                        Repeat: ('export', 0, 1)
-                            'export' <<Regex: <_sre.SRE_Match object; span=(179, 185), match='export'>>> ws:None [15, 1 -> 15, 7]
+                        Repeat: (Visibility, 0, 1)
+                            Visibility
+                                'private' <<Regex: <_sre.SRE_Match object; span=(179, 186), match='private'>>> ws:None [15, 1 -> 15, 8]
                         DynamicStatementsType.Types
                             1.0.0 Grammar
                                 Standard
-                                    <name> <<Regex: <_sre.SRE_Match object; span=(186, 189), match='Int'>>> ws:(185, 186) [15, 8 -> 15, 11]
-                        <name> <<Regex: <_sre.SRE_Match object; span=(190, 200), match='WithExport'>>> ws:(189, 190) [15, 12 -> 15, 22]
+                                    <name> <<Regex: <_sre.SRE_Match object; span=(187, 190), match='Int'>>> ws:(186, 187) [15, 9 -> 15, 12]
+                        <name> <<Regex: <_sre.SRE_Match object; span=(191, 201), match='WithExport'>>> ws:(190, 191) [15, 13 -> 15, 23]
                         Parameters
-                            '(' <<Regex: <_sre.SRE_Match object; span=(200, 201), match='('>>> ws:None [15, 22 -> 15, 23]
+                            '(' <<Regex: <_sre.SRE_Match object; span=(201, 202), match='('>>> ws:None [15, 23 -> 15, 24]
                             Repeat: (Or: {Repeat: (New Style, 1, 3), Traditional}, 0, 1)
                                 Or: {Repeat: (New Style, 1, 3), Traditional}
                                     Traditional
@@ -475,51 +477,51 @@ def test_DocString():
                                                 DynamicStatementsType.Types
                                                     1.0.0 Grammar
                                                         Standard
-                                                            <name> <<Regex: <_sre.SRE_Match object; span=(201, 204), match='Int'>>> ws:None [15, 23 -> 15, 26]
-                                                <name> <<Regex: <_sre.SRE_Match object; span=(205, 206), match='a'>>> ws:(204, 205) [15, 27 -> 15, 28]
+                                                            <name> <<Regex: <_sre.SRE_Match object; span=(202, 205), match='Int'>>> ws:None [15, 24 -> 15, 27]
+                                                <name> <<Regex: <_sre.SRE_Match object; span=(206, 207), match='a'>>> ws:(205, 206) [15, 28 -> 15, 29]
                                         Repeat: (Delimiter and Element, 0, None)
                                             Delimiter and Element
-                                                ',' <<Regex: <_sre.SRE_Match object; span=(206, 207), match=','>>> ws:None [15, 28 -> 15, 29]
+                                                ',' <<Regex: <_sre.SRE_Match object; span=(207, 208), match=','>>> ws:None [15, 29 -> 15, 30]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
                                                         DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
-                                                                    <name> <<Regex: <_sre.SRE_Match object; span=(208, 212), match='Bool'>>> ws:(207, 208) [15, 30 -> 15, 34]
-                                                        <name> <<Regex: <_sre.SRE_Match object; span=(213, 214), match='b'>>> ws:(212, 213) [15, 35 -> 15, 36]
+                                                                    <name> <<Regex: <_sre.SRE_Match object; span=(209, 213), match='Bool'>>> ws:(208, 209) [15, 31 -> 15, 35]
+                                                        <name> <<Regex: <_sre.SRE_Match object; span=(214, 215), match='b'>>> ws:(213, 214) [15, 36 -> 15, 37]
                                             Delimiter and Element
-                                                ',' <<Regex: <_sre.SRE_Match object; span=(214, 215), match=','>>> ws:None [15, 36 -> 15, 37]
+                                                ',' <<Regex: <_sre.SRE_Match object; span=(215, 216), match=','>>> ws:None [15, 37 -> 15, 38]
                                                 Or: {Parameter, '/', '*'}
                                                     Parameter
                                                         DynamicStatementsType.Types
                                                             1.0.0 Grammar
                                                                 Standard
-                                                                    <name> <<Regex: <_sre.SRE_Match object; span=(216, 220), match='Char'>>> ws:(215, 216) [15, 38 -> 15, 42]
-                                                        <name> <<Regex: <_sre.SRE_Match object; span=(221, 222), match='c'>>> ws:(220, 221) [15, 43 -> 15, 44]
-                            ')' <<Regex: <_sre.SRE_Match object; span=(222, 223), match=')'>>> ws:None [15, 44 -> 15, 45]
-                        ':' <<Regex: <_sre.SRE_Match object; span=(223, 224), match=':'>>> ws:None [15, 45 -> 15, 46]
-                        Newline+ <<224, 225>> ws:None [15, 46 -> 16, 1]
-                        Indent <<225, 229, (4)>> ws:None [16, 1 -> 16, 5]
+                                                                    <name> <<Regex: <_sre.SRE_Match object; span=(217, 221), match='Char'>>> ws:(216, 217) [15, 39 -> 15, 43]
+                                                        <name> <<Regex: <_sre.SRE_Match object; span=(222, 223), match='c'>>> ws:(221, 222) [15, 44 -> 15, 45]
+                            ')' <<Regex: <_sre.SRE_Match object; span=(223, 224), match=')'>>> ws:None [15, 45 -> 15, 46]
+                        ':' <<Regex: <_sre.SRE_Match object; span=(224, 225), match=':'>>> ws:None [15, 46 -> 15, 47]
+                        Newline+ <<225, 226>> ws:None [15, 47 -> 16, 1]
+                        Indent <<226, 230, (4)>> ws:None [16, 1 -> 16, 5]
                         Repeat: (Docstring, 0, 1)
                             Docstring
-                                <docstring> <<Regex: <_sre.SRE_Match object; span=(229, 269), match='"""\\n    A\\n        doc\\n    string\\n    """'>>> ws:None [16, 5 -> 20, 8]
-                                Newline+ <<269, 270>> ws:None [20, 8 -> 21, 1]
+                                <docstring> <<Regex: <_sre.SRE_Match object; span=(230, 270), match='"""\\n    A\\n        doc\\n    string\\n    """'>>> ws:None [16, 5 -> 20, 8]
+                                Newline+ <<270, 271>> ws:None [20, 8 -> 21, 1]
                         Repeat: (DynamicStatementsType.Statements, 1, None)
                             DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
-                                        'pass' <<Regex: <_sre.SRE_Match object; span=(274, 278), match='pass'>>> ws:None [21, 5 -> 21, 9]
-                                        Newline+ <<278, 279>> ws:None [21, 9 -> 22, 1]
+                                        'pass' <<Regex: <_sre.SRE_Match object; span=(275, 279), match='pass'>>> ws:None [21, 5 -> 21, 9]
+                                        Newline+ <<279, 280>> ws:None [21, 9 -> 22, 1]
                             DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
-                                        'pass' <<Regex: <_sre.SRE_Match object; span=(283, 287), match='pass'>>> ws:None [22, 5 -> 22, 9]
-                                        Newline+ <<287, 288>> ws:None [22, 9 -> 23, 1]
+                                        'pass' <<Regex: <_sre.SRE_Match object; span=(284, 288), match='pass'>>> ws:None [22, 5 -> 22, 9]
+                                        Newline+ <<288, 289>> ws:None [22, 9 -> 23, 1]
                             DynamicStatementsType.Statements
                                 1.0.0 Grammar
                                     Pass
-                                        'pass' <<Regex: <_sre.SRE_Match object; span=(292, 296), match='pass'>>> ws:None [23, 5 -> 23, 9]
-                                        Newline+ <<296, 297>> ws:None [23, 9 -> 24, 1]
+                                        'pass' <<Regex: <_sre.SRE_Match object; span=(293, 297), match='pass'>>> ws:None [23, 5 -> 23, 9]
+                                        Newline+ <<297, 298>> ws:None [23, 9 -> 24, 1]
                         Dedent <<>> ws:None [24, 1 -> 24, 1]
         ''',
     )
@@ -528,9 +530,9 @@ def test_DocString():
     assert value == textwrap.dedent(
         '''\
         SingleStatement
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 4), match='Bool'>>> ws:None [1, 1 -> 1, 5]
             Parameters:
@@ -554,9 +556,9 @@ def test_DocString():
     assert value == textwrap.dedent(
         '''\
         DoubleStatement
-            Export: False
+            Visibility: None
             Statements: 2
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(86, 92), match='String'>>> ws:None [8, 1 -> 8, 7]
             Parameters:
@@ -579,31 +581,31 @@ def test_DocString():
     assert value == textwrap.dedent(
         '''\
         WithExport
-            Export: True
+            Visibility: private
             Statements: 3
-            Type:
+            ReturnType:
                 Standard
-                    <name> <<Regex: <_sre.SRE_Match object; span=(186, 189), match='Int'>>> ws:(185, 186) [15, 8 -> 15, 11]
+                    <name> <<Regex: <_sre.SRE_Match object; span=(187, 190), match='Int'>>> ws:(186, 187) [15, 9 -> 15, 12]
             Parameters:
                 Positional:
                     <No Parameters>
                 Any:
                     a
-                        Parameter: [15, 23 -> 15, 28]
-                        Type: [15, 23 -> 15, 26]
-                        Name: [15, 27 -> 15, 28]
+                        Parameter: [15, 24 -> 15, 29]
+                        Type: [15, 24 -> 15, 27]
+                        Name: [15, 28 -> 15, 29]
                         Default: <No Default>
 
                     b
-                        Parameter: [15, 30 -> 15, 36]
-                        Type: [15, 30 -> 15, 34]
-                        Name: [15, 35 -> 15, 36]
+                        Parameter: [15, 31 -> 15, 37]
+                        Type: [15, 31 -> 15, 35]
+                        Name: [15, 36 -> 15, 37]
                         Default: <No Default>
 
                     c
-                        Parameter: [15, 38 -> 15, 44]
-                        Type: [15, 38 -> 15, 42]
-                        Name: [15, 43 -> 15, 44]
+                        Parameter: [15, 39 -> 15, 45]
+                        Type: [15, 39 -> 15, 43]
+                        Name: [15, 44 -> 15, 45]
                         Default: <No Default>
                 Keyword:
                     <No Parameters>
@@ -713,9 +715,9 @@ def test_TraditionalSingleArg():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(20, 25), match='Type1'>>> ws:None [2, 1 -> 2, 6]
             Parameters:
@@ -738,9 +740,9 @@ def test_TraditionalSingleArg():
     assert value == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(71, 76), match='Type2'>>> ws:None [6, 1 -> 6, 6]
                     Repeat: (Modifier, 0, 1)
@@ -1024,9 +1026,9 @@ def test_TraditionalMultipleArgs():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(20, 26), match='String'>>> ws:None [2, 1 -> 2, 7]
                     Repeat: (Modifier, 0, 1)
@@ -1070,9 +1072,9 @@ def test_TraditionalMultipleArgs():
     assert value == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(118, 124), match='String'>>> ws:None [6, 1 -> 6, 7]
                     Repeat: (Modifier, 0, 1)
@@ -1116,9 +1118,9 @@ def test_TraditionalMultipleArgs():
     assert value == textwrap.dedent(
         """\
         Func3
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(212, 218), match='String'>>> ws:None [10, 1 -> 10, 7]
                     Repeat: (Modifier, 0, 1)
@@ -1227,9 +1229,9 @@ def test_TraditionalWithDefaults():
     assert value == textwrap.dedent(
         """\
         Func
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -1361,9 +1363,9 @@ def test_TraditionalWithPositional():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 3), match='Int'>>> ws:None [1, 1 -> 1, 4]
             Parameters:
@@ -1390,9 +1392,9 @@ def test_TraditionalWithPositional():
     assert value == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(39, 45), match='String'>>> ws:None [4, 1 -> 4, 7]
             Parameters:
@@ -1477,9 +1479,9 @@ def test_TraditionalWithKeyword():
     assert value == textwrap.dedent(
         """\
         Func
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 3), match='Int'>>> ws:None [1, 1 -> 1, 4]
             Parameters:
@@ -1581,9 +1583,9 @@ def test_TraditionalWithPositionalAndKeyword():
     assert value == textwrap.dedent(
         """\
         ThisFunc
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -1748,9 +1750,9 @@ def test_NewStyleSingleArg():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -1773,9 +1775,9 @@ def test_NewStyleSingleArg():
     assert value == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(36, 42), match='String'>>> ws:None [4, 1 -> 4, 7]
             Parameters:
@@ -1798,9 +1800,9 @@ def test_NewStyleSingleArg():
     assert value == textwrap.dedent(
         """\
         Func3
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(80, 83), match='Int'>>> ws:None [9, 1 -> 9, 4]
             Parameters:
@@ -1986,9 +1988,9 @@ def test_NewStylePos():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -2017,9 +2019,9 @@ def test_NewStylePos():
     assert value == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(44, 50), match='String'>>> ws:None [4, 1 -> 4, 7]
             Parameters:
@@ -2048,9 +2050,9 @@ def test_NewStylePos():
     assert value == textwrap.dedent(
         """\
         Func3
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(94, 97), match='Int'>>> ws:None [9, 1 -> 9, 4]
             Parameters:
@@ -2242,9 +2244,9 @@ def test_NewStyleKey():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -2273,9 +2275,9 @@ def test_NewStyleKey():
     assert value == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(44, 50), match='String'>>> ws:None [4, 1 -> 4, 7]
             Parameters:
@@ -2304,9 +2306,9 @@ def test_NewStyleKey():
     assert value == textwrap.dedent(
         """\
         Func3
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(94, 97), match='Int'>>> ws:None [9, 1 -> 9, 4]
             Parameters:
@@ -2498,9 +2500,9 @@ def test_NewStyleAny():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -2529,9 +2531,9 @@ def test_NewStyleAny():
     assert value == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(44, 50), match='String'>>> ws:None [4, 1 -> 4, 7]
             Parameters:
@@ -2560,9 +2562,9 @@ def test_NewStyleAny():
     assert value == textwrap.dedent(
         """\
         Func3
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(94, 97), match='Int'>>> ws:None [9, 1 -> 9, 4]
             Parameters:
@@ -2796,9 +2798,9 @@ def test_NewStylePosKey():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -2831,9 +2833,9 @@ def test_NewStylePosKey():
     assert value == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(58, 64), match='String'>>> ws:None [4, 1 -> 4, 7]
             Parameters:
@@ -2866,9 +2868,9 @@ def test_NewStylePosKey():
     assert value == textwrap.dedent(
         """\
         Func3
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(124, 130), match='String'>>> ws:None [10, 1 -> 10, 7]
             Parameters:
@@ -3171,9 +3173,9 @@ def test_NewStyleWithDefaults():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -3216,9 +3218,9 @@ def test_NewStyleWithDefaults():
     assert value == textwrap.dedent(
         """\
         Func2
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(99, 102), match='Int'>>> ws:None [4, 1 -> 4, 4]
             Parameters:
@@ -3253,9 +3255,9 @@ def test_NewStyleWithDefaults():
     assert value == textwrap.dedent(
         """\
         Func3
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(171, 175), match='Char'>>> ws:None [10, 1 -> 10, 5]
             Parameters:
@@ -3379,9 +3381,9 @@ def test_NestedFunc():
     assert value == textwrap.dedent(
         """\
         Func1
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -3404,9 +3406,9 @@ def test_NestedFunc():
     assert value == textwrap.dedent(
         """\
         Nested
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(20, 23), match='Int'>>> ws:None [2, 5 -> 2, 8]
             Parameters:
@@ -3497,9 +3499,9 @@ def test_FunctionNames():
     assert value == textwrap.dedent(
         """\
         Func?
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(0, 6), match='String'>>> ws:None [1, 1 -> 1, 7]
             Parameters:
@@ -3518,9 +3520,9 @@ def test_FunctionNames():
     assert value == textwrap.dedent(
         """\
         __Dunder__
-            Export: False
+            Visibility: None
             Statements: 1
-            Type:
+            ReturnType:
                 Standard
                     <name> <<Regex: <_sre.SRE_Match object; span=(26, 32), match='String'>>> ws:None [4, 1 -> 4, 7]
             Parameters:

@@ -40,6 +40,7 @@ with InitRelativeImports():
         ExtractDynamicExpressionNode,
         ExtractLeafValue,
         ExtractOptionalNode,
+        ExtractOrNode,
         Leaf,
         Node,
     )
@@ -56,7 +57,7 @@ class FuncDeclarationStatement(GrammarStatement):
     """\
     Declares a function.
 
-    'export'? <type> <name> '(' <parameters> ')' ':'
+    'public'|'protected'|'private'? <type> <name> '(' <parameters> ')' ':'
         <docstring>?
         <statement>+
     """
@@ -70,8 +71,8 @@ class FuncDeclarationStatement(GrammarStatement):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class Info(object):
-        Export: bool                        # TODO: Use 'public'|'private'|'protected'
-        Type: Node                          # TODO: Rename to 'ReturnType'
+        Visibility: Optional[str]
+        ReturnType: Node
         Name: str
         Parameters: FuncParameters.Parameters
         Docstring: Optional[str]
@@ -79,6 +80,7 @@ class FuncDeclarationStatement(GrammarStatement):
 
         # TODO: Add exceptions flag, remove trailing '?'
         # TODO: Add coroutine flags, remove trailing '...'
+        # TODO: How identify a generator?
 
         # ----------------------------------------------------------------------
         def __str__(self):
@@ -92,10 +94,10 @@ class FuncDeclarationStatement(GrammarStatement):
             return textwrap.dedent(
                 """\
                 {name}
-                    Export: {export}
+                    Visibility: {visibility}
                     Statements: {num_statements}
-                    Type:
-                        {the_type}
+                    ReturnType:
+                        {return_type}
                     Parameters:
                         {parameters}
                     Docstring:
@@ -103,10 +105,10 @@ class FuncDeclarationStatement(GrammarStatement):
                 """,
             ).format(
                 name=self.Name,
-                export=self.Export,
+                visibility=self.Visibility,
                 num_statements=len(self.Statements),
-                the_type=StringHelpers.LeftJustify(
-                    self.Type.ToString(
+                return_type=StringHelpers.LeftJustify(
+                    self.ReturnType.ToString(
                         verbose=verbose,
                     ).rstrip(),
                     8,
@@ -134,10 +136,9 @@ class FuncDeclarationStatement(GrammarStatement):
             GrammarDSL.CreateStatement(
                 name=self.NODE_NAME,
                 item=[
-                    # TODO: Change this to public|protected|private
-                    # 'export'?
                     GrammarDSL.StatementItem(
-                        CommonTokens.Export,
+                        name="Visibility",
+                        item=tuple(CommonTokens.AllAccessModifiers),
                         arity="?",
                     ),
 
@@ -186,13 +187,20 @@ class FuncDeclarationStatement(GrammarStatement):
     ):
         child_index = 0
 
-        # 'export'?
         assert len(node.Children) >= child_index + 1
-        if isinstance(ExtractOptionalNode(node, child_index), Leaf):
-            export = True
+
+        potential_visibility_node = ExtractOptionalNode(node, child_index, "Visibility")
+        if potential_visibility_node is not None:
             child_index += 1
+
+            visibility_node = ExtractOrNode(cast(Node, potential_visibility_node))
+
+            visibility = ExtractLeafValue(
+                cast(Leaf, visibility_node),
+                group_value_name=None,
+            )
         else:
-            export = False
+            visibility = None
 
         # <type>
         assert len(node.Children) >= child_index + 1
@@ -248,7 +256,7 @@ class FuncDeclarationStatement(GrammarStatement):
             node,
             "Info",
             cls.Info(
-                export,
+                visibility,
                 the_type,
                 name,
                 parameters,
