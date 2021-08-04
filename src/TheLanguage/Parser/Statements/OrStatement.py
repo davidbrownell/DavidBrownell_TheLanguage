@@ -50,22 +50,21 @@ class OrStatement(Statement):
         *statements: Statement,
         sort_results=True,
         name: str=None,
-        _name_is_default: Optional[bool]=None,
     ):
         assert statements
         assert all(statement for statement in statements)
 
         if name is None:
             name = self._CreateDefaultName(statements)
-            _name_is_default = True
-        elif _name_is_default is None:
-            _name_is_default = False
+            name_is_default = True
+        else:
+            name_is_default = False
 
         super(OrStatement, self).__init__(name)
 
         self.Statements                     = list(statements)
         self.SortResults                    = sort_results
-        self._name_is_default               = _name_is_default
+        self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
     @Interface.override

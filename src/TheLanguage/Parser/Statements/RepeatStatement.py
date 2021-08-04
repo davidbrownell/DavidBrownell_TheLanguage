@@ -50,7 +50,6 @@ class RepeatStatement(Statement):
         min_matches: int,
         max_matches: Optional[int],
         name: str=None,
-        _name_is_default: Optional[bool]=None,
     ):
         assert statement
         assert min_matches >= 0, min_matches
@@ -58,16 +57,16 @@ class RepeatStatement(Statement):
 
         if name is None:
             name = self._CreateDefaultName(statement, min_matches, max_matches)
-            _name_is_default = True
-        elif _name_is_default is None:
-            _name_is_default = False
+            name_is_default = True
+        else:
+            name_is_default = False
 
         super(RepeatStatement, self).__init__(name)
 
         self.Statement                      = statement
         self.MinMatches                     = min_matches
         self.MaxMatches                     = max_matches
-        self._name_is_default               = _name_is_default
+        self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
     @Interface.override

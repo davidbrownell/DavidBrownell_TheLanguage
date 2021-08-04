@@ -63,7 +63,6 @@ class SequenceStatement(Statement):
         comment_token: RegexToken,
         *statements: Statement,
         name: str=None,
-        _name_is_default: Optional[bool]=None,
     ):
         assert comment_token
         assert statements
@@ -108,15 +107,15 @@ class SequenceStatement(Statement):
         # Initialize the class
         if name is None:
             name = self._CreateDefaultName(statements)
-            _name_is_default = True
-        elif _name_is_default is None:
-            _name_is_default = False
+            name_is_default = True
+        else:
+            name_is_default = False
 
         super(SequenceStatement, self).__init__(name)
 
         self.CommentToken                   = comment_token
         self.Statements                     = list(statements)
-        self._name_is_default               = _name_is_default
+        self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
     @Interface.override

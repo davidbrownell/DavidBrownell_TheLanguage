@@ -33,9 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..TokenStatement import *
 
-    from ...Components.Normalize import Normalize
-    from ...Components.NormalizedIterator import NormalizedIterator
-
     from ...Components.Token import (
         DedentToken,
         IndentToken,

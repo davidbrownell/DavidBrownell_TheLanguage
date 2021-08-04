@@ -33,3 +33,17 @@
 #       FixedInt: fixed size
 #       Int<Min, Max>: Same as regular Int?
 #       Floating points similar to ints
+
+
+
+
+
+# TODO: BinaryExpression
+# TODO: CastExpression (full and modifier only)
+# TODO: GeneratorExpression
+# TODO: QuickRefExpressions
+# TODO: TernaryExpression
+# TODO: TransferExpression(copy/move)
+# TODO: TupleExpression
+# TODO: UnaryExpression
+# TODO: VariableExpression
