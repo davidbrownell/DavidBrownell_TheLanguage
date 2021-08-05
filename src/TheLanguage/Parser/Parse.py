@@ -142,7 +142,7 @@ def Parse(
     """
 
     syntax_observer = SyntaxObserver(
-        _Observer(
+        _ParseObserver(
             source_roots,
             max_num_threads=max_num_threads,
         ),
@@ -190,7 +190,7 @@ def Validate(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-class _Observer(TranslationUnitsParserObserver):
+class _ParseObserver(TranslationUnitsParserObserver):
     # ----------------------------------------------------------------------
     def __init__(
         self,

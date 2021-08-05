@@ -28,6 +28,8 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+# BugBug: This file can go away
+
 with InitRelativeImports():
     from ...GrammarStatement import (
         Leaf,

@@ -38,6 +38,9 @@ class DynamicMethods(object):
     TODO: Describe
     """
 
+    # TODO: Index operator
+    # TODO: Tuple assignment unpacking
+
     # ----------------------------------------------------------------------
     def __init__(
         self,

@@ -27,10 +27,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common import GrammarDSL
-    from .Common import Tokens as CommonTokens
+    from ..Common import GrammarDSL
+    from ..Common import Tokens as CommonTokens
 
-    from ..GrammarStatement import GrammarStatement
+    from ...GrammarStatement import GrammarStatement
 
 
 # ----------------------------------------------------------------------

@@ -27,11 +27,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .AsExpression import AsExpression
+    from .Expressions.AsExpression import AsExpression
+
+    from .Statements.ImportStatement import ImportStatement
+
     from .ClassDeclarationStatement import ClassDeclarationStatement
     from .FuncDeclarationStatement import FuncDeclarationStatement
     from .FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
-    from .ImportStatement import ImportStatement
     from .PassStatement import PassStatement
     from .StandardType import StandardType
     from .TupleStatements import TupleExpression, TupleType, TupleVariableDeclarationStatement

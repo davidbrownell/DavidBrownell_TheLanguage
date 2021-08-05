@@ -38,6 +38,7 @@ with InitRelativeImports():
 
     from ....Statements.StatementDSL import (
         DynamicStatementsType,
+        NodeInfo,
         Statement,
         StatementItem,
     )
@@ -99,6 +100,7 @@ def CreateDelimitedStatementItem(
 
 
 # ----------------------------------------------------------------------
+# BugBug: Remove this when it is no longer being used
 def ExtractDelimitedNodes(
     node: Node,
 ) -> Generator[Node, None, None]:
@@ -115,3 +117,16 @@ def ExtractDelimitedNodes(
 
         assert len(child.Children) >= 2, child
         yield cast(Node, child.Children[-1])
+
+
+# ----------------------------------------------------------------------
+def ExtractDelimitedNodeInfo(
+    node_info: NodeInfo.AnyType,
+) -> Generator[NodeInfo.AnyType, None, None]:
+    # <item>
+    yield node_info[0]  # type: ignore
+
+    # (<delimiter> <item>){+|*}
+    if NodeInfo.IsRepeat(node_info[1]):  # type: ignore
+        for result in node_info[1]:  # type: ignore
+            yield result[1]

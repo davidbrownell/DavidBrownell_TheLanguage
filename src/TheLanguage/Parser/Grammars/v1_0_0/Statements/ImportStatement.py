@@ -19,7 +19,7 @@ import os
 
 from collections import OrderedDict
 from enum import auto, Enum
-from typing import cast, Callable, Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -34,20 +34,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import (
-        ExtractLeafValue,
-        ExtractOrNode,
-        Leaf,
-        Node,
-    )
+    from ..Common.GrammarAST import Leaf, Node
 
-    from .Common import GrammarDSL
-    from .Common import Tokens as CommonTokens
-    from ..GrammarStatement import ImportGrammarStatement
+    from ..Common import GrammarDSL
+    from ..Common import Tokens as CommonTokens
+    from ...GrammarStatement import ImportGrammarStatement
+    from ....Statements.StatementDSL import NodeInfo as RawNodeInfo
 
-    from ...Statements.SequenceStatement import SequenceStatement
-
-    from ...TranslationUnitsParser import (
+    from ....TranslationUnitsParser import (
         Observer as TranslationUnitsParserObserver,
         UnknownSourceError,
     )
@@ -86,9 +80,9 @@ class ImportStatement(ImportGrammarStatement):
     @dataclass(frozen=True)
     class NodeInfo(object):
         ImportType: "ImportStatement.ImportType"
+        SourceFilename: str
         ImportItems: Dict[str, str]
         ImportItemsLookup: Dict[int, Leaf]
-        SourceFilename: str
 
     # ----------------------------------------------------------------------
     # |
@@ -161,6 +155,12 @@ class ImportStatement(ImportGrammarStatement):
 
         assert fully_qualified_name
 
+        (
+            raw_source,
+            raw_items,
+            raw_leaf_lookup,
+        ) = self._ExtractRawInfo(node)
+
         # We need to get the source and the items to import, however that information depends on
         # context. The content will fall into one of these scenarios:
         #
@@ -171,21 +171,16 @@ class ImportStatement(ImportGrammarStatement):
         # Update the source_roots if we are looking at a relative path
         working_dir = os.path.dirname(fully_qualified_name)
 
-        # Get the source
-        source_leaf = cast(Leaf, node.Children[1])
-        importing_source = ExtractLeafValue(source_leaf)
-
-        # Handle the all dots scenario specifically
-        if all(character if character == "." else None for character in importing_source):
-            importing_source_parts = [""] * len(importing_source)
+        # The all does scenario is special
+        if all(char if char == "." else None for char in raw_source):
+            importing_source_parts = [""] * len(raw_source)
         else:
-            importing_source_parts = importing_source.split(".")
+            importing_source_parts = raw_source.split(".")
 
         assert importing_source_parts
 
+        # Process relative path info (if any)
         if not importing_source_parts[0]:
-            # If here, the importing source started with a dot; the path is relative to the
-            # fully_qualified_name
             importing_root = os.path.realpath(working_dir)
             importing_source_parts.pop(0)
 
@@ -193,10 +188,12 @@ class ImportStatement(ImportGrammarStatement):
                 potential_importing_root = os.path.dirname(importing_root)
 
                 if potential_importing_root == importing_root:
+                    source_leaf = raw_leaf_lookup[id(raw_source)]
+
                     raise InvalidRelativePathError(
                         source_leaf.IterBefore.Line,
                         source_leaf.IterBefore.Column,
-                        importing_source,
+                        raw_source,
                         working_dir,
                         source_leaf.IterAfter.Line,
                         source_leaf.IterAfter.Column,
@@ -207,28 +204,7 @@ class ImportStatement(ImportGrammarStatement):
 
             source_roots = [importing_root]
 
-        # Get the items to import
-        items_node = cast(Node, ExtractOrNode(cast(Node, node.Children[3])))
-
-        import_items = None
-        import_items_lookup = None
-
-        assert items_node.Type
-
-        if items_node.Type.Name == "Grouped":
-            # This code is invoked before ignore content is pruned, so we need to
-            # account for random whitespace.
-            for child_node in items_node.Children:
-                if isinstance(child_node.Type, SequenceStatement):
-                    import_items, import_items_lookup = self._ExtractImportItems(cast(Node, child_node))
-                    break
-        else:
-            import_items, import_items_lookup = self._ExtractImportItems(items_node)
-
-        # At this point, we have a potential source and items to import. Figure the scenario
-        # that we are in.
-        assert import_items
-        assert import_items_lookup
+        # Figure out which scenario we are looking at
 
         # ----------------------------------------------------------------------
         def FindSource(
@@ -258,8 +234,8 @@ class ImportStatement(ImportGrammarStatement):
         source_filename = FindSource(lambda name: os.path.isdir(os.path.dirname(name)))
         if source_filename is not None:
             import_type = self.__class__.ImportType.SourceIsModule
-        elif len(import_items) == 1:
-            potential_module_name = next(iter(import_items.keys()))
+        elif len(raw_items) == 1:
+            potential_module_name = next(iter(raw_items.keys()))
 
             source_filename = FindSource(
                 os.path.isdir,
@@ -270,70 +246,61 @@ class ImportStatement(ImportGrammarStatement):
                 import_type = self.__class__.ImportType.SourceIsDirectory
 
         if source_filename is None:
-            return TranslationUnitsParserObserver.ImportInfo(importing_source, None)
+            return TranslationUnitsParserObserver.ImportInfo(raw_source, None)
 
-        assert import_type
+        assert import_type is not None
 
-        # Cache the values for later
+        # Cache the value for later
         object.__setattr__(
             node,
             "Info",
             ImportStatement.NodeInfo(
                 import_type,
-                import_items,
-                import_items_lookup,
                 source_filename,
+                raw_items,
+                raw_leaf_lookup,
             ),
         )
 
-        return TranslationUnitsParserObserver.ImportInfo(importing_source, source_filename)
+        return TranslationUnitsParserObserver.ImportInfo(raw_source, source_filename)
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _ExtractImportItems(
-        cls,
+    @staticmethod
+    def _ExtractRawInfo(
         node: Node,
-    ) -> Tuple[
-        Dict[str, str],                     # Map of values
-        Dict[int, Leaf],                    # Map of strings to tokens
-    ]:
-        import_items = OrderedDict()
-        leaf_lookup = {}
+    ) -> Tuple[str, Dict[str, str], Dict[int, Leaf]]:
+        node_info = RawNodeInfo.Extract(node)
 
-        for child in GrammarDSL.ExtractDelimitedNodes(node):
-            child = ExtractOrNode(child)
+        string_lookup = {}
 
-            if isinstance(child, Node):
-                assert isinstance(child.Type, SequenceStatement)
+        # Get the source
+        source_text, source_leaf = node_info[1]  # type: ignore
+        string_lookup[id(source_text)] = source_leaf
 
-                leaves = [
-                    cast(Leaf, this_child)
-                    for this_child in child.Children
-                    if isinstance(this_child, Leaf)
-                ]
+        # Get the items
+        statements_node = node_info[3]  # type: ignore
+        if statements_node.Statement.Name == "Grouped":
+            statements_node = statements_node[1]  # type: ignore
 
-                assert len(leaves) == 3
+        items = OrderedDict()
 
-                key = ExtractLeafValue(leaves[0])
-                key_leaf = leaves[0]
+        for result in GrammarDSL.ExtractDelimitedNodeInfo(statements_node):  # type: ignore
+            if RawNodeInfo.IsToken(result):
+                key_text, key_leaf = result  # type: ignore
 
-                value = ExtractLeafValue(leaves[2])
-                value_leaf = leaves[2]
-
-            elif isinstance(child, Leaf):
-                key_leaf = cast(Leaf, child)
-                key = ExtractLeafValue(key_leaf)
-
+                value_text = key_text
                 value_leaf = key_leaf
-                value = key
 
             else:
-                assert False, node  # pragma: no cover
+                key_text, key_leaf = result[0]  # type: ignore
+                value_text, value_leaf = result[2]  # type: ignore
 
-            import_items[key] = value
-            leaf_lookup[id(key)] = key_leaf
-            leaf_lookup[id(value)] = value_leaf
+            items[key_text] = value_text
+            string_lookup[id(key_text)] = key_leaf
+            string_lookup[id(value_text)] = value_leaf
 
-        return import_items, leaf_lookup
+        return source_text, items, string_lookup

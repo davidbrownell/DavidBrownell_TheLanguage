@@ -41,6 +41,7 @@ with InitRelativeImports():
     from .SequenceStatement import SequenceStatement
     from .TokenStatement import TokenStatement
 
+    from ..Components.AST import Leaf, Node
     from ..Components.Statement import Statement
     from ..Components.Token import RegexToken, Token
 
@@ -63,6 +64,7 @@ class DynamicStatementsType(Enum):
     Statements                              = auto()    # Statements that do not generate a result
     Expressions                             = auto()    # Statements that generate a result
     Types                                   = auto()    # Statements used in types
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -184,6 +186,178 @@ def CreateStatement(
     statement.PopulateRecursive()
 
     return statement
+
+
+# ----------------------------------------------------------------------
+class NodeInfo(object):
+    """Extracts information from a parsed node for easier processing"""
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class TokenStatementInfo(object):
+        Value: Union[str, None]
+        Leaf: Leaf
+
+        # ----------------------------------------------------------------------
+        def __iter__(self):
+            return iter(
+                (
+                    self.Value,
+                    self.Leaf,
+                ),
+            )
+
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class MissingOptionalStatementInfo(object):
+        Statement: Statement
+
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class SequenceStatementInfo(object):
+        Value: List["NodeInfo.AnyType"]
+        Statement: Statement
+
+        # ----------------------------------------------------------------------
+        def __getitem__(self, key):
+            return self.Value[key]
+
+        # ----------------------------------------------------------------------
+        def __iter__(self):
+            return iter(
+                (
+                    self.Value,
+                    self.Statement,
+                ),
+            )
+
+    # ----------------------------------------------------------------------
+    RepeatStatementInfoType                 = List["NodeInfo.AnyType"]
+
+    # ----------------------------------------------------------------------
+    AnyType                                 = Union[
+        TokenStatementInfo,
+        MissingOptionalStatementInfo,
+        SequenceStatementInfo,
+        RepeatStatementInfoType,
+    ]
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsToken(
+        cls,
+        info: "NodeInfo.AnyType",
+    ) -> bool:
+        return isinstance(info, cls.TokenStatementInfo)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsMissing(
+        cls,
+        info: "NodeInfo.AnyType",
+    ) -> bool:
+        return isinstance(info, cls.MissingOptionalStatementInfo)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsSequence(
+        cls,
+        info: "NodeInfo.AnyType",
+    ) -> bool:
+        return isinstance(info, cls.SequenceStatementInfo)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsRepeat(
+        cls,
+        info: "NodeInfo.AnyType",
+    ) -> bool:
+        return isinstance(info, list)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Extract(
+        cls,
+        node: Union[Leaf, Node],
+        skip_last_statement=False,
+    ) -> "NodeInfo.AnyType":
+        assert not skip_last_statement or (
+            isinstance(node.Type, SequenceStatement)
+            and isinstance(node.Type.Statements[-1], RepeatStatement)
+        )
+
+        if isinstance(node.Type, Token):
+            assert isinstance(node, Leaf), node
+
+            if node.IsIgnored or not isinstance(node.Value, Token.RegexMatch):
+                result = None
+            else:
+                groups_dict = node.Value.Match.groupdict()
+                if len(groups_dict) == 1:
+                    result = next(iter(groups_dict.values()))
+                else:
+                    result = node.Type.Name
+
+            return cls.TokenStatementInfo(result, node)
+
+        assert isinstance(node, Node), node
+
+        if isinstance(node.Type, DynamicStatement):
+            # Drill into the dynamic expression
+            assert len(node.Children) == 1
+            return cls.Extract(node.Children[0])
+
+        elif isinstance(node.Type, OrStatement):
+            # Drill into the or node
+            assert len(node.Children) == 1
+            return cls.Extract(node.Children[0])
+
+        elif isinstance(node.Type, RepeatStatement):
+            return [cls.Extract(child) for child in node.Children]
+
+        elif isinstance(node.Type, SequenceStatement):
+            results = []
+
+            for child in node.Children:
+                if isinstance(child, Leaf) and child.IsIgnored:
+                    continue
+
+                statement_index = len(results)
+                assert statement_index < len(node.Type.Statements)
+
+                statement = node.Type.Statements[statement_index]
+
+                if (
+                    (isinstance(statement, RepeatStatement) and child.Type != statement)
+                    or (skip_last_statement and statement_index == len(node.Type.Statements) - 1)
+                ):
+                    result = None
+                else:
+                    result = cls.Extract(child)
+
+                    if (
+                        isinstance(statement, RepeatStatement)
+                        and statement.MaxMatches == 1
+                    ):
+                        assert isinstance(result, list), result
+                        result = result[0] if result else None
+
+                if result is None:
+                    results.append(cls.MissingOptionalStatementInfo(statement))
+                else:
+                    results.append(result)
+
+            return cls.SequenceStatementInfo(results, node.Type)
+
+        assert False, node.Type  # pragma: no cover
 
 
 # ----------------------------------------------------------------------

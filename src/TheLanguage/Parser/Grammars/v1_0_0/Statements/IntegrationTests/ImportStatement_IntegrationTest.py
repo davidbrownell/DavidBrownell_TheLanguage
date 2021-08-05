@@ -30,8 +30,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import PatchAndExecute
     from ..ImportStatement import *
+    from ...Common.AutomatedTests import PatchAndExecute
 
 
 # ----------------------------------------------------------------------

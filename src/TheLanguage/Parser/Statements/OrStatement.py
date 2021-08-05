@@ -125,12 +125,18 @@ class OrStatement(Statement):
                         ExecuteAsync(statement_index, statement)
                         for statement_index, statement in enumerate(self.Statements)
                     ],
+                    return_exceptions=True,
                 )
 
-                if any(result is None for result in gathered_results):
-                    return None
+                results = []
 
-                results = cast(List[Statement.ParseResult], gathered_results)
+                for result in gathered_results:
+                    if result is None:
+                        return None
+                    elif isinstance(result, Exception):
+                        raise result
+
+                    results.append(result)
 
             else:
                 for statement_index, statement in enumerate(self.Statements):
