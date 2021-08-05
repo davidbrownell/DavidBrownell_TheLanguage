@@ -30,8 +30,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Execute
     from ..VariableNameExpression import *
+    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------

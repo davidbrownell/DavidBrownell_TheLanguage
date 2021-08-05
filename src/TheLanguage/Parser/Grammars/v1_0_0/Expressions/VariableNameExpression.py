@@ -17,7 +17,9 @@
 
 import os
 
-from typing import cast
+from typing import Dict
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,12 +32,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import ExtractLeafValue
-    from .Common import GrammarDSL
-    from .Common import NamingConventions
-    from .Common import Tokens as CommonTokens
-
-    from ..GrammarStatement import GrammarStatement
+    from ..Common import GrammarDSL
+    from ..Common import NamingConventions
+    from ..Common import Tokens as CommonTokens
+    from ...GrammarStatement import GrammarStatement
+    from ....Statements.StatementDSL import NodeInfo as RawNodeInfo
 
 
 # ----------------------------------------------------------------------
@@ -45,11 +46,28 @@ class VariableNameExpression(GrammarStatement):
     NODE_NAME                               = "Variable Name"
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class VariableInfo(object):
+        Node: GrammarDSL.Node
+        Name: str
+        ItemsLookup: Dict[int, GrammarDSL.Leaf]
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
     def __init__(self):
         super(VariableNameExpression, self).__init__(
             GrammarStatement.Type.Expression,
             GrammarDSL.CreateStatement(
                 name=self.NODE_NAME,
+
+                # <name>
                 item=CommonTokens.Name,
             ),
         )
@@ -61,10 +79,14 @@ class VariableNameExpression(GrammarStatement):
         cls,
         node: GrammarDSL.Node,
     ):
-        assert len(node.Children) == 1, node
-        name_leaf = cast(GrammarDSL.Leaf, node.Children[0])
+        raw_info = RawNodeInfo.Extract(node)
+        string_lookup = {}
 
-        variable_name = ExtractLeafValue(name_leaf)
+        name_text, name_leaf = raw_info[0]  # type: ignore
+        string_lookup[id(name_text)] = name_leaf
 
-        if not NamingConventions.Variable.Regex.match(variable_name):
-            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, variable_name)
+        if not NamingConventions.Variable.Regex.match(name_text):
+            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, name_text)
+
+        # Commit the data
+        object.__setattr__(node, "Info", cls.VariableInfo(node, name_text, string_lookup))

@@ -154,7 +154,7 @@ def ExecuteEx(
         max_num_threads=1,
     )
 
-    result = result["filename"]
+    result = cast(Dict[str, RootNode], result)["filename"]
 
     return str(result), result
 

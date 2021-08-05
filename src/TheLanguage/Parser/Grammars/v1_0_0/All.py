@@ -28,6 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Expressions.AsExpression import AsExpression
+    from .Expressions.VariableNameExpression import VariableNameExpression
 
     from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
@@ -39,7 +40,6 @@ with InitRelativeImports():
     from .FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
     from .TupleStatements import TupleExpression, TupleType, TupleVariableDeclarationStatement
     from .VariableDeclarationStatement import VariableDeclarationStatement
-    from .VariableNameExpression import VariableNameExpression
     from .VariantType import VariantType
 
 # TODO: Check grammar for all statements to determine if syntax errors (bad) or other errors (good)
