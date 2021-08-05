@@ -86,7 +86,7 @@ class VariableNameExpression(GrammarStatement):
         string_lookup[id(name_text)] = name_leaf
 
         if not NamingConventions.Variable.Regex.match(name_text):
-            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, name_text)
+            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, name_text)  # type: ignore
 
         # Commit the data
-        object.__setattr__(node, "Info", cls.VariableInfo(node, name_text, string_lookup))
+        object.__setattr__(node, "Info", cls.VariableInfo(node, name_text, string_lookup))  # type: ignore

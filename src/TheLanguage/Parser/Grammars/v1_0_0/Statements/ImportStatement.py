@@ -19,7 +19,7 @@ import os
 
 from collections import OrderedDict
 from enum import auto, Enum
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import cast, Callable, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -303,4 +303,4 @@ class ImportStatement(ImportGrammarStatement):
             string_lookup[id(key_text)] = key_leaf
             string_lookup[id(value_text)] = value_leaf
 
-        return source_text, items, string_lookup
+        return cast(str, source_text), items, string_lookup

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, Optional
+from typing import cast, Dict, Optional
 
 from dataclasses import dataclass
 
@@ -108,7 +108,7 @@ class StandardType(GrammarStatement):
         string_lookup[id(name_text)] = name_leaf
 
         if not NamingConventions.Type.Regex.match(name_text):
-            raise NamingConventions.InvalidTypeNameError.FromNode(name_leaf, name_text)
+            raise NamingConventions.InvalidTypeNameError.FromNode(name_leaf, name_text)  # type: ignore
 
         # <template>?
         # TODO: Extract templates
@@ -120,4 +120,4 @@ class StandardType(GrammarStatement):
             modifier = raw_info[1].Leaf.Type  # type: ignore
 
         # Commit the data
-        object.__setattr__(node, "Info", cls.TypeInfo(node, name_text, modifier, string_lookup))
+        object.__setattr__(node, "Info", cls.TypeInfo(node, name_text, modifier, string_lookup))  # type: ignore
