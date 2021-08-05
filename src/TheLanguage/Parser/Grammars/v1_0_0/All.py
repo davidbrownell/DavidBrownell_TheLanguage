@@ -32,10 +32,11 @@ with InitRelativeImports():
     from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
 
+    from .Types.StandardType import StandardType
+
     from .ClassDeclarationStatement import ClassDeclarationStatement
     from .FuncDeclarationStatement import FuncDeclarationStatement
     from .FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
-    from .StandardType import StandardType
     from .TupleStatements import TupleExpression, TupleType, TupleVariableDeclarationStatement
     from .VariableDeclarationStatement import VariableDeclarationStatement
     from .VariableNameExpression import VariableNameExpression

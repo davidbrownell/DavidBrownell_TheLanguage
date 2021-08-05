@@ -283,7 +283,7 @@ class ImportStatement(ImportGrammarStatement):
 
         # Get the items
         statements_node = node_info[3]  # type: ignore
-        if statements_node.Statement.Name == "Grouped":
+        if statements_node.Statement.Name == "Grouped":  # type: ignore
             statements_node = statements_node[1]  # type: ignore
 
         items = OrderedDict()

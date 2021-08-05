@@ -355,6 +355,9 @@ class NodeInfo(object):
                 else:
                     results.append(result)
 
+            while len(results) < len(node.Type.Statements):
+                results.append(cls.MissingOptionalStatementInfo(node.Type.Statements[len(results) - len(node.Type.Statements)]))
+
             return cls.SequenceStatementInfo(results, node.Type)
 
         assert False, node.Type  # pragma: no cover
