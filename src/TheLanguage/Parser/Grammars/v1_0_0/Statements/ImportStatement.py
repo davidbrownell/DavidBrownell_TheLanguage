@@ -39,7 +39,7 @@ with InitRelativeImports():
     from ..Common import GrammarDSL
     from ..Common import Tokens as CommonTokens
     from ...GrammarStatement import ImportGrammarStatement
-    from ....Statements.StatementDSL import NodeInfo as RawNodeInfo
+    from ....Statements import StatementDSL
 
     from ....TranslationUnitsParser import (
         Observer as TranslationUnitsParserObserver,
@@ -100,7 +100,7 @@ class ImportStatement(ImportGrammarStatement):
             GrammarDSL.StatementItem(
                 name="Content Item",
                 item=(
-                    # <name> as <name>
+                    # <name> 'as' <name>
                     [
                         CommonTokens.Name,
                         CommonTokens.As,
@@ -117,18 +117,28 @@ class ImportStatement(ImportGrammarStatement):
             GrammarDSL.CreateStatement(
                 name=self.NODE_NAME,
                 item=[
-                    # 'from' <name> 'import' ...
+                    # 'from'
                     CommonTokens.From,
+
+                    # <name>
                     CommonTokens.Name,
+
+                    # 'import'
                     CommonTokens.Import,
+
+                    # Content Items
                     (
-                        # '(' <content_items_statement> ')'
                         GrammarDSL.StatementItem(
                             name="Grouped",
                             item=[
+                                # '('
                                 CommonTokens.LParen,
                                 CommonTokens.PushIgnoreWhitespaceControl,
+
+                                # <content_items_statement>
                                 content_items_statement,
+
+                                # ')'
                                 CommonTokens.PopIgnoreWhitespaceControl,
                                 CommonTokens.RParen,
                             ],
@@ -137,6 +147,7 @@ class ImportStatement(ImportGrammarStatement):
                         # <content_items_statement>
                         content_items_statement,
                     ),
+
                     CommonTokens.Newline,
                 ],
             ),
@@ -273,34 +284,37 @@ class ImportStatement(ImportGrammarStatement):
     def _ExtractRawInfo(
         node: Node,
     ) -> Tuple[str, Dict[str, str], Dict[int, Leaf]]:
-        node_info = RawNodeInfo.Extract(node)
 
-        string_lookup = {}
+        node_values = StatementDSL.ExtractValues(node)
+        leaf_lookup = {}
 
-        # Get the source
-        source_text, source_leaf = node_info[1]  # type: ignore
-        string_lookup[id(source_text)] = source_leaf
+        # <source>
+        source, source_leaf = node_values[1]  # type: ignore
+        leaf_lookup[id(source)] = source_leaf
 
-        # Get the items
-        statements_node = node_info[3]  # type: ignore
-        if statements_node.Statement.Name == "Grouped":  # type: ignore
-            statements_node = statements_node[1]  # type: ignore
+        # Content items
+        content_item_values = StatementDSL.ExtractValues(node_values[3])  # type: ignore
+
+        if node_values[3].Type.Name == "Grouped":  # type: ignore
+            content_item_values = content_item_values[2]  # type: ignore
 
         items = OrderedDict()
 
-        for result in GrammarDSL.ExtractDelimitedNodeInfo(statements_node):  # type: ignore
-            if RawNodeInfo.IsToken(result):
-                key_text, key_leaf = result  # type: ignore
+        for content_item in GrammarDSL.ExtractDelimitedNodeValues(content_item_values):  # type: ignore
+            if GrammarDSL.IsLeafValue(content_item):
+                key_text, key_leaf = content_item  # type: ignore
 
                 value_text = key_text
                 value_leaf = key_leaf
 
             else:
-                key_text, key_leaf = result[0]  # type: ignore
-                value_text, value_leaf = result[2]  # type: ignore
+                content_item = StatementDSL.ExtractValues(content_item)  # type: ignore
+
+                key_text, key_leaf = content_item[0]  # type: ignore
+                value_text, value_leaf = content_item[2]  # type: ignore
 
             items[key_text] = value_text
-            string_lookup[id(key_text)] = key_leaf
-            string_lookup[id(value_text)] = value_leaf
+            leaf_lookup[id(key_text)] = key_leaf
+            leaf_lookup[id(value_text)] = value_leaf
 
-        return cast(str, source_text), items, string_lookup
+        return source, items, leaf_lookup

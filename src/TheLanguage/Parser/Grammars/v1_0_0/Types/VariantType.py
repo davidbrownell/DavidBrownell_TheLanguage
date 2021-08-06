@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List
+from typing import List
 
 from dataclasses import dataclass
 
@@ -32,16 +32,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import (
-        ExtractDynamicExpressionNode,
-        ExtractRepeatedNodes,
-        Node,
-    )
-
-    from .Common import GrammarDSL
-    from .Common import Tokens as CommonTokens
-
-    from ..GrammarStatement import GrammarStatement
+    from ..Common import GrammarDSL
+    from ..Common import Tokens as CommonTokens
+    from ...GrammarStatement import GrammarStatement
+    from ....Statements import StatementDSL
 
 
 # ----------------------------------------------------------------------
@@ -57,7 +51,7 @@ class VariantType(GrammarStatement):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class TypeInfo(object):
-        Types: List[Node]
+        Types: List[GrammarDSL.Node]
 
     # ----------------------------------------------------------------------
     # |
@@ -105,46 +99,18 @@ class VariantType(GrammarStatement):
     @Interface.override
     def ValidateNodeSyntax(
         cls,
-        node: Node,
+        node: GrammarDSL.Node,
     ):
-        child_index = 0
-
-        types = []
-
-        # '('
-        assert len(node.Children) >= child_index + 1
-        child_index += 1
+        node_values = StatementDSL.ExtractValues(node)
 
         # <type>
-        assert len(node.Children) >= child_index + 1
-        types.append(ExtractDynamicExpressionNode(cast(Node, node.Children[child_index])))
-        child_index += 1
-
-        # '|'
-        assert len(node.Children) >= child_index + 1
-        child_index += 1
+        types = [node_values[2]]  # type: ignore
 
         # (<type> '|')*
-        potential_types = ExtractRepeatedNodes(node, child_index, "Sep and Type")
-        if potential_types is not None:
-            child_index += 1
-
-            for child in potential_types:
-                child = cast(Node, child)
-
-                assert len(child.Children) == 2
-                types.append(ExtractDynamicExpressionNode(cast(Node, child.Children[0])))
+        types += [node_value[0] for node_value in node_values[4]]  # type: ignore
 
         # <type>
-        assert len(node.Children) >= child_index + 1
-        types.append(ExtractDynamicExpressionNode(cast(Node, node.Children[child_index])))
-        child_index += 1
+        types += [node_values[5]]  # type: ignore
 
-        # ')'
-        assert len(node.Children) >= child_index + 1
-        child_index += 1
-
-        assert len(node.Children) == child_index
-
-        # Commit the results
-        object.__setattr__(node, "Info", cls.TypeInfo(types))
+        # Commit the data
+        object.__setattr__(node, "Info", cls.TypeInfo(types))  # type: ignore

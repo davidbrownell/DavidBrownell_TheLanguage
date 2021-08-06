@@ -32,12 +32,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Execute, ExecuteEx
     from ..VariantType import *
-    from ..Common.GrammarAST import RootNode
-    from ..Common.NamingConventions import InvalidTypeNameError
+    from ...Common.AutomatedTests import Execute, ExecuteEx
+    from ...Common.GrammarAST import RootNode
+    from ...Common.NamingConventions import InvalidTypeNameError
 
-    from ....Components.Statement import Statement
+    from .....Components.Statement import Statement
 
 
 # ----------------------------------------------------------------------
@@ -774,11 +774,11 @@ def test_InvalidType():
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def _GenerateVariants(
-    node: Union[Node, RootNode],
-) -> Generator[Node, None, None]:
+    node: Union[GrammarDSL.Node, RootNode],
+) -> Generator[GrammarDSL.Node, None, None]:
     if node.Type is not None and cast(Statement, node.Type).Name == VariantType.NODE_NAME:
-        yield cast(Node, node)
+        yield cast(GrammarDSL.Node, node)
 
     for child in node.Children:
-        if isinstance(child, Node):
+        if isinstance(child, GrammarDSL.Node):
             yield from _GenerateVariants(child)

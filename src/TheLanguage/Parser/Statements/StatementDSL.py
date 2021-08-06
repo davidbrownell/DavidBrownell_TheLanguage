@@ -20,7 +20,7 @@ import re
 import textwrap
 
 from enum import auto, Enum
-from typing import List, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -189,6 +189,126 @@ def CreateStatement(
 
 
 # ----------------------------------------------------------------------
+ExtractValuesResultType                     = Union[
+    Tuple[str, Leaf],
+    Node,
+    List["ExtractValuesResultType"],
+    None,
+]
+
+
+# ----------------------------------------------------------------------
+def IsLeafValue(
+    value: ExtractValuesResultType,
+) -> bool:
+    return isinstance(value, tuple) and isinstance(value[0], str)
+
+
+# ----------------------------------------------------------------------
+def ExtractValues(
+    node: Union[Leaf, Node],
+) -> ExtractValuesResultType:
+    """Extract values from a node for easier processing."""
+
+    if not isinstance(node, Leaf):
+        if isinstance(node.Type, DynamicStatement):
+            # Drill into the Dynamic node
+            assert len(node.Children) == 1
+            node = cast(Node, node.Children[0])
+
+            # Drill into the Or node
+            assert isinstance(node.Type, OrStatement)
+            assert len(node.Children) == 1
+            node = node.Children[0]
+
+        elif isinstance(node.Type, OrStatement):
+            # Drill into the Or node
+            assert len(node.Children) == 1
+            node = node.Children[0]
+
+        elif isinstance(node.Type, RepeatStatement):
+            results = []
+
+            for child in node.Children:
+                results.append(ExtractValues(child))
+
+            if node.Type.MaxMatches == 1:
+                assert results or node.Type.MinMatches == 0, node.Type.MinMatches
+                return results[0] if results else None
+
+            return results
+
+        elif isinstance(node.Type, SequenceStatement):
+            results = []
+            child_index = 0
+
+            while child_index != len(node.Children) or len(results) != len(node.Type.Statements):
+                statement = None
+
+                if len(results) != len(node.Type.Statements):
+                    statement = node.Type.Statements[len(results)]
+
+                    if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
+                        results.append(None)
+                        continue
+
+                child = None
+
+                if child_index != len(node.Children):
+                    child = node.Children[child_index]
+                    child_index += 1
+
+                    if isinstance(child, Leaf) and child.IsIgnored:
+                        continue
+
+                else:
+                    assert isinstance(statement, RepeatStatement), statement
+
+                    assert statement.MinMatches == 0, statement.MinMatches
+                    results.append(None if statement.MaxMatches == 1 else [])
+
+                    continue
+
+                assert child
+                assert statement
+
+                if isinstance(statement, RepeatStatement) and child.Type != statement:
+                    assert child_index != 0
+                    child_index -= 1
+
+                    assert statement.MinMatches == 0, statement.MinMatches
+                    results.append(None if statement.MaxMatches == 1 else [])
+
+                    continue
+
+                results.append(ExtractValues(child))
+
+            assert len(results) == len(node.Type.Statements), (len(results), len(node.Type.Statements))
+
+            return results
+
+        else:
+            assert False, node.Type  # pragma: no cover
+
+    if isinstance(node, Leaf):
+        result = None
+
+        if isinstance(node.Value, Token.RegexMatch):
+            groups_dict = node.Value.Match.groupdict()
+
+            if len(groups_dict) == 1:
+                result = next(iter(groups_dict.values()))
+
+        if result is None:
+            result = cast(Token, node.Type).Name
+
+        return result, node
+
+    return node
+
+
+# ----------------------------------------------------------------------
+# BugBug: Remove this
 class NodeInfo(object):
     """Extracts information from a parsed node for easier processing"""
 

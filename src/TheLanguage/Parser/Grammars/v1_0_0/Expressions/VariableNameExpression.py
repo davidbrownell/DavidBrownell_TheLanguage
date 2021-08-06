@@ -36,7 +36,7 @@ with InitRelativeImports():
     from ..Common import NamingConventions
     from ..Common import Tokens as CommonTokens
     from ...GrammarStatement import GrammarStatement
-    from ....Statements.StatementDSL import NodeInfo as RawNodeInfo
+    from ....Statements import StatementDSL
 
 
 # ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ class VariableNameExpression(GrammarStatement):
     class VariableInfo(object):
         Node: GrammarDSL.Node
         Name: str
-        ItemsLookup: Dict[int, GrammarDSL.Leaf]
+        LeafLookup: Dict[int, GrammarDSL.Leaf]
 
     # ----------------------------------------------------------------------
     # |
@@ -79,14 +79,15 @@ class VariableNameExpression(GrammarStatement):
         cls,
         node: GrammarDSL.Node,
     ):
-        raw_info = RawNodeInfo.Extract(node)
-        string_lookup = {}
+        node_values = StatementDSL.ExtractValues(node)
+        leaf_lookup = {}
 
-        name_text, name_leaf = raw_info[0]  # type: ignore
-        string_lookup[id(name_text)] = name_leaf
+        # <name>
+        name, name_leaf = node_values[0]  # type: ignore
+        leaf_lookup[id(name)] = name_leaf
 
-        if not NamingConventions.Variable.Regex.match(name_text):
-            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, name_text)  # type: ignore
+        if not NamingConventions.Variable.Regex.match(name):
+            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, name)  # type: ignore
 
         # Commit the data
-        object.__setattr__(node, "Info", cls.VariableInfo(node, name_text, string_lookup))  # type: ignore
+        object.__setattr__(node, "Info", cls.VariableInfo(node, name, leaf_lookup))  # type: ignore
