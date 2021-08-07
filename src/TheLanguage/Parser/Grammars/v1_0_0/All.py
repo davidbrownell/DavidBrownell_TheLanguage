@@ -36,13 +36,13 @@ with InitRelativeImports():
     from .Statements.FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
     from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
+    from .Statements.TupleVariableDeclarationStatement import TupleVariableDeclarationStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
 
     from .Types.StandardType import StandardType
     from .Types.TupleType import TupleType
     from .Types.VariantType import VariantType
 
-    from .TupleStatements import TupleVariableDeclarationStatement
 
 # TODO: Check grammar for all statements to determine if syntax errors (bad) or other errors (good)
 #       are most appropriate.
