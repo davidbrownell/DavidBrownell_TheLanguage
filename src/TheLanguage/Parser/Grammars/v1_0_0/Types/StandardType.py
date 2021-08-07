@@ -36,7 +36,6 @@ with InitRelativeImports():
     from ..Common import NamingConventions
     from ..Common import Tokens as CommonTokens
     from ...GrammarStatement import GrammarStatement
-    from ....Statements.StatementDSL import NodeInfo as RawNodeInfo
 
 
 # ----------------------------------------------------------------------
@@ -52,10 +51,9 @@ class StandardType(GrammarStatement):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class TypeInfo(object) :
-        Node: GrammarDSL.Node
         Name: str
         Modifier: Optional[CommonTokens.Token]
-        ItemsLookup: Dict[int, GrammarDSL.Leaf]
+        LeafLookup: Dict[int, GrammarDSL.Leaf]
 
     # ----------------------------------------------------------------------
     # |
@@ -100,24 +98,24 @@ class StandardType(GrammarStatement):
         cls,
         node: GrammarDSL.Node,
     ):
-        raw_info = RawNodeInfo.Extract(node)
-        string_lookup = {}
+        node_values = GrammarDSL.ExtractValues(node)
+        leaf_lookup = {}
 
         # <name>
-        name_text, name_leaf = raw_info[0]  # type: ignore
-        string_lookup[id(name_text)] = name_leaf
+        name, name_leaf = node_values[0]  # type: ignore
+        leaf_lookup[id(name)] = name_leaf
 
-        if not NamingConventions.Type.Regex.match(name_text):
-            raise NamingConventions.InvalidTypeNameError.FromNode(name_leaf, name_text)  # type: ignore
+        if not NamingConventions.Type.Regex.match(name):
+            raise NamingConventions.InvalidTypeNameError.FromNode(name_leaf, name)  # type: ignore
 
-        # <template>?
+        # <templates>?
         # TODO: Extract templates
 
         # <modifier>?
-        if RawNodeInfo.IsMissing(raw_info[1]):  # type: ignore
-            modifier = None
+        if node_values[1]:  # type: ignore
+            modifier = node_values[1][1].Type  # type: ignore
         else:
-            modifier = raw_info[1].Leaf.Type  # type: ignore
+            modifier = None
 
         # Commit the data
-        object.__setattr__(node, "Info", cls.TypeInfo(node, name_text, modifier, string_lookup))  # type: ignore
+        object.__setattr__(node, "Info", cls.TypeInfo(name, modifier, leaf_lookup))  # type: ignore
