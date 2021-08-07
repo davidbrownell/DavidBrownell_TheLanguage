@@ -30,6 +30,7 @@ with InitRelativeImports():
     from .Expressions.AsExpression import AsExpression
     from .Expressions.VariableNameExpression import VariableNameExpression
 
+    from .Statements.ClassDeclarationStatement import ClassDeclarationStatement
     from .Statements.FuncDeclarationStatement import FuncDeclarationStatement
     from .Statements.FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
     from .Statements.ImportStatement import ImportStatement
@@ -39,7 +40,6 @@ with InitRelativeImports():
     from .Types.StandardType import StandardType
     from .Types.VariantType import VariantType
 
-    from .ClassDeclarationStatement import ClassDeclarationStatement
     from .TupleStatements import TupleExpression, TupleType, TupleVariableDeclarationStatement
 
 # TODO: Check grammar for all statements to determine if syntax errors (bad) or other errors (good)
