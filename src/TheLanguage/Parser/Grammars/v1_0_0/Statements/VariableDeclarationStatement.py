@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Dict
+from typing import Dict
 
 from dataclasses import dataclass
 
@@ -36,7 +36,6 @@ with InitRelativeImports():
     from ..Common import NamingConventions
     from ..Common import Tokens as CommonTokens
     from ...GrammarStatement import GrammarStatement
-    from ....Statements.StatementDSL import NodeInfo as RawNodeInfo
 
 
 # ----------------------------------------------------------------------
@@ -56,10 +55,9 @@ class VariableDeclarationStatement(GrammarStatement):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class VariableInfo(object):
-        Node: GrammarDSL.Node
         Name: str
-        Expression: RawNodeInfo.AnyType
-        ItemsLookup: Dict[int, GrammarDSL.Leaf]
+        Expression: GrammarDSL.Node
+        LeafLookup: Dict[int, GrammarDSL.Leaf]
 
     # ----------------------------------------------------------------------
     # |
@@ -92,18 +90,18 @@ class VariableDeclarationStatement(GrammarStatement):
         cls,
         node: GrammarDSL.Node,
     ):
-        raw_info = RawNodeInfo.Extract(node)
-        string_lookup = {}
+        node_values = GrammarDSL.ExtractValues(node)
+        leaf_lookup = {}
 
         # <name>
-        name_text, name_leaf = raw_info[0]  # type: ignore
-        string_lookup[id(name_text)] = name_leaf
+        name, name_leaf = node_values[0]  # type: ignore
+        leaf_lookup[id(name)] = name_leaf
 
-        if not NamingConventions.Variable.Regex.match(name_text):
-            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, name_text)
+        if not NamingConventions.Variable.Regex.match(name):
+            raise NamingConventions.InvalidVariableNameError.FromNode(name_leaf, name)  # type: ignore
 
         # <expr>
-        expr = raw_info[2]  # type: ignore
+        expr = node_values[2]  # type: ignore
 
         # Commit the data
-        object.__setattr__(node, "Info", cls.VariableInfo(node, name_text, expr, string_lookup))
+        object.__setattr__(node, "Info", cls.VariableInfo(name, expr, leaf_lookup))  # type: ignore
