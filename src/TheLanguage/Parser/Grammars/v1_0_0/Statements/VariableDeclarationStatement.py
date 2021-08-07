@@ -32,7 +32,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.GrammarAST import ExtractLeafValue
     from ..Common import GrammarDSL
     from ..Common import NamingConventions
     from ..Common import Tokens as CommonTokens

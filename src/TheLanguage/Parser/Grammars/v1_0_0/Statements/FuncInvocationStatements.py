@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.GrammarAST import (
+    from ..Common.GrammarAST import (
         ExtractDynamicExpressionNode,
         ExtractLeafValue,
         ExtractOptionalNode,
@@ -43,14 +43,14 @@ with InitRelativeImports():
         Node,
     )
 
-    from .Common import GrammarDSL
-    from .Common import Tokens as CommonTokens
+    from ..Common import GrammarDSL
+    from ..Common import Tokens as CommonTokens
 
-    from ..GrammarStatement import GrammarStatement, ValidationError
+    from ...GrammarStatement import GrammarStatement, ValidationError
 
-    from ...Statements.DynamicStatement import DynamicStatement
-    from ...Statements.SequenceStatement import SequenceStatement
-    from ...Statements.TokenStatement import NewlineToken
+    from ....Statements.DynamicStatement import DynamicStatement
+    from ....Statements.SequenceStatement import SequenceStatement
+    from ....Statements.TokenStatement import NewlineToken
 
 
 # ----------------------------------------------------------------------

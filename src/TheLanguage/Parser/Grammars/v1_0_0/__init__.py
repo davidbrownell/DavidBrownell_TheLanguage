@@ -1,3 +1,5 @@
+# BugBug: Go through all items and make sure that the imports are correct
+
 # TODO:
 #   Function type
 #   scoped ref syntax (can be similar to with statements?)
