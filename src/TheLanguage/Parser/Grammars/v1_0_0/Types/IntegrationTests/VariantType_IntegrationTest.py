@@ -18,7 +18,7 @@
 import os
 import textwrap
 
-from typing import Generator, Union
+from typing import cast, Generator, Union
 
 import pytest
 
