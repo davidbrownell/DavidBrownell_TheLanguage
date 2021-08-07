@@ -30,9 +30,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Execute, ExecuteEx
     from ..FuncDeclarationStatement import *
-    from ..Common import FuncParameters
+    from ...Common.AutomatedTests import Execute, ExecuteEx
+    from ...Common import FuncParameters
 
 # ----------------------------------------------------------------------
 def test_NoArgs():
