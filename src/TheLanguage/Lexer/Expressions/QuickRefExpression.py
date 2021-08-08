@@ -20,7 +20,6 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,24 +29,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from .VariableExpression import VariableExpression
+    from ..AST import ExpressionNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Expression,  # type: ignore
-)
 @dataclass(frozen=True)
-class QuickRefExpression(Node):
+class QuickRefExpression(ExpressionNode):
     """\
     TODO: Comment
     """
 
-    Ref: str
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(QuickRefExpression, self).__post_init__()
-
-        # TODO: Validate only used in func invocation where return value is not a ref. Also needs
-        #       to match parameter.
+    Ref: VariableExpression

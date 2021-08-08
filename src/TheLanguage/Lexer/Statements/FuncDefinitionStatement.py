@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  FuncDefinitionStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 11:11:50
+# |      2021-07-31 18:16:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the FuncDefinitionStatement object"""
 
 import os
 
+from typing import List
+
 from dataclasses import dataclass
 
-from enum import IntFlag
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,35 +31,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
-    from ..Common.Flags import OperatorCategory
+    from ..AST import StatementNode
 
-
-# ----------------------------------------------------------------------
-class UnaryOperator(IntFlag):
-    """\
-    TODO: Comment
-    """
-
-    Not                                     = (OperatorCategory.Logical << 8) + 1
-
-    BitCompliment                           = (OperatorCategory.BitManipulation << 8) + 1
+    from ..Common import Flags
+    from ..Common.FuncDefinitionNode import FuncDefinitionNode as _FuncDefinitionNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class UnaryExpression(ExpressionNode):
+class FuncDefinitionStatement(StatementNode, _FuncDefinitionNode):
     """\
     TODO: Comment
     """
 
-    Operator: UnaryOperator
-    Expression: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def IsBoolean(self) -> bool:
-        if self.Operator & OperatorCategory.Logical:
-            return True
-
-        return super(UnaryExpression, self).IsBoolean()
+    Visibility: Flags.VisibilityType
+    Statements: List[StatementNode]

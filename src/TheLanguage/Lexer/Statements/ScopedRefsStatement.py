@@ -32,26 +32,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..AST import StatementNode
+    from ..Expressions.VariableExpression import VariableExpression
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
-)
 @dataclass(frozen=True)
-class ScopedRefsStatement(Node):
+class ScopedRefsStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Refs: List[str]
-    Statements: List[Node]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(ScopedRefsStatement, self).__post_init__()
-
-        self.ValidateTypes(
-            Statements=Node.NodeType.Statement,
-        )
+    Refs: List[VariableExpression]
+    Statements: List[StatementNode]

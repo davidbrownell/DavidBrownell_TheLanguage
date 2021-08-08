@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  VariableDeclarationStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 11:11:50
+# |      2021-07-30 16:53:19
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the VariableDeclarationStatement object"""
 
 import os
 
 from dataclasses import dataclass
 
-from enum import IntFlag
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,35 +29,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
-    from ..Common.Flags import OperatorCategory
-
-
-# ----------------------------------------------------------------------
-class UnaryOperator(IntFlag):
-    """\
-    TODO: Comment
-    """
-
-    Not                                     = (OperatorCategory.Logical << 8) + 1
-
-    BitCompliment                           = (OperatorCategory.BitManipulation << 8) + 1
+    from ..AST import ExpressionNode, StatementNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class UnaryExpression(ExpressionNode):
+class VariableDeclarationStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Operator: UnaryOperator
+    Variable: ExpressionNode
     Expression: ExpressionNode
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def IsBoolean(self) -> bool:
-        if self.Operator & OperatorCategory.Logical:
-            return True
+    def __post_init__(self):
+        super(VariableDeclarationStatement, self).__post_init__()
 
-        return super(UnaryExpression, self).IsBoolean()
+        assert self.Variable.IsVariable(), self.Variable

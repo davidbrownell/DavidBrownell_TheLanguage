@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ParametersNode.py
+# |  TupleStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 10:37:47
+# |      2021-07-31 18:42:20
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ParameterNode and ParametersNode objects"""
+"""Contains the TupleStatement object"""
 
 import os
 
-from typing import List, Optional
+from typing import List
 
 from dataclasses import dataclass
 
@@ -31,39 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-
-# TODO: Move this to the file that uses it and delete this file
+    from ..AST import StatementNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class ParameterNode(Node):
+class TupleStatement(StatementNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Name: str
-    Type: Node
-    DefaultValue: Optional[Node]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(ParameterNode, self).__post_init__()
-
-        self.ValidateTypes(
-            Type=Node.NodeType.Type,
-            DefaultValue=Node.NodeType.Expression,
-        )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ParametersNode(Node):
-    """\
-    TODO: Comment
-    """
-
-    Positional: List[ParameterNode]
-    Any: List[ParameterNode]
-    Keyword: List[ParameterNode]
+    Statements: List[StatementNode]

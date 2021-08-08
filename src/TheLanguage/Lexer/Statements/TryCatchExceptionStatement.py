@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncDefinitionNode.py
+# |  TryCatchExceptionStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 10:29:36
+# |      2021-07-31 14:11:23
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncDefinitionNode object"""
+"""Contains the TryCatchExceptionStatement object"""
 
 import os
 
-from typing import List
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -31,42 +31,36 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
-    from .Common import Flags
-    from .ParametersNode import ParametersNode
+    from ..AST import StatementNode
+    from ..Types.StandardType import StandardType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class FuncDefinitionNode(Node):
+class TryCatchExceptionStatement(StatementNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Flags: Flags.FunctionFlags
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class CatchStatement(StatementNode):
+        """\
+        TODO: Describe
+        """
 
-    Visibility: Flags.VisibilityType
-
-    Name: str
-    CapturedVars: List[str]
-    ReturnType: Node
-    Parameters: ParametersNode
-    Statements: List[Node]
+        Exception: StandardType
+        Statements: List[StatementNode]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(FuncDefinitionNode, self).__post_init__()
-
-        if self.Type not in [
-            Node.NodeType.Statement,        # Standard function
-            Node.NodeType.Expression,       # Lambda
-        ]:
-            raise Exception("FuncDefinitionNodes must be a 'Statement' or 'Expression' type")
-
-        if self.Type == Node.NodeType.Expression and self.Visibility != Flags.VisibilityType.Private:
-            raise Exception("The visibility of a FuncDefinitionNode expression must be 'Private'")
-
-        self.ValidateTypes(
-            ReturnType=Node.NodeType.Type,
-            Statements=self.Type,
-        )
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
+    TryStatements: List[StatementNode]
+    CatchStatements: List[CatchStatement]
+    FinallyStatements: Optional[List[StatementNode]]

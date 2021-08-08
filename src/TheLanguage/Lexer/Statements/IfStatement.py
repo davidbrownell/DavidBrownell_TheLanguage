@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  IfStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:16:09
+# |      2021-07-31 13:14:07
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the IfStatement object"""
 
 import os
+
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -29,22 +31,48 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
+    from ..AST import ExpressionNode, StatementNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TernaryExpression(ExpressionNode):
+class IfStatement(StatementNode):
     """\
     TODO: Comment
     """
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ElseIfStatement(StatementNode):
+        """\
+        TODO: Document
+        """
+
+        Condition: ExpressionNode
+        Statements: List[StatementNode]
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            super(IfStatement.ElseIfStatement, self).__post_init__()
+
+            assert self.Condition.IsBoolean(), self.Condition
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
     Condition: ExpressionNode
-    TrueNode: ExpressionNode
-    FalseNode: ExpressionNode
+    Statements: List[StatementNode]
+    ElseIf: Optional[List[ElseIfStatement]]
+    ElseStatements: Optional[List[StatementNode]]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(TernaryExpression, self).__post_init__()
+        super(IfStatement, self).__post_init__()
 
         assert self.Condition.IsBoolean(), self.Condition

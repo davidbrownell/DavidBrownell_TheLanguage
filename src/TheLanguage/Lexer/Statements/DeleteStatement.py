@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  DeleteStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 11:11:50
+# |      2021-07-31 12:57:38
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the DeleteStatement object"""
 
 import os
 
 from dataclasses import dataclass
 
-from enum import IntFlag
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,35 +29,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
-    from ..Common.Flags import OperatorCategory
-
-
-# ----------------------------------------------------------------------
-class UnaryOperator(IntFlag):
-    """\
-    TODO: Comment
-    """
-
-    Not                                     = (OperatorCategory.Logical << 8) + 1
-
-    BitCompliment                           = (OperatorCategory.BitManipulation << 8) + 1
+    from .VariableStatement import VariableStatement
+    from ..AST import StatementNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class UnaryExpression(ExpressionNode):
+class DeleteStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Operator: UnaryOperator
-    Expression: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def IsBoolean(self) -> bool:
-        if self.Operator & OperatorCategory.Logical:
-            return True
-
-        return super(UnaryExpression, self).IsBoolean()
+    Variable: VariableStatement
