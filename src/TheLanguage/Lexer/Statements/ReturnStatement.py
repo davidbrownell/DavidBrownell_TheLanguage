@@ -22,7 +22,6 @@ from typing import Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,25 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..AST import ExpressionNode, StatementNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
-)
 @dataclass(frozen=True)
-class ReturnStatement(Node):
+class ReturnStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Result: Optional[Node]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(ReturnStatement, self).__post_init__()
-
-        self.ValidateTypes(
-            Result=Node.NodeType.Expression,
-        )
+    Result: Optional[ExpressionNode]

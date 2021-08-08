@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  ClassStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 11:11:50
+# |      2021-07-31 14:28:55
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the ClassStatement object"""
 
 import os
 
+from enum import auto, Enum
+from typing import List, Optional
+
 from dataclasses import dataclass
 
-from enum import IntFlag
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,35 +32,37 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
-    from ..Common.Flags import OperatorCategory
+    from ..AST import StatementNode
+    from ..Common import Flags
 
 
 # ----------------------------------------------------------------------
-class UnaryOperator(IntFlag):
+class ClassType(Enum):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Not                                     = (OperatorCategory.Logical << 8) + 1
-
-    BitCompliment                           = (OperatorCategory.BitManipulation << 8) + 1
+    Class                                   = auto()
+    Interface                               = auto()
+    Mixin                                   = auto()
+    Exception                               = auto()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class UnaryExpression(ExpressionNode):
+class ClassStatement(StatementNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Operator: UnaryOperator
-    Expression: ExpressionNode
+    Visibility: Flags.VisibilityType
+    Type: ClassType
 
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def IsBoolean(self) -> bool:
-        if self.Operator & OperatorCategory.Logical:
-            return True
+    Name: str
+    BaseClasses: Optional[List[str]]
+    Interfaces: Optional[List[str]]
+    Mixins: Optional[List[str]]
 
-        return super(UnaryExpression, self).IsBoolean()
+    Statements: List[StatementNode]
+
+    # TODO: Attributes
