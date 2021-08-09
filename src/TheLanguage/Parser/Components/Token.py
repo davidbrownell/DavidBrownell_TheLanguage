@@ -16,9 +16,8 @@
 """Contains the builing blocks for token processing"""
 
 import os
-import re
 
-from typing import cast, Match as TypingMatch, Optional, Pattern, Union
+from typing import cast, Match as TypingMatch, Optional, Pattern
 
 from dataclasses import dataclass
 

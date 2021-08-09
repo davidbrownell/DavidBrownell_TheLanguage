@@ -66,10 +66,14 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         """Abstract base class for data associated with a ParseResult"""
 
         # ----------------------------------------------------------------------
-        def __post_init__(self):
+        def __post_init__(
+            self,
+            **custom_display_funcs: Callable[[Any], str],
+        ):
             CommonEnvironment.ObjectReprImplBase.__init__(
                 self,
                 include_class_info=False,
+                **custom_display_funcs,
             )
 
     # ----------------------------------------------------------------------
@@ -113,6 +117,12 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         IterBefore: NormalizedIterator
         IterAfter: NormalizedIterator
         IsIgnored: bool
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            super(Phrase.TokenParseResultData, self).__post_init__(
+                Token=lambda token: token.Name,
+            )
 
     # ----------------------------------------------------------------------
     class Observer(Interface.Interface):
@@ -185,12 +195,14 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
     def __init__(
         self,
         name: str,
+        **custom_display_funcs: Callable[[Any], str],
     ):
         assert name
 
         CommonEnvironment.ObjectReprImplBase.__init__(
             self,
             include_class_info=False,
+            **custom_display_funcs,
         )
 
         self.Name                           = name
