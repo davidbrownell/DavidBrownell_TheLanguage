@@ -3,7 +3,7 @@
 # |  Token.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-04-09 22:46:15
+# |      2021-08-07 23:51:35
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,17 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains various token objects"""
+"""Contains the builing blocks for token processing"""
 
 import os
 import re
 
-from typing import (
-    Match as TypingMatch,
-    Optional,
-    Pattern,
-    Union,
-)
+from typing import cast, Match as TypingMatch, Optional, Pattern, Union
 
 from dataclasses import dataclass
 
@@ -40,55 +35,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .NormalizedIterator import NormalizedIterator
 
+
 # ----------------------------------------------------------------------
-class Token(Interface.Interface):
-    """Base class for various Token types"""
+class Token(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
+    """Base class for various Token objects"""
 
     # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class NewlineMatch(object):
-        Start: int
-        End: int
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class MatchResult(CommonEnvironment.ObjectReprImplBase):
 
         # ----------------------------------------------------------------------
-        def __str__(self):
-            return "{}, {}".format(self.Start, self.End)
+        def __post_init__(self):
+            CommonEnvironment.ObjectReprImplBase.__init__(
+                self,
+                include_class_info=False,
+            )
 
     # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class IndentMatch(object):
-        Start: int
-        End: int
-        Value: int
-
-        # ----------------------------------------------------------------------
-        def __str__(self):
-            return "{}, {}, ({})".format(self.Start, self.End, self.Value)
-
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class DedentMatch(object):
-        # ----------------------------------------------------------------------
-        def __str__(self):
-            return ""
-
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class RegexMatch(object):
-        Match: TypingMatch
-
-        # ----------------------------------------------------------------------
-        def __str__(self):
-            return "Regex: {}".format(str(self.Match))
-
-    # ----------------------------------------------------------------------
-    MatchType                               = Union[
-        NewlineMatch,
-        IndentMatch,
-        DedentMatch,
-        RegexMatch,
-    ]
-
+    # |
+    # |  Public Data
+    # |
     # ----------------------------------------------------------------------
     # A Control Token is a token that doesn't consume content, but modifies
     # behavior of a statement. This concept is necessary because we are combining
@@ -99,8 +69,26 @@ class Token(Interface.Interface):
     IsAlwaysIgnored                         = False
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        CommonEnvironment.ObjectReprImplBase.__init__(
+            self,
+            include_class_info=False,
+        )
+
+    # ----------------------------------------------------------------------
     def __hash__(self):
         return tuple(self.__dict__.values()).__hash__()
+
+    # ----------------------------------------------------------------------
+    def __eq__(self, other):
+        if self.__dict__ != other.__dict__:
+            return False
+
+        return self.__class__ == other.__class__
 
     # ----------------------------------------------------------------------
     @Interface.abstractproperty
@@ -113,28 +101,45 @@ class Token(Interface.Interface):
     @Interface.abstractmethod
     def Match(
         normalized_iter: NormalizedIterator,
-    ) -> Optional["MatchType"]:
-        """Returns match information if applicable"""
+    ) -> Optional["MatchResult"]:
+        """Returns match information if applicable to the iterator at its current position"""
         raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    def __eq__(self, other):
-        if self.__dict__ != other.__dict__:
-            return False
-
-        return self.__class__ == other.__class__
 
 
 # ----------------------------------------------------------------------
 class NewlineToken(Token):
-    """Token that matches 1 or more newlines (depending on `capture_many`)"""
+    """Token that matches 1 or more newlines"""
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class MatchResult(Token.MatchResult):
+        # ----------------------------------------------------------------------
+        Start: int
+        End: int
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            super(NewlineToken.MatchResult, self).__post_init__()
+
+            assert self.Start >= 0, self
+            assert self.End > self.Start, self
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     def __init__(
         self,
         capture_many=True,
         is_always_ignored=False,
     ):
+        super(NewlineToken, self).__init__()
+
         self._name                          = "Newline{}".format("+" if capture_many else "")
         self.CaptureMany                    = capture_many
         self.IsAlwaysIgnored                = is_always_ignored
@@ -147,7 +152,10 @@ class NewlineToken(Token):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Match(self, normalized_iter):
+    def Match(
+        self,
+        normalized_iter: NormalizedIterator,
+    ) -> Optional["MatchResult"]:
         if (
             not normalized_iter.AtEnd()
             and normalized_iter.Offset == normalized_iter.LineInfo.OffsetEnd
@@ -161,10 +169,7 @@ class NewlineToken(Token):
                 while normalized_iter.IsBlankLine():
                     normalized_iter.SkipLine()
 
-            return Token.NewlineMatch(
-                newline_start,
-                normalized_iter.Offset,
-            )
+            return NewlineToken.MatchResult(newline_start, normalized_iter.Offset)
 
         return None
 
@@ -174,22 +179,57 @@ class NewlineToken(Token):
 class IndentToken(Token):
     """Token that matches indentations"""
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class MatchResult(Token.MatchResult):
+        # ----------------------------------------------------------------------
+        Start: int
+        End: int
+        Value: int
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            super(IndentToken.MatchResult, self).__post_init__()
+
+            assert self.Start >= 0, self
+            assert self.End > self.Start, self
+            assert self.Value >= 0, self
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
     Name                                    = Interface.DerivedProperty("Indent")
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def Match(normalized_iter):
+    def Match(
+        normalized_iter: NormalizedIterator,
+    ) -> Optional["MatchResult"]:
         if normalized_iter.AtEnd():
             return None
 
-        if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart and normalized_iter.LineInfo.HasNewIndent():
+        if (
+            not normalized_iter.AtEnd()
+            and normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
+            and normalized_iter.LineInfo.HasNewIndent()
+        ):
             normalized_iter.SkipPrefix()
 
-            return Token.IndentMatch(
+            return IndentToken.MatchResult(
                 normalized_iter.LineInfo.OffsetStart,
-                normalized_iter.LineInfo.StartPos,
-                normalized_iter.LineInfo.IndentationValue(),
+                normalized_iter.LineInfo.PosStart,
+                cast(int, normalized_iter.LineInfo.IndentationValue()),
             )
 
         return None
@@ -198,19 +238,37 @@ class IndentToken(Token):
 # ----------------------------------------------------------------------
 @Interface.staticderived
 class DedentToken(Token):
-    """Token that matches dedents"""
+    """Token that matches a single dedent"""
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class MatchResult(Token.MatchResult):
+        pass
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
     Name                                    = Interface.DerivedProperty("Dedent")
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def Match(normalized_iter):
-        if normalized_iter.AtEnd():
-            return None
-
+    def Match(
+        normalized_iter: NormalizedIterator,
+    ) -> Optional["MatchResult"]:
         if (
-            normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
+            not normalized_iter.AtEnd()
+            and normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
             and not normalized_iter.HasConsumedAllDedents()
         ):
             normalized_iter.ConsumeDedent()
@@ -221,23 +279,39 @@ class DedentToken(Token):
                 if normalized_iter.AtTrailingDedents():
                     normalized_iter.Advance(0)
 
-            return Token.DedentMatch()
+            return DedentToken.MatchResult()
 
         return None
 
 
 # ----------------------------------------------------------------------
 class RegexToken(Token):
-    """Token that matches content based on the provided regular expression"""
+    """Token that matches content based on a regular expression"""
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class MatchResult(Token.MatchResult):
+        # ----------------------------------------------------------------------
+        Match: TypingMatch
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     def __init__(
         self,
         name: str,
         regex: Pattern,
-        is_multiline: Optional[bool]=False,
-        is_always_ignored: Optional[bool]=False,
+        is_multiline=False,
+        is_always_ignored=False,
     ):
+        super(RegexToken, self).__init__()
+
         assert name
 
         self._name                          = name
@@ -254,17 +328,17 @@ class RegexToken(Token):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Match(self, normalized_iter):
-        if normalized_iter.AtEnd():
-            return None
-
-        if not normalized_iter.HasConsumedAllDedents():
+    def Match(
+        self,
+        normalized_iter: NormalizedIterator,
+    ) -> Optional["MatchResult"]:
+        if normalized_iter.AtEnd() or not normalized_iter.HasConsumedAllDedents():
             return None
 
         match = self.Regex.match(
             normalized_iter.Content,
             pos=normalized_iter.Offset,
-            endpos=normalized_iter.ContentLen if self.IsMultiline else normalized_iter.LineInfo.EndPos,
+            endpos=normalized_iter.ContentLen if self.IsMultiline else normalized_iter.LineInfo.PosEnd,
         )
 
         if match:
@@ -275,82 +349,7 @@ class RegexToken(Token):
             else:
                 normalized_iter.Advance(match_length)
 
-            return Token.RegexMatch(match)
-
-        return None
-
-
-# ----------------------------------------------------------------------
-class MultilineRegexToken(Token):
-    """Matches lines until a regex delimiter is encountered"""
-
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        name: str,
-        *regex_delimiters: Pattern,
-        regex_match_group_name="value",
-    ):
-        assert name
-        assert regex_delimiters
-
-        self._name                          = name
-        self._match_all_regex               = re.compile(r"(?P<{}>.+)".format(regex_match_group_name), re.DOTALL | re.MULTILINE)
-
-        self.RegexDelimiters                = list(regex_delimiters)
-
-    # ----------------------------------------------------------------------
-    @property
-    @Interface.override
-    def Name(self):
-        return self._name
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Match(self, normalized_iter):
-        if normalized_iter.AtEnd():
-            return None
-
-        matches = []
-
-        for regex in self.RegexDelimiters:
-            match = regex.search(
-                normalized_iter.Content,
-                pos=normalized_iter.Offset,
-                endpos=normalized_iter.ContentLen,
-            )
-
-            if not match:
-                continue
-
-            match = self._match_all_regex.match(
-                normalized_iter.Content,
-                pos=normalized_iter.Offset,
-                endpos=match.start(),
-            )
-            assert match
-
-            matches.append(match)
-
-        if matches:
-            if len(matches) == 1:
-                shortest_match = matches[0]
-            else:
-                # Find the shortest match
-                shortest_match = None
-                shortest_match_length = None
-
-                for match in matches:
-                    match_length = match.end() - match.start()
-
-                    if shortest_match is None or match_length < shortest_match_length:
-                        shortest_match = match
-                        shortest_match_length = match_length
-
-            assert shortest_match
-
-            _AdvanceMultiline(normalized_iter, shortest_match.end() - normalized_iter.Offset)
-            return Token.RegexMatch(shortest_match)
+            return RegexToken.MatchResult(match)
 
         return None
 
@@ -370,7 +369,9 @@ class ControlTokenBase(Token):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def Match(normalized_iter):
+    def Match(
+        normalized_iter: NormalizedIterator,
+    ) -> Optional[Token.MatchResult]:
         raise Exception("This method should never be invoked for control tokens")
 
 
@@ -411,18 +412,18 @@ PushIgnoreWhitespaceControlToken.ClosingToken           = PopIgnoreWhitespaceCon
 # ----------------------------------------------------------------------
 def _AdvanceMultiline(
     normalized_iter: NormalizedIterator,
-    to_advance: int,
+    delta: int,
 ):
-    # The match may span multiple lines, so we have to be intentional about how we advance.
-    while to_advance:
-        line_to_advance = min(to_advance, normalized_iter.LineInfo.OffsetEnd - normalized_iter.Offset)
+    # The match may span multiple lines, so we have to be intentional about how we advance
+    while delta:
+        this_delta = min(delta, normalized_iter.LineInfo.PosEnd - normalized_iter.Offset)
 
         # The amount to advance can be 0 if we are looking at a blank line
-        if line_to_advance:
-            normalized_iter.Advance(line_to_advance)
-            to_advance -= line_to_advance
+        if this_delta:
+            normalized_iter.Advance(this_delta)
+            delta -= this_delta
 
         # Skip the newline (if necessary)
-        if to_advance:
+        if delta:
             normalized_iter.Advance(1)
-            to_advance -= 1
+            delta -= 1

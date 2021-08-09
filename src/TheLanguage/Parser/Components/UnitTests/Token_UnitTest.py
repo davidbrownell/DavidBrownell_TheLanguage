@@ -63,13 +63,13 @@ def test_NewlineToken():
     assert token.Name == "Newline+"
     assert token.CaptureMany
 
-    assert token.Match(iter) == Token.NewlineMatch(0, 3)                    # Lines 1-3
+    assert token.Match(iter) == NewlineToken.MatchResult(0, 3)                    # Lines 1-3
 
     # line with 'last_line'
     assert token.Match(iter) is None
     iter.Advance(len("last_line"))
     assert iter.Offset == 12
-    assert token.Match(iter) == Token.NewlineMatch(12, 14)
+    assert token.Match(iter) == NewlineToken.MatchResult(12, 14)
 
     assert iter.AtEnd()
 
@@ -82,7 +82,7 @@ def test_NewlineTokenWithWhitespace():
     assert token.Name == "Newline+"
     assert token.CaptureMany
 
-    assert token.Match(iter) == Token.NewlineMatch(0, 7)                    # Line 1 - 3
+    assert token.Match(iter) == NewlineToken.MatchResult(0, 7)                    # Line 1 - 3
 
     # line with 'last_line'
     assert token.Match(iter) is None
@@ -91,7 +91,7 @@ def test_NewlineTokenWithWhitespace():
 
     assert token.Match(iter) is None
     iter.SkipSuffix()
-    assert token.Match(iter) == Token.NewlineMatch(18, 20)
+    assert token.Match(iter) == NewlineToken.MatchResult(18, 20)
 
     assert iter.AtEnd()
 
@@ -122,19 +122,19 @@ def test_NonGreedyNewline():
     assert iter.Line == 1
     assert iter.Column == 1
     assert iter.Offset == 0
-    assert token.Match(iter) == Token.NewlineMatch(0, 1)
+    assert token.Match(iter) == NewlineToken.MatchResult(0, 1)
 
     # Line 2
     assert iter.Line == 2
     assert iter.Column == 1
     assert iter.Offset == 1
-    assert token.Match(iter) == Token.NewlineMatch(1, 2)
+    assert token.Match(iter) == NewlineToken.MatchResult(1, 2)
 
     # Line 3
     assert iter.Line == 3
     assert iter.Column == 1
     assert iter.Offset == 2
-    assert token.Match(iter) == Token.NewlineMatch(2, 3)
+    assert token.Match(iter) == NewlineToken.MatchResult(2, 3)
 
     # Line 4
     assert iter.Line == 4
@@ -144,7 +144,7 @@ def test_NonGreedyNewline():
 
     iter.Advance(len("last_line"))
     assert iter.Offset == 12
-    assert token.Match(iter) == Token.NewlineMatch(12, 13)
+    assert token.Match(iter) == NewlineToken.MatchResult(12, 13)
 
     # Line 5
     assert iter.AtEnd() == False
@@ -152,7 +152,7 @@ def test_NonGreedyNewline():
     assert iter.Line == 5
     assert iter.Column == 1
     assert iter.Offset == 13
-    assert token.Match(iter) == Token.NewlineMatch(13, 14)
+    assert token.Match(iter) == NewlineToken.MatchResult(13, 14)
 
     assert iter.AtEnd()
 
@@ -183,13 +183,13 @@ def test_Indent():
     iter.Advance(1)
 
     # Line 2
-    assert token.Match(iter) == Token.IndentMatch(4, 8, 4)
+    assert token.Match(iter) == IndentToken.MatchResult(4, 8, 4)
     assert token.Match(iter) is None
     iter.Advance(len("two"))
     iter.Advance(1)
 
     # Line 3
-    assert token.Match(iter) == Token.IndentMatch(12, 18, 6)
+    assert token.Match(iter) == IndentToken.MatchResult(12, 18, 6)
     assert token.Match(iter) is None
     iter.Advance(len("three"))
     iter.Advance(1)
@@ -261,8 +261,8 @@ def test_Dedent():
     iter.Advance(1)
 
     # Line 5
-    assert token.Match(iter) == Token.DedentMatch()
-    assert token.Match(iter) == Token.DedentMatch()
+    assert token.Match(iter) == DedentToken.MatchResult()
+    assert token.Match(iter) == DedentToken.MatchResult()
     iter.Advance(len("five"))
     iter.Advance(1)
 
@@ -279,13 +279,13 @@ def test_Dedent():
     iter.Advance(1)
 
     # Line 8
-    assert token.Match(iter) == Token.DedentMatch()
+    assert token.Match(iter) == DedentToken.MatchResult()
     iter.Advance(len("eight"))
     iter.Advance(1)
 
     # Final dedent line
     assert iter.AtEnd() == False
-    assert token.Match(iter) == Token.DedentMatch()
+    assert token.Match(iter) == DedentToken.MatchResult()
     assert iter.AtEnd()
 
 # ----------------------------------------------------------------------
@@ -369,6 +369,7 @@ def test_ControlTokens():
         MyControlToken.Match(None)
 
 # ----------------------------------------------------------------------
+@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexTokenSingleDelimiter():
     iter = NormalizedIterator(
         Normalize(
@@ -413,6 +414,7 @@ def test_MultilineRegexTokenSingleDelimiter():
     assert iter.Offset == 50
 
 # ----------------------------------------------------------------------
+@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexTokenMultipleDelimiterFirstMatch():
     iter = NormalizedIterator(
         Normalize(
@@ -454,6 +456,7 @@ def test_MultilineRegexTokenMultipleDelimiterFirstMatch():
     assert iter.Offset == 50
 
 # ----------------------------------------------------------------------
+@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexTokenMultipleDelimiterSecondMatch():
     iter = NormalizedIterator(
         Normalize(
@@ -485,6 +488,7 @@ def test_MultilineRegexTokenMultipleDelimiterSecondMatch():
     assert iter.Offset == 40
 
 # ----------------------------------------------------------------------
+@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexNoMatch():
     iter = NormalizedIterator(
         Normalize(
@@ -506,6 +510,7 @@ def test_MultilineRegexNoMatch():
     assert result is None
 
 # ----------------------------------------------------------------------
+@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexCustomGroup():
     iter = NormalizedIterator(
         Normalize(
@@ -561,7 +566,13 @@ def test_NewlineMatch():
         ),
     )
 
-    assert str(result) == "0, 2"
+    assert str(result) == textwrap.dedent(
+        """\
+        <class 'Token.NewlineToken.MatchResult'>
+        End   : 2
+        Start : 0
+        """,
+    )
 
 # ----------------------------------------------------------------------
 def test_IndentMatch():
@@ -573,7 +584,14 @@ def test_IndentMatch():
         ),
     )
 
-    assert str(result) == "0, 4, (4)"
+    assert str(result) == textwrap.dedent(
+        """\
+        <class 'Token.IndentToken.MatchResult'>
+        End   : 4
+        Start : 0
+        Value : 4
+        """,
+    )
 
 # ----------------------------------------------------------------------
 def test_DedentMatch():
@@ -592,7 +610,12 @@ def test_DedentMatch():
 
     result = DedentToken().Match(iter)
 
-    assert str(result) == ""
+    assert str(result) == textwrap.dedent(
+        """\
+        <class 'Token.DedentToken.MatchResult'>
+        -- empty dict --
+        """,
+    )
 
 # ----------------------------------------------------------------------
 def test_RegexMatch():
@@ -604,4 +627,9 @@ def test_RegexMatch():
         ),
     )
 
-    assert str(result) == "Regex: <_sre.SRE_Match object; span=(0, 3), match='foo'>"
+    assert str(result) == textwrap.dedent(
+        """\
+        <class 'Token.RegexToken.MatchResult'>
+        Match : <_sre.SRE_Match object; span=(0, 3), match='foo'>
+        """,
+    )

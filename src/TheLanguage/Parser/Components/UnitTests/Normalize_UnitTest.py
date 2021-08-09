@@ -40,8 +40,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
-        assert li.StartPos == 2
-        assert li.EndPos == 3
+        assert li.PosStart == 2
+        assert li.PosEnd == 3
         assert li.IndentationLevel == 6
         assert li.IndentationInfo is None
 
@@ -60,8 +60,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 3
-        assert li.StartPos == 2
-        assert li.EndPos == 3
+        assert li.PosStart == 2
+        assert li.PosEnd == 3
         assert li.IndentationLevel == 6
         assert li.IndentationInfo is None
 
@@ -80,8 +80,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
-        assert li.StartPos == 1
-        assert li.EndPos == 3
+        assert li.PosStart == 1
+        assert li.PosEnd == 3
         assert li.IndentationLevel == 6
         assert li.IndentationInfo is None
 
@@ -100,8 +100,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
-        assert li.StartPos == 1
-        assert li.EndPos == 3
+        assert li.PosStart == 1
+        assert li.PosEnd == 3
         assert li.IndentationLevel == 6
         assert li.IndentationInfo == (LineInfo.IndentType.Indent, 10)
 
@@ -120,8 +120,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
-        assert li.StartPos == 1
-        assert li.EndPos == 3
+        assert li.PosStart == 1
+        assert li.PosEnd == 3
         assert li.IndentationLevel == 6
         assert li.IndentationInfo == (LineInfo.IndentType.Dedent, 2)
 

@@ -3,7 +3,7 @@
 # |  __init__.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-03 09:33:56
+# |      2021-08-08 01:07:34
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Types and Methods common across unit tests"""
+"""Types and methods common across automatedunit tests"""
 
 import os
 import textwrap
 
 from typing import Optional
 
-import pytest
-
 from asynctest import CoroutineMock
+import pytest
 
 import CommonEnvironment
 from CommonEnvironment import StringHelpers
@@ -37,7 +36,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Normalize import Normalize
     from ..NormalizedIterator import NormalizedIterator
-    from ..Statement import Statement
+    from ..Phrase import Phrase
 
 
 # ----------------------------------------------------------------------
@@ -47,7 +46,7 @@ def parse_mock():
 
     mock.OnIndentAsync = CoroutineMock()
     mock.OnDedentAsync = CoroutineMock()
-    mock.OnInternalStatementAsync = CoroutineMock()
+    mock.OnInternalPhraseAsync = CoroutineMock()
 
     return mock
 
@@ -78,30 +77,30 @@ def MethodCallsToString(
         if get_method_name:
             method_name = method_call[0]
 
-        if method_name == "StartStatement":
+        if method_name == "StartPhrase":
             contents.append(
                 "{}) {}, {}".format(
                     index,
                     method_name,
-                    ", ".join(['"{}"'.format(statement.Name) for statement in method_call[1][1]]),
+                    ", ".join(['"{}"'.format(phrase.Name) for phrase in method_call[1][1]]),
                 ),
             )
 
-        elif method_name == "EndStatement":
+        elif method_name == "EndPhrase":
             contents.append(
                 "{}) {}, {}".format(
                     index,
                     method_name,
                     ", ".join(
                         [
-                            '"{}" [{}]'.format(statement.Name, result)
-                            for statement, result in method_call[1][1]
+                            '"{}" [{}]'.format(phrase.Name, result)
+                            for phrase, result in method_call[1][1]
                         ],
                     ),
                 ),
             )
 
-        elif method_name == "OnStatementCompleteAsync":
+        elif method_name == "OnPhraseCompleteAsync":
             contents.append(
                 textwrap.dedent(
                     """\
@@ -118,7 +117,7 @@ def MethodCallsToString(
                 ).rstrip(),
             )
 
-        elif method_name == "GetDynamicStatements":
+        elif method_name == "GetDynamicPhrases":
             contents.append(
                 textwrap.dedent(
                     """\

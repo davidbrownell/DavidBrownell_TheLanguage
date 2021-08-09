@@ -3,7 +3,7 @@
 # |  Error.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-04-09 20:25:53
+# |      2021-08-07 22:54:50
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Base class for errors"""
+"""Contains the Error object"""
 
 import os
 
@@ -27,6 +27,7 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class Error(Exception, Interface.Interface):
@@ -36,11 +37,16 @@ class Error(Exception, Interface.Interface):
     Column: int
 
     # ----------------------------------------------------------------------
-    @Interface.abstractproperty
-    def MessageTemplate(self):
-        """Template used when generating the exception string"""
-        raise Exception("Abstract property")  # pragma: no cover
+    def __post_init__(self):
+        assert self.Line >= 1, self.Line
+        assert self.Column >= 1, self.Column
 
     # ----------------------------------------------------------------------
     def __str__(self):
         return self.MessageTemplate.format(**self.__dict__)
+
+    # ----------------------------------------------------------------------
+    @Interface.abstractproperty
+    def MessageTemplate(self):
+        """Template used when generating the exception string"""
+        raise Exception("Abstract property")  # pragma: no cover
