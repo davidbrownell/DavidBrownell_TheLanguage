@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DynamicStatement.py
+# |  DynamicPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-25 18:07:33
+# |      2021-08-09 11:19:22
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the DynamicStatement object"""
+"""Contains the DynamicPhrase object"""
 
 import os
 
@@ -31,55 +31,55 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .OrStatement import OrStatement
-    from ..Components.Statement import Statement
+    from .OrPhrase import OrPhrase
+    from ..Components.Phrase import Phrase
 
 
 # ----------------------------------------------------------------------
-class DynamicStatement(Statement):
+class DynamicPhrase(Phrase):
     """Collects dynamic statements and parses them"""
 
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        get_dynamic_statements_func: Callable[
+        get_dynamic_phrases_func: Callable[
             [
-                List[str],
-                Statement.Observer,
+                List[str],                  # unique_id
+                Phrase.Observer,
             ],
             Union[
-                List[Statement],
-                Tuple[str, List[Statement]],
+                List[Phrase],               # List of Phrases
+                Tuple[List[Phrase], str],   # List of Phrases and the phase name
             ]
         ],
         name: str=None,
     ):
-        assert get_dynamic_statements_func
+        assert get_dynamic_phrases_func
 
-        name = name or "Dynamic Statements"
+        name = name or "Dynamic Phrases"
 
-        super(DynamicStatement, self).__init__(name)
+        super(DynamicPhrase, self).__init__(name)
 
-        self._get_dynamic_statements_func   = get_dynamic_statements_func
+        self._get_dynamic_phrases_func      = get_dynamic_phrases_func
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def ParseAsync(
         self,
         unique_id: List[str],
-        normalized_iter: Statement.NormalizedIterator,
-        observer: Statement.Observer,
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
         ignore_whitespace=False,
         single_threaded=False,
     ) -> Union[
-        Statement.ParseResult,
+        Phrase.ParseResult,
         None,
     ]:
-        result: Optional[Statement.ParseResult] = None
+        result: Optional[Phrase.ParseResult] = None
 
-        observer.StartStatement(unique_id, [self])
+        observer.StartPhrase(unique_id, [self])
         with CallOnExit(
-            lambda: observer.EndStatement(
+            lambda: observer.EndPhrase(
                 unique_id,
                 [
                     (
@@ -89,27 +89,29 @@ class DynamicStatement(Statement):
                 ],
             ),
         ):
-            dynamic_statements = self._get_dynamic_statements_func(unique_id, observer)
-            if not dynamic_statements:
-                return Statement.ParseResult(False, normalized_iter, None)
+            dynamic_phrases = self._get_dynamic_phrases_func(unique_id, observer)
+            if not dynamic_phrases:
+                return Phrase.ParseResult(False, normalized_iter, None)
 
-            if isinstance(dynamic_statements, tuple):
-                name = dynamic_statements[0]
-                dynamic_statements = dynamic_statements[1]
+            if isinstance(dynamic_phrases, tuple):
+                dyanmic_phrases, phrase_name = dynamic_phrases
             else:
-                name = None
+                phrase_name = None
 
-            # Use the logic in the OrStatement constructor to create a pretty name; then use that
-            # name when creating the unique_id when cloning the new OrStatement.
-            or_statement = OrStatement(
-                *dynamic_statements,
-                name=name,
+            assert isinstance(dynamic_phrases, list)
+
+            # Use the logic in the OrPhrase constructor to create a pretty name for the phrase;
+            # use that name when creating the unique_id to be used for events associated with
+            # this invocation.
+            or_phrase = OrPhrase(
+                dynamic_phrases,
+                name=phrase_name,
             )
 
-            result = await or_statement.ParseAsync(
-                unique_id + [or_statement.Name],
+            result = await or_phrase.ParseAsync(
+                unique_id + [or_phrase.Name],
                 normalized_iter,
-                Statement.ObserverDecorator(
+                Phrase.ObserverDecorator(
                     self,
                     unique_id,
                     observer,
@@ -123,11 +125,11 @@ class DynamicStatement(Statement):
             if result is None:
                 return None
 
-            data = Statement.StandardParseResultData(self, result.Data, unique_id)
+            data = Phrase.StandardParseResultData(self, result.Data, unique_id)
 
             if (
                 result.Success
-                and not await observer.OnInternalStatementAsync(
+                and not await observer.OnInternalPhraseAsync(
                     [data],
                     normalized_iter,
                     result.Iter,
@@ -135,7 +137,7 @@ class DynamicStatement(Statement):
             ):
                 return None
 
-            return Statement.ParseResult(result.Success, result.Iter, data)
+            return Phrase.ParseResult(result.Success, result.Iter, data)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -143,7 +145,7 @@ class DynamicStatement(Statement):
     @Interface.override
     def _PopulateRecursiveImpl(
         self,
-        new_statement: Statement,
+        new_phrase: Phrase,
     ) -> bool:
         # Nothing to do here
         return False
