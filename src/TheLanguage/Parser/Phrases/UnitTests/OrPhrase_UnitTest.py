@@ -103,10 +103,7 @@ class TestStandard(object):
                                                          Match : <_sre.SRE_Match object; span=(0, 9), match='lowercase'>
                                             Whitespace : None
                                  Phrase   : lower
-                                 UniqueId : 0)   root
-                                            1)   Or: lower [0]
                       Phrase   : My Or Phrase
-                      UniqueId : 0)   root
             Iter    : [1, 10] (9)
             Success : True
             """,
@@ -137,10 +134,7 @@ class TestStandard(object):
                                                          Match : <_sre.SRE_Match object; span=(0, 9), match='UPPERCASE'>
                                             Whitespace : None
                                  Phrase   : upper
-                                 UniqueId : 0)   root
-                                            1)   Or: upper [1]
                       Phrase   : My Or Phrase
-                      UniqueId : 0)   root
             Iter    : [1, 10] (9)
             Success : True
             """,
@@ -171,10 +165,7 @@ class TestStandard(object):
                                                          Match : <_sre.SRE_Match object; span=(0, 8), match='12345678'>
                                             Whitespace : None
                                  Phrase   : number
-                                 UniqueId : 0)   root
-                                            1)   Or: number [2]
                       Phrase   : My Or Phrase
-                      UniqueId : 0)   root
             Iter    : [1, 9] (8)
             Success : True
             """,
@@ -211,10 +202,7 @@ class TestStandard(object):
                                                          Match : <_sre.SRE_Match object; span=(0, 8), match='12345678'>
                                             Whitespace : None
                                  Phrase   : number
-                                 UniqueId : 0)   root
-                                            1)   Or: number [2]
                       Phrase   : My Or Phrase
-                      UniqueId : 0)   root
             Iter    : [1, 9] (8)
             Success : True
             """,
@@ -251,22 +239,17 @@ class TestStandard(object):
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : lower
-                                                   UniqueId : None
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : upper
-                                                   UniqueId : None
                                               2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : number
-                                                   UniqueId : None
                                               3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : Newline+
-                                                   UniqueId : None
                                  IsComplete : True
                       Phrase   : My Or Phrase
-                      UniqueId : 0)   root
             Iter    : [1, 1] (0)
             Success : False
             """,
@@ -297,22 +280,17 @@ class TestStandard(object):
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : lower
-                                                   UniqueId : None
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : upper
-                                                   UniqueId : None
                                               2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : number
-                                                   UniqueId : None
                                               3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : Newline+
-                                                   UniqueId : None
                                  IsComplete : True
                       Phrase   : My Or Phrase
-                      UniqueId : 0)   root
             Iter    : [1, 1] (0)
             Success : False
             """,
@@ -347,14 +325,8 @@ class TestStandard(object):
                                                                     Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
                                                        Whitespace : None
                                             Phrase   : lower
-                                            UniqueId : 0)   root
-                                                       1)   Or: Or: (lower, number) [1]
-                                                       2)   Or: lower [0]
                                  Phrase   : Or: (lower, number)
-                                 UniqueId : 0)   root
-                                            1)   Or: Or: (lower, number) [1]
                       Phrase   : Or: (upper, Or: (lower, number))
-                      UniqueId : 0)   root
             Iter    : [1, 5] (4)
             Success : True
             """,
@@ -387,14 +359,8 @@ class TestStandard(object):
                                                                     Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
                                                        Whitespace : None
                                             Phrase   : lower
-                                            UniqueId : 0)   root
-                                                       1)   Or: Or: (lower, number) [1]
-                                                       2)   Or: lower [0]
                                  Phrase   : Or: (lower, number)
-                                 UniqueId : 0)   root
-                                            1)   Or: Or: (lower, number) [1]
                       Phrase   : Or: (upper, Or: (lower, number))
-                      UniqueId : 0)   root
             Iter    : [1, 5] (4)
             Success : True
             """,
@@ -418,25 +384,18 @@ class TestStandard(object):
                                         Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
                            Whitespace : None
                 Phrase   : lower
-                UniqueId : 0)   root
-                           1)   Or: Or: (lower, number) [1]
-                           2)   Or: lower [0]
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
                            DataItems  : -- empty list --
                            IsComplete : False
                 Phrase   : Or: (lower, number)
-                UniqueId : 0)   root
-                           1)   Or: Or: (lower, number) [1]
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
                            DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                              Data     : None
                                              Phrase   : upper
-                                             UniqueId : None
                            IsComplete : False
                 Phrase   : Or: (upper, Or: (lower, number))
-                UniqueId : 0)   root
             6) EndPhrase, "lower" [True], "Or: (lower, number)" [None], "Or: (upper, Or: (lower, number))" [None]
             7) StartPhrase, "number", "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
             8) EndPhrase, "number" [False], "Or: (lower, number)" [None], "Or: (upper, Or: (lower, number))" [None]
@@ -452,21 +411,14 @@ class TestStandard(object):
                                                    Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
                                       Whitespace : None
                            Phrase   : lower
-                           UniqueId : 0)   root
-                                      1)   Or: Or: (lower, number) [1]
-                                      2)   Or: lower [0]
                 Phrase   : Or: (lower, number)
-                UniqueId : 0)   root
-                           1)   Or: Or: (lower, number) [1]
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
                            DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                              Data     : None
                                              Phrase   : upper
-                                             UniqueId : None
                            IsComplete : False
                 Phrase   : Or: (upper, Or: (lower, number))
-                UniqueId : 0)   root
             10) EndPhrase, "Or: (lower, number)" [True], "Or: (upper, Or: (lower, number))" [None]
             11) OnInternalPhraseAsync, 0, 4
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
@@ -481,14 +433,8 @@ class TestStandard(object):
                                                               Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
                                                  Whitespace : None
                                       Phrase   : lower
-                                      UniqueId : 0)   root
-                                                 1)   Or: Or: (lower, number) [1]
-                                                 2)   Or: lower [0]
                            Phrase   : Or: (lower, number)
-                           UniqueId : 0)   root
-                                      1)   Or: Or: (lower, number) [1]
                 Phrase   : Or: (upper, Or: (lower, number))
-                UniqueId : 0)   root
             12) EndPhrase, "Or: (upper, Or: (lower, number))" [True]
             """,
         )
@@ -516,10 +462,7 @@ class TestStandard(object):
                                                          Match : <_sre.SRE_Match object; span=(0, 4), match='WORD'>
                                             Whitespace : None
                                  Phrase   : upper
-                                 UniqueId : 0)   root
-                                            1)   Or: upper [0]
                       Phrase   : Or: (upper, Or: (lower, number))
-                      UniqueId : 0)   root
             Iter    : [1, 5] (4)
             Success : True
             """,
@@ -570,10 +513,7 @@ class TestSort(object):
                                                          Match : <_sre.SRE_Match object; span=(0, 4), match='1234'>
                                             Whitespace : None
                                  Phrase   : Long
-                                 UniqueId : 0)   root
-                                            1)   Or: Long [1]
                       Phrase   : Sort
-                      UniqueId : 0)   root
             Iter    : [1, 5] (4)
             Success : True
             """,
@@ -602,10 +542,7 @@ class TestSort(object):
                                                          Match : <_sre.SRE_Match object; span=(0, 2), match='12'>
                                             Whitespace : None
                                  Phrase   : Short
-                                 UniqueId : 0)   root
-                                            1)   Or: Short [0]
                       Phrase   : No Sort
-                      UniqueId : 0)   root
             Iter    : [1, 3] (2)
             Success : True
             """,
@@ -625,14 +562,11 @@ class TestSort(object):
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : Short
-                                                   UniqueId : None
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : None
                                                    Phrase   : Long
-                                                   UniqueId : None
                                  IsComplete : True
                       Phrase   : No Sort
-                      UniqueId : 0)   root
             Iter    : [1, 1] (0)
             Success : False
             """,

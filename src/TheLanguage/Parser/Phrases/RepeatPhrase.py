@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  RepeatStatement.py
+# |  RepeatPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-25 16:17:23
+# |      2021-08-08 23:30:18
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the RepeatStatement object"""
+"""Contains the RepeatPhrase object"""
 
 import os
 
@@ -31,13 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .RecursivePlaceholderStatement import RecursivePlaceholderStatement
-    from ..Components.Statement import Statement
+    from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
+    from ..Components.Phrase import Phrase
 
 
 # ----------------------------------------------------------------------
-class RepeatStatement(Statement):
-    """Matches content that repeats the provided statement N times"""
+class RepeatPhrase(Phrase):
+    """Matches content that repeats the provided phrase N times"""
 
     # ----------------------------------------------------------------------
     # |
@@ -46,24 +46,24 @@ class RepeatStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        statement: Statement,
+        phrase: Phrase,
         min_matches: int,
         max_matches: Optional[int],
         name: str=None,
     ):
-        assert statement
+        assert phrase
         assert min_matches >= 0, min_matches
         assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
 
         if name is None:
-            name = self._CreateDefaultName(statement, min_matches, max_matches)
+            name = self._CreateDefaultName(phrase, min_matches, max_matches)
             name_is_default = True
         else:
             name_is_default = False
 
-        super(RepeatStatement, self).__init__(name)
+        super(RepeatPhrase, self).__init__(name)
 
-        self.Statement                      = statement
+        self.Phrase                         = phrase
         self.MinMatches                     = min_matches
         self.MaxMatches                     = max_matches
         self._name_is_default               = name_is_default
@@ -73,28 +73,28 @@ class RepeatStatement(Statement):
     async def ParseAsync(
         self,
         unique_id: List[str],
-        normalized_iter: Statement.NormalizedIterator,
-        observer: Statement.Observer,
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
         ignore_whitespace=False,
         single_threaded=False,
     ) -> Union[
-        Statement.ParseResult,
+        Phrase.ParseResult,
         None,
     ]:
         success = False
 
-        observer.StartStatement(unique_id, [self])
-        with CallOnExit(lambda: observer.EndStatement(unique_id, [(self, success)])):
+        observer.StartPhrase(unique_id, [self])
+        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
             original_normalized_iter = normalized_iter.Clone()
 
-            results: List[Statement.ParseResult] = []
-            error_result: Optional[Statement.ParseResult] = None
+            results: List[Optional[Phrase.ParseResultData]] = []
+            error_result: Optional[Phrase.ParseResult] = None
 
             while not normalized_iter.AtEnd():
-                result = await self.Statement.ParseAsync(
-                    unique_id + ["Repeat: {} [{}]".format(self.Statement.Name, len(results))],
+                result = await self.Phrase.ParseAsync(
+                    unique_id + ["Repeat: {} [{}]".format(self.Phrase.Name, len(results))],
                     normalized_iter.Clone(),
-                    Statement.ObserverDecorator(
+                    Phrase.ObserverDecorator(
                         self,
                         unique_id,
                         observer,
@@ -112,56 +112,49 @@ class RepeatStatement(Statement):
                     error_result = result
                     break
 
-                results.append(result)
+                results.append(result.Data)
                 normalized_iter = result.Iter.Clone()
 
                 if self.MaxMatches is not None and len(results) == self.MaxMatches:
                     break
 
-            results = cast(List[Statement.ParseResult], results)
+            if len(results) >= self.MinMatches:
+                assert self.MaxMatches is None or len(results) <= self.MaxMatches
+                success = True
 
-            success = (
-                len(results) >= self.MinMatches
-                and (
-                    self.MaxMatches is None
-                    or self.MaxMatches >= len(results)
-                )
-            )
-
-            if success:
-                data = Statement.StandardParseResultData(
+                data = Phrase.StandardParseResultData(
                     self,
-                    Statement.MultipleStandardParseResultData(
-                        [result.Data for result in results],
+                    Phrase.MultipleStandardParseResultData(
+                        results,
                         True,
                     ),
                     unique_id,
                 )
 
-                if not await observer.OnInternalStatementAsync(
+                if not await observer.OnInternalPhraseAsync(
                     [data],
                     original_normalized_iter,
                     normalized_iter,
                 ):
                     return None
 
-                return Statement.ParseResult(True, normalized_iter, data)
+                return Phrase.ParseResult(True, normalized_iter, data)
+
+            success = False
 
             # Gather the failure information
-            result_data = [result.Data for result in results]
-
             if error_result:
-                result_data.append(error_result.Data)
+                results.append(error_result.Data)
                 end_iter = error_result.Iter
             else:
                 end_iter = normalized_iter
 
-            return Statement.ParseResult(
+            return Phrase.ParseResult(
                 False,
                 end_iter,
-                Statement.StandardParseResultData(
+                Phrase.StandardParseResultData(
                     self,
-                    Statement.MultipleStandardParseResultData(cast(List[Optional[Statement.ParseResultData]], result_data), True),
+                    Phrase.MultipleStandardParseResultData(results, True),
                     unique_id,
                 ),
             )
@@ -172,27 +165,26 @@ class RepeatStatement(Statement):
     @Interface.override
     def _PopulateRecursiveImpl(
         self,
-        new_statement: Statement,
+        new_phrase: Phrase,
     ) -> bool:
-        replaced_statement = False
+        replaced_phrase = False
 
-        if isinstance(self.Statement, RecursivePlaceholderStatement):
-            self.Statement = new_statement
-            replaced_statement = True
-
+        if isinstance(self.Phrase, RecursivePlaceholderPhrase):
+            self.Phrase = new_phrase
+            replaced_phrase = True
         else:
-            replaced_statement = self.Statement.PopulateRecursiveImpl(new_statement) or replaced_statement
+            replaced_phrase = self.Phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
 
-        if replaced_statement and self._name_is_default:
-            self.Name = self._CreateDefaultName(self.Statement, self.MinMatches, self.MaxMatches)
+        if replaced_phrase and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)
 
-        return replaced_statement
+        return replaced_phrase
 
     # ----------------------------------------------------------------------
     @staticmethod
     def _CreateDefaultName(
-        statement: Statement,
+        phrase: Phrase,
         min_matches: int,
         max_matches: Optional[int],
     ) -> str:
-        return "Repeat: ({}, {}, {})".format(statement.Name, min_matches, max_matches)
+        return "Repeat: {{{}, {}, {}}}".format(phrase.Name, min_matches, max_matches)

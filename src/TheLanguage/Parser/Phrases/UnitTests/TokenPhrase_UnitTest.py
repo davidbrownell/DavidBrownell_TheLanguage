@@ -74,10 +74,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(0, 4), match='This'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [1, 5] (4)
             Success : True
             """,
@@ -99,10 +96,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(0, 4), match='This'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             2) EndPhrase, "Word" [True]
             """,
         )
@@ -125,10 +119,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(10, 12), match='is'>
                                  Whitespace : 0)   4
                                               1)   10
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [1, 13] (12)
             Success : True
             """,
@@ -150,10 +141,7 @@ class TestWords(object):
                                         Match : <_sre.SRE_Match object; span=(10, 12), match='is'>
                            Whitespace : 0)   4
                                         1)   10
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             2) EndPhrase, "Word" [True]
             """,
         )
@@ -176,10 +164,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(13, 14), match='a'>
                                  Whitespace : 0)   12
                                               1)   13
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [1, 15] (14)
             Success : True
             """,
@@ -201,10 +186,7 @@ class TestWords(object):
                                         Match : <_sre.SRE_Match object; span=(13, 14), match='a'>
                            Whitespace : 0)   12
                                         1)   13
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             2) EndPhrase, "Word" [True]
             """,
         )
@@ -227,10 +209,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(20, 24), match='test'>
                                  Whitespace : 0)   14
                                               1)   20
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [1, 25] (24)
             Success : True
             """,
@@ -252,10 +231,7 @@ class TestWords(object):
                                         Match : <_sre.SRE_Match object; span=(20, 24), match='test'>
                            Whitespace : 0)   14
                                         1)   20
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             2) EndPhrase, "Word" [True]
             """,
         )
@@ -279,10 +255,7 @@ class TestWords(object):
                                               Start : 27
                                  Whitespace : 0)   24
                                               1)   27
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [2, 1] (28)
             Success : True
             """,
@@ -305,10 +278,7 @@ class TestWords(object):
                                         Start : 27
                            Whitespace : 0)   24
                                         1)   27
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             2) EndPhrase, "Newline+" [True]
             """,
         )
@@ -324,10 +294,7 @@ class TestWords(object):
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
             Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                       Data     : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : None
+                      Phrase   : Word
             Iter    : [1, 1] (0)
             Success : False
             """,
@@ -372,10 +339,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [1, 4] (3)
             Success : True
             """,
@@ -397,10 +361,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             2) EndPhrase, "Word" [True]
             """,
         )
@@ -423,10 +384,7 @@ class TestWords(object):
                                               End   : 4
                                               Start : 3
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [2, 1] (4)
             Success : True
             """,
@@ -448,10 +406,7 @@ class TestWords(object):
                                         End   : 4
                                         Start : 3
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             2) EndPhrase, "Newline+" [True]
             """,
         )
@@ -475,10 +430,7 @@ class TestWords(object):
                                               Start : 4
                                               Value : 4
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Indent
-                                 Token : Indent
-                      UniqueId : 0)   root
+                      Phrase   : Indent
             Iter    : [2, 5] (8)
             Success : True
             """,
@@ -501,10 +453,7 @@ class TestWords(object):
                                         Start : 4
                                         Value : 4
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Indent
-                           Token : Indent
-                UniqueId : 0)   root
+                Phrase   : Indent
             2) EndPhrase, "Indent" [True]
             """,
         )
@@ -526,10 +475,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(8, 11), match='two'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [2, 8] (11)
             Success : True
             """,
@@ -550,10 +496,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(8, 11), match='two'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             2) EndPhrase, "Word" [True]
             """,
         )
@@ -576,10 +519,7 @@ class TestWords(object):
                                               End   : 12
                                               Start : 11
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [3, 1] (12)
             Success : True
             """,
@@ -601,10 +541,7 @@ class TestWords(object):
                                         End   : 12
                                         Start : 11
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             2) EndPhrase, "Newline+" [True]
             """,
         )
@@ -626,10 +563,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                               -- empty dict --
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Dedent
-                                 Token : Dedent
-                      UniqueId : 0)   root
+                      Phrase   : Dedent
             Iter    : [3, 1] (12)
             Success : True
             """,
@@ -650,10 +584,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                         -- empty dict --
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Dedent
-                           Token : Dedent
-                UniqueId : 0)   root
+                Phrase   : Dedent
             2) EndPhrase, "Dedent" [True]
             """,
         )
@@ -738,10 +669,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [1, 4] (3)
             Success : True
 
@@ -756,10 +684,7 @@ class TestWords(object):
                                               End   : 4
                                               Start : 3
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [2, 1] (4)
             Success : True
 
@@ -775,10 +700,7 @@ class TestWords(object):
                                               Start : 4
                                               Value : 4
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Indent
-                                 Token : Indent
-                      UniqueId : 0)   root
+                      Phrase   : Indent
             Iter    : [2, 5] (8)
             Success : True
 
@@ -792,10 +714,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(8, 11), match='two'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [2, 8] (11)
             Success : True
 
@@ -810,10 +729,7 @@ class TestWords(object):
                                               End   : 12
                                               Start : 11
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [3, 1] (12)
             Success : True
 
@@ -829,10 +745,7 @@ class TestWords(object):
                                               Start : 12
                                               Value : 8
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Indent
-                                 Token : Indent
-                      UniqueId : 0)   root
+                      Phrase   : Indent
             Iter    : [3, 9] (20)
             Success : True
 
@@ -846,10 +759,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(20, 25), match='three'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [3, 14] (25)
             Success : True
 
@@ -864,10 +774,7 @@ class TestWords(object):
                                               End   : 26
                                               Start : 25
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [4, 1] (26)
             Success : True
 
@@ -881,10 +788,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(34, 38), match='four'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [4, 13] (38)
             Success : True
 
@@ -899,10 +803,7 @@ class TestWords(object):
                                               End   : 39
                                               Start : 38
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [5, 1] (39)
             Success : True
 
@@ -916,10 +817,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                               -- empty dict --
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Dedent
-                                 Token : Dedent
-                      UniqueId : 0)   root
+                      Phrase   : Dedent
             Iter    : [5, 5] (43)
             Success : True
 
@@ -933,10 +831,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(43, 47), match='five'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [5, 9] (47)
             Success : True
 
@@ -951,10 +846,7 @@ class TestWords(object):
                                               End   : 48
                                               Start : 47
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [6, 1] (48)
             Success : True
 
@@ -970,10 +862,7 @@ class TestWords(object):
                                               Start : 48
                                               Value : 12
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Indent
-                                 Token : Indent
-                      UniqueId : 0)   root
+                      Phrase   : Indent
             Iter    : [6, 13] (60)
             Success : True
 
@@ -987,10 +876,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(60, 63), match='six'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [6, 16] (63)
             Success : True
 
@@ -1005,10 +891,7 @@ class TestWords(object):
                                               End   : 64
                                               Start : 63
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [7, 1] (64)
             Success : True
 
@@ -1022,10 +905,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                               -- empty dict --
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Dedent
-                                 Token : Dedent
-                      UniqueId : 0)   root
+                      Phrase   : Dedent
             Iter    : [7, 5] (68)
             Success : True
 
@@ -1039,10 +919,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(68, 73), match='seven'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [7, 10] (73)
             Success : True
 
@@ -1057,10 +934,7 @@ class TestWords(object):
                                               End   : 74
                                               Start : 73
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [8, 1] (74)
             Success : True
 
@@ -1076,10 +950,7 @@ class TestWords(object):
                                               Start : 74
                                               Value : 8
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Indent
-                                 Token : Indent
-                      UniqueId : 0)   root
+                      Phrase   : Indent
             Iter    : [8, 9] (82)
             Success : True
 
@@ -1093,10 +964,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                               Match : <_sre.SRE_Match object; span=(82, 87), match='eight'>
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Word
-                                 Token : Word
-                      UniqueId : 0)   root
+                      Phrase   : Word
             Iter    : [8, 14] (87)
             Success : True
 
@@ -1111,10 +979,7 @@ class TestWords(object):
                                               End   : 88
                                               Start : 87
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Newline+
-                                 Token : Newline+
-                      UniqueId : 0)   root
+                      Phrase   : Newline+
             Iter    : [9, 1] (88)
             Success : True
 
@@ -1128,10 +993,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                               -- empty dict --
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Dedent
-                                 Token : Dedent
-                      UniqueId : 0)   root
+                      Phrase   : Dedent
             Iter    : [9, 1] (88)
             Success : True
 
@@ -1145,10 +1007,7 @@ class TestWords(object):
                                  Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                               -- empty dict --
                                  Whitespace : None
-                      Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                 Name  : Dedent
-                                 Token : Dedent
-                      UniqueId : 0)   root
+                      Phrase   : Dedent
             Iter    : [9, 1] (88)
             Success : True
             """,
@@ -1167,10 +1026,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             2) EndPhrase, "Word" [True]
             3) StartPhrase, "Newline+"
             4) OnInternalPhraseAsync, 3, 4
@@ -1184,10 +1040,7 @@ class TestWords(object):
                                         End   : 4
                                         Start : 3
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             5) EndPhrase, "Newline+" [True]
             6) StartPhrase, "Indent"
             7) OnIndentAsync, 4, 8
@@ -1202,10 +1055,7 @@ class TestWords(object):
                                         Start : 4
                                         Value : 4
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Indent
-                           Token : Indent
-                UniqueId : 0)   root
+                Phrase   : Indent
             8) EndPhrase, "Indent" [True]
             9) StartPhrase, "Word"
             10) OnInternalPhraseAsync, 8, 11
@@ -1218,10 +1068,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(8, 11), match='two'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             11) EndPhrase, "Word" [True]
             12) StartPhrase, "Newline+"
             13) OnInternalPhraseAsync, 11, 12
@@ -1235,10 +1082,7 @@ class TestWords(object):
                                         End   : 12
                                         Start : 11
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             14) EndPhrase, "Newline+" [True]
             15) StartPhrase, "Indent"
             16) OnIndentAsync, 12, 20
@@ -1253,10 +1097,7 @@ class TestWords(object):
                                         Start : 12
                                         Value : 8
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Indent
-                           Token : Indent
-                UniqueId : 0)   root
+                Phrase   : Indent
             17) EndPhrase, "Indent" [True]
             18) StartPhrase, "Word"
             19) OnInternalPhraseAsync, 20, 25
@@ -1269,10 +1110,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(20, 25), match='three'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             20) EndPhrase, "Word" [True]
             21) StartPhrase, "Newline+"
             22) OnInternalPhraseAsync, 25, 26
@@ -1286,10 +1124,7 @@ class TestWords(object):
                                         End   : 26
                                         Start : 25
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             23) EndPhrase, "Newline+" [True]
             24) StartPhrase, "Word"
             25) OnInternalPhraseAsync, 34, 38
@@ -1302,10 +1137,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(34, 38), match='four'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             26) EndPhrase, "Word" [True]
             27) StartPhrase, "Newline+"
             28) OnInternalPhraseAsync, 38, 39
@@ -1319,10 +1151,7 @@ class TestWords(object):
                                         End   : 39
                                         Start : 38
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             29) EndPhrase, "Newline+" [True]
             30) StartPhrase, "Dedent"
             31) OnDedentAsync, 39, 43
@@ -1335,10 +1164,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                         -- empty dict --
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Dedent
-                           Token : Dedent
-                UniqueId : 0)   root
+                Phrase   : Dedent
             32) EndPhrase, "Dedent" [True]
             33) StartPhrase, "Word"
             34) OnInternalPhraseAsync, 43, 47
@@ -1351,10 +1177,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(43, 47), match='five'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             35) EndPhrase, "Word" [True]
             36) StartPhrase, "Newline+"
             37) OnInternalPhraseAsync, 47, 48
@@ -1368,10 +1191,7 @@ class TestWords(object):
                                         End   : 48
                                         Start : 47
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             38) EndPhrase, "Newline+" [True]
             39) StartPhrase, "Indent"
             40) OnIndentAsync, 48, 60
@@ -1386,10 +1206,7 @@ class TestWords(object):
                                         Start : 48
                                         Value : 12
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Indent
-                           Token : Indent
-                UniqueId : 0)   root
+                Phrase   : Indent
             41) EndPhrase, "Indent" [True]
             42) StartPhrase, "Word"
             43) OnInternalPhraseAsync, 60, 63
@@ -1402,10 +1219,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(60, 63), match='six'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             44) EndPhrase, "Word" [True]
             45) StartPhrase, "Newline+"
             46) OnInternalPhraseAsync, 63, 64
@@ -1419,10 +1233,7 @@ class TestWords(object):
                                         End   : 64
                                         Start : 63
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             47) EndPhrase, "Newline+" [True]
             48) StartPhrase, "Dedent"
             49) OnDedentAsync, 64, 68
@@ -1435,10 +1246,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                         -- empty dict --
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Dedent
-                           Token : Dedent
-                UniqueId : 0)   root
+                Phrase   : Dedent
             50) EndPhrase, "Dedent" [True]
             51) StartPhrase, "Word"
             52) OnInternalPhraseAsync, 68, 73
@@ -1451,10 +1259,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(68, 73), match='seven'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             53) EndPhrase, "Word" [True]
             54) StartPhrase, "Newline+"
             55) OnInternalPhraseAsync, 73, 74
@@ -1468,10 +1273,7 @@ class TestWords(object):
                                         End   : 74
                                         Start : 73
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             56) EndPhrase, "Newline+" [True]
             57) StartPhrase, "Indent"
             58) OnIndentAsync, 74, 82
@@ -1486,10 +1288,7 @@ class TestWords(object):
                                         Start : 74
                                         Value : 8
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Indent
-                           Token : Indent
-                UniqueId : 0)   root
+                Phrase   : Indent
             59) EndPhrase, "Indent" [True]
             60) StartPhrase, "Word"
             61) OnInternalPhraseAsync, 82, 87
@@ -1502,10 +1301,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(82, 87), match='eight'>
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Word
-                           Token : Word
-                UniqueId : 0)   root
+                Phrase   : Word
             62) EndPhrase, "Word" [True]
             63) StartPhrase, "Newline+"
             64) OnInternalPhraseAsync, 87, 88
@@ -1519,10 +1315,7 @@ class TestWords(object):
                                         End   : 88
                                         Start : 87
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Newline+
-                           Token : Newline+
-                UniqueId : 0)   root
+                Phrase   : Newline+
             65) EndPhrase, "Newline+" [True]
             66) StartPhrase, "Dedent"
             67) OnDedentAsync, 88, 88
@@ -1535,10 +1328,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                         -- empty dict --
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Dedent
-                           Token : Dedent
-                UniqueId : 0)   root
+                Phrase   : Dedent
             68) EndPhrase, "Dedent" [True]
             69) StartPhrase, "Dedent"
             70) OnDedentAsync, 88, 88
@@ -1551,10 +1341,7 @@ class TestWords(object):
                            Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                         -- empty dict --
                            Whitespace : None
-                Phrase   : <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                           Name  : Dedent
-                           Token : Dedent
-                UniqueId : 0)   root
+                Phrase   : Dedent
             71) EndPhrase, "Dedent" [True]
             """,
         )

@@ -90,6 +90,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         def __post_init__(self):
             super(Phrase.StandardParseResultData, self).__post_init__(
                 Phrase=lambda phrase: phrase.Name,
+                UniqueId=None,
             )
 
             assert (

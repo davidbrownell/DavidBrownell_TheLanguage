@@ -47,9 +47,9 @@ class RecursivePlaceholderPhrase(Phrase):
     @Interface.override
     async def ParseAsync(
         self,
-        *args,
-        **kwargs,
-    ):
+        *args,  # <unused argument> pylint: disable=W0613
+        **kwargs,  # <unused argument> pylint: disable=W0613
+    ):  # <parameters differ from overridden> pylint: disable=W0221
         raise Exception("'ParseAsync' should never be called on a RecursivePlaceholderPhrase instance")
 
     # ----------------------------------------------------------------------

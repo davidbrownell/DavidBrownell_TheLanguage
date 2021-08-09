@@ -177,7 +177,6 @@ class TestStandard(object):
                       Data     : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
                                  -- empty dict --
                       Phrase   : The Phrase
-                      UniqueId : 0)   id1
             Iter    : [1, 1] (0)
             Success : True
             """,
