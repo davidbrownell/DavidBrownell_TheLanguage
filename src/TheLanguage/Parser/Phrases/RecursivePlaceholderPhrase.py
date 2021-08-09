@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  RecursivePlaceholderStatement.py
+# |  RecursivePlaceholderPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-15 13:53:45
+# |      2021-08-08 23:24:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the RecursivePlaceholderStatement object"""
+"""Contains the RecursivePlaceholderPhrase object"""
 
 import os
 
@@ -28,25 +28,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Components.Statement import Statement
+    from ..Components.Phrase import Phrase
 
 
 # ----------------------------------------------------------------------
-class RecursivePlaceholderStatement(Statement):
-    """Temporary Statement that should be replaced before participating in a Parse hierarchy"""
+class RecursivePlaceholderPhrase(Phrase):
+    """\
+    Temporary Phrase that should be replaced before participathing in a Parse hierarchy.
+
+    These objects are used as sentinels within a tree to implement recursive grammars.
+    """
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(RecursivePlaceholderStatement, self).__init__("Recursive")
+        super(RecursivePlaceholderPhrase, self).__init__("Recursive")
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def ParseAsync(
         self,
-        *args,                              # pylint: disable=unused-argument
-        **kwargs,                           # pylint: disable=unused-argument
-    ):  # <Parameters differ> pylint: disable=W0221
-        raise Exception("'ParseAsync' should never be called on a RecursivePlaceholderStatement instance")
+        *args,
+        **kwargs,
+    ):
+        raise Exception("'ParseAsync' should never be called on a RecursivePlaceholderPhrase instance")
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -54,6 +58,6 @@ class RecursivePlaceholderStatement(Statement):
     @Interface.override
     def _PopulateRecursiveImpl(
         self,
-        new_statement: Statement,
+        new_phrase: Phrase,
     )  -> bool:
-        raise Exception("'_PopulateRecursiveImpl' should never be called on a RecursivePlaceholderStatement instance")
+        raise Exception("'_PopulateRecursiveImpl' should never be called on a RecursivePlaceholderPhrase instance")

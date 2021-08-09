@@ -36,8 +36,8 @@ with InitRelativeImports():
     from ..Components.Token import (
         DedentToken,
         IndentToken,
-        NewlineToken,
-        RegexToken,
+        NewlineToken,                       # This is here as a convenience to other modules importing this one; please do not remove
+        RegexToken,                         # This is here as a convenience to other modules importing this one; please do not remove
         Token as TokenClass,
     )
 
