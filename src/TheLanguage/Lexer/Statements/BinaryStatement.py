@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  BinaryExpression.py
+# |  BinaryStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 10:38:57
+# |      2021-07-31 13:02:17
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the BinaryExpression object"""
+"""Contains the BinaryStatement object"""
 
 import os
 
@@ -22,7 +22,6 @@ from enum import IntFlag
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,29 +31,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
+    from .VariableStatement import VariableStatement
+
+    from ..AST import ExpressionNode, StatementNode
     from ..Common.Flags import OperatorCategory
 
 
 # ----------------------------------------------------------------------
-class BinaryExpressionOperator(IntFlag):
+class BinaryStatementOperator(IntFlag):
     """\
     TODO: Comment
     """
 
-    And                                     = (OperatorCategory.Logical << 8) + 1
-    Or                                      = (OperatorCategory.Logical << 8) + 2
-    In                                      = (OperatorCategory.Logical << 8) + 3
-    Is                                      = (OperatorCategory.Logical << 8) + 4
-
-    Less                                    = (OperatorCategory.Comparison << 8) + 1
-    LessEqual                               = (OperatorCategory.Comparison << 8) + 2
-    Greater                                 = (OperatorCategory.Comparison << 8) + 3
-    GreaterEqual                            = (OperatorCategory.Comparison << 8) + 4
-    Equal                                   = (OperatorCategory.Comparison << 8) + 5
-    NotEqual                                = (OperatorCategory.Comparison << 8) + 6
-
-    # Note that the following values should match those found in ../Statements/BinaryStatement.py
+    # Note that the following values should match those found in ../Expressions/BinaryExpression.py
     Add                                     = (OperatorCategory.Math << 8) + 1
     Subtract                                = (OperatorCategory.Math << 8) + 2
     Multiply                                = (OperatorCategory.Math << 8) + 3
@@ -72,22 +61,11 @@ class BinaryExpressionOperator(IntFlag):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class BinaryExpression(ExpressionNode):
+class BinaryStatement(StatementNode):
     """\
     TODO: Comment
     """
 
-    Operator: BinaryExpressionOperator
-    Left: ExpressionNode
+    Operator: BinaryStatementOperator
+    Variable: VariableStatement
     Right: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def IsBoolean(self) -> bool:
-        if (
-            self.Operator & OperatorCategory.Logical
-            or self.Operator & OperatorCategory.Comparison
-        ):
-            return True
-
-        return super(BinaryExpression, self).IsBoolean()

@@ -20,7 +20,6 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,26 +29,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..AST import StatementNode, TypeNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
-)
 @dataclass(frozen=True)
-class TypeAliasStatement(Node):
+class TypeAliasStatement(StatementNode):
     """\
     TODO: Comment
     """
 
     Name: str
-    Type: Node
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(TypeAliasStatement, self).__post_init__()
-
-        self.ValidateTypes(
-            Type=Node.NodeType.Type,
-        )
+    Type: TypeNode

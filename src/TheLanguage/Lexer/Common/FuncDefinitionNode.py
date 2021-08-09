@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNode.py
+# |  FuncDefinitionNode.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-29 20:34:06
+# |      2021-07-29 10:29:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNode object"""
+"""Contains the FuncDefinitionNode object"""
 
 import os
 
-from typing import List
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -31,22 +31,45 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Common.AST import Node
+    from . import Flags
+    from ..AST import Node, ExpressionNode, TypeNode
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TupleNode(Node):
+class FuncDefinitionNode(Node):
     """\
     TODO: Comment
     """
 
-    Elements: List[Node]
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ParameterNode(Node):
+        """\
+        TODO: Comment
+        """
+
+        Name: str
+        Type: TypeNode
+        DefaultValue: Optional[ExpressionNode]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(TupleNode, self).__post_init__()
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
+    Flags: Flags.FunctionFlags
 
-        self.ValidateTypes(
-            Elements=self.Type,
-        )
+    Name: str
+    CapturedVars: Optional[List[str]]
+    ReturnType: Optional[Node]
+
+    PositionalParameters: Optional[List[ParameterNode]]
+    AnyParameters: Optional[List[ParameterNode]]
+    KeywordParameters: Optional[List[ParameterNode]]
+
+    # TODO: Attributes when Type==Statement

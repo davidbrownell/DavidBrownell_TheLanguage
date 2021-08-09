@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableStatement.py
+# |  TupleType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 16:53:19
+# |      2021-07-31 18:42:20
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableStatement object"""
+"""Contains the TupleType object"""
 
 import os
+
+from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,26 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..AST import TypeNode
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
-)
 @dataclass(frozen=True)
-class VariableStatement(Node):
+class TupleType(TypeNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Name: str
-    Expression: Node
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(VariableStatement, self).__post_init__()
-
-        self.ValidateTypes(
-            Expression=Node.NodeType.Expression,
-        )
+    Types: List[TypeNode]

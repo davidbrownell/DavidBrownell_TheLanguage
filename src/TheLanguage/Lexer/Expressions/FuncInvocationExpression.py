@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  FuncInvocationExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 11:11:50
+# |      2021-07-31 18:35:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the FuncInvocationExpression object"""
 
 import os
 
 from dataclasses import dataclass
 
-from enum import IntFlag
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,34 +30,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..AST import ExpressionNode
-    from ..Common.Flags import OperatorCategory
 
-
-# ----------------------------------------------------------------------
-class UnaryOperator(IntFlag):
-    """\
-    TODO: Comment
-    """
-
-    Not                                     = (OperatorCategory.Logical << 8) + 1
-
-    BitCompliment                           = (OperatorCategory.BitManipulation << 8) + 1
+    from ..Common.FuncInvocationNode import (
+        FunctionCallType,                               # Not used directly, but here as a convenience to callers
+        FuncInvocationNode as _FuncInvocationNode,
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class UnaryExpression(ExpressionNode):
+class FuncInvocationExpression(ExpressionNode, _FuncInvocationNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Operator: UnaryOperator
-    Expression: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def IsBoolean(self) -> bool:
-        if self.Operator & OperatorCategory.Logical:
-            return True
-
-        return super(UnaryExpression, self).IsBoolean()
+    pass

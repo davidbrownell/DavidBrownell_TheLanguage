@@ -23,7 +23,6 @@ from typing import Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import DataclassDefaultValues
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.AST import Node
+    from ..AST import ExpressionNode, StatementNode
 
 
 # ----------------------------------------------------------------------
@@ -47,25 +46,17 @@ class YieldType(Enum):
 
 
 # ----------------------------------------------------------------------
-@DataclassDefaultValues(
-    Type=Node.NodeType.Statement,  # type: ignore
-)
 @dataclass(frozen=True)
-class YieldStatement(Node):
+class YieldStatement(StatementNode):
     """\
     TODO: Comment
     """
 
     Yield: YieldType
-    Expression: Optional[Node]
+    Expression: Optional[ExpressionNode]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         super(YieldStatement, self).__post_init__()
 
-        self.ValidateTypes(
-            Expression=Node.NodeType.Expression,
-        )
-
-        if self.Yield == YieldType.From and not self.Expression:
-            raise Exception("'From' YieldStatements must have an 'Expression'")
+        assert self.Yield != YieldType.From or self.Expression, (self.Yield, self.Expression)

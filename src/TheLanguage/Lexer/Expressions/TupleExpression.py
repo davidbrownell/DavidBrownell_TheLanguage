@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  TupleExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 11:11:50
+# |      2021-07-31 18:42:20
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the TupleExpression object"""
 
 import os
 
+from typing import List
+
 from dataclasses import dataclass
 
-from enum import IntFlag
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,34 +32,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..AST import ExpressionNode
-    from ..Common.Flags import OperatorCategory
-
-
-# ----------------------------------------------------------------------
-class UnaryOperator(IntFlag):
-    """\
-    TODO: Comment
-    """
-
-    Not                                     = (OperatorCategory.Logical << 8) + 1
-
-    BitCompliment                           = (OperatorCategory.BitManipulation << 8) + 1
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class UnaryExpression(ExpressionNode):
+class TupleExpression(ExpressionNode):
     """\
-    TODO: Comment
+    TODO: Describe
     """
 
-    Operator: UnaryOperator
-    Expression: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def IsBoolean(self) -> bool:
-        if self.Operator & OperatorCategory.Logical:
-            return True
-
-        return super(UnaryExpression, self).IsBoolean()
+    Expressions: List[ExpressionNode]
