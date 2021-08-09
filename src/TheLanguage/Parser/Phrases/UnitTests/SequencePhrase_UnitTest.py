@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  SequenceStatement_UnitTest.py
+# |  SequencePhrase_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-07-12 08:59:03
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for SequenceStatement.py"""
+"""Unit test for SequencePhrase.py"""
 
 import os
 
@@ -27,7 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..SequenceStatement import *
+    from ..SequencePhrase import *
 
 
 # ----------------------------------------------------------------------

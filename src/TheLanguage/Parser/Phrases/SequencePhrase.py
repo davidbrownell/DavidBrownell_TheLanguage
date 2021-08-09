@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  SequenceStatement.py
+# |  SequencePhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-12 08:58:23
+# |      2021-08-09 12:59:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the SequenceStatement object"""
+"""Contians the SequencePhrase object"""
 
 import os
 
@@ -33,10 +33,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .RecursivePlaceholderStatement import RecursivePlaceholderStatement
-    from .TokenStatement import TokenStatement
+    from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
+    from .TokenPhrase import TokenPhrase
 
-    from ..Components.Statement import Statement
+    from ..Components.Phrase import Phrase
 
     from ..Components.Token import (
         ControlTokenBase,
@@ -50,8 +50,8 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class SequenceStatement(Statement):
-    """Matches a sequence of statements"""
+class SequencePhrase(Phrase):
+    """Matchs a sequence of phrases"""
 
     # ----------------------------------------------------------------------
     # |
@@ -61,25 +61,25 @@ class SequenceStatement(Statement):
     def __init__(
         self,
         comment_token: RegexToken,
-        *statements: Statement,
+        phrases: List[Phrase],
         name: str=None,
     ):
         assert comment_token
-        assert statements
-        assert all(statement for statement in statements)
+        assert phrases
+        assert all(phrase for phrase in phrases)
 
-        # Ensure that any control token requiring a pair has a peer
+        # Ensure that any control tokens that come in pairs have peers
         control_token_tracker = set()
 
-        for statement_index, statement in enumerate(statements):
-            if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
-                if statement_index == 0:
+        for phrase_index, phrase in enumerate(phrases):
+            if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
+                if phrase_index == 0:
                     assert (
-                        isinstance(statements[-1], TokenStatement)
-                        and cast(TokenStatement, statements[-1]).Token.IsControlToken
-                    ), "The last statement must be a control token when the first statement is a control token"
+                        isinstance(phrases[-1], TokenPhrase)
+                        and cast(TokenPhrase, phrases[-1]).Token.IsControlToken
+                    ), "The last phrase must be a control token when the first phrase is a control token"
 
-                control_token = cast(ControlTokenBase, statement.Token)
+                control_token = cast(ControlTokenBase, phrase.Token)
 
                 if control_token.ClosingToken is not None:
                     key = type(control_token)
@@ -95,26 +95,29 @@ class SequenceStatement(Statement):
                         assert False, key
 
                     control_token_tracker.remove(key)
-            else:
-                if statement_index == 0:
-                    assert not (
-                        isinstance(statements[-1], TokenStatement)
-                        and cast(TokenStatement, statements[-1]).Token.IsControlToken
-                    ), "The last statement must not be a control token when the first statement is not a control token"
+
+            elif phrase_index == 0:
+                assert not (
+                    isinstance(phrases[-1], TokenPhrase)
+                    and cast(TokenPhrase, phrases[-1]).Token.IsControlToken
+                ), "The last phrase must not be a control token when the first phrase is not a control token"
 
         assert not control_token_tracker, control_token_tracker
 
         # Initialize the class
         if name is None:
-            name = self._CreateDefaultName(statements)
+            name = self._CreateDefaultName(phrases)
             name_is_default = True
         else:
             name_is_default = False
 
-        super(SequenceStatement, self).__init__(name)
+        super(SequencePhrase, self).__init__(
+            name,
+            CommentToken=None,
+        )
 
         self.CommentToken                   = comment_token
-        self.Statements                     = list(statements)
+        self.Phrases                        = phrases
         self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
@@ -122,35 +125,35 @@ class SequenceStatement(Statement):
     async def ParseAsync(
         self,
         unique_id: List[str],
-        normalized_iter: Statement.NormalizedIterator,
-        observer: Statement.Observer,
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
         ignore_whitespace=False,
         single_threaded=False,
     ) -> Union[
-        Statement.ParseResult,
+        Phrase.ParseResult,
         None,
     ]:
         success = True
 
-        observer.StartStatement(unique_id, [self])
-        with CallOnExit(lambda: observer.EndStatement(unique_id, [(self, success)])):
-            original_normalized_iter = normalized_iter.Clone()
+        observer.StartPhrase(unique_id, [self])
+        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
+            original_noramlized_iter = normalized_iter.Clone()
 
             ignore_whitespace_ctr = 1 if ignore_whitespace else 0
 
-            # If the first statement is a control token indicating that whitespace should be
-            # ignored, we need to make sure that the trailing dedents aren't greedily consumed
-            # but rather correspond to the number of indents encountered.
+            # If the first phrase is a control token indicating that whitespace should be
+            # ignored, we need to make sure that the trailing dedents aren't greedily consumed,
+            # but rather end up at the current level.
             if (
-                isinstance(self.Statements[0], TokenStatement)
-                and isinstance(self.Statements[0].Token, PushIgnoreWhitespaceControlToken)
+                isinstance(self.Phrases[0], TokenPhrase)
+                and isinstance(self.Phrases[0].Token, PushIgnoreWhitespaceControlToken)
             ):
                 ignored_indentation_level = 0
             else:
                 ignored_indentation_level = None
 
             # ----------------------------------------------------------------------
-            def ExtractWhitespaceOrComments() -> Optional[SequenceStatement.ExtractPotentialResults]:
+            def ExtractWhitespaceOrComments() -> Optional[SequencePhrase.ExtractPotentialResults]:
                 nonlocal ignored_indentation_level
 
                 if ignore_whitespace_ctr:
@@ -167,7 +170,7 @@ class SequenceStatement(Statement):
                                 assert ignored_indentation_level
                                 ignored_indentation_level -= 1
 
-                        return SequenceStatement.ExtractPotentialResults(
+                        return SequencePhrase.ExtractPotentialResults(
                             [data_item],
                             data_item.IterAfter,
                         )
@@ -176,9 +179,9 @@ class SequenceStatement(Statement):
 
             # ----------------------------------------------------------------------
 
-            data_items: List[Optional[Statement.ParseResultData]] = []
+            data_items: List[Optional[Phrase.ParseResultData]] = []
 
-            observer_decorator = Statement.ObserverDecorator(
+            observer_decorator = Phrase.ObserverDecorator(
                 self,
                 unique_id,
                 observer,
@@ -186,7 +189,7 @@ class SequenceStatement(Statement):
                 lambda data_item: data_item,
             )
 
-            for statement_index, statement in enumerate(self.Statements):
+            for phrase_index, phrase in enumerate(self.Phrases):
                 # Extract whitespace or comments
                 while not normalized_iter.AtEnd():
                     potential_prefix_info = ExtractWhitespaceOrComments()
@@ -197,21 +200,20 @@ class SequenceStatement(Statement):
                     normalized_iter = potential_prefix_info.Iter
 
                 # Process control tokens
-                if isinstance(statement, TokenStatement) and statement.Token.IsControlToken:
-                    if isinstance(statement.Token, PushIgnoreWhitespaceControlToken):
+                if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
+                    if isinstance(phrase.Token, PushIgnoreWhitespaceControlToken):
                         ignore_whitespace_ctr += 1
-
-                    elif isinstance(statement.Token, PopIgnoreWhitespaceControlToken):
+                    elif isinstance(phrase.Token, PopIgnoreWhitespaceControlToken):
                         assert ignore_whitespace_ctr != 0
                         ignore_whitespace_ctr -= 1
                     else:
-                        assert False, statement.Token  # pragma: no cover
+                        assert False, phrase.Token  # pragma: no cover
 
                     continue
 
-                # Process the statement
-                result = await statement.ParseAsync(
-                    unique_id + ["Sequence: {} [{}]".format(statement.Name, statement_index)],
+                # Process the phrase
+                result = await phrase.ParseAsync(
+                    unique_id + ["Sequence: {} [{}]".format(phrase.Name, phrase_index)],
                     normalized_iter.Clone(),
                     observer_decorator,
                     ignore_whitespace=ignore_whitespace_ctr != 0,
@@ -222,7 +224,7 @@ class SequenceStatement(Statement):
                     return None
 
                 # Preserve the results
-                if result.Data:
+                if result.Data is not None:
                     data_items.append(result.Data)
 
                 normalized_iter = result.Iter.Clone()
@@ -231,23 +233,23 @@ class SequenceStatement(Statement):
                     success = False
                     break
 
-            data = Statement.StandardParseResultData(
+            data = Phrase.StandardParseResultData(
                 self,
-                Statement.MultipleStandardParseResultData(data_items, True),
+                Phrase.MultipleStandardParseResultData(data_items, True),
                 unique_id,
             )
 
             if (
                 success
-                and not await observer.OnInternalStatementAsync(
+                and not await observer.OnInternalPhraseAsync(
                     [data],
-                    original_normalized_iter,
+                    original_noramlized_iter,
                     normalized_iter,
                 )
             ):
                 return None
 
-            return Statement.ParseResult(success, normalized_iter, data)
+            return Phrase.ParseResult(success, normalized_iter, data)
 
     # ----------------------------------------------------------------------
     # |
@@ -256,8 +258,8 @@ class SequenceStatement(Statement):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class ExtractPotentialResults(object):
-        Results: List[Statement.TokenParseResultData]
-        Iter: Statement.NormalizedIterator
+        Results: List[Phrase.TokenParseResultData]
+        Iter: Phrase.NormalizedIterator
 
     # ----------------------------------------------------------------------
     # |
@@ -276,9 +278,9 @@ class SequenceStatement(Statement):
     @classmethod
     def _ExtractPotentialWhitespaceToken(
         cls,
-        normalized_iter: Statement.NormalizedIterator,
+        normalized_iter: Phrase.NormalizedIterator,
         consume_dedent=True,
-    ) -> Optional[Statement.TokenParseResultData]:
+    ) -> Optional[Phrase.TokenParseResultData]:
         """Eats any whitespace token when requested"""
 
         normalized_iter_begin = normalized_iter.Clone()
@@ -294,7 +296,7 @@ class SequenceStatement(Statement):
 
             result = token.Match(normalized_iter)
             if result is not None:
-                return Statement.TokenParseResultData(
+                return Phrase.TokenParseResultData(
                     token,
                     None,
                     result,
@@ -304,12 +306,12 @@ class SequenceStatement(Statement):
                 )
 
         # A potential newline
-        potential_whitespace = TokenStatement.ExtractWhitespace(normalized_iter)
+        potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
         normalized_iter_begin = normalized_iter.Clone()
 
         result = cls._newline_token.Match(normalized_iter)
         if result is not None:
-            return Statement.TokenParseResultData(
+            return Phrase.TokenParseResultData(
                 cls._newline_token,
                 potential_whitespace,
                 result,
@@ -323,8 +325,8 @@ class SequenceStatement(Statement):
     # ----------------------------------------------------------------------
     def _ExtractPotentialCommentTokens(
         self,
-        normalized_iter: Statement.NormalizedIterator,
-    ) -> Optional["ExtractPotentialResults"]:
+        normalized_iter: Phrase.NormalizedIterator,
+    ) -> Optional[ExtractPotentialResults]:
         """Eats any comment (stand-alone or trailing) when requested"""
 
         normalized_iter = normalized_iter.Clone()
@@ -337,7 +339,7 @@ class SequenceStatement(Statement):
 
             potential_whitespace = normalized_iter_begin.Offset, normalized_iter.Offset
         else:
-            potential_whitespace = TokenStatement.ExtractWhitespace(normalized_iter)
+            potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
 
         normalized_iter_begin = normalized_iter.Clone()
 
@@ -346,7 +348,7 @@ class SequenceStatement(Statement):
             return None
 
         results = [
-            Statement.TokenParseResultData(
+            Phrase.TokenParseResultData(
                 self.CommentToken,
                 potential_whitespace,
                 result,
@@ -364,40 +366,42 @@ class SequenceStatement(Statement):
 
             results.append(result)
 
-            # Consume the dedent, but don't return it with the results (as we absorbed the
-            # corresponding indent when we skipped the prefix above)
+            # Consume potential dedents, but don't return it with the results (as we absorbed
+            # the corresponding indent when we skipped the prefix in the code above)
             if results[0].Whitespace is not None:
                 result = self._ExtractPotentialWhitespaceToken(results[-1].IterAfter)
                 assert result
 
-                return SequenceStatement.ExtractPotentialResults(results, result.IterAfter)
+                # Ensure that the iterator is updated to account for the dedent even if
+                # it wasn't returned as part of the results. Comments are special beasts.
+                return SequencePhrase.ExtractPotentialResults(results, result.IterAfter)
 
-        return SequenceStatement.ExtractPotentialResults(results, results[-1].IterAfter)
+        return SequencePhrase.ExtractPotentialResults(results, results[-1].IterAfter)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _PopulateRecursiveImpl(
         self,
-        new_statement: Statement,
+        new_phrase: Phrase,
     ) -> bool:
-        replaced_statements = False
+        replaced_phrase = False
 
-        for statement_index, statement in enumerate(self.Statements):
-            if isinstance(statement, RecursivePlaceholderStatement):
-                self.Statements[statement_index] = new_statement
-                replaced_statements = True
+        for phrase_index, phrase in enumerate(self.Phrases):
+            if isinstance(phrase, RecursivePlaceholderPhrase):
+                self.Phrases[phrase_index] = new_phrase
+                replaced_phrase = True
 
             else:
-                replaced_statements = statement.PopulateRecursiveImpl(new_statement) or replaced_statements
+                replaced_phrase = phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
 
-        if replaced_statements and self._name_is_default:
-            self.Name = self._CreateDefaultName(self.Statements)
+        if replaced_phrase and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Phrases)
 
-        return replaced_statements
+        return replaced_phrase
 
     # ----------------------------------------------------------------------
     @staticmethod
     def _CreateDefaultName(
-        statements: Iterable[Statement],
+        phrases: List[Phrase],
     ) -> str:
-        return "Sequence: [{}]".format(", ".join([statement.Name for statement in statements]))
+        return "Sequence: [{}]".format(", ".join([phrase.Name for phrase in phrases]))
