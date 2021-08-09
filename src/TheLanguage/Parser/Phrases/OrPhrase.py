@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  OrStatement.py
+# |  OrPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-25 15:28:32
+# |      2021-08-08 23:48:42
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the OrStatement object"""
+"""Contains the OrPhrase object"""
 
 import asyncio
 import os
@@ -32,13 +32,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .RecursivePlaceholderStatement import RecursivePlaceholderStatement
-    from ..Components.Statement import Statement
+    from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
+    from ..Components.Phrase import Phrase
 
 
 # ----------------------------------------------------------------------
-class OrStatement(Statement):
-    """Parsing attempts to match one of the provided statements"""
+class OrPhrase(Phrase):
+    """Parsing attempts to match one of the provided phrases"""
 
     # ----------------------------------------------------------------------
     # |
@@ -47,22 +47,22 @@ class OrStatement(Statement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        *statements: Statement,
+        phrases: List[Phrase],
         sort_results=True,
         name: str=None,
     ):
-        assert statements
-        assert all(statement for statement in statements)
+        assert phrases
+        assert all(phrase for phrase in phrases)
 
         if name is None:
-            name = self._CreateDefaultName(statements)
+            name = self._CreateDefaultName(phrases)
             name_is_default = True
         else:
             name_is_default = False
 
-        super(OrStatement, self).__init__(name)
+        super(OrPhrase, self).__init__(name)
 
-        self.Statements                     = list(statements)
+        self.Phrases                        = phrases
         self.SortResults                    = sort_results
         self._name_is_default               = name_is_default
 
@@ -71,21 +71,19 @@ class OrStatement(Statement):
     async def ParseAsync(
         self,
         unique_id: List[str],
-        normalized_iter: Statement.NormalizedIterator,
-        observer: Statement.Observer,
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
         ignore_whitespace=False,
         single_threaded=False,
     ) -> Union[
-        Statement.ParseResult,
+        Phrase.ParseResult,
         None,
     ]:
-        # TODO: This really should use multiple threads
+        best_result: Optional[Phrase.ParseResult] = None
 
-        best_result: Optional[Statement.ParseResult] = None
-
-        observer.StartStatement(unique_id, [self])
+        observer.StartPhrase(unique_id, [self])
         with CallOnExit(
-            lambda: observer.EndStatement(
+            lambda: observer.EndPhrase(
                 unique_id,
                 [
                     (
@@ -95,9 +93,12 @@ class OrStatement(Statement):
                 ],
             ),
         ):
-            results: List[Statement.ParseResult] = []
+            if not single_threaded and len(self.Phrases) == 1:
+                single_threaded = True
 
-            observer_decorator = Statement.ObserverDecorator(
+            results: List[Phrase.ParseResult] = []
+
+            observer_decorator = Phrase.ObserverDecorator(
                 self,
                 unique_id,
                 observer,
@@ -106,9 +107,9 @@ class OrStatement(Statement):
             )
 
             # ----------------------------------------------------------------------
-            async def ExecuteAsync(statement_index, statement):
-                return await statement.ParseAsync(
-                    unique_id + ["Or: {} [{}]".format(statement.Name, statement_index)],
+            async def ExecuteAsync(phrase_index, phrase):
+                return await phrase.ParseAsync(
+                    unique_id + ["Or: {} [{}]".format(phrase.Name, phrase_index)],
                     normalized_iter.Clone(),
                     observer_decorator,
                     ignore_whitespace=ignore_whitespace,
@@ -117,14 +118,39 @@ class OrStatement(Statement):
 
             # ----------------------------------------------------------------------
 
-            use_async = not single_threaded and len(self.Statements) > 1
+            if single_threaded:
+                for phrase_index, phrase in enumerate(self.Phrases):
+                    result = await ExecuteAsync(phrase_index, phrase)
+                    if result is None:
+                        return None
 
-            if use_async:
-                gathered_results = await asyncio.gather(
-                    *[
-                        ExecuteAsync(statement_index, statement)
-                        for statement_index, statement in enumerate(self.Statements)
+                    results.append(result)
+
+                    if not self.SortResults and result.Success:
+                        break
+
+            else:
+                # ----------------------------------------------------------------------
+                def Execute(phrase_index, phrase):
+                    loop = asyncio.new_event_loop()
+
+                    try:
+                        asyncio.set_event_loop(loop)
+                        return loop.run_until_complete(ExecuteAsync(phrase_index, phrase))
+                    finally:
+                        loop.close()
+
+                # ----------------------------------------------------------------------
+
+                coros = observer.Enqueue(
+                    [
+                        lambda phrase_index=phrase_index, phrase=phrase: Execute(phrase_index, phrase)
+                        for phrase_index, phrase in enumerate(self.Phrases)
                     ],
+                )
+
+                gathered_results = await asyncio.gather(
+                    *coros,
                     return_exceptions=True,
                 )
 
@@ -138,41 +164,30 @@ class OrStatement(Statement):
 
                     results.append(result)
 
-            else:
-                for statement_index, statement in enumerate(self.Statements):
-                    result = await ExecuteAsync(statement_index, statement)
-                    if result is None:
-                        return None
-
-                    results.append(result)
-
-                    if not self.SortResults and result.Success:
-                        break
-
             assert results
 
             best_index: Optional[int] = None
 
             if self.SortResults:
-                # Stable sort according to the criteria:
-                #   - Success
-                #   - Longest matched content
+                # Stable sort according to:
+                #   - Sucess
+                #   - Longest matched context
 
                 sort_data = [
                     (
-                        index,
                         1 if result.Success else 0,
                         result.Iter.Offset,
+                        index,
                     )
                     for index, result in enumerate(results)
                 ]
 
                 sort_data.sort(
-                    key=lambda value: value[1:],
+                    key=lambda value: value[:-1],
                     reverse=True,
                 )
 
-                best_index = sort_data[0][0]
+                best_index = sort_data[0][-1]
 
             else:
                 for index, result in enumerate(results):
@@ -187,24 +202,20 @@ class OrStatement(Statement):
             best_result = results[best_index]
 
             if best_result.Success:
-                data = Statement.StandardParseResultData(
-                    self,
-                    best_result.Data,
-                    unique_id,
-                )
+                data = Phrase.StandardParseResultData(self, best_result.Data, unique_id)
 
-                if not await observer.OnInternalStatementAsync(
+                if not await observer.OnInternalPhraseAsync(
                     [data],
                     normalized_iter,
                     best_result.Iter,
                 ):
                     return None
 
-                return Statement.ParseResult(True, best_result.Iter, data)
+                return Phrase.ParseResult(True, best_result.Iter, data)
 
             # Gather the failure information
-            data_items: List[Optional[Statement.StandardParseResultData]] = []
-            max_iter: Optional[Statement.NormalizedIterator] = None
+            data_items: List[Optional[Phrase.ParseResultData]] = []
+            max_iter: Optional[Phrase.NormalizedIterator] = None
 
             for result in results:
                 assert not result.Success
@@ -214,14 +225,15 @@ class OrStatement(Statement):
                 if max_iter is None or result.Iter.Offset > max_iter.Offset:
                     max_iter = result.Iter
 
+            assert data_items
             assert max_iter
 
-            return Statement.ParseResult(
+            return Phrase.ParseResult(
                 False,
                 max_iter,
-                Statement.StandardParseResultData(
+                Phrase.StandardParseResultData(
                     self,
-                    Statement.MultipleStandardParseResultData(cast(List[Optional[Statement.ParseResultData]], data_items), True),
+                    Phrase.MultipleStandardParseResultData(data_items, True),
                     unique_id,
                 ),
             )
@@ -232,26 +244,25 @@ class OrStatement(Statement):
     @Interface.override
     def _PopulateRecursiveImpl(
         self,
-        new_statement: Statement,
+        new_phrase: Phrase,
     ) -> bool:
-        replaced_statements = False
+        replaced_phrase = False
 
-        for statement_index, statement in enumerate(self.Statements):
-            if isinstance(statement, RecursivePlaceholderStatement):
-                self.Statements[statement_index] = new_statement
-                replaced_statements = True
-
+        for phrase_index, phrase in enumerate(self.Phrases):
+            if isinstance(phrase, RecursivePlaceholderPhrase):
+                self.Phrases[phrase_index] = new_phrase
+                replaced_phrase = True
             else:
-                replaced_statements = statement.PopulateRecursiveImpl(new_statement) or replaced_statements
+                replaced_phrase = phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
 
-        if replaced_statements and self._name_is_default:
-            self.Name = self._CreateDefaultName(self.Statements)
+        if replaced_phrase and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Phrases)
 
-        return replaced_statements
+        return replaced_phrase
 
     # ----------------------------------------------------------------------
     @staticmethod
     def _CreateDefaultName(
-        statements: Iterable[Statement],
+        phrases: List[Phrase],
     ) -> str:
-        return "Or: {{{}}}".format(", ".join([statement.Name for statement in statements]))
+        return "Or: ({})".format(", ".join([phrase.Name for phrase in phrases]))
