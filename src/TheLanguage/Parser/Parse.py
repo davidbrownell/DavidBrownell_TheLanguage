@@ -21,6 +21,7 @@ import importlib
 import sys
 
 from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Awaitable, cast, Callable, Dict, List, Optional, Union
 
 from semantic_version import Version as SemVer
@@ -156,6 +157,34 @@ def Parse(
 
 
 # ----------------------------------------------------------------------
+def Prune(
+    roots: Dict[str, RootNode],
+    max_num_threads: Optional[int]=None,
+):
+    """Removes Leaf nodes that have been explicity ignored (for easier parsing)"""
+
+    _Execute(
+        lambda fqn, node: _Prune(node),
+        roots,
+        max_num_threads=max_num_threads,
+    )
+
+
+# ----------------------------------------------------------------------
+def Validate(
+    roots: Dict[str, RootNode],
+    max_num_threads: Optional[int]=None,
+):
+    """Invokes functionality to validate a node and its children in isolation"""
+
+    _Execute(
+        _ValidateRoot,
+        roots,
+        max_num_threads=max_num_threads,
+    )
+
+
+# ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 class _ParseObserver(TranslationUnitsObserver):
@@ -261,3 +290,89 @@ class _ParseObserver(TranslationUnitsObserver):
                 )
 
         return not self._is_cancelled
+
+
+# ----------------------------------------------------------------------
+def _Execute(
+    func: Callable[[str, RootNode], None],
+    roots: Dict[str, RootNode],
+    max_num_threads: Optional[int]=None,
+):
+    single_threaded = max_num_threads == 1 or len(roots) == 1
+
+    if single_threaded:
+        for k, v in roots.items():
+            func(k, v)
+
+    else:
+        with ThreadPoolExecutor(
+            max_workers=max_num_threads,
+        ) as executor:
+            futures = [
+                executor.submit(lambda k=k, v=v: func(k, v))
+                for k, v in roots.items()
+            ]
+
+            [future.result() for future in futures]
+
+
+# ----------------------------------------------------------------------
+def _Prune(
+    node: Union[RootNode, Node],
+):
+    child_index = 0
+
+    while child_index < len(node.Children):
+        child = node.Children[child_index]
+
+        should_delete = False
+
+        if isinstance(child, Node):
+            _Prune(child)
+
+            if not child.Children:
+                should_delete = True
+
+        elif isinstance(child, Leaf):
+            if child.IsIgnored:
+                should_delete = True
+
+        else:
+            assert False, child  # pragma: no cover
+
+        if not should_delete:
+            child_index += 1
+            continue
+
+        del node.Children[child_index]
+
+
+# ----------------------------------------------------------------------
+def _ValidateRoot(
+    fully_qualified_name: str,
+    root: RootNode,
+):
+    try:
+        for child in root.Children:
+            _ValidateNode(child)
+
+    except Exception as ex:
+        if not hasattr(ex, "FullyQualifiedName"):
+            object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
+
+        raise
+
+
+# ----------------------------------------------------------------------
+def _ValidateNode(
+    node: Union[Leaf, Node],
+):
+    if isinstance(node.Type, Phrase):
+        grammar_phrase = GrammarPhraseLookup.get(node.Type, None)
+        if grammar_phrase is not None:
+            result = grammar_phrase.ValidateNodeSyntax(cast(Node, node))
+            if isinstance(result, bool) and not result:
+                return
+
+    for child in getattr(node, "Children", []):
+        _ValidateNode(child)

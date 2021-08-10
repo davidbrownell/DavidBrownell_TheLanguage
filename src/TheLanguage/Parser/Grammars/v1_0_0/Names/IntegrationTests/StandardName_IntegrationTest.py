@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableDeclaration_IntegrationTest.py
+# |  StandardName_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-08-10 15:44:30
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for VariableDeclarationStatement.py"""
+"""Automated tests for StandardName.py"""
 
 import os
 import textwrap
@@ -30,9 +30,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..VariableDeclarationStatement import *
+    from ..StandardName import *
     from ...Common.AutomatedTests import Execute
-    from ...Names.StandardName import InvalidNameError
 
 
 # ----------------------------------------------------------------------

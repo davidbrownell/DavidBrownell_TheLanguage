@@ -3,7 +3,7 @@
 # |  Tokens.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-16 09:55:54
+# |      2021-08-10 15:51:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains tokens used by statements within the grammar"""
+"""Tokens used across multiple phrases"""
 
 import os
 import re
-import textwrap
 
 import CommonEnvironment
 
@@ -36,163 +35,17 @@ with InitRelativeImports():
         PopIgnoreWhitespaceControlToken,
         PushIgnoreWhitespaceControlToken,
         RegexToken,
-        Token,
     )
 
+
 # ----------------------------------------------------------------------
-# |  General
 Dedent                                      = DedentToken()
 Indent                                      = IndentToken()
 Newline                                     = NewlineToken()
 PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
-Comment                                     = RegexToken(
-    "<comment>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-                Prefix                      )\#(?#
-                Content                     )[^\n]*(?#
-            ))""",
-        ),
-    ),
-    is_always_ignored=True,
-)
-
-Name                                        = RegexToken(
-    "<name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-                Initial char [not a number]             )[A-Za-z_\.](?#
-                Alpha numeric, underscore, dot          )[A-Za-z_\.0-9]*(?#
-                [optional] Trailing ? for funcs         )\??(?#
-            ))""",
-        ),
-    ),
-)
-
-Equal                                       = RegexToken("'='", re.compile(r"\="))
-Colon                                       = RegexToken("':'", re.compile(r":"))
-Comma                                       = RegexToken("','", re.compile(r","))
-LParen                                      = RegexToken("'('", re.compile(r"\("))
-RParen                                      = RegexToken("')'", re.compile(r"\)"))
-
-DocString                                   = RegexToken(
-    "<docstring>",
-    re.compile(
-        r'"""\n(?P<value>.+?)\n\s*"""',
-        re.DOTALL | re.MULTILINE,
-    ),
-    is_multiline=True,
-)
-
-Public                                      = RegexToken("'public'", re.compile(r"public\b"))
-Protected                                   = RegexToken("'protected'", re.compile(r"protected\b"))
-Private                                     = RegexToken("'private'", re.compile(r"private\b"))
-
-AllAccessModifiers                          = [
-    Public,
-    Protected,
-    Private,
-]
-
-#             isolated    shared
-#             --------    ------
-# mutable:      var        ref
-# immutable:    val        view
-#
-# variables:    var, val, view
-# parameters:   isolated, shared, immutable
-# methods:      mutable/mut, immutable/const
-
-Var                                         = RegexToken("'var'", re.compile(r"var\b"))
-Ref                                         = RegexToken("'ref'", re.compile(r"ref\b"))
-Val                                         = RegexToken("'val'", re.compile(r"val\b"))
-View                                        = RegexToken("'view'", re.compile(r"view\b"))
-
-Isolated                                    = RegexToken("'isolated'", re.compile(r"isolated\b"))
-Shared                                      = RegexToken("'shared'", re.compile(r"shared\b"))
-
-Mutable                                     = RegexToken("'mutable'", re.compile(r"mutable\b"))
-Immutable                                   = RegexToken("'immutable'", re.compile(r"immutable\b"))
-
-# ----------------------------------------------------------------------
-# |  ClassDeclarationStatement
-Class                                       = RegexToken("'class'", re.compile(r"class\b"))
-Interface                                   = RegexToken("'interface'", re.compile(r"interface\b"))
-Mixin                                       = RegexToken("'mixin'", re.compile(r"mixin\b"))
-Enum                                        = RegexToken("'enum'", re.compile(r"enum\b"))
-Exception                                   = RegexToken("'exception'", re.compile(r"exception\b"))
-
-Implements                                  = RegexToken("'implements'", re.compile(r"implements\b"))
-Uses                                        = RegexToken("'uses'", re.compile(r"uses\b"))
-
-# ----------------------------------------------------------------------
-# |  FunctionDeclarationStatement
-
-# Traditional Parameters
-FunctionParameterPositionalDelimiter        = RegexToken("'/'", re.compile(r"/"))
-FunctionParameterKeywordDelimiter           = RegexToken("'*'", re.compile(r"\*"))
-
-# New Style Parameters
-FunctionParameterPositional                 = RegexToken("'pos'", re.compile(r"pos\b"))
-FunctionParameterAny                        = RegexToken("'any'", re.compile(r"any\b"))
-FunctionParameterKeyword                    = RegexToken("'key'", re.compile(r"key\b"))
-
-# When declaring a function, new style parameters must be grouped in this order
-AllNewStyleParameters                       = [
-    FunctionParameterPositional,
-    FunctionParameterAny,
-    FunctionParameterKeyword,
-]
-
-FunctionParameterVarArgsType                = RegexToken("'*'", re.compile(r"\*"))
-
-# ----------------------------------------------------------------------
-# |  FuncInvocationStatement
-ArrowedName                                 = RegexToken(
-    "<arrowed_name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-                Arrow                                   )\-\>(?#
-                Initial char [not a number or dot]      )[A-Za-z_](?#
-                Alpha numeric, underscore, dot          )[A-Za-z_\.0-9]*(?#
-                [optional] Trailing ? for funcs         )\??(?#
-            ))""",
-        ),
-    ),
-)
-
-DottedName                                  = RegexToken(
-    "<dotted_name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-                Dot                                     )\.(?#
-                Initial char [not a number or dot]      )[A-Za-z_](?#
-                Alpha numeric, underscore, dot          )[A-Za-z_\.0-9]*(?#
-                [optional] Trailing ? for funcs         )\??(?#
-            ))""",
-        ),
-    ),
-)
-
-# ----------------------------------------------------------------------
-# |  ImportStatement
-From                                        = RegexToken("'from'", re.compile(r"from\b"))
-Import                                      = RegexToken("'import'", re.compile(r"import\b"))
-As                                          = RegexToken("'as'", re.compile(r"as\b"))
-
-# TODO: Remove export
-Export                                      = RegexToken("'export'", re.compile(r"export\b"))
-
-# ----------------------------------------------------------------------
-# |  PassStatement
-Pass                                        = RegexToken("'pass'", re.compile(r"pass\b"))
-
-# ----------------------------------------------------------------------
-# |  VariantType
-VariantSep                                  = RegexToken("'|'", re.compile(r"\|"))
+# This token is intended to be a generic token that will match every name used in the grammar so that
+# we don't see complicated syntax errors when incorrect naming conventions are used. Grammars leveraging
+# this token should perform more specific regex matching during their custom validation process.
+GenericName                                 = RegexToken("<name>", re.compile(r"(?P<value>[a-zA-Z0-9_\.]+)\b"))

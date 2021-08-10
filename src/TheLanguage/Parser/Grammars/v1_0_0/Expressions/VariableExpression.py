@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  VariableExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 15:10:07
+# |      2021-08-10 15:20:43
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for v1.0.0 grammar"""
+"""Contains the VariableExpression object"""
 
 import os
 
@@ -27,23 +27,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Expressions.VariableExpression import VariableExpression
-
-    from .Names.StandardName import StandardName
-
-    from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
+    from ...GrammarPhrase import GrammarPhrase
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
-GrammarPhrases                              = [
-    # Expressions
-    VariableExpression(),
+class VariableExpression(GrammarPhrase):
+    """<name>"""
 
-    # Names
-    StandardName(),
+    NODE_NAME                               = "Variable Expression"
 
-    # Statements
-    VariableDeclarationStatement(),
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        super(VariableExpression, self).__init__(
+            GrammarPhrase.Type.Expression,
+            CreatePhrase(
+                name=self.NODE_NAME,
 
-    # Types
-]
+                # <name>
+                item=DynamicPhrasesType.Names,
+            ),
+        )

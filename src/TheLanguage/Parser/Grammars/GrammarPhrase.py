@@ -37,6 +37,7 @@ with InitRelativeImports():
     from ..Components.Error import Error
 
     from ..TranslationUnitsParser import (
+        DynamicPhrasesInfo,                             # This is here as a convenience
         Observer as TranslationUnitsParserObserver,
         Phrase,
     )
