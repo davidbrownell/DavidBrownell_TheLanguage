@@ -3,7 +3,7 @@
 # |  Syntax.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-17 09:49:29
+# |      2021-08-10 11:48:25
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps when working with custom syntaxes"""
+"""Contains functionality that allows the dynamic specification of custom syntaxes"""
 
 import os
 import re
 
-from typing import cast, Dict, List, Optional
+from typing import cast, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass
 from semantic_version import Version as SemVer
@@ -35,23 +35,33 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Components.Error import Error
-    from .Statements.StatementDSL import CreateStatement, DynamicStatementsType, StatementItem
-
-    from .TranslationUnitParser import DynamicStatementInfo
-
-    from .TranslationUnitsParser import (
-        NormalizedIterator,
-        Observer as TranslationUnitsParserObserver,
-        Statement,
-    )
-
     from .Components.Token import (
         DedentToken,
         IndentToken,
+        PopIgnoreWhitespaceControlToken,
+        PushIgnoreWhitespaceControlToken,
         NewlineToken,
         RegexToken,
-        Token,
     )
+
+    from .Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+
+    from .TranslationUnitParser import DynamicPhrasesInfo
+
+    from .TranslationUnitsParser import (
+        Observer as TranslationUnitsParserObserver,
+        Phrase,
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class SyntaxInvalidVersionFormatError(Error):
+    # Note that this is a str rather than a SemVer, as the invalid version may not even be in the
+    # correct format
+    InvalidVersion: str
+
+    MessageTemplate                         = Interface.DerivedProperty("The syntax version '{InvalidVersion}' is not a valid version")
 
 
 # ----------------------------------------------------------------------
@@ -59,48 +69,130 @@ with InitRelativeImports():
 class SyntaxInvalidVersionError(Error):
     InvalidVersion: SemVer
 
-    MessageTemplate                         = Interface.DerivedProperty("The syntax version '{InvalidVersion}' is not valid")
+    MessageTemplate                         = Interface.DerivedProperty("The syntax version '{InvalidVersion}' is not recognized")
 
 
 # ----------------------------------------------------------------------
-# major and Minor components are required, patch is optional.
-_simple_semantic_version_regex              = re.compile(r"(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)(?:\.(?P<patch>0|[1-9]\d*))?")
+def _CreateSyntaxStatements():
+    version_token = RegexToken("<semantic_version>", re.compile(r"(?P<value>[a-zA-Z0-9_\-\.]+)\b"))
+
+    statements_phrase = PhraseItem(
+        DynamicPhrasesType.Statements,
+        arity="+",
+    )
+
+    # '__with' '__syntax' '=' <version> ':'
+    #     <statement>+
+    set_syntax_statement = CreatePhrase(
+        name="Set Syntax",
+        item=[
+            "__with",
+            "__syntax",
+            "=",
+            version_token,
+            ":",
+            NewlineToken(),
+            IndentToken(),
+            statements_phrase,
+            DedentToken(),
+        ],
+    )
+
+    # Note that this statement is more complicated that what we would prefer, as we aren't relying
+    # on the DynamicPhrases capabilities for expressions (as we don't want these expressions to be
+    # used in other contextes). The syntax for these statements are relatively straight forward, so
+    # this isn't as big of an issues as it would be if we tried to do this with any reasonably sized
+    # grammar.
+
+    # This is a stand-alone phrase because it is recursive
+    condition_phrase = CreatePhrase(
+        name="Condition Phrase",
+        item=(
+            # '__syntax' ('=='|'!='|'<'|'<='|'>'|'>=') <version>
+            PhraseItem(
+                name="Comparison",
+                item=[
+                    "__syntax",
+                    ("==", "!=", "<", "<=", ">", ">="),
+                    version_token,
+                ],
+            ),
+
+            # 'not' <condition_phrase>
+            PhraseItem(
+                name="Not",
+                item=["not", None],
+            ),
+
+            # '(' <condition_phrase> ('and'|'or' <condition_phrase>)+ ')'
+            #
+            #  The use of parens to group the clauses is unfortunately, but a byproduct of the simplicity
+            # of these statements. Hopefully, this functionality isn't used much and this is an
+            # acceptable tradeoff.
+            #
+            PhraseItem(
+                name="Logical",
+                item=[
+                    # '('
+                    '(',
+                    PushIgnoreWhitespaceControlToken(),
+
+                    # <condition_phrase>
+                    None,
+
+                    # ('and'|'or' <condition_phrase>)+
+                    PhraseItem(
+                        item=[
+                            ("and", "or"),
+                            None,
+                        ],
+                        arity="+",
+                    ),
+
+                    # ')'
+                    PopIgnoreWhitespaceControlToken(),
+                    ')',
+                ],
+            ),
+        ),
+    )
+
+    # '__if' <condition_phrase> ':'
+    #     <statement>+
+    if_syntax_statement = CreatePhrase(
+        name="If Syntax",
+        item=[
+            "__if",
+            condition_phrase,
+            ":",
+            NewlineToken(),
+            IndentToken(),
+            statements_phrase,
+            DedentToken(),
+        ],
+    )
+
+    return [
+        set_syntax_statement,
+        if_syntax_statement,
+    ]
 
 
-# ----------------------------------------------------------------------
-# Statement to explicitly set the version of the syntax used to parse the block. This
-# is useful to make code written according to an older syntax version available along side
-# code written according to the current syntax version.
-
-# __with_syntax=1.0:
-#     ...
-#
-SetSyntaxStatement                          = CreateStatement(
-    name="Set Syntax",
-    item=[
-        RegexToken("'__with_syntax'", re.compile(r"(?P<value>__with_syntax)")),
-        RegexToken("'='", re.compile(r"(?P<value>=)")),
-        RegexToken("<semantic_version>", _simple_semantic_version_regex),
-        RegexToken("':'", re.compile(r"(?P<value>:)")),
-        NewlineToken(),
-        IndentToken(),
-        StatementItem(DynamicStatementsType.Statements, arity="+"),
-        DedentToken(),
-    ],
-)
+_syntax_statements                          = _CreateSyntaxStatements()
+del _CreateSyntaxStatements
 
 
 # ----------------------------------------------------------------------
 class Observer(TranslationUnitsParserObserver):
-    """Processes syntax-related statements; all other statements are processed by the provided observer"""
+    """Processes all syntax-related statements; all others are forwarded to the provided observer"""
 
     # ----------------------------------------------------------------------
     def __init__(
         self,
         observer: TranslationUnitsParserObserver,
         syntaxes: Dict[
-            SemVer,                         # Syntax Name
-            DynamicStatementInfo,           # Syntax Info
+            SemVer,
+            DynamicPhrasesInfo,
         ],
     ):
         assert observer
@@ -109,80 +201,66 @@ class Observer(TranslationUnitsParserObserver):
         max_ver: Optional[SemVer] = None
         updated_syntaxes = {}
 
-        for semver, statement_info in syntaxes.items():
+        for semver, phrases_info in syntaxes.items():
             if max_ver is None or semver > max_ver:
                 max_ver = semver
 
-            updated_statements = None
+            updated_statements = phrases_info.Statements
 
-            if not any(statement for statement in statement_info.Statements if getattr(statement, "Name", None) == SetSyntaxStatement.Name):
-                updated_statements = (SetSyntaxStatement,) + statement_info.Statements
+            for syntax_statement in _syntax_statements:
+                if not any(statement for statement in phrases_info.Statements if getattr(statement, "Name", None) == syntax_statement.Name):
+                    updated_statements = (syntax_statement,) + updated_statements
 
-            updated_syntaxes[semver] = statement_info.Clone(
+            updated_syntaxes[semver] = phrases_info.Clone(
                 updated_statements=updated_statements,
                 updated_allow_parent_traversal=False,
                 updated_name="{} Grammar".format(semver),
             )
 
-        assert max_ver
+        assert max_ver is not None
 
         self._observer                      = observer
+
         self.DefaultVersion                 = max_ver
         self.Syntaxes                       = updated_syntaxes
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Enqueue(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.Enqueue(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def LoadContent(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+    def LoadContent(self, *args, **kwargs):  # <parameters differ> pylint: disable=W0221
         return self._observer.LoadContent(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ExtractDynamicStatements(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return self._observer.ExtractDynamicStatements(*args, **kwargs)
+    def Enqueue(self, *args, **kwargs):  # <parameters differ> pylint: disable=W0221
+        return self._observer.Enqueue(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ExtractDynamicPhrases(self, *args, **kwargs):  # <parameters differ> pylint: disable=W0221
+        return self._observer.ExtractDynamicPhrases(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def OnIndentAsync(
         self,
         fully_qualified_name: str,
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: NormalizedIterator,
-        iter_after: NormalizedIterator,
-    ) -> Optional[DynamicStatementInfo]:
-        if len(data_stack) > 1 and data_stack[1].Statement == SetSyntaxStatement:
-            data = cast(Statement.MultipleStandardParseResultData, data_stack[1].Data)
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
+    ) -> Optional[DynamicPhrasesInfo]:
+        # Process the statement once we have encountered the corresponding indent
+        if len(data_stack) > 1 and data_stack[1].Phrase in _syntax_statements:
+            statement = data_stack[1].Phrase
 
-            # The data should include everything prior to the indentation
-            assert len(data.DataItems) == 5, data.DataItems
-            data = cast(Statement.StandardParseResultData, data.DataItems[2])
-            assert data.Statement.Name == "<semantic_version>", data.Statement.Name
+            if statement.Name == "Set Syntax":
+                assert data_stack[1].Data
+                return self._SetSyntax(data_stack[1].Data)
 
-            token_data = cast(Statement.TokenParseResultData, data.Data)
+            elif statement.Name == "If Syntax":
+                pass # TODO
 
-            regex_match = cast(Token.RegexMatch, token_data.Value).Match
-
-            semver = SemVer(
-                "{}.{}.{}".format(
-                    regex_match.group("major"),
-                    regex_match.group("minor"),
-                    regex_match.group("patch") or "0",
-                ),
-            )
-
-            statement_info = self.Syntaxes.get(semver, None)
-            if statement_info is None:
-                raise SyntaxInvalidVersionError(
-                    token_data.IterBefore.Line,
-                    token_data.IterBefore.Column,
-                    semver,
-                )
-
-            return statement_info
+            else:
+                assert False, statement  # pragma: no cover
 
         return await self._observer.OnIndentAsync(
             fully_qualified_name,
@@ -193,10 +271,59 @@ class Observer(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnDedentAsync(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
+    async def OnDedentAsync(self, *args, **kwargs):  # <parameters differ> pylint: disable=W0221
         return await self._observer.OnDedentAsync(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnStatementCompleteAsync(self, *args, **kwargs):  # <Parameters differ> pylint: disable=W0221
-        return await self._observer.OnStatementCompleteAsync(*args, **kwargs)
+    async def OnPhraseCompleteAsync(self, *args, **kwargs):  # <parameters differ> pylint: disable=W0221
+        return await self._observer.OnPhraseCompleteAsync(*args, **kwargs)
+
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _SetSyntax(
+        self,
+        data: Phrase.ParseResultData,
+    ) -> DynamicPhrasesInfo:
+        data = cast(Phrase.MultipleStandardParseResultData, data)
+
+        # The data will include everything prior to the indentation
+        assert len(data.DataItems) == 6, data.DataItems
+
+        # Extract the version
+        version_data = data.DataItems[3]
+        assert version_data
+
+        version, version_data = self._GetVersion(version_data)
+
+        phrases_info = self.Syntaxes.get(version, None)
+        if phrases_info is None:
+            raise SyntaxInvalidVersionError(
+                version_data.IterBefore.Line,
+                version_data.IterBefore.Column,
+                version,
+            )
+
+        return phrases_info
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _GetVersion(
+        data: Phrase.ParseResultData,
+    ) -> Tuple[SemVer, Phrase.TokenParseResultData]:
+        data = cast(Phrase.StandardParseResultData, data)
+        assert data.Phrase.Name == "<semantic_version>", data.Phrase.name
+
+        token_data = cast(Phrase.TokenParseResultData, data.Data)
+        token_value = token_data.Value.Match.group("value")
+
+        try:
+            return SemVer.coerce(token_value), token_data
+        except ValueError:
+            raise SyntaxInvalidVersionFormatError(
+                token_data.IterBefore.Line,
+                token_data.IterBefore.Column,
+                token_value,
+            )
