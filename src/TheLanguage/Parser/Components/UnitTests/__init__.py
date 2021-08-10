@@ -38,26 +38,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Normalize import Normalize
     from ..NormalizedIterator import NormalizedIterator
+    from ..Phrase import Phrase
+    from ..ThreadPool import CreateThreadPool
 
 
 # ----------------------------------------------------------------------
 @pytest.fixture
 def parse_mock():
     mock = CoroutineMock()
-    mock._thread_pool_executor = ThreadPoolExecutor(max_workers=10)
+    mock._thread_pool = CreateThreadPool(20)
 
-    # ----------------------------------------------------------------------
-    def Enqueue(funcs):
-        loop = asyncio.get_event_loop()
-
-        return [
-            loop.run_in_executor(mock._thread_pool_executor, func)
-            for func in funcs
-        ]
-
-    # ----------------------------------------------------------------------
-
-    mock.Enqueue = Enqueue
+    mock.Enqueue = mock._thread_pool.EnqueueAsync
 
     mock.OnIndentAsync = CoroutineMock()
     mock.OnDedentAsync = CoroutineMock()

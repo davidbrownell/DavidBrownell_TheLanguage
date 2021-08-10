@@ -3,7 +3,7 @@
 # |  TranslationUnitsParser.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-02 11:23:32
+# |      2021-08-09 23:54:31
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,17 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality to parse multiple translation units simultaneously"""
+"""Functionality used to parse multiple translation units simultaneously"""
 
-import asyncio
 import os
 import threading
 import traceback
 
-from concurrent.futures import Future
-from typing import Awaitable, Callable, cast, Dict, List, Optional, Union
+from typing import Any, Awaitable, Callable, cast, Dict, List, Optional, Union
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -37,14 +35,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Components.AST import Leaf, Node, RootNode
+    from .Components.AST import Node, RootNode
     from .Components.Error import Error
     from .Components.Normalize import Normalize
     from .Components.NormalizedIterator import NormalizedIterator
-    from .Components.Statement import Statement
+    from .Components.Phrase import Phrase
 
     from .TranslationUnitParser import (
-        DynamicStatementInfo,
+        DynamicPhrasesInfo,
         Observer as TranslationUnitObserver,
         ParseAsync as TranslationUnitParseAsync,
     )
@@ -77,15 +75,6 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def Enqueue(
-        funcs: List[Callable[[], None]],
-    ) -> List[Future]:
-        """Enqueues the funcs for execution on a thread pool"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
     def LoadContent(
         fully_qualified_name: str,
     ) -> str:
@@ -95,11 +84,19 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def ExtractDynamicStatements(
+    def Enqueue(
+        func_infos: List[Phrase.EnqueueAsyncItemType],
+    ) -> Awaitable[Any]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def ExtractDynamicPhrases(
         fully_qualified_name: str,
         node: RootNode,
-    ) -> DynamicStatementInfo:
-        """Extracts statements from parsed content"""
+    ) -> DynamicPhrasesInfo:
+        """Extracts phrases from the RootNode associated with the fully qualified name"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -107,11 +104,10 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     async def OnIndentAsync(
         fully_qualified_name: str,
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: NormalizedIterator,
-        iter_after: NormalizedIterator,
-    ) -> Optional[DynamicStatementInfo]:
-        """Event generated on the creation of a new scope"""
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
+    ) -> Optional[DynamicPhrasesInfo]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -119,35 +115,33 @@ class Observer(Interface.Interface):
     @Interface.abstractmethod
     async def OnDedentAsync(
         fully_qualified_name: str,
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: NormalizedIterator,
-        iter_after: NormalizedIterator,
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ) -> None:
-        """Event generated on the end of a scope"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnStatementCompleteAsync(
+    async def OnPhraseCompleteAsync(
         fully_qualified_name: str,
-        statement: Statement,
+        phrase: Phrase,
         node: Node,
-        iter_before: NormalizedIterator,
-        iter_after: NormalizedIterator,
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ) -> Union[
         bool,                               # True to continue processing, False to terminate
-        DynamicStatementInfo,               # DynamicStatementInfo generated by the statement
-        "Observer.ImportInfo",              # Import information generated by the statement
+        DynamicPhrasesInfo,                 # Dynamic phases (if any) resulting from the parsed phrase
+        "Observer.ImportInfo",              # Import infromation (if any) resulting from the parsed phrase
     ]:
-        """Called on the completion of each statement"""
         raise Exception("Abstract method")  # pragma: no cover
 
 
 # ----------------------------------------------------------------------
 async def ParseAsync(
     fully_qualified_names: List[str],
-    initial_statement_info: DynamicStatementInfo,
+    initial_phrases_info: DynamicPhrasesInfo,
     observer: Observer,
     single_threaded=False,
 ) -> Union[
@@ -156,25 +150,23 @@ async def ParseAsync(
     List[Exception],
 ]:
     # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
     class SourceInfo(object):
-        # ----------------------------------------------------------------------
-        def __init__(
-            self,
-            node: Optional[RootNode],
-            statement_info: DynamicStatementInfo,
-        ):
-            self.Node                       = node
-            self.StatementInfo              = statement_info
+        Node: Optional[RootNode]
+        DynamicInfo: DynamicPhrasesInfo
 
     # ----------------------------------------------------------------------
     class ThreadInfo(object):
+        # Note: not using dataclass here as it was producing too many pylint warnings
+
+        # ----------------------------------------------------------------------
         def __init__(self):
-            self.pending_ctr                                                = 0
+            self.pending_ctr                = 0
 
             self.source_lookup: Dict[str, Optional[SourceInfo]]             = {}
             self.source_pending: Dict[str, List[threading.Event]]           = {}
 
-            self.errors: List[Exception]                                    = []
+            self.errors: List[Exception]    = []
 
     # ----------------------------------------------------------------------
 
@@ -185,21 +177,24 @@ async def ParseAsync(
 
     # ----------------------------------------------------------------------
     async def ExecuteAsync(
-        fully_qualified_name,
+        fully_qualified_name: str,
         increment_pending_ctr=True,
-    ) -> Optional[DynamicStatementInfo]:
-        final_result = None
+    ) -> Optional[DynamicPhrasesInfo]:
+
+        final_result: Optional[DynamicPhrasesInfo] = None
 
         # ----------------------------------------------------------------------
         def OnExit():
             nonlocal final_result
 
             with thread_info_lock:
-                final_result = thread_info.source_lookup.get(fully_qualified_name, None)
-                if final_result is None:
+                source_info = thread_info.source_lookup.get(fully_qualified_name, None)
+                if source_info is None:
                     del thread_info.source_lookup[fully_qualified_name]
 
-                    final_result = SourceInfo(None, DynamicStatementInfo((), (), ()))
+                    final_result = DynamicPhrasesInfo((), (), (), ())
+                else:
+                    final_result = source_info.DynamicInfo
 
                 for event in thread_info.source_pending.pop(fully_qualified_name, []):
                     event.set()
@@ -208,10 +203,19 @@ async def ParseAsync(
                     is_complete.set()
 
         # ----------------------------------------------------------------------
+        class DoesNotExist(object):
+            pass
+
+        # ----------------------------------------------------------------------
 
         with CallOnExit(OnExit):
             with thread_info_lock:
-                if fully_qualified_name not in thread_info.source_lookup:
+                # Note that we can't use None to determine if the item exists within the dict, as
+                # None is a valid value.
+                source_info = thread_info.source_lookup.get(fully_qualified_name, DoesNotExist)
+
+                if source_info is DoesNotExist:
+                    # If here, the content needs to be parsed
                     should_execute = True
                     wait_event = None
 
@@ -220,15 +224,16 @@ async def ParseAsync(
                     if increment_pending_ctr:
                         thread_info.pending_ctr += 1
 
-                else:
-                    source_info = thread_info.source_lookup[fully_qualified_name]
-                    if source_info is not None:
-                        return source_info.StatementInfo
-
+                elif source_info is None:
+                    # If here, the content is in the process of being parsed
                     should_execute = False
                     wait_event = threading.Event()
 
                     thread_info.source_pending.setdefault(fully_qualified_name, []).append(wait_event)
+
+                else:
+                    # If here, the content is already parsed
+                    return source_info.DynamicInfo
 
             if should_execute:
                 # ----------------------------------------------------------------------
@@ -241,12 +246,16 @@ async def ParseAsync(
 
                 with CallOnExit(OnExecuteExit):
                     try:
-                        translation_unit_observer = _TranslationUnitObserver(fully_qualified_name, observer, ExecuteAsync)
+                        translation_unit_observer = _TranslationUnitObserver(
+                            fully_qualified_name,
+                            observer,
+                            ExecuteAsync,
+                        )
 
                         content = observer.LoadContent(fully_qualified_name)
 
                         root = await TranslationUnitParseAsync(
-                            initial_statement_info,
+                            initial_phrases_info,
                             NormalizedIterator(Normalize(content)),
                             translation_unit_observer,
                             single_threaded=single_threaded,
@@ -255,13 +264,13 @@ async def ParseAsync(
                         if root is None:
                             return None
 
-                        # Get the Dynamic Statements
-                        dynamic_statements = observer.ExtractDynamicStatements(fully_qualified_name, root)
+                        # Get the dynamic phrases
+                        dynamic_phrases = observer.ExtractDynamicPhrases(fully_qualified_name, root)
 
                         # Commit the results
                         with thread_info_lock:
                             assert thread_info.source_lookup[fully_qualified_name] is None
-                            thread_info.source_lookup[fully_qualified_name] = SourceInfo(root, dynamic_statements)
+                            thread_info.source_lookup[fully_qualified_name] = SourceInfo(root, dynamic_phrases)
 
                     except Exception as ex:
                         assert not hasattr(ex, "Traceback")
@@ -277,25 +286,7 @@ async def ParseAsync(
                 wait_event.wait()
 
         assert final_result
-        return final_result.StatementInfo
-
-    # ----------------------------------------------------------------------
-    def PrepLoopAndExecute(
-        fully_qualified_name,
-        increment_pending_ctr=True,
-    ):
-        thread_loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(thread_loop)
-
-        try:
-            return thread_loop.run_until_complete(
-                ExecuteAsync(
-                    fully_qualified_name,
-                    increment_pending_ctr=increment_pending_ctr,
-                ),
-            )
-        finally:
-            thread_loop.close()
+        return final_result
 
     # ----------------------------------------------------------------------
 
@@ -311,17 +302,15 @@ async def ParseAsync(
                 return None
 
     else:
-        futures = observer.Enqueue(
+        results = await observer.Enqueue(
             [
-                cast(Callable[[], None], lambda fqn=fqn: PrepLoopAndExecute(fqn, increment_pending_ctr=False))
+                (ExecuteAsync, [fqn], {"increment_pending_ctr": False})
                 for fqn in fully_qualified_names
-            ],
+            ],  # type: ignore
         )
 
-        for future in futures:
-            result = future.result()
-            if result is None:
-                return None
+        if any(result is None for result in results):
+            return None
 
         is_complete.wait()
 
@@ -345,11 +334,19 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         self,
         fully_qualified_name: str,
         observer: Observer,
-        async_parse_func: Callable[[str], Awaitable[Optional[DynamicStatementInfo]]],
+        async_parse_func: Callable[[str], Awaitable[Optional[DynamicPhrasesInfo]]],
     ):
         self._fully_qualified_name          = fully_qualified_name
         self._observer                      = observer
         self._async_parse_func              = async_parse_func
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Enqueue(
+        self,
+        func_infos: List[Phrase.EnqueueAsyncItemType],
+    ) -> Awaitable[Any]:
+        return self._observer.Enqueue(func_infos)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -371,16 +368,19 @@ class _TranslationUnitObserver(TranslationUnitObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnStatementCompleteAsync(
+    async def OnPhraseCompleteAsync(
         self,
-        statement: Statement,
+        phrase: Phrase,
         node: Node,
         iter_before: NormalizedIterator,
         iter_after: NormalizedIterator,
-    ):
-        result = await self._observer.OnStatementCompleteAsync(
+    ) -> Union[
+        bool,                               # True to continue processing, False to terminate
+        DynamicPhrasesInfo,                 # Dynamic phases (if any) resulting from the parsed phrase
+    ]:
+        result = await self._observer.OnPhraseCompleteAsync(
             self._fully_qualified_name,
-            statement,
+            phrase,
             node,
             iter_before,
             iter_after,
@@ -394,8 +394,6 @@ class _TranslationUnitObserver(TranslationUnitObserver):
                     result.SourceName,
                 )
 
-            result = await self._async_parse_func(result.FullyQualifiedName)
-
-            return False if result is None else result
+            return await self._async_parse_func(result.FullyQualifiedName) or False
 
         return result

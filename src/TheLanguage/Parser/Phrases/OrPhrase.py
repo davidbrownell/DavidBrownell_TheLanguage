@@ -130,28 +130,11 @@ class OrPhrase(Phrase):
                         break
 
             else:
-                # ----------------------------------------------------------------------
-                def Execute(phrase_index, phrase):
-                    loop = asyncio.new_event_loop()
-
-                    try:
-                        asyncio.set_event_loop(loop)
-                        return loop.run_until_complete(ExecuteAsync(phrase_index, phrase))
-                    finally:
-                        loop.close()
-
-                # ----------------------------------------------------------------------
-
-                coros = observer.Enqueue(
+                gathered_results = await observer.Enqueue(
                     [
-                        lambda phrase_index=phrase_index, phrase=phrase: Execute(phrase_index, phrase)
+                        (ExecuteAsync, [phrase_index, phrase])
                         for phrase_index, phrase in enumerate(self.Phrases)
-                    ],
-                )
-
-                gathered_results = await asyncio.gather(
-                    *coros,
-                    return_exceptions=True,
+                    ],  # type: ignore
                 )
 
                 results = []

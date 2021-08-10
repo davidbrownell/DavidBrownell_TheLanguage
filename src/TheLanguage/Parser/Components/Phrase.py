@@ -15,6 +15,7 @@
 # ----------------------------------------------------------------------
 """Contains the Phrase object"""
 
+import asyncio
 import os
 
 from typing import Any, Awaitable, Callable, cast, Generator, List, Optional, Tuple, Union
@@ -33,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .NormalizedIterator import NormalizedIterator
+    from .ThreadPool import EnqueueAsyncItemType
     from .Token import Token as TokenClass
 
 
@@ -77,15 +79,13 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
             )
 
         # ----------------------------------------------------------------------
-        def Enum(self) -> Generator["Phrase.ParseResultData", None, None]:
-            if isinstance(self, (Phrase.StandardParseResultData, Phrase.TokenParseResultData)):
-                yield self
-            elif isinstance(self, Phrase.MultipleStandardParseResultData):
-                for item in self.DataItems:
-                    if item is not None:
-                        yield from item.Enum()
-            else:
-                assert False, self  # pragma: no cover
+        @Interface.extensionmethod
+        def Enum(self) -> Generator[
+            "Phrase.ParseResultData",
+            None,
+            None,
+        ]:
+            yield self
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
@@ -101,7 +101,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         def __post_init__(self):
             super(Phrase.StandardParseResultData, self).__post_init__(
                 Phrase=lambda phrase: phrase.Name,
-                UniqueId=None,
+                UniqueId=None,  # type: ignore
             )
 
             assert (
@@ -117,6 +117,17 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         # ----------------------------------------------------------------------
         DataItems: List[Optional["Phrase.ParseResultData"]]
         IsComplete: bool
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def Enum(self) -> Generator[
+            "Phrase.ParseResultData",
+            None,
+            None,
+        ]:
+            for data_item in self.DataItems:
+                if data_item is not None:
+                    yield from data_item.Enum()
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
@@ -146,8 +157,8 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         @staticmethod
         @Interface.abstractmethod
         def Enqueue(
-            funcs: List[Callable[[None], Any]],
-        ) -> List[Awaitable[Any]]:
+            func_infos: List[EnqueueAsyncItemType],
+        ) -> Awaitable[Any]:
             """Enqueus the provided functions in an executor"""
             raise Exception("Abstract method")  # pragma: no cover
 
@@ -208,7 +219,8 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
             raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    NormalizedIterator                  = NormalizedIterator
+    EnqueueAsyncItemType                    = EnqueueAsyncItemType
+    NormalizedIterator                      = NormalizedIterator
 
     # ----------------------------------------------------------------------
     # |
@@ -292,9 +304,9 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         @Interface.override
         def Enqueue(
             self,
-            funcs: List[Callable[[None], Any]],
-        ) -> List[Awaitable[Any]]:
-            return self._observer.Enqueue(funcs)
+            func_infos: List[EnqueueAsyncItemType],
+        ) -> Awaitable[Any]:
+            return self._observer.Enqueue(func_infos)
 
         # ----------------------------------------------------------------------
         @Interface.override

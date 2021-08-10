@@ -93,8 +93,8 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
     Statements: Tuple[Phrase, ...]
     Types: Tuple[Phrase, ...]
 
-    AllowParentTraversal: bool              = True
-    Name: Optional[str]                     = None
+    AllowParentTraversal: bool              = field(default=True)
+    Name: Optional[str]                     = field(default=None)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -116,6 +116,7 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
             "Types",
         ]:
             if not isinstance(getattr(self, attribute_name), tuple):
+                # TODO: Explain why, as I can't remember
                 raise Exception("'{}' must be a tuple because...".format(attribute_name))
 
     # ----------------------------------------------------------------------
@@ -144,8 +145,8 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     def Enqueue(
-        funcs: List[Callable[[None], Any]],
-    ) -> List[Awaitable[Any]]:
+        func_infos: List[Phrase.EnqueueAsyncItemType],
+    ) -> Awaitable[Any]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -180,7 +181,7 @@ class Observer(Interface.Interface):
         bool,                               # True to continue processing, False to terminate
         DynamicPhrasesInfo,                 # Dynamic phases (if any) resulting from the parsed phrase
     ]:
-        """Invalid when an internal phrase is successfully parsed"""
+        """Used when an internal phrase is successfully parsed"""
         raise Exception("Abstract method")  # pragma: no cover
 
 
@@ -444,9 +445,9 @@ class _PhraseObserver(Phrase.Observer):
     @Interface.override
     def Enqueue(
         self,
-        funcs: List[Callable[[None], Any]],
-    ) -> List[Awaitable[Any]]:
-        return self._observer.Enqueue(funcs)
+        func_infos: List[Phrase.EnqueueAsyncItemType],
+    ) -> Awaitable[Any]:
+        return self._observer.Enqueue(func_infos)
 
     # ----------------------------------------------------------------------
     @Interface.override

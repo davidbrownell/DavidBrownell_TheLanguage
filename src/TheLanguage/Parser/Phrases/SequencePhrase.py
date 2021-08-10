@@ -113,7 +113,7 @@ class SequencePhrase(Phrase):
 
         super(SequencePhrase, self).__init__(
             name,
-            CommentToken=None,
+            CommentToken=None,  # type: ignore
         )
 
         self.CommentToken                   = comment_token
@@ -326,7 +326,7 @@ class SequencePhrase(Phrase):
     def _ExtractPotentialCommentTokens(
         self,
         normalized_iter: Phrase.NormalizedIterator,
-    ) -> Optional[ExtractPotentialResults]:
+    ) -> Optional["SequencePhrase.ExtractPotentialResults"]:
         """Eats any comment (stand-alone or trailing) when requested"""
 
         normalized_iter = normalized_iter.Clone()
