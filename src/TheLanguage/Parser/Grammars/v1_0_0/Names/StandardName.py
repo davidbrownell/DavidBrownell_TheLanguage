@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  StandardName.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 15:10:07
+# |      2021-08-10 15:12:58
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for v1.0.0 grammar"""
+"""Contains the StandardName object"""
 
 import os
 
@@ -27,17 +27,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Names.StandardName import StandardName
+    from ...GrammarPhrase import GrammarPhrase
+    from ....Phrases.DSL import CreatePhrase
 
 
 # ----------------------------------------------------------------------
-GrammarPhrases                              = [
-    # Expressions
+class StandardName(GrammarPhrase):
+    """<name>"""
 
-    # Names
-    StandardName(),
+    NODE_NAME                               = "Standard Name"
 
-    # Statements
-
-    # Types
-]
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        super(StandardName, self).__init__(
+            GrammarPhrase.Type.Name,
+            CreatePhrase(
+                name=self.NODE_NAME,
+                item="TODO",
+            ),
+        )

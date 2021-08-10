@@ -3,7 +3,7 @@
 # |  Parse.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-23 09:55:37
+# |      2021-08-10 14:22:22
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps with parsing"""
+"""Contains functionality that parses content"""
 
 import asyncio
-import importlib
 import os
+import importlib
 import sys
 
 from collections import OrderedDict
-from concurrent.futures import Future, ThreadPoolExecutor
-from typing import cast, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Awaitable, cast, Callable, Dict, List, Optional, Union
 
 from semantic_version import Version as SemVer
 
@@ -38,40 +37,34 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Syntax import (
-        Observer as SyntaxObserver
-    )
+    from .Components.ThreadPool import CreateThreadPool
+
+    from .Grammars.GrammarPhrase import GrammarPhrase, ImportGrammarStatement
+
+    from .Syntax import Observer as SyntaxObserver
 
     from .TranslationUnitsParser import (
-        DynamicStatementInfo,
+        DynamicPhrasesInfo,
         Leaf,
         Node,
-        Observer as TranslationUnitsParserObserver,
+        Observer as TranslationUnitsObserver,
         ParseAsync as TranslationUnitsParseAsync,
+        Phrase,
         RootNode,
-        Statement,
     )
 
-    from .Grammars.GrammarStatement import GrammarStatement, ImportGrammarStatement
 
-    from .Components.NormalizedIterator import NormalizedIterator
+# ----------------------------------------------------------------------
+Grammars: Dict[SemVer, DynamicPhrasesInfo]              = OrderedDict()
+GrammarPhraseLookup: Dict[Phrase, GrammarPhrase]        = OrderedDict()
 
 
 # ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-Grammars: Dict[SemVer, DynamicStatementInfo]            = OrderedDict()
-StatementLookup: Dict[Statement, GrammarStatement]      = OrderedDict()
-
-
-# ----------------------------------------------------------------------
-def _LoadDyanmicStatementsFromFile(
+def _LoadDynamicPhrasesFromFile(
     filename: str,
-    attribute_name: Optional[str]=None,
-) -> DynamicStatementInfo:
+    module_attribute_name: str=None,
+) -> DynamicPhrasesInfo:
     assert os.path.isfile(filename), filename
-
-    attribute_name = attribute_name or "Statements"
 
     dirname, basename = os.path.split(filename)
     basename = os.path.splitext(basename)[0]
@@ -80,65 +73,68 @@ def _LoadDyanmicStatementsFromFile(
     with CallOnExit(lambda: sys.path.pop(0)):
         mod = importlib.import_module(basename)
 
-        grammar_statements = getattr(mod, attribute_name, None)
-        assert grammar_statements is not None, filename
+        grammar_phrases = getattr(mod, module_attribute_name or "GrammarPhrases", None)
+        assert grammar_phrases is not None, filename
 
-        statements = []
-        expressions = []
-        types = []
+        expressions: List[Phrase] = []
+        names: List[Phrase] = []
+        statements: List[Phrase] = []
+        types: List[Phrase] = []
 
-        for grammar_statement in grammar_statements:
-            if grammar_statement.TypeValue == GrammarStatement.Type.Statement:
-                statements.append(grammar_statement.Statement)
-            elif grammar_statement.TypeValue == GrammarStatement.Type.Expression:
-                expressions.append(grammar_statement.Statement)
-            elif grammar_statement.TypeValue == GrammarStatement.Type.Type:
-                types.append(grammar_statement.Statement)
+        for grammar_phrase in grammar_phrases:
+            if grammar_phrase.TypeValue == GrammarPhrase.Type.Expression:
+                expressions.append(grammar_phrase.Phrase)
+            elif grammar_phrase.TypeValue == GrammarPhrase.Type.Name:
+                names.append(grammar_phrase.Phrase)
+            elif grammar_phrase.TypeValue == GrammarPhrase.Type.Statement:
+                statements.append(grammar_phrase.Phrase)
+            elif grammar_phrase.TypeValue == GrammarPhrase.Type.Type:
+                types.append(grammar_phrase.Phrase)
             else:
-                assert False, grammar_statement.TypeValue  # pragma: no cover
+                assert False, grammar_phrase.TypeValue  # pragma: no cover
 
-            assert grammar_statement.Statement not in StatementLookup, grammar_statement.Statement
-            StatementLookup[grammar_statement.Statement] = grammar_statement
+            assert grammar_phrase.Phrase not in GrammarPhraseLookup, grammar_phrase.Phrase
+            GrammarPhraseLookup[grammar_phrase.Phrase] = grammar_phrase
 
         del sys.modules[basename]
 
-        return DynamicStatementInfo(
-            tuple(statements),
+        return DynamicPhrasesInfo(
             tuple(expressions),
+            tuple(names),
+            tuple(statements),
             tuple(types),
             AllowParentTraversal=False,
         )
 
 
 # ----------------------------------------------------------------------
-Grammars[SemVer("1.0.0")]                   = _LoadDyanmicStatementsFromFile(os.path.join(_script_dir, "Grammars", "v1_0_0", "All.py"))
+Grammars[SemVer("1.0.0")]                   = _LoadDynamicPhrasesFromFile(os.path.join(_script_dir, "Grammars", "v1_0_0", "All.py"))
 
 
 # ----------------------------------------------------------------------
-assert StatementLookup
-del _LoadDyanmicStatementsFromFile
+assert GrammarPhraseLookup, "We should have entires for all encountered phrases"
+del _LoadDynamicPhrasesFromFile
 
 
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def Parse(
     fully_qualified_names: List[str],
     source_roots: List[str],
     max_num_threads: Optional[int]=None,
 ) -> Union[
-    None,
-    Dict[str, RootNode],
-    List[Exception],
+    None,                                   # Cancellation
+    Dict[str, RootNode],                    # Successful results
+    List[Exception],                        # Errors
 ]:
     """\
     Return AST(s) for the given names.
 
-    This information can be used to completely regenerate the original source. This is valuable for
-    writing things like source formatting tools, but contains extraneous data that can make parsing
-    more difficult (for example, comments and vertical whitespace).
+    This information can be used to complete regenerate the original source (which can be valuable for
+    writing things like source formatting tools). However, it contains extraneous data that can make
+    parsing more difficult (for example, ignored tokens that comments and whitespace remain in the AST).
 
-    The `Prune` function should be used before invoking additional functionality.
+    The 'Prune' function should be used on the successful result of this function before further
+    processing is invoked.
     """
 
     syntax_observer = SyntaxObserver(
@@ -160,42 +156,14 @@ def Parse(
 
 
 # ----------------------------------------------------------------------
-def Prune(
-    roots: Dict[str, RootNode],
-    max_num_threads: Optional[int]=None,
-):
-    """Removes Leaf nodes that have been explicitly ignored for easier parsing"""
-
-    _Execute(
-        lambda fqn, node: _Prune(node),
-        roots,
-        max_num_threads=max_num_threads,
-    )
-
-
-# ----------------------------------------------------------------------
-def Validate(
-    roots: Dict[str, RootNode],
-    max_num_threads: Optional[int]=None,
-):
-    """Invokes functionality to validate a node and its children in isolation"""
-
-    _Execute(
-        _ValidateRoot,
-        roots,
-        max_num_threads=max_num_threads,
-    )
-
-
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-class _ParseObserver(TranslationUnitsParserObserver):
+class _ParseObserver(TranslationUnitsObserver):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         source_roots: List[str],
-        max_num_threads: Optional[int] = None,
+        max_num_threads: Optional[int]=None,
     ):
         for source_root in source_roots:
             assert os.path.isdir(source_root), source_root
@@ -204,27 +172,16 @@ class _ParseObserver(TranslationUnitsParserObserver):
 
         self._is_cancelled                  = False
         self._source_roots                  = source_roots
-        self._executor                      = ThreadPoolExecutor(
-            max_workers=max_num_threads,
-        )
+        self._executor                      = CreateThreadPool(max_workers=max_num_threads)
 
     # ----------------------------------------------------------------------
     def Cancel(self):
         self._is_cancelled = True
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def Enqueue(
-        self,
-        funcs: List[Callable[[], None]],
-    ) -> List[Future]:
-        # TODO: Handle scenario where there are too many enqueued items
-        return [self._executor.submit(func) for func in funcs]
-
-    # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
     def LoadContent(
-        self,
         fully_qualified_name: str,
     ) -> str:
         assert os.path.isfile(fully_qualified_name), fully_qualified_name
@@ -236,151 +193,71 @@ class _ParseObserver(TranslationUnitsParserObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ExtractDynamicStatements(
+    def Enqueue(
         self,
-        fully_qualified_name: str,
-        node: RootNode,
-    ) -> DynamicStatementInfo:
-        # TODO
-        return DynamicStatementInfo((), (), ())
+        func_infos: List[Phrase.EnqueueAsyncItemType],
+    ) -> Awaitable[Any]:
+        return self._executor.EnqueueAsync(func_infos)  # type: ignore
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnIndentAsync(
+    def ExtractDynamicPhrases(
         self,
         fully_qualified_name: str,
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: NormalizedIterator,
-        iter_after: NormalizedIterator,
-    ) -> Optional[DynamicStatementInfo]:
+        node: RootNode,
+    ) -> DynamicPhrasesInfo:
+        # TODO
+        return DynamicPhrasesInfo((), (), (), ())
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    async def OnIndentAsync(
+        fully_qualified_name: str,
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
+    ) -> Optional[DynamicPhrasesInfo]:
         # Nothing to do here
         return None
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
     async def OnDedentAsync(
-        self,
         fully_qualified_name: str,
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: NormalizedIterator,
-        iter_after: NormalizedIterator,
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ) -> None:
         # Nothing to do here
         return None
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnStatementCompleteAsync(
+    async def OnPhraseCompleteAsync(
         self,
         fully_qualified_name: str,
-        statement: Statement,
+        phrase: Phrase,
         node: Node,
-        iter_before: NormalizedIterator,
-        iter_after: NormalizedIterator,
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ) -> Union[
-        bool,
-        DynamicStatementInfo,
-        TranslationUnitsParserObserver.ImportInfo,
+        bool,                                           # True to continue processing, False to terminate
+        DynamicPhrasesInfo,                             # Dynamic phases (if any) resulting from the parsed phrase
+        TranslationUnitsObserver.ImportInfo,            # Import infromation (if any) resulting from the parsed phrase
     ]:
         try:
-            grammar_statement = StatementLookup.get(statement, None)
+            grammar_phrase = GrammarPhraseLookup.get(phrase, None)
         except TypeError:
-            grammar_statement = None
+            grammar_phrase = None
 
-        if grammar_statement is not None:
-            if isinstance(grammar_statement, ImportGrammarStatement):
-                return grammar_statement.ProcessImportStatement(
+        if grammar_phrase is not None:
+            if isinstance(grammar_phrase, ImportGrammarStatement):
+                return grammar_phrase.ProcessImportStatement(
                     self._source_roots,
                     fully_qualified_name,
                     node,
                 )
 
         return not self._is_cancelled
-
-
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-def _Execute(
-    func: Callable[[str, RootNode], None],
-    roots: Dict[str, RootNode],
-    max_num_threads: Optional[int]=None,
-):
-    use_futures = max_num_threads != 1 and len(roots) != 1
-
-    if use_futures:
-        with ThreadPoolExecutor(
-            max_workers=max_num_threads,
-        ) as executor:
-            futures = [
-                executor.submit(lambda k=k, v=v: func(k, v))
-                for k, v in roots.items()
-            ]
-
-            [future.result() for future in futures]
-            return
-
-    for k, v in roots.items():
-        func(k, v)
-
-
-# ----------------------------------------------------------------------
-def _Prune(
-    node: Union[RootNode, Node],
-):
-    child_index = 0
-
-    while child_index < len(node.Children):
-        child = node.Children[child_index]
-
-        should_delete = False
-
-        if isinstance(child, Node):
-            _Prune(child)
-
-            if not child.Children:
-                should_delete = True
-
-        elif isinstance(child, Leaf):
-            if child.IsIgnored:
-                should_delete = True
-
-        else:
-            assert False, child  # pragma: no cover
-
-        if not should_delete:
-            child_index += 1
-            continue
-
-        del node.Children[child_index]
-
-
-# ----------------------------------------------------------------------
-def _ValidateRoot(
-    fully_qualified_name: str,
-    root: RootNode,
-):
-    try:
-        for child in root.Children:
-            _ValidateNode(child)
-
-    except Exception as ex:
-        if not hasattr(ex, "FullyQualifiedName"):
-            object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
-
-        raise
-
-
-# ----------------------------------------------------------------------
-def _ValidateNode(
-    node: Union[Node, Leaf],
-):
-    if isinstance(node.Type, Statement):
-        grammar_statement = StatementLookup.get(cast(Statement, node.Type), None)
-        if grammar_statement:
-            result = grammar_statement.ValidateNodeSyntax(cast(Node, node))
-            if isinstance(result, bool) and not result:
-                return
-
-    for child in getattr(node, "Children", []):
-        _ValidateNode(child)

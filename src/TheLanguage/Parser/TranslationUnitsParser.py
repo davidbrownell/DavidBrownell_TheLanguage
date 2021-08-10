@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Components.AST import Node, RootNode
+    from .Components.AST import Leaf, Node, RootNode    # Note that Leaf isn't used in this file but is here as a convenience
     from .Components.Error import Error
     from .Components.Normalize import Normalize
     from .Components.NormalizedIterator import NormalizedIterator
@@ -233,7 +233,8 @@ async def ParseAsync(
 
                 else:
                     # If here, the content is already parsed
-                    return source_info.DynamicInfo
+                    assert source_info is not DoesNotExist
+                    return source_info.DynamicInfo  # type: ignore
 
             if should_execute:
                 # ----------------------------------------------------------------------

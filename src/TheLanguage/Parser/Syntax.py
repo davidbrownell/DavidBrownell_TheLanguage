@@ -317,7 +317,7 @@ class Observer(TranslationUnitsParserObserver):
         assert data.Phrase.Name == "<semantic_version>", data.Phrase.name
 
         token_data = cast(Phrase.TokenParseResultData, data.Data)
-        token_value = token_data.Value.Match.group("value")
+        token_value = cast(RegexToken.MatchResult, token_data.Value).Match.group("value")
 
         try:
             return SemVer.coerce(token_value), token_data

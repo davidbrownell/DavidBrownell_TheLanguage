@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GrammarStatement.py
+# |  GrammarPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-05-23 15:47:29
+# |      2021-08-10 14:48:11
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Tools and utilities that help creating statements within a grammar"""
+"""Tools and utilities that help creating phrases within a grammar"""
 
 import os
 
 from enum import auto, Enum
-from typing import List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -33,24 +33,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Components.AST import (
-        Leaf,                               # This is here as a convenience for files that import this one; please do not remove
-        Node,
-        RootNode,
-    )
-
+    from ..Components.AST import Leaf, Node
     from ..Components.Error import Error
 
     from ..TranslationUnitsParser import (
         Observer as TranslationUnitsParserObserver,
-        Statement,
+        Phrase,
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class ValidationError(Error):
-    """Extend the `Error` base class to Include starting line and column attributes"""
+    """Extend the Error baase class to include ending line and column attributes"""
 
     LineEnd: int
     ColumnEnd: int
@@ -59,57 +54,78 @@ class ValidationError(Error):
     @classmethod
     def FromNode(
         cls,
-        node: Union[Node, Leaf],
+        node: Union[Leaf, Node],
         *args,
     ):
-        if isinstance(node, Leaf):
-            assert node.IterBefore.Line == node.IterAfter.Line
+        line_before = node.IterBefore.Line if node.IterBefore is not None else -1
+        column_before = node.IterBefore.Column if node.IterBefore is not None else -1
 
+        line_after = node.IterAfter.Line if node.IterAfter is not None else -1
+        column_after = node.IterAfter.Column if node.IterAfter is not None else -1
+
+        if isinstance(node, Leaf):
             return cls(
-                node.IterBefore.Line,
-                node.IterBefore.Column + (
+                line_before,
+                column_before + (
                     node.Whitespace[1] - node.Whitespace[0] - 1
                     if node.Whitespace else 0
                 ),
-                node.IterAfter.Line,
-                node.IterAfter.Column,
+                line_after,
+                column_after,
                 *args,
             )
 
         return cls(
-            node.IterBefore.Line,
-            node.IterBefore.Column,
-            node.IterAfter.Line,
-            node.IterAfter.Column,
+            line_before,
+            column_before,
+            line_after,
+            column_after,
             *args,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        assert self.Line <= self.LineEnd
-        assert self.Line != self.LineEnd or self.Column <= self.ColumnEnd
+        super(ValidationError, self).__post_init__()
+
+        assert self.Line <= self.LineEnd, self
+        assert self.Line != self.LineEnd or self.Column <= self.ColumnEnd, self
 
 
 # ----------------------------------------------------------------------
-class GrammarStatement(Interface.Interface):
-    """An individual statement within a grammar"""
+class GrammarPhrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
+    """An individual phrase within a grammar"""
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
     class Type(Enum):
-        """A Statement will be one of these types"""
-
-        Statement                           = auto()
         Expression                          = auto()
+        Name                                = auto()
+        Statement                           = auto()
         Type                                = auto()
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
     def __init__(
         self,
-        type_value: "GrammarStatement.Type",
-        statement: Statement,
+        type_value: "GrammarPhrase.Type",
+        phrase: Phrase,
+        **custom_display_funcs: Callable[[Any], Optional[str]],
     ):
+        CommonEnvironment.ObjectReprImplBase.__init__(
+            self,
+            include_class_info=False,
+            Phrase=lambda phrase: phrase.Name,
+            **custom_display_funcs,
+        )
+
         self.TypeValue                      = type_value
-        self.Statement                      = statement
+        self.Phrase                         = phrase
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -117,31 +133,31 @@ class GrammarStatement(Interface.Interface):
     def ValidateNodeSyntax(
         node: Node,
     ) -> Optional[bool]:                    # False to prevent child traversal
-        """Opportunity to validate the syntax of a node; this method is invoked during calls to Parser.py:Validate"""
-        return
+        """\
+        Opportunity to validate the syntax of a node.
 
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.extensionmethod
-    def Lower(
-        node: Node,
-    ) -> Optional[bool]:                    # False to prevent child traversal
-        """Opportunity to lower the node associated with the statement (if necessary)"""
-        return
+        This method is invoked during calls to Parser.py:Validate and should be invoked after calls
+        to Parser.py:Prune.
+        """
+
+        # No validation be default
+        return None
 
 
 # ----------------------------------------------------------------------
-class ImportGrammarStatement(GrammarStatement):
-    """Grammar statement that imports content; this functionality requires special handling"""
+class ImportGrammarStatement(GrammarPhrase):
+    """Grammar statement that imports content; this functionality requires special handling during the parsing process"""
 
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        statement: Statement,
+        statement: Phrase,
+        **custom_display_funcs: Callable[[Any], Optional[str]],
     ):
         super(ImportGrammarStatement, self).__init__(
-            GrammarStatement.Type.Statement,
+            GrammarPhrase.Type.Statement,
             statement,
+            **custom_display_funcs,
         )
 
     # ----------------------------------------------------------------------
@@ -152,5 +168,10 @@ class ImportGrammarStatement(GrammarStatement):
         fully_qualified_name: str,
         node: Node,
     ) -> TranslationUnitsParserObserver.ImportInfo:
-        """Returns ImportInfo for the statement"""
+        """\
+        Returns ImportInfo for the statement.
+
+        Note that this method is called during the parsing process, so content will not have been
+        pruned yet.
+        """
         raise Exception("Abstract method")  # pragma: no cover

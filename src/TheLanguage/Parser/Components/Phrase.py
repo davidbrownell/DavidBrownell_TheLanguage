@@ -70,7 +70,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         # ----------------------------------------------------------------------
         def __post_init__(
             self,
-            **custom_display_funcs: Callable[[Any], str],
+            **custom_display_funcs: Callable[[Any], Optional[str]],
         ):
             CommonEnvironment.ObjectReprImplBase.__init__(
                 self,
@@ -230,7 +230,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
     def __init__(
         self,
         name: str,
-        **custom_display_funcs: Callable[[Any], str],
+        **custom_display_funcs: Callable[[Any], Optional[str]],
     ):
         assert name
 
