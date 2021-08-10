@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Awaitable, Callable, cast, List, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, cast, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -51,7 +51,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
 
         Success: bool
         Iter: NormalizedIterator
-        Data: Optional["Phrase.ParseResultData"]
+        Data: Optional["Phrase.StandardParseResultData"]
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
@@ -75,6 +75,17 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
                 include_class_info=False,
                 **custom_display_funcs,
             )
+
+        # ----------------------------------------------------------------------
+        def Enum(self) -> Generator["Phrase.ParseResultData", None, None]:
+            if isinstance(self, (Phrase.StandardParseResultData, Phrase.TokenParseResultData)):
+                yield self
+            elif isinstance(self, Phrase.MultipleStandardParseResultData):
+                for item in self.DataItems:
+                    if item is not None:
+                        yield from item.Enum()
+            else:
+                assert False, self  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)

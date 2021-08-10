@@ -3,7 +3,7 @@
 # |  TranslationUnitParser.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-01 15:36:23
+# |      2021-08-09 16:29:57
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality used to parse a single translation unit"""
+"""Functionality used to prase a single translation unit"""
 
 import os
 import textwrap
 
 from collections import OrderedDict
-from typing import Any, cast, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, cast, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -36,27 +36,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Components import AST
     from .Components.Error import Error
-    from .Components.Statement import Statement
+    from .Components.Phrase import Phrase
 
-    from .Statements.DynamicStatement import DynamicStatement
-    from .Statements.StatementDSL import DynamicStatementsType
-    from .Statements.TokenStatement import TokenStatement
+    from .Phrases.DSL import DynamicPhrasesType
+    from .Phrases.DynamicPhrase import DynamicPhrase
+    from .Phrases.TokenPhrase import TokenPhrase
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidDynamicTraversalError(Error):
-    """Exception thrown when dynamic statements that prohibit parent traversal are applied over other dynamic statements"""
+    """Exception thrown when dynamic phrases that prohibit parent traversal are applied over other dynamic phrases"""
 
-    ExistingDynamicStatements: Statement.NormalizedIterator
+    ExistingDynamicPhrases: Phrase.NormalizedIterator
 
-    MessageTemplate                         = Interface.DerivedProperty("Dynamic statements that prohibit parent traversal should never be applied over other dynamic statements within the same lexical scope. You should make these dynamic statements the first ones applied in this lexical scope.")
+    MessageTemplate                         = Interface.DerivedProperty("Dynamic phrases that prohibit parent traversal should never be applied over other dynamic phrases within the same lexical scope; consider making these dyanmic phrases the first ones applied in this lexical scope.")
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class SyntaxInvalidError(Error):
-    """Exception thrown when no matching statements were found"""
+    """Exception thrown when no matching phrases were found"""
 
     Root: AST.RootNode
 
@@ -66,7 +66,7 @@ class SyntaxInvalidError(Error):
     def ToDebugString(
         self,
         verbose=False,
-    ):
+    ) -> str:
         return textwrap.dedent(
             """\
             {message} [{line}, {column}]
@@ -77,45 +77,61 @@ class SyntaxInvalidError(Error):
             message=str(self),
             line=self.Line,
             column=self.Column,
-            content=self.Root.ToString(
-                verbose=verbose,
-            ).rstrip(),
+            content=self.Root.ToString().rstrip(),
         )
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class DynamicStatementInfo(object):
-    """Contains Statements that have been dynamically added to the active scope"""
+@dataclass(frozen=True, repr=False)
+class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
+    """Phrases that should be dynamically added to the active scope"""
 
-    Statements: Tuple[Statement, ...]
-    Expressions: Tuple[Statement, ...]
-    Types: Tuple[Statement, ...]
-    AllowParentTraversal: bool              = True      # If False, prevent content from including values from higher-level scope
+    # ----------------------------------------------------------------------
+    # |  Public Data
+    Expressions: Tuple[Phrase, ...]
+    Names: Tuple[Phrase, ...]
+    Statements: Tuple[Phrase, ...]
+    Types: Tuple[Phrase, ...]
+
+    AllowParentTraversal: bool              = True
     Name: Optional[str]                     = None
 
     # ----------------------------------------------------------------------
+    # |  Public Methods
     def __post_init__(self):
+        phrase_display_func = lambda phrases: ", ".join([phrase.Name for phrase in phrases])
+
+        CommonEnvironment.ObjectReprImplBase.__init__(
+            self,
+            Expressions=phrase_display_func,
+            Names=phrase_display_func,
+            Statements=phrase_display_func,
+            Types=phrase_display_func,
+        )
+
         for attribute_name in [
-            "Statements",
             "Expressions",
+            "Names",
+            "Statements",
             "Types",
         ]:
             if not isinstance(getattr(self, attribute_name), tuple):
-                raise Exception("'{}' must be a tuple".format(attribute_name))
+                raise Exception("'{}' must be a tuple because...".format(attribute_name))
 
     # ----------------------------------------------------------------------
     def Clone(
         self,
-        updated_statements=None,
         updated_expressions=None,
+        updated_names=None,
+        updated_statements=None,
         updated_types=None,
         updated_allow_parent_traversal=None,
         updated_name=None,
     ):
         return self.__class__(
-            updated_statements if updated_statements is not None else tuple(self.Statements),
             updated_expressions if updated_expressions is not None else tuple(self.Expressions),
+            updated_names if updated_names is not None else tuple(self.Names),
+            updated_statements if updated_statements is not None else tuple(self.Statements),
             updated_types if updated_types is not None else tuple(self.Types),
             updated_allow_parent_traversal if updated_allow_parent_traversal is not None else self.AllowParentTraversal,
             updated_name if updated_name is not None else self.Name,
@@ -127,10 +143,18 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
+    def Enqueue(
+        funcs: List[Callable[[None], Any]],
+    ) -> List[Awaitable[Any]]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
     async def OnIndentAsync(
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: Statement.NormalizedIterator,
-        iter_after: Statement.NormalizedIterator,
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ) -> None:
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -138,70 +162,67 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     async def OnDedentAsync(
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: Statement.NormalizedIterator,
-        iter_after: Statement.NormalizedIterator,
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ) -> None:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnStatementCompleteAsync(
-        statement: Statement,
+    async def OnPhraseCompleteAsync(
+        phrase: Phrase,
         node: AST.Node,
-        iter_before: Statement.NormalizedIterator,
-        iter_after: Statement.NormalizedIterator,
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ) -> Union[
         bool,                               # True to continue processing, False to terminate
-        DynamicStatementInfo,               # DynamicStatementInfo generated by the statement
+        DynamicPhrasesInfo,                 # Dynamic phases (if any) resulting from the parsed phrase
     ]:
-        """Invoked when an internal statement is successfully matched"""
+        """Invalid when an internal phrase is successfully parsed"""
         raise Exception("Abstract method")  # pragma: no cover
 
 
 # ----------------------------------------------------------------------
 async def ParseAsync(
-    initial_statement_info: DynamicStatementInfo,
-    normalized_iter: Statement.NormalizedIterator,
+    initial_phrase_info: DynamicPhrasesInfo,
+    normalized_iter: Phrase.NormalizedIterator,
     observer: Observer,
     single_threaded=False,
-    name: str = None,
-) -> Optional[AST.RootNode]:
-    """Repeatedly matches statements for all of the iterator"""
+    name: str=None,
+):
+    """Repeatedly matches the statements for the contents of the iterator"""
 
     assert normalized_iter.Offset == 0, normalized_iter
 
-    all_statement_infos: Dict[Any, _StatementInfoNode] = {
-        _DefaultStatementInfoTag : _StatementInfoNode(
-            [],
+    scope_trackers: Dict[Any, _ScopeTracker] = {
+        _DefaultScopeTrackerTag : _ScopeTracker(
+            "",
             OrderedDict(),
-            [
-                _InternalDynamicStatementInfo(
-                    0,
-                    normalized_iter.Clone(),
-                    initial_statement_info,
-                ),
-            ],
+            [_ScopeItem(0, normalized_iter.Clone(), initial_phrase_info)],
         ),
     }
 
-    statement_observer = _StatementObserver(observer, all_statement_infos)
+    phrase_observer = _PhraseObserver(observer, scope_trackers)
 
-    statement = DynamicStatement(
-        lambda unique_id, observer: cast(_StatementObserver, observer).GetDynamicStatements(unique_id, DynamicStatementsType.Statements),
+    phrase = DynamicPhrase(
+        lambda unique_id, observer: cast(
+                _PhraseObserver,
+                observer,
+            ).GetDynamicPhrases(unique_id, DynamicPhrasesType.Statements),
         name=name,
     )
 
     root = AST.RootNode(None)
 
     while not normalized_iter.AtEnd():
-        statement_observer.ClearNodeCache()
+        phrase_observer.ClearNodeCache()
 
-        result = await statement.ParseAsync(
+        result = await phrase.ParseAsync(
             ["root"],
             normalized_iter,
-            statement_observer,
+            phrase_observer,
             ignore_whitespace=False,
             single_threaded=single_threaded,
         )
@@ -211,8 +232,8 @@ async def ParseAsync(
 
         assert result.Data
 
-        statement_observer.CreateNode(
-            result.Data.Statement,
+        phrase_observer.CreateNode(
+            result.Data.Phrase,
             result.Data.Data,
             result.Data.UniqueId,
             root,
@@ -227,7 +248,7 @@ async def ParseAsync(
 
         normalized_iter = result.Iter.Clone()
 
-        # TODO: Eat trailing comments (here or in SequenceStatement.py?)
+        # TODO: Eat trailing comments (here or in SequencePhrase.py?)
 
     assert normalized_iter.AtEnd()
     return root
@@ -236,9 +257,9 @@ async def ParseAsync(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-class _DefaultStatementInfoTag(object):
+class _DefaultScopeTrackerTag(object):
     """\
-    Unique type to use as a key in `_StatementInfoNode` dictionaries; this is used rather
+    Unique type to use as a key in `_ScopeTracker` dictionaries; this is used rather
     than a normal value (for example, `None`) to allow for any key types.
     """
     pass
@@ -246,34 +267,34 @@ class _DefaultStatementInfoTag(object):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class _InternalDynamicStatementInfo(object):
+class _ScopeItem(object):
     IndentLevel: int
-    IterAfter: Statement.NormalizedIterator
-    Info: DynamicStatementInfo
-
-
- # ----------------------------------------------------------------------
-@dataclass()
-class _StatementInfoNode(object):
-    UniqueIdPart: Any
-    Children: Dict[Any, "_StatementInfoNode"]           = field(default_factory=OrderedDict)
-    Infos: List[_InternalDynamicStatementInfo]          = field(default_factory=list)
+    IterAfter: Phrase.NormalizedIterator
+    Info: DynamicPhrasesInfo
 
 
 # ----------------------------------------------------------------------
-class _StatementObserver(Statement.Observer):
+@dataclass()
+class _ScopeTracker(object):
+    UniqueIdPart: str
+    Children: Dict[Any, "_ScopeTracker"]    = field(default_factory=OrderedDict)
+    DynamicItems: List[_ScopeItem]          = field(default_factory=list)
+
+
+# ----------------------------------------------------------------------
+class _PhraseObserver(Phrase.Observer):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         observer: Observer,
-        all_statement_infos: Dict[Any, _StatementInfoNode],
+        scope_trackers: Dict[Any, _ScopeTracker],
     ):
         self._observer                      = observer
-        self._all_statement_infos           = all_statement_infos
+        self._scope_trackers                = scope_trackers
 
         self._indent_level                  = 0
 
-        self._node_cache: Dict[Any, Union[AST.Node, AST.Leaf]]              = {}
+        self._node_cache: Dict[Any, Union[AST.Leaf, AST.Node]]              = {}
 
     # ----------------------------------------------------------------------
     def ClearNodeCache(self):
@@ -282,11 +303,11 @@ class _StatementObserver(Statement.Observer):
     # ----------------------------------------------------------------------
     def CreateNode(
         self,
-        statement: Statement,
-        data: Optional[Statement.ParseResultData],
+        phrase: Phrase,
+        data: Optional[Phrase.ParseResultData],
         unique_id: Optional[List[str]],
         parent: Optional[Union[AST.RootNode, AST.Node]],
-    ) -> Union[AST.Node, AST.Leaf]:
+    ) -> Union[AST.Leaf, AST.Node]:
 
         # Look for the cached value
         if unique_id is not None:
@@ -294,7 +315,7 @@ class _StatementObserver(Statement.Observer):
         else:
             key = None
 
-        node: Optional[Union[AST.Node, AST.Leaf]] = None
+        node: Optional[Union[AST.Leaf, AST.Node]] = None
         was_cached = False
 
         potential_node = self._node_cache.get(key, None)
@@ -302,31 +323,32 @@ class _StatementObserver(Statement.Observer):
             node = potential_node
             was_cached = True
 
-        # Create the node if necessary
+        # Create the node (if necessary)
         if node is None:
-            if isinstance(statement, TokenStatement) and data:
-                node = self._CreateLeaf(cast(Statement.TokenParseResultData, data), parent)
+            if isinstance(phrase, TokenPhrase) and data:
+                node = self._CreateLeaf(cast(Phrase.TokenParseResultData, data), parent)
             else:
-                node = AST.Node(statement)
+                node = AST.Node(phrase)
 
         assert node
 
-        # Assign the parent if necessary
+        # Assign the parent (if necessary)
         if parent != node.Parent:
             assert parent
 
             object.__setattr__(node, "Parent", parent)
             parent.Children.append(node)
 
-        # Populate the children
+        # Populate the children (if necessary)
         if not was_cached:
-            if isinstance(node, AST.Node):
-                for child_statement, child_data, child_unique_id in (data.Enum() if data else []):
-                    if child_statement is None:
-                        assert child_data
-                        self._CreateLeaf(cast(Statement.TokenParseResultData, child_data), node)
+            if isinstance(node, AST.Node) and data is not None:
+                for data_item in data.Enum():
+                    if isinstance(data_item, Phrase.TokenParseResultData):
+                        self._CreateLeaf(data_item, node)
+                    elif isinstance(data_item, Phrase.StandardParseResultData):
+                        self.CreateNode(data_item.Phrase, data_item.Data, data_item.UniqueId, node)
                     else:
-                        self.CreateNode(child_statement, child_data, child_unique_id, node)
+                        assert False, data_item  # pragma: no cover
 
             if key is not None:
                 self._node_cache[key] = node
@@ -334,42 +356,41 @@ class _StatementObserver(Statement.Observer):
         return node
 
     # ----------------------------------------------------------------------
-    def GetDynamicStatements(
+    def GetDynamicPhrases(
         self,
         unique_id: List[str],
-        dynamic_statement_type: DynamicStatementsType,
-    ) -> Union[
-        Tuple[str, List[Statement]],
-        List[Statement],
-    ]:
-        if dynamic_statement_type == DynamicStatementsType.Statements:
-            attribute_name = "Statements"
-        elif dynamic_statement_type == DynamicStatementsType.Expressions:
+        dynamic_phrases_type: DynamicPhrasesType,
+    ) -> Tuple[List[Phrase], str]:
+        if dynamic_phrases_type == DynamicPhrasesType.Expressions:
             attribute_name = "Expressions"
-        elif dynamic_statement_type == DynamicStatementsType.Types:
+        elif dynamic_phrases_type == DynamicPhrasesType.Names:
+            attribute_name = "Names"
+        elif dynamic_phrases_type == DynamicPhrasesType.Statements:
+            attribute_name = "Statements"
+        elif dynamic_phrases_type == DynamicPhrasesType.Types:
             attribute_name = "Types"
         else:
-            assert False, dynamic_statement_type  # pragma: no cover
+            assert False, dynamic_phrases_type  # pragma: no cover
 
-        all_statements = []
+        all_phrases = []
         all_names = []
 
         processed_infos = set()
-        processed_statements = set()
+        processed_phrases = set()
 
         should_continue = True
 
-        # Process the most recently added statements to the original ones
-        previous_nodes = list(self._EnumPreviousNodes(unique_id))
+        # Process from the phrases most recently added to those added long ago
+        previous_scope_trackers = list(self._EnumPreviousScopeTrackers(unique_id))
 
-        for node in reversed(previous_nodes):
-            these_statements = []
+        for tracker in reversed(previous_scope_trackers):
+            these_phrases = []
             these_names = []
 
-            for info in node.Infos:
-                info = info.Info
+            for dynamic_item in tracker.DynamicItems:
+                info = dynamic_item.Info
 
-                # Have we seen this DynamicStatementInfo before?
+                # Have we seen this info before
                 info_key = id(info)
 
                 if info_key in processed_infos:
@@ -377,30 +398,31 @@ class _StatementObserver(Statement.Observer):
 
                 processed_infos.add(info_key)
 
-                # Get the statements
-                statements = getattr(info, attribute_name)
-                if not statements:
+                # Get the phrases
+                phrases = getattr(info, attribute_name)
+                if not phrases:
                     continue
 
-                len_these_statements = len(these_statements)
+                len_these_phrases = len(these_phrases)
 
-                for statement in statements:
-                    # Have we already seen this statement
-                    statement_key = id(statement)
+                for phrase in phrases:
+                    # Have we seen this phrase before?
+                    phrase_key = id(phrase)
 
-                    if statement_key in processed_statements:
+                    if phrase_key in processed_phrases:
                         continue
 
-                    processed_statements.add(statement_key)
+                    processed_phrases.add(phrase_key)
 
-                    these_statements.append(statement)
+                    these_phrases.append(phrase)
 
-                if len(these_statements) == len_these_statements:
+                if len(these_phrases) == len_these_phrases:
+                    # No new phrases to process
                     continue
 
                 these_names.append(
-                    info.Name or "{{{}}}".format(
-                        ", ".join([statement.ToString() for statement in these_statements[len_these_statements:]]),
+                    info.Name or "({})".format(
+                        ", ".join([phrase.Name for phrase in these_phrases[len_these_phrases:]]),
                     ),
                 )
 
@@ -408,89 +430,88 @@ class _StatementObserver(Statement.Observer):
                     should_continue = False
                     break
 
-            if these_statements:
-                all_statements = these_statements + all_statements
+            if these_phrases:
+                all_phrases = these_phrases + all_phrases
             if these_names:
                 all_names = these_names + all_names
 
             if not should_continue:
                 break
 
-        return " / ".join(all_names), all_statements
+        return all_phrases, " / ".join(all_names)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def StartStatement(
+    def Enqueue(
+        self,
+        funcs: List[Callable[[None], Any]],
+    ) -> List[Awaitable[Any]]:
+        return self._observer.Enqueue(funcs)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def StartPhrase(
         self,
         unique_id: List[str],
-        statement_stack: List[Statement],
+        phrase_stack: List[Phrase],
     ):
-        d = self._all_statement_infos
+        d = self._scope_trackers
 
         for id_part in unique_id:
             value = d.get(id_part, None)
             if value is None:
-                value = _StatementInfoNode(id_part)
+                value = _ScopeTracker(id_part)
                 d[id_part] = value
 
             d = value.Children
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def EndStatement(
+    def EndPhrase(
         self,
         unique_id: List[str],
-        statement_info_stack: List[
-            Tuple[
-                Statement,
-                Optional[bool],
-            ],
-        ],
+        phrase_info_stack: List[Tuple[Phrase, Optional[bool]]],
     ):
-        was_successful = statement_info_stack[0][1]
+        was_successful = bool(phrase_info_stack[0][1])
 
-        # Get this node
-        d = self._all_statement_infos
-        node = None
+        # Get the tracker
+        d = self._scope_trackers
+        tracker = None
 
         for id_part in unique_id:
-            node = d.get(id_part, None)
-            assert node is not None
+            tracker = d.get(id_part, None)
+            assert tracker is not None
 
-            d = node.Children
+            d = tracker.Children
 
-        assert node
+        assert tracker
 
-        # Collect all the infos of the descendants and add them here
+        # Collect all the infos associated with the descendances of this tracker and add them here
         if was_successful:
-            if not node.Infos:
-                for descendant in self._EnumDescendantNodes(node.Children):
-                    node.Infos += descendant.Infos
+            if not tracker.DynamicItems:
+                for descendant in self._EnumDescendantScopeTrackers(tracker.Children):
+                    tracker.DynamicItems += descendant.DynamicItems
         else:
-            node.Infos = []
+            tracker.DynamicItems = []
 
-        node.Children = {}
+        tracker.Children = {}
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def OnIndentAsync(
         self,
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: Statement.NormalizedIterator,
-        iter_after: Statement.NormalizedIterator,
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ):
         self._indent_level += 1
 
-        this_result = await self._observer.OnIndentAsync(
-            data_stack,
-            iter_before,
-            iter_after,
-        )
-        if isinstance(this_result, DynamicStatementInfo):
+        this_result = await self._observer.OnIndentAsync(data_stack, iter_before, iter_after)
+        if isinstance(this_result, DynamicPhrasesInfo):
             assert data_stack[0].UniqueId is not None
             unique_id = data_stack[0].UniqueId
 
-            self._AddDynamicStatementInfo(unique_id, iter_after, this_result)
+            self._AddScopeItem(unique_id, iter_after, this_result)
 
         return None
 
@@ -498,51 +519,47 @@ class _StatementObserver(Statement.Observer):
     @Interface.override
     async def OnDedentAsync(
         self,
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: Statement.NormalizedIterator,
-        iter_after: Statement.NormalizedIterator,
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ):
         assert data_stack[0].UniqueId is not None
         unique_id = data_stack[0].UniqueId
 
-        for node in self._EnumPreviousNodes(unique_id):
-            if not node.Infos:
+        for tracker in self._EnumPreviousScopeTrackers(unique_id):
+            if not tracker.DynamicItems:
                 continue
 
-            info_index = 0
-            while info_index < len(node.Infos):
-                info = node.Infos[info_index]
+            item_index = 0
+            while item_index < len(tracker.DynamicItems):
+                info = tracker.DynamicItems[item_index]
 
                 if info.IndentLevel == self._indent_level:
-                    del node.Infos[info_index]
+                    del tracker.DynamicItems[item_index]
                 else:
-                    info_index += 1
+                    item_index += 1
 
         assert self._indent_level
         self._indent_level -= 1
 
-        await self._observer.OnDedentAsync(
-            data_stack,
-            iter_before,
-            iter_after,
-        )
+        await self._observer.OnDedentAsync(data_stack, iter_before, iter_after)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnInternalStatementAsync(
+    async def OnInternalPhraseAsync(
         self,
-        data_stack: List[Statement.StandardParseResultData],
-        iter_before: Statement.NormalizedIterator,
-        iter_after: Statement.NormalizedIterator,
+        data_stack: List[Phrase.StandardParseResultData],
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
     ) -> bool:
         assert data_stack[0].Data
 
-        this_result = await self._observer.OnStatementCompleteAsync(
-            data_stack[0].Statement,
+        this_result = await self._observer.OnPhraseCompleteAsync(
+            data_stack[0].Phrase,
             cast(
                 AST.Node,
                 self.CreateNode(
-                    data_stack[0].Statement,
+                    data_stack[0].Phrase,
                     data_stack[0].Data,
                     data_stack[0].UniqueId,
                     None,
@@ -552,11 +569,10 @@ class _StatementObserver(Statement.Observer):
             iter_after,
         )
 
-        if isinstance(this_result, DynamicStatementInfo):
+        if isinstance(this_result, DynamicPhrasesInfo):
             assert data_stack[0].UniqueId is not None
-            unique_id = data_stack[0].UniqueId
 
-            self._AddDynamicStatementInfo(unique_id, iter_after, this_result)
+            self._AddScopeItem(data_stack[0].UniqueId, iter_after, this_result)
             return True
 
         return this_result
@@ -566,7 +582,7 @@ class _StatementObserver(Statement.Observer):
     # ----------------------------------------------------------------------
     @staticmethod
     def _CreateLeaf(
-        data: Statement.TokenParseResultData,
+        data: Phrase.TokenParseResultData,
         parent: Optional[Union[AST.RootNode, AST.Node]],
     ) -> AST.Leaf:
         leaf = AST.Leaf(
@@ -585,45 +601,43 @@ class _StatementObserver(Statement.Observer):
         return leaf
 
     # ----------------------------------------------------------------------
-    def _AddDynamicStatementInfo(
+    def _AddScopeItem(
         self,
         unique_id: List[str],
-        iter_after: Statement.NormalizedIterator,
-        info: DynamicStatementInfo,
+        iter_after: Phrase.NormalizedIterator,
+        info: DynamicPhrasesInfo,
     ):
-        if not info.Statements and not info.Expressions:
+        if not info.Expressions and not info.Names and not info.Statements and not info.Types:
             return
 
-        this_node = None
-        last_info = None
+        this_tracker = None
+        last_item = None
 
-        # The node associated with this event will be the last one that
-        # we encounter in this generator. In addition to the current node,
-        # get the last dynamic info associated with all of the nodes to determine
-        # if adding this dynamic info will be a problem.
-        for node in self._EnumPreviousNodes(unique_id):
-            this_node = node
+        # The tracker associated with this event will be the last one that we encounter when enumerating
+        # through the previous scope_trackers. In addition to the current tracker, get the last dynamic info associated
+        # with all of the scope_trackers to determine if adding this dynamic info will be a problem.
+        for tracker in self._EnumPreviousScopeTrackers(unique_id):
+            this_tracker = tracker
 
-            if node.Infos:
-                last_info = node.Infos[-1]
+            if tracker.DynamicItems:
+                last_item = tracker.DynamicItems[-1]
 
-        assert this_node
-        assert this_node.UniqueIdPart == unique_id[-1], (this_node.UniqueIdPart, unique_id[-1])
+        assert this_tracker
+        assert this_tracker.UniqueIdPart == unique_id[-1], (this_tracker.UniqueIdPart, unique_id[-1])
 
         if (
             not info.AllowParentTraversal
-            and last_info is not None
-            and last_info.IndentLevel == self._indent_level
+            and last_item is not None
+            and last_item.IndentLevel == self._indent_level
         ):
             raise InvalidDynamicTraversalError(
                 iter_after.Line,
                 iter_after.Column,
-                last_info.IterAfter,
+                last_item.IterAfter,
             )
 
-        assert this_node is not None, unique_id
-        this_node.Infos.append(
-            _InternalDynamicStatementInfo(
+        this_tracker.DynamicItems.append(
+            _ScopeItem(
                 self._indent_level,
                 iter_after.Clone(),
                 info,
@@ -632,26 +646,26 @@ class _StatementObserver(Statement.Observer):
 
     # ----------------------------------------------------------------------
     @classmethod
-    def _EnumDescendantNodes(
+    def _EnumDescendantScopeTrackers(
         cls,
-        node_children: Dict[Any, _StatementInfoNode],
-    ) -> Generator[_StatementInfoNode, None, None]:
-        for v in node_children.values():
+        scope_trackers: Dict[Any, _ScopeTracker],
+    ) -> Generator[_ScopeTracker, None, None]:
+        for v in scope_trackers.values():
             yield v
-            yield from cls._EnumDescendantNodes(v.Children)
+            yield from cls._EnumDescendantScopeTrackers(v.Children)
 
     # ----------------------------------------------------------------------
-    def _EnumPreviousNodes(
+    def _EnumPreviousScopeTrackers(
         self,
         unique_id: List[str],
-    ) -> Generator[_StatementInfoNode, None, None]:
-        yield self._all_statement_infos[_DefaultStatementInfoTag]
+    ) -> Generator[_ScopeTracker, None, None]:
+        yield self._scope_trackers[_DefaultScopeTrackerTag]
 
-        d = self._all_statement_infos
+        d = self._scope_trackers
 
         for id_part in unique_id:
             for k, v in d.items():
-                if k == _DefaultStatementInfoTag:
+                if k == _DefaultScopeTrackerTag:
                     continue
 
                 yield v

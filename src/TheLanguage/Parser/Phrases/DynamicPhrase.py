@@ -94,11 +94,11 @@ class DynamicPhrase(Phrase):
                 return Phrase.ParseResult(False, normalized_iter, None)
 
             if isinstance(dynamic_phrases, tuple):
-                dyanmic_phrases, phrase_name = dynamic_phrases
+                dynamic_phrases, phrase_name = dynamic_phrases
             else:
                 phrase_name = None
 
-            assert isinstance(dynamic_phrases, list)
+            assert isinstance(dynamic_phrases, list), dynamic_phrases
 
             # Use the logic in the OrPhrase constructor to create a pretty name for the phrase;
             # use that name when creating the unique_id to be used for events associated with

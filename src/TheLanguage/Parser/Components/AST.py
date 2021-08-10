@@ -20,7 +20,7 @@ for the parser.
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import Any, Callable, cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -48,10 +48,16 @@ class _ASTBase(CommonEnvironment.ObjectReprImplBase):
     Parent: Optional[Phrase]                = field(default=None, init=False)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
+    def __post_init__(
+        self,
+        **custom_display_funcs: Callable[[Any], str],
+    ):
         CommonEnvironment.ObjectReprImplBase.__init__(
             self,
             include_class_info=False,
+            Type=lambda value: "<None>" if value is None else "{} {}".format(value.Name, type(value)),
+            Parent=None,
+            **custom_display_funcs,
         )
 
 
@@ -64,19 +70,25 @@ class _Node(_ASTBase):
 
     # ----------------------------------------------------------------------
     @property
-    def IterBefore(self) -> NormalizedIterator:
+    def IterBefore(self) -> Optional[NormalizedIterator]:
         node = self
 
         while isinstance(node, _Node):
+            if not node.Children:
+                return None
+
             node = node.Children[0]  # <unscriptable> pylint: disable=E1136
 
         return cast(Leaf, node).IterBefore
 
     @property
-    def IterAfter(self) -> NormalizedIterator:
+    def IterAfter(self) -> Optional[NormalizedIterator]:
         node = self
 
         while isinstance(node, _Node):
+            if not node.Children:
+                return None
+
             node = node.Children[-1]  # <unscriptable> pylint: disable=E1136
 
         return cast(Leaf, node).IterAfter
