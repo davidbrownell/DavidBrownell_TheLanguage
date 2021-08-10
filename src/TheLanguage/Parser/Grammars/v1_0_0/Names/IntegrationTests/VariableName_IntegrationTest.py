@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  StandardName_IntegrationTest.py
+# |  VariableName_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-08-10 15:44:30
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for StandardName.py"""
+"""Automated tests for VariableName.py"""
 
 import os
 import textwrap
@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..StandardName import *
+    from ..VariableName import *
     from ...Common.AutomatedTests import Execute
 
 
@@ -61,7 +61,7 @@ def test_Standard():
                                                                                                                                       Whitespace : None
                                                                                                                     IterAfter  : [1, 4] (3)
                                                                                                                     IterBefore : [1, 1] (0)
-                                                                                                                    Type       : Standard Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
+                                                                                                                    Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                   IterAfter  : [1, 4] (3)
                                                                                                   IterBefore : [1, 1] (0)
                                                                                                   Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
@@ -93,7 +93,7 @@ def test_Standard():
                                                                                                                                                                                        1)   6
                                                                                                                                                         IterAfter  : [1, 12] (11)
                                                                                                                                                         IterBefore : [1, 7] (6)
-                                                                                                                                                        Type       : Standard Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
+                                                                                                                                                        Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                       IterAfter  : [1, 12] (11)
                                                                                                                                       IterBefore : [1, 7] (6)
                                                                                                                                       Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>

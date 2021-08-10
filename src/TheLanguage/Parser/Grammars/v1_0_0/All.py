@@ -29,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Expressions.VariableExpression import VariableExpression
 
-    from .Names.StandardName import StandardName
+    from .Names.VariableName import VariableName
 
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
 
@@ -40,7 +40,7 @@ GrammarPhrases                              = [
     VariableExpression(),
 
     # Names
-    StandardName(),
+    VariableName(),
 
     # Statements
     VariableDeclarationStatement(),

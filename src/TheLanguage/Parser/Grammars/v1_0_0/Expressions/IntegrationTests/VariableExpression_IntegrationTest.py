@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..VariableExpression import *
     from ...Common.AutomatedTests import Execute
-    from ...Names.StandardName import InvalidNameError
+    from ...Names.VariableName import InvalidNameError
 
 
 # ----------------------------------------------------------------------
@@ -62,7 +62,7 @@ def test_Standard():
                                                                                                                                       Whitespace : None
                                                                                                                     IterAfter  : [1, 4] (3)
                                                                                                                     IterBefore : [1, 1] (0)
-                                                                                                                    Type       : Standard Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
+                                                                                                                    Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                   IterAfter  : [1, 4] (3)
                                                                                                   IterBefore : [1, 1] (0)
                                                                                                   Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
@@ -94,7 +94,7 @@ def test_Standard():
                                                                                                                                                                                        1)   6
                                                                                                                                                         IterAfter  : [1, 12] (11)
                                                                                                                                                         IterBefore : [1, 7] (6)
-                                                                                                                                                        Type       : Standard Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
+                                                                                                                                                        Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                       IterAfter  : [1, 12] (11)
                                                                                                                                       IterBefore : [1, 7] (6)
                                                                                                                                       Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>

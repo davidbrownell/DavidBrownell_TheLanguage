@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  StandardName.py
+# |  VariableName.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-08-10 15:12:58
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the StandardName object"""
+"""Contains the VariableName object"""
 
 import os
 import re
@@ -45,15 +45,15 @@ class InvalidNameError(ValidationError):
 
 
 # ----------------------------------------------------------------------
-class StandardName(GrammarPhrase):
+class VariableName(GrammarPhrase):
     """<name>"""
 
-    NODE_NAME                               = "Standard Name"
-    VALIDATION_EXPRESSION                   = re.compile(r"^_?[a-z][a-zA-Z0-9_\.]*$")
+    NODE_NAME                               = "Variable Name"
+    VALIDATION_EXPRESSION                   = re.compile(r"^_?[a-z][a-zA-Z0-9_\.]*(?!<__)$")
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(StandardName, self).__init__(
+        super(VariableName, self).__init__(
             GrammarPhrase.Type.Name,
             CreatePhrase(
                 name=self.NODE_NAME,
