@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contians the SequencePhrase object"""
+"""Contains the SequencePhrase object"""
 
 import os
 
-from typing import cast, Iterable, List, Optional, Union
+from typing import cast, List, Optional, Union
 
 from dataclasses import dataclass
 

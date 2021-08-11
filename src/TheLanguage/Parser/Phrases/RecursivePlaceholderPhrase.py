@@ -34,7 +34,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class RecursivePlaceholderPhrase(Phrase):
     """\
-    Temporary Phrase that should be replaced before participathing in a Parse hierarchy.
+    Temporary Phrase that should be replaced before participating in a Parse hierarchy.
 
     These objects are used as sentinels within a tree to implement recursive grammars.
     """

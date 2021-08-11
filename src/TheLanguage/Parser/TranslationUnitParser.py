@@ -13,13 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality used to prase a single translation unit"""
+"""Functionality used to parse a single translation unit"""
 
 import os
 import textwrap
 
 from collections import OrderedDict
-from typing import Any, Awaitable, Callable, cast, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Awaitable, cast, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -50,7 +50,7 @@ class InvalidDynamicTraversalError(Error):
 
     ExistingDynamicPhrases: Phrase.NormalizedIterator
 
-    MessageTemplate                         = Interface.DerivedProperty("Dynamic phrases that prohibit parent traversal should never be applied over other dynamic phrases within the same lexical scope; consider making these dyanmic phrases the first ones applied in this lexical scope.")
+    MessageTemplate                         = Interface.DerivedProperty("Dynamic phrases that prohibit parent traversal should never be applied over other dynamic phrases within the same lexical scope; consider making these dynamic phrases the first ones applied in this lexical scope.")
 
 
 # ----------------------------------------------------------------------
@@ -129,6 +129,7 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
         updated_allow_parent_traversal=None,
         updated_name=None,
     ):
+        # pylint: disable=too-many-function-args
         return self.__class__(
             updated_expressions if updated_expressions is not None else tuple(self.Expressions),
             updated_names if updated_names is not None else tuple(self.Names),
@@ -586,6 +587,7 @@ class _PhraseObserver(Phrase.Observer):
         data: Phrase.TokenParseResultData,
         parent: Optional[Union[AST.RootNode, AST.Node]],
     ) -> AST.Leaf:
+        # pylint: disable=too-many-function-args
         leaf = AST.Leaf(
             data.Token,
             data.Whitespace,

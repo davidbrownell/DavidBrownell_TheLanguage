@@ -15,7 +15,6 @@
 # ----------------------------------------------------------------------
 """Contains the Phrase object"""
 
-import asyncio
 import os
 
 from typing import Any, Awaitable, Callable, cast, Generator, List, Optional, Tuple, Union

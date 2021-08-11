@@ -21,7 +21,7 @@ import traceback
 
 from typing import Any, Awaitable, Callable, cast, Dict, List, Optional, Union
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
