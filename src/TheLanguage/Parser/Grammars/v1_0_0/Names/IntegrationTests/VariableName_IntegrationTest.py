@@ -137,7 +137,7 @@ def test_InvalidLeftHandSide():
 
     ex = ex.value
 
-    assert str(ex) == "'InvalidName' is not a valid variable name; variables must start with a lowercase letter."
+    assert str(ex) == "'InvalidName' is not a valid variable or parameter name; names must start with a lowercase letter."
     assert ex.Name == "InvalidName"
     assert ex.Line == 1
     assert ex.Column == 1
@@ -152,7 +152,7 @@ def test_InvalidRightHandSide():
 
     ex = ex.value
 
-    assert str(ex) == "'InvalidName' is not a valid variable name; variables must start with a lowercase letter."
+    assert str(ex) == "'InvalidName' is not a valid variable or parameter name; names must start with a lowercase letter."
     assert ex.Name == "InvalidName"
     assert ex.Line == 1
     assert ex.Column == 7

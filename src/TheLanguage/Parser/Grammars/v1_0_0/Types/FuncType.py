@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  FunctionType.py
+# |  FuncType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-08-11 14:51:00
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FunctionType object"""
+"""Contains the FuncType object"""
 
 import os
 
@@ -33,7 +33,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class FunctionType(GrammarPhrase):
+class FuncType(GrammarPhrase):
     """\
     A first-class function type.
 
@@ -44,11 +44,11 @@ class FunctionType(GrammarPhrase):
         (Int (Char, Bool))
     """
 
-    NODE_NAME                               = "Function Type"
+    NODE_NAME                               = "Func Type"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(FunctionType, self).__init__(
+        super(FuncType, self).__init__(
             GrammarPhrase.Type.Type,
             CreatePhrase(
                 name=self.NODE_NAME,

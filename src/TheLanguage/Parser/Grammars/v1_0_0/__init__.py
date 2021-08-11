@@ -17,7 +17,6 @@
 #   - Delete (easy)
 #   - Docstring
 #   - For
-#   - FuncDefinition
 #   - MethodDefinition
 #   - ClassAttribute
 #   - ClassCompilerData
