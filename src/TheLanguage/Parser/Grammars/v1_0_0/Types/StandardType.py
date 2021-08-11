@@ -3,7 +3,7 @@
 # |  StandardType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-18 13:55:37
+# |      2021-08-11 11:31:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -16,8 +16,7 @@
 """Contains the StandardType object"""
 
 import os
-
-from typing import Dict, Optional
+import re
 
 from dataclasses import dataclass
 
@@ -32,59 +31,49 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import GrammarDSL
-    from ..Common import NamingConventions
     from ..Common import Tokens as CommonTokens
-    from ...GrammarStatement import GrammarStatement
+    from ..Common.TypeModifier import TypeModifier
+    from ...GrammarPhrase import GrammarPhrase, Node, ValidationError
+    from ....Phrases.DSL import CreatePhrase, ExtractSequence, PhraseItem
 
 
 # ----------------------------------------------------------------------
-class StandardType(GrammarStatement):
-    """<name> <template>? <modifier>?"""
+@dataclass(frozen=True)
+class InvalidTypeError(ValidationError):
+    Name: str
 
-    NODE_NAME                               = "Standard"
+    MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid type name; types must start with an uppercase letter and be at least 2 characters.")
 
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class TypeInfo(object) :
-        Name: str
-        Modifier: Optional[CommonTokens.Token]
-        LeafLookup: Dict[int, GrammarDSL.Leaf]
 
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
+# ----------------------------------------------------------------------
+class StandardType(GrammarPhrase):
+    """\
+    Type declaration.
+
+    <type_name> <modifier>?
+
+    Examples:
+        Int
+        Int var
+    """
+
+    NODE_NAME                               = "Standard Type"
+    VALIDATION_EXPRESSION                   = re.compile(r"^_?[A-Z][a-zA-Z0-9_\.]+(?!<__)$")
+
     # ----------------------------------------------------------------------
     def __init__(self):
         super(StandardType, self).__init__(
-            GrammarStatement.Type.Type,
-            GrammarDSL.CreateStatement(
+            GrammarPhrase.Type.Type,
+            CreatePhrase(
                 name=self.NODE_NAME,
                 item=[
-                    # <name>
-                    CommonTokens.Name,
-
-                    # <template>?
-                    # TODO: Templates
+                    # <type_name>
+                    CommonTokens.GenericName,
 
                     # <modifier>?
-                    GrammarDSL.StatementItem(
+                    PhraseItem(
                         name="Modifier",
-                        item=(
-                            CommonTokens.Var,
-                            CommonTokens.Ref,
-                            CommonTokens.Val,
-                            CommonTokens.View,
-                            CommonTokens.Isolated,
-                            CommonTokens.Shared,
-                            CommonTokens.Immutable,
-                            CommonTokens.Mutable,
-                        ),
+                        item=TypeModifier.CreatePhraseItem(),
                         arity="?",
                     ),
                 ],
@@ -96,26 +85,11 @@ class StandardType(GrammarStatement):
     @Interface.override
     def ValidateNodeSyntax(
         cls,
-        node: GrammarDSL.Node,
+        node: Node,
     ):
-        node_values = GrammarDSL.ExtractValues(node)
-        leaf_lookup = {}
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 2
+        name, leaf = nodes[0]  # type: ignore
 
-        # <name>
-        name, name_leaf = node_values[0]  # type: ignore
-        leaf_lookup[id(name)] = name_leaf
-
-        if not NamingConventions.Type.Regex.match(name):
-            raise NamingConventions.InvalidTypeNameError.FromNode(name_leaf, name)  # type: ignore
-
-        # <templates>?
-        # TODO: Extract templates
-
-        # <modifier>?
-        if node_values[1]:  # type: ignore
-            modifier = node_values[1][1].Type  # type: ignore
-        else:
-            modifier = None
-
-        # Commit the data
-        object.__setattr__(node, "Info", cls.TypeInfo(name, modifier, leaf_lookup))  # type: ignore
+        if not cls.VALIDATION_EXPRESSION.match(name):
+            raise InvalidTypeError.FromNode(leaf, name)
