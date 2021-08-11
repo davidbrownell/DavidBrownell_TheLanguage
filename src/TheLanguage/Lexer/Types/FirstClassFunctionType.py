@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import TypeNode
+    from ..AST import ExpressionNode, Node, TypeNode
     from ..Common import Flags
 
 
@@ -42,8 +42,29 @@ class FirstClassFunctionType(TypeNode):
     TODO: Comment
     """
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ParameterNode(Node):
+        """\
+        TODO: Comment
+        """
+
+        Type: TypeNode
+        DefaultValue: Optional[ExpressionNode]
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
     Flags: Flags.FunctionFlags
 
-    Name: str
-    ReturnType: TypeNode
-    Parameters: List[TypeNode]
+    ReturnType: Optional[TypeNode]
+
+    PositionalParameters: Optional[List[ParameterNode]]
+    AnyParameters: Optional[List[ParameterNode]]
+    KeywordParameters: Optional[List[ParameterNode]]

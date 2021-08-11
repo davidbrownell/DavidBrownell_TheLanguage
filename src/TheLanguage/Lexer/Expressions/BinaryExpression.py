@@ -81,13 +81,10 @@ class BinaryExpression(ExpressionNode):
     Left: ExpressionNode
     Right: ExpressionNode
 
+    # BugBug: Verify that the method can handle the right expression type
+
     # ----------------------------------------------------------------------
     @Interface.override
-    def IsBoolean(self) -> bool:
-        if (
-            self.Operator & OperatorCategory.Logical
-            or self.Operator & OperatorCategory.Comparison
-        ):
-            return True
-
-        return super(BinaryExpression, self).IsBoolean()
+    @property
+    def ExpressionResultType(self):
+        return None # BugBug

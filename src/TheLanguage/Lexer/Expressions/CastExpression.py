@@ -20,6 +20,7 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -41,3 +42,14 @@ class CastExpression(ExpressionNode):
 
     Expression: ExpressionNode
     Type: TypeNode
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        # BugBug: Is the cast valid?
+        pass # BugBug
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    @property
+    def ExpressionResultType(self):
+        return self.Type

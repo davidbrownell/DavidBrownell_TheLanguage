@@ -20,6 +20,7 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -45,6 +46,16 @@ class TernaryExpression(ExpressionNode):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        # BugBug: Error if  they don't match
+        assert self.TrueNode.ExpressionResultType == self.FalseNode.ExpressionResultType
+
         super(TernaryExpression, self).__post_init__()
 
         assert self.Condition.IsBoolean(), self.Condition
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    @property
+    def ExpressionResultType(self):
+        assert self.TrueNode.ExpressionResultType == self.FalseNode.ExpressionResultType
+        return self.TrueNode.ExpressionResultType
