@@ -29,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode, StatementNode
+    from ..AST import ExpressionNode, StatementNode, VariableNode
 
 
 # ----------------------------------------------------------------------
@@ -39,11 +39,5 @@ class VariableDeclarationStatement(StatementNode):
     TODO: Comment
     """
 
-    Variable: ExpressionNode
+    Variable: VariableNode
     Expression: ExpressionNode
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(VariableDeclarationStatement, self).__post_init__()
-
-        assert self.Variable.IsVariable(), self.Variable

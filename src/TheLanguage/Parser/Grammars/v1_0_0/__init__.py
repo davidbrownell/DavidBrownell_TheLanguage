@@ -1,35 +1,36 @@
 # TODO:
-#   Function type
-#   scoped ref syntax (can be similar to with statements?)
 
+# Expressions:
+#   - BinaryExpression
+#   - CastExpression (full type and modifier)
+#   - LambdaDefinition
+#   - FuncInvocation
+#   - Generator
+#   - Ternary
+#   - Transfer (easy)
+#   - Unary
+#   - Index (easy)
 
-#   Classes / Interfaces / Mixins
-#       Include docstrings
-#   Exceptions
-#   Async/Await (Possibly "FuncName..." suffix?)
-#   Generators
-#       for / in
-#       all
-#       any
-#   Loops
-#   Conditional
-#   Pattern Matching / Super case statements
-#   Templates
-#   Lambdas / Capture scope
-#   dunder methods
-#   type aliases
-#   Enumerations
-#       Standard
-#       Flags
-#   Variadic function parameters
+# Statements:
+#   - Binary
+#   - Class
+#   - Delete (easy)
+#   - Docstring
+#   - For
+#   - FuncDefinition
+#   - MethodDefinition
+#   - ClassAttribute
+#   - ClassCompilerData
+#   - FuncInvocation
+#   - If
+#   - Import (easy)
+#   - ScopedRef
+#   - SmartIf
+#   - Try/Catch
+#   - Type Alias
+#   - While (easy)
 
-#   Class library
-#       None
-#       String
-#       List
-#       Dict
-#       Int: Increases in size
-#       ____Int: Checks for overflow
-#       FixedInt: fixed size
-#       Int<Min, Max>: Same as regular Int?
-#       Floating points similar to ints
+# Types:
+#   - FunctionType
+#   - StandardType (easy)
+#   - VariantType (easy)

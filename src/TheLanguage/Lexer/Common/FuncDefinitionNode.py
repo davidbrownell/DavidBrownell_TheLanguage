@@ -19,7 +19,7 @@ import os
 
 from typing import List, Optional
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 
@@ -32,7 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from . import Flags
-    from ..AST import Node, ExpressionNode, TypeNode
+    from ..AST import Node, ExpressionNode, TypeNode, VariableNode
+    from ..Types.FirstClassFunctionType import FirstClassFunctionType
 
 
 # ----------------------------------------------------------------------
@@ -53,7 +54,7 @@ class FuncDefinitionNode(Node):
         TODO: Comment
         """
 
-        Name: str
+        Name: VariableNode
         Type: TypeNode
         DefaultValue: Optional[ExpressionNode]
 
@@ -65,11 +66,51 @@ class FuncDefinitionNode(Node):
     Flags: Flags.FunctionFlags
 
     Name: str
-    CapturedVars: Optional[List[str]]
-    ReturnType: Optional[Node]
+    ReturnType: Optional[TypeNode]
 
     PositionalParameters: Optional[List[ParameterNode]]
     AnyParameters: Optional[List[ParameterNode]]
     KeywordParameters: Optional[List[ParameterNode]]
 
-    # TODO: Attributes when Type==Statement
+    # TODO: Attributes
+
+    CapturedVars: Optional[List[str]]
+
+    FirstClassFunction: FirstClassFunctionType          = field(init=False)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        # BugBug: Are the captures valid?
+
+        # ----------------------------------------------------------------------
+        def ToFirstClassFunctionParameters(
+            parameters: Optional[List[FuncDefinitionNode.ParameterNode]],
+        ) -> Optional[List[FirstClassFunctionType.ParameterNode]]:
+            if parameters is None:
+                return None
+
+            return [
+                FirstClassFunctionType.ParameterNode(
+                    parameter.SourceRange,
+                    parameter.SourceRanges,
+                    parameter.Type,
+                    parameter.DefaultValue,
+                )
+                for parameter in parameters
+            ]
+
+        # ----------------------------------------------------------------------
+
+        object.__setattr__(
+            self,
+            "FirstClassFunction",
+            FirstClassFunctionType(
+                self.SourceRange,
+                self.SourceRanges,
+                self.Flags,
+                self.ReturnType,
+                ToFirstClassFunctionParameters(self.PositionalParameters),
+                ToFirstClassFunctionParameters(self.AnyParameters),
+                ToFirstClassFunctionParameters(self.KeywordParameters),
+            ),
+        )

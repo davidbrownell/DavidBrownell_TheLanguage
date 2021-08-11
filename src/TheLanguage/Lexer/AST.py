@@ -162,7 +162,7 @@ class Node(Interface.Interface):
     # |  Public Data
     # |
     # ----------------------------------------------------------------------
-    SourceRange: SourceRange
+    SourceRange: Optional[SourceRange]
     SourceRanges: Optional[Dict[str, SourceRangesItemType]]
     Parent: Optional["Node"]                = field(init=False, default=None)
 
@@ -253,7 +253,7 @@ class Node(Interface.Interface):
     def _EnsureValidMembers(
         cls,
         name_stack: List[Any],
-        containing_range: SourceRange,
+        containing_range: Optional[SourceRange],
         value: _EnsureValidMembersValueType,
         range_value: SourceRangesItemType,
     ):
@@ -279,10 +279,13 @@ class Node(Interface.Interface):
 
         # ----------------------------------------------------------------------
         def EnsureContains(
-            outer_range: SourceRange,
+            outer_range: Optional[SourceRange],
             inner_range: SourceRange,
             item_desc: str,
         ):
+            if outer_range is None:
+                return
+
             if outer_range.Start.Filename != inner_range.Start.Filename:
                 # TODO: This should only happen for certain node types; not sure what those are right now
                 return
@@ -307,7 +310,8 @@ class Node(Interface.Interface):
         # ----------------------------------------------------------------------
 
         if isinstance(value, Node):
-            EnsureContains(containing_range,value.SourceRange, "Node")
+            if value.SourceRange is not None:
+                EnsureContains(containing_range, value.SourceRange, "Node")
 
         elif isinstance(value, (Enum, str)):
             if not isinstance(range_value, SourceRange):
@@ -329,8 +333,7 @@ class Node(Interface.Interface):
 
             range_value, range_values = range_value
 
-            if not containing_range.Contains(range_value):
-                EnsureContains(containing_range, range_value, "List")
+            EnsureContains(containing_range, range_value, "List")
 
             if len(value) != len(range_values):
                 raise CreateException(
@@ -354,24 +357,24 @@ class Node(Interface.Interface):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
+class TypeNode(Node):
+    """\
+    TODO: Comment
+    """
+    pass
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
 class ExpressionNode(Node):
     """\
     TODO: Comment
     """
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.extensionmethod
-    def IsBoolean() -> bool:
-        """Returns True if the expression is a boolean expression"""
-        return False
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.extensionmethod
-    def IsVariable() -> bool:
-        """Returns True if the expression can be considered a variable name"""
-        return False
+    @Interface.abstractproperty
+    def ExpressionResultType(self) -> TypeNode:
+        """Result of the expression"""
 
 
 # ----------------------------------------------------------------------
@@ -380,13 +383,18 @@ class StatementNode(Node):
     """\
     TODO: Comment
     """
-    pass
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TypeNode(Node):
+class VariableNode(Node):
     """\
     TODO: Comment
     """
-    pass
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def VarNames() -> List[str]:
+        """Returns a list of variable names made available by node"""
+        raise Exception("Abstract method")  # pragma: no cover

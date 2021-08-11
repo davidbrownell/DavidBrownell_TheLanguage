@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
+    from ..AST import ExpressionNode, VariableNode
 
 
 # ----------------------------------------------------------------------
@@ -40,9 +40,10 @@ class VariableExpression(ExpressionNode):
     TODO: Comment
     """
 
-    Name: str
+    Variable: VariableNode
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def IsVariable(self) -> bool:
-        return True
+    @property
+    def ExpressionResultType(self):
+        return None # BugBug

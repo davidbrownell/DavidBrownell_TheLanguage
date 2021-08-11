@@ -17,7 +17,7 @@
 
 import os
 
-from enum import auto, Enum, IntFlag
+from enum import auto, Enum, IntEnum, IntFlag
 
 import CommonEnvironment
 
@@ -67,13 +67,15 @@ class FunctionFlags(IntFlag):
     TODO: Comment
     """
 
+    Standard                                = 0
+
     IsPartial                               = auto()    # Flag set if the function generates exceptions.
     IsCoroutine                             = auto()    # Flag set if the function is a coroutine (reentrant within a future task).
     IsGenerator                             = auto()    # Flag set if the function is a generator (reentrant within the same task).
 
 
 # ----------------------------------------------------------------------
-class OperatorCategory(IntFlag):
+class OperatorCategory(IntEnum):
     """\
     TODO: Comment
     """
