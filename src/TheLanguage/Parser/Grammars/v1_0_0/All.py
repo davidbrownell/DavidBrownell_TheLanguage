@@ -41,6 +41,7 @@ with InitRelativeImports():
 
     from .Types.StandardType import StandardType
     from .Types.TupleType import TupleType
+    from .Types.VariantType import VariantType
 
 
 # ----------------------------------------------------------------------
@@ -63,4 +64,5 @@ GrammarPhrases                              = [
     # Types
     StandardType(),
     TupleType(),
+    VariantType(),
 ]

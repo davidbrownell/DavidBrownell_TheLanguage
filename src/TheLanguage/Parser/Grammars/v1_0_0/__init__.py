@@ -32,5 +32,3 @@
 
 # Types:
 #   - FunctionType
-#   - StandardType (easy)
-#   - VariantType (easy)
