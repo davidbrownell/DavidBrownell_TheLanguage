@@ -21,7 +21,7 @@
 #   - MethodDefinition
 #   - ClassAttribute
 #   - ClassCompilerData
-#   - FuncInvocation
+#   - FuncInvocation (includes attribute or func suffix?)
 #   - If
 #   - Import (easy)
 #   - ScopedRef
@@ -29,6 +29,3 @@
 #   - Try/Catch
 #   - Type Alias
 #   - While (easy)
-
-# Types:
-#   - FunctionType

@@ -32,10 +32,12 @@ class TypeModifier(IntFlag):
     """\
     Modifies the behavior of a type.
 
-                isolated   shared
-    ----------|----------|--------
-    mutable   |   var    |  ref
-    immutable |   val    |  view
+    |-----------|----------|--------|
+    |           | isolated | shared |
+    |-----------|----------|--------|
+    | mutable   |    var   |   ref  |
+    | immutable |    val   |  view  |
+    |-----------|----------|--------|
     """
 
     mutable                                 = auto()

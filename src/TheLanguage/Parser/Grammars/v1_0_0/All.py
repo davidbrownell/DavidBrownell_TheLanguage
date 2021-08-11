@@ -39,6 +39,7 @@ with InitRelativeImports():
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
     from .Statements.YieldStatement import YieldStatement
 
+    from .Types.FunctionType import FunctionType
     from .Types.StandardType import StandardType
     from .Types.TupleType import TupleType
     from .Types.VariantType import VariantType
@@ -62,6 +63,7 @@ GrammarPhrases                              = [
     YieldStatement(),
 
     # Types
+    FunctionType(),
     StandardType(),
     TupleType(),
     VariantType(),
