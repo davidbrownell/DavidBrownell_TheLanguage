@@ -30,7 +30,6 @@
 #   - Try/Catch
 #   - Type Alias
 #   - While
-#   - Yield
 
 # Types:
 #   - FunctionType

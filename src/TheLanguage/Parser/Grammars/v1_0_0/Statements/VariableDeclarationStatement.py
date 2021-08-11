@@ -34,7 +34,15 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class VariableDeclarationStatement(GrammarPhrase):
-    """<name> '=' <expr>"""
+    """\
+    Declares a variable.
+
+    <name> '=' <expr>
+
+    Examples:
+        foo = bar
+        (a, b,) = Func()
+    """
 
     NODE_NAME                               = "Variable Declaration Statement"
 

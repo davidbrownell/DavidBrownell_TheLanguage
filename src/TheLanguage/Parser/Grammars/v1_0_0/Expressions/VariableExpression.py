@@ -33,7 +33,16 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class VariableExpression(GrammarPhrase):
-    """<name>"""
+    """\
+    A variable name.
+
+    <name>
+
+    Example:
+        foo
+        bar
+        (a, b)
+    """
 
     NODE_NAME                               = "Variable Expression"
 

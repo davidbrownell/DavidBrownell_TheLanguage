@@ -36,6 +36,9 @@ class TupleExpression(TupleBase):
     """\
     Creates a tuple that can be used as an expression.
 
+    '(' <expr> ',' ')'
+    '(' <expr> (',' <expr>)+ ','? ')'
+
     Example:
         var = (a, b)
         Func((a, b, c), (d,))

@@ -36,6 +36,9 @@ class TupleType(TupleBase):
     """\
     Creates a tuple type that can be used where types are used.
 
+    '(' <type> ',' ')'
+    '(' <type> (',' <type>)+ ','? ')'
+
     Example:
         (Int, Char) Func():
             <statements>

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement.py
+# |  YieldStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 22:49:44
+# |      2021-08-10 23:18:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement"""
+"""Contains the YieldStatement object"""
 
 import os
 
@@ -29,31 +29,43 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
 
 # ----------------------------------------------------------------------
-class PassStatement(GrammarPhrase):
+class YieldStatement(GrammarPhrase):
     """\
-    Noop statement.
+    Yields a value to the caller.
 
-    'pass'
+    'yield' ('from'? <expr>)?
 
-    Example:
-        Int var Func():
-            pass
+    Examples:
+        yield
+        yield foo
+        yield from Func()
     """
 
-    NODE_NAME                               = "Pass Statement"
+    NODE_NAME                               = "Yield Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(PassStatement, self).__init__(
+        super(YieldStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
                 name=self.NODE_NAME,
                 item=[
-                    "pass",
+                    "yield",
+                    PhraseItem(
+                        name="Suffix",
+                        item=[
+                            PhraseItem(
+                                item="from",
+                                arity="?",
+                            ),
+                            DynamicPhrasesType.Expressions,
+                        ],
+                        arity="?",
+                    ),
                     CommonTokens.Newline,
                 ],
             ),

@@ -37,6 +37,8 @@ class ReturnStatement(GrammarPhrase):
     """\
     Returns from a function.
 
+    'return' <expr>?
+
     Example:
         return
         return var
@@ -50,7 +52,6 @@ class ReturnStatement(GrammarPhrase):
             GrammarPhrase.Type.Statement,
             CreatePhrase(
                 name=self.NODE_NAME,
-                # 'return' <expr>?
                 item=[
                     "return",
                     PhraseItem(

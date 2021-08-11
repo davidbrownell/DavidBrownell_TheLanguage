@@ -46,7 +46,15 @@ class InvalidNameError(ValidationError):
 
 # ----------------------------------------------------------------------
 class VariableName(GrammarPhrase):
-    """<name>"""
+    """\
+    A variable name
+
+    <name>
+
+    Examples:
+        foo
+        bar
+    """
 
     NODE_NAME                               = "Variable Name"
     VALIDATION_EXPRESSION                   = re.compile(r"^_?[a-z][a-zA-Z0-9_\.]*(?!<__)$")

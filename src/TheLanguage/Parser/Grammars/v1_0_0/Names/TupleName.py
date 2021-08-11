@@ -36,6 +36,9 @@ class TupleName(TupleBase):
     """\
     Creates a tuple that can be used as a name.
 
+    '(' <name> ',' ')'
+    '(' <name> (',' <name>)+ ','? ')'
+
     Example:
         (a, b, (c, d)) = value
     """
