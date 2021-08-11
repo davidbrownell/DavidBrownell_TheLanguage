@@ -28,8 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
+    from ..Common.TypeModifier import TypeModifier
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
 
 # ----------------------------------------------------------------------
@@ -37,7 +38,7 @@ class VariableDeclarationStatement(GrammarPhrase):
     """\
     Declares a variable.
 
-    <name> '=' <expr>
+    <modifier>? <name> '=' <expr>
 
     Examples:
         foo = bar
@@ -53,6 +54,13 @@ class VariableDeclarationStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.NODE_NAME,
                 item=[
+                    # <modifier>?
+                    PhraseItem(
+                        name="Modifier",
+                        item=TypeModifier.CreatePhraseItem(),
+                        arity="?",
+                    ),
+
                     # <name>
                     DynamicPhrasesType.Names,
 

@@ -7,30 +7,30 @@
 #   - FuncInvocation
 #   - Generator
 #   - Ternary
-#   - Transfer
+#   - Transfer (easy)
 #   - Unary
-#   - Index
+#   - Index (easy)
 
 # Statements:
 #   - Binary
 #   - Class
-#   - Delete
+#   - Delete (easy)
 #   - Docstring
 #   - For
 #   - FuncDefinition
 #   - MethodDefinition
 #   - ClassAttribute
+#   - ClassCompilerData
 #   - FuncInvocation
 #   - If
-#   - Import
-#   - Loop
+#   - Import (easy)
 #   - ScopedRef
 #   - SmartIf
 #   - Try/Catch
 #   - Type Alias
-#   - While
+#   - While (easy)
 
 # Types:
 #   - FunctionType
-#   - StandardType
-#   - VariantType
+#   - StandardType (easy)
+#   - VariantType (easy)
