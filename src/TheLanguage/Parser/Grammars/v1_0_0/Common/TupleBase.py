@@ -3,7 +3,7 @@
 # |  TupleBase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-06 18:22:32
+# |      2021-08-10 16:34:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -29,23 +29,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .GrammarAST import (
-        ExtractLeafValue,
-        ExtractOrNode,
-    )
-
-    from . import GrammarDSL
-    from . import NamingConventions
     from . import Tokens as CommonTokens
-
-    from ...GrammarStatement import GrammarStatement
-
-    from ....Statements.SequenceStatement import SequenceStatement
+    from ...GrammarPhrase import GrammarPhrase, Leaf, Node
+    from ....Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractOr,
+        ExtractRepeat,
+        ExtractSequence,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------
-class TupleBase(GrammarStatement):
-    """Base class for Tuple expressions, statements, and types"""
+class TupleBase(GrammarPhrase):
+    """Base class for Tuple expressions, names, statements, and types"""
 
     MULTIPLE_NODE_NAME                      = "Multiple"
     SINGLE_NODE_NAME                        = "Single"
@@ -53,92 +51,110 @@ class TupleBase(GrammarStatement):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        grammar_statement_type: GrammarStatement.Type,
-        tuple_statement_name: str,
-        tuple_element_item: GrammarDSL.StatementItem.ItemType,
-        additional_sequence_suffix_items: List[GrammarDSL.StatementItem.ItemType],
+        grammar_phrase_type: GrammarPhrase.Type,
     ):
-        tuple_statement = GrammarDSL.CreateStatement(
-            name="Tuple Element" if additional_sequence_suffix_items else tuple_statement_name,
-            item=(
-                # Multiple Elements
-                #   '(' <tuple_element> (',' <tuple_element>)+ ','? ')'
-                GrammarDSL.StatementItem(
-                    name=self.MULTIPLE_NODE_NAME,
-                    item=[
-                        # '('
-                        CommonTokens.LParen,
-                        CommonTokens.PushIgnoreWhitespaceControl,
+        if grammar_phrase_type == GrammarPhrase.Type.Expression:
+            name_suffix = "Expression"
+            tuple_element_item = DynamicPhrasesType.Expressions
 
-                        # <tuple_element> (',' <tuple_element>)+ ','?
-                        GrammarDSL.CreateDelimitedStatementItem(
+        elif grammar_phrase_type == GrammarPhrase.Type.Name:
+            name_suffix = "Name"
+            tuple_element_item = DynamicPhrasesType.Names
+
+        elif grammar_phrase_type == GrammarPhrase.Type.Type:
+            name_suffix = "Type"
+            tuple_element_item = DynamicPhrasesType.Types
+
+        else:
+            assert False, grammar_phrase_type  # pragma: no cover
+
+
+        super(TupleBase, self).__init__(
+            grammar_phrase_type,
+            CreatePhrase(
+                name="Tuple {}".format(name_suffix),
+                item=(
+                    # Multiple Elements
+                    #   '(' <tuple_element> (',' <tuple_element>)+ ','? ')'
+                    PhraseItem(
+                        name=self.MULTIPLE_NODE_NAME,
+                        item=[
+                            # '('
+                            "(",
+                            CommonTokens.PushIgnoreWhitespaceControl,
+
+                            # <tuple_element> (',' <tuple_element>)+ ','?
                             tuple_element_item,
-                            are_multiple_items_required=True,
-                        ),
 
-                        # ')'
-                        CommonTokens.PopIgnoreWhitespaceControl,
-                        CommonTokens.RParen,
-                    ],
-                ),
+                            PhraseItem(
+                                name="Comma and Element",
+                                item=[
+                                    ",",
+                                    tuple_element_item,
+                                ],
+                                arity="+",
+                            ),
 
-                # Single Element
-                #   '(' <tuple_element> ',' ')'
-                GrammarDSL.StatementItem(
-                    name=self.SINGLE_NODE_NAME,
-                    item=[
-                        # '('
-                        CommonTokens.LParen,
-                        CommonTokens.PushIgnoreWhitespaceControl,
+                            PhraseItem(
+                                name="Trailing Comma",
+                                item=",",
+                                arity="?",
+                            ),
 
-                        # <tuple_element>
-                        tuple_element_item,
+                            # ')'
+                            CommonTokens.PopIgnoreWhitespaceControl,
+                            ")",
+                        ],
+                    ),
 
-                        # ','
-                        CommonTokens.Comma,
+                    # Single Element
+                    #   '(' <tuple_element> ',' ')'
+                    PhraseItem(
+                        name=self.SINGLE_NODE_NAME,
+                        item=[
+                            # '('
+                            "(",
+                            CommonTokens.PushIgnoreWhitespaceControl,
 
-                        # ')'
-                        CommonTokens.PopIgnoreWhitespaceControl,
-                        CommonTokens.RParen,
-                    ],
+                            # <tuple_element> ','
+                            tuple_element_item,
+                            ",",
+
+                            # ')'
+                            CommonTokens.PopIgnoreWhitespaceControl,
+                            ")",
+                        ],
+                    ),
                 ),
             ),
         )
 
-        if additional_sequence_suffix_items:
-            tuple_statement = GrammarDSL.CreateStatement(
-                name=tuple_statement_name,
-                item=
-                    cast(List[GrammarDSL.StatementItem.ItemType], [tuple_statement])
-                    + additional_sequence_suffix_items,
-            )
-
-        super(TupleBase, self).__init__(grammar_statement_type, tuple_statement)
-
     # ----------------------------------------------------------------------
     @classmethod
-    def EnumElements(
+    def EnumNodeValues(
         cls,
-        node: GrammarDSL.Node,
+        node: Node,
     ) -> Generator[
-        Union[GrammarDSL.Leaf, GrammarDSL.Node],
+        Union[Leaf, Node],
         None,
         None,
     ]:
-        if isinstance(node.Type, SequenceStatement):
-            assert node.Children
-            node = cast(GrammarDSL.Node, node.Children[0])
-
-        node = cast(GrammarDSL.Node, ExtractOrNode(node))
+        node = cast(Node, ExtractOr(node))
         assert node.Type
 
-        if node.Type.Name == cls.SINGLE_NODE_NAME:
-            assert len(node.Children) == 4
-            yield node.Children[1]
+        values = ExtractSequence(node)
 
-        elif node.Type.Name == cls.MULTIPLE_NODE_NAME:
-            assert len(node.Children) == 3
-            yield from GrammarDSL.ExtractDelimitedNodes(cast(GrammarDSL.Node, node.Children[1]))
+        if node.Type.Name == cls.MULTIPLE_NODE_NAME:
+            assert len(values) == 7
+            yield cast(Node, values[2])
+
+            for value in cast(List[Node], ExtractRepeat(cast(Node, values[3]))):
+                value = ExtractSequence(value)
+                yield cast(Node, value[0])
+
+        elif node.Type.Name == cls.SINGLE_NODE_NAME:
+            assert len(values) == 6
+            yield cast(Node, values[2])
 
         else:
-            assert False, node.Type.Name
+            assert False, node.Type  # pragma: no cover

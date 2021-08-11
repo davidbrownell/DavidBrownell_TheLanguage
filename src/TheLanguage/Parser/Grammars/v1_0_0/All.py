@@ -27,23 +27,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Expressions.TupleExpression import TupleExpression
     from .Expressions.VariableExpression import VariableExpression
 
+    from .Names.TupleName import TupleName
     from .Names.VariableName import VariableName
 
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
+
+    from .Types.TupleType import TupleType
 
 
 # ----------------------------------------------------------------------
 GrammarPhrases                              = [
     # Expressions
+    TupleExpression(),
     VariableExpression(),
 
     # Names
+    TupleName(),
     VariableName(),
 
     # Statements
     VariableDeclarationStatement(),
 
     # Types
+    TupleType(),
 ]

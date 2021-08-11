@@ -3,7 +3,7 @@
 # |  TupleExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-06 18:35:19
+# |      2021-08-10 16:59:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -27,9 +27,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import GrammarDSL
     from ..Common.TupleBase import TupleBase
-    from ...GrammarStatement import GrammarStatement
+    from ...GrammarPhrase import GrammarPhrase
 
 
 # ----------------------------------------------------------------------
@@ -37,18 +36,11 @@ class TupleExpression(TupleBase):
     """\
     Creates a tuple that can be used as an expression.
 
-    '(' <content> ')'
-
-    Examples:
+    Example:
         var = (a, b)
-        Func((a, b, c), (a,))
+        Func((a, b, c), (d,))
     """
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleExpression, self).__init__(
-            GrammarStatement.Type.Expression,
-            "Tuple Expression",
-            GrammarDSL.DynamicStatementsType.Expressions,
-            additional_sequence_suffix_items=[],
-        )
+        super(TupleExpression, self).__init__(GrammarPhrase.Type.Expression)

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleType.py
+# |  TupleName.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 22:27:10
+# |      2021-08-10 22:06:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleType object"""
+"""Contains the TupleHeader object"""
 
 import os
 
@@ -32,15 +32,14 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class TupleType(TupleBase):
+class TupleName(TupleBase):
     """\
-    Creates a tuple type that can be used where types are used.
+    Creates a tuple that can be used as a name.
 
     Example:
-        (Int, Char) Func():
-            <statements>
+        (a, b, (c, d)) = value
     """
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleType, self).__init__(GrammarPhrase.Type.Type)
+        super(TupleName, self).__init__(GrammarPhrase.Type.Name)
