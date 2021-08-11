@@ -29,8 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .VariableStatement import VariableStatement
-    from ..AST import StatementNode
+    from ..AST import StatementNode, VariableNode
 
 
 # ----------------------------------------------------------------------
@@ -40,4 +39,4 @@ class DeleteStatement(StatementNode):
     TODO: Comment
     """
 
-    Variable: VariableStatement
+    Variable: VariableNode

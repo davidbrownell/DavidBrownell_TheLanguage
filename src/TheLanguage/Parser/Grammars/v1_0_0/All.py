@@ -3,7 +3,7 @@
 # |  All.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-06 08:32:04
+# |      2021-08-10 15:10:07
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains statements used in this grammar"""
+"""All grammar phrases for v1.0.0 grammar"""
 
 import os
 
@@ -27,37 +27,39 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .AsExpression import AsExpression
-    from .ClassDeclarationStatement import ClassDeclarationStatement
-    from .FuncDeclarationStatement import FuncDeclarationStatement
-    from .FuncInvocationStatements import FuncInvocationExpression, FuncInvocationStatement
-    from .ImportStatement import ImportStatement
-    from .PassStatement import PassStatement
-    from .StandardType import StandardType
-    from .TupleStatements import TupleExpression, TupleType, TupleVariableDeclarationStatement
-    from .VariableDeclarationStatement import VariableDeclarationStatement
-    from .VariableNameExpression import VariableNameExpression
-    from .VariantType import VariantType
+    from .Expressions.TupleExpression import TupleExpression
+    from .Expressions.VariableExpression import VariableExpression
 
-# TODO: Check grammar for all statements to determine if syntax errors (bad) or other errors (good)
-#       are most appropriate.
+    from .Names.TupleName import TupleName
+    from .Names.VariableName import VariableName
+
+    from .Statements.PassStatement import PassStatement
+    from .Statements.ReturnStatement import ReturnStatement
+    from .Statements.ThrowStatement import ThrowStatement
+    from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
+    from .Statements.YieldStatement import YieldStatement
+
+    from .Types.StandardType import StandardType
+    from .Types.TupleType import TupleType
+    from .Types.VariantType import VariantType
+
 
 # ----------------------------------------------------------------------
-Statements                                  = [
-    # Statements
-    ClassDeclarationStatement(),
-    FuncDeclarationStatement(),
-    FuncInvocationStatement(),
-    ImportStatement(".TheLanguage"),        # TODO: Change this once the language name is finalized
-    PassStatement(),
-    TupleVariableDeclarationStatement(),
-    VariableDeclarationStatement(),
-
+GrammarPhrases                              = [
     # Expressions
-    AsExpression(),
-    FuncInvocationExpression(),
     TupleExpression(),
-    VariableNameExpression(),
+    VariableExpression(),
+
+    # Names
+    TupleName(),
+    VariableName(),
+
+    # Statements
+    PassStatement(),
+    ReturnStatement(),
+    ThrowStatement(),
+    VariableDeclarationStatement(),
+    YieldStatement(),
 
     # Types
     StandardType(),

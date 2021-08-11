@@ -22,6 +22,7 @@ from typing import List
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..AST import ExpressionNode
+    from ..Types.TupleType import TupleType
 
 
 # ----------------------------------------------------------------------
@@ -42,3 +44,13 @@ class TupleExpression(ExpressionNode):
     """
 
     Expressions: List[ExpressionNode]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    @property
+    def ExpressionResultType(self):
+        return TupleType(
+            self.SourceRange,
+            self.SourceRanges,
+            [expression.ExpressionResultType for expression in self.Expressions],
+        )

@@ -20,6 +20,7 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,8 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .VariableExpression import VariableExpression
-    from ..AST import ExpressionNode
+    from ..AST import ExpressionNode, TypeNode
 
 
 # ----------------------------------------------------------------------
@@ -40,4 +40,11 @@ class QuickRefExpression(ExpressionNode):
     TODO: Comment
     """
 
-    Ref: VariableExpression
+    Expression: ExpressionNode
+    RefType: TypeNode
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    @property
+    def ExpressionResultType(self):
+        return self.RefType

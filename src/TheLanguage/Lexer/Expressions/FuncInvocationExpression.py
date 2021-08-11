@@ -20,6 +20,7 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -44,4 +45,8 @@ class FuncInvocationExpression(ExpressionNode, _FuncInvocationNode):
     TODO: Describe
     """
 
-    pass
+    # ----------------------------------------------------------------------
+    @Interface.override
+    @property
+    def ExpressionResultType(self):
+        return None # BugBug
