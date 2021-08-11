@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeModifier.py
+# |  VisibilityModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-11 12:50:29
+# |      2021-08-11 15:25:18
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality associated with type modifiers"""
+"""Functionality associated with visibility modifiers"""
 
 import os
 
-from enum import auto, IntFlag
+from enum import auto, Enum
 
 import CommonEnvironment
 
@@ -28,27 +28,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 
 # ----------------------------------------------------------------------
-class TypeModifier(IntFlag):
+class VisibilityModifier(Enum):
     """\
-    Modifies the behavior of a type.
-
-    |-----------|----------|--------|
-    |           | isolated | shared |
-    |-----------|----------|--------|
-    | mutable   |    var   |   ref  |
-    | immutable |    val   |  view  |
-    |-----------|----------|--------|
+    Modifies the external visibility of a function, method, class attribute, etc.
     """
 
-    mutable                                 = auto()
-    immutable                               = auto()
-    isolated                                = auto()
-    shared                                  = auto()
-
-    var                                     = (mutable << 4) | isolated
-    ref                                     = (mutable << 4) | shared
-    val                                     = (immutable << 4) | isolated
-    view                                    = (immutable << 4) | shared
+    private                                 = auto()
+    protected                               = auto()
+    public                                  = auto()
 
     # ----------------------------------------------------------------------
     @classmethod

@@ -42,7 +42,7 @@ with InitRelativeImports():
 class InvalidTypeError(ValidationError):
     Name: str
 
-    MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid type name; types must start with an uppercase letter and be at least 2 characters.")
+    MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid type name; names must start with an uppercase letter and be at least 2 characters.")
 
 
 # ----------------------------------------------------------------------
