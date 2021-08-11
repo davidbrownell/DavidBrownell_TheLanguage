@@ -26,7 +26,6 @@
 #   - Loop
 #   - ScopedRef
 #   - SmartIf
-#   - Throw
 #   - Try/Catch
 #   - Type Alias
 #   - While

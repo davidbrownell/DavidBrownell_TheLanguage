@@ -35,6 +35,7 @@ with InitRelativeImports():
 
     from .Statements.PassStatement import PassStatement
     from .Statements.ReturnStatement import ReturnStatement
+    from .Statements.ThrowStatement import ThrowStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
     from .Statements.YieldStatement import YieldStatement
 
@@ -54,6 +55,7 @@ GrammarPhrases                              = [
     # Statements
     PassStatement(),
     ReturnStatement(),
+    ThrowStatement(),
     VariableDeclarationStatement(),
     YieldStatement(),
 
