@@ -9,6 +9,7 @@
 #   - Ternary
 #   - Transfer
 #   - Unary
+#   - Index
 
 # Statements:
 #   - Binary
@@ -23,8 +24,6 @@
 #   - If
 #   - Import
 #   - Loop
-#   - Noop
-#   - Return
 #   - ScopedRef
 #   - SmartIf
 #   - Throw

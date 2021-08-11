@@ -34,6 +34,7 @@ with InitRelativeImports():
     from .Names.VariableName import VariableName
 
     from .Statements.PassStatement import PassStatement
+    from .Statements.ReturnStatement import ReturnStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
 
     from .Types.TupleType import TupleType
@@ -51,6 +52,7 @@ GrammarPhrases                              = [
 
     # Statements
     PassStatement(),
+    ReturnStatement(),
     VariableDeclarationStatement(),
 
     # Types
