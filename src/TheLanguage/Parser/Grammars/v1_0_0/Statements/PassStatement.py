@@ -3,7 +3,7 @@
 # |  PassStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-16 16:37:54
+# |      2021-08-10 22:49:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement object"""
+"""Contains the PassStatement"""
 
 import os
 
@@ -27,25 +27,31 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import GrammarDSL
     from ..Common import Tokens as CommonTokens
-    from ...GrammarStatement import GrammarStatement
+    from ...GrammarPhrase import GrammarPhrase
+    from ....Phrases.DSL import CreatePhrase
 
 
 # ----------------------------------------------------------------------
-class PassStatement(GrammarStatement):
-    """pass"""
+class PassStatement(GrammarPhrase):
+    """\
+    Noop statement.
 
-    NODE_NAME                               = "Pass"
+    Example:
+        Int var Func():
+            pass
+    """
+
+    NODE_NAME                               = "Pass Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(PassStatement, self).__init__(
-            GrammarStatement.Type.Statement,
-            GrammarDSL.CreateStatement(
+            GrammarPhrase.Type.Statement,
+            CreatePhrase(
                 name=self.NODE_NAME,
                 item=[
-                    CommonTokens.Pass,
+                    "pass",
                     CommonTokens.Newline,
                 ],
             ),
