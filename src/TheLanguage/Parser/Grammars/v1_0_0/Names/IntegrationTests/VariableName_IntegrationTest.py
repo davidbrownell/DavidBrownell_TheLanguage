@@ -39,7 +39,7 @@ def test_Standard():
     assert Execute(
         textwrap.dedent(
             """\
-            var = value
+            one = value
             """,
         ),
     ) == textwrap.dedent(
@@ -57,7 +57,7 @@ def test_Standard():
                                                                                                                                       IterBefore : [1, 1] (0)
                                                                                                                                       Type       : <name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>
                                                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                                                                                   Match : <_sre.SRE_Match object; span=(0, 3), match='var'>
+                                                                                                                                                   Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
                                                                                                                                       Whitespace : None
                                                                                                                     IterAfter  : [1, 4] (3)
                                                                                                                     IterBefore : [1, 1] (0)
@@ -137,7 +137,7 @@ def test_InvalidLeftHandSide():
 
     ex = ex.value
 
-    assert str(ex) == "'InvalidName' is not a valid variable name; variables must start with a lowercase character."
+    assert str(ex) == "'InvalidName' is not a valid variable name; variables must start with a lowercase letter."
     assert ex.Name == "InvalidName"
     assert ex.Line == 1
     assert ex.Column == 1
@@ -148,11 +148,11 @@ def test_InvalidLeftHandSide():
 # ----------------------------------------------------------------------
 def test_InvalidRightHandSide():
     with pytest.raises(InvalidNameError) as ex:
-        Execute("val = InvalidName")
+        Execute("one = InvalidName")
 
     ex = ex.value
 
-    assert str(ex) == "'InvalidName' is not a valid variable name; variables must start with a lowercase character."
+    assert str(ex) == "'InvalidName' is not a valid variable name; variables must start with a lowercase letter."
     assert ex.Name == "InvalidName"
     assert ex.Line == 1
     assert ex.Column == 7

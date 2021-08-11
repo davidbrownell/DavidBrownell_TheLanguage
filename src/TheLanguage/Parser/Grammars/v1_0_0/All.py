@@ -39,6 +39,7 @@ with InitRelativeImports():
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
     from .Statements.YieldStatement import YieldStatement
 
+    from .Types.StandardType import StandardType
     from .Types.TupleType import TupleType
 
 
@@ -60,5 +61,6 @@ GrammarPhrases                              = [
     YieldStatement(),
 
     # Types
+    StandardType(),
     TupleType(),
 ]
