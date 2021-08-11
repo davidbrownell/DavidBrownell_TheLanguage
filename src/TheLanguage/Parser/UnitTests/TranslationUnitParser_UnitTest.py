@@ -49,7 +49,7 @@ with InitRelativeImports():
         parse_mock as parse_mock_impl,
     )
 
-    from ..Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+    from ..Phrases.DSL import CreatePhrase, DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
@@ -2249,7 +2249,7 @@ async def test_InvalidDynamicTraversalError(parse_mock):
 
     ex = ex.value
 
-    assert str(ex) == "Dynamic phrases that prohibit parent traversal should never be applied over other dynamic phrases within the same lexical scope; consider making these dyanmic phrases the first ones applied in this lexical scope."
+    assert str(ex) == "Dynamic phrases that prohibit parent traversal should never be applied over other dynamic phrases within the same lexical scope; consider making these dynamic phrases the first ones applied in this lexical scope."
     assert ex.Line == 4
     assert ex.Column == 1
 
