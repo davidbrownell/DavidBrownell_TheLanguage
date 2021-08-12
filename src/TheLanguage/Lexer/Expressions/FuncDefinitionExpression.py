@@ -20,6 +20,7 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -40,4 +41,8 @@ class FuncDefinitionExpression(ExpressionNode, _FuncDefinitionNode):
     TODO: Comment
     """
 
-    Expression: ExpressionNode
+    # ----------------------------------------------------------------------
+    @Interface.override
+    @property
+    def ExpressionResultType(self):
+        return self.FirstClassFunction

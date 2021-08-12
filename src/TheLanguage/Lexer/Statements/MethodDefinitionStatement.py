@@ -17,10 +17,12 @@
 
 import os
 from enum import auto, Enum
+from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -48,6 +50,8 @@ class MethodType(Enum):
     Final                                   = auto()
     Static                                  = auto()
 
+    # TODO: Static might need New/Replace
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -58,3 +62,9 @@ class MethodDefinitionStatement(FuncDefinitionStatement):
 
     Method: MethodType
     InstanceType: Flags.TypeFlags
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetTypeDescriptions() -> List[str]:
+        return ["method"]

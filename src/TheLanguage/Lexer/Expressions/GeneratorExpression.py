@@ -22,6 +22,7 @@ from typing import Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
+    from ..AST import ExpressionNode, VariableNode
 
 
 # ----------------------------------------------------------------------
@@ -46,13 +47,16 @@ class GeneratorExpression(ExpressionNode):
     """
 
     VariableDecorator: ExpressionNode
-    Variable: ExpressionNode
+    Variable: VariableNode
     Source: ExpressionNode
     Condition: Optional[ExpressionNode]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(GeneratorExpression, self).__post_init__()
-
-        assert self.Variable.IsVariable(), self.Variable
         assert self.Condition is None or self.Condition.IsBoolean(), self.Condition
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    @property
+    def ExpressionResultType(self):
+        return self.VariableDecorator.ExpressionResultType

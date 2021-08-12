@@ -44,6 +44,9 @@ class UnaryOperator(IntFlag):
 
     Not                                     = (OperatorCategory.Logical << 8) + 1
 
+    Positive                                = (OperatorCategory.Math << 8) + 1
+    Negative                                = (OperatorCategory.Math << 8) + 2
+
     BitCompliment                           = (OperatorCategory.BitManipulation << 8) + 1
 
 
@@ -59,8 +62,6 @@ class UnaryExpression(ExpressionNode):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def IsBoolean(self) -> bool:
-        if self.Operator & OperatorCategory.Logical:
-            return True
-
-        return super(UnaryExpression, self).IsBoolean()
+    @property
+    def ExpressionResultType(self):
+        return self.Expression.ExpressionResultType
