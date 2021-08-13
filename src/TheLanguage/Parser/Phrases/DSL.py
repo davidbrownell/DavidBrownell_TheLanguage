@@ -273,7 +273,7 @@ def ExtractSequence(
         skipped_indexes = set()
 
     assert node.Type is not None
-    phrases = node.Type.Phrases
+    phrases = node.Type.Phrases  # type: ignore
 
     num_skipped_phrases = 0
 
