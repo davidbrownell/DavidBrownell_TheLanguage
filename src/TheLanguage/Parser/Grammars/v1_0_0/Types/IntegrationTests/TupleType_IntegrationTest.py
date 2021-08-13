@@ -21,6 +21,7 @@ import textwrap
 import pytest
 
 import CommonEnvironment
+from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,24 +36,18 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: Types are not supported yet")
 def test_Single():
     assert Execute(
         textwrap.dedent(
             """\
             (Int var,) Func():
-               pass
+                pass
             """,
         ),
-    ) == textwrap.dedent(
-        """\
-        TODO
-        """,
-    )
+    ) == ResultsFromFile()
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: Types are not supported yet")
 def test_Multiple():
     assert Execute(
         textwrap.dedent(
@@ -61,18 +56,7 @@ def test_Multiple():
                 Int var,
                 Char view
             ) Func():
-               pass
+                pass
             """,
         ),
-    ) == textwrap.dedent(
-        """\
-        TODO
-        """,
-    )
-
-
-# ----------------------------------------------------------------------
-def test_TODO():
-    # This is here to get tester passing (it has troubles when all the tests are skipped).
-    # Remove this test once the tests above are working.
-    assert True
+    ) == ResultsFromFile()

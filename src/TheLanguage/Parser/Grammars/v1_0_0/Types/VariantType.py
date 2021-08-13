@@ -37,7 +37,7 @@ class VariantType(GrammarPhrase):
     """\
     A type that can be any one of a collection of types.
 
-    '(' <type> '|' (<type> '|')+ <type> ')'
+    '(' <type> '|' (<type> '|')* <type> ')'
 
     Examples:
         (Int | Float)
@@ -60,14 +60,17 @@ class VariantType(GrammarPhrase):
                     # <type>
                     DynamicPhrasesType.Types,
 
-                    # (<type> '|')+
+                    # '|'
+                    "|",
+
+                    # (<type> '|')*
                     PhraseItem(
                         name="Type and Sep",
                         item=[
                             DynamicPhrasesType.Types,
                             "|",
                         ],
-                        arity="+",
+                        arity="*",
                     ),
 
                     # <type>

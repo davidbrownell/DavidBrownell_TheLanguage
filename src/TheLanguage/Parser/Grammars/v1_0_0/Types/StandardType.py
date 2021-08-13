@@ -96,4 +96,4 @@ class StandardType(GrammarPhrase):
 
         # Validate the modifier
         if nodes[1] is not None:
-            TypeModifier.Extract(nodes[1])
+            TypeModifier.Extract(nodes[1])  # type: ignore
