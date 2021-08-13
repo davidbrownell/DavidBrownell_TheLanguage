@@ -7,7 +7,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           IsIgnored  : False
                                                                                           IterAfter  : [1, 7] (6)
                                                                                           IterBefore : [1, 1] (0)
-                                                                                          Type       : <generic_lower_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>
+                                                                                          Type       : Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>
                                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                                        Match : <_sre.SRE_Match object; span=(0, 6), match='public'>
                                                                                           Whitespace : None
@@ -151,7 +151,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           IsIgnored  : False
                                                                                           IterAfter  : [4, 10] (39)
                                                                                           IterBefore : [4, 1] (30)
-                                                                                          Type       : <generic_lower_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>
+                                                                                          Type       : Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>
                                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                                        Match : <_sre.SRE_Match object; span=(30, 39), match='protected'>
                                                                                           Whitespace : None
@@ -295,7 +295,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           IsIgnored  : False
                                                                                           IterAfter  : [7, 8] (71)
                                                                                           IterBefore : [7, 1] (64)
-                                                                                          Type       : <generic_lower_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>
+                                                                                          Type       : Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>
                                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                                        Match : <_sre.SRE_Match object; span=(64, 71), match='private'>
                                                                                           Whitespace : None

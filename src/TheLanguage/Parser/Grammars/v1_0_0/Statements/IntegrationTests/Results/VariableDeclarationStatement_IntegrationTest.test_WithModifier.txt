@@ -3,18 +3,14 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                   Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                     Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                       Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                                        Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                                                          Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                                                                            IsIgnored  : False
-                                                                                                            IterAfter  : [1, 4] (3)
-                                                                                                            IterBefore : [1, 1] (0)
-                                                                                                            Type       : 'var' <class 'TheLanguage.Parser.Components.Token.RegexToken'>
-                                                                                                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                                                         Match : <_sre.SRE_Match object; span=(0, 3), match='var'>
-                                                                                                            Whitespace : None
+                                                                        Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                                                          IsIgnored  : False
                                                                                           IterAfter  : [1, 4] (3)
                                                                                           IterBefore : [1, 1] (0)
-                                                                                          Type       : Modifier <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                          Type       : Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>
+                                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                                       Match : <_sre.SRE_Match object; span=(0, 3), match='var'>
+                                                                                          Whitespace : None
                                                                         IterAfter  : [1, 4] (3)
                                                                         IterBefore : [1, 1] (0)
                                                                         Type       : Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>

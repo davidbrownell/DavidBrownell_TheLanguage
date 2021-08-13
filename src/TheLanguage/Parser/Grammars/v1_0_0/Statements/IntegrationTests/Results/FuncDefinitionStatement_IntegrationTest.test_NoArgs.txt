@@ -145,19 +145,15 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                                            Match : <_sre.SRE_Match object; span=(23, 26), match='Int'>
                                                                                                                               Whitespace : None
                                                                                                                          1)   <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                                                                                              Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                                                                                                                Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                                                                                                                                  IsIgnored  : False
-                                                                                                                                                                  IterAfter  : [4, 8] (30)
-                                                                                                                                                                  IterBefore : [4, 5] (27)
-                                                                                                                                                                  Type       : 'var' <class 'TheLanguage.Parser.Components.Token.RegexToken'>
-                                                                                                                                                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                                                                                                               Match : <_sre.SRE_Match object; span=(27, 30), match='var'>
-                                                                                                                                                                  Whitespace : 0)   26
-                                                                                                                                                                               1)   27
+                                                                                                                              Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                                                                                                                IsIgnored  : False
                                                                                                                                                 IterAfter  : [4, 8] (30)
                                                                                                                                                 IterBefore : [4, 5] (27)
-                                                                                                                                                Type       : Modifier <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                Type       : Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>
+                                                                                                                                                Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                                                                                             Match : <_sre.SRE_Match object; span=(27, 30), match='var'>
+                                                                                                                                                Whitespace : 0)   26
+                                                                                                                                                             1)   27
                                                                                                                               IterAfter  : [4, 8] (30)
                                                                                                                               IterBefore : [4, 5] (27)
                                                                                                                               Type       : Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>

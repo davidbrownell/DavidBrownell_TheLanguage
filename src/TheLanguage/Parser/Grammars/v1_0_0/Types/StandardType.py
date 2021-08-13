@@ -50,7 +50,7 @@ class StandardType(GrammarPhrase):
     """\
     Type declaration.
 
-    <type_name> <modifier>?
+    <generic_name> <modifier>?
 
     Examples:
         Int
@@ -67,7 +67,7 @@ class StandardType(GrammarPhrase):
             CreatePhrase(
                 name=self.NODE_NAME,
                 item=[
-                    # <type_name>
+                    # <generic_name>
                     CommonTokens.GenericName,
 
                     # <modifier>?
@@ -93,3 +93,7 @@ class StandardType(GrammarPhrase):
 
         if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
             raise InvalidTypeError.FromNode(leaf, name)
+
+        # Validate the modifier
+        if nodes[1] is not None:
+            TypeModifier.Extract(nodes[1])

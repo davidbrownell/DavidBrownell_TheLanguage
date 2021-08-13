@@ -16,9 +16,11 @@
 """Functionality associated with visibility modifiers"""
 
 import os
+import re
+import textwrap
 
 from enum import auto, Enum
-from typing import Callable, Tuple, Union
+from typing import Tuple, Union
 
 from dataclasses import dataclass
 
@@ -33,9 +35,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Tokens as CommonTokens
+    from ....Components.Token import RegexToken
     from ...GrammarPhrase import ValidationError
-    from ....Phrases.DSL import ExtractToken, Leaf, Node, PhraseItem
+    from ....Phrases.DSL import ExtractToken, Leaf, Node
 
 
 # ----------------------------------------------------------------------
@@ -51,7 +53,22 @@ class VisibilityModifier(Enum):
     # ----------------------------------------------------------------------
     @staticmethod
     def CreatePhraseItem():
-        return CommonTokens.GenericLowerName
+        # This code is attempting to walk a fine line - errors indicating that a modifier isn't
+        # valid are much better than generic syntax errors. If we look for the exact modifier
+        # tokens, we will produce syntax errors when it isn't found. However, if we just look for a
+        # general string, we will greedily consume other tokens are produce syntax errors. So here,
+        # we are producing a regular expression that is "close" to what a user might likely type
+        # without requiring an exact match.
+        return RegexToken(
+            "Type Modifier",
+            re.compile(
+                textwrap.dedent(
+                    r"""(?#
+                        Word that starts with a 'p'     )p[a-z]{2}[a-z]+\b(?#
+                    )""",
+                ),
+            ),
+        )
 
     # ----------------------------------------------------------------------
     @staticmethod

@@ -128,7 +128,7 @@ def test_InvalidVisibilityModifier():
         Execute(
             textwrap.dedent(
                 """\
-                invalid Int Func():
+                probably Int Func():
                     pass
                 """,
             ),
@@ -136,8 +136,8 @@ def test_InvalidVisibilityModifier():
 
     ex = ex.value
 
-    assert str(ex) == "The visibility modifier 'invalid' is not valid; values may be 'private', 'protected', 'public'."
-    assert ex.Name == "invalid"
+    assert str(ex) == "The visibility modifier 'probably' is not valid; values may be 'private', 'protected', 'public'."
+    assert ex.Name == "probably"
     assert ex.Line == 1
     assert ex.Column == 1
     assert ex.LineEnd == 1
