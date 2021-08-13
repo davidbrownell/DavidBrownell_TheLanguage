@@ -7,7 +7,6 @@
 #   - FuncInvocation
 #   - Generator
 #   - Ternary
-#   - Transfer (easy)
 #   - Unary
 #   - Index (easy)
 
