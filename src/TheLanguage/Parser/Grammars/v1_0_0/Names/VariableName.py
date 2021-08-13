@@ -80,5 +80,5 @@ class VariableName(GrammarPhrase):
         assert len(nodes) == 1
         name, leaf = nodes[0]  # type: ignore
 
-        if not cls.VALIDATION_EXPRESSION.match(name):
+        if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
             raise InvalidNameError.FromNode(leaf, name)
