@@ -18,9 +18,8 @@
 import os
 import textwrap
 
-import pytest
-
 import CommonEnvironment
+from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,8 +34,6 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: Types are not supported yet")
 def test_NoModifier():
     assert Execute(
         textwrap.dedent(
@@ -45,31 +42,22 @@ def test_NoModifier():
                pass
             """,
         ),
-    ) == textwrap.dedent(
-        """\
-        TODO
-        """,
-    )
+    ) == ResultsFromFile()
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: Types are not supported yet")
 def test_WithModifier():
     assert Execute(
         textwrap.dedent(
             """\
-            (Int var ()) Func1();
+            (Int var ()) Func1():
                 pass
 
             (Char view (Int, Bool var, Double)) Func2():
                 pass
             """,
         ),
-    ) == textwrap.dedent(
-        """\
-        TODO
-        """,
-    )
+    ) == ResultsFromFile()
 
 
 # ----------------------------------------------------------------------

@@ -125,7 +125,8 @@ class FuncDefinitionStatement(GrammarPhrase):
         assert len(nodes) == 9
 
         # Validate the visibility modifier (if any)
-        modifier = VisibilityModifier.Extract(nodes[0]) if nodes[0] is not None else None
+        if nodes[0] is not None:
+            VisibilityModifier.Extract(nodes[0])  # type: ignore
 
         # Validate the function name
         name, leaf = nodes[2]  # type: ignore

@@ -21,6 +21,7 @@ import textwrap
 import pytest
 
 import CommonEnvironment
+from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,40 +36,30 @@ with InitRelativeImports():
     from ...Common.TypeModifier import InvalidTypeModifierError
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: Types are not supported yet")
 def test_NoModifier():
     assert Execute(
         textwrap.dedent(
             """\
             Int Func():
-               pass
+                pass
             """,
         ),
-    ) == textwrap.dedent(
-        """\
-        TODO
-        """,
-    )
+    ) == ResultsFromFile()
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: Types are not supported yet")
 def test_WithModifier():
     assert Execute(
         textwrap.dedent(
             """\
-            Int var Func1();
+            Int var Func1():
                 pass
 
             Char view Func2():
                 pass
             """,
         ),
-    ) == textwrap.dedent(
-        """\
-        TODO
-        """,
-    )
+    ) == ResultsFromFile()
 
 
 # ----------------------------------------------------------------------
