@@ -24,6 +24,7 @@ from typing import cast, Dict, List, Optional, Tuple, Union
 from unittest.mock import patch
 
 import CommonEnvironment
+from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 

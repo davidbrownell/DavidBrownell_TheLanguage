@@ -30,7 +30,12 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common.TypeModifier import TypeModifier
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+    from ....Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        Node,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------

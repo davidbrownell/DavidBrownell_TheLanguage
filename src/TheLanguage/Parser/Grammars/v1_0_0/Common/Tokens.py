@@ -48,4 +48,6 @@ PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 # This token is intended to be a generic token that will match every name used in the grammar so that
 # we don't see complicated syntax errors when incorrect naming conventions are used. Grammars leveraging
 # this token should perform more specific regex matching during their custom validation process.
-GenericName                                 = RegexToken("<name>", re.compile(r"(?P<value>[a-zA-Z0-9_\.]+\??)\b"))
+
+# TODO: Introduce GenericUpper and GenericLower and use those for Enum and type values
+GenericName                                 = RegexToken("<generic_name>", re.compile(r"(?P<value>[a-zA-Z0-9_\.]+\??)\b"))
