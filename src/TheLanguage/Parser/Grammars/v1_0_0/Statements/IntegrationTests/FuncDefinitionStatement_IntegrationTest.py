@@ -43,6 +43,8 @@ with InitRelativeImports():
         TraditionalDelimiterPositionalError,
     )
 
+    from ...Common.VisibilityModifier import InvalidVisibilityModifierError
+
     from ...Names.VariableName import InvalidNameError
     from ...Types.StandardType import InvalidTypeError
 
@@ -119,6 +121,28 @@ def test_WithVisibility():
             """,
         ),
     ) == ResultsFromFile()
+
+# ----------------------------------------------------------------------
+def test_InvalidVisibilityModifier():
+    with pytest.raises(InvalidVisibilityModifierError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                invalid Int Func():
+                    pass
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "The visibility modifier 'invalid' is not valid; values may be 'private', 'protected', 'public'."
+    assert ex.Name == "invalid"
+    assert ex.Line == 1
+    assert ex.Column == 1
+    assert ex.LineEnd == 1
+    assert ex.ColumnEnd == ex.Column + len(ex.Name)
+
 
 # ----------------------------------------------------------------------
 def test_InvalidFuncName():

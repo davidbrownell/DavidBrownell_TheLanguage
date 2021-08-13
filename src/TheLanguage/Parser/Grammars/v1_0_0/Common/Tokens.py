@@ -49,5 +49,6 @@ PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 # we don't see complicated syntax errors when incorrect naming conventions are used. Grammars leveraging
 # this token should perform more specific regex matching during their custom validation process.
 
-# TODO: Introduce GenericUpper and GenericLower and use those for Enum and type values
 GenericName                                 = RegexToken("<generic_name>", re.compile(r"(?P<value>[a-zA-Z0-9_\.]+\??)\b"))
+GenericUpperName                            = RegexToken("<generic_upper_name>", re.compile(r"(?P<value>_?[A-Z][a-zA-Z0-9_\.]*\??)\b"))
+GenericLowerName                            = RegexToken("<generic_lower_name>", re.compile(r"(?P<value>_?[a-z][a-zA-Z0-9_\.]*\??)\b"))

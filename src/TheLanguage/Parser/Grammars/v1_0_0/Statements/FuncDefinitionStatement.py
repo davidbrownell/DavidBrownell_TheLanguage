@@ -124,6 +124,10 @@ class FuncDefinitionStatement(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 9
 
+        # Validate the visibility modifier (if any)
+        modifier = VisibilityModifier.Extract(nodes[0]) if nodes[0] is not None else None
+
+        # Validate the function name
         name, leaf = nodes[2]  # type: ignore
 
         if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
