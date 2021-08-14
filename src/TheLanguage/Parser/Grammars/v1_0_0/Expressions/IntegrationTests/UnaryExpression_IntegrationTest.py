@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TransferExpression_IntegrationTest.py
+# |  UnaryExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 15:34:00
+# |      2021-08-14 11:51:22
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for TransferExpression.py"""
+"""Automated tests for UnaryExpression.py"""
 
 import os
 import textwrap
@@ -29,33 +29,59 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..TransferExpression import *
+    from ..UnaryExpression import *
     from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
-def test_Move():
+def test_Logical():
     assert Execute(
         textwrap.dedent(
             """\
-            variable1 = <<move>> foo
-
-            variable2 = <<move>> (a, b, c)
+            value1 = not foo
+            value2 = not (a, b, c)
             """,
         ),
     ) == ResultsFromFile()
 
 
 # ----------------------------------------------------------------------
-def test_Copy():
+def test_Transfer():
     assert Execute(
         textwrap.dedent(
             """\
-            variable1 = <<copy>> foo
+            value1 = copy foo
+            value2 = copy (a, b, c)
 
-            variable2 = <<copy>> (
-                a, b,
-            )
+            value3 = move bar
+            value4 = move (e, f,)
+            """,
+        ),
+    ) == ResultsFromFile()
+
+
+# ----------------------------------------------------------------------
+def test_Mathematical():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            value1 = +foo
+            value2 = +(a, b, c)
+
+            value3 = -bar
+            value4 = -(d,)
+            """,
+        ),
+    ) == ResultsFromFile()
+
+
+# ----------------------------------------------------------------------
+def test_BitManipulation():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            value1 = ~foo
+            value2 = ~(a, b, c)
             """,
         ),
     ) == ResultsFromFile()

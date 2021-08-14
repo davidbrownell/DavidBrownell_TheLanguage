@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  UnaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 19:28:52
+# |      2021-08-14 11:43:02
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the UnaryExpression object"""
 
 import os
 
@@ -27,36 +27,50 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
 
 # ----------------------------------------------------------------------
-class TernaryExpression(GrammarPhrase):
+class UnaryExpression(GrammarPhrase):
     """\
-    Expression that yields on value on True and a different value on False.
+    A prefix to an expression.
 
-    <expr> 'if' <expr> 'else' <expr>
+    <op> <expr>
 
-    Examples:
-        "The Truth" if SomeExpr() else "The Lie"
+    Example:
+        not foo
+        -bar
     """
 
-    PHRASE_NAME                             = "Ternary Expression"
+    PHRASE_NAME                             = "Unary Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TernaryExpression, self).__init__(
+        super(UnaryExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    DynamicPhrasesType.Expressions,
-                    "if",
-                    DynamicPhrasesType.Expressions,
-                    "else",
+                    # <op>
+                    PhraseItem(
+                        name="Operator",
+                        item=tuple(
+                            CommonTokens.AlphaUnaryOperators +
+                            [
+                                # Mathematical
+                                "+",
+                                "-",
+
+                                # Bit Manipulation
+                                "~",            # Bit Complement
+                            ],
+                        ),
+                    ),
+
+                    # <expr>
                     DynamicPhrasesType.Expressions,
                 ],
-                suffers_from_infinite_recursion=True,
             ),
         )

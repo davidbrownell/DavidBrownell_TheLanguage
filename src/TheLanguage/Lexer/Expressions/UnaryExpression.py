@@ -47,7 +47,7 @@ class UnaryOperator(IntFlag):
     Positive                                = (OperatorCategory.Math << 8) + 1
     Negative                                = (OperatorCategory.Math << 8) + 2
 
-    BitCompliment                           = (OperatorCategory.BitManipulation << 8) + 1
+    BitComplement                           = (OperatorCategory.BitManipulation << 8) + 1
 
 
 # ----------------------------------------------------------------------

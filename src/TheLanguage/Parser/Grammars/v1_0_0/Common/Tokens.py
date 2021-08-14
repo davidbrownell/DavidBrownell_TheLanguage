@@ -45,7 +45,38 @@ Newline                                     = NewlineToken()
 PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
+# These keywords are special and should not be consumed by the generic expression below. Without
+# this special consideration, the phrase:
+#
+#   value = move (foo,)
+#
+# is ambiguous, as it could be considered:
+#
+#   - Function invocation expression: 'move' is the function name and '(foo,)' are the arguments
+#   - Unary expression: 'move' is the operator and '(foo,)' is a tuple
+#
+AlphaUnaryOperators                         = [
+    # Logical
+    "not",
+
+    # Transfer
+    "move",
+    "copy",
+]
+
 # This token is intended to be a generic token that will match every name used in the grammar so that
 # we don't see complicated syntax errors when incorrect naming conventions are used. Grammars leveraging
 # this token should perform more specific regex matching during their custom validation process.
-GenericName                                 = RegexToken("<generic_name>", re.compile(r"(?P<value>[a-zA-Z0-9_\.]+\??)\b"))
+def _CreateGenericName():
+    regex_suffixes = []
+
+    for alpha_unary_operator in AlphaUnaryOperators:
+        regex_suffixes.append(r"(?<!{})".format(re.escape(alpha_unary_operator)))
+
+    regex = r"(?P<value>[a-zA-Z0-9_\.]+\??)\b{}".format("".join(regex_suffixes))
+
+    return RegexToken("<generic_name>", re.compile(regex))
+
+GenericName                                 = _CreateGenericName()
+
+del _CreateGenericName

@@ -45,8 +45,8 @@ with InitRelativeImports():
 class TupleBase(GrammarPhrase):
     """Base class for Tuple expressions, names, statements, and types"""
 
-    MULTIPLE_NODE_NAME                      = "Multiple"
-    SINGLE_NODE_NAME                        = "Single"
+    MULTIPLE_PHRASE_NAME                    = "Multiple"
+    SINGLE_PHRASE_NAME                      = "Single"
 
     # ----------------------------------------------------------------------
     def __init__(
@@ -77,7 +77,7 @@ class TupleBase(GrammarPhrase):
                     # Multiple Elements
                     #   '(' <tuple_element> (',' <tuple_element>)+ ','? ')'
                     PhraseItem(
-                        name=self.MULTIPLE_NODE_NAME,
+                        name=self.MULTIPLE_PHRASE_NAME,
                         item=[
                             # '('
                             "(",
@@ -110,7 +110,7 @@ class TupleBase(GrammarPhrase):
                     # Single Element
                     #   '(' <tuple_element> ',' ')'
                     PhraseItem(
-                        name=self.SINGLE_NODE_NAME,
+                        name=self.SINGLE_PHRASE_NAME,
                         item=[
                             # '('
                             "(",
@@ -144,7 +144,7 @@ class TupleBase(GrammarPhrase):
 
         values = ExtractSequence(node)
 
-        if node.Type.Name == cls.MULTIPLE_NODE_NAME:
+        if node.Type.Name == cls.MULTIPLE_PHRASE_NAME:
             assert len(values) == 7
             yield cast(Node, values[2])
 
@@ -152,7 +152,7 @@ class TupleBase(GrammarPhrase):
                 value = ExtractSequence(value)
                 yield cast(Node, value[0])
 
-        elif node.Type.Name == cls.SINGLE_NODE_NAME:
+        elif node.Type.Name == cls.SINGLE_PHRASE_NAME:
             assert len(values) == 6
             yield cast(Node, values[2])
 

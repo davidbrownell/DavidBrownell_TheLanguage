@@ -70,7 +70,7 @@ class FuncDefinitionStatement(GrammarPhrase):
             pass
     """
 
-    NODE_NAME                               = "Func Definition Statement"
+    PHRASE_NAME                             = "Func Definition Statement"
     VALIDATION_EXPRESSION                   = re.compile(r"^_?[A-Z][a-zA-Z0-9_\.]+(?!<__)$")
 
     # ----------------------------------------------------------------------
@@ -78,7 +78,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         super(FuncDefinitionStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
                 item=[
                     # <visibility>?
                     PhraseItem(

@@ -44,14 +44,14 @@ class BinaryExpression(GrammarPhrase):
         biz and baz
     """
 
-    NODE_NAME                               = "Binary Expression"
+    PHRASE_NAME                             = "Binary Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(BinaryExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
                 item=[
                     # <expr>
                     DynamicPhrasesType.Expressions,

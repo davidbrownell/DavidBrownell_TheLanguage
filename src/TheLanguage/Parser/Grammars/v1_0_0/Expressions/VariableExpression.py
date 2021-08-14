@@ -44,14 +44,14 @@ class VariableExpression(GrammarPhrase):
         (a, b)
     """
 
-    NODE_NAME                               = "Variable Expression"
+    PHRASE_NAME                             = "Variable Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(VariableExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
 
                 # <name>
                 item=DynamicPhrasesType.Names,
