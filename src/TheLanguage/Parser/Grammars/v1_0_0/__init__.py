@@ -7,7 +7,6 @@
 #   - Index (easy)
 
 # Statements:
-#   - FuncInvocation (includes attribute or func suffix?)
 #   - Import (easy)
 #   - Delete (easy)
 #   - Class

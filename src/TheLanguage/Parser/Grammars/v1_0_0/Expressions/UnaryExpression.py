@@ -57,14 +57,22 @@ class UnaryExpression(GrammarPhrase):
                     PhraseItem(
                         name="Operator",
                         item=tuple(
-                            CommonTokens.AlphaUnaryOperators +
+                            # Note that any alphanumeric operators added here must also be added to
+                            # `DoNotMatchKeywords` in ../Common/Tokens.py.
                             [
+                                # Transfer
+                                "copy",
+                                "move",
+
+                                # Logical
+                                "not",
+
                                 # Mathematical
                                 "+",
                                 "-",
 
                                 # Bit Manipulation
-                                "~",            # Bit Complement
+                                "~",        # Bit Complement
                             ],
                         ),
                     ),
