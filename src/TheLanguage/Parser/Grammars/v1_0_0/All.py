@@ -27,6 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Expressions.BinaryExpression import BinaryExpression
     from .Expressions.TransferExpression import TransferExpression
     from .Expressions.TupleExpression import TupleExpression
     from .Expressions.VariableExpression import VariableExpression
@@ -50,6 +51,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 GrammarPhrases                              = [
     # Expressions
+    BinaryExpression(),
     TransferExpression(),
     TupleExpression(),
     VariableExpression(),

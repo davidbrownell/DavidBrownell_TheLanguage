@@ -1,7 +1,6 @@
 # TODO:
 
 # Expressions:
-#   - BinaryExpression
 #   - CastExpression (full type and modifier)
 #   - LambdaDefinition
 #   - FuncInvocation
