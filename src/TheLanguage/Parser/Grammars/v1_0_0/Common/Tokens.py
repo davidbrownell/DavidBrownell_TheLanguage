@@ -46,7 +46,7 @@ PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
 # These keywords are special and should not be consumed by the generic expression below. Without
-# this special consideration, the phrase:
+# this special consideration, the phrase (for example):
 #
 #   value = move (foo,)
 #
@@ -55,14 +55,26 @@ PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 #   - Function invocation expression: 'move' is the function name and '(foo,)' are the arguments
 #   - Unary expression: 'move' is the operator and '(foo,)' is a tuple
 #
-AlphaUnaryOperators                         = [
-    # Logical
-    "not",
+# We should not generically match these keywords:
+#
+DoNotMatchKeywords                          = [
+    # ../Statements/ReturnStatement.py
+    "return",
 
-    # Transfer
-    "move",
-    "copy",
+    # ../Statements/ThrowStatement.py
+    "throw",
+
+    # ../Statements/YieldStatement.py
+    "yield",
+
+    # ../Expressions/UnaryExpression.py
+    "not",                                  # Logical
+    "move",                                 # Transfer
+    "copy",                                 # Transfer
 ]
+
+
+# ----------------------------------------------------------------------
 
 # This token is intended to be a generic token that will match every name used in the grammar so that
 # we don't see complicated syntax errors when incorrect naming conventions are used. Grammars leveraging
@@ -70,13 +82,15 @@ AlphaUnaryOperators                         = [
 def _CreateGenericName():
     regex_suffixes = []
 
-    for alpha_unary_operator in AlphaUnaryOperators:
-        regex_suffixes.append(r"(?<!{})".format(re.escape(alpha_unary_operator)))
+    for do_not_match_keyword in DoNotMatchKeywords:
+        regex_suffixes.append(r"(?<!{})".format(re.escape(do_not_match_keyword)))
 
     regex = r"(?P<value>[a-zA-Z0-9_\.]+\??)\b{}".format("".join(regex_suffixes))
 
     return RegexToken("<generic_name>", re.compile(regex))
 
+
 GenericName                                 = _CreateGenericName()
+
 
 del _CreateGenericName
