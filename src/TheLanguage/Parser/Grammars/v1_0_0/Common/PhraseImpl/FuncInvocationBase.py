@@ -58,7 +58,7 @@ class FuncInvocationBase(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        node_name: str,
+        phrase_name: str,
         grammar_phrase_type: GrammarPhrase.Type,
     ):
         argument = PhraseItem(
@@ -129,7 +129,7 @@ class FuncInvocationBase(GrammarPhrase):
         super(FuncInvocationBase, self).__init__(
             grammar_phrase_type,
             CreatePhrase(
-                name=node_name,
+                name=phrase_name,
                 item=phrase_items,
             ),
         )

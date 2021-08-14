@@ -100,10 +100,10 @@ def _LoadDynamicPhrasesFromFile(
         del sys.modules[basename]
 
         return DynamicPhrasesInfo(
-            tuple(expressions),
-            tuple(names),
-            tuple(statements),
-            tuple(types),
+            expressions,
+            names,
+            statements,
+            types,
             AllowParentTraversal=False,
         )
 
@@ -236,7 +236,7 @@ class _ParseObserver(TranslationUnitsObserver):
         node: RootNode,
     ) -> DynamicPhrasesInfo:
         # TODO
-        return DynamicPhrasesInfo((), (), (), ())
+        return DynamicPhrasesInfo([], [], [], [])
 
     # ----------------------------------------------------------------------
     @staticmethod

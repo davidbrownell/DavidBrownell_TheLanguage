@@ -55,8 +55,8 @@ class TestStandard(object):
     _number_phrase                          = CreatePhrase(name="Number Phrase", item=[_number_token, NewlineToken()])
 
     _syntaxes                               = {
-        SemVer("1.0.0") : DynamicPhrasesInfo((), (), (_upper_phrase, _lower_phrase), ()),
-        SemVer("2.0.0") : DynamicPhrasesInfo((), (), (_upper_phrase, _lower_phrase, _number_phrase), ()),
+        SemVer("1.0.0") : DynamicPhrasesInfo([], [], [_upper_phrase, _lower_phrase], []),
+        SemVer("2.0.0") : DynamicPhrasesInfo([], [], [_upper_phrase, _lower_phrase, _number_phrase], []),
     }
 
     # ----------------------------------------------------------------------

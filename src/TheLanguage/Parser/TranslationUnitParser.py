@@ -88,10 +88,10 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     # |  Public Data
-    Expressions: Tuple[Phrase, ...]
-    Names: Tuple[Phrase, ...]
-    Statements: Tuple[Phrase, ...]
-    Types: Tuple[Phrase, ...]
+    Expressions: List[Phrase]
+    Names: List[Phrase]
+    Statements: List[Phrase]
+    Types: List[Phrase]
 
     AllowParentTraversal: bool              = field(default=True)
     Name: Optional[str]                     = field(default=None)
@@ -109,16 +109,6 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
             Types=phrase_display_func,
         )
 
-        for attribute_name in [
-            "Expressions",
-            "Names",
-            "Statements",
-            "Types",
-        ]:
-            if not isinstance(getattr(self, attribute_name), tuple):
-                # TODO: Explain why, as I can't remember
-                raise Exception("'{}' must be a tuple because...".format(attribute_name))
-
     # ----------------------------------------------------------------------
     def Clone(
         self,
@@ -131,10 +121,10 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
     ):
         # pylint: disable=too-many-function-args
         return self.__class__(
-            updated_expressions if updated_expressions is not None else tuple(self.Expressions),
-            updated_names if updated_names is not None else tuple(self.Names),
-            updated_statements if updated_statements is not None else tuple(self.Statements),
-            updated_types if updated_types is not None else tuple(self.Types),
+            updated_expressions if updated_expressions is not None else self.Expressions,
+            updated_names if updated_names is not None else self.Names,
+            updated_statements if updated_statements is not None else self.Statements,
+            updated_types if updated_types is not None else self.Types,
             updated_allow_parent_traversal if updated_allow_parent_traversal is not None else self.AllowParentTraversal,
             updated_name if updated_name is not None else self.Name,
         )
