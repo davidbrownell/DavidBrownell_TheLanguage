@@ -18,6 +18,8 @@
 import os
 import re
 
+from typing import cast
+
 from dataclasses import dataclass
 
 import CommonEnvironment
@@ -31,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common import ParametersPhraseItem
     from ..Common import Tokens as CommonTokens
     from ..Common.VisibilityModifier import VisibilityModifier
     from ...GrammarPhrase import GrammarPhrase, ValidationError
@@ -56,7 +59,7 @@ class FuncDefinitionStatement(GrammarPhrase):
     """\
     Defines a function.
 
-    <visibility>? <type> <name> '(' (<type> <name> (<type> <name> ',')* ','?)* ')' ':'
+    <visibility>? <type> <name> <parameter_phrase_item> ':'
         <statement>+
 
     Examples:
@@ -72,14 +75,6 @@ class FuncDefinitionStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        parameter_item = PhraseItem(
-            name="Parameter",
-            item=[
-                DynamicPhrasesType.Types,
-                DynamicPhrasesType.Names,
-            ],
-        )
-
         super(FuncDefinitionStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
@@ -98,40 +93,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                     # <name>
                     CommonTokens.GenericName,
 
-                    # '('
-                    "(",
-                    CommonTokens.PushIgnoreWhitespaceControl,
-
-                    # (<type> <name> (',' <type> <name>)* ','?)*
-                    PhraseItem(
-                        name="Parameters",
-                        item=[
-                            # <type> <name>
-                            parameter_item,
-
-                            # (',' <type> <name>)*
-                            PhraseItem(
-                                name="Comma and Element",
-                                item=[
-                                    ",",
-                                    parameter_item,
-                                ],
-                                arity="*",
-                            ),
-
-                            # ','?
-                            PhraseItem(
-                                name="Trailing Comma",
-                                item=",",
-                                arity="?",
-                            ),
-                        ],
-                        arity="?",
-                    ),
-
-                    # ')'
-                    CommonTokens.PopIgnoreWhitespaceControl,
-                    ")",
+                    ParametersPhraseItem.Create(),
 
                     # ':'
                     ":",
@@ -160,9 +122,16 @@ class FuncDefinitionStatement(GrammarPhrase):
         node: Node,
     ):
         nodes = ExtractSequence(node)
-        assert len(nodes) == 13
+        assert len(nodes) == 9
 
+        # Validate the visibility modifier (if any)
+        if nodes[0] is not None:
+            VisibilityModifier.Extract(nodes[0])  # type: ignore
+
+        # Validate the function name
         name, leaf = nodes[2]  # type: ignore
 
-        if not cls.VALIDATION_EXPRESSION.match(name):
+        if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
             raise InvalidFuncError.FromNode(leaf, name)
+
+        ParametersPhraseItem.Validate(cast(Node, nodes[3]))

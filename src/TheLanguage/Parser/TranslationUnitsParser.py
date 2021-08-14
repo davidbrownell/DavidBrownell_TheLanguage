@@ -192,7 +192,7 @@ async def ParseAsync(
                 if source_info is None:
                     del thread_info.source_lookup[fully_qualified_name]
 
-                    final_result = DynamicPhrasesInfo((), (), (), ())
+                    final_result = DynamicPhrasesInfo([], [], [], [])
                 else:
                     final_result = source_info.DynamicInfo
 

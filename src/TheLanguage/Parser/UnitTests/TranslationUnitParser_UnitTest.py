@@ -71,10 +71,10 @@ class TestSimple(object):
     _number_phrase                          = CreatePhrase(name="Number Phrase", item=[_number_token, NewlineToken()])
 
     _phrases                                = DynamicPhrasesInfo(
-        (),
-        (),
-        (_upper_phrase, _lower_phrase, _number_phrase),
-        (),
+        [],
+        [],
+        [_upper_phrase, _lower_phrase, _number_phrase],
+        [],
     )
 
     # ----------------------------------------------------------------------
@@ -641,12 +641,7 @@ class TestIndentation(object):
         ],
     )
 
-    _phrases                                = DynamicPhrasesInfo(
-        (),
-        (),
-        (_phrase,),
-        (),
-    )
+    _phrases                                = DynamicPhrasesInfo([], [], [_phrase], [])
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -751,8 +746,8 @@ class TestNewPhrases(object):
     _upper_phrase                           = CreatePhrase(name="Upper Phrase", item=_upper_token)
     _lower_phrase                           = CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()])
 
-    _phrases                                = DynamicPhrasesInfo((), (), (_upper_phrase,), ())
-    _new_phrases                            = DynamicPhrasesInfo((), (), (_lower_phrase,), ())
+    _phrases                                = DynamicPhrasesInfo([], [], [_upper_phrase,], [])
+    _new_phrases                            = DynamicPhrasesInfo([], [], [_lower_phrase,], [])
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -901,8 +896,8 @@ class TestNewScopedPhrases(object):
     _indent_phrase                          = CreatePhrase(name="Indent Phrase", item=IndentToken())
     _dedent_phrase                          = CreatePhrase(name="Dedent Phrase", item=DedentToken())
 
-    _phrases                                = DynamicPhrasesInfo((), (), (_upper_phrase, _newline_phrase, _indent_phrase, _dedent_phrase), ())
-    _new_phrases                            = DynamicPhrasesInfo((), (), (_lower_phrase,), ())
+    _phrases                                = DynamicPhrasesInfo([], [], [_upper_phrase, _newline_phrase, _indent_phrase, _dedent_phrase], [])
+    _new_phrases                            = DynamicPhrasesInfo([], [], [_lower_phrase,], [])
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -1226,8 +1221,8 @@ class TestNewScopedPhrasesComplex(object):
         ],
     )
 
-    _phrases                             = DynamicPhrasesInfo((), (), (_newline_phrase, _new_scope_phrase), ())
-    _new_phrases                         = DynamicPhrasesInfo((), (), (_upper_phrase, _lower_phrase), ())
+    _phrases                             = DynamicPhrasesInfo([], [], [_newline_phrase, _new_scope_phrase], [])
+    _new_phrases                         = DynamicPhrasesInfo([], [], [_upper_phrase, _lower_phrase], [])
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -1388,7 +1383,7 @@ class TestEmbeddedPhrases(object):
     _uul_phrase                             = CreatePhrase(name="uul", item=[_upper_token, _upper_lower_phrase])
     _lul_phrase                             = CreatePhrase(name="lul", item=[_lower_token, _upper_lower_phrase])
 
-    _phrases                                = DynamicPhrasesInfo((), (), (_uul_phrase, _lul_phrase), ())
+    _phrases                                = DynamicPhrasesInfo([], [], [_uul_phrase, _lul_phrase], [])
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -1524,10 +1519,10 @@ class TestVariedLengthMatches(object):
     _number_phrase                          = CreatePhrase(name="Number", item=[_number_token, _number_token, _number_token, NewlineToken()])
 
     _phrases                                = DynamicPhrasesInfo(
-        (),
-        (),
-        (_upper_phrase, _lower_phrase, _number_phrase),
-        (),
+        [],
+        [],
+        [_upper_phrase, _lower_phrase, _number_phrase],
+        [],
     )
 
     # ----------------------------------------------------------------------
@@ -1674,18 +1669,18 @@ class TestVariedLengthMatches(object):
 @pytest.mark.asyncio
 async def test_EmptyDynamicPhrasesInfo(parse_mock):
     parse_mock.OnPhraseCompleteAsync = CoroutineMock(
-        return_value=DynamicPhrasesInfo((), (), (), ()),
+        return_value=DynamicPhrasesInfo([], [], [], []),
     )
 
     result = await ParseAsync(
         DynamicPhrasesInfo(
-            (),
-            (),
-            (
+            [],
+            [],
+            [
                 CreatePhrase(name="Newline Phrase", item=NewlineToken()),
                 CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()]),
-            ),
-            (),
+            ],
+            [],
         ),
         CreateIterator(
             textwrap.dedent(
@@ -1761,10 +1756,10 @@ class TestPreventParentTraversal(object):
     _dedent_phrase                          = CreatePhrase(name="Dedent Phrase", item=DedentToken())
 
     _phrases                                = DynamicPhrasesInfo(
-        (),
-        (),
-        (_upper_phrase, _indent_phrase, _dedent_phrase),
-        (),
+        [],
+        [],
+        [_upper_phrase, _indent_phrase, _dedent_phrase],
+        [],
     )
 
     # ----------------------------------------------------------------------
@@ -1772,10 +1767,10 @@ class TestPreventParentTraversal(object):
     async  def test_Match(self, parse_mock):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicPhrasesInfo(
-                (),
-                (),
-                (self._lower_phrase, self._dedent_phrase),
-                (),
+                [],
+                [],
+                [self._lower_phrase, self._dedent_phrase],
+                [],
                 False,
             ),
         )
@@ -1990,10 +1985,10 @@ class TestPreventParentTraversal(object):
     async def test_NoMatch(self, parse_mock):
         parse_mock.OnIndentAsync = CoroutineMock(
             return_value=DynamicPhrasesInfo(
-                (),
-                (),
-                (self._lower_phrase, self._dedent_phrase),
-                (),
+                [],
+                [],
+                [self._lower_phrase, self._dedent_phrase],
+                [],
                 False,
             ),
         )
@@ -2217,10 +2212,10 @@ class TestPreventParentTraversal(object):
 async def test_InvalidDynamicTraversalError(parse_mock):
     parse_mock.OnPhraseCompleteAsync = CoroutineMock(
         return_value=DynamicPhrasesInfo(
-            (),
-            (),
-            (CreatePhrase(name="Newline", item=NewlineToken()),),
-            (),
+            [],
+            [],
+            [CreatePhrase(name="Newline", item=NewlineToken()),],
+            [],
             False,
         ),
     )
@@ -2228,10 +2223,10 @@ async def test_InvalidDynamicTraversalError(parse_mock):
     with pytest.raises(InvalidDynamicTraversalError) as ex:
         result = await ParseAsync(
             DynamicPhrasesInfo(
-                (),
-                (),
-                (CreatePhrase(name="Newline", item=NewlineToken()),),
-                (),
+                [],
+                [],
+                [CreatePhrase(name="Newline", item=NewlineToken()),],
+                [],
             ),
             CreateIterator(
                 textwrap.dedent(
@@ -2258,14 +2253,14 @@ async def test_InvalidDynamicTraversalError(parse_mock):
 async def test_DynamicExpressions(parse_mock):
     result = await ParseAsync(
         DynamicPhrasesInfo(
-            (
+            [
                 CreatePhrase(
                     name="Expression",
                     item=_number_token,
                 ),
-            ),
-            (),
-            (
+            ],
+            [],
+            [
                 CreatePhrase(
                     name="Statement",
                     item=[
@@ -2275,8 +2270,8 @@ async def test_DynamicExpressions(parse_mock):
                         NewlineToken(),
                     ],
                 ),
-            ),
-            (),
+            ],
+            [],
         ),
         CreateIterator("WORD 1234 lower"),
         parse_mock,
@@ -2396,26 +2391,26 @@ class TestCatastrophicInclude(object):
     )
 
     _phrases                                = DynamicPhrasesInfo(
-        (),
-        (),
-        (_lower_include_phrase, _number_include_phrase),
-        (),
+        [],
+        [],
+        [_lower_include_phrase, _number_include_phrase],
+        [],
     )
 
     _lower_dynamic_phrases                  = DynamicPhrasesInfo(
-        (),
-        (),
-        (_lower_phrase,),
-        (),
+        [],
+        [],
+        [_lower_phrase,],
+        [],
         True,
         # "Lower Dynamic Phrases",
     )
 
     _number_dynamic_phrases                 = DynamicPhrasesInfo(
-        (),
-        (),
-        (_number_phrase,),
-        (),
+        [],
+        [],
+        [_number_phrase,],
+        [],
         True,
         # "Number Dynamic Phrases",
     )

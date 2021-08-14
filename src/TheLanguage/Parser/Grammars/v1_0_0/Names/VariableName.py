@@ -65,6 +65,8 @@ class VariableName(GrammarPhrase):
             GrammarPhrase.Type.Name,
             CreatePhrase(
                 name=self.NODE_NAME,
+
+                # TODO: Does this need to be in a sequence?
                 item=[CommonTokens.GenericName],
             ),
         )
@@ -80,5 +82,5 @@ class VariableName(GrammarPhrase):
         assert len(nodes) == 1
         name, leaf = nodes[0]  # type: ignore
 
-        if not cls.VALIDATION_EXPRESSION.match(name):
+        if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
             raise InvalidNameError.FromNode(leaf, name)

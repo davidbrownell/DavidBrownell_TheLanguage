@@ -209,7 +209,7 @@ class Observer(TranslationUnitsParserObserver):
 
             for syntax_statement in _syntax_statements:
                 if not any(statement for statement in phrases_info.Statements if getattr(statement, "Name", None) == syntax_statement.Name):
-                    updated_statements = (syntax_statement,) + updated_statements
+                    updated_statements = [syntax_statement] + updated_statements
 
             updated_syntaxes[semver] = phrases_info.Clone(
                 updated_statements=updated_statements,
