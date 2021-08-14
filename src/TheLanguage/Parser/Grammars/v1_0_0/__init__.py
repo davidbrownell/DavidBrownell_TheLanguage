@@ -5,7 +5,6 @@
 #   - LambdaDefinition
 #   - FuncInvocation
 #   - Generator
-#   - Ternary
 #   - Unary
 #   - Index (easy)
 
