@@ -58,6 +58,9 @@ PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 # We should not generically match these keywords:
 #
 DoNotMatchKeywords                          = [
+    # ../Statements/DeleteStatement.py
+    "del",
+
     # ../Statements/ReturnStatement.py
     "return",
 
