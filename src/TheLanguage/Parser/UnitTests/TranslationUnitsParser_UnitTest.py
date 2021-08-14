@@ -115,10 +115,10 @@ class TestStandard(object):
     )
 
     _phrases                                = DynamicPhrasesInfo(
-        (),
-        (),
-        (_include_phrase, _upper_phrase, _lower_phrase, _number_phrase, _new_scope_phrase),
-        (),
+        [],
+        [],
+        [_include_phrase, _upper_phrase, _lower_phrase, _number_phrase, _new_scope_phrase],
+        [],
     )
 
     _or_phrase_name                         = "{Include, Upper, Lower, Number, New Scope}"
@@ -172,9 +172,9 @@ class TestStandard(object):
                 node: RootNode,
             ) -> DynamicPhrasesInfo:
                 if fully_qualified_name == "number":
-                    return DynamicPhrasesInfo((), (), (cls._dynamic_number_phrase,), ())
+                    return DynamicPhrasesInfo([], [], [cls._dynamic_number_phrase], [])
 
-                return DynamicPhrasesInfo((), (), (), ())
+                return DynamicPhrasesInfo([], [], [], [])
 
             # ----------------------------------------------------------------------
             @staticmethod
