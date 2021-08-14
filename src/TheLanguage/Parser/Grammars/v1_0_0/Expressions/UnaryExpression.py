@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TransferExpression.py
+# |  UnaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 15:30:15
+# |      2021-08-14 11:43:02
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TransferExpression object"""
+"""Contains the UnaryExpression object"""
 
 import os
 
@@ -27,38 +27,50 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
 
 # ----------------------------------------------------------------------
-class TransferExpression(GrammarPhrase):
+class UnaryExpression(GrammarPhrase):
     """\
-    Transfers a variable.
+    A prefix to an expression.
 
-    'move'|'copy' <name>
+    <op> <expr>
 
     Example:
-        move foo
-        copy (bar, baz)
+        not foo
+        -bar
     """
 
-    PHRASE_NAME                             = "Transfer Expression"
+    PHRASE_NAME                             = "Unary Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TransferExpression, self).__init__(
+        super(UnaryExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
                 name=self.PHRASE_NAME,
-
                 item=[
-                    # 'move' | 'copy'
-                    # TODO: Determine if '<<' and '>>' are ideal after everything else is complete
-                    ("<<move>>", "<<copy>>"),
+                    # <op>
+                    PhraseItem(
+                        name="Operator",
+                        item=tuple(
+                            CommonTokens.AlphaUnaryOperators +
+                            [
+                                # Mathematical
+                                "+",
+                                "-",
 
-                    # <name>
-                    DynamicPhrasesType.Names,
+                                # Bit Manipulation
+                                "~",            # Bit Complement
+                            ],
+                        ),
+                    ),
+
+                    # <expr>
+                    DynamicPhrasesType.Expressions,
                 ],
             ),
         )

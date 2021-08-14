@@ -1,7 +1,6 @@
 # TODO:
 
 # Expressions:
-#   - Unary
 # ---
 #   - Generator
 #   - LambdaDefinition

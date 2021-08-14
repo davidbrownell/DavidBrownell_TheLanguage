@@ -31,8 +31,8 @@ with InitRelativeImports():
     from .Expressions.CastExpression import CastExpression
     from .Expressions.FuncInvocationExpression import FuncInvocationExpression
     from .Expressions.TernaryExpression import TernaryExpression
-    from .Expressions.TransferExpression import TransferExpression
     from .Expressions.TupleExpression import TupleExpression
+    from .Expressions.UnaryExpression import UnaryExpression
     from .Expressions.VariableExpression import VariableExpression
 
     from .Names.TupleName import TupleName
@@ -58,8 +58,8 @@ GrammarPhrases                              = [
     CastExpression(),
     FuncInvocationExpression(),
     TernaryExpression(),
-    TransferExpression(),
     TupleExpression(),
+    UnaryExpression(),
     VariableExpression(),
 
     # Names
