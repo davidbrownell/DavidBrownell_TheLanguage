@@ -3,7 +3,6 @@
 # Expressions:
 #   - CastExpression (full type and modifier)
 #   - LambdaDefinition
-#   - FuncInvocation
 #   - Generator
 #   - Unary
 #   - Index (easy)

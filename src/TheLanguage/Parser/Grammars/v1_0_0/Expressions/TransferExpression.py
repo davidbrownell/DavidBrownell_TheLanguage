@@ -54,7 +54,8 @@ class TransferExpression(GrammarPhrase):
 
                 item=[
                     # 'move' | 'copy'
-                    ("move", "copy"),
+                    # TODO: Determine if '<<' and '>>' are ideal after everything else is complete
+                    ("<<move>>", "<<copy>>"),
 
                     # <name>
                     DynamicPhrasesType.Names,

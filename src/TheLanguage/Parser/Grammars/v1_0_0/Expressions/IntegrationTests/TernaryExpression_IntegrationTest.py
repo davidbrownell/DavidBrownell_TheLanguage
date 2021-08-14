@@ -18,8 +18,6 @@
 import os
 import textwrap
 
-import pytest
-
 import CommonEnvironment
 from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 
@@ -36,7 +34,6 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: Enabled once FuncInvicationExpression is available")
 def test_Standard():
     assert Execute(
         textwrap.dedent(
@@ -46,8 +43,3 @@ def test_Standard():
             """,
         ),
     ) == ResultsFromFile()
-
-
-# Remove this function once the function above is unskipped
-def test_RemoveMe():
-    assert True
