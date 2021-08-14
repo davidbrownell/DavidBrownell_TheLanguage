@@ -1,13 +1,11 @@
 # TODO:
 
 # Expressions:
-#   - BinaryExpression
 #   - CastExpression (full type and modifier)
 #   - LambdaDefinition
 #   - FuncInvocation
 #   - Generator
 #   - Ternary
-#   - Transfer (easy)
 #   - Unary
 #   - Index (easy)
 
