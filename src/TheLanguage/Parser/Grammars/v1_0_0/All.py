@@ -39,6 +39,7 @@ with InitRelativeImports():
     from .Names.VariableName import VariableName
 
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
+    from .Statements.FuncInvocationStatement import FuncInvocationStatement
     from .Statements.PassStatement import PassStatement
     from .Statements.ReturnStatement import ReturnStatement
     from .Statements.ThrowStatement import ThrowStatement
@@ -68,6 +69,7 @@ GrammarPhrases                              = [
 
     # Statements
     FuncDefinitionStatement(),
+    FuncInvocationStatement(),
     PassStatement(),
     ReturnStatement(),
     ThrowStatement(),
