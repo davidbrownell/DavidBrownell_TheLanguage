@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Dict, Generator, List, Optional, Tuple
+from typing import cast, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -59,6 +59,27 @@ class ParametersType(Enum):
     @classmethod
     def CreatePhraseItem(cls):
         return tuple(value.name for value in cls)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Extract(
+        cls,
+        node: Union[Node, Tuple[str, Leaf]],
+    ) -> "ParametersType":
+        if isinstance(node, tuple):
+            name, leaf = node
+        else:
+            name = ExtractToken(
+                node,  # type: ignore
+                use_match=True,
+            )
+
+            leaf = node
+
+        try:
+            return cls[name]  # type: ignore
+        except KeyError:
+            assert False, (name, leaf)
 
 
 # ----------------------------------------------------------------------
@@ -290,9 +311,9 @@ def Validate(
             enum_method = _EnumNewStyle
 
         # Create the info
-        for parameter_type, parameters in enum_method(node):
-            assert parameter_type not in parameters_dict, parameters_dict
-            parameters_dict[parameter_type] = parameters
+        for parameters_type, parameters in enum_method(node):
+            assert parameters_type not in parameters_dict, parameters_dict
+            parameters_dict[parameters_type] = parameters
 
     # Commit the info
     object.__setattr__(node, "Info", NodeInfo(parameters_dict))
@@ -373,11 +394,11 @@ def _EnumTraditional(
 
     if parameters:
         if keyword_parameter_index is not None:
-            parameter_type = ParametersType.key
+            parameters_type = ParametersType.key
         else:
-            parameter_type = ParametersType.any
+            parameters_type = ParametersType.any
 
-        yield parameter_type, parameters
+        yield parameters_type, parameters
 
 
 # ----------------------------------------------------------------------
@@ -395,18 +416,12 @@ def _EnumNewStyle(
         assert len(nodes) == 5
 
         # Get the parameter type
-        # TODO: Move this to the enum
-        parameter_type_value = ExtractToken(
-            nodes[0],  # type: ignore
-            use_match=True,
-        )
+        parameters_type = ParametersType.Extract(nodes[0])  # type: ignore
 
-        parameter_type = ParametersType[parameter_type_value]  # type: ignore
+        if parameters_type in encountered:
+            raise NewStyleParameterGroupDuplicateError.FromNode(nodes[0], parameters_type.name)  # type: ignore
 
-        if parameter_type in encountered:
-            raise NewStyleParameterGroupDuplicateError.FromNode(nodes[0], parameter_type_value)  # type: ignore
-
-        encountered.add(parameter_type)
+        encountered.add(parameters_type)
 
         # Get the parameters
         parameters = list(
@@ -418,4 +433,4 @@ def _EnumNewStyle(
             ),
         )
 
-        yield parameter_type, parameters  # type: ignore
+        yield parameters_type, parameters  # type: ignore

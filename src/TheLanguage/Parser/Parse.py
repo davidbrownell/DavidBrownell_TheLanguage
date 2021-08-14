@@ -42,6 +42,7 @@ with InitRelativeImports():
 
     from .Grammars.GrammarPhrase import GrammarPhrase, ImportGrammarStatement
 
+    # TODO: Consider adding if functionality for target similar to the Syntax decorator
     from .Syntax import Observer as SyntaxObserver
 
     from .TranslationUnitsParser import (
@@ -161,7 +162,7 @@ def Prune(
     roots: Dict[str, RootNode],
     max_num_threads: Optional[int]=None,
 ):
-    """Removes Leaf nodes that have been explicity ignored (for easier parsing)"""
+    """Removes Leaf nodes that have been explicitly ignored (for easier parsing)"""
 
     _Execute(
         lambda fqn, node: _Prune(node),
