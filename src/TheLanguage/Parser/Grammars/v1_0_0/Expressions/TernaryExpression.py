@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TransferExpression.py
+# |  TernaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 15:30:15
+# |      2021-08-13 19:28:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TransferExpression object"""
+"""Contains the TernaryExpression object"""
 
 import os
 
@@ -32,33 +32,31 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class TransferExpression(GrammarPhrase):
+class TernaryExpression(GrammarPhrase):
     """\
-    Transfers a variable.
+    Expression that yields on value on True and a different value on False.
 
-    'move'|'copy' <name>
+    <expr> 'if' <expr> 'else' <expr>
 
-    Example:
-        move foo
-        copy (bar, baz)
+    Examples:
+        "The Truth" if SomeExpr() else "The Lie"
     """
 
-    NODE_NAME                               = "Transfer Expression"
+    NODE_NAME                               = "Ternary Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TransferExpression, self).__init__(
+        super(TernaryExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
                 name=self.NODE_NAME,
-
                 item=[
-                    # 'move' | 'copy'
-                    # TODO: Determine if '<<' and '>>' are ideal after everything else is complete
-                    ("<<move>>", "<<copy>>"),
-
-                    # <name>
-                    DynamicPhrasesType.Names,
+                    DynamicPhrasesType.Expressions,
+                    "if",
+                    DynamicPhrasesType.Expressions,
+                    "else",
+                    DynamicPhrasesType.Expressions,
                 ],
+                suffers_from_infinite_recursion=True,
             ),
         )

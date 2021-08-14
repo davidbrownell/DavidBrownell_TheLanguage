@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TransferExpression_IntegrationTest.py
+# |  TernaryExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 15:34:00
+# |      2021-08-13 19:32:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for TransferExpression.py"""
+"""Automated tests for TernaryExpression.py"""
 
 import os
 import textwrap
@@ -29,33 +29,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..TransferExpression import *
+    from ..TernaryExpression import *
     from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
-def test_Move():
+def test_Standard():
     assert Execute(
         textwrap.dedent(
             """\
-            variable1 = <<move>> foo
-
-            variable2 = <<move>> (a, b, c)
-            """,
-        ),
-    ) == ResultsFromFile()
-
-
-# ----------------------------------------------------------------------
-def test_Copy():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            variable1 = <<copy>> foo
-
-            variable2 = <<copy>> (
-                a, b,
-            )
+            value1 = TrueFunc() if Condition1() else FalseFunc()
+            value2 = (a, b, c) if Condition2() else (d,)
             """,
         ),
     ) == ResultsFromFile()
