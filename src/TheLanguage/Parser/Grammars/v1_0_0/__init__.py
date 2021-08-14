@@ -1,24 +1,24 @@
 # TODO:
 
 # Expressions:
-#   - CastExpression (full type and modifier)
-#   - LambdaDefinition
-#   - Generator
 #   - Unary
+# ---
+#   - Generator
+#   - LambdaDefinition
 #   - Index (easy)
 
 # Statements:
-#   - Binary
-#   - Class
+#   - FuncInvocation (includes attribute or func suffix?)
+#   - Import (easy)
 #   - Delete (easy)
+#   - Class
+#   - Binary Op
 #   - Docstring
 #   - For
 #   - MethodDefinition
 #   - ClassAttribute
 #   - ClassCompilerData
-#   - FuncInvocation (includes attribute or func suffix?)
 #   - If
-#   - Import (easy)
 #   - ScopedRef
 #   - SmartIf
 #   - Try/Catch

@@ -43,14 +43,14 @@ class TransferExpression(GrammarPhrase):
         copy (bar, baz)
     """
 
-    NODE_NAME                               = "Transfer Expression"
+    PHRASE_NAME                             = "Transfer Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(TransferExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
 
                 item=[
                     # 'move' | 'copy'

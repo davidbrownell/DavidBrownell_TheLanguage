@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  CastExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 19:28:52
+# |      2021-08-14 11:25:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the CastExpression object"""
 
 import os
 
@@ -27,35 +27,47 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common.TypeModifier import TypeModifier
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
 
 # ----------------------------------------------------------------------
-class TernaryExpression(GrammarPhrase):
+class CastExpression(GrammarPhrase):
     """\
-    Expression that yields on value on True and a different value on False.
+    Casts a variable to a different type.
 
-    <expr> 'if' <expr> 'else' <expr>
+    <expr> 'as' <modifier> | <type>
 
     Examples:
-        "The Truth" if SomeExpr() else "The Lie"
+        foo = bar as Int
+        biz = baz as Int val
+        another = a_var as val
     """
 
-    PHRASE_NAME                             = "Ternary Expression"
+    PHRASE_NAME                             = "Cast Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TernaryExpression, self).__init__(
+        super(CastExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
+                    # <expr>
                     DynamicPhrasesType.Expressions,
-                    "if",
-                    DynamicPhrasesType.Expressions,
-                    "else",
-                    DynamicPhrasesType.Expressions,
+
+                    # 'as'
+                    "as",
+
+                    # <modifier> | <type>
+                    PhraseItem(
+                        name="Type or Modifier",
+                        item=(
+                            TypeModifier.CreatePhraseItem(),
+                            DynamicPhrasesType.Types,
+                        ),
+                    ),
                 ],
                 suffers_from_infinite_recursion=True,
             ),

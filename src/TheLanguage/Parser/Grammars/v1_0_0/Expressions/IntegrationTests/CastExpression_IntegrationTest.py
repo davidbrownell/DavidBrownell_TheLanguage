@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement.py
+# |  CastExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 22:49:44
+# |      2021-08-14 11:33:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement"""
+"""Automated tests for CastExpression.py"""
 
 import os
+import textwrap
 
 import CommonEnvironment
+from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,34 +29,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase
+    from ..CastExpression import *
+    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
-class PassStatement(GrammarPhrase):
-    """\
-    Noop statement.
-
-    'pass'
-
-    Example:
-        Int var Func():
-            pass
-    """
-
-    PHRASE_NAME                             = "Pass Statement"
-
-    # ----------------------------------------------------------------------
-    def __init__(self):
-        super(PassStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    "pass",
-                    CommonTokens.Newline,
-                ],
-            ),
-        )
+def test_Standard():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            value1 = one as Int
+            value2 = two as Char val
+            value3 = three as var
+            """,
+        ),
+    ) == ResultsFromFile()
