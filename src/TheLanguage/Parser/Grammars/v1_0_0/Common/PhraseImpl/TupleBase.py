@@ -29,9 +29,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase, Leaf, Node
-    from ....Phrases.DSL import (
+    from .. import Tokens as CommonTokens
+    from ....GrammarPhrase import GrammarPhrase, Leaf, Node
+    from .....Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractOr,

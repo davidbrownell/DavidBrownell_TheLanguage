@@ -65,6 +65,8 @@ class VariableName(GrammarPhrase):
             GrammarPhrase.Type.Name,
             CreatePhrase(
                 name=self.NODE_NAME,
+
+                # TODO: Does this need to be in a sequence?
                 item=[CommonTokens.GenericName],
             ),
         )

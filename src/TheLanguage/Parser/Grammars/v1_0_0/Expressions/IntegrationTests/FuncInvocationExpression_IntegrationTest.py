@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TransferExpression_IntegrationTest.py
+# |  FuncInvocationExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 15:34:00
+# |      2021-08-13 20:12:02
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for TransferExpression.py"""
+"""Automated test for FuncInvocationExpression.py"""
 
 import os
 import textwrap
@@ -29,33 +29,60 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..TransferExpression import *
+    from ..FuncInvocationExpression import *
     from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
-def test_Move():
+def test_NoArgs():
     assert Execute(
         textwrap.dedent(
             """\
-            variable1 = <<move>> foo
-
-            variable2 = <<move>> (a, b, c)
+            value = Func()
             """,
         ),
     ) == ResultsFromFile()
 
 
 # ----------------------------------------------------------------------
-def test_Copy():
+def test_SingleArg():
     assert Execute(
         textwrap.dedent(
             """\
-            variable1 = <<copy>> foo
+            value1 = Func1(arg)
+            value2 = Func2((a,))
+            """,
+        ),
+    ) == ResultsFromFile()
 
-            variable2 = <<copy>> (
-                a, b,
+
+# ----------------------------------------------------------------------
+def test_MultipleArgs():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            value1 = Func1(a, b, c)
+            value2 = Func2(e, InnerFunc(f, (g, h)), i)
+            """,
+        ),
+    ) == ResultsFromFile()
+
+
+# ----------------------------------------------------------------------
+def test_WithKeywords():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            value1 = Func1(a=one, b=two, c=three)
+
+            value2 = Func2(
+                a,
+                b,
+                c=three,
+                d=four,
             )
             """,
         ),
     ) == ResultsFromFile()
+
+# TODO: keyword before pos
