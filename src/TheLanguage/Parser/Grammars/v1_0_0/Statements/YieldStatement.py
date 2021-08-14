@@ -45,14 +45,14 @@ class YieldStatement(GrammarPhrase):
         yield from Func()
     """
 
-    NODE_NAME                               = "Yield Statement"
+    PHRASE_NAME                             = "Yield Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(YieldStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
                 item=[
                     "yield",
                     PhraseItem(

@@ -28,10 +28,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Expressions.BinaryExpression import BinaryExpression
+    from .Expressions.CastExpression import CastExpression
     from .Expressions.FuncInvocationExpression import FuncInvocationExpression
     from .Expressions.TernaryExpression import TernaryExpression
-    from .Expressions.TransferExpression import TransferExpression
     from .Expressions.TupleExpression import TupleExpression
+    from .Expressions.UnaryExpression import UnaryExpression
     from .Expressions.VariableExpression import VariableExpression
 
     from .Names.TupleName import TupleName
@@ -54,10 +55,11 @@ with InitRelativeImports():
 GrammarPhrases                              = [
     # Expressions
     BinaryExpression(),
+    CastExpression(),
     FuncInvocationExpression(),
     TernaryExpression(),
-    TransferExpression(),
     TupleExpression(),
+    UnaryExpression(),
     VariableExpression(),
 
     # Names

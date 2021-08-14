@@ -56,7 +56,7 @@ class VariableName(GrammarPhrase):
         bar
     """
 
-    NODE_NAME                               = "Variable Name"
+    PHRASE_NAME                             = "Variable Name"
     VALIDATION_EXPRESSION                   = re.compile(r"^_?[a-z][a-zA-Z0-9_\.]*(?!<__)$")
 
     # ----------------------------------------------------------------------
@@ -64,7 +64,7 @@ class VariableName(GrammarPhrase):
         super(VariableName, self).__init__(
             GrammarPhrase.Type.Name,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
 
                 # TODO: Does this need to be in a sequence?
                 item=[CommonTokens.GenericName],

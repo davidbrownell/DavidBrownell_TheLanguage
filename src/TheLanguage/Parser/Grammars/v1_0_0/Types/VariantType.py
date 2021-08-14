@@ -44,14 +44,14 @@ class VariantType(GrammarPhrase):
         (Int val | Bool | Char view)
     """
 
-    NODE_NAME                               = "Variant Type"
+    PHRASE_NAME                             = "Variant Type"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(VariantType, self).__init__(
             GrammarPhrase.Type.Type,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
                 item=[
                     # '('
                     "(",

@@ -52,14 +52,14 @@ class VariableDeclarationStatement(GrammarPhrase):
         (a, b,) = Func()
     """
 
-    NODE_NAME                               = "Variable Declaration Statement"
+    PHRASE_NAME                             = "Variable Declaration Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(VariableDeclarationStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
                 item=[
                     # <modifier>?
                     PhraseItem(
