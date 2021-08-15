@@ -44,14 +44,14 @@ class ReturnStatement(GrammarPhrase):
         return var
     """
 
-    NODE_NAME                               = "Return Statement"
+    PHRASE_NAME                               = "Return Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(ReturnStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
                 item=[
                     "return",
                     PhraseItem(

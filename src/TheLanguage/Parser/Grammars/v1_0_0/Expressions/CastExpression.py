@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TransferExpression.py
+# |  CastExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 15:30:15
+# |      2021-08-14 11:25:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TransferExpression object"""
+"""Contains the CastExpression object"""
 
 import os
 
@@ -27,38 +27,48 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common.TypeModifier import TypeModifier
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
 
 # ----------------------------------------------------------------------
-class TransferExpression(GrammarPhrase):
+class CastExpression(GrammarPhrase):
     """\
-    Transfers a variable.
+    Casts a variable to a different type.
 
-    'move'|'copy' <name>
+    <expr> 'as' <modifier> | <type>
 
-    Example:
-        move foo
-        copy (bar, baz)
+    Examples:
+        foo = bar as Int
+        biz = baz as Int val
+        another = a_var as val
     """
 
-    NODE_NAME                               = "Transfer Expression"
+    PHRASE_NAME                             = "Cast Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TransferExpression, self).__init__(
+        super(CastExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
-                name=self.NODE_NAME,
-
+                name=self.PHRASE_NAME,
                 item=[
-                    # 'move' | 'copy'
-                    # TODO: Determine if '<<' and '>>' are ideal after everything else is complete
-                    ("<<move>>", "<<copy>>"),
+                    # <expr>
+                    DynamicPhrasesType.Expressions,
 
-                    # <name>
-                    DynamicPhrasesType.Names,
+                    # 'as'
+                    "as",
+
+                    # <modifier> | <type>
+                    PhraseItem(
+                        name="Type or Modifier",
+                        item=(
+                            TypeModifier.CreatePhraseItem(),
+                            DynamicPhrasesType.Types,
+                        ),
+                    ),
                 ],
+                suffers_from_infinite_recursion=True,
             ),
         )

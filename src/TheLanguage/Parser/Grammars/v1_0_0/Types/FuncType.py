@@ -44,14 +44,14 @@ class FuncType(GrammarPhrase):
         (Int (Char, Bool))
     """
 
-    NODE_NAME                               = "Func Type"
+    PHRASE_NAME                               = "Func Type"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(FuncType, self).__init__(
             GrammarPhrase.Type.Type,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
                 item=[
                     # '(' (outer)
                     "(",

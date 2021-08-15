@@ -241,6 +241,7 @@ async def ParseAsync(
         normalized_iter = result.Iter.Clone()
 
         # TODO: Eat trailing comments (here or in SequencePhrase.py?)
+        # TODO: What happens to file that starts with newlines?
 
     assert normalized_iter.AtEnd()
     return root

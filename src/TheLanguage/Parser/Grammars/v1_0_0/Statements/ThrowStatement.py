@@ -45,14 +45,14 @@ class ThrowStatement(GrammarPhrase):
         throw (a, b, c)
     """
 
-    NODE_NAME                               = "Throw Statement"
+    PHRASE_NAME                             = "Throw Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(ThrowStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
                 item=[
                     "throw",
                     PhraseItem(

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TransferExpression_IntegrationTest.py
+# |  FuncInvocationStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 15:34:00
+# |      2021-08-14 16:16:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for TransferExpression.py"""
+"""Contains the FuncInvocationStatement object"""
 
 import os
-import textwrap
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,33 +27,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..TransferExpression import *
-    from ...Common.AutomatedTests import Execute
+    from ..Common.PhraseImpl.FuncInvocationBase import FuncInvocationBase
+    from ...GrammarPhrase import GrammarPhrase
 
 
 # ----------------------------------------------------------------------
-def test_Move():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            variable1 = <<move>> foo
+class FuncInvocationStatement(FuncInvocationBase):
+    """Invokes a function"""
 
-            variable2 = <<move>> (a, b, c)
-            """,
-        ),
-    ) == ResultsFromFile()
-
-
-# ----------------------------------------------------------------------
-def test_Copy():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            variable1 = <<copy>> foo
-
-            variable2 = <<copy>> (
-                a, b,
-            )
-            """,
-        ),
-    ) == ResultsFromFile()
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        super(FuncInvocationStatement, self).__init__(
+            "Func Invocation Statement",
+            GrammarPhrase.Type.Statement,
+        )

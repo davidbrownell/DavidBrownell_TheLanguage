@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  DeleteStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-30 11:11:50
+# |      2021-08-14 16:44:10
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the DeleteStatement object"""
 
 import os
 
-from dataclasses import dataclass
-
-from enum import IntFlag
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,36 +27,35 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AST import ExpressionNode
-    from ..Common.Flags import OperatorCategory
+    from ..Common import Tokens as CommonTokens
+    from ...GrammarPhrase import GrammarPhrase
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
-class UnaryOperator(IntFlag):
+class DeleteStatement(GrammarPhrase):
     """\
-    TODO: Comment
+    Deletes a variable so that it is no longer accessible.
+
+    'del' <name>
+
+    Examples:
+        del foo
+        del bar
     """
 
-    Not                                     = (OperatorCategory.Logical << 8) + 1
-
-    Positive                                = (OperatorCategory.Math << 8) + 1
-    Negative                                = (OperatorCategory.Math << 8) + 2
-
-    BitComplement                           = (OperatorCategory.BitManipulation << 8) + 1
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class UnaryExpression(ExpressionNode):
-    """\
-    TODO: Comment
-    """
-
-    Operator: UnaryOperator
-    Expression: ExpressionNode
+    PHRASE_NAME                             = "Delete Statement"
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    @property
-    def ExpressionResultType(self):
-        return self.Expression.ExpressionResultType
+    def __init__(self):
+        super(DeleteStatement, self).__init__(
+            GrammarPhrase.Type.Statement,
+            CreatePhrase(
+                name=self.PHRASE_NAME,
+                item=[
+                    "del",
+                    DynamicPhrasesType.Names,
+                    CommonTokens.Newline,
+                ],
+            ),
+        )

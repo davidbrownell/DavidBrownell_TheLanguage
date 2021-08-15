@@ -57,7 +57,7 @@ class StandardType(GrammarPhrase):
         Int var
     """
 
-    NODE_NAME                               = "Standard Type"
+    PHRASE_NAME                             = "Standard Type"
     VALIDATION_EXPRESSION                   = re.compile(r"^_?[A-Z][a-zA-Z0-9_\.]+(?!<__)$")
 
     # ----------------------------------------------------------------------
@@ -65,7 +65,7 @@ class StandardType(GrammarPhrase):
         super(StandardType, self).__init__(
             GrammarPhrase.Type.Type,
             CreatePhrase(
-                name=self.NODE_NAME,
+                name=self.PHRASE_NAME,
                 item=[
                     # <generic_name>
                     CommonTokens.GenericName,
