@@ -8,7 +8,6 @@
 
 # Statements:
 #   - Import (easy)
-#   - Delete (easy)
 #   - Class
 #   - Binary Op
 #   - Docstring
