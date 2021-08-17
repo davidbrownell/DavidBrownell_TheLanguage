@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase, Node, ValidationError
-    from ....Phrases.DSL import CreatePhrase, ExtractSequence
+    from ....Phrases.DSL import CreatePhrase, ExtractSequence, ExtractToken
 
 
 # ----------------------------------------------------------------------
@@ -80,7 +80,9 @@ class VariableName(GrammarPhrase):
     ):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
-        name, leaf = nodes[0]  # type: ignore
+
+        leaf = nodes[0]
+        name = ExtractToken(leaf)  # type: ignore
 
         if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
-            raise InvalidNameError.FromNode(leaf, name)
+            raise InvalidNameError.FromNode(leaf, name)  # type: ignore

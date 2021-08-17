@@ -90,9 +90,9 @@ class TypeModifier(IntFlag):
     # ----------------------------------------------------------------------
     @staticmethod
     def Extract(
-        node: Union[Node, Tuple[str, Leaf]],
+        leaf: Leaf,
     ) -> "TypeModifier":
-        return _ExtractImpl(node)
+        return _ExtractImpl(leaf)
 
 
 # ----------------------------------------------------------------------
@@ -111,17 +111,12 @@ class InvalidTypeModifierError(ValidationError):
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def _ExtractImpl(
-    node: Union[Node, Tuple[str, Leaf]],
+    leaf: Leaf,
 ) -> TypeModifier:
-    if isinstance(node, tuple):
-        name, leaf = node
-    else:
-        name = ExtractToken(
-            node,  # type: ignore
-            use_match=True,
-        )
-
-        leaf = node
+    name = ExtractToken(
+        leaf,
+        use_match=True,
+    )
 
     try:
         return TypeModifier[name]  # type: ignore

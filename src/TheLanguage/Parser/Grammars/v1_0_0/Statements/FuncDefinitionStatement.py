@@ -40,7 +40,9 @@ with InitRelativeImports():
     from ....Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractRepeat,
         ExtractSequence,
+        ExtractToken,
         Node,
         PhraseItem,
     )
@@ -126,12 +128,13 @@ class FuncDefinitionStatement(GrammarPhrase):
 
         # Validate the visibility modifier (if any)
         if nodes[0] is not None:
-            VisibilityModifier.Extract(nodes[0])  # type: ignore
+            VisibilityModifier.Extract(ExtractRepeat(nodes[0]))  # type: ignore
 
         # Validate the function name
-        name, leaf = nodes[2]  # type: ignore
+        leaf = nodes[2]
+        name = ExtractToken(leaf)  # type: ignore
 
         if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
-            raise InvalidFuncError.FromNode(leaf, name)
+            raise InvalidFuncError.FromNode(leaf, name)  # type: ignore
 
         ParametersPhraseItem.Validate(cast(Node, nodes[3]))

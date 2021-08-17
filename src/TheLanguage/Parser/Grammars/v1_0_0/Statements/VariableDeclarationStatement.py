@@ -34,6 +34,7 @@ with InitRelativeImports():
     from ....Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractRepeat,
         ExtractSequence,
         Node,
         PhraseItem,
@@ -91,4 +92,4 @@ class VariableDeclarationStatement(GrammarPhrase):
 
         # Validate the modifier
         if nodes[0] is not None:
-            TypeModifier.Extract(nodes[0])  # type: ignore
+            TypeModifier.Extract(ExtractRepeat(nodes[0]))  # type: ignore

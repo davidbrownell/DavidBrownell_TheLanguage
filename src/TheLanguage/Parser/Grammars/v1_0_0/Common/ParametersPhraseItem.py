@@ -64,17 +64,14 @@ class ParametersType(Enum):
     @classmethod
     def Extract(
         cls,
-        node: Union[Node, Tuple[str, Leaf]],
+        node: Node,
     ) -> "ParametersType":
-        if isinstance(node, tuple):
-            name, leaf = node
-        else:
-            name = ExtractToken(
-                node,  # type: ignore
-                use_match=True,
-            )
+        leaf = cast(Leaf, ExtractOr(node))
 
-            leaf = node
+        name = ExtractToken(
+            leaf,
+            use_match=True,
+        )
 
         try:
             return cls[name]  # type: ignore
@@ -289,6 +286,7 @@ def Create():
 
 
 # ----------------------------------------------------------------------
+# TODO: Change this method to Extract, return NodeInfo
 def Validate(
     node: Node,
 ):
@@ -300,9 +298,9 @@ def Validate(
 
     if nodes[2] is not None:
         node = cast(Node, nodes[2])
+        node = cast(Node, ExtractRepeat(node))          # Drill into the repeat node
+        node = cast(Node, ExtractOr(node))              # Drill into the or node
 
-        # Drill into the or node
-        node = cast(Node, ExtractOr(node))
         assert node.Type
 
         if node.Type.Name == "Traditional":
@@ -340,9 +338,12 @@ def _EnumTraditional(
     for node_index, node in enumerate(  # type: ignore
         itertools.chain(
             [nodes[0]],
-            [ExtractOr(node.Children[1]) for node in nodes[1]],  # type: ignore
+            [ExtractSequence(node)[1] for node in ExtractRepeat(nodes[1])],  # type: ignore
         ),
     ):
+        # Drill into the or node
+        node = cast(Node, ExtractOr(cast(Node, node)))
+
         if isinstance(node, Node):
             parameters.append(node)
             continue
@@ -428,7 +429,7 @@ def _EnumNewStyle(
             itertools.chain(
                 [
                     [nodes[2]],
-                    [node.Children[1] for node in nodes[3]],  # type: ignore
+                    [ExtractSequence(node)[1] for node in ExtractRepeat(nodes[3])],  # type: ignore
                 ],
             ),
         )

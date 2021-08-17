@@ -34,7 +34,13 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common.TypeModifier import TypeModifier
     from ...GrammarPhrase import GrammarPhrase, Node, ValidationError
-    from ....Phrases.DSL import CreatePhrase, ExtractSequence, PhraseItem
+    from ....Phrases.DSL import (
+        CreatePhrase,
+        ExtractRepeat,
+        ExtractSequence,
+        ExtractToken,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -89,11 +95,13 @@ class StandardType(GrammarPhrase):
     ):
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
-        name, leaf = nodes[0]  # type: ignore
+
+        leaf = nodes[0]
+        name = ExtractToken(leaf)  # type: ignore
 
         if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
-            raise InvalidTypeError.FromNode(leaf, name)
+            raise InvalidTypeError.FromNode(leaf, name)  # type: ignore
 
         # Validate the modifier
         if nodes[1] is not None:
-            TypeModifier.Extract(nodes[1])  # type: ignore
+            TypeModifier.Extract(ExtractRepeat(nodes[1]))  # type: ignore
