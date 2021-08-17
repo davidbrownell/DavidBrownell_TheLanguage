@@ -103,6 +103,7 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
 
         CommonEnvironment.ObjectReprImplBase.__init__(
             self,
+            include_class_info=False,
             Expressions=phrase_display_func,
             Names=phrase_display_func,
             Statements=phrase_display_func,

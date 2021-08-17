@@ -7,7 +7,6 @@
 #   - Index (easy)
 
 # Statements:
-#   - Class
 #   - Binary Op
 #   - Docstring
 #   - For
