@@ -17,6 +17,7 @@
 
 import os
 import textwrap
+import threading
 
 from collections import OrderedDict
 from typing import Any, Awaitable, cast, Dict, Generator, List, Optional, Tuple, Union
@@ -111,6 +112,15 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
         )
 
     # ----------------------------------------------------------------------
+    def __bool__(self):
+        return (
+            bool(self.Expressions)
+            or bool(self.Names)
+            or bool(self.Statements)
+            or bool(self.Types)
+        )
+
+    # ----------------------------------------------------------------------
     def Clone(
         self,
         updated_expressions=None,
@@ -148,7 +158,7 @@ class Observer(Interface.Interface):
         data_stack: List[Phrase.StandardParseResultData],
         iter_before: Phrase.NormalizedIterator,
         iter_after: Phrase.NormalizedIterator,
-    ) -> None:
+    ) -> Optional[DynamicPhrasesInfo]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -189,15 +199,11 @@ async def ParseAsync(
 
     assert normalized_iter.Offset == 0, normalized_iter
 
-    scope_trackers: Dict[Any, _ScopeTracker] = {
-        _DefaultScopeTrackerTag : _ScopeTracker(
-            "",
-            OrderedDict(),
-            [_ScopeItem(0, normalized_iter.Clone(), initial_phrase_info)],
-        ),
-    }
-
-    phrase_observer = _PhraseObserver(observer, scope_trackers)
+    phrase_observer = _PhraseObserver(
+        observer,
+        normalized_iter,
+        initial_phrase_info,
+    )
 
     phrase = DynamicPhrase(
         lambda unique_id, observer: cast(
@@ -251,28 +257,288 @@ async def ParseAsync(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-class _DefaultScopeTrackerTag(object):
-    """\
-    Unique type to use as a key in `_ScopeTracker` dictionaries; this is used rather
-    than a normal value (for example, `None`) to allow for any key types.
-    """
-    pass
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class _ScopeItem(object):
-    IndentLevel: int
-    IterAfter: Phrase.NormalizedIterator
-    Info: DynamicPhrasesInfo
-
-
-# ----------------------------------------------------------------------
-@dataclass()
 class _ScopeTracker(object):
-    UniqueIdPart: str
-    Children: Dict[Any, "_ScopeTracker"]    = field(default_factory=OrderedDict)
-    DynamicItems: List[_ScopeItem]          = field(default_factory=list)
+    """Manages access to scope impacted by phrase modifications via DynamicPhraseInfo objects"""
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        normalized_iter: Phrase.NormalizedIterator,
+        initial_phrase_info: DynamicPhrasesInfo,
+    ):
+        tracker_nodes: Dict[Union[str, _ScopeTracker._DefaultScopeTrackerTag], _ScopeTracker._TrackerNode] = OrderedDict()
+
+        tracker_nodes[self._DefaultScopeTrackerTagInstance] = _ScopeTracker._TrackerNode("")
+
+        tracker_nodes[self._DefaultScopeTrackerTagInstance].ScopeItems.append(
+            _ScopeTracker._ScopeItem(
+                0,
+                normalized_iter.Clone(),
+                initial_phrase_info,
+            ),
+        )
+
+        self._tracker_nodes                 = tracker_nodes
+
+    # ----------------------------------------------------------------------
+    def AddNode(
+        self,
+        unique_id: List[str],
+    ) -> None:
+        d = self._tracker_nodes
+
+        for id_part in unique_id:
+            node = d.get(id_part, None)
+            if node is None:
+                node = _ScopeTracker._TrackerNode(id_part)
+                d[id_part] = node
+
+            d = node.Children
+
+    # ----------------------------------------------------------------------
+    def RemoveNode(
+        self,
+        unique_id: List[str],
+        was_successful: bool,
+    ) -> None:
+        # Get the tracker node
+        d = self._tracker_nodes
+        tracker_node = None
+
+        for id_part in unique_id:
+            tracker_node = d.get(id_part, None)
+            assert tracker_node is not None
+
+            d = tracker_node.Children
+
+        assert tracker_node is not None
+
+        # Collect all of the dynamic phrase info associated with the descendants and add them here
+        if was_successful:
+            if not tracker_node.ScopeItems:
+                for descendant_node in self._EnumDescendants(tracker_node.Children):
+                    tracker_node.ScopeItems += descendant_node.ScopeItems
+        else:
+            tracker_node.ScopeItems = []
+
+        tracker_node.Children = {}
+
+    # ----------------------------------------------------------------------
+    def AddScopeItem(
+        self,
+        unique_id: List[str],
+        indentation_level: int,
+        iter_after: Phrase.NormalizedIterator,
+        phrases_info: DynamicPhrasesInfo,
+    ) -> None:
+        if not phrases_info:
+            return
+
+        this_tracker_node = None
+        last_scope_item = None
+
+        # The tracker node associated with this event will be the last one that we encounter when enumerating
+        # through the previous tracker nodes. In addition to the current tracker node, get the last dynamic
+        # info associated with all of the scope_trackers to determine if adding this dynamic info will be a problem.
+        for tracker_node in self._EnumPrevious(unique_id):
+            this_tracker_node = tracker_node
+
+            if tracker_node.ScopeItems:
+                last_scope_item = tracker_node.ScopeItems[-1]
+
+        assert this_tracker_node is not None
+        assert this_tracker_node.UniqueIdPart == unique_id[-1], (this_tracker_node.UniqueIdPart, unique_id[-1])
+
+        if (
+            not phrases_info.AllowParentTraversal
+            and last_scope_item is not None
+            and last_scope_item.IndentLevel == indentation_level
+        ):
+            raise InvalidDynamicTraversalError(
+                iter_after.Line,
+                iter_after.Column,
+                last_scope_item.IterAfter,
+            )
+
+        this_tracker_node.ScopeItems.append(
+            _ScopeTracker._ScopeItem(
+                indentation_level,
+                iter_after.Clone(),
+                phrases_info,
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    def RemoveScopeItems(
+        self,
+        unique_id: List[str],
+        indentation_level: int,
+    ) -> None:
+        for tracker_node in self._EnumPrevious(unique_id):
+            if not tracker_node.ScopeItems:
+                continue
+
+            item_index = 0
+            while item_index < len(tracker_node.ScopeItems):
+                scope_item = tracker_node.ScopeItems[item_index]
+
+                if scope_item.IndentLevel == indentation_level:
+                    del tracker_node.ScopeItems[item_index]
+                else:
+                    item_index += 1
+
+    # ----------------------------------------------------------------------
+    def GetDynamicPhrases(
+        self,
+        unique_id: List[str],
+        dynamic_phrases_type: DynamicPhrasesType,
+    ) -> Tuple[List[Phrase], str]:
+
+        if dynamic_phrases_type == DynamicPhrasesType.Expressions:
+            attribute_name = "Expressions"
+        elif dynamic_phrases_type == DynamicPhrasesType.Names:
+            attribute_name = "Names"
+        elif dynamic_phrases_type == DynamicPhrasesType.Statements:
+            attribute_name = "Statements"
+        elif dynamic_phrases_type == DynamicPhrasesType.Types:
+            attribute_name = "Types"
+        else:
+            assert False, dynamic_phrases_type  # pragma: no cover
+
+        all_phrases = []
+        all_names = []
+
+        processed_dynamic_infos = set()
+        processed_phrases = set()
+
+        should_continue = True
+
+        # Process the phrases from most recently added to those added long ago (this is the reason
+        # for 'reversed' below)
+        previous_tracker_nodes = list(self._EnumPrevious(unique_id))
+
+        for tracker_node in reversed(previous_tracker_nodes):
+            these_phrases = []
+            these_names = []
+
+            for scope_item in tracker_node.ScopeItems:
+                dynamic_info = scope_item.Info
+
+                # Have we seen this info before?
+                dynamic_info_key = id(dynamic_info)
+
+                if dynamic_info_key in processed_dynamic_infos:
+                    continue
+
+                processed_dynamic_infos.add(dynamic_info_key)
+
+                # Get the phrases
+                phrases = getattr(dynamic_info, attribute_name)
+                if not phrases:
+                    continue
+
+                len_these_phrases = len(these_phrases)
+
+                for phrase in phrases:
+                    # Have we seen this phrase before
+                    phrase_key = id(phrase)
+
+                    if phrase_key in processed_phrases:
+                        continue
+
+                    processed_phrases.add(phrase_key)
+
+                    these_phrases.append(phrase)
+
+                if len(these_phrases) == len_these_phrases:
+                    # No new phrases to process
+                    continue
+
+                these_names.append(
+                    dynamic_info.Name or "({})".format(
+                        ", ".join([phrase.Name for phrase in these_phrases[len_these_phrases:]]),
+                    ),
+                )
+
+                if not dynamic_info.AllowParentTraversal:
+                    should_continue = False
+                    break
+
+            if these_phrases:
+                all_phrases = these_phrases + all_phrases
+            if these_names:
+                all_names = these_names + all_names
+
+            if not should_continue:
+                break
+
+        return all_phrases, " / ".join(all_names)
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Types
+    # |
+    # ----------------------------------------------------------------------
+    class _DefaultScopeTrackerTag(object):
+        """\
+        Unique type to use as a key in `_ScopeTracker` dictionaries; this is used rather
+        than a normal value (for example, `None`) to allow for any key types.
+        """
+        pass
+
+    _DefaultScopeTrackerTagInstance         = _DefaultScopeTrackerTag()
+
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class _ScopeItem(object):
+        IndentLevel: int
+        IterAfter: Phrase.NormalizedIterator
+        Info: DynamicPhrasesInfo
+
+    # ----------------------------------------------------------------------
+    @dataclass
+    class _TrackerNode(object):
+        UniqueIdPart: str
+        Children: Dict[Union[str, "_ScopeTracker._DefaultScopeTrackerTag"], "_ScopeTracker._TrackerNode"]   = field(default_factory=OrderedDict)
+        ScopeItems: List["_ScopeTracker._ScopeItem"]                                                        = field(default_factory=list)
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _EnumDescendants(
+        cls,
+        tracker_nodes: Dict[Any, "_ScopeTracker._TrackerNode"],
+    ) -> Generator["_ScopeTracker._TrackerNode", None, None]:
+        for v in tracker_nodes.values():
+            yield v
+            yield from cls._EnumDescendants(v.Children)
+
+    # ----------------------------------------------------------------------
+    def _EnumPrevious(
+        self,
+        unique_id: List[str],
+    ) -> Generator["_ScopeTracker._TrackerNode", None, None]:
+        yield self._tracker_nodes[self._DefaultScopeTrackerTagInstance]
+
+        d = self._tracker_nodes
+
+        for id_part in unique_id:
+            for k, v in d.items():
+                if k == self._DefaultScopeTrackerTagInstance:
+                    continue
+
+                yield v
+
+                if k == id_part:
+                    d = v.Children
+                    break
 
 
 # ----------------------------------------------------------------------
@@ -281,10 +547,13 @@ class _PhraseObserver(Phrase.Observer):
     def __init__(
         self,
         observer: Observer,
-        scope_trackers: Dict[Any, _ScopeTracker],
+        normalized_iter: Phrase.NormalizedIterator,
+        initial_phrase_info: DynamicPhrasesInfo,
     ):
         self._observer                      = observer
-        self._scope_trackers                = scope_trackers
+
+        self._scope_tracker                 = _ScopeTracker(normalized_iter, initial_phrase_info)
+        self._scope_tracker_lock            = threading.Lock()
 
         self._indent_level                  = 0
 
@@ -355,84 +624,8 @@ class _PhraseObserver(Phrase.Observer):
         unique_id: List[str],
         dynamic_phrases_type: DynamicPhrasesType,
     ) -> Tuple[List[Phrase], str]:
-        if dynamic_phrases_type == DynamicPhrasesType.Expressions:
-            attribute_name = "Expressions"
-        elif dynamic_phrases_type == DynamicPhrasesType.Names:
-            attribute_name = "Names"
-        elif dynamic_phrases_type == DynamicPhrasesType.Statements:
-            attribute_name = "Statements"
-        elif dynamic_phrases_type == DynamicPhrasesType.Types:
-            attribute_name = "Types"
-        else:
-            assert False, dynamic_phrases_type  # pragma: no cover
-
-        all_phrases = []
-        all_names = []
-
-        processed_infos = set()
-        processed_phrases = set()
-
-        should_continue = True
-
-        # Process from the phrases most recently added to those added long ago
-        previous_scope_trackers = list(self._EnumPreviousScopeTrackers(unique_id))
-
-        for tracker in reversed(previous_scope_trackers):
-            these_phrases = []
-            these_names = []
-
-            for dynamic_item in tracker.DynamicItems:
-                info = dynamic_item.Info
-
-                # Have we seen this info before
-                info_key = id(info)
-
-                if info_key in processed_infos:
-                    continue
-
-                processed_infos.add(info_key)
-
-                # Get the phrases
-                phrases = getattr(info, attribute_name)
-                if not phrases:
-                    continue
-
-                len_these_phrases = len(these_phrases)
-
-                for phrase in phrases:
-                    # Have we seen this phrase before?
-                    phrase_key = id(phrase)
-
-                    if phrase_key in processed_phrases:
-                        continue
-
-                    processed_phrases.add(phrase_key)
-
-                    these_phrases.append(phrase)
-
-                if len(these_phrases) == len_these_phrases:
-                    # No new phrases to process
-                    continue
-
-                these_names.append(
-                    info.Name or "({})".format(
-                        ", ".join([phrase.Name for phrase in these_phrases[len_these_phrases:]]),
-                    ),
-                )
-
-                if not info.AllowParentTraversal:
-                    should_continue = False
-                    break
-
-            if these_phrases:
-                all_phrases = these_phrases + all_phrases
-            if these_names:
-                all_names = these_names + all_names
-
-            if not should_continue:
-                break
-
-        return all_phrases, " / ".join(all_names)
+        with self._scope_tracker_lock:
+            return self._scope_tracker.GetDynamicPhrases(unique_id, dynamic_phrases_type)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -449,15 +642,8 @@ class _PhraseObserver(Phrase.Observer):
         unique_id: List[str],
         phrase_stack: List[Phrase],
     ):
-        d = self._scope_trackers
-
-        for id_part in unique_id:
-            value = d.get(id_part, None)
-            if value is None:
-                value = _ScopeTracker(id_part)
-                d[id_part] = value
-
-            d = value.Children
+        with self._scope_tracker_lock:
+            self._scope_tracker.AddNode(unique_id)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -468,27 +654,8 @@ class _PhraseObserver(Phrase.Observer):
     ):
         was_successful = bool(phrase_info_stack[0][1])
 
-        # Get the tracker
-        d = self._scope_trackers
-        tracker = None
-
-        for id_part in unique_id:
-            tracker = d.get(id_part, None)
-            assert tracker is not None
-
-            d = tracker.Children
-
-        assert tracker
-
-        # Collect all the infos associated with the descendances of this tracker and add them here
-        if was_successful:
-            if not tracker.DynamicItems:
-                for descendant in self._EnumDescendantScopeTrackers(tracker.Children):
-                    tracker.DynamicItems += descendant.DynamicItems
-        else:
-            tracker.DynamicItems = []
-
-        tracker.Children = {}
+        with self._scope_tracker_lock:
+            self._scope_tracker.RemoveNode(unique_id, was_successful)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -505,7 +672,8 @@ class _PhraseObserver(Phrase.Observer):
             assert data_stack[0].UniqueId is not None
             unique_id = data_stack[0].UniqueId
 
-            self._AddScopeItem(unique_id, iter_after, this_result)
+            with self._scope_tracker_lock:
+                self._scope_tracker.AddScopeItem(unique_id, self._indent_level, iter_after, this_result)
 
         return None
 
@@ -520,18 +688,8 @@ class _PhraseObserver(Phrase.Observer):
         assert data_stack[0].UniqueId is not None
         unique_id = data_stack[0].UniqueId
 
-        for tracker in self._EnumPreviousScopeTrackers(unique_id):
-            if not tracker.DynamicItems:
-                continue
-
-            item_index = 0
-            while item_index < len(tracker.DynamicItems):
-                info = tracker.DynamicItems[item_index]
-
-                if info.IndentLevel == self._indent_level:
-                    del tracker.DynamicItems[item_index]
-                else:
-                    item_index += 1
+        with self._scope_tracker_lock:
+            self._scope_tracker.RemoveScopeItems(unique_id, self._indent_level)
 
         assert self._indent_level
         self._indent_level -= 1
@@ -566,7 +724,14 @@ class _PhraseObserver(Phrase.Observer):
         if isinstance(this_result, DynamicPhrasesInfo):
             assert data_stack[0].UniqueId is not None
 
-            self._AddScopeItem(data_stack[0].UniqueId, iter_after, this_result)
+            with self._scope_tracker_lock:
+                self._scope_tracker.AddScopeItem(
+                    data_stack[0].UniqueId,
+                    self._indent_level,
+                    iter_after,
+                    this_result,
+                )
+
             return True
 
         return this_result
@@ -594,77 +759,3 @@ class _PhraseObserver(Phrase.Observer):
             parent.Children.append(leaf)
 
         return leaf
-
-    # ----------------------------------------------------------------------
-    def _AddScopeItem(
-        self,
-        unique_id: List[str],
-        iter_after: Phrase.NormalizedIterator,
-        info: DynamicPhrasesInfo,
-    ):
-        if not info.Expressions and not info.Names and not info.Statements and not info.Types:
-            return
-
-        this_tracker = None
-        last_item = None
-
-        # The tracker associated with this event will be the last one that we encounter when enumerating
-        # through the previous scope_trackers. In addition to the current tracker, get the last dynamic info associated
-        # with all of the scope_trackers to determine if adding this dynamic info will be a problem.
-        for tracker in self._EnumPreviousScopeTrackers(unique_id):
-            this_tracker = tracker
-
-            if tracker.DynamicItems:
-                last_item = tracker.DynamicItems[-1]
-
-        assert this_tracker
-        assert this_tracker.UniqueIdPart == unique_id[-1], (this_tracker.UniqueIdPart, unique_id[-1])
-
-        if (
-            not info.AllowParentTraversal
-            and last_item is not None
-            and last_item.IndentLevel == self._indent_level
-        ):
-            raise InvalidDynamicTraversalError(
-                iter_after.Line,
-                iter_after.Column,
-                last_item.IterAfter,
-            )
-
-        this_tracker.DynamicItems.append(
-            _ScopeItem(
-                self._indent_level,
-                iter_after.Clone(),
-                info,
-            ),
-        )
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _EnumDescendantScopeTrackers(
-        cls,
-        scope_trackers: Dict[Any, _ScopeTracker],
-    ) -> Generator[_ScopeTracker, None, None]:
-        for v in scope_trackers.values():
-            yield v
-            yield from cls._EnumDescendantScopeTrackers(v.Children)
-
-    # ----------------------------------------------------------------------
-    def _EnumPreviousScopeTrackers(
-        self,
-        unique_id: List[str],
-    ) -> Generator[_ScopeTracker, None, None]:
-        yield self._scope_trackers[_DefaultScopeTrackerTag]
-
-        d = self._scope_trackers
-
-        for id_part in unique_id:
-            for k, v in d.items():
-                if k == _DefaultScopeTrackerTag:
-                    continue
-
-                yield v
-
-                if k == id_part:
-                    d = v.Children
-                    break
