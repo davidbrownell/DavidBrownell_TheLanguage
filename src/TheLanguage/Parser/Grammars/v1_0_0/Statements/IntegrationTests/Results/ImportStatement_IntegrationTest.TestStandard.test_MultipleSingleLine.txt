@@ -191,7 +191,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                        obj2 : obj2Decorated
                                                                                        obj3 : obj3Decorated
                                                                                        obj4 : obj4
-                                                                   ImportType        : ImportType.SourceIsModule <enum 'ImportType'>
+                                                                   ImportType        : ImportType.SourceIsModule
                                                                    SourceFilename    : <generic_root>/Statements/File1.TheLanguage
                                                       IterAfter  : [2, 1] (75)
                                                       IterBefore : [1, 1] (0)

@@ -34,7 +34,7 @@ with InitRelativeImports():
     from ..VariableDeclarationStatement import *
     from ...Common.AutomatedTests import Execute
     from ...Common.TypeModifier import InvalidTypeModifierError
-    from ...Names.VariableName import InvalidNameError
+    from ...Names.VariableName import InvalidVariableNameError
 
 
 # ----------------------------------------------------------------------
@@ -60,7 +60,7 @@ def test_WithModifier():
 # ----------------------------------------------------------------------
 def test_InvalidLeftHandSide():
     # No modifier
-    with pytest.raises(InvalidNameError) as ex:
+    with pytest.raises(InvalidVariableNameError) as ex:
         Execute("InvalidName = value")
 
     ex = ex.value
@@ -73,7 +73,7 @@ def test_InvalidLeftHandSide():
     assert ex.ColumnEnd == ex.Column + len(ex.Name)
 
     # With modifier
-    with pytest.raises(InvalidNameError) as ex:
+    with pytest.raises(InvalidVariableNameError) as ex:
         Execute("var InvalidName = value")
 
     ex = ex.value
@@ -88,7 +88,7 @@ def test_InvalidLeftHandSide():
 
 # ----------------------------------------------------------------------
 def test_InvalidRightHandSide():
-    with pytest.raises(InvalidNameError) as ex:
+    with pytest.raises(InvalidVariableNameError) as ex:
         Execute("one = InvalidName")
 
     ex = ex.value

@@ -110,6 +110,7 @@ class ImportStatement(ImportGrammarStatement):
 
             CommonEnvironment.ObjectReprImplBase.__init__(
                 self,
+                include_class_info=False,
                 ImportItemsLookup=None,
             )
 

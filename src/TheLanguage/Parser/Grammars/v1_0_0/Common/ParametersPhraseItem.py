@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Dict, Generator, List, Optional, Tuple, Union
+from typing import cast, Dict, Generator, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -232,7 +232,7 @@ def Create():
                                 arity="?",
                             ),
                         ],
-                        arity=(1, len(ParametersType.CreatePhraseItem())),
+                        arity="+",
                     ),
 
                     # Traditional:
