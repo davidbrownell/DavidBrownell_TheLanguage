@@ -158,7 +158,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         def Enqueue(
             func_infos: List[EnqueueAsyncItemType],
         ) -> Awaitable[Any]:
-            """Enqueus the provided functions in an executor"""
+            """Enqueues the provided functions in an executor"""
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------

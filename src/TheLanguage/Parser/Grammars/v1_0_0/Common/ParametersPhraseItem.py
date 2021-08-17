@@ -64,20 +64,20 @@ class ParametersType(Enum):
     @classmethod
     def Extract(
         cls,
-        node: Union[Node, Tuple[str, Leaf]],
+        node: Node,
     ) -> "ParametersType":
-        if isinstance(node, tuple):
-            name, leaf = node
-        else:
-            name = ExtractToken(
-                node,  # type: ignore
-                use_match=True,
-            )
+        leaf = cast(Leaf, ExtractOr(node))
 
-            leaf = node
+        name = cast(
+            str,
+            ExtractToken(
+                leaf,
+                use_match=True,
+            ),
+        )
 
         try:
-            return cls[name]  # type: ignore
+            return cls[name]
         except KeyError:
             assert False, (name, leaf)
 
@@ -289,6 +289,7 @@ def Create():
 
 
 # ----------------------------------------------------------------------
+# TODO: Change this method to Extract, return NodeInfo
 def Validate(
     node: Node,
 ):
@@ -300,9 +301,9 @@ def Validate(
 
     if nodes[2] is not None:
         node = cast(Node, nodes[2])
+        node = cast(Node, ExtractRepeat(node))          # Drill into the repeat node
+        node = cast(Node, ExtractOr(node))              # Drill into the or node
 
-        # Drill into the or node
-        node = cast(Node, ExtractOr(node))
         assert node.Type
 
         if node.Type.Name == "Traditional":
@@ -337,35 +338,41 @@ def _EnumTraditional(
 
     parameters = []
 
-    for node_index, node in enumerate(  # type: ignore
+    for parameter_node_index, parameter_node in enumerate(
         itertools.chain(
             [nodes[0]],
-            [ExtractOr(node.Children[1]) for node in nodes[1]],  # type: ignore
+            [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Node, nodes[1])))],
         ),
     ):
-        if isinstance(node, Node):
-            parameters.append(node)
+        # Drill into the or node
+        parameter_node = cast(Node, ExtractOr(cast(Node, parameter_node)))
+
+        if isinstance(parameter_node, Node):
+            parameters.append(parameter_node)
             continue
 
-        assert isinstance(node, Leaf)
+        assert isinstance(parameter_node, Leaf)
 
-        name = ExtractToken(
-            node,  # type: ignore
-            use_match=True,
+        name = cast(
+            str,
+            ExtractToken(
+                parameter_node,
+                use_match=True,
+            ),
         )
 
         if name == TraditionalParameterType.Positional:
             # This should never be the first parameter
-            if node_index == 0:
-                raise TraditionalDelimiterPositionalError.FromNode(node)
+            if parameter_node_index == 0:
+                raise TraditionalDelimiterPositionalError.FromNode(parameter_node)
 
             # We shouldn't see this more than once
             if encountered_positional_parameter:
-                raise TraditionalDelimiterDuplicatePositionalError.FromNode(node)
+                raise TraditionalDelimiterDuplicatePositionalError.FromNode(parameter_node)
 
             # We shouldn't see this after a keyword parameter
             if keyword_parameter_index is not None:
-                raise TraditionalDelimiterOrderError.FromNode(node)
+                raise TraditionalDelimiterOrderError.FromNode(parameter_node)
 
             encountered_positional_parameter = True
 
@@ -377,9 +384,9 @@ def _EnumTraditional(
         elif name == TraditionalParameterType.Keyword:
             # We shouldn't see this more than once
             if keyword_parameter_index is not None:
-                raise TraditionalDelimiterDuplicateKeywordError.FromNode(node)
+                raise TraditionalDelimiterDuplicateKeywordError.FromNode(parameter_node)
 
-            keyword_parameter_index = node_index
+            keyword_parameter_index = parameter_node_index
 
             if parameters:
                 yield ParametersType.any, parameters
@@ -389,8 +396,8 @@ def _EnumTraditional(
             assert False, name # pragma: no cover
 
     # The keyword delimiter should never be the last parameter
-    if keyword_parameter_index == node_index:  # type: ignore
-        raise TraditionalDelimiterKeywordError.FromNode(node)
+    if keyword_parameter_index == parameter_node_index:  # type: ignore
+        raise TraditionalDelimiterKeywordError.FromNode(parameter_node)  # type: ignore
 
     if parameters:
         if keyword_parameter_index is not None:
@@ -411,15 +418,15 @@ def _EnumNewStyle(
 ]:
     encountered = set()
 
-    for node in ExtractRepeat(node):  # type: ignore
+    for node in cast(List[Node], ExtractRepeat(node)):
         nodes = ExtractSequence(node)
         assert len(nodes) == 5
 
         # Get the parameter type
-        parameters_type = ParametersType.Extract(nodes[0])  # type: ignore
+        parameters_type = ParametersType.Extract(cast(Node, nodes[0]))
 
         if parameters_type in encountered:
-            raise NewStyleParameterGroupDuplicateError.FromNode(nodes[0], parameters_type.name)  # type: ignore
+            raise NewStyleParameterGroupDuplicateError.FromNode(cast(Node, nodes[0]), parameters_type.name)
 
         encountered.add(parameters_type)
 
@@ -428,9 +435,9 @@ def _EnumNewStyle(
             itertools.chain(
                 [
                     [nodes[2]],
-                    [node.Children[1] for node in nodes[3]],  # type: ignore
+                    [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Node, nodes[3])))],
                 ],
             ),
         )
 
-        yield parameters_type, parameters  # type: ignore
+        yield parameters_type, cast(List[Node], parameters)

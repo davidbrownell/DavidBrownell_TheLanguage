@@ -7,7 +7,6 @@
 #   - Index (easy)
 
 # Statements:
-#   - Import (easy)
 #   - Class
 #   - Binary Op
 #   - Docstring

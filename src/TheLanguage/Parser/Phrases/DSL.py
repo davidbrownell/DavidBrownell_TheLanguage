@@ -231,7 +231,7 @@ def ExtractOr(
 
 # ----------------------------------------------------------------------
 def ExtractRepeat(
-    node: Node,
+    node: Optional[Node],
 ) -> Union[
     # Results for "?"
     Optional[Union[Leaf, Node]],
@@ -239,6 +239,9 @@ def ExtractRepeat(
     # Results for "*", "+"
     List[Union[Leaf, Node]],
 ]:
+    if node is None:
+        return []
+
     assert isinstance(node.Type, RepeatPhrase), node.Type
 
     if node.Type.MaxMatches == 1:
@@ -249,18 +252,9 @@ def ExtractRepeat(
 
 
 # ----------------------------------------------------------------------
-ExtractSequenceReturnType                   = List[
-    Union[
-        Tuple[str, Leaf],
-        Node,
-        List[Node],
-        None,
-    ],
-]
-
 def ExtractSequence(
     node: Node,
-) -> ExtractSequenceReturnType:
+) -> List[Union[Leaf, Node, None]]:
     # Are we looking at a non-greedy sequence?
     if isinstance(node.Type, OrPhrase):
         node = cast(Node, ExtractOr(node))
@@ -272,8 +266,8 @@ def ExtractSequence(
         assert isinstance(node.Type, SequencePhrase), node.Type
         skipped_indexes = set()
 
-    assert node.Type is not None
-    phrases = node.Type.Phrases  # type: ignore
+    assert isinstance(node.Type, SequencePhrase)
+    phrases = node.Type.Phrases
 
     num_skipped_phrases = 0
 
@@ -308,39 +302,23 @@ def ExtractSequence(
         else:
             assert isinstance(phrase, RepeatPhrase), phrase
             assert phrase.MinMatches == 0, phrase.MinMatches
-            results.append(None if phrase.MaxMatches == 1 else [])
+            results.append(None)
 
             continue
 
         assert phrase
         assert child
 
-        if isinstance(phrase, TokenPhrase):
-            results.append((ExtractToken(cast(Leaf, child)), child))
+        if isinstance(phrase, RepeatPhrase) and child.Type != phrase:
+            assert phrase.MinMatches == 0, phrase.MinMatches
+            results.append(None)
 
-        elif isinstance(phrase, DynamicPhrase):
-            results.append(ExtractDynamic(cast(Node, child)))
+            assert child_index != 0
+            child_index -= 1
 
-        elif isinstance(phrase, OrPhrase):
-            results.append(ExtractOr(cast(Node, child)))
+            continue
 
-        elif isinstance(phrase, RepeatPhrase):
-            if child.Type != phrase:
-                assert child_index != 0
-                child_index -= 1
-
-                assert phrase.MinMatches == 0, phrase.MinMatches
-                results.append(None if phrase.MaxMatches == 1 else [])
-
-            else:
-                results.append(ExtractRepeat(cast(Node, child)))
-
-        elif isinstance(phrase, SequencePhrase):
-            # Do not drill into the sequence
-            results.append(child)
-
-        else:
-            assert False, phrase  # pragma: no cover
+        results.append(child)
 
     assert len(results) - num_skipped_phrases == len(phrases), (len(results), num_skipped_phrases, len(phrases))
     return results

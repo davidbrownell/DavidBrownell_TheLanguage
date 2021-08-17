@@ -114,7 +114,7 @@ Grammars[SemVer("1.0.0")]                   = _LoadDynamicPhrasesFromFile(os.pat
 
 
 # ----------------------------------------------------------------------
-assert GrammarPhraseLookup, "We should have entires for all encountered phrases"
+assert GrammarPhraseLookup, "We should have entries for all encountered phrases"
 del _LoadDynamicPhrasesFromFile
 
 
@@ -227,6 +227,7 @@ class _ParseObserver(TranslationUnitsObserver):
         self,
         func_infos: List[Phrase.EnqueueAsyncItemType],
     ) -> Awaitable[Any]:
+        # pylint: disable=not-callable
         return self._executor.EnqueueAsync(func_infos)  # type: ignore
 
     # ----------------------------------------------------------------------
@@ -275,7 +276,7 @@ class _ParseObserver(TranslationUnitsObserver):
     ) -> Union[
         bool,                                           # True to continue processing, False to terminate
         DynamicPhrasesInfo,                             # Dynamic phases (if any) resulting from the parsed phrase
-        TranslationUnitsObserver.ImportInfo,            # Import infromation (if any) resulting from the parsed phrase
+        TranslationUnitsObserver.ImportInfo,            # Import information (if any) resulting from the parsed phrase
     ]:
         try:
             grammar_phrase = GrammarPhraseLookup.get(phrase, None)
