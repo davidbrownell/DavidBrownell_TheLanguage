@@ -629,10 +629,10 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                               Type       : Traditional <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                             IterAfter  : [1, 49] (48)
                                                                                                             IterBefore : [1, 10] (9)
-                                                                                                            Type       : Or: (Repeat: {New Style, 1, 3}, Traditional) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                            Type       : Or: (Repeat: {New Style, 1, None}, Traditional) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                           IterAfter  : [1, 49] (48)
                                                                                           IterBefore : [1, 10] (9)
-                                                                                          Type       : Repeat: {Or: (Repeat: {New Style, 1, 3}, Traditional), 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>
+                                                                                          Type       : Repeat: {Or: (Repeat: {New Style, 1, None}, Traditional), 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>
                                                                                      2)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
                                                                                           IsIgnored  : False
                                                                                           IterAfter  : [1, 50] (49)

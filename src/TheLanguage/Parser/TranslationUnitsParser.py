@@ -286,7 +286,7 @@ async def ParseAsync(
             elif wait_event:
                 wait_event.wait()
 
-        assert final_result
+        assert final_result is not None
         return final_result
 
     # ----------------------------------------------------------------------
@@ -395,6 +395,10 @@ class _TranslationUnitObserver(TranslationUnitObserver):
                     result.SourceName,
                 )
 
-            return await self._async_parse_func(result.FullyQualifiedName) or False
+            result = await self._async_parse_func(result.FullyQualifiedName)
+            if result is None:
+                return False
+
+            return result
 
         return result

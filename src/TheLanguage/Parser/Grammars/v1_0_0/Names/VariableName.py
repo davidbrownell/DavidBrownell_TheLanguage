@@ -46,7 +46,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidNameError(ValidationError):
+class InvalidVariableNameError(ValidationError):
     Name: str
 
     MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid variable or parameter name; names must start with a lowercase letter.")
@@ -93,4 +93,4 @@ class VariableName(GrammarPhrase):
         name = cast(str, ExtractToken(leaf))
 
         if not cls.VALIDATION_EXPRESSION.match(name):
-            raise InvalidNameError.FromNode(leaf, name)
+            raise InvalidVariableNameError.FromNode(leaf, name)
