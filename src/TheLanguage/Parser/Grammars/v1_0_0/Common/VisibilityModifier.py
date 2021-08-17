@@ -20,7 +20,7 @@ import re
 import textwrap
 
 from enum import auto, Enum
-from typing import Tuple, Union
+from typing import cast
 
 from dataclasses import dataclass
 
@@ -73,9 +73,9 @@ class VisibilityModifier(Enum):
     # ----------------------------------------------------------------------
     @staticmethod
     def Extract(
-        node: Union[Node, Tuple[str, Leaf]],
+        leaf: Leaf,
     ) -> "VisibilityModifier":
-        return _ExtractImpl(node)
+        return _ExtractImpl(leaf)
 
 
 # ----------------------------------------------------------------------
@@ -94,20 +94,18 @@ class InvalidVisibilityModifierError(ValidationError):
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def _ExtractImpl(
-    node: Union[Node, Tuple[str, Leaf]],
+    leaf: Leaf,
 ) -> VisibilityModifier:
 
-    if isinstance(node, tuple):
-        name, leaf = node
-    else:
-        name = ExtractToken(
-            node,  # type: ignore
+    name = cast(
+        str,
+        ExtractToken(
+            leaf,
             use_match=True,
-        )
-
-        leaf = node
+        ),
+    )
 
     try:
-        return VisibilityModifier[name]  # type: ignore
+        return VisibilityModifier[name]
     except KeyError:
         raise InvalidVisibilityModifierError.FromNode(leaf, name)

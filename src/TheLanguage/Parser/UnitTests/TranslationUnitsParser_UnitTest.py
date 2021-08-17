@@ -19,9 +19,8 @@ import os
 import re
 import textwrap
 
-from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional
 from unittest.mock import Mock
 
 import pytest
@@ -38,7 +37,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 # ----------------------------------------------------------------------
 with InitRelativeImports():
-    from ..Components.AST import Leaf, Node
+    from ..Components.AST import Node
     from ..Components.ThreadPool import CreateThreadPool
 
     from ..Components.Token import (
@@ -52,7 +51,12 @@ with InitRelativeImports():
 
     from ..TranslationUnitsParser import *
 
-    from ..Phrases.DSL import CreatePhrase, DynamicPhrasesType, ExtractSequence
+    from ..Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractSequence,
+        ExtractToken,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -216,7 +220,7 @@ class TestStandard(object):
                     children = ExtractSequence(node)
                     assert len(children) == 3
 
-                    value, value_leaf = cast(Tuple[str, Leaf], children[1])
+                    value = cast(str, ExtractToken(children[1]))
 
                     return Observer.ImportInfo(value, value if value in cls._content_dict else None)
 
