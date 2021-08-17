@@ -20,3 +20,14 @@
 #   - Try/Catch
 #   - Type Alias
 #   - While (easy)
+#   - Await
+
+
+# Ensure that all phrases are as forgiving as possible.
+
+# TODO: Problems when ending with comments:
+#     class Foo():
+#         pass
+#
+#     # Comment 1
+#     # Comment 2

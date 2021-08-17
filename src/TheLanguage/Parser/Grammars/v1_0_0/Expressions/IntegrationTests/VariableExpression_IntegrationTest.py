@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..VariableExpression import *
     from ...Common.AutomatedTests import Execute
-    from ...Names.VariableName import InvalidNameError
+    from ...Names.VariableName import InvalidVariableNameError
 
 
 # ----------------------------------------------------------------------
@@ -48,7 +48,7 @@ def test_Standard():
 
 # ----------------------------------------------------------------------
 def test_InvalidLeftHandSide():
-    with pytest.raises(InvalidNameError) as ex:
+    with pytest.raises(InvalidVariableNameError) as ex:
         Execute("InvalidName = value")
 
     ex = ex.value
@@ -63,7 +63,7 @@ def test_InvalidLeftHandSide():
 
 # ----------------------------------------------------------------------
 def test_InvalidRightHandSide():
-    with pytest.raises(InvalidNameError) as ex:
+    with pytest.raises(InvalidVariableNameError) as ex:
         Execute("one = InvalidName")
 
     ex = ex.value

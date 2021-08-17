@@ -47,7 +47,7 @@ def test_Standard():
 
 # ----------------------------------------------------------------------
 def test_InvalidLeftHandSide():
-    with pytest.raises(InvalidNameError) as ex:
+    with pytest.raises(InvalidVariableNameError) as ex:
         Execute("InvalidName = value")
 
     ex = ex.value
@@ -62,7 +62,7 @@ def test_InvalidLeftHandSide():
 
 # ----------------------------------------------------------------------
 def test_InvalidRightHandSide():
-    with pytest.raises(InvalidNameError) as ex:
+    with pytest.raises(InvalidVariableNameError) as ex:
         Execute("one = InvalidName")
 
     ex = ex.value
