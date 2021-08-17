@@ -51,7 +51,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class SequencePhrase(Phrase):
-    """Matchs a sequence of phrases"""
+    """Matches a sequence of phrases"""
 
     # ----------------------------------------------------------------------
     # |

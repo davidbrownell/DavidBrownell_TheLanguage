@@ -307,7 +307,7 @@ async def ParseAsync(
             [
                 (ExecuteAsync, [fqn], {"increment_pending_ctr": False})
                 for fqn in fully_qualified_names
-            ],  # type: ignore
+            ],  #
         )
 
         if any(result is None for result in results):
