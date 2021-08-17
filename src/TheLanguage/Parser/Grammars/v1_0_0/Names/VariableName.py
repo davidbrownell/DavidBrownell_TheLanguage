@@ -18,6 +18,8 @@
 import os
 import re
 
+from typing import cast
+
 from dataclasses import dataclass
 
 import CommonEnvironment
@@ -33,7 +35,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase, Node, ValidationError
-    from ....Phrases.DSL import CreatePhrase, ExtractSequence, ExtractToken
+    from ....Phrases.DSL import (
+        CreatePhrase,
+        ExtractSequence,
+        ExtractToken,
+        Leaf,
+        Node,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -81,8 +89,8 @@ class VariableName(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
-        leaf = nodes[0]
-        name = ExtractToken(leaf)  # type: ignore
+        leaf = cast(Leaf, nodes[0])
+        name = cast(str, ExtractToken(leaf))
 
-        if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
-            raise InvalidNameError.FromNode(leaf, name)  # type: ignore
+        if not cls.VALIDATION_EXPRESSION.match(name):
+            raise InvalidNameError.FromNode(leaf, name)

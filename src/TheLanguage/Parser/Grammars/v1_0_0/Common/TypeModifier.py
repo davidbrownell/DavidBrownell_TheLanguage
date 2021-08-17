@@ -20,7 +20,7 @@ import re
 import textwrap
 
 from enum import auto, IntFlag
-from typing import Tuple, Union
+from typing import cast
 
 from dataclasses import dataclass
 
@@ -37,7 +37,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ...GrammarPhrase import ValidationError
     from ....Components.Token import RegexToken
-    from ....Phrases.DSL import ExtractToken, Leaf, Node
+    from ....Phrases.DSL import ExtractToken, Leaf
 
 
 # ----------------------------------------------------------------------
@@ -113,12 +113,15 @@ class InvalidTypeModifierError(ValidationError):
 def _ExtractImpl(
     leaf: Leaf,
 ) -> TypeModifier:
-    name = ExtractToken(
-        leaf,
-        use_match=True,
+    name = cast(
+        str,
+        ExtractToken(
+            leaf,
+            use_match=True,
+        ),
     )
 
     try:
-        return TypeModifier[name]  # type: ignore
+        return TypeModifier[name]
     except KeyError:
         raise InvalidTypeModifierError.FromNode(leaf, name)

@@ -152,7 +152,7 @@ class OrPhrase(Phrase):
 
             if self.SortResults:
                 # Stable sort according to:
-                #   - Sucess
+                #   - Success
                 #   - Longest matched context
 
                 sort_data = [

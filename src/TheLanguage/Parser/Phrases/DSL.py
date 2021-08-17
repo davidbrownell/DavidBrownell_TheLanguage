@@ -266,8 +266,8 @@ def ExtractSequence(
         assert isinstance(node.Type, SequencePhrase), node.Type
         skipped_indexes = set()
 
-    assert node.Type is not None
-    phrases = node.Type.Phrases  # type: ignore
+    assert isinstance(node.Type, SequencePhrase)
+    phrases = node.Type.Phrases
 
     num_skipped_phrases = 0
 

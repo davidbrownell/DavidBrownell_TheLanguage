@@ -220,7 +220,7 @@ class TestStandard(object):
                     children = ExtractSequence(node)
                     assert len(children) == 3
 
-                    value = cast(str, ExtractToken(children[1]))  # type: ignore
+                    value = cast(str, ExtractToken(children[1]))
 
                     return Observer.ImportInfo(value, value if value in cls._content_dict else None)
 

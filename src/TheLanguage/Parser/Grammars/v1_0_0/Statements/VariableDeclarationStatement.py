@@ -17,6 +17,8 @@
 
 import os
 
+from typing import cast
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -36,6 +38,7 @@ with InitRelativeImports():
         DynamicPhrasesType,
         ExtractRepeat,
         ExtractSequence,
+        Leaf,
         Node,
         PhraseItem,
     )
@@ -92,4 +95,4 @@ class VariableDeclarationStatement(GrammarPhrase):
 
         # Validate the modifier
         if nodes[0] is not None:
-            TypeModifier.Extract(ExtractRepeat(nodes[0]))  # type: ignore
+            TypeModifier.Extract(cast(Leaf, ExtractRepeat(cast(Node, nodes[0]))))

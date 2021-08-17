@@ -21,7 +21,7 @@ import re
 
 from collections import OrderedDict
 from enum import auto, Enum
-from typing import Callable, cast, Dict, List, Optional, Tuple
+from typing import Callable, cast, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -345,30 +345,30 @@ class ImportStatement(ImportGrammarStatement):
 
         # <source>
         source_leaf = cast(Leaf, nodes[1])
-        source = ExtractToken(source_leaf)
+        source = cast(str, ExtractToken(source_leaf))
 
         leaf_lookup[id(source)] = source_leaf
 
         # Content items
         items: Dict[str, str] = OrderedDict()
 
-        content_node = ExtractOr(cast(Node, nodes[3]))
-        assert content_node.Type
+        content_items = ExtractOr(cast(Node, nodes[3]))
+        assert content_items.Type
 
-        if content_node.Type.Name == "Grouped":
-            content_node = ExtractSequence(content_node)
-            assert len(content_node) == 5
+        if content_items.Type.Name == "Grouped":
+            content_items = ExtractSequence(cast(Node, content_items))
+            assert len(content_items) == 5
 
-            content_node = content_node[2]
+            content_items = content_items[2]
 
-        content_items = ExtractSequence(content_node)
+        content_items = ExtractSequence(cast(Node, content_items))
         assert len(content_items) == 3
 
         for content_item in itertools.chain(
             [content_items[0]],
-            [ExtractSequence(node)[1] for node in ExtractRepeat(content_items[1])],
+            [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Node, content_items[1])))],
         ):
-            content_item = ExtractOr(content_item)
+            content_item = ExtractOr(cast(Node, content_item))
 
             if isinstance(content_item, Leaf):
                 key_leaf = content_item

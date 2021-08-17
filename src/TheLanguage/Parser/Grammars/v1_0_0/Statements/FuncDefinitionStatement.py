@@ -43,6 +43,7 @@ with InitRelativeImports():
         ExtractRepeat,
         ExtractSequence,
         ExtractToken,
+        Leaf,
         Node,
         PhraseItem,
     )
@@ -128,13 +129,13 @@ class FuncDefinitionStatement(GrammarPhrase):
 
         # Validate the visibility modifier (if any)
         if nodes[0] is not None:
-            VisibilityModifier.Extract(ExtractRepeat(nodes[0]))  # type: ignore
+            VisibilityModifier.Extract(cast(Leaf, ExtractRepeat(cast(Node, nodes[0]))))
 
         # Validate the function name
-        leaf = nodes[2]
-        name = ExtractToken(leaf)  # type: ignore
+        leaf = cast(Leaf, nodes[2])
+        name = cast(str, ExtractToken(leaf))
 
-        if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
-            raise InvalidFuncError.FromNode(leaf, name)  # type: ignore
+        if not cls.VALIDATION_EXPRESSION.match(name):
+            raise InvalidFuncError.FromNode(leaf, name)
 
         ParametersPhraseItem.Validate(cast(Node, nodes[3]))

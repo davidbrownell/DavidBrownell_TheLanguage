@@ -18,6 +18,8 @@
 import os
 import re
 
+from typing import cast
+
 from dataclasses import dataclass
 
 import CommonEnvironment
@@ -39,6 +41,8 @@ with InitRelativeImports():
         ExtractRepeat,
         ExtractSequence,
         ExtractToken,
+        Leaf,
+        Node,
         PhraseItem,
     )
 
@@ -96,12 +100,12 @@ class StandardType(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
-        leaf = nodes[0]
-        name = ExtractToken(leaf)  # type: ignore
+        leaf = cast(Leaf, nodes[0])
+        name = cast(str, ExtractToken(leaf))
 
-        if not cls.VALIDATION_EXPRESSION.match(name):  # type: ignore
-            raise InvalidTypeError.FromNode(leaf, name)  # type: ignore
+        if not cls.VALIDATION_EXPRESSION.match(name):
+            raise InvalidTypeError.FromNode(leaf, name)
 
         # Validate the modifier
         if nodes[1] is not None:
-            TypeModifier.Extract(ExtractRepeat(nodes[1]))  # type: ignore
+            TypeModifier.Extract(cast(Leaf, ExtractRepeat(cast(Node, nodes[1]))))
