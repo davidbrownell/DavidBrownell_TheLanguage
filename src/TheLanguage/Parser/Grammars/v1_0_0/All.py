@@ -41,6 +41,7 @@ with InitRelativeImports():
     from .Statements.BinaryStatement import BinaryStatement
     from .Statements.ClassStatement import ClassStatement
     from .Statements.DeleteStatement import DeleteStatement
+    from .Statements.ForStatement import ForStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
     from .Statements.FuncInvocationStatement import FuncInvocationStatement
     from .Statements.ImportStatement import ImportStatement
@@ -75,6 +76,7 @@ GrammarPhrases                              = [
     BinaryStatement(),
     ClassStatement(),
     DeleteStatement(),
+    ForStatement(),
     FuncDefinitionStatement(),
     FuncInvocationStatement(),
     ImportStatement(".TheLanguage",),       # TODO: Update this once the language has a name
