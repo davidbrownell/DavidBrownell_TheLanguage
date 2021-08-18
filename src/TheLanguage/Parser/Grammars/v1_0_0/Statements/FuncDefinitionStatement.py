@@ -51,7 +51,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidFuncError(ValidationError):
+class InvalidFuncNameError(ValidationError):
     Name: str
 
     MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid function name; names must start with an uppercase letter and be at least 2 characters.")
@@ -74,7 +74,7 @@ class FuncDefinitionStatement(GrammarPhrase):
     """
 
     PHRASE_NAME                             = "Func Definition Statement"
-    VALIDATION_EXPRESSION                   = re.compile(r"^_?[A-Z][a-zA-Z0-9_\.]+(?!<__)$")
+    VALIDATION_EXPRESSION                   = re.compile(r"^_?[A-Z][a-zA-Z0-9_\.]+\??(?!<__)$")
 
     # ----------------------------------------------------------------------
     def __init__(self):
@@ -127,15 +127,19 @@ class FuncDefinitionStatement(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 9
 
-        # Validate the visibility modifier (if any)
-        if nodes[0] is not None:
-            VisibilityModifier.Extract(cast(Leaf, ExtractRepeat(cast(Node, nodes[0]))))
+        # Validate the visibility modifier
+        if nodes[0] is None:
+            visibility = VisibilityModifier.private
+        else:
+            visibility = VisibilityModifier.Extract(
+                cast(Leaf, ExtractRepeat(cast(Node, nodes[0]))),
+            )
 
         # Validate the function name
         leaf = cast(Leaf, nodes[2])
         name = cast(str, ExtractToken(leaf))
 
         if not cls.VALIDATION_EXPRESSION.match(name):
-            raise InvalidFuncError.FromNode(leaf, name)
+            raise InvalidFuncNameError.FromNode(leaf, name)
 
         ParametersPhraseItem.Validate(cast(Node, nodes[3]))

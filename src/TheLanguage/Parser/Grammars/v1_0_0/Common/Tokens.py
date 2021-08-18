@@ -58,6 +58,10 @@ PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 # We should not generically match these keywords:
 #
 DoNotMatchKeywords                          = [
+    # ../Statements/ClassStatement.py
+    "implements",
+    "uses",
+
     # ../Statements/DeleteStatement.py
     "del",
 
@@ -71,9 +75,10 @@ DoNotMatchKeywords                          = [
     "yield",
 
     # ../Expressions/UnaryExpression.py
-    "not",                                  # Logical
-    "move",                                 # Transfer
+    "await",                                # Coroutines
     "copy",                                 # Transfer
+    "move",                                 # Transfer
+    "not",                                  # Logical
 ]
 
 

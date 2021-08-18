@@ -77,7 +77,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                         Whitespace : None
                                                       Info       : <class 'TheLanguage.Parser.Grammars.v1_0_0.Statements.ImportStatement.ImportStatement.NodeInfo'>
                                                                    ImportItems       : File1 : File1
-                                                                   ImportType        : ImportType.SourceIsDirectory <enum 'ImportType'>
+                                                                   ImportType        : ImportType.SourceIsDirectory
                                                                    SourceFilename    : <generic_root>/Statements/IntegrationTests/File1.TheLanguage
                                                       IterAfter  : [2, 1] (21)
                                                       IterBefore : [1, 1] (0)
@@ -191,7 +191,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                       Info       : <class 'TheLanguage.Parser.Grammars.v1_0_0.Statements.ImportStatement.ImportStatement.NodeInfo'>
                                                                    ImportItems       : obj1 : obj1
                                                                                        obj2 : obj2
-                                                                   ImportType        : ImportType.SourceIsModule <enum 'ImportType'>
+                                                                   ImportType        : ImportType.SourceIsModule
                                                                    SourceFilename    : <generic_root>/File2.TheLanguage
                                                       IterAfter  : [4, 1] (55)
                                                       IterBefore : [2, 1] (21)
@@ -358,7 +358,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                         Whitespace : None
                                                       Info       : <class 'TheLanguage.Parser.Grammars.v1_0_0.Statements.ImportStatement.ImportStatement.NodeInfo'>
                                                                    ImportItems       : obj3 : obj3Decorated
-                                                                   ImportType        : ImportType.SourceIsModule <enum 'ImportType'>
+                                                                   ImportType        : ImportType.SourceIsModule
                                                                    SourceFilename    : <generic_root>/Dir1/File3.TheLanguage
                                                       IterAfter  : [8, 1] (113)
                                                       IterBefore : [4, 1] (55)
@@ -528,7 +528,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                       Info       : <class 'TheLanguage.Parser.Grammars.v1_0_0.Statements.ImportStatement.ImportStatement.NodeInfo'>
                                                                    ImportItems       : obj4 : obj4
                                                                                        obj5 : obj5
-                                                                   ImportType        : ImportType.SourceIsModule <enum 'ImportType'>
+                                                                   ImportType        : ImportType.SourceIsModule
                                                                    SourceFilename    : <generic_root>/Statements/IntegrationTests/Dir2/Dir3/File4.TheLanguage
                                                       IterAfter  : [11, 1] (162)
                                                       IterBefore : [8, 1] (113)

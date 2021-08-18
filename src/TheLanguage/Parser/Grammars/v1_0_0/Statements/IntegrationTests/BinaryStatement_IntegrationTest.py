@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableName_IntegrationTest.py
+# |  BinaryStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 15:44:30
+# |      2021-08-17 22:28:07
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for VariableName.py"""
+"""Automated test for BinaryStatement.py"""
 
 import os
 import textwrap
-
-import pytest
 
 import CommonEnvironment
 from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
@@ -31,45 +29,37 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..VariableName import *
+    from ..BinaryStatement import *
     from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
+def test_Mathematical():
     assert Execute(
         textwrap.dedent(
             """\
-            one = value
+            value1 += expr1
+            value2 -= expr2
+            value3 *= expr3
+            value4 **= expr4
+            value5 /= expr5
+            value6 //= expr6
+            value7 %= expr7
             """,
         ),
     ) == ResultsFromFile()
 
-# ----------------------------------------------------------------------
-def test_InvalidLeftHandSide():
-    with pytest.raises(InvalidVariableNameError) as ex:
-        Execute("InvalidName = value")
-
-    ex = ex.value
-
-    assert str(ex) == "'InvalidName' is not a valid variable or parameter name; names must start with a lowercase letter."
-    assert ex.Name == "InvalidName"
-    assert ex.Line == 1
-    assert ex.Column == 1
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == ex.Column + len(ex.Name)
-
 
 # ----------------------------------------------------------------------
-def test_InvalidRightHandSide():
-    with pytest.raises(InvalidVariableNameError) as ex:
-        Execute("one = InvalidName")
-
-    ex = ex.value
-
-    assert str(ex) == "'InvalidName' is not a valid variable or parameter name; names must start with a lowercase letter."
-    assert ex.Name == "InvalidName"
-    assert ex.Line == 1
-    assert ex.Column == 7
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == ex.Column + len(ex.Name)
+def test_BitManipulation():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            value1 <<= expr1
+            value2 >>= expr2
+            value3 ^= expr3
+            value4 |= expr4
+            value5 &= expr5
+            """,
+        ),
+    ) == ResultsFromFile()

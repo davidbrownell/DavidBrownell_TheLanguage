@@ -45,7 +45,7 @@ with InitRelativeImports():
 
     from ...Common.VisibilityModifier import InvalidVisibilityModifierError
 
-    from ...Names.VariableName import InvalidNameError
+    from ...Names.VariableName import InvalidVariableNameError
     from ...Types.StandardType import InvalidTypeError
 
 
@@ -146,7 +146,7 @@ def test_InvalidVisibilityModifier():
 
 # ----------------------------------------------------------------------
 def test_InvalidFuncName():
-    with pytest.raises(InvalidFuncError) as ex:
+    with pytest.raises(InvalidFuncNameError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -190,7 +190,7 @@ def test_InvalidParameterTypeName():
 
 # ----------------------------------------------------------------------
 def test_InvalidParameterName():
-    with pytest.raises(InvalidNameError) as ex:
+    with pytest.raises(InvalidVariableNameError) as ex:
         Execute(
             textwrap.dedent(
                 """\
