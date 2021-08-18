@@ -10,7 +10,6 @@
 #   - If
 #   - Try/Catch
 #   - Type Alias
-#   - While (easy)
 #   - Docstring
 #   - ClassAttribute
 #   - SmartIf
