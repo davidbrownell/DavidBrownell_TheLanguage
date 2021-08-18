@@ -7,7 +7,6 @@
 #   - Index (easy)
 
 # Statements:
-#   - Binary Op
 #   - Docstring
 #   - For
 #   - MethodDefinition
