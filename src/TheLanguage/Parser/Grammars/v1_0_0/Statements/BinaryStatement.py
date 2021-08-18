@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  BinaryStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 11:43:02
+# |      2021-08-17 13:07:26
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the BinaryStatement object"""
 
 import os
 
@@ -33,55 +33,56 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class UnaryExpression(GrammarPhrase):
+class BinaryStatement(GrammarPhrase):
     """\
-    A prefix to an expression.
+    Statement that follows the form:
 
-    <op> <expr>
+    <name> <op> <expr>
 
-    Example:
-        not foo
-        -bar
+    Examples:
+        value += one
+        value <<= two
     """
 
-    PHRASE_NAME                             = "Unary Expression"
+    PHRASE_NAME                             = "Binary Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(UnaryExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+        super(BinaryStatement, self).__init__(
+            GrammarPhrase.Type.Statement,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
+                    # <name>
+                    DynamicPhrasesType.Names,
+
                     # <op>
-                    PhraseItem(
+                    CreatePhrase(
                         name="Operator",
-                        item=tuple(
-                            # Note that any alphanumeric operators added here must also be added to
-                            # `DoNotMatchKeywords` in ../Common/Tokens.py.
-                            [
-                                # Coroutine
-                                "await",
+                        item=(
+                            # Mathematical
+                            "+=",           # Addition
+                            "-=",           # Subtraction
+                            "*=",           # Multiplication
+                            "**=",          # Power
+                            "/=",           # Decimal Division
+                            "//=",          # Integer Division
+                            "%=",           # Modulo
 
-                                # Transfer
-                                "copy",
-                                "move",
-
-                                # Logical
-                                "not",
-
-                                # Mathematical
-                                "+",
-                                "-",
-
-                                # Bit Manipulation
-                                "~",        # Bit Complement
-                            ],
+                            # Bit Manipulation
+                            "<<=",          # Left Shift
+                            ">>=",          # Right Shift
+                            "^=",           # Xor
+                            "|=",           # Bitwise or
+                            "&=",           # Bitwise and
                         ),
                     ),
 
                     # <expr>
                     DynamicPhrasesType.Expressions,
+
+                    # End
+                    CommonTokens.Newline,
                 ],
             ),
         )
