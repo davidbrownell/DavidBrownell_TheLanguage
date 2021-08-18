@@ -148,12 +148,6 @@ class TraditionalDelimiterKeywordError(ValidationError):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class NodeInfo(CommonEnvironment.ObjectReprImplBase):
-    Parameters: Dict[ParametersType, List[Node]]
-
-
-# ----------------------------------------------------------------------
 def Create():
     """\
     '(' <parameters>? ')'
@@ -290,9 +284,10 @@ def Create():
 
 # ----------------------------------------------------------------------
 # TODO: Change this method to Extract, return NodeInfo
-def Validate(
+def Extract(
     node: Node,
-):
+) -> Dict[ParametersType, List[Node]]:
+
     # Drill into the parameters node
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
@@ -316,8 +311,7 @@ def Validate(
             assert parameters_type not in parameters_dict, parameters_dict
             parameters_dict[parameters_type] = parameters
 
-    # Commit the info
-    object.__setattr__(node, "Info", NodeInfo(parameters_dict))
+    return parameters_dict
 
 
 # ----------------------------------------------------------------------

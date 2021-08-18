@@ -61,8 +61,6 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                                        Match : <_sre.SRE_Match object; span=(17, 18), match=')'>
                                                                                           Whitespace : None
-                                                                        Info       : <class 'TheLanguage.Parser.Grammars.v0_0_1.Common.ParametersPhraseItem.NodeInfo'>
-                                                                                     Parameters : -- empty dict --
                                                                         IterAfter  : [1, 19] (18)
                                                                         IterBefore : [1, 17] (16)
                                                                         Type       : Parameters <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
@@ -134,6 +132,12 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                                                                      -- empty dict --
                                                                         Whitespace : None
+                                                      Info       : <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncDefinitionStatement.FuncDefinitionStatement.NodeInfo'>
+                                                                   Name       : Func1
+                                                                   Parameters : -- empty dict --
+                                                                   ReturnType : Standard Type
+                                                                   Statements : 0)   Pass Statement
+                                                                   Visibility : VisibilityModifier.public
                                                       IterAfter  : [4, 1] (30)
                                                       IterBefore : [1, 1] (0)
                                                       Type       : Func Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
@@ -205,8 +209,6 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                                        Match : <_sre.SRE_Match object; span=(51, 52), match=')'>
                                                                                           Whitespace : None
-                                                                        Info       : <class 'TheLanguage.Parser.Grammars.v0_0_1.Common.ParametersPhraseItem.NodeInfo'>
-                                                                                     Parameters : -- empty dict --
                                                                         IterAfter  : [4, 23] (52)
                                                                         IterBefore : [4, 21] (50)
                                                                         Type       : Parameters <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
@@ -278,6 +280,12 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                                                                      -- empty dict --
                                                                         Whitespace : None
+                                                      Info       : <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncDefinitionStatement.FuncDefinitionStatement.NodeInfo'>
+                                                                   Name       : Func2
+                                                                   Parameters : -- empty dict --
+                                                                   ReturnType : Standard Type
+                                                                   Statements : 0)   Pass Statement
+                                                                   Visibility : VisibilityModifier.protected
                                                       IterAfter  : [7, 1] (64)
                                                       IterBefore : [4, 1] (30)
                                                       Type       : Func Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
@@ -349,8 +357,6 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                                        Match : <_sre.SRE_Match object; span=(83, 84), match=')'>
                                                                                           Whitespace : None
-                                                                        Info       : <class 'TheLanguage.Parser.Grammars.v0_0_1.Common.ParametersPhraseItem.NodeInfo'>
-                                                                                     Parameters : -- empty dict --
                                                                         IterAfter  : [7, 21] (84)
                                                                         IterBefore : [7, 19] (82)
                                                                         Type       : Parameters <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
@@ -422,6 +428,12 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
                                                                                      -- empty dict --
                                                                         Whitespace : None
+                                                      Info       : <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncDefinitionStatement.FuncDefinitionStatement.NodeInfo'>
+                                                                   Name       : Func3
+                                                                   Parameters : -- empty dict --
+                                                                   ReturnType : Standard Type
+                                                                   Statements : 0)   Pass Statement
+                                                                   Visibility : VisibilityModifier.private
                                                       IterAfter  : [9, 1] (95)
                                                       IterBefore : [7, 1] (64)
                                                       Type       : Func Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>

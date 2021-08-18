@@ -65,7 +65,7 @@ class VariableName(GrammarPhrase):
     """
 
     PHRASE_NAME                             = "Variable Name"
-    VALIDATION_EXPRESSION                   = re.compile(r"^_?[a-z][a-zA-Z0-9_\.]*(?!<__)$")
+    VALIDATION_EXPRESSION                   = re.compile(r"^_?[a-z][a-zA-Z0-9_]*(?!<__)$")
 
     # ----------------------------------------------------------------------
     def __init__(self):

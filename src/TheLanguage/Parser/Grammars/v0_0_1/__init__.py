@@ -7,7 +7,6 @@
 #   - Index (easy)
 
 # Statements:
-#   - MethodDefinition
 #   - ClassAttribute
 #   - If
 #   - ScopedRef
@@ -27,3 +26,5 @@
 #
 #     # Comment 1
 #     # Comment 2
+
+# TODO: Ensure that everything that uses CommonEnvironment.ObjectReprImplBase is properly initializing with include_class_info=False

@@ -18,7 +18,7 @@
 import os
 import re
 
-from typing import cast
+from typing import Any, cast, List, Union
 
 from dataclasses import dataclass
 
@@ -40,6 +40,7 @@ with InitRelativeImports():
     from ....Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractDynamic,
         ExtractRepeat,
         ExtractSequence,
         ExtractToken,
@@ -74,8 +75,34 @@ class FuncDefinitionStatement(GrammarPhrase):
     """
 
     PHRASE_NAME                             = "Func Definition Statement"
-    VALIDATION_EXPRESSION                   = re.compile(r"^_?[A-Z][a-zA-Z0-9_\.]+\??(?!<__)$")
+    VALIDATION_EXPRESSION                   = re.compile(r"^_?[A-Z][a-zA-Z0-9_]+\??(?!<__)$")
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class NodeInfo(CommonEnvironment.ObjectReprImplBase):
+        Visibility: VisibilityModifier
+        ReturnType: Union[Leaf, Node]
+        Name: str
+        Parameters: Any  # Defined in ParametersPhraseItem.py
+        Statements: List[Union[Leaf, Node]]
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            CommonEnvironment.ObjectReprImplBase.__init__(
+                self,
+                include_class_info=False,
+                ReturnType=lambda node: node.Type.Name,
+                Statements=lambda statements: [statement.Type.Name for statement in statements],
+            )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     def __init__(self):
         super(FuncDefinitionStatement, self).__init__(
@@ -116,7 +143,6 @@ class FuncDefinitionStatement(GrammarPhrase):
             ),
         )
 
-
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
@@ -127,7 +153,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 9
 
-        # Validate the visibility modifier
+        # Visibility
         if nodes[0] is None:
             visibility = VisibilityModifier.private
         else:
@@ -135,11 +161,34 @@ class FuncDefinitionStatement(GrammarPhrase):
                 cast(Leaf, ExtractRepeat(cast(Node, nodes[0]))),
             )
 
-        # Validate the function name
-        leaf = cast(Leaf, nodes[2])
-        name = cast(str, ExtractToken(leaf))
+        # Return type
+        return_type = ExtractDynamic(cast(Node, nodes[1]))
 
-        if not cls.VALIDATION_EXPRESSION.match(name):
-            raise InvalidFuncNameError.FromNode(leaf, name)
+        # Func Name
+        func_name_leaf = cast(Leaf, nodes[2])
+        func_name = cast(str, ExtractToken(func_name_leaf))
 
-        ParametersPhraseItem.Validate(cast(Node, nodes[3]))
+        if not cls.VALIDATION_EXPRESSION.match(func_name):
+            raise InvalidFuncNameError.FromNode(func_name_leaf, func_name)
+
+        # Parameters
+        parameters = ParametersPhraseItem.Extract(cast(Node, nodes[3]))
+
+        # Statements
+        statements = [
+            ExtractDynamic(cast(Node, statement_node))
+            for statement_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[7])))
+        ]
+
+        # Commit the info
+        object.__setattr__(
+            node,
+            "Info",
+            cls.NodeInfo(
+                visibility,
+                return_type,
+                func_name,
+                parameters,
+                statements,
+            ),
+        )

@@ -13,7 +13,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Whitespace : None
                                                                         IterAfter  : [1, 6] (5)
                                                                         IterBefore : [1, 1] (0)
-                                                                        Type       : Or: ('class', 'enum', 'exception', 'interface', 'mixin') <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                        Type       : Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                    1)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
                                                                         IsIgnored  : False
                                                                         IterAfter  : [1, 13] (12)
@@ -188,7 +188,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                      Visibility : VisibilityModifier.private
                                                                    Mixins     : -- empty list --
                                                                    Name       : Class1
-                                                                   Type       : class
+                                                                   Type       : ClassType.Class
                                                                    Visibility : VisibilityModifier.private
                                                       IterAfter  : [4, 1] (62)
                                                       IterBefore : [1, 1] (0)
@@ -213,7 +213,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Whitespace : None
                                                                         IterAfter  : [4, 6] (67)
                                                                         IterBefore : [4, 1] (62)
-                                                                        Type       : Or: ('class', 'enum', 'exception', 'interface', 'mixin') <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                        Type       : Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                    1)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
                                                                         IsIgnored  : False
                                                                         IterAfter  : [4, 13] (74)
@@ -400,7 +400,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                      Visibility : VisibilityModifier.private
                                                                    Mixins     : -- empty list --
                                                                    Name       : Class2
-                                                                   Type       : class
+                                                                   Type       : ClassType.Class
                                                                    Visibility : VisibilityModifier.private
                                                       IterAfter  : [7, 1] (125)
                                                       IterBefore : [4, 1] (62)
@@ -425,7 +425,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Whitespace : None
                                                                         IterAfter  : [7, 6] (130)
                                                                         IterBefore : [7, 1] (125)
-                                                                        Type       : Or: ('class', 'enum', 'exception', 'interface', 'mixin') <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                        Type       : Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                    1)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
                                                                         IsIgnored  : False
                                                                         IterAfter  : [7, 13] (137)
@@ -620,7 +620,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                      Visibility : VisibilityModifier.private
                                                                    Mixins     : -- empty list --
                                                                    Name       : Class3
-                                                                   Type       : class
+                                                                   Type       : ClassType.Class
                                                                    Visibility : VisibilityModifier.private
                                                       IterAfter  : [10, 1] (189)
                                                       IterBefore : [7, 1] (125)
@@ -645,7 +645,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Whitespace : None
                                                                         IterAfter  : [10, 6] (194)
                                                                         IterBefore : [10, 1] (189)
-                                                                        Type       : Or: ('class', 'enum', 'exception', 'interface', 'mixin') <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                        Type       : Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                    1)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
                                                                         IsIgnored  : False
                                                                         IterAfter  : [10, 13] (201)
@@ -852,7 +852,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                      Visibility : VisibilityModifier.private
                                                                    Mixins     : -- empty list --
                                                                    Name       : Class4
-                                                                   Type       : class
+                                                                   Type       : ClassType.Class
                                                                    Visibility : VisibilityModifier.private
                                                       IterAfter  : [13, 1] (254)
                                                       IterBefore : [10, 1] (189)
@@ -877,7 +877,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Whitespace : None
                                                                         IterAfter  : [13, 6] (259)
                                                                         IterBefore : [13, 1] (254)
-                                                                        Type       : Or: ('class', 'enum', 'exception', 'interface', 'mixin') <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                        Type       : Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                    1)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
                                                                         IsIgnored  : False
                                                                         IterAfter  : [13, 13] (266)
@@ -1071,7 +1071,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                      Visibility : VisibilityModifier.private
                                                                    Mixins     : -- empty list --
                                                                    Name       : Class5
-                                                                   Type       : class
+                                                                   Type       : ClassType.Class
                                                                    Visibility : VisibilityModifier.private
                                                       IterAfter  : [19, 1] (328)
                                                       IterBefore : [13, 1] (254)
@@ -1096,7 +1096,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Whitespace : None
                                                                         IterAfter  : [19, 6] (333)
                                                                         IterBefore : [19, 1] (328)
-                                                                        Type       : Or: ('class', 'enum', 'exception', 'interface', 'mixin') <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                        Type       : Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                    1)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
                                                                         IsIgnored  : False
                                                                         IterAfter  : [19, 13] (340)
@@ -1328,7 +1328,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                      Visibility : VisibilityModifier.public
                                                                    Mixins     : -- empty list --
                                                                    Name       : Class6
-                                                                   Type       : class
+                                                                   Type       : ClassType.Class
                                                                    Visibility : VisibilityModifier.private
                                                       IterAfter  : [25, 1] (420)
                                                       IterBefore : [19, 1] (328)
@@ -1353,7 +1353,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                           Whitespace : None
                                                                         IterAfter  : [25, 6] (425)
                                                                         IterBefore : [25, 1] (420)
-                                                                        Type       : Or: ('class', 'enum', 'exception', 'interface', 'mixin') <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                        Type       : Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                    1)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
                                                                         IsIgnored  : False
                                                                         IterAfter  : [25, 13] (432)
@@ -1640,7 +1640,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                      Visibility : VisibilityModifier.private
                                                                    Mixins     : -- empty list --
                                                                    Name       : Class7
-                                                                   Type       : class
+                                                                   Type       : ClassType.Class
                                                                    Visibility : VisibilityModifier.private
                                                       IterAfter  : [32, 1] (552)
                                                       IterBefore : [25, 1] (420)

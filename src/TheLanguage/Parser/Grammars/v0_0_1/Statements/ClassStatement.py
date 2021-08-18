@@ -19,7 +19,8 @@ import itertools
 import os
 import re
 
-from typing import cast, List, Optional, Tuple, Union
+from enum import auto, Enum
+from typing import cast, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -74,7 +75,7 @@ class MultipleBasesError(ValidationError):
 
 
 # ----------------------------------------------------------------------
-# TODO: Add modifier to control what can be in class ("static", "abstract", "virtual", "override"?)
+# TODO: Add modifier to control what can be in class ("static", "mutable", "immutable", "abstract", "virtual", "override"?)
 class ClassStatement(GrammarPhrase):
     """\
     Statement that creates a class.
@@ -107,6 +108,64 @@ class ClassStatement(GrammarPhrase):
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
+    class ClassType(Enum):
+        Class                               = "class"
+        Enum                                = "enum"
+        Exception                           = "exception"
+        Interface                           = "interface"
+        Mixin                               = "mixin"
+
+        # ----------------------------------------------------------------------
+        @classmethod
+        def CreatePhraseItem(cls):
+            return tuple(e.value for e in cls)
+
+        # ----------------------------------------------------------------------
+        @classmethod
+        def Extract(
+            cls,
+            node: Node,
+        ) -> "ClassStatement.ClassType":
+            value = cast(
+                str,
+                ExtractToken(
+                    cast(Leaf, ExtractOr(node)),
+                    use_match=True,
+                ),
+            )
+
+            for e in cls:
+                if e.value == value:
+                    return e
+
+            assert False, value
+
+    # ----------------------------------------------------------------------
+    class BaseTypeIndicator(Enum):
+        implements                          = auto()
+        uses                                = auto()
+
+        # ----------------------------------------------------------------------
+        @classmethod
+        def CreatePhraseItem(cls):
+            return tuple(e.name for e in cls)
+
+        # ----------------------------------------------------------------------
+        @classmethod
+        def Extract(
+            cls,
+            node: Node,
+        ) -> "ClassStatement.BaseTypeIndicator":
+            value = cast(
+                str,
+                ExtractToken(
+                    cast(Leaf, ExtractOr(node)),
+                    use_match=True,
+                ),
+            )
+            return cls[value]
+
+    # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class BaseInfo(CommonEnvironment.ObjectReprImplBase):
         Visibility: VisibilityModifier
@@ -122,7 +181,7 @@ class ClassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class NodeInfo(CommonEnvironment.ObjectReprImplBase):
-        Type: str
+        Type: "ClassStatement.ClassType"
         Name: str
         Visibility: VisibilityModifier
         Base: Optional["ClassStatement.BaseInfo"]
@@ -201,14 +260,9 @@ class ClassStatement(GrammarPhrase):
                     ),
 
                     # 'class'|'interface'|'mixin'|'enum'|'exception'
-                    tuple(
-                        [
-                            "class",
-                            "enum",
-                            "exception",
-                            "interface",
-                            "mixin",
-                        ],
+                    PhraseItem(
+                        name="Class Type",
+                        item=self.ClassType.CreatePhraseItem(),
                     ),
 
                     # <name> (class)
@@ -234,7 +288,7 @@ class ClassStatement(GrammarPhrase):
                         name="Implements and Uses",
                         item=[
                             # 'implements'|'uses'
-                            ("implements", "uses"),
+                            self.BaseTypeIndicator.CreatePhraseItem(),
 
                             # Items
                             (
@@ -293,17 +347,11 @@ class ClassStatement(GrammarPhrase):
         # applied for the visibility if one wasn't explicitly specified.
 
         # Class type
-        class_type = cast(
-            str,
-            ExtractToken(
-                cast(Leaf, ExtractOr(cast(Node, nodes[1]))),
-                use_match=True,
-            ),
-        )
+        class_type = cls.ClassType.Extract(cast(Node, nodes[1]))
 
         # Validate the visibility modifier
         if nodes[0] is None:
-            if class_type == "exception":
+            if class_type == cls.ClassType.Exception:
                 class_visibility = VisibilityModifier.public
             else:
                 class_visibility = VisibilityModifier.private
@@ -338,17 +386,11 @@ class ClassStatement(GrammarPhrase):
             assert len(base_nodes) == 2
 
             # 'implements'|'uses'
-            base_node_type_leaf = cast(Leaf, ExtractOr(cast(Node, base_nodes[0])))
-            base_node_type = cast(
-                str,
-                ExtractToken(
-                    base_node_type_leaf,
-                    use_match=True,
-                ),
-            )
+            base_type_node = cast(Node, base_nodes[0])
+            base_type = cls.BaseTypeIndicator.Extract(base_type_node)
 
-            if base_node_type in interfaces_and_mixins:
-                raise DuplicateInterfacesTypeError.FromNode(base_node_type_leaf, base_node_type)
+            if base_type in interfaces_and_mixins:
+                raise DuplicateInterfacesTypeError.FromNode(base_type_node, base_type.name)
 
             # Items
             base_node_items = cast(Node, ExtractOr(cast(Node, base_nodes[1])))
@@ -357,7 +399,7 @@ class ClassStatement(GrammarPhrase):
             if base_node_items.Type.Name == "Grouped":
                 base_node_items = ExtractSequence(base_node_items)[2]
 
-            interfaces_and_mixins[base_node_type] = cls._ExtractBaseInfo(cast(Node, base_node_items))
+            interfaces_and_mixins[base_type] = cls._ExtractBaseInfo(cast(Node, base_node_items))
 
         # Statements
         statements = cast(List[Union[Leaf, Node]], ExtractRepeat(cast(Node, nodes[14])))
@@ -366,13 +408,14 @@ class ClassStatement(GrammarPhrase):
         object.__setattr__(
             node,
             "Info",
+            # pylint: disable=too-many-function-args
             cls.NodeInfo(
                 class_type,
                 class_name,
                 class_visibility,
                 base_info,
-                interfaces_and_mixins.get("implements", []),
-                interfaces_and_mixins.get("uses", []),
+                interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, []),
+                interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, []),
                 statements,
             ),
         )
