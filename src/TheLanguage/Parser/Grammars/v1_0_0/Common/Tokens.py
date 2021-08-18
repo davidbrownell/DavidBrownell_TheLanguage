@@ -75,9 +75,10 @@ DoNotMatchKeywords                          = [
     "yield",
 
     # ../Expressions/UnaryExpression.py
-    "not",                                  # Logical
-    "move",                                 # Transfer
+    "await",                                # Coroutines
     "copy",                                 # Transfer
+    "move",                                 # Transfer
+    "not",                                  # Logical
 ]
 
 

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  ForStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 11:43:02
+# |      2021-08-17 22:39:50
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the ForStatement object"""
 
 import os
 
@@ -33,55 +33,56 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class UnaryExpression(GrammarPhrase):
+class ForStatement(GrammarPhrase):
     """\
-    A prefix to an expression.
+    Statement that exercises an iterator.
 
-    <op> <expr>
+    'for' <name> 'in' <expr> ':'
+        <statement>+
 
-    Example:
-        not foo
-        -bar
+    Examples:
+        for x in values:
+            pass
+
+        for (x, y) in values:
+            pass
     """
 
-    PHRASE_NAME                             = "Unary Expression"
+    PHRASE_NAME                             = "For Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(UnaryExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+        super(ForStatement, self).__init__(
+            GrammarPhrase.Type.Statement,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <op>
-                    PhraseItem(
-                        name="Operator",
-                        item=tuple(
-                            # Note that any alphanumeric operators added here must also be added to
-                            # `DoNotMatchKeywords` in ../Common/Tokens.py.
-                            [
-                                # Coroutine
-                                "await",
+                    # 'for'
+                    "for",
 
-                                # Transfer
-                                "copy",
-                                "move",
+                    # <name>
+                    DynamicPhrasesType.Names,
 
-                                # Logical
-                                "not",
-
-                                # Mathematical
-                                "+",
-                                "-",
-
-                                # Bit Manipulation
-                                "~",        # Bit Complement
-                            ],
-                        ),
-                    ),
+                    # 'in'
+                    "in",
 
                     # <expr>
                     DynamicPhrasesType.Expressions,
+
+                    # ':'
+                    ":",
+                    CommonTokens.Newline,
+                    CommonTokens.Indent,
+
+                    # <statement>+
+                    PhraseItem(
+                        name="Statements",
+                        item=DynamicPhrasesType.Statements,
+                        arity="+",
+                    ),
+
+                    # End
+                    CommonTokens.Dedent,
                 ],
             ),
         )
