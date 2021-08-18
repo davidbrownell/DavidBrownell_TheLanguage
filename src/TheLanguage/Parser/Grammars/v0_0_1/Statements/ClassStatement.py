@@ -74,6 +74,7 @@ class MultipleBasesError(ValidationError):
 
 
 # ----------------------------------------------------------------------
+# TODO: Add modifier to control what can be in class ("static", "abstract", "virtual", "override"?)
 class ClassStatement(GrammarPhrase):
     """\
     Statement that creates a class.
