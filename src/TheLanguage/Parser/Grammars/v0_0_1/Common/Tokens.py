@@ -68,6 +68,9 @@ DoNotMatchKeywords                          = [
     # ../Statements/ReturnStatement.py
     "return",
 
+    # ../Statements/ScopedRefStatement.py
+    "as",
+
     # ../Statements/ThrowStatement.py
     "throw",
 
