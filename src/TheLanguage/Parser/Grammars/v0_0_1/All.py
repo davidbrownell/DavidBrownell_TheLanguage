@@ -48,6 +48,7 @@ with InitRelativeImports():
     from .Statements.MethodDefinitionStatement import MethodDefinitionStatement
     from .Statements.PassStatement import PassStatement
     from .Statements.ReturnStatement import ReturnStatement
+    from .Statements.ScopedRefStatement import ScopedRefStatement
     from .Statements.ThrowStatement import ThrowStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
     from .Statements.YieldStatement import YieldStatement
@@ -84,6 +85,7 @@ GrammarPhrases                              = [
     MethodDefinitionStatement(),
     PassStatement(),
     ReturnStatement(),
+    ScopedRefStatement(),
     ThrowStatement(),
     VariableDeclarationStatement(),
     YieldStatement(),
