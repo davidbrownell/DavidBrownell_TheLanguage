@@ -113,7 +113,7 @@ def _CreateSyntaxStatements():
                 name="Comparison",
                 item=[
                     "__syntax",
-                    ("==", "!=", "<", "<=", ">", ">="),
+                    ("==", "!=", "<", "<=", ">", ">="), # TODO: Change these to use string-based enum
                     version_token,
                 ],
             ),
@@ -143,7 +143,7 @@ def _CreateSyntaxStatements():
                     # ('and'|'or' <condition_phrase>)+
                     PhraseItem(
                         item=[
-                            ("and", "or"),
+                            ("and", "or"), # TODO: Change these to use string-based enum
                             None,
                         ],
                         arity="+",
