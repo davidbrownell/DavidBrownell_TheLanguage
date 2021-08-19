@@ -2,9 +2,8 @@
 
 # Expressions:
 # ---
-#   - Generator
-#   - LambdaDefinition
-#   - Index (easy)
+#   - Index (easy):         <expr> '[' <expr> ']'
+#   - LambdaDefinition:     ???
 
 # Statements:
 #   - If
