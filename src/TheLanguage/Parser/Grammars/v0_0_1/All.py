@@ -51,6 +51,7 @@ with InitRelativeImports():
     from .Statements.ScopedRefStatement import ScopedRefStatement
     from .Statements.ThrowStatement import ThrowStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
+    from .Statements.WhileStatement import WhileStatement
     from .Statements.YieldStatement import YieldStatement
 
     from .Types.FuncType import FuncType
@@ -88,6 +89,7 @@ GrammarPhrases                              = [
     ScopedRefStatement(),
     ThrowStatement(),
     VariableDeclarationStatement(),
+    WhileStatement(),
     YieldStatement(),
 
     # Types
