@@ -90,19 +90,15 @@ class PhraseItem(object):
     item: ItemType
     name: Optional[str]                     = field(default=None)
     arity: Union[
-        str,                                # Valid values are "?", "?-", "*", "+"
+        str,                                # Valid values are "?", "*", "+"
         Tuple[int, Optional[int]],
     ]                                       = field(default_factory=lambda: (1, 1))
-    non_greedy: bool                        = field(init=False, default=False)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
     def __post_init__(self):
         if isinstance(self.arity, str):
-            if self.arity == "?-":
-                value = (0, 1)
-                object.__setattr__(self, "non_greedy", True)
-            elif self.arity == "?":
+            if self.arity == "?":
                 value = (0, 1)
             elif self.arity == "*":
                 value = (0, None)
@@ -163,22 +159,16 @@ def CreatePhrase(
         assert item is not None
         assert not isinstance(item, (PhraseItem, Phrase)), item
 
-        phrase = _PopulateItem(
-            comment_token,
-            PhraseItem(
-                item,
-                name=name,
-            ),
-            suffers_from_infinite_recursion_ctr,
-        )
-    else:
-        phrase = _PopulateItem(
-            comment_token,
+        item = PhraseItem(
             item,
-            suffers_from_infinite_recursion_ctr,
+            name=name,
         )
 
-    assert not _IsNonGreedy(phrase), phrase
+    phrase = _PopulateItem(
+        comment_token,
+        item,
+        suffers_from_infinite_recursion_ctr,
+    )
 
     phrase.PopulateRecursive()
 
@@ -255,36 +245,17 @@ def ExtractRepeat(
 def ExtractSequence(
     node: Node,
 ) -> List[Union[Leaf, Node, None]]:
-    # Are we looking at a non-greedy sequence?
-    if isinstance(node.Type, OrPhrase):
-        node = cast(Node, ExtractOr(node))
-
-        skipped_indexes = getattr(node.Type, _SKIPPED_INDEXES_ATTRIBUTE, None)
-        assert skipped_indexes is not None
-
-    else:
-        assert isinstance(node.Type, SequencePhrase), node.Type
-        skipped_indexes = set()
-
     assert isinstance(node.Type, SequencePhrase)
     phrases = node.Type.Phrases
-
-    num_skipped_phrases = 0
 
     results = []
     child_index = 0
 
-    while child_index != len(node.Children) or len(results) - num_skipped_phrases != len(phrases):
-        if len(results) in skipped_indexes:
-            results.append(None)
-            num_skipped_phrases += 1
-
-            continue
-
+    while child_index != len(node.Children) or len(results) != len(phrases):
         phrase = None
 
-        if len(results) - num_skipped_phrases != len(phrases):
-            phrase = phrases[len(results) - num_skipped_phrases]
+        if len(results) != len(phrases):
+            phrase = phrases[len(results)]
 
             if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
                 results.append(None)
@@ -320,16 +291,12 @@ def ExtractSequence(
 
         results.append(child)
 
-    assert len(results) - num_skipped_phrases == len(phrases), (len(results), num_skipped_phrases, len(phrases))
+    assert len(results) == len(phrases), (len(results), len(phrases))
     return results
 
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-_NON_GREEDY_FLAG_ATTRIBUTE                  = "_non_greedy_flag"
-_SKIPPED_INDEXES_ATTRIBUTE                  = "_non-greedy_skipped_indexes"
-
 # ----------------------------------------------------------------------
 def _PopulateItem(
     comment_token: RegexToken,
@@ -411,40 +378,11 @@ def _PopulateItem(
 
             sequence_phrases.append(sequence_phrase)
 
-        # Non-greedy phrases are tricky, as we want to attempt to match the content with the phrase and
-        # also as if the phrase doesn't exist. Furthermore, there can be multiple non-greedy phrases in
-        # the sequence. Generate every permutation of the phrases that include and don't include these
-        # non-greedy phrases and then wrap them in an OrPhrase.
-        all_phrase_options = list(_GenerateNonGreedySequencePhrases(sequence_phrases))
-
-        if len(all_phrase_options) == 1:
-            assert sequence_phrases == all_phrase_options[0][0]
-            assert not all_phrase_options[0][1], all_phrase_options[0][1]
-
-            phrase = SequencePhrase(
-                comment_token,
-                sequence_phrases,
-                name=item.name,
-            )
-        else:
-            or_phrases = []
-
-            for phrase_options_index, (phrase_options, skipped_indexes) in enumerate(all_phrase_options):
-                sequence_phrase = SequencePhrase(
-                    comment_token,
-                    phrase_options,
-                    name="<< Option {} >>".format(phrase_options_index),
-                )
-
-                object.__setattr__(sequence_phrase, _SKIPPED_INDEXES_ATTRIBUTE, skipped_indexes)
-
-                or_phrases.append(sequence_phrase)
-
-            phrase = OrPhrase(
-                or_phrases,
-                sort_results=True,
-                name="<< Non Greedy - {} >>".format(item.name),
-            )
+        phrase = SequencePhrase(
+            comment_token,
+            sequence_phrases,
+            name=item.name,
+        )
 
     elif isinstance(item.item, tuple):
         or_options = []
@@ -455,8 +393,6 @@ def _PopulateItem(
                 phrase_item,
                 None if suffers_from_infinite_recursion_ctr is None else suffers_from_infinite_recursion_ctr - 1,
             )
-
-            assert not _IsNonGreedy(option_phrase), option_phrase
 
             or_options.append(option_phrase)
 
@@ -477,72 +413,9 @@ def _PopulateItem(
     if item.arity[0] == 1 and item.arity[1] == 1:
         return phrase
 
-    assert not _IsNonGreedy(phrase), phrase
-
-    repeat_phrase = RepeatPhrase(
+    return RepeatPhrase(
         phrase,
         item.arity[0],
         item.arity[1],
         name=name,
     )
-
-    if item.non_greedy:
-        object.__setattr__(repeat_phrase, _NON_GREEDY_FLAG_ATTRIBUTE, True)
-
-    return repeat_phrase
-
-
-# ----------------------------------------------------------------------
-def _IsNonGreedy(
-    phrase: Phrase,
-):
-    return hasattr(phrase, _NON_GREEDY_FLAG_ATTRIBUTE)
-
-
-# ----------------------------------------------------------------------
-def _GenerateNonGreedySequencePhrases(
-    phrases: List[Phrase],
-    index=0,
-    skipped_indexes: Optional[Set[int]]=None,
-) -> Generator[
-    Tuple[List[Phrase], Set[int]],
-    None,
-    None,
-]:
-    if skipped_indexes is None:
-        skipped_indexes = set()
-
-    while index < len(phrases):
-        phrase = phrases[index]
-
-        if not _IsNonGreedy(phrase):
-            index += 1
-            continue
-
-        assert isinstance(phrase, RepeatPhrase), phrase
-
-        # This only works for optional RepeatPhrases. We will need to introduce more complex
-        # non-greedy algorithms if this turns out to be too great of a limitation.
-        assert phrase.MinMatches == 0, phrase.MinMatches
-        assert phrase.MaxMatches == 1, phrase.MaxMatches
-
-        object.__delattr__(phrase, _NON_GREEDY_FLAG_ATTRIBUTE)
-
-        phrases = list(phrases)
-
-        # Generate combinations with this phrase as required
-        phrases[index] = phrase.Phrase
-        yield from _GenerateNonGreedySequencePhrases(phrases, index + 1, skipped_indexes)
-
-        # Generate combinations with this phrase removed
-        phrases = list(phrases)
-        del phrases[index]
-
-        skipped_indexes = set(skipped_indexes)
-        skipped_indexes.add(index)
-
-        yield from _GenerateNonGreedySequencePhrases(phrases, index, skipped_indexes)
-
-        return
-
-    yield phrases, skipped_indexes
