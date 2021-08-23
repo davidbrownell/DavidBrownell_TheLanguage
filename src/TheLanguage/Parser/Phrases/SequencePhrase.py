@@ -161,8 +161,6 @@ class SequencePhrase(Phrase):
             if result is None:
                 return None
 
-            result = result[0]
-
             if result.Success:
                 success = result.Success
 
@@ -189,13 +187,11 @@ class SequencePhrase(Phrase):
         single_threaded: bool,
         ignore_whitespace_ctr: int,
         ignored_indentation_level: Optional[int],
-    ) -> Optional[
-        Tuple[
-            Phrase.ParseResult,
-            int,
-            Optional[int],
-        ]
-    ]:
+    ) -> Optional[Phrase.ParseResult]:
+
+        # TODO: Figure out a way to cache results to improve algorithm efficiency. Better yet, figure
+        #       out a way to avoid duplicate call for left-recursive phrases.
+
         # ----------------------------------------------------------------------
         def ExtractWhitespaceOrComments() -> Optional[SequencePhrase.ExtractPotentialResults]:
             nonlocal ignored_indentation_level
@@ -280,18 +276,14 @@ class SequencePhrase(Phrase):
                 success = False
                 break
 
-        return (
-            Phrase.ParseResult(
-                success,
-                normalized_iter,
-                Phrase.StandardParseResultData(
-                    self,
-                    Phrase.MultipleStandardParseResultData(data_items, True),
-                    unique_id,
-                ),
+        return Phrase.ParseResult(
+            success,
+            normalized_iter,
+            Phrase.StandardParseResultData(
+                self,
+                Phrase.MultipleStandardParseResultData(data_items, True),
+                unique_id,
             ),
-            ignore_whitespace_ctr,
-            ignored_indentation_level,
         )
 
     # ----------------------------------------------------------------------

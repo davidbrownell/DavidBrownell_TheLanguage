@@ -50,7 +50,6 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
         self,
         comment_token: RegexToken,
         phrases: List[Phrase],
-        recursive_match: bool,
         name: str=None,
     ):
         assert phrases
@@ -62,8 +61,6 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             phrases,
             name=name,
         )
-
-        self.RecursiveMatch                 = False # BugBug recursive_match
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -78,11 +75,13 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
         Phrase.ParseResult,
         None,
     ]:
-        success = None
+        success = False
 
         observer.StartPhrase(unique_id, [self])
-        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, bool(success))])):
+        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
             original_normalized_iter = normalized_iter.Clone()
+
+            result_data: List[Optional[Phrase.ParseResultData]] = []
 
             # Match the first phrase. The first part of the process will attempt to match
             # non-left-recursive phrases; the second part will use that information when
@@ -105,6 +104,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                     else:
                         standard_phrases.append(phrase)
 
+                assert standard_phrases
                 return standard_phrases
 
             # ----------------------------------------------------------------------
@@ -132,9 +132,9 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                 return result
 
             normalized_iter = result.Iter
-            result_data: List[Optional[Phrase.ParseResultData]] = [
-                result.Data,
-            ]
+
+            assert result.Data
+            result_data.append(result.Data)
 
             # Match any left-recursive content
             if left_recursive_phrases:
@@ -144,7 +144,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                     phrases: List[Phrase],
                 ) -> List[Phrase]:
                     # Note that the cast isn't correct here, but we are providing something
-                    # that looks like a Phrase to OrPhrase.
+                    # that looks like a Phrase to the DynamicPhrase instance.
                     return [cast(Phrase, _PrefixWrapper(phrase)) for phrase in left_recursive_phrases]
 
                 # ----------------------------------------------------------------------
@@ -170,47 +170,32 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
 
                 if this_result.Success:
                     normalized_iter = this_result.Iter
+
+                    assert result.Data is not None
                     result_data.append(this_result.Data)
 
             # Match the remainder of the sequence
-            iteration = 0
-            ignore_whitespace_ctr = 1 if ignore_whitespace else 0
+            result = await self.ParseSuffixAsync(
+                unique_id,
+                normalized_iter,
+                observer,
+                ignore_whitespace=ignore_whitespace,
+                single_threaded=single_threaded,
+            )
 
-            while True:
-                result = await self._MatchAsync(
-                    1,
-                    unique_id,
-                    normalized_iter,
-                    observer,
-                    single_threaded,
-                    ignore_whitespace_ctr,
-                    None,
-                )
+            if result is None:
+                return None
 
-                if result is None:
-                    return None
+            success = result.Success
+            normalized_iter = result.Iter
 
-                result, ignore_whitespace_ctr, _ = result
+            assert result.Data is not None
+            assert result.Data.Data is not None
+            assert isinstance(result.Data.Data, Phrase.MultipleStandardParseResultData)
 
-                if result.Success or iteration == 0:
-                    assert result.Data is not None
-                    assert result.Data.Data is not None
-                    assert isinstance(result.Data.Data, Phrase.MultipleStandardParseResultData)
+            result_data += result.Data.Data.DataItems
 
-                    result_data += result.Data.Data.DataItems
-                    normalized_iter = result.Iter
-
-                if not result.Success or not self.RecursiveMatch:
-                    if not self.RecursiveMatch:
-                        success = result.Success
-
-                    break
-
-                iteration += 1
-
-            if success is None:
-                success = iteration != 0
-
+            # Commit the results
             data = Phrase.StandardParseResultData(
                 self,
                 Phrase.MultipleStandardParseResultData(result_data, True),
@@ -241,7 +226,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
         Phrase.ParseResult,
         None,
     ]:
-        result = await self._MatchAsync(
+        return await self._MatchAsync(
             1,
             unique_id,
             normalized_iter,
@@ -250,11 +235,6 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             1 if ignore_whitespace else 0,
             None,
         )
-
-        if result is None:
-            return None
-
-        return result[0]
 
 
 # ----------------------------------------------------------------------

@@ -19,7 +19,6 @@ import os
 import re
 import textwrap
 
-from enum import auto, Enum
 from typing import cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
@@ -104,25 +103,11 @@ class PhraseItem(object):
 
 
 # ----------------------------------------------------------------------
-class SequenceParseType(Enum):
-    """BugBug: Desc"""
-
-    # BugBug:Desc
-    Standard                                = auto()
-
-    # BugBug:Desc
-    LeftRecursiveExclusive                  = auto()
-
-    # BugBug:Desc
-    LeftRecursiveInclusive                  = auto()
-
-
-# ----------------------------------------------------------------------
 def CreatePhrase(
     item: PhraseItem.ItemType,
     name: str=None,
     comment_token: RegexToken=None,
-    sequence_parse_type: Optional[SequenceParseType]=None,
+    is_left_recursive_sequence: Optional[bool]=None,
 ) -> Phrase:
 
     comment_token = comment_token or CommentToken
@@ -139,7 +124,7 @@ def CreatePhrase(
     phrase = _PopulateItem(
         comment_token,
         item,
-        sequence_parse_type,
+        is_left_recursive_sequence,
     )
 
     phrase.PopulateRecursive()
@@ -273,7 +258,7 @@ def ExtractSequence(
 def _PopulateItem(
     comment_token: RegexToken,
     item: PhraseItem.ItemType,
-    sequence_parse_type: Optional[SequenceParseType],
+    is_left_recursive_sequence: Optional[bool],
 ) -> Phrase:
 
     if not isinstance(item, PhraseItem):
@@ -282,7 +267,7 @@ def _PopulateItem(
     name = None
 
     if isinstance(item.item, PhraseItem):
-        phrase = _PopulateItem(comment_token, item.item, sequence_parse_type)
+        phrase = _PopulateItem(comment_token, item.item, is_left_recursive_sequence)
         name = item.name
 
     elif isinstance(item.item, Phrase):
@@ -290,7 +275,7 @@ def _PopulateItem(
         name = item.name
 
     else:
-        assert sequence_parse_type is None or isinstance(item.item, list), (sequence_parse_type, item.item)
+        assert is_left_recursive_sequence is None or isinstance(item.item, list), (is_left_recursive_sequence, item.item)
 
         if isinstance(item.item, Token):
             phrase = TokenPhrase(
@@ -335,28 +320,18 @@ def _PopulateItem(
 
                 sequence_phrases.append(sequence_phrase)
 
-            if sequence_parse_type is None or sequence_parse_type == SequenceParseType.Standard:
+            if is_left_recursive_sequence is None or not is_left_recursive_sequence:
                 phrase = SequencePhrase(
                     comment_token,
                     sequence_phrases,
                     name=item.name,
                 )
-            elif sequence_parse_type == SequenceParseType.LeftRecursiveExclusive:
-                phrase = LeftRecursiveSequencePhrase(
-                    comment_token,
-                    sequence_phrases,
-                    recursive_match=False,
-                    name=item.name,
-                )
-            elif sequence_parse_type == SequenceParseType.LeftRecursiveInclusive:
-                phrase = LeftRecursiveSequencePhrase(
-                    comment_token,
-                    sequence_phrases,
-                    recursive_match=True,
-                    name=item.name,
-                )
             else:
-                assert False, sequence_parse_type  # pragma: no cover
+                phrase = LeftRecursiveSequencePhrase(
+                    comment_token,
+                    sequence_phrases,
+                    name=item.name,
+                )
 
         elif isinstance(item.item, tuple):
             or_options = []

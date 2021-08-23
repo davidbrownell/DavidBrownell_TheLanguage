@@ -29,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common.TypeModifier import TypeModifier
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem, SequenceParseType
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
 
 # ----------------------------------------------------------------------
@@ -69,6 +69,6 @@ class CastExpression(GrammarPhrase):
                         ),
                     ),
                 ],
-                sequence_parse_type=SequenceParseType.LeftRecursiveExclusive,
+                is_left_recursive_sequence=True,
             ),
         )

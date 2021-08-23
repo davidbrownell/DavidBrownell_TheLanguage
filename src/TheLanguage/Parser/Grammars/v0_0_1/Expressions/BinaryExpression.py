@@ -28,7 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem, SequenceParseType
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
@@ -95,6 +95,6 @@ class BinaryExpression(GrammarPhrase):
                     # <expr>
                     DynamicPhrasesType.Expressions,
                 ],
-                sequence_parse_type=SequenceParseType.LeftRecursiveInclusive,
+                is_left_recursive_sequence=True,
             ),
         )

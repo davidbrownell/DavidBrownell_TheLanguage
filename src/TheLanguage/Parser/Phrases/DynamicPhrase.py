@@ -59,11 +59,6 @@ class DynamicPhrase(Phrase):
 
         self._get_dynamic_phrases_func                                      = get_dynamic_phrases_func
 
-    # BugBug
-    import threading
-    BugBug = {}
-    BugBug_lock = threading.Lock()
-
     # ----------------------------------------------------------------------
     @Interface.override
     async def ParseAsync(
@@ -91,21 +86,6 @@ class DynamicPhrase(Phrase):
                 ],
             ),
         ):
-            assert normalized_iter.Hash
-            key = (normalized_iter.Hash, normalized_iter.Offset)
-
-            # BugBug: Why is this called so often?
-            if normalized_iter.Offset == 142:
-                key = id(self)
-
-                with self.BugBug_lock:
-                    if key not in self.BugBug:
-                        self.BugBug[key] = [self.Name, 0]
-                    self.BugBug[key][1] += 1
-
-                    print("BugBug", self.BugBug)
-            # BugBug: End
-
             dynamic_phrases = self._get_dynamic_phrases_func(unique_id, observer)
             if not dynamic_phrases:
                 return Phrase.ParseResult(False, normalized_iter, None)
