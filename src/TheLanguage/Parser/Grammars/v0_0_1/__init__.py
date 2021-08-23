@@ -2,7 +2,6 @@
 
 # Expressions:
 # ---
-#   - GroupExpression:      '(' <expr> ')'
 #   - Index (easy):         <expr> '[' <expr> ']'
 #   - LambdaDefinition:     ???
 
