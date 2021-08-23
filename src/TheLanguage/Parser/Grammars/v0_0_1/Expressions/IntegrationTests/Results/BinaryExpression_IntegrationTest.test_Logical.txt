@@ -18,7 +18,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                             Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                           IterAfter  : [1, 5] (4)
                                                                                           IterBefore : [1, 1] (0)
-                                                                                          Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                          Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                         IterAfter  : [1, 5] (4)
                                                                         IterBefore : [1, 1] (0)
                                                                         Type       : DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -53,13 +53,13 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                                                                                                       Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                                                                     IterAfter  : [1, 11] (10)
                                                                                                                                                                                     IterBefore : [1, 8] (7)
-                                                                                                                                                                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                                                                   IterAfter  : [1, 11] (10)
                                                                                                                                                                   IterBefore : [1, 8] (7)
                                                                                                                                                                   Type       : Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                                                                 IterAfter  : [1, 11] (10)
                                                                                                                                                 IterBefore : [1, 8] (7)
-                                                                                                                                                Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                               IterAfter  : [1, 11] (10)
                                                                                                                               IterBefore : [1, 8] (7)
                                                                                                                               Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -95,22 +95,22 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                                                                                                       Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                                                                     IterAfter  : [1, 19] (18)
                                                                                                                                                                                     IterBefore : [1, 16] (15)
-                                                                                                                                                                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                                                                   IterAfter  : [1, 19] (18)
                                                                                                                                                                   IterBefore : [1, 16] (15)
                                                                                                                                                                   Type       : Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                                                                 IterAfter  : [1, 19] (18)
                                                                                                                                                 IterBefore : [1, 16] (15)
-                                                                                                                                                Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                               IterAfter  : [1, 19] (18)
                                                                                                                               IterBefore : [1, 16] (15)
                                                                                                                               Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                             IterAfter  : [1, 19] (18)
                                                                                                             IterBefore : [1, 8] (7)
-                                                                                                            Type       : Binary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
+                                                                                                            Type       : Binary Expression <class 'TheLanguage.Parser.Phrases.LeftRecursiveSequencePhrase.LeftRecursiveSequencePhrase'>
                                                                                           IterAfter  : [1, 19] (18)
                                                                                           IterBefore : [1, 8] (7)
-                                                                                          Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                          Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                         IterAfter  : [1, 19] (18)
                                                                         IterBefore : [1, 8] (7)
                                                                         Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -128,7 +128,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                       Type       : Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                     IterAfter  : [2, 1] (19)
                                     IterBefore : [1, 1] (0)
-                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                   IterAfter  : [2, 1] (19)
                   IterBefore : [1, 1] (0)
                   Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -151,7 +151,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                             Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                           IterAfter  : [2, 5] (23)
                                                                                           IterBefore : [2, 1] (19)
-                                                                                          Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                          Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                         IterAfter  : [2, 5] (23)
                                                                         IterBefore : [2, 1] (19)
                                                                         Type       : DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -186,13 +186,13 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                                                                                                       Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                                                                     IterAfter  : [2, 13] (31)
                                                                                                                                                                                     IterBefore : [2, 8] (26)
-                                                                                                                                                                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                                                                   IterAfter  : [2, 13] (31)
                                                                                                                                                                   IterBefore : [2, 8] (26)
                                                                                                                                                                   Type       : Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                                                                 IterAfter  : [2, 13] (31)
                                                                                                                                                 IterBefore : [2, 8] (26)
-                                                                                                                                                Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                               IterAfter  : [2, 13] (31)
                                                                                                                               IterBefore : [2, 8] (26)
                                                                                                                               Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -228,22 +228,22 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                                                                                                       Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                                                                     IterAfter  : [2, 21] (39)
                                                                                                                                                                                     IterBefore : [2, 17] (35)
-                                                                                                                                                                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                                                                   IterAfter  : [2, 21] (39)
                                                                                                                                                                   IterBefore : [2, 17] (35)
                                                                                                                                                                   Type       : Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                                                                 IterAfter  : [2, 21] (39)
                                                                                                                                                 IterBefore : [2, 17] (35)
-                                                                                                                                                Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                               IterAfter  : [2, 21] (39)
                                                                                                                               IterBefore : [2, 17] (35)
                                                                                                                               Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                             IterAfter  : [2, 21] (39)
                                                                                                             IterBefore : [2, 8] (26)
-                                                                                                            Type       : Binary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
+                                                                                                            Type       : Binary Expression <class 'TheLanguage.Parser.Phrases.LeftRecursiveSequencePhrase.LeftRecursiveSequencePhrase'>
                                                                                           IterAfter  : [2, 21] (39)
                                                                                           IterBefore : [2, 8] (26)
-                                                                                          Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                          Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                         IterAfter  : [2, 21] (39)
                                                                         IterBefore : [2, 8] (26)
                                                                         Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -261,7 +261,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                       Type       : Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                     IterAfter  : [3, 1] (40)
                                     IterBefore : [2, 1] (19)
-                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                   IterAfter  : [3, 1] (40)
                   IterBefore : [2, 1] (19)
                   Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -284,7 +284,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                             Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                           IterAfter  : [3, 5] (44)
                                                                                           IterBefore : [3, 1] (40)
-                                                                                          Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                          Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                         IterAfter  : [3, 5] (44)
                                                                         IterBefore : [3, 1] (40)
                                                                         Type       : DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -319,13 +319,13 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                                                                                                       Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                                                                     IterAfter  : [3, 12] (51)
                                                                                                                                                                                     IterBefore : [3, 8] (47)
-                                                                                                                                                                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                                                                   IterAfter  : [3, 12] (51)
                                                                                                                                                                   IterBefore : [3, 8] (47)
                                                                                                                                                                   Type       : Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                                                                 IterAfter  : [3, 12] (51)
                                                                                                                                                 IterBefore : [3, 8] (47)
-                                                                                                                                                Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                               IterAfter  : [3, 12] (51)
                                                                                                                               IterBefore : [3, 8] (47)
                                                                                                                               Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -361,22 +361,22 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                                                                                                       Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                                                                     IterAfter  : [3, 19] (58)
                                                                                                                                                                                     IterBefore : [3, 16] (55)
-                                                                                                                                                                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                                                                   IterAfter  : [3, 19] (58)
                                                                                                                                                                   IterBefore : [3, 16] (55)
                                                                                                                                                                   Type       : Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                                                                 IterAfter  : [3, 19] (58)
                                                                                                                                                 IterBefore : [3, 16] (55)
-                                                                                                                                                Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                               IterAfter  : [3, 19] (58)
                                                                                                                               IterBefore : [3, 16] (55)
                                                                                                                               Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                             IterAfter  : [3, 19] (58)
                                                                                                             IterBefore : [3, 8] (47)
-                                                                                                            Type       : Binary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
+                                                                                                            Type       : Binary Expression <class 'TheLanguage.Parser.Phrases.LeftRecursiveSequencePhrase.LeftRecursiveSequencePhrase'>
                                                                                           IterAfter  : [3, 19] (58)
                                                                                           IterBefore : [3, 8] (47)
-                                                                                          Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                          Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                         IterAfter  : [3, 19] (58)
                                                                         IterBefore : [3, 8] (47)
                                                                         Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -394,7 +394,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                       Type       : Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                     IterAfter  : [4, 1] (59)
                                     IterBefore : [3, 1] (40)
-                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                   IterAfter  : [4, 1] (59)
                   IterBefore : [3, 1] (40)
                   Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -417,7 +417,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                             Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                           IterAfter  : [4, 5] (63)
                                                                                           IterBefore : [4, 1] (59)
-                                                                                          Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                          Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                         IterAfter  : [4, 5] (63)
                                                                         IterBefore : [4, 1] (59)
                                                                         Type       : DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -452,13 +452,13 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                                                                                                       Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                                                                     IterAfter  : [4, 13] (71)
                                                                                                                                                                                     IterBefore : [4, 8] (66)
-                                                                                                                                                                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                                                                   IterAfter  : [4, 13] (71)
                                                                                                                                                                   IterBefore : [4, 8] (66)
                                                                                                                                                                   Type       : Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                                                                 IterAfter  : [4, 13] (71)
                                                                                                                                                 IterBefore : [4, 8] (66)
-                                                                                                                                                Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                               IterAfter  : [4, 13] (71)
                                                                                                                               IterBefore : [4, 8] (66)
                                                                                                                               Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -494,22 +494,22 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                                                                                                                                                                       Type       : Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                                                                                                                                                                     IterAfter  : [4, 22] (80)
                                                                                                                                                                                     IterBefore : [4, 17] (75)
-                                                                                                                                                                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                                                                   IterAfter  : [4, 22] (80)
                                                                                                                                                                   IterBefore : [4, 17] (75)
                                                                                                                                                                   Type       : Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                                                                 IterAfter  : [4, 22] (80)
                                                                                                                                                 IterBefore : [4, 17] (75)
-                                                                                                                                                Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                                                                                Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                                                                               IterAfter  : [4, 22] (80)
                                                                                                                               IterBefore : [4, 17] (75)
                                                                                                                               Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
                                                                                                             IterAfter  : [4, 22] (80)
                                                                                                             IterBefore : [4, 8] (66)
-                                                                                                            Type       : Binary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
+                                                                                                            Type       : Binary Expression <class 'TheLanguage.Parser.Phrases.LeftRecursiveSequencePhrase.LeftRecursiveSequencePhrase'>
                                                                                           IterAfter  : [4, 22] (80)
                                                                                           IterBefore : [4, 8] (66)
-                                                                                          Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                                                                          Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                                                                         IterAfter  : [4, 22] (80)
                                                                         IterBefore : [4, 8] (66)
                                                                         Type       : DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
@@ -527,7 +527,7 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                       Type       : Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>
                                     IterAfter  : [5, 1] (81)
                                     IterBefore : [4, 1] (59)
-                                    Type       : 1.0.0 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                                    Type       : 0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
                   IterAfter  : [5, 1] (81)
                   IterBefore : [4, 1] (59)
                   Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>

@@ -39,7 +39,7 @@ def test_NoModifier():
         textwrap.dedent(
             """\
             (Int ()) Func():
-               pass
+                pass
             """,
         ),
     ) == ResultsFromFile()
@@ -58,10 +58,3 @@ def test_WithModifier():
             """,
         ),
     ) == ResultsFromFile()
-
-
-# ----------------------------------------------------------------------
-def test_TODO():
-    # This is here to get tester passing (it has troubles when all the tests are skipped).
-    # Remove this test once the tests above are working.
-    assert True

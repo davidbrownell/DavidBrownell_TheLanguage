@@ -42,6 +42,7 @@ class NormalizedIterator(object):
         self.Content                        = normalized_content.Content
         self.ContentLen                     = normalized_content.ContentLen
         self.LineInfos                      = normalized_content.LineInfos
+        self.Hash                           = normalized_content.Hash
 
         self._line_info_index               = 0
         self._offset                        = 0
@@ -55,7 +56,13 @@ class NormalizedIterator(object):
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        return (
+            self.Hash == other.Hash
+            and self._line_info_index == other._line_info_index
+            and self._offset == other._offset
+            and self._consumed_dedent_line == other._consumed_dedent_line
+            and self._consumed_dedent_count == other._consumed_dedent_count
+        )
 
     # ----------------------------------------------------------------------
     def Clone(self) -> "NormalizedIterator":
@@ -64,6 +71,7 @@ class NormalizedIterator(object):
                 self.Content,
                 self.ContentLen,
                 self.LineInfos,
+                self.Hash,
             ),
         )
 

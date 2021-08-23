@@ -396,7 +396,7 @@ class _ScopeTracker(object):
         self,
         unique_id: List[str],
         dynamic_phrases_type: DynamicPhrasesType,
-    ) -> Tuple[List[Phrase], str]:
+    ) -> Tuple[Optional[str], List[Phrase]]:
 
         if dynamic_phrases_type == DynamicPhrasesType.Expressions:
             attribute_name = "Expressions"
@@ -476,7 +476,7 @@ class _ScopeTracker(object):
             if not should_continue:
                 break
 
-        return all_phrases, " / ".join(all_names)
+        return " / ".join(all_names), all_phrases
 
     # ----------------------------------------------------------------------
     # |
@@ -619,13 +619,14 @@ class _PhraseObserver(Phrase.Observer):
         return node
 
     # ----------------------------------------------------------------------
+    @Interface.override
     def GetDynamicPhrases(
         self,
         unique_id: List[str],
-        dynamic_phrases_type: DynamicPhrasesType,
-    ) -> Tuple[List[Phrase], str]:
+        phrases_type: DynamicPhrasesType,
+    ) -> Tuple[Optional[str], List[Phrase]]:
         with self._scope_tracker_lock:
-            return self._scope_tracker.GetDynamicPhrases(unique_id, dynamic_phrases_type)
+            return self._scope_tracker.GetDynamicPhrases(unique_id, phrases_type)
 
     # ----------------------------------------------------------------------
     @Interface.override

@@ -30,12 +30,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..GeneratorExpression import *
-    from ...Common.AutomatedTests import Execute
+    from ...Common.AutomatedTests import ExecuteEx
 
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    assert Execute(
+    result, node = ExecuteEx(
         textwrap.dedent(
             """\
             a = value1 for value1 in OneToTen()
@@ -45,4 +45,6 @@ def test_Standard():
             c = AddOne(value3) for value3 in OneToTen() if value3 % two
             """,
         ),
-    ) == ResultsFromFile()
+    )
+
+    assert result == ResultsFromFile()
