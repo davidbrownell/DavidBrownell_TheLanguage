@@ -93,6 +93,12 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                 unique_id: List[str],
                 phrases: List[Phrase],
             ) -> List[Phrase]:
+                assert unique_id
+                is_left_recursive = unique_id[-1].endswith("[0 <A>]")
+
+                if not is_left_recursive:
+                    return phrases
+
                 standard_phrases = []
 
                 for phrase in phrases:
