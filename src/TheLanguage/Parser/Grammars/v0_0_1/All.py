@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for v1.0.0 grammar"""
+"""All grammar phrases for this grammar"""
 
 import os
 

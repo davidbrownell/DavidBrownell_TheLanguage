@@ -20,11 +20,12 @@ for the parser.
 
 import os
 
-from typing import Any, Callable, cast, List, Optional, Tuple, Union
+from typing import Any, Callable, cast, List, Optional, TextIO, Tuple, Union
 
 from dataclasses import dataclass, field
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -36,12 +37,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .NormalizedIterator import NormalizedIterator
     from .Phrase import Phrase
-    from .Token import Token
+    from .Token import Token, RegexToken
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class _ASTBase(CommonEnvironment.ObjectReprImplBase):
+class _ASTBase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
     """Common base class for nodes and leaves"""
 
     Type: Union[None, Phrase, Token]
@@ -59,6 +60,16 @@ class _ASTBase(CommonEnvironment.ObjectReprImplBase):
             Parent=None,
             **custom_display_funcs,
         )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def DebugOutput(
+        output_stream: TextIO,
+        indentation_prefix: Optional[str]=None,
+    ) -> None:
+        """Writes debugging output to the provided stream"""
+        raise Exception("Abstract method")  # pragma: no cover
 
 
 # ----------------------------------------------------------------------
@@ -94,18 +105,59 @@ class _Node(_ASTBase):
         return cast(Leaf, node).IterAfter
 
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def DebugOutput(
+        self,
+        output_stream: TextIO,
+        indentation_prefix: Optional[str]=None,
+    ):
+        if indentation_prefix is None:
+            indentation_prefix = ""
+
+        for child in self.Children:  # type: ignore
+            child.DebugOutput(output_stream, indentation_prefix)
+
+
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class RootNode(_Node):
     """Root of the tree"""
-    pass
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def DebugOutput(
+        self,
+        output_stream: TextIO,
+        indentation_prefix: Optional[str]=None,
+    ):
+        if indentation_prefix is None:
+            indentation_prefix = ""
+
+        output_stream.write("{}<root>\n".format(indentation_prefix))
+
+        super(RootNode, self).DebugOutput(output_stream, indentation_prefix + "    ")
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class Node(_Node):
     """Result of a `Statement`"""
-    pass
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def DebugOutput(
+        self,
+        output_stream: TextIO,
+        indentation_prefix: Optional[str]=None,
+    ):
+        if indentation_prefix is None:
+            indentation_prefix = ""
+
+        assert self.Type
+        output_stream.write("{}{}\n".format(indentation_prefix, self.Type.Name))
+
+        super(Node, self).DebugOutput(output_stream, indentation_prefix + "    ")
 
 
 # ----------------------------------------------------------------------
@@ -118,3 +170,22 @@ class Leaf(_ASTBase):
     IterBefore: NormalizedIterator          # NormalizedIterator before the token
     IterAfter: NormalizedIterator           # NormalizedIterator after the token has been consumed
     IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def DebugOutput(
+        self,
+        output_stream: TextIO,
+        indentation_prefix: Optional[str]=None,
+    ):
+        if indentation_prefix is None:
+            indentation_prefix = ""
+
+        assert self.Type is not None
+        output_stream.write(
+            "{}{}{}\n".format(
+                indentation_prefix,
+                self.Type.Name,
+                " [{}]".format(self.Value.Match) if isinstance(self.Value, RegexToken.MatchResult) else "",
+            ),
+        )

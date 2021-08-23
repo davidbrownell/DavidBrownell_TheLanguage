@@ -49,7 +49,7 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Single(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: [self._lower_phrase])
+        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase]))
 
         result = await phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
@@ -79,7 +79,7 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SingleNoMatch(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: [self._lower_phrase])
+        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase]))
 
         result = await phrase.ParseAsync(["root"], CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
@@ -104,7 +104,7 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MultipleNumber(self, parse_mock):
-        phrase = DynamicPhrase(lambda uniqud_id, observer: [self._lower_phrase, self._number_phrase])
+        phrase = DynamicPhrase(lambda uniqud_id, observer: (None, [self._lower_phrase, self._number_phrase]))
 
         result = await phrase.ParseAsync(["root"], CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
@@ -134,7 +134,7 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MultipleLower(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: [self._lower_phrase, self._number_phrase])
+        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase, self._number_phrase]))
 
         result = await phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
@@ -164,7 +164,7 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MultipleNumberEvents(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: [self._lower_phrase, self._number_phrase])
+        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase, self._number_phrase]))
 
         result = await phrase.ParseAsync(
             ["root"],
@@ -269,7 +269,7 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SingleNoMatchEvents(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: [self._lower_phrase])
+        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase]))
 
         result = await phrase.ParseAsync(
             ["root"],

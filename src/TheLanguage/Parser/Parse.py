@@ -110,7 +110,7 @@ def _LoadDynamicPhrasesFromFile(
 
 
 # ----------------------------------------------------------------------
-Grammars[SemVer("1.0.0")]                   = _LoadDynamicPhrasesFromFile(os.path.join(_script_dir, "Grammars", "v0_0_1", "All.py"))
+Grammars[SemVer("0.0.1")]                   = _LoadDynamicPhrasesFromFile(os.path.join(_script_dir, "Grammars", "v0_0_1", "All.py"))
 
 
 # ----------------------------------------------------------------------

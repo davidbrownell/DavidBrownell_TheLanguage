@@ -1,0 +1,104 @@
+<class 'TheLanguage.Parser.Components.AST.RootNode'>
+Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                  Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                      IsIgnored  : False
+                                                      IterAfter  : [1, 4] (3)
+                                                      IterBefore : [1, 1] (0)
+                                                      Type       : Upper <class 'TheLanguage.Parser.Components.Token.RegexToken'>
+                                                      Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                   Match : <_sre.SRE_Match object; span=(0, 3), match='ONE'>
+                                                      Whitespace : None
+                                    IterAfter  : [1, 4] (3)
+                                    IterBefore : [1, 1] (0)
+                                    Type       : (Upper Phrase, Newline Phrase, Indent Phrase, Dedent Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                  IterAfter  : [1, 4] (3)
+                  IterBefore : [1, 1] (0)
+                  Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
+             1)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                  Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                      IsIgnored  : False
+                                                      IterAfter  : [2, 1] (4)
+                                                      IterBefore : [1, 4] (3)
+                                                      Type       : Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>
+                                                      Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                   End   : 4
+                                                                   Start : 3
+                                                      Whitespace : None
+                                    IterAfter  : [2, 1] (4)
+                                    IterBefore : [1, 4] (3)
+                                    Type       : (Upper Phrase, Newline Phrase, Indent Phrase, Dedent Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                  IterAfter  : [2, 1] (4)
+                  IterBefore : [1, 4] (3)
+                  Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
+             2)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                  Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                      IsIgnored  : False
+                                                      IterAfter  : [2, 5] (8)
+                                                      IterBefore : [2, 1] (4)
+                                                      Type       : Indent <class 'TheLanguage.Parser.Components.Token.IndentToken'>
+                                                      Value      : <class 'TheLanguage.Parser.Components.Token.IndentToken.MatchResult'>
+                                                                   End   : 8
+                                                                   Start : 4
+                                                                   Value : 4
+                                                      Whitespace : None
+                                    IterAfter  : [2, 5] (8)
+                                    IterBefore : [2, 1] (4)
+                                    Type       : (Upper Phrase, Newline Phrase, Indent Phrase, Dedent Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                  IterAfter  : [2, 5] (8)
+                  IterBefore : [2, 1] (4)
+                  Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
+             3)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                  Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                      IsIgnored  : False
+                                                      IterAfter  : [2, 8] (11)
+                                                      IterBefore : [2, 5] (8)
+                                                      Type       : Lower <class 'TheLanguage.Parser.Components.Token.RegexToken'>
+                                                      Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                   Match : <_sre.SRE_Match object; span=(8, 11), match='two'>
+                                                      Whitespace : None
+                                    IterAfter  : [2, 8] (11)
+                                    IterBefore : [2, 5] (8)
+                                    Type       : (Upper Phrase, Newline Phrase, Indent Phrase, Dedent Phrase) / (Lower Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                  IterAfter  : [2, 8] (11)
+                  IterBefore : [2, 5] (8)
+                  Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
+             4)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                  Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                      IsIgnored  : False
+                                                      IterAfter  : [3, 1] (12)
+                                                      IterBefore : [2, 8] (11)
+                                                      Type       : Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>
+                                                      Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                   End   : 12
+                                                                   Start : 11
+                                                      Whitespace : None
+                                    IterAfter  : [3, 1] (12)
+                                    IterBefore : [2, 8] (11)
+                                    Type       : (Upper Phrase, Newline Phrase, Indent Phrase, Dedent Phrase) / (Lower Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                  IterAfter  : [3, 1] (12)
+                  IterBefore : [2, 8] (11)
+                  Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
+             5)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                  Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                      IsIgnored  : False
+                                                      IterAfter  : [3, 1] (12)
+                                                      IterBefore : [3, 1] (12)
+                                                      Type       : Dedent <class 'TheLanguage.Parser.Components.Token.DedentToken'>
+                                                      Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
+                                                                   -- empty dict --
+                                                      Whitespace : None
+                                    IterAfter  : [3, 1] (12)
+                                    IterBefore : [3, 1] (12)
+                                    Type       : (Upper Phrase, Newline Phrase, Indent Phrase, Dedent Phrase) / (Lower Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
+                  IterAfter  : [3, 1] (12)
+                  IterBefore : [3, 1] (12)
+                  Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
+IterAfter  : [3, 1] (12)
+IterBefore : [1, 1] (0)
+Type       : <None>

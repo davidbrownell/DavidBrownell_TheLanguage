@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -47,10 +47,7 @@ class DynamicPhrase(Phrase):
                 List[str],                  # unique_id
                 Phrase.Observer,
             ],
-            Union[
-                List[Phrase],               # List of Phrases
-                Tuple[List[Phrase], str],   # List of Phrases and the phase name
-            ]
+            Tuple[Optional[str], List[Phrase]],         # List of Phrases and the phase name
         ],
         name: str=None,
     ):
@@ -60,7 +57,7 @@ class DynamicPhrase(Phrase):
 
         super(DynamicPhrase, self).__init__(name)
 
-        self._get_dynamic_phrases_func      = get_dynamic_phrases_func
+        self._get_dynamic_phrases_func                                      = get_dynamic_phrases_func
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -93,11 +90,7 @@ class DynamicPhrase(Phrase):
             if not dynamic_phrases:
                 return Phrase.ParseResult(False, normalized_iter, None)
 
-            if isinstance(dynamic_phrases, tuple):
-                dynamic_phrases, phrase_name = dynamic_phrases
-            else:
-                phrase_name = None
-
+            phrase_name, dynamic_phrases = dynamic_phrases
             assert isinstance(dynamic_phrases, list), dynamic_phrases
 
             # Use the logic in the OrPhrase constructor to create a pretty name for the phrase;
