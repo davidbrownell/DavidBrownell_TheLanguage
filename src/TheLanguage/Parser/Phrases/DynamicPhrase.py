@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -47,10 +47,7 @@ class DynamicPhrase(Phrase):
                 List[str],                  # unique_id
                 Phrase.Observer,
             ],
-            Union[
-                List[Phrase],               # List of Phrases
-                Tuple[List[Phrase], str],   # List of Phrases and the phase name
-            ]
+            Tuple[Optional[str], List[Phrase]],         # List of Phrases and the phase name
         ],
         name: str=None,
     ):
@@ -60,7 +57,12 @@ class DynamicPhrase(Phrase):
 
         super(DynamicPhrase, self).__init__(name)
 
-        self._get_dynamic_phrases_func      = get_dynamic_phrases_func
+        self._get_dynamic_phrases_func                                      = get_dynamic_phrases_func
+
+    # BugBug
+    import threading
+    BugBug = {}
+    BugBug_lock = threading.Lock()
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -89,15 +91,26 @@ class DynamicPhrase(Phrase):
                 ],
             ),
         ):
+            assert normalized_iter.Hash
+            key = (normalized_iter.Hash, normalized_iter.Offset)
+
+            # BugBug: Why is this called so often?
+            if normalized_iter.Offset == 142:
+                key = id(self)
+
+                with self.BugBug_lock:
+                    if key not in self.BugBug:
+                        self.BugBug[key] = [self.Name, 0]
+                    self.BugBug[key][1] += 1
+
+                    print("BugBug", self.BugBug)
+            # BugBug: End
+
             dynamic_phrases = self._get_dynamic_phrases_func(unique_id, observer)
             if not dynamic_phrases:
                 return Phrase.ParseResult(False, normalized_iter, None)
 
-            if isinstance(dynamic_phrases, tuple):
-                dynamic_phrases, phrase_name = dynamic_phrases
-            else:
-                phrase_name = None
-
+            phrase_name, dynamic_phrases = dynamic_phrases
             assert isinstance(dynamic_phrases, list), dynamic_phrases
 
             # Use the logic in the OrPhrase constructor to create a pretty name for the phrase;

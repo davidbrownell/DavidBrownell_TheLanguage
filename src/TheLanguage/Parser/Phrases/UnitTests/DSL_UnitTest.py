@@ -469,7 +469,7 @@ class TestDynamicPhrases(object):
     @staticmethod
     @pytest.fixture
     def modified_parse_mock(parse_mock):
-        parse_mock.GetDynamicPhrases.side_effect = lambda unique_id, value: [TestDynamicPhrases._word_phrase, TestDynamicPhrases._number_phrase] if value == DynamicPhrasesType.Statements else [TestDynamicPhrases._number_phrase]
+        parse_mock.GetDynamicPhrases.side_effect = lambda unique_id, value: (None, [TestDynamicPhrases._word_phrase, TestDynamicPhrases._number_phrase] if value == DynamicPhrasesType.Statements else [TestDynamicPhrases._number_phrase])
 
         return parse_mock
 
@@ -886,7 +886,7 @@ class TestNamedPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.fixture
     def modified_parse_mock(self, parse_mock):
-        parse_mock.GetDynamicPhrases.side_effect = lambda unique_id, value: [self._word_line_phrase]
+        parse_mock.GetDynamicPhrases.side_effect = lambda unique_id, value: (None, [self._word_line_phrase])
 
         return parse_mock
 

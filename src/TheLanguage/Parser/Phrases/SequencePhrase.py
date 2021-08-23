@@ -3,7 +3,7 @@
 # |  SequencePhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-09 12:59:28
+# |      2021-08-22 18:54:53
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,13 +17,13 @@
 
 import os
 
-from typing import cast, List, Optional, Union
+from typing import cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
+from CommonEnvironment.CallOnExit import CallOnExit
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -64,10 +64,6 @@ class SequencePhrase(Phrase):
         phrases: List[Phrase],
         name: str=None,
     ):
-        assert comment_token
-        assert phrases
-        assert all(phrase for phrase in phrases)
-
         # Ensure that any control tokens that come in pairs have peers
         control_token_tracker = set()
 
@@ -133,17 +129,17 @@ class SequencePhrase(Phrase):
         Phrase.ParseResult,
         None,
     ]:
-        success = True
+        success = False
 
         observer.StartPhrase(unique_id, [self])
         with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
-            original_noramlized_iter = normalized_iter.Clone()
+            original_normalized_iter = normalized_iter.Clone()
 
             ignore_whitespace_ctr = 1 if ignore_whitespace else 0
 
             # If the first phrase is a control token indicating that whitespace should be
             # ignored, we need to make sure that the trailing dedents aren't greedily consumed,
-            # but rather end up at the current level.
+            # but rather we stop consuming them once we end up at the initial level.
             if (
                 isinstance(self.Phrases[0], TokenPhrase)
                 and isinstance(self.Phrases[0].Token, PushIgnoreWhitespaceControlToken)
@@ -152,104 +148,151 @@ class SequencePhrase(Phrase):
             else:
                 ignored_indentation_level = None
 
-            # ----------------------------------------------------------------------
-            def ExtractWhitespaceOrComments() -> Optional[SequencePhrase.ExtractPotentialResults]:
-                nonlocal ignored_indentation_level
-
-                if ignore_whitespace_ctr:
-                    data_item = self._ExtractPotentialWhitespaceToken(
-                        normalized_iter,
-                        consume_dedent=ignored_indentation_level != 0,
-                    )
-
-                    if data_item is not None:
-                        if ignored_indentation_level is not None:
-                            if isinstance(data_item.Token, IndentToken):
-                                ignored_indentation_level += 1
-                            elif isinstance(data_item.Token, DedentToken):
-                                assert ignored_indentation_level
-                                ignored_indentation_level -= 1
-
-                        return SequencePhrase.ExtractPotentialResults(
-                            [data_item],
-                            data_item.IterAfter,
-                        )
-
-                return self._ExtractPotentialCommentTokens(normalized_iter)
-
-            # ----------------------------------------------------------------------
-
-            data_items: List[Optional[Phrase.ParseResultData]] = []
-
-            observer_decorator = Phrase.ObserverDecorator(
-                self,
+            result = await self._MatchAsync(
+                0,
                 unique_id,
+                normalized_iter,
                 observer,
-                data_items,
-                lambda data_item: data_item,
+                single_threaded,
+                ignore_whitespace_ctr,
+                ignored_indentation_level,
             )
 
-            for phrase_index, phrase in enumerate(self.Phrases):
-                # Extract whitespace or comments
-                while not normalized_iter.AtEnd():
-                    potential_prefix_info = ExtractWhitespaceOrComments()
-                    if potential_prefix_info is None:
-                        break
-
-                    data_items += potential_prefix_info.Results
-                    normalized_iter = potential_prefix_info.Iter
-
-                # Process control tokens
-                if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
-                    if isinstance(phrase.Token, PushIgnoreWhitespaceControlToken):
-                        ignore_whitespace_ctr += 1
-                    elif isinstance(phrase.Token, PopIgnoreWhitespaceControlToken):
-                        assert ignore_whitespace_ctr != 0
-                        ignore_whitespace_ctr -= 1
-                    else:
-                        assert False, phrase.Token  # pragma: no cover
-
-                    continue
-
-                # Process the phrase
-                result = await phrase.ParseAsync(
-                    unique_id + ["Sequence: {} [{}]".format(phrase.Name, phrase_index)],
-                    normalized_iter.Clone(),
-                    observer_decorator,
-                    ignore_whitespace=ignore_whitespace_ctr != 0,
-                    single_threaded=single_threaded,
-                )
-
-                if result is None:
-                    return None
-
-                # Preserve the results
-                if result.Data is not None:
-                    data_items.append(result.Data)
-
-                normalized_iter = result.Iter.Clone()
-
-                if not result.Success:
-                    success = False
-                    break
-
-            data = Phrase.StandardParseResultData(
-                self,
-                Phrase.MultipleStandardParseResultData(data_items, True),
-                unique_id,
-            )
-
-            if (
-                success
-                and not await observer.OnInternalPhraseAsync(
-                    [data],
-                    original_noramlized_iter,
-                    normalized_iter,
-                )
-            ):
+            if result is None:
                 return None
 
-            return Phrase.ParseResult(success, normalized_iter, data)
+            result = result[0]
+
+            if result.Success:
+                success = result.Success
+
+                if not await observer.OnInternalPhraseAsync(
+                    [cast(Phrase.StandardParseResultData, result.Data)],
+                    original_normalized_iter,
+                    result.Iter,
+                ):
+                    return None
+
+            return result
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Protected Methods
+    # |
+    # ----------------------------------------------------------------------
+    async def _MatchAsync(
+        self,
+        phrase_offset: int,
+        unique_id: List[str],
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
+        single_threaded: bool,
+        ignore_whitespace_ctr: int,
+        ignored_indentation_level: Optional[int],
+    ) -> Optional[
+        Tuple[
+            Phrase.ParseResult,
+            int,
+            Optional[int],
+        ]
+    ]:
+        # ----------------------------------------------------------------------
+        def ExtractWhitespaceOrComments() -> Optional[SequencePhrase.ExtractPotentialResults]:
+            nonlocal ignored_indentation_level
+
+            if ignore_whitespace_ctr:
+                data_item = self._ExtractPotentialWhitespaceToken(
+                    normalized_iter,
+                    consume_dedent=ignored_indentation_level != 0,
+                )
+
+                if data_item is not None:
+                    if ignored_indentation_level is not None:
+                        if isinstance(data_item.Token, IndentToken):
+                            ignored_indentation_level += 1
+                        elif isinstance(data_item.Token, DedentToken):
+                            assert ignored_indentation_level
+                            ignored_indentation_level -= 1
+
+                    return SequencePhrase.ExtractPotentialResults(
+                        [data_item],
+                        data_item.IterAfter,
+                    )
+
+            return self._ExtractPotentialCommentTokens(normalized_iter)
+
+        # ----------------------------------------------------------------------
+
+        success = True
+        data_items: List[Optional[Phrase.ParseResultData]] = []
+
+        observer_decorator = Phrase.ObserverDecorator(
+            self,
+            unique_id,
+            observer,
+            data_items,
+            lambda data_item: data_item,
+        )
+
+        for phrase_index, phrase in enumerate(self.Phrases[phrase_offset:]):
+            phrase_index += phrase_offset
+
+            # Extract whitespace or comments
+            while not normalized_iter.AtEnd():
+                potential_prefix_info = ExtractWhitespaceOrComments()
+                if potential_prefix_info is None:
+                    break
+
+                data_items += potential_prefix_info.Results
+                normalized_iter = potential_prefix_info.Iter
+
+            # Process control tokens
+            if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
+                if isinstance(phrase.Token, PushIgnoreWhitespaceControlToken):
+                    ignore_whitespace_ctr += 1
+                elif isinstance(phrase.Token, PopIgnoreWhitespaceControlToken):
+                    assert ignore_whitespace_ctr != 0
+                    ignore_whitespace_ctr -= 1
+                else:
+                    assert False, phrase.Token  # pragma: no cover
+
+                continue
+
+            # Process the phrase
+            result = await phrase.ParseAsync(
+                unique_id + ["Sequence: {} [{}]".format(phrase.Name, phrase_index)],
+                normalized_iter.Clone(),
+                observer_decorator,
+                ignore_whitespace=ignore_whitespace_ctr != 0,
+                single_threaded=single_threaded,
+            )
+
+            if result is None:
+                return None
+
+            # Preserve the results
+            if result.Data is not None:
+                data_items.append(result.Data)
+
+            normalized_iter = result.Iter.Clone()
+
+            if not result.Success:
+                success = False
+                break
+
+        return (
+            Phrase.ParseResult(
+                success,
+                normalized_iter,
+                Phrase.StandardParseResultData(
+                    self,
+                    Phrase.MultipleStandardParseResultData(data_items, True),
+                    unique_id,
+                ),
+            ),
+            ignore_whitespace_ctr,
+            ignored_indentation_level,
+        )
 
     # ----------------------------------------------------------------------
     # |

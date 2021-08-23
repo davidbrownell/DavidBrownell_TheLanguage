@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GeneratorExpression_IntegrationTest.py
+# |  LeftRecursiveSequencePhrase_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-18 19:18:32
+# |      2021-08-23 09:09:42
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for GeneratorExpression.py"""
+"""Unit test for LeftRecursiveSequencePhrase.py"""
 
 import os
-import textwrap
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,22 +27,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GeneratorExpression import *
-    from ...Common.AutomatedTests import ExecuteEx
+    from ..LeftRecursiveSequencePhrase import *
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    result, node = ExecuteEx(
-        textwrap.dedent(
-            """\
-            a = value1 for value1 in OneToTen()
-
-            b = AddOne(value2) for value2 in OneToTen()
-
-            c = AddOne(value3) for value3 in OneToTen() if value3 % two
-            """,
-        ),
-    )
-
-    assert result == ResultsFromFile()
+def test_BugBug():
+    assert True

@@ -20,7 +20,7 @@ import re
 import textwrap
 
 from enum import auto, Enum
-from typing import cast, Generator, List, Optional, Set, Tuple, Union
+from typing import cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -35,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .DynamicPhrase import DynamicPhrase
+    from .LeftRecursiveSequencePhrase import LeftRecursiveSequencePhrase
     from .OrPhrase import OrPhrase
     from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
     from .RepeatPhrase import RepeatPhrase
@@ -42,7 +43,7 @@ with InitRelativeImports():
     from .TokenPhrase import TokenPhrase
 
     from ..Components.AST import Leaf, Node
-    from ..Components.Phrase import Phrase
+    from ..Components.Phrase import DynamicPhrasesType, Phrase
     from ..Components.Token import RegexToken, Token
 
 
@@ -59,14 +60,6 @@ CommentToken                                = RegexToken(
     ),
     is_always_ignored=True,
 )
-
-
-# ----------------------------------------------------------------------
-class DynamicPhrasesType(Enum):
-    Expressions                             = auto()    # Phrase that returns a value
-    Names                                   = auto()    # Phrase that can be used as a name
-    Statements                              = auto()    # Phrase that doesn't return a value
-    Types                                   = auto()    # Phrase that can be used as a type
 
 
 # ----------------------------------------------------------------------
@@ -111,49 +104,28 @@ class PhraseItem(object):
 
 
 # ----------------------------------------------------------------------
+class SequenceParseType(Enum):
+    """BugBug: Desc"""
+
+    # BugBug:Desc
+    Standard                                = auto()
+
+    # BugBug:Desc
+    LeftRecursiveExclusive                  = auto()
+
+    # BugBug:Desc
+    LeftRecursiveInclusive                  = auto()
+
+
+# ----------------------------------------------------------------------
 def CreatePhrase(
     item: PhraseItem.ItemType,
     name: str=None,
     comment_token: RegexToken=None,
-
-    # Most of the time, this flag does not need to be set. However, setting it to True will prevent
-    # infinite recursion errors for the first phrase in a sequence if that phrase is a DynamicPhrase
-    # that includes the parent.
-    #
-    # For example, the following phrase will suffer from this problem (as the first phrase in the
-    # sequence is requesting a collection of dynamic phrases of a category that includes the phrase
-    # itself) unless the flag is set:
-    #
-    #   Name:   AsPhrase
-    #   Type:   DynamicPhrasesType.Expressions
-    #   DSL:    [
-    #               DynamicPhrasesType.Expressions      # Note that this phrase is requesting a collection of phrases that will include itself
-    #               'as'
-    #               DynamicPhrasesType.Types,
-    #           ]
-    #
-    suffers_from_infinite_recursion=False,
+    sequence_parse_type: Optional[SequenceParseType]=None,
 ) -> Phrase:
 
     comment_token = comment_token or CommentToken
-
-    if suffers_from_infinite_recursion:
-        # If this flag is set, we should be looking at a sequence where the first time is a dynamic expression
-        if isinstance(item, list):
-            first_item = item[0]
-        elif isinstance(item, PhraseItem):
-            assert isinstance(item.item, list)
-            first_item = item.item[0]
-        elif isinstance(item, SequencePhrase):
-            first_item = item.Phrases[0]
-        else:
-            assert False, item  # pragma: no cover
-
-        assert isinstance(first_item, (DynamicPhrasesType, DynamicPhrase)), first_item
-
-        suffers_from_infinite_recursion_ctr = 1
-    else:
-        suffers_from_infinite_recursion_ctr = None
 
     if name is not None:
         assert item is not None
@@ -167,7 +139,7 @@ def CreatePhrase(
     phrase = _PopulateItem(
         comment_token,
         item,
-        suffers_from_infinite_recursion_ctr,
+        sequence_parse_type,
     )
 
     phrase.PopulateRecursive()
@@ -301,7 +273,7 @@ def ExtractSequence(
 def _PopulateItem(
     comment_token: RegexToken,
     item: PhraseItem.ItemType,
-    suffers_from_infinite_recursion_ctr: Optional[int],
+    sequence_parse_type: Optional[SequenceParseType],
 ) -> Phrase:
 
     if not isinstance(item, PhraseItem):
@@ -310,103 +282,105 @@ def _PopulateItem(
     name = None
 
     if isinstance(item.item, PhraseItem):
-        phrase = _PopulateItem(comment_token, item.item, suffers_from_infinite_recursion_ctr)
+        phrase = _PopulateItem(comment_token, item.item, sequence_parse_type)
         name = item.name
 
     elif isinstance(item.item, Phrase):
         phrase = item.item
         name = item.name
 
-    elif isinstance(item.item, Token):
-        phrase = TokenPhrase(
-            item.item,
-            name=item.name,
-        )
+    else:
+        assert sequence_parse_type is None or isinstance(item.item, list), (sequence_parse_type, item.item)
 
-    elif isinstance(item.item, str):
-        phrase = TokenPhrase(
-            RegexToken(
-                item.name or "'{}'".format(item.item),
-                re.compile(r"{}{}".format(re.escape(item.item), "\\b" if item.item.isalnum() else "")),
-            ),
-        )
+        if isinstance(item.item, Token):
+            phrase = TokenPhrase(
+                item.item,
+                name=item.name,
+            )
 
-    elif isinstance(item.item, DynamicPhrasesType):
-        dynamic_phrases_value = item.item
+        elif isinstance(item.item, str):
+            phrase = TokenPhrase(
+                RegexToken(
+                    item.name or "'{}'".format(item.item),
+                    re.compile(r"{}{}".format(re.escape(item.item), "\\b" if item.item.isalnum() else "")),
+                ),
+            )
 
-        if suffers_from_infinite_recursion_ctr == 0:
-            # ----------------------------------------------------------------------
-            def GetDyanmicPhrasesWithFilter(
-                unique_id: List[str],
-                observer,
-            ):
-                if unique_id[-1] in unique_id[:-1]:
-                    return []
+        elif isinstance(item.item, DynamicPhrasesType):
+            dynamic_phrases_value = item.item
 
-                return observer.GetDynamicPhrases(unique_id, dynamic_phrases_value)
-
-            # ----------------------------------------------------------------------
-
-            get_dynamic_phrases_func = GetDyanmicPhrasesWithFilter
-
-        else:
             # ----------------------------------------------------------------------
             def GetDynamicPhrases(
                 unique_id: List[str],
                 observer,
-            ):
+            ) -> Tuple[Optional[str], List[Phrase]]:
                 return observer.GetDynamicPhrases(unique_id, dynamic_phrases_value)
 
             # ----------------------------------------------------------------------
 
-            get_dynamic_phrases_func = GetDynamicPhrases
-
-        phrase = DynamicPhrase(
-            get_dynamic_phrases_func,
-            name=item.name or str(item.item),
-        )
-
-    elif isinstance(item.item, list):
-        sequence_phrases = []
-
-        for phrase_item in item.item:
-            sequence_phrase = _PopulateItem(
-                comment_token,
-                phrase_item,
-                None if suffers_from_infinite_recursion_ctr is None else suffers_from_infinite_recursion_ctr - 1,
+            phrase = DynamicPhrase(
+                GetDynamicPhrases,
+                name=item.name or str(item.item),
             )
 
-            sequence_phrases.append(sequence_phrase)
+        elif isinstance(item.item, list):
+            sequence_phrases = []
 
-        phrase = SequencePhrase(
-            comment_token,
-            sequence_phrases,
-            name=item.name,
-        )
+            for phrase_item in item.item:
+                sequence_phrase = _PopulateItem(
+                    comment_token,
+                    phrase_item,
+                    None,
+                )
 
-    elif isinstance(item.item, tuple):
-        or_options = []
+                sequence_phrases.append(sequence_phrase)
 
-        for phrase_item in item.item:
-            option_phrase = _PopulateItem(
-                comment_token,
-                phrase_item,
-                None if suffers_from_infinite_recursion_ctr is None else suffers_from_infinite_recursion_ctr - 1,
+            if sequence_parse_type is None or sequence_parse_type == SequenceParseType.Standard:
+                phrase = SequencePhrase(
+                    comment_token,
+                    sequence_phrases,
+                    name=item.name,
+                )
+            elif sequence_parse_type == SequenceParseType.LeftRecursiveExclusive:
+                phrase = LeftRecursiveSequencePhrase(
+                    comment_token,
+                    sequence_phrases,
+                    recursive_match=False,
+                    name=item.name,
+                )
+            elif sequence_parse_type == SequenceParseType.LeftRecursiveInclusive:
+                phrase = LeftRecursiveSequencePhrase(
+                    comment_token,
+                    sequence_phrases,
+                    recursive_match=True,
+                    name=item.name,
+                )
+            else:
+                assert False, sequence_parse_type  # pragma: no cover
+
+        elif isinstance(item.item, tuple):
+            or_options = []
+
+            for phrase_item in item.item:
+                option_phrase = _PopulateItem(
+                    comment_token,
+                    phrase_item,
+                    None,
+                )
+
+                or_options.append(option_phrase)
+
+            phrase = OrPhrase(
+                or_options,
+                name=item.name,
             )
 
-            or_options.append(option_phrase)
+        elif item.item is None:
+            phrase = RecursivePlaceholderPhrase()
+            name = item.name
 
-        phrase = OrPhrase(
-            or_options,
-            name=item.name,
-        )
-
-    elif item.item is None:
-        phrase = RecursivePlaceholderPhrase()
-        name = item.name
-
-    else:
-        assert False, item.item  # pragma: no cover
+        else:
+            assert False, item.item  # pragma: no cover
 
     assert isinstance(item.arity, tuple), item.arity
 

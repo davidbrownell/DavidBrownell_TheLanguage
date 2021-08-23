@@ -100,7 +100,7 @@ def test_Nested():
     assert Execute(
         textwrap.dedent(
             """\
-            var1 = one + two == three
+            var1 = one + two + three + four == five
             """,
         ),
     ) == ResultsFromFile()

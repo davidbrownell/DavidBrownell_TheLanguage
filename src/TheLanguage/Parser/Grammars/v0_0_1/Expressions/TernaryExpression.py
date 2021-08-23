@@ -28,7 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, SequenceParseType
 
 
 # ----------------------------------------------------------------------
@@ -57,6 +57,6 @@ class TernaryExpression(GrammarPhrase):
                     "else",
                     DynamicPhrasesType.Expressions,
                 ],
-                suffers_from_infinite_recursion=True,
+                sequence_parse_type=SequenceParseType.LeftRecursiveInclusive,
             ),
         )
