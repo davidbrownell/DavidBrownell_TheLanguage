@@ -258,12 +258,12 @@ class ImportStatement(ImportGrammarStatement):
                     source_leaf = raw_leaf_lookup[id(raw_source)]
 
                     raise InvalidRelativePathError(
-                        source_leaf.IterBefore.Line,
-                        source_leaf.IterBefore.Column,
+                        source_leaf.IterBegin_.Line,
+                        source_leaf.IterBegin_.Column,
                         raw_source,
                         working_dir,
-                        source_leaf.IterAfter.Line,
-                        source_leaf.IterAfter.Column,
+                        source_leaf.IterEnd.Line,
+                        source_leaf.IterEnd.Column,
                     )
 
                 importing_root = potential_importing_root

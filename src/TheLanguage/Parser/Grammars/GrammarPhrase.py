@@ -58,11 +58,11 @@ class ValidationError(Error):
         node: Union[Leaf, Node],
         *args,
     ):
-        line_before = node.IterBefore.Line if node.IterBefore is not None else -1
-        column_before = node.IterBefore.Column if node.IterBefore is not None else -1
+        line_before = node.IterBegin_.Line if node.IterBegin_ is not None else -1
+        column_before = node.IterBegin_.Column if node.IterBegin_ is not None else -1
 
-        line_after = node.IterAfter.Line if node.IterAfter is not None else -1
-        column_after = node.IterAfter.Column if node.IterAfter is not None else -1
+        line_after = node.IterEnd.Line if node.IterEnd is not None else -1
+        column_after = node.IterEnd.Column if node.IterEnd is not None else -1
 
         if isinstance(node, Leaf):
             return cls(

@@ -82,8 +82,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [1, 4] (3)
-                                                                         IterBefore : [1, 1] (0)
+                                                                         IterBegin_ : [1, 1] (0)
+                                                                         IterEnd    : [1, 4] (3)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -94,8 +94,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 1] (4)
-                                                                         IterBefore : [1, 4] (3)
+                                                                         IterBegin_ : [1, 4] (3)
+                                                                         IterEnd    : [2, 1] (4)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 4
@@ -119,8 +119,8 @@ class TestStandard(object):
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                            IsIgnored  : False
-                           IterAfter  : [1, 4] (3)
-                           IterBefore : [1, 1] (0)
+                           IterBegin_ : [1, 1] (0)
+                           IterEnd    : [1, 4] (3)
                            Token      : Word
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -144,8 +144,8 @@ class TestStandard(object):
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                       IsIgnored  : False
-                                      IterAfter  : [1, 4] (3)
-                                      IterBefore : [1, 1] (0)
+                                      IterBegin_ : [1, 1] (0)
+                                      IterEnd    : [1, 4] (3)
                                       Token      : Word
                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                    Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -166,8 +166,8 @@ class TestStandard(object):
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                            IsIgnored  : False
-                           IterAfter  : [2, 1] (4)
-                           IterBefore : [1, 4] (3)
+                           IterBegin_ : [1, 4] (3)
+                           IterEnd    : [2, 1] (4)
                            Token      : Newline+
                            Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                         End   : 4
@@ -186,8 +186,8 @@ class TestStandard(object):
                            DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                         IsIgnored  : False
-                                                        IterAfter  : [1, 4] (3)
-                                                        IterBefore : [1, 1] (0)
+                                                        IterBegin_ : [1, 1] (0)
+                                                        IterEnd    : [1, 4] (3)
                                                         Token      : Word
                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                      Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -201,8 +201,8 @@ class TestStandard(object):
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                       IsIgnored  : False
-                                      IterAfter  : [2, 1] (4)
-                                      IterBefore : [1, 4] (3)
+                                      IterBegin_ : [1, 4] (3)
+                                      IterEnd    : [2, 1] (4)
                                       Token      : Newline+
                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                    End   : 4
@@ -215,8 +215,8 @@ class TestStandard(object):
                            DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                         IsIgnored  : False
-                                                        IterAfter  : [1, 4] (3)
-                                                        IterBefore : [1, 1] (0)
+                                                        IterBegin_ : [1, 1] (0)
+                                                        IterEnd    : [1, 4] (3)
                                                         Token      : Word
                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                      Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -232,8 +232,8 @@ class TestStandard(object):
                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                    IsIgnored  : False
-                                                                   IterAfter  : [1, 4] (3)
-                                                                   IterBefore : [1, 1] (0)
+                                                                   IterBegin_ : [1, 1] (0)
+                                                                   IterEnd    : [1, 4] (3)
                                                                    Token      : Word
                                                                    Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                 Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -244,8 +244,8 @@ class TestStandard(object):
                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                    IsIgnored  : False
-                                                                   IterAfter  : [2, 1] (4)
-                                                                   IterBefore : [1, 4] (3)
+                                                                   IterBegin_ : [1, 4] (3)
+                                                                   IterEnd    : [2, 1] (4)
                                                                    Token      : Newline+
                                                                    Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                 End   : 4
@@ -284,8 +284,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [1, 4] (3)
-                                                                         IterBefore : [1, 1] (0)
+                                                                         IterBegin_ : [1, 1] (0)
+                                                                         IterEnd    : [1, 4] (3)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -296,8 +296,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 1] (4)
-                                                                         IterBefore : [1, 4] (3)
+                                                                         IterBegin_ : [1, 4] (3)
+                                                                         IterEnd    : [2, 1] (4)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 4
@@ -309,8 +309,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 4] (7)
-                                                                         IterBefore : [2, 1] (4)
+                                                                         IterBegin_ : [2, 1] (4)
+                                                                         IterEnd    : [2, 4] (7)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
@@ -321,8 +321,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [3, 1] (8)
-                                                                         IterBefore : [2, 4] (7)
+                                                                         IterBegin_ : [2, 4] (7)
+                                                                         IterEnd    : [3, 1] (8)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 8
@@ -365,8 +365,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [1, 4] (3)
-                                                                         IterBefore : [1, 1] (0)
+                                                                         IterBegin_ : [1, 1] (0)
+                                                                         IterEnd    : [1, 4] (3)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -377,8 +377,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 1] (4)
-                                                                         IterBefore : [1, 4] (3)
+                                                                         IterBegin_ : [1, 4] (3)
+                                                                         IterEnd    : [2, 1] (4)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 4
@@ -390,8 +390,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 4] (7)
-                                                                         IterBefore : [2, 1] (4)
+                                                                         IterBegin_ : [2, 1] (4)
+                                                                         IterEnd    : [2, 4] (7)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
@@ -402,8 +402,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [3, 1] (8)
-                                                                         IterBefore : [2, 4] (7)
+                                                                         IterBegin_ : [2, 4] (7)
+                                                                         IterEnd    : [3, 1] (8)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 8
@@ -485,8 +485,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [1, 4] (3)
-                                                                         IterBefore : [1, 1] (0)
+                                                                         IterBegin_ : [1, 1] (0)
+                                                                         IterEnd    : [1, 4] (3)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(0, 3), match='abc'>
@@ -537,8 +537,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [1, 4] (3)
-                                                                         IterBefore : [1, 1] (0)
+                                                                         IterBegin_ : [1, 1] (0)
+                                                                         IterEnd    : [1, 4] (3)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -549,8 +549,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 1] (4)
-                                                                         IterBefore : [1, 4] (3)
+                                                                         IterBegin_ : [1, 4] (3)
+                                                                         IterEnd    : [2, 1] (4)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 4
@@ -562,8 +562,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 4] (7)
-                                                                         IterBefore : [2, 1] (4)
+                                                                         IterBegin_ : [2, 1] (4)
+                                                                         IterEnd    : [2, 4] (7)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
@@ -574,8 +574,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [3, 1] (8)
-                                                                         IterBefore : [2, 4] (7)
+                                                                         IterBegin_ : [2, 4] (7)
+                                                                         IterEnd    : [3, 1] (8)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 8
@@ -616,8 +616,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [1, 4] (3)
-                                                                         IterBefore : [1, 1] (0)
+                                                                         IterBegin_ : [1, 1] (0)
+                                                                         IterEnd    : [1, 4] (3)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -628,8 +628,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 1] (4)
-                                                                         IterBefore : [1, 4] (3)
+                                                                         IterBegin_ : [1, 4] (3)
+                                                                         IterEnd    : [2, 1] (4)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 4
@@ -641,8 +641,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 4] (7)
-                                                                         IterBefore : [2, 1] (4)
+                                                                         IterBegin_ : [2, 1] (4)
+                                                                         IterEnd    : [2, 4] (7)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
@@ -653,8 +653,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [3, 1] (8)
-                                                                         IterBefore : [2, 4] (7)
+                                                                         IterBegin_ : [2, 4] (7)
+                                                                         IterEnd    : [3, 1] (8)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 8
@@ -687,8 +687,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [1, 4] (3)
-                                                                         IterBefore : [1, 1] (0)
+                                                                         IterBegin_ : [1, 1] (0)
+                                                                         IterEnd    : [1, 4] (3)
                                                                          Token      : Word
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                       Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
@@ -699,8 +699,8 @@ class TestStandard(object):
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterAfter  : [2, 1] (4)
-                                                                         IterBefore : [1, 4] (3)
+                                                                         IterBegin_ : [1, 4] (3)
+                                                                         IterEnd    : [2, 1] (4)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                                       End   : 4

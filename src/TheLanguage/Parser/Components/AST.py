@@ -81,7 +81,7 @@ class _Node(_ASTBase):
 
     # ----------------------------------------------------------------------
     @property
-    def IterBefore(self) -> Optional[NormalizedIterator]:
+    def IterBegin_(self) -> Optional[NormalizedIterator]:
         node = self
 
         while isinstance(node, _Node):
@@ -90,10 +90,10 @@ class _Node(_ASTBase):
 
             node = node.Children[0]  # <unscriptable> pylint: disable=E1136
 
-        return cast(Leaf, node).IterBefore
+        return cast(Leaf, node).IterBegin_
 
     @property
-    def IterAfter(self) -> Optional[NormalizedIterator]:
+    def IterEnd(self) -> Optional[NormalizedIterator]:
         node = self
 
         while isinstance(node, _Node):
@@ -102,7 +102,7 @@ class _Node(_ASTBase):
 
             node = node.Children[-1]  # <unscriptable> pylint: disable=E1136
 
-        return cast(Leaf, node).IterAfter
+        return cast(Leaf, node).IterEnd
 
 
     # ----------------------------------------------------------------------
@@ -167,8 +167,8 @@ class Leaf(_ASTBase):
 
     Whitespace: Optional[Tuple[int, int]]   # Whitespace immediately before the token
     Value: Token.MatchResult                # Result of the call to Token.Match
-    IterBefore: NormalizedIterator          # NormalizedIterator before the token
-    IterAfter: NormalizedIterator           # NormalizedIterator after the token has been consumed
+    IterBegin_: NormalizedIterator          # NormalizedIterator before the token
+    IterEnd: NormalizedIterator           # NormalizedIterator after the token has been consumed
     IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
 
     # ----------------------------------------------------------------------

@@ -5,8 +5,8 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                 DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                              IsIgnored  : False
-                                                             IterAfter  : [2, 5] (8)
-                                                             IterBefore : [2, 1] (4)
+                                                             IterBegin_ : [2, 1] (4)
+                                                             IterEnd    : [2, 5] (8)
                                                              Token      : Number Token
                                                              Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                           Match : <_sre.SRE_Match object; span=(4, 8), match='2222'>
@@ -15,8 +15,8 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                              1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                              IsIgnored  : False
-                                                             IterAfter  : [3, 1] (9)
-                                                             IterBefore : [2, 5] (8)
+                                                             IterBegin_ : [2, 5] (8)
+                                                             IterEnd    : [3, 1] (9)
                                                              Token      : Newline+
                                                              Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
                                                                           End   : 9

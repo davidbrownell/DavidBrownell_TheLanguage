@@ -148,8 +148,8 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
 
         Whitespace: Optional[Tuple[int, int]]
         Value: TokenClass.MatchResult
-        IterBefore: NormalizedIterator
-        IterAfter: NormalizedIterator
+        IterBegin_: NormalizedIterator
+        IterEnd: NormalizedIterator
         IsIgnored: bool
 
         # ----------------------------------------------------------------------
