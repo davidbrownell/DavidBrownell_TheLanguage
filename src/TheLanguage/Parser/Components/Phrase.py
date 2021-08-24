@@ -16,9 +16,10 @@
 """Contains the Phrase object"""
 
 import os
+import threading
 
 from enum import auto, Enum
-from typing import Any, Awaitable, Callable, cast, Generator, List, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, cast, Generator, List, Optional, TextIO, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -73,6 +74,45 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
             )
 
             assert self.IterBegin.Offset <= self.IterEnd.Offset, self
+
+            self.UpdateStats()
+
+        # ----------------------------------------------------------------------
+        # Set this value to True to enable basic statistic collection.
+        # ----------------------------------------------------------------------
+        if True: # BugBug False:
+            _stats = [0]
+            _stats_lock = threading.Lock()
+
+            # ----------------------------------------------------------------------
+            @classmethod
+            def UpdateStats(cls):
+                with cls._stats_lock:
+                    cls._stats[0] += 1
+
+            # ----------------------------------------------------------------------
+            @classmethod
+            def DisplayStats(
+                cls,
+                output_stream: TextIO,
+            ):
+                with cls._stats_lock:
+                    output_stream.write("\n\nPhrase.PhraseResult Creation Count: {}\n\n".format(cls._stats[0]))
+
+            # ----------------------------------------------------------------------
+
+        else:
+            # ----------------------------------------------------------------------
+            @staticmethod
+            def UpdateStats(*args, **kwargs):
+                pass
+
+            # ----------------------------------------------------------------------
+            @staticmethod
+            def DisplayStats(*args, **kwargs):
+                pass
+
+            # ----------------------------------------------------------------------
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
@@ -307,9 +347,10 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
                 Callable[
                     [
                         List[str],          # unique_id
+                        Optional[str],      # Unfiltered phrases name
                         List["Phrase"],     # Unfiltered dynamic phrases
                     ],
-                    List["Phrase"]          # Filtered dynamic phrases
+                    Tuple[Optional[str], List["Phrase"]]                    # Filtered dynamic phrases
                 ]
             ]=None,
         ):
@@ -335,15 +376,12 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
             unique_id: List[str],
             phrases_type: DynamicPhrasesType,
         ) -> Tuple[Optional[str], List["Phrase"]]:
-            phrases = self._observer.GetDynamicPhrases(unique_id, phrases_type)
+            name, phrases = self._observer.GetDynamicPhrases(unique_id, phrases_type)
 
             if self._post_filter_dynamic_phrases_func:
-                name, phrases = phrases
+                name, phrases = self._post_filter_dynamic_phrases_func(unique_id, name, phrases)
 
-                phrases = self._post_filter_dynamic_phrases_func(unique_id, phrases)
-                phrases = name, phrases
-
-            return phrases
+            return name, phrases
 
         # ----------------------------------------------------------------------
         @Interface.override

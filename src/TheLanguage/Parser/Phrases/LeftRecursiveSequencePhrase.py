@@ -17,7 +17,8 @@
 
 import os
 
-from typing import cast, List, Optional, Union
+from collections import OrderedDict
+from typing import cast, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -81,43 +82,55 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
         with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
             original_normalized_iter = normalized_iter.Clone()
 
+            part1_unique_id_suffix = "[0 <A>]"
+            part2_unique_id_suffix = "[0 <B>]"
+
             result_data: List[Optional[Phrase.ParseResultData]] = []
 
             # Match the first phrase. The first part of the process will attempt to match
             # non-left-recursive phrases; the second part will use that information when
             # attempting to match left-recursive phrases other than this one.
+            unique_id_depth = len(unique_id)
             left_recursive_phrases = []
 
             # ----------------------------------------------------------------------
             def FilterDynamicPhrasesPartA(
                 unique_id: List[str],
+                name: Optional[str],
                 phrases: List[Phrase],
-            ) -> List[Phrase]:
+            ) -> Tuple[Optional[str], List[Phrase]]:
+
+                # BugBug: Desc
                 assert unique_id
-                is_left_recursive = unique_id[-1].endswith("[0 <A>]")
 
-                if not is_left_recursive:
-                    return phrases
+                is_this_left_recursive = (
+                    len(unique_id) == unique_id_depth + 1
+                    and unique_id[-1].endswith(part1_unique_id_suffix)
+                    and self.Name in unique_id[-1]
+                )
 
+                if not is_this_left_recursive:
+                    return name, phrases
+
+                # BugBug: Desc
                 standard_phrases = []
 
                 for phrase in phrases:
-                    if phrase == self:
-                        continue
-
                     if isinstance(phrase, LeftRecursiveSequencePhrase):
+                        if phrase == self:
+                            continue
+
                         left_recursive_phrases.append(phrase)
                     else:
                         standard_phrases.append(phrase)
 
-                assert standard_phrases
-                return standard_phrases
+                return name, standard_phrases
 
             # ----------------------------------------------------------------------
 
             result = None
             result = await self.Phrases[0].ParseAsync(
-                unique_id + ["Sequence: {} [0 <A>]".format(self.Name)],
+                unique_id + ["Sequence: {} {}".format(self.Name, part1_unique_id_suffix)],
                 normalized_iter,
                 Phrase.ObserverDecorator(
                     self,
@@ -147,17 +160,29 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                 # ----------------------------------------------------------------------
                 def FilterDynamicPhrasesPartB(
                     unique_id: List[str],
+                    name: Optional[str],
                     phrases: List[Phrase],
-                ) -> List[Phrase]:
+                ) -> Tuple[Optional[str], List[Phrase]]:
+                    assert unique_id
+
+                    is_this_left_recursive = (
+                        len(unique_id) == unique_id_depth + 1
+                        and unique_id[-1].endswith(part2_unique_id_suffix)
+                        and self.Name in unique_id[-1]
+                    )
+
+                    if not is_this_left_recursive:
+                        return name, phrases
+
                     # Note that the cast isn't correct here, but we are providing something
                     # that looks like a Phrase to the DynamicPhrase instance.
-                    return [cast(Phrase, _PrefixWrapper(phrase)) for phrase in left_recursive_phrases]
+                    return "_SuffixWrappers", [cast(Phrase, _SuffixWrapper(phrase)) for phrase in left_recursive_phrases]
 
                 # ----------------------------------------------------------------------
 
                 this_result = None
                 this_result = await self.Phrases[0].ParseAsync(
-                    unique_id + ["Sequence: {} [0 <B>]".format(self.Name)],
+                    unique_id + ["Sequence: {} {}".format(self.Name, part2_unique_id_suffix)],
                     normalized_iter,
                     Phrase.ObserverDecorator(
                         self,
@@ -246,13 +271,13 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-class _PrefixWrapper(Phrase):
+class _SuffixWrapper(Phrase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         phrase: LeftRecursiveSequencePhrase,
     ):
-        super(_PrefixWrapper, self).__init__("_PrefixWrapper")
+        super(_SuffixWrapper, self).__init__("_SuffixWrapper ({})".format(phrase.Name))
 
         self._phrase                    = phrase
 

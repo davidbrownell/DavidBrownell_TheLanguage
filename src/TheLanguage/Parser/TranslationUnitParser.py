@@ -205,11 +205,17 @@ async def ParseAsync(
         initial_phrase_info,
     )
 
+    # ----------------------------------------------------------------------
+    def GetDynamicPhrases(
+        unique_id: List[str],
+        observer,
+    ) -> Tuple[Optional[str], List[Phrase]]:
+        return observer.GetDynamicPhrases(unique_id, DynamicPhrasesType.Statements)
+
+    # ----------------------------------------------------------------------
+
     phrase = DynamicPhrase(
-        lambda unique_id, observer: cast(
-                _PhraseObserver,
-                observer,
-            ).GetDynamicPhrases(unique_id, DynamicPhrasesType.Statements),
+        GetDynamicPhrases,
         name=name,
     )
 

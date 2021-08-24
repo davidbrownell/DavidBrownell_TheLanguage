@@ -32,26 +32,22 @@ with InitRelativeImports():
     from ..GroupExpression import *
     from ...Common.AutomatedTests import Execute
 
+    from .....Components.Phrase import Phrase # BugBug
+    from .....Phrases.DynamicPhrase import DynamicPhrase # BugBug
+    import sys # BugBug
+
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    assert Execute(
+    result = Execute(
         textwrap.dedent(
             """\
-            value1 = one or (two and three)
-
-            value2 = (one + two - three) * four
-
             value3 = (one + two - three) * (four + five)
-
-            value4 = (
-                one
-                + two
-                - three
-            ) * (
-                four
-                        + five
-            )
             """,
         ),
-    ) == ResultsFromFile()
+    )
+
+    # assert result == ResultsFromFile()
+
+    DynamicPhrase.DisplayStats(sys.stdout, verbose=True) # BugBug
+    Phrase.ParseResult.DisplayStats(sys.stdout) # BugBug

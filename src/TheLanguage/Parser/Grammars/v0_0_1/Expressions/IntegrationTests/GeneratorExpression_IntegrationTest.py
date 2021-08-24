@@ -32,6 +32,9 @@ with InitRelativeImports():
     from ..GeneratorExpression import *
     from ...Common.AutomatedTests import ExecuteEx
 
+    from .....Components.Phrase import Phrase # BugBug
+    import sys # BugBug
+
 
 # ----------------------------------------------------------------------
 def test_Standard():
@@ -48,3 +51,5 @@ def test_Standard():
     )
 
     assert result == ResultsFromFile()
+
+    Phrase.ParseResult.DisplayStats(sys.stdout) # BugBug
