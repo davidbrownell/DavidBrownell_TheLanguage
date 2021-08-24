@@ -76,13 +76,13 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [1, 1] (0)
-            IterE   : [1, 5] (4)
+            IterEnd : [1, 5] (4)
             Success : True
             """,
         )
 
         assert iter.Offset == 0
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -102,7 +102,7 @@ class TestWords(object):
             """,
         )
 
-        iter = result.IterE
+        iter = result.IterEnd
         parse_mock.reset_mock()
 
         # is
@@ -122,12 +122,12 @@ class TestWords(object):
                                               1)   10
                       Phrase   : Word
             IterB   : [1, 5] (4)
-            IterE   : [1, 13] (12)
+            IterEnd : [1, 13] (12)
             Success : True
             """,
         )
 
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -148,7 +148,7 @@ class TestWords(object):
             """,
         )
 
-        iter = result.IterE
+        iter = result.IterEnd
         parse_mock.reset_mock()
 
         # a
@@ -168,12 +168,12 @@ class TestWords(object):
                                               1)   13
                       Phrase   : Word
             IterB   : [1, 13] (12)
-            IterE   : [1, 15] (14)
+            IterEnd : [1, 15] (14)
             Success : True
             """,
         )
 
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -194,7 +194,7 @@ class TestWords(object):
             """,
         )
 
-        iter = result.IterE
+        iter = result.IterEnd
         parse_mock.reset_mock()
 
         # test
@@ -214,12 +214,12 @@ class TestWords(object):
                                               1)   20
                       Phrase   : Word
             IterB   : [1, 15] (14)
-            IterE   : [1, 25] (24)
+            IterEnd : [1, 25] (24)
             Success : True
             """,
         )
 
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -240,7 +240,7 @@ class TestWords(object):
             """,
         )
 
-        iter = result.IterE
+        iter = result.IterEnd
         parse_mock.reset_mock()
 
         # Newline
@@ -261,12 +261,12 @@ class TestWords(object):
                                               1)   27
                       Phrase   : Newline+
             IterB   : [1, 25] (24)
-            IterE   : [2, 1] (28)
+            IterEnd : [2, 1] (28)
             Success : True
             """,
         )
 
-        assert result.IterE.AtEnd()
+        assert result.IterEnd.AtEnd()
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -301,13 +301,13 @@ class TestWords(object):
                       Data     : None
                       Phrase   : Word
             IterB   : [1, 1] (0)
-            IterE   : [1, 1] (0)
+            IterEnd : [1, 1] (0)
             Success : False
             """,
         )
 
         assert iter.Offset == 0
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -347,13 +347,13 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [1, 1] (0)
-            IterE   : [1, 4] (3)
+            IterEnd : [1, 4] (3)
             Success : True
             """,
         )
 
         assert iter.Offset == 0
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -373,7 +373,7 @@ class TestWords(object):
             """,
         )
 
-        iter = result.IterE
+        iter = result.IterEnd
         parse_mock.reset_mock()
 
         # Newline
@@ -393,12 +393,12 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [1, 4] (3)
-            IterE   : [2, 1] (4)
+            IterEnd : [2, 1] (4)
             Success : True
             """,
         )
 
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -419,7 +419,7 @@ class TestWords(object):
             """,
         )
 
-        iter = result.IterE
+        iter = result.IterEnd
         parse_mock.reset_mock()
 
         # Indent
@@ -440,12 +440,12 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Indent
             IterB   : [2, 1] (4)
-            IterE   : [2, 5] (8)
+            IterEnd : [2, 5] (8)
             Success : True
             """,
         )
 
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -467,7 +467,7 @@ class TestWords(object):
             """,
         )
 
-        iter = result.IterE
+        iter = result.IterEnd
         parse_mock.reset_mock()
 
         # two
@@ -486,12 +486,12 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [2, 5] (8)
-            IterE   : [2, 8] (11)
+            IterEnd : [2, 8] (11)
             Success : True
             """,
         )
 
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -511,7 +511,7 @@ class TestWords(object):
             """,
         )
 
-        iter = result.IterE
+        iter = result.IterEnd
         parse_mock.reset_mock()
 
         # Newline
@@ -531,12 +531,12 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [2, 8] (11)
-            IterE   : [3, 1] (12)
+            IterEnd : [3, 1] (12)
             Success : True
             """,
         )
 
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -557,7 +557,7 @@ class TestWords(object):
             """,
         )
 
-        iter = result.IterE
+        iter = result.IterEnd
         parse_mock.reset_mock()
 
         # Dedent
@@ -576,12 +576,12 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Dedent
             IterB   : [3, 1] (12)
-            IterE   : [3, 1] (12)
+            IterEnd : [3, 1] (12)
             Success : True
             """,
         )
 
-        assert result.IterE.AtEnd()
+        assert result.IterEnd.AtEnd()
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
@@ -665,7 +665,7 @@ class TestWords(object):
             self._dedent_phrase,
         ]:
             results.append(await expected_phrase.ParseAsync(["root"], iter, parse_mock))
-            iter = results[-1].IterE.Clone()
+            iter = results[-1].IterEnd.Clone()
 
         assert iter.AtEnd()
 
@@ -683,7 +683,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [1, 1] (0)
-            IterE   : [1, 4] (3)
+            IterEnd : [1, 4] (3)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -699,7 +699,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [1, 4] (3)
-            IterE   : [2, 1] (4)
+            IterEnd : [2, 1] (4)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -716,7 +716,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Indent
             IterB   : [2, 1] (4)
-            IterE   : [2, 5] (8)
+            IterEnd : [2, 5] (8)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -731,7 +731,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [2, 5] (8)
-            IterE   : [2, 8] (11)
+            IterEnd : [2, 8] (11)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -747,7 +747,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [2, 8] (11)
-            IterE   : [3, 1] (12)
+            IterEnd : [3, 1] (12)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -764,7 +764,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Indent
             IterB   : [3, 1] (12)
-            IterE   : [3, 9] (20)
+            IterEnd : [3, 9] (20)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -779,7 +779,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [3, 9] (20)
-            IterE   : [3, 14] (25)
+            IterEnd : [3, 14] (25)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -795,7 +795,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [3, 14] (25)
-            IterE   : [4, 1] (26)
+            IterEnd : [4, 1] (26)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -810,7 +810,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [4, 1] (26)
-            IterE   : [4, 13] (38)
+            IterEnd : [4, 13] (38)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -826,7 +826,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [4, 13] (38)
-            IterE   : [5, 1] (39)
+            IterEnd : [5, 1] (39)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -841,7 +841,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Dedent
             IterB   : [5, 1] (39)
-            IterE   : [5, 5] (43)
+            IterEnd : [5, 5] (43)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -856,7 +856,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [5, 5] (43)
-            IterE   : [5, 9] (47)
+            IterEnd : [5, 9] (47)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -872,7 +872,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [5, 9] (47)
-            IterE   : [6, 1] (48)
+            IterEnd : [6, 1] (48)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -889,7 +889,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Indent
             IterB   : [6, 1] (48)
-            IterE   : [6, 13] (60)
+            IterEnd : [6, 13] (60)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -904,7 +904,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [6, 13] (60)
-            IterE   : [6, 16] (63)
+            IterEnd : [6, 16] (63)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -920,7 +920,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [6, 16] (63)
-            IterE   : [7, 1] (64)
+            IterEnd : [7, 1] (64)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -935,7 +935,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Dedent
             IterB   : [7, 1] (64)
-            IterE   : [7, 5] (68)
+            IterEnd : [7, 5] (68)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -950,7 +950,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [7, 5] (68)
-            IterE   : [7, 10] (73)
+            IterEnd : [7, 10] (73)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -966,7 +966,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [7, 10] (73)
-            IterE   : [8, 1] (74)
+            IterEnd : [8, 1] (74)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -983,7 +983,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Indent
             IterB   : [8, 1] (74)
-            IterE   : [8, 9] (82)
+            IterEnd : [8, 9] (82)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -998,7 +998,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Word
             IterB   : [8, 9] (82)
-            IterE   : [8, 14] (87)
+            IterEnd : [8, 14] (87)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -1014,7 +1014,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Newline+
             IterB   : [8, 14] (87)
-            IterE   : [9, 1] (88)
+            IterEnd : [9, 1] (88)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -1029,7 +1029,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Dedent
             IterB   : [9, 1] (88)
-            IterE   : [9, 1] (88)
+            IterEnd : [9, 1] (88)
             Success : True
 
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -1044,7 +1044,7 @@ class TestWords(object):
                                  Whitespace : None
                       Phrase   : Dedent
             IterB   : [9, 1] (88)
-            IterE   : [9, 1] (88)
+            IterEnd : [9, 1] (88)
             Success : True
             """,
         )

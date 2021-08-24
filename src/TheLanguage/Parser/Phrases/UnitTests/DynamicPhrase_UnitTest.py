@@ -70,7 +70,7 @@ class TestStandard(object):
                                  Phrase   : Or: (lower)
                       Phrase   : Dynamic Phrases
             IterB   : [1, 1] (0)
-            IterE   : [1, 5] (4)
+            IterEnd : [1, 5] (4)
             Success : True
             """,
         )
@@ -96,7 +96,7 @@ class TestStandard(object):
                                  Phrase   : Or: (lower)
                       Phrase   : Dynamic Phrases
             IterB   : [1, 1] (0)
-            IterE   : [1, 1] (0)
+            IterEnd : [1, 1] (0)
             Success : False
             """,
         )
@@ -127,7 +127,7 @@ class TestStandard(object):
                                  Phrase   : Or: (lower, number)
                       Phrase   : Dynamic Phrases
             IterB   : [1, 1] (0)
-            IterE   : [1, 5] (4)
+            IterEnd : [1, 5] (4)
             Success : True
             """,
         )
@@ -158,7 +158,7 @@ class TestStandard(object):
                                  Phrase   : Or: (lower, number)
                       Phrase   : Dynamic Phrases
             IterB   : [1, 1] (0)
-            IterE   : [1, 5] (4)
+            IterEnd : [1, 5] (4)
             Success : True
             """,
         )
@@ -195,7 +195,7 @@ class TestStandard(object):
                                  Phrase   : Or: (lower, number)
                       Phrase   : Dynamic Phrases
             IterB   : [1, 1] (0)
-            IterE   : [1, 5] (4)
+            IterEnd : [1, 5] (4)
             Success : True
             """,
         )
@@ -295,7 +295,7 @@ class TestStandard(object):
                                  Phrase   : Or: (lower)
                       Phrase   : Dynamic Phrases
             IterB   : [1, 1] (0)
-            IterE   : [1, 1] (0)
+            IterEnd : [1, 1] (0)
             Success : False
             """,
         )

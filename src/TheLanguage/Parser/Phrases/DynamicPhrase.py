@@ -125,12 +125,12 @@ class DynamicPhrase(Phrase):
                 and not await observer.OnInternalPhraseAsync(
                     [data],
                     normalized_iter,
-                    result.IterE,
+                    result.IterEnd,
                 )
             ):
                 return None
 
-            return Phrase.ParseResult(result.Success, normalized_iter, result.IterE, data)
+            return Phrase.ParseResult(result.Success, normalized_iter, result.IterEnd, data)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

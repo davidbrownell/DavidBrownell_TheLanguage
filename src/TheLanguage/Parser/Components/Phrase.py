@@ -62,12 +62,10 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
 
         Success: bool
         # BugBug:
-        #   1) Change name to IterEnd__
-        #   2) Add IterBegin
-        #   3) Rename IterEnd__ to IterEnd
-        #   4) Cache in __post_init__ based on IterBegin
+        #   1) Rename IterB to IterBegin
+        #   2) Cache in __post_init__ based on IterBegin
         IterB: NormalizedIterator # BugBug: Rename
-        IterE: NormalizedIterator # BugBug: Rename
+        IterEnd: NormalizedIterator
         Data: Optional["Phrase.StandardParseResultData"]
 
         # ----------------------------------------------------------------------
@@ -77,7 +75,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
                 include_class_info=False,
             )
 
-            assert self.IterB.Offset <= self.IterE.Offset, self
+            assert self.IterB.Offset <= self.IterEnd.Offset, self
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)

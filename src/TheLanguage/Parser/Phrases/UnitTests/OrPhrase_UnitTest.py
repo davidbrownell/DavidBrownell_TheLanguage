@@ -105,13 +105,13 @@ class TestStandard(object):
                                  Phrase   : lower
                       Phrase   : My Or Phrase
             IterB   : [1, 1] (0)
-            IterE   : [1, 10] (9)
+            IterEnd : [1, 10] (9)
             Success : True
             """,
         )
 
         assert iter.Offset == 0
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert len(parse_mock.method_calls) == 12
 
@@ -137,13 +137,13 @@ class TestStandard(object):
                                  Phrase   : upper
                       Phrase   : My Or Phrase
             IterB   : [1, 1] (0)
-            IterE   : [1, 10] (9)
+            IterEnd : [1, 10] (9)
             Success : True
             """,
         )
 
         assert iter.Offset == 0
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert len(parse_mock.method_calls) == 12
 
@@ -169,13 +169,13 @@ class TestStandard(object):
                                  Phrase   : number
                       Phrase   : My Or Phrase
             IterB   : [1, 1] (0)
-            IterE   : [1, 9] (8)
+            IterEnd : [1, 9] (8)
             Success : True
             """,
         )
 
         assert iter.Offset == 0
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert len(parse_mock.method_calls) == 12
 
@@ -207,13 +207,13 @@ class TestStandard(object):
                                  Phrase   : number
                       Phrase   : My Or Phrase
             IterB   : [1, 1] (0)
-            IterE   : [1, 9] (8)
+            IterEnd : [1, 9] (8)
             Success : True
             """,
         )
 
         assert iter.Offset == 0
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert len(parse_mock.method_calls) == 12
 
@@ -255,13 +255,13 @@ class TestStandard(object):
                                  IsComplete : True
                       Phrase   : My Or Phrase
             IterB   : [1, 1] (0)
-            IterE   : [1, 1] (0)
+            IterEnd : [1, 1] (0)
             Success : False
             """,
         )
 
         assert iter.Offset == 0
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert len(parse_mock.method_calls) == 10
 
@@ -297,13 +297,13 @@ class TestStandard(object):
                                  IsComplete : True
                       Phrase   : My Or Phrase
             IterB   : [1, 1] (0)
-            IterE   : [1, 1] (0)
+            IterEnd : [1, 1] (0)
             Success : False
             """,
         )
 
         assert iter.Offset == 0
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
 
         assert len(parse_mock.method_calls) == 10
 
@@ -334,7 +334,7 @@ class TestStandard(object):
                                  Phrase   : Or: (lower, number)
                       Phrase   : Or: (upper, Or: (lower, number))
             IterB   : [1, 1] (0)
-            IterE   : [1, 5] (4)
+            IterEnd : [1, 5] (4)
             Success : True
             """,
         )
@@ -369,7 +369,7 @@ class TestStandard(object):
                                  Phrase   : Or: (lower, number)
                       Phrase   : Or: (upper, Or: (lower, number))
             IterB   : [1, 1] (0)
-            IterE   : [1, 5] (4)
+            IterEnd : [1, 5] (4)
             Success : True
             """,
         )
@@ -472,7 +472,7 @@ class TestStandard(object):
                                  Phrase   : upper
                       Phrase   : Or: (upper, Or: (lower, number))
             IterB   : [1, 1] (0)
-            IterE   : [1, 5] (4)
+            IterEnd : [1, 5] (4)
             Success : True
             """,
         )
@@ -524,7 +524,7 @@ class TestSort(object):
                                  Phrase   : Long
                       Phrase   : Sort
             IterB   : [1, 1] (0)
-            IterE   : [1, 5] (4)
+            IterEnd : [1, 5] (4)
             Success : True
             """,
         )
@@ -554,7 +554,7 @@ class TestSort(object):
                                  Phrase   : Short
                       Phrase   : No Sort
             IterB   : [1, 1] (0)
-            IterE   : [1, 3] (2)
+            IterEnd : [1, 3] (2)
             Success : True
             """,
         )
@@ -579,12 +579,12 @@ class TestSort(object):
                                  IsComplete : True
                       Phrase   : No Sort
             IterB   : [1, 1] (0)
-            IterE   : [1, 1] (0)
+            IterEnd : [1, 1] (0)
             Success : False
             """,
         )
 
-        assert result.IterE.AtEnd() == False
+        assert result.IterEnd.AtEnd() == False
         assert len(parse_mock.method_calls) == 6
 
 # ----------------------------------------------------------------------

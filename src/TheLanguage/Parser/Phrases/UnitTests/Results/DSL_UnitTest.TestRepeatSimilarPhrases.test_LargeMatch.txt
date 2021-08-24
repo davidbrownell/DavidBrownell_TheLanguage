@@ -38,5 +38,5 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                      IsComplete : True
           Phrase   : Sequence: [Repeat: {Word & Number, 0, None}, Repeat: {Word Token, 0, 1}]
 IterB   : [1, 1] (0)
-IterE   : [1, 9] (8)
+IterEnd : [1, 9] (8)
 Success : True

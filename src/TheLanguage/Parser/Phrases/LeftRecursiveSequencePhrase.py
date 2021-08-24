@@ -137,7 +137,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             if not result.Success:
                 return result
 
-            normalized_iter = result.IterE
+            normalized_iter = result.IterEnd
 
             assert result.Data
             result_data.append(result.Data)
@@ -175,7 +175,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                     return None
 
                 if this_result.Success:
-                    normalized_iter = this_result.IterE
+                    normalized_iter = this_result.IterEnd
 
                     assert result.Data is not None
                     result_data.append(this_result.Data)
@@ -193,7 +193,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                 return None
 
             success = result.Success
-            normalized_iter = result.IterE
+            normalized_iter = result.IterEnd
 
             assert result.Data is not None
             assert result.Data.Data is not None
