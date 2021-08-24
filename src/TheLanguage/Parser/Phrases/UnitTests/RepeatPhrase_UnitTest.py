@@ -105,7 +105,7 @@ class TestStandard(object):
                                                      Phrase   : Or: (Word, Newline+)
                                    IsComplete : True
                         Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [2, 1] (4)
             Success   : True
             """,
@@ -333,7 +333,7 @@ class TestStandard(object):
                                                      Phrase   : Or: (Word, Newline+)
                                    IsComplete : True
                         Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [3, 1] (8)
             Success   : True
             """,
@@ -415,7 +415,7 @@ class TestStandard(object):
                                                      Phrase   : Or: (Word, Newline+)
                                    IsComplete : True
                         Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [3, 1] (8)
             Success   : True
             """,
@@ -456,7 +456,7 @@ class TestStandard(object):
                                                      Phrase   : Or: (Word, Newline+)
                                    IsComplete : True
                         Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 1] (0)
             Success   : False
             """,
@@ -509,7 +509,7 @@ class TestStandard(object):
                                                      Phrase   : Or: (Word, Newline+)
                                    IsComplete : True
                         Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 4] (3)
             Success   : False
             """,
@@ -590,7 +590,7 @@ class TestStandard(object):
                                                      Phrase   : Or: (Word, Newline+)
                                    IsComplete : True
                         Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [3, 1] (8)
             Success   : True
             """,
@@ -670,7 +670,7 @@ class TestStandard(object):
                                                      Phrase   : Or: (Word, Newline+)
                                    IsComplete : True
                         Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [3, 1] (8)
             Success   : True
             """,
@@ -717,7 +717,7 @@ class TestStandard(object):
                                                      Phrase   : Or: (Word, Newline+)
                                    IsComplete : True
                         Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [2, 1] (4)
             Success   : False
             """,

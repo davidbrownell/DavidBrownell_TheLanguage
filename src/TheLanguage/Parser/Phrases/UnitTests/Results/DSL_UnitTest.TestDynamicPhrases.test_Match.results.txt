@@ -101,6 +101,6 @@ Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseRes
                                          Phrase   : DynamicPhrasesType.Expressions
                        IsComplete : True
             Phrase   : Phrase
-IterBeg__ : [1, 1] (0)
+IterBegin : [1, 1] (0)
 IterEnd   : [4, 1] (20)
 Success   : True

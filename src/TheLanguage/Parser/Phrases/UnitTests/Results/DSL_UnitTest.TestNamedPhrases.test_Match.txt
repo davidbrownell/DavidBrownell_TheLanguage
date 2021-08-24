@@ -113,6 +113,6 @@ Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseRes
                                          Phrase   : Repeat: {__Repeat__, 2, 2}
                        IsComplete : True
             Phrase   : __Phrase__
-IterBeg__ : [1, 1] (0)
+IterBegin : [1, 1] (0)
 IterEnd   : [5, 1] (20)
 Success   : True

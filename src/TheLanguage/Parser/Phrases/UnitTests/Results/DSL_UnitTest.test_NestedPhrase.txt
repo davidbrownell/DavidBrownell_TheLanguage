@@ -13,6 +13,6 @@ Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseRes
                                          Phrase   : Word Token
                        IsComplete : True
             Phrase   : Phrase
-IterBeg__ : [1, 1] (0)
+IterBegin : [1, 1] (0)
 IterEnd   : [1, 5] (4)
 Success   : True

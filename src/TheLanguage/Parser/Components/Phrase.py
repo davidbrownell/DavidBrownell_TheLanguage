@@ -61,10 +61,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         """Result returned by calls to ParseAsync"""
 
         Success: bool
-        # BugBug:
-        #   1) Rename IterBeg__ to IterBegin
-        #   2) Cache in __post_init__ based on IterBegin
-        IterBeg__: NormalizedIterator # BugBug: Rename
+        IterBegin: NormalizedIterator
         IterEnd: NormalizedIterator
         Data: Optional["Phrase.StandardParseResultData"]
 
@@ -75,7 +72,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
                 include_class_info=False,
             )
 
-            assert self.IterBeg__.Offset <= self.IterEnd.Offset, self
+            assert self.IterBegin.Offset <= self.IterEnd.Offset, self
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)

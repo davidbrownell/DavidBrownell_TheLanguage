@@ -130,7 +130,7 @@ class TestStandard(object):
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
             Data      : None
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 1] (0)
             Success   : True
             """,
@@ -144,7 +144,7 @@ class TestStandard(object):
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
             Data      : None
-            IterBeg__ : [1, 6] (5)
+            IterBegin : [1, 6] (5)
             IterEnd   : [1, 6] (5)
             Success   : True
             """,
@@ -157,7 +157,7 @@ class TestStandard(object):
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
             Data      : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
                         -- empty dict --
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 1] (0)
             Success   : False
             """,
@@ -181,7 +181,7 @@ class TestStandard(object):
                         Data     : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
                                    -- empty dict --
                         Phrase   : The Phrase
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 1] (0)
             Success   : True
             """,

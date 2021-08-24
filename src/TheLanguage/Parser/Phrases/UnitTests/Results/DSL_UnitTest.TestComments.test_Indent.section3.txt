@@ -115,6 +115,6 @@ Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseRes
                                          Phrase   : Dedent
                        IsComplete : True
             Phrase   : Indent
-IterBeg__ : [7, 1] (66)
+IterBegin : [7, 1] (66)
 IterEnd   : [10, 1] (123)
 Success   : True

@@ -34,6 +34,6 @@ Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseRes
                                          Phrase   : Upper Phrase
                        IsComplete : True
             Phrase   : Or: (Word Phrase, Number Phrase, Upper Phrase)
-IterBeg__ : [1, 1] (0)
+IterBegin : [1, 1] (0)
 IterEnd   : [1, 5] (4)
 Success   : False

@@ -50,6 +50,6 @@ Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseRes
                                          Phrase   : rpar
                        IsComplete : True
             Phrase   : Phrase
-IterBeg__ : [1, 1] (0)
+IterBegin : [1, 1] (0)
 IterEnd   : [1, 12] (11)
 Success   : True

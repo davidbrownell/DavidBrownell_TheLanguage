@@ -69,7 +69,7 @@ class TestStandard(object):
                                               Phrase   : lower
                                    Phrase   : Or: (lower)
                         Phrase   : Dynamic Phrases
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 5] (4)
             Success   : True
             """,
@@ -95,7 +95,7 @@ class TestStandard(object):
                                               IsComplete : True
                                    Phrase   : Or: (lower)
                         Phrase   : Dynamic Phrases
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 1] (0)
             Success   : False
             """,
@@ -126,7 +126,7 @@ class TestStandard(object):
                                               Phrase   : number
                                    Phrase   : Or: (lower, number)
                         Phrase   : Dynamic Phrases
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 5] (4)
             Success   : True
             """,
@@ -157,7 +157,7 @@ class TestStandard(object):
                                               Phrase   : lower
                                    Phrase   : Or: (lower, number)
                         Phrase   : Dynamic Phrases
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 5] (4)
             Success   : True
             """,
@@ -194,7 +194,7 @@ class TestStandard(object):
                                               Phrase   : number
                                    Phrase   : Or: (lower, number)
                         Phrase   : Dynamic Phrases
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 5] (4)
             Success   : True
             """,
@@ -294,7 +294,7 @@ class TestStandard(object):
                                               IsComplete : True
                                    Phrase   : Or: (lower)
                         Phrase   : Dynamic Phrases
-            IterBeg__ : [1, 1] (0)
+            IterBegin : [1, 1] (0)
             IterEnd   : [1, 1] (0)
             Success   : False
             """,

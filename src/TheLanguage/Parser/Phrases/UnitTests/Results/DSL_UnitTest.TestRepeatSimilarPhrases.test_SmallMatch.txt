@@ -22,6 +22,6 @@ Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseRes
                                          Phrase   : Repeat: {Word Token, 0, 1}
                        IsComplete : True
             Phrase   : Sequence: [Repeat: {Word & Number, 0, None}, Repeat: {Word Token, 0, 1}]
-IterBeg__ : [1, 1] (0)
+IterBegin : [1, 1] (0)
 IterEnd   : [1, 5] (4)
 Success   : True

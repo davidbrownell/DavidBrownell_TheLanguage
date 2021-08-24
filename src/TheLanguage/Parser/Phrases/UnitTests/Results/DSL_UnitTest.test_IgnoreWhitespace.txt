@@ -68,6 +68,6 @@ Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseRes
                                          Whitespace : None
                        IsComplete : True
             Phrase   : Phrase
-IterBeg__ : [1, 1] (0)
+IterBegin : [1, 1] (0)
 IterEnd   : [8, 1] (25)
 Success   : True

@@ -35,6 +35,6 @@ Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseRes
                                          Phrase   : Newline+
                        IsComplete : True
             Phrase   : Phrase
-IterBeg__ : [2, 1] (8)
+IterBegin : [2, 1] (8)
 IterEnd   : [3, 1] (19)
 Success   : True
