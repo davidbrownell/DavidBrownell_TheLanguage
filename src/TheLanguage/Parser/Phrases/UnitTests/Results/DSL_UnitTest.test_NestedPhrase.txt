@@ -4,7 +4,7 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                      DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                   IsIgnored  : False
-                                                  IterBegin_ : [1, 1] (0)
+                                                  IterBegin  : [1, 1] (0)
                                                   IterEnd    : [1, 5] (4)
                                                   Token      : Word Token
                                                   Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>

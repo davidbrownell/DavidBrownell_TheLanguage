@@ -81,7 +81,7 @@ class _Node(_ASTBase):
 
     # ----------------------------------------------------------------------
     @property
-    def IterBegin_(self) -> Optional[NormalizedIterator]:
+    def IterBegin_(self) -> Optional[NormalizedIterator]: # TODO: Change this to IterBegin once there is better tooling support to do so
         node = self
 
         while isinstance(node, _Node):

@@ -750,7 +750,7 @@ class _PhraseObserver(Phrase.Observer):
             data.Token,
             data.Whitespace,
             data.Value,
-            data.IterBegin_,
+            data.IterBegin,
             data.IterEnd,
             data.IsIgnored,
         )

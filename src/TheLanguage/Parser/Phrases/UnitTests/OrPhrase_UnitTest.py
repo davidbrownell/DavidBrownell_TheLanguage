@@ -96,7 +96,7 @@ class TestStandard(object):
                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 1] (0)
+                                            IterBegin  : [1, 1] (0)
                                             IterEnd    : [1, 10] (9)
                                             Token      : lower
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -127,7 +127,7 @@ class TestStandard(object):
                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 1] (0)
+                                            IterBegin  : [1, 1] (0)
                                             IterEnd    : [1, 10] (9)
                                             Token      : upper
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -158,7 +158,7 @@ class TestStandard(object):
                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 1] (0)
+                                            IterBegin  : [1, 1] (0)
                                             IterEnd    : [1, 9] (8)
                                             Token      : number
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -195,7 +195,7 @@ class TestStandard(object):
                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 1] (0)
+                                            IterBegin  : [1, 1] (0)
                                             IterEnd    : [1, 9] (8)
                                             Token      : number
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -318,7 +318,7 @@ class TestStandard(object):
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                             Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                        IsIgnored  : False
-                                                       IterBegin_ : [1, 1] (0)
+                                                       IterBegin  : [1, 1] (0)
                                                        IterEnd    : [1, 5] (4)
                                                        Token      : lower
                                                        Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -352,7 +352,7 @@ class TestStandard(object):
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                             Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                        IsIgnored  : False
-                                                       IterBegin_ : [1, 1] (0)
+                                                       IterBegin  : [1, 1] (0)
                                                        IterEnd    : [1, 5] (4)
                                                        Token      : lower
                                                        Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -377,7 +377,7 @@ class TestStandard(object):
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                            IsIgnored  : False
-                           IterBegin_ : [1, 1] (0)
+                           IterBegin  : [1, 1] (0)
                            IterEnd    : [1, 5] (4)
                            Token      : lower
                            Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -404,7 +404,7 @@ class TestStandard(object):
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                       IsIgnored  : False
-                                      IterBegin_ : [1, 1] (0)
+                                      IterBegin  : [1, 1] (0)
                                       IterEnd    : [1, 5] (4)
                                       Token      : lower
                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -426,7 +426,7 @@ class TestStandard(object):
                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                  IsIgnored  : False
-                                                 IterBegin_ : [1, 1] (0)
+                                                 IterBegin  : [1, 1] (0)
                                                  IterEnd    : [1, 5] (4)
                                                  Token      : lower
                                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -455,7 +455,7 @@ class TestStandard(object):
                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 1] (0)
+                                            IterBegin  : [1, 1] (0)
                                             IterEnd    : [1, 5] (4)
                                             Token      : upper
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -506,7 +506,7 @@ class TestSort(object):
                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 1] (0)
+                                            IterBegin  : [1, 1] (0)
                                             IterEnd    : [1, 5] (4)
                                             Token      : Long
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -535,7 +535,7 @@ class TestSort(object):
                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 1] (0)
+                                            IterBegin  : [1, 1] (0)
                                             IterEnd    : [1, 3] (2)
                                             Token      : Short
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>

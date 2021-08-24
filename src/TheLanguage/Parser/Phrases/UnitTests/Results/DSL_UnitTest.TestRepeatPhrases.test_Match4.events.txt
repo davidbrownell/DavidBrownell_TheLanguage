@@ -23,7 +23,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [1, 1] (0)
+               IterBegin  : [1, 1] (0)
                IterEnd    : [1, 3] (2)
                Token      : Number Token
                Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -55,7 +55,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [1, 3] (2)
+               IterBegin  : [1, 3] (2)
                IterEnd    : [2, 1] (3)
                Token      : Newline+
                Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -68,7 +68,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 1] (0)
+                                            IterBegin  : [1, 1] (0)
                                             IterEnd    : [1, 3] (2)
                                             Token      : Number Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -98,7 +98,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 1] (0)
+                                            IterBegin  : [1, 1] (0)
                                             IterEnd    : [1, 3] (2)
                                             Token      : Number Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -108,7 +108,7 @@
                             1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [1, 3] (2)
+                                            IterBegin  : [1, 3] (2)
                                             IterEnd    : [2, 1] (3)
                                             Token      : Newline+
                                             Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -139,7 +139,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [2, 1] (3)
+               IterBegin  : [2, 1] (3)
                IterEnd    : [2, 5] (7)
                Token      : Number Token
                Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -157,7 +157,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [1, 1] (0)
+                                                              IterBegin  : [1, 1] (0)
                                                               IterEnd    : [1, 3] (2)
                                                               Token      : Number Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -167,7 +167,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [1, 3] (2)
+                                                              IterBegin  : [1, 3] (2)
                                                               IterEnd    : [2, 1] (3)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -193,7 +193,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [2, 5] (7)
+               IterBegin  : [2, 5] (7)
                IterEnd    : [3, 1] (8)
                Token      : Newline+
                Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -206,7 +206,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [2, 1] (3)
+                                            IterBegin  : [2, 1] (3)
                                             IterEnd    : [2, 5] (7)
                                             Token      : Number Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -221,7 +221,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [1, 1] (0)
+                                                              IterBegin  : [1, 1] (0)
                                                               IterEnd    : [1, 3] (2)
                                                               Token      : Number Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -231,7 +231,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [1, 3] (2)
+                                                              IterBegin  : [1, 3] (2)
                                                               IterEnd    : [2, 1] (3)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -258,7 +258,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [2, 1] (3)
+                                            IterBegin  : [2, 1] (3)
                                             IterEnd    : [2, 5] (7)
                                             Token      : Number Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -268,7 +268,7 @@
                             1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [2, 5] (7)
+                                            IterBegin  : [2, 5] (7)
                                             IterEnd    : [3, 1] (8)
                                             Token      : Newline+
                                             Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -284,7 +284,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [1, 1] (0)
+                                                              IterBegin  : [1, 1] (0)
                                                               IterEnd    : [1, 3] (2)
                                                               Token      : Number Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -294,7 +294,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [1, 3] (2)
+                                                              IterBegin  : [1, 3] (2)
                                                               IterEnd    : [2, 1] (3)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -327,7 +327,7 @@
                                             DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [1, 1] (0)
+                                                                         IterBegin  : [1, 1] (0)
                                                                          IterEnd    : [1, 3] (2)
                                                                          Token      : Number Token
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -337,7 +337,7 @@
                                                          1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [1, 3] (2)
+                                                                         IterBegin  : [1, 3] (2)
                                                                          IterEnd    : [2, 1] (3)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -352,7 +352,7 @@
                                             DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [2, 1] (3)
+                                                                         IterBegin  : [2, 1] (3)
                                                                          IterEnd    : [2, 5] (7)
                                                                          Token      : Number Token
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -362,7 +362,7 @@
                                                          1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [2, 5] (7)
+                                                                         IterBegin  : [2, 5] (7)
                                                                          IterEnd    : [3, 1] (8)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -409,7 +409,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -419,7 +419,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -434,7 +434,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -444,7 +444,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -466,7 +466,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [3, 1] (8)
+               IterBegin  : [3, 1] (8)
                IterEnd    : [3, 6] (13)
                Token      : Word Token
                Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -497,7 +497,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -507,7 +507,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -522,7 +522,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -532,7 +532,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -557,7 +557,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [3, 6] (13)
+               IterBegin  : [3, 6] (13)
                IterEnd    : [4, 1] (14)
                Token      : Newline+
                Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -570,7 +570,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [3, 1] (8)
+                                            IterBegin  : [3, 1] (8)
                                             IterEnd    : [3, 6] (13)
                                             Token      : Word Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -598,7 +598,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -608,7 +608,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -623,7 +623,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -633,7 +633,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -659,7 +659,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [3, 1] (8)
+                                            IterBegin  : [3, 1] (8)
                                             IterEnd    : [3, 6] (13)
                                             Token      : Word Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -669,7 +669,7 @@
                             1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [3, 6] (13)
+                                            IterBegin  : [3, 6] (13)
                                             IterEnd    : [4, 1] (14)
                                             Token      : Newline+
                                             Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -698,7 +698,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -708,7 +708,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -723,7 +723,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -733,7 +733,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -759,7 +759,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [4, 1] (14)
+               IterBegin  : [4, 1] (14)
                IterEnd    : [4, 6] (19)
                Token      : Word Token
                Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -777,7 +777,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 1] (8)
+                                                              IterBegin  : [3, 1] (8)
                                                               IterEnd    : [3, 6] (13)
                                                               Token      : Word Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -787,7 +787,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 6] (13)
+                                                              IterBegin  : [3, 6] (13)
                                                               IterEnd    : [4, 1] (14)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -812,7 +812,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -822,7 +822,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -837,7 +837,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -847,7 +847,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -872,7 +872,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [4, 6] (19)
+               IterBegin  : [4, 6] (19)
                IterEnd    : [5, 1] (20)
                Token      : Newline+
                Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -885,7 +885,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [4, 1] (14)
+                                            IterBegin  : [4, 1] (14)
                                             IterEnd    : [4, 6] (19)
                                             Token      : Word Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -900,7 +900,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 1] (8)
+                                                              IterBegin  : [3, 1] (8)
                                                               IterEnd    : [3, 6] (13)
                                                               Token      : Word Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -910,7 +910,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 6] (13)
+                                                              IterBegin  : [3, 6] (13)
                                                               IterEnd    : [4, 1] (14)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -935,7 +935,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -945,7 +945,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -960,7 +960,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -970,7 +970,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -996,7 +996,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [4, 1] (14)
+                                            IterBegin  : [4, 1] (14)
                                             IterEnd    : [4, 6] (19)
                                             Token      : Word Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1006,7 +1006,7 @@
                             1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [4, 6] (19)
+                                            IterBegin  : [4, 6] (19)
                                             IterEnd    : [5, 1] (20)
                                             Token      : Newline+
                                             Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1022,7 +1022,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 1] (8)
+                                                              IterBegin  : [3, 1] (8)
                                                               IterEnd    : [3, 6] (13)
                                                               Token      : Word Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1032,7 +1032,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 6] (13)
+                                                              IterBegin  : [3, 6] (13)
                                                               IterEnd    : [4, 1] (14)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1057,7 +1057,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1067,7 +1067,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1082,7 +1082,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1092,7 +1092,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1118,7 +1118,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [5, 1] (20)
+               IterBegin  : [5, 1] (20)
                IterEnd    : [5, 6] (25)
                Token      : Word Token
                Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1136,7 +1136,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 1] (8)
+                                                              IterBegin  : [3, 1] (8)
                                                               IterEnd    : [3, 6] (13)
                                                               Token      : Word Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1146,7 +1146,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 6] (13)
+                                                              IterBegin  : [3, 6] (13)
                                                               IterEnd    : [4, 1] (14)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1159,7 +1159,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [4, 1] (14)
+                                                              IterBegin  : [4, 1] (14)
                                                               IterEnd    : [4, 6] (19)
                                                               Token      : Word Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1169,7 +1169,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [4, 6] (19)
+                                                              IterBegin  : [4, 6] (19)
                                                               IterEnd    : [5, 1] (20)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1194,7 +1194,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1204,7 +1204,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1219,7 +1219,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1229,7 +1229,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1254,7 +1254,7 @@
     <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                IsIgnored  : False
-               IterBegin_ : [5, 6] (25)
+               IterBegin  : [5, 6] (25)
                IterEnd    : [6, 1] (26)
                Token      : Newline+
                Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1267,7 +1267,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [5, 1] (20)
+                                            IterBegin  : [5, 1] (20)
                                             IterEnd    : [5, 6] (25)
                                             Token      : Word Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1282,7 +1282,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 1] (8)
+                                                              IterBegin  : [3, 1] (8)
                                                               IterEnd    : [3, 6] (13)
                                                               Token      : Word Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1292,7 +1292,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 6] (13)
+                                                              IterBegin  : [3, 6] (13)
                                                               IterEnd    : [4, 1] (14)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1305,7 +1305,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [4, 1] (14)
+                                                              IterBegin  : [4, 1] (14)
                                                               IterEnd    : [4, 6] (19)
                                                               Token      : Word Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1315,7 +1315,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [4, 6] (19)
+                                                              IterBegin  : [4, 6] (19)
                                                               IterEnd    : [5, 1] (20)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1340,7 +1340,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1350,7 +1350,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1365,7 +1365,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1375,7 +1375,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1401,7 +1401,7 @@
                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [5, 1] (20)
+                                            IterBegin  : [5, 1] (20)
                                             IterEnd    : [5, 6] (25)
                                             Token      : Word Token
                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1411,7 +1411,7 @@
                             1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                             IsIgnored  : False
-                                            IterBegin_ : [5, 6] (25)
+                                            IterBegin  : [5, 6] (25)
                                             IterEnd    : [6, 1] (26)
                                             Token      : Newline+
                                             Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1427,7 +1427,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 1] (8)
+                                                              IterBegin  : [3, 1] (8)
                                                               IterEnd    : [3, 6] (13)
                                                               Token      : Word Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1437,7 +1437,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [3, 6] (13)
+                                                              IterBegin  : [3, 6] (13)
                                                               IterEnd    : [4, 1] (14)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1450,7 +1450,7 @@
                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [4, 1] (14)
+                                                              IterBegin  : [4, 1] (14)
                                                               IterEnd    : [4, 6] (19)
                                                               Token      : Word Token
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1460,7 +1460,7 @@
                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                               IsIgnored  : False
-                                                              IterBegin_ : [4, 6] (19)
+                                                              IterBegin  : [4, 6] (19)
                                                               IterEnd    : [5, 1] (20)
                                                               Token      : Newline+
                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1485,7 +1485,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1495,7 +1495,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1510,7 +1510,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1520,7 +1520,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1548,7 +1548,7 @@
                                             DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [3, 1] (8)
+                                                                         IterBegin  : [3, 1] (8)
                                                                          IterEnd    : [3, 6] (13)
                                                                          Token      : Word Token
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1558,7 +1558,7 @@
                                                          1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [3, 6] (13)
+                                                                         IterBegin  : [3, 6] (13)
                                                                          IterEnd    : [4, 1] (14)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1573,7 +1573,7 @@
                                             DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [4, 1] (14)
+                                                                         IterBegin  : [4, 1] (14)
                                                                          IterEnd    : [4, 6] (19)
                                                                          Token      : Word Token
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1583,7 +1583,7 @@
                                                          1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [4, 6] (19)
+                                                                         IterBegin  : [4, 6] (19)
                                                                          IterEnd    : [5, 1] (20)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1598,7 +1598,7 @@
                                             DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [5, 1] (20)
+                                                                         IterBegin  : [5, 1] (20)
                                                                          IterEnd    : [5, 6] (25)
                                                                          Token      : Word Token
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1608,7 +1608,7 @@
                                                          1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                               Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                          IsIgnored  : False
-                                                                         IterBegin_ : [5, 6] (25)
+                                                                         IterBegin  : [5, 6] (25)
                                                                          IterEnd    : [6, 1] (26)
                                                                          Token      : Newline+
                                                                          Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1634,7 +1634,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1644,7 +1644,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1659,7 +1659,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1669,7 +1669,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1704,7 +1704,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 1] (0)
+                                                                                                      IterBegin  : [1, 1] (0)
                                                                                                       IterEnd    : [1, 3] (2)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1714,7 +1714,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [1, 3] (2)
+                                                                                                      IterBegin  : [1, 3] (2)
                                                                                                       IterEnd    : [2, 1] (3)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1729,7 +1729,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 1] (3)
+                                                                                                      IterBegin  : [2, 1] (3)
                                                                                                       IterEnd    : [2, 5] (7)
                                                                                                       Token      : Number Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1739,7 +1739,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [2, 5] (7)
+                                                                                                      IterBegin  : [2, 5] (7)
                                                                                                       IterEnd    : [3, 1] (8)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1763,7 +1763,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [3, 1] (8)
+                                                                                                      IterBegin  : [3, 1] (8)
                                                                                                       IterEnd    : [3, 6] (13)
                                                                                                       Token      : Word Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1773,7 +1773,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [3, 6] (13)
+                                                                                                      IterBegin  : [3, 6] (13)
                                                                                                       IterEnd    : [4, 1] (14)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1788,7 +1788,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [4, 1] (14)
+                                                                                                      IterBegin  : [4, 1] (14)
                                                                                                       IterEnd    : [4, 6] (19)
                                                                                                       Token      : Word Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1798,7 +1798,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [4, 6] (19)
+                                                                                                      IterBegin  : [4, 6] (19)
                                                                                                       IterEnd    : [5, 1] (20)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
@@ -1813,7 +1813,7 @@
                                                                          DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [5, 1] (20)
+                                                                                                      IterBegin  : [5, 1] (20)
                                                                                                       IterEnd    : [5, 6] (25)
                                                                                                       Token      : Word Token
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
@@ -1823,7 +1823,7 @@
                                                                                       1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                                                                                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                                                                                                       IsIgnored  : False
-                                                                                                      IterBegin_ : [5, 6] (25)
+                                                                                                      IterBegin  : [5, 6] (25)
                                                                                                       IterEnd    : [6, 1] (26)
                                                                                                       Token      : Newline+
                                                                                                       Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
