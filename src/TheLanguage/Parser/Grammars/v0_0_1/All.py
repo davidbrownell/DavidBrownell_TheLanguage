@@ -31,6 +31,7 @@ with InitRelativeImports():
     from .Expressions.CastExpression import CastExpression
     from .Expressions.FuncInvocationExpression import FuncInvocationExpression
     from .Expressions.GeneratorExpression import GeneratorExpression
+    from .Expressions.GroupExpression import GroupExpression
     from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.TupleExpression import TupleExpression
     from .Expressions.UnaryExpression import UnaryExpression
@@ -68,6 +69,7 @@ GrammarPhrases                              = [
     CastExpression(),
     FuncInvocationExpression(),
     GeneratorExpression(),
+    GroupExpression(),
     TernaryExpression(),
     TupleExpression(),
     UnaryExpression(),
