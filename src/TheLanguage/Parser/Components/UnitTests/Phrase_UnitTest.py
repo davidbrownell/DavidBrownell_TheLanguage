@@ -129,10 +129,10 @@ class TestStandard(object):
         assert str(Phrase.ParseResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : None
-            IterB   : [1, 1] (0)
-            IterEnd : [1, 1] (0)
-            Success : True
+            Data      : None
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [1, 1] (0)
+            Success   : True
             """,
         )
 
@@ -143,10 +143,10 @@ class TestStandard(object):
         assert str(Phrase.ParseResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : None
-            IterB   : [1, 6] (5)
-            IterEnd : [1, 6] (5)
-            Success : True
+            Data      : None
+            IterBeg__ : [1, 6] (5)
+            IterEnd   : [1, 6] (5)
+            Success   : True
             """,
         )
 
@@ -155,11 +155,11 @@ class TestStandard(object):
         assert str(Phrase.ParseResult(False, iterator, iterator, self.MyParseResultData())) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
-                      -- empty dict --
-            IterB   : [1, 1] (0)
-            IterEnd : [1, 1] (0)
-            Success : False
+            Data      : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
+                        -- empty dict --
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [1, 1] (0)
+            Success   : False
             """,
         )
 
@@ -177,13 +177,13 @@ class TestStandard(object):
         ).ToString() == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
-                                 -- empty dict --
-                      Phrase   : The Phrase
-            IterB   : [1, 1] (0)
-            IterEnd : [1, 1] (0)
-            Success : True
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
+                                   -- empty dict --
+                        Phrase   : The Phrase
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [1, 1] (0)
+            Success   : True
             """,
         )
 

@@ -76,38 +76,38 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                 DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 1] (0)
-                                                                         IterEnd    : [1, 4] (3)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 4] (3)
-                                                                         IterEnd    : [2, 1] (4)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 4
-                                                                                      Start : 3
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                 IsComplete : True
-                      Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterB   : [1, 1] (0)
-            IterEnd : [2, 1] (4)
-            Success : True
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 1] (0)
+                                                                           IterEnd    : [1, 4] (3)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 4] (3)
+                                                                           IterEnd    : [2, 1] (4)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 4
+                                                                                        Start : 3
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                   IsComplete : True
+                        Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [2, 1] (4)
+            Success   : True
             """,
         )
 
@@ -279,63 +279,63 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                 DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 1] (0)
-                                                                         IterEnd    : [1, 4] (3)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 4] (3)
-                                                                         IterEnd    : [2, 1] (4)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 4
-                                                                                      Start : 3
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                              2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [2, 1] (4)
-                                                                         IterEnd    : [2, 4] (7)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [2, 4] (7)
-                                                                         IterEnd    : [3, 1] (8)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 8
-                                                                                      Start : 7
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                 IsComplete : True
-                      Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterB   : [1, 1] (0)
-            IterEnd : [3, 1] (8)
-            Success : True
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 1] (0)
+                                                                           IterEnd    : [1, 4] (3)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 4] (3)
+                                                                           IterEnd    : [2, 1] (4)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 4
+                                                                                        Start : 3
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                                2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [2, 1] (4)
+                                                                           IterEnd    : [2, 4] (7)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [2, 4] (7)
+                                                                           IterEnd    : [3, 1] (8)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 8
+                                                                                        Start : 7
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                   IsComplete : True
+                        Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [3, 1] (8)
+            Success   : True
             """,
         )
 
@@ -361,63 +361,63 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                 DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 1] (0)
-                                                                         IterEnd    : [1, 4] (3)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 4] (3)
-                                                                         IterEnd    : [2, 1] (4)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 4
-                                                                                      Start : 3
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                              2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [2, 1] (4)
-                                                                         IterEnd    : [2, 4] (7)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [2, 4] (7)
-                                                                         IterEnd    : [3, 1] (8)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 8
-                                                                                      Start : 7
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                 IsComplete : True
-                      Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterB   : [1, 1] (0)
-            IterEnd : [3, 1] (8)
-            Success : True
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 1] (0)
+                                                                           IterEnd    : [1, 4] (3)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 4] (3)
+                                                                           IterEnd    : [2, 1] (4)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 4
+                                                                                        Start : 3
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                                2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [2, 1] (4)
+                                                                           IterEnd    : [2, 4] (7)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [2, 4] (7)
+                                                                           IterEnd    : [3, 1] (8)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 8
+                                                                                        Start : 7
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                   IsComplete : True
+                        Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [3, 1] (8)
+            Success   : True
             """,
         )
 
@@ -442,23 +442,23 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                 DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                                              DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                                Data     : None
-                                                                                Phrase   : Word
-                                                                           1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                                Data     : None
-                                                                                Phrase   : Newline+
-                                                              IsComplete : True
-                                                   Phrase   : Or: (Word, Newline+)
-                                 IsComplete : True
-                      Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterB   : [1, 1] (0)
-            IterEnd : [1, 1] (0)
-            Success : False
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                                                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                                  Data     : None
+                                                                                  Phrase   : Word
+                                                                             1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                                  Data     : None
+                                                                                  Phrase   : Newline+
+                                                                IsComplete : True
+                                                     Phrase   : Or: (Word, Newline+)
+                                   IsComplete : True
+                        Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [1, 1] (0)
+            Success   : False
             """,
         )
 
@@ -483,35 +483,35 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                 DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 1] (0)
-                                                                         IterEnd    : [1, 4] (3)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(0, 3), match='abc'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                                              DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                                Data     : None
-                                                                                Phrase   : Word
-                                                                           1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                                Data     : None
-                                                                                Phrase   : Newline+
-                                                              IsComplete : True
-                                                   Phrase   : Or: (Word, Newline+)
-                                 IsComplete : True
-                      Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
-            IterB   : [1, 1] (0)
-            IterEnd : [1, 4] (3)
-            Success : False
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 1] (0)
+                                                                           IterEnd    : [1, 4] (3)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(0, 3), match='abc'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                                                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                                  Data     : None
+                                                                                  Phrase   : Word
+                                                                             1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                                  Data     : None
+                                                                                  Phrase   : Newline+
+                                                                IsComplete : True
+                                                     Phrase   : Or: (Word, Newline+)
+                                   IsComplete : True
+                        Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [1, 4] (3)
+            Success   : False
             """,
         )
 
@@ -536,63 +536,63 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                 DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 1] (0)
-                                                                         IterEnd    : [1, 4] (3)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 4] (3)
-                                                                         IterEnd    : [2, 1] (4)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 4
-                                                                                      Start : 3
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                              2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [2, 1] (4)
-                                                                         IterEnd    : [2, 4] (7)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [2, 4] (7)
-                                                                         IterEnd    : [3, 1] (8)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 8
-                                                                                      Start : 7
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                 IsComplete : True
-                      Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
-            IterB   : [1, 1] (0)
-            IterEnd : [3, 1] (8)
-            Success : True
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 1] (0)
+                                                                           IterEnd    : [1, 4] (3)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 4] (3)
+                                                                           IterEnd    : [2, 1] (4)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 4
+                                                                                        Start : 3
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                                2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [2, 1] (4)
+                                                                           IterEnd    : [2, 4] (7)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [2, 4] (7)
+                                                                           IterEnd    : [3, 1] (8)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 8
+                                                                                        Start : 7
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                   IsComplete : True
+                        Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [3, 1] (8)
+            Success   : True
             """,
         )
 
@@ -616,63 +616,63 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                 DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 1] (0)
-                                                                         IterEnd    : [1, 4] (3)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 4] (3)
-                                                                         IterEnd    : [2, 1] (4)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 4
-                                                                                      Start : 3
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                              2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [2, 1] (4)
-                                                                         IterEnd    : [2, 4] (7)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [2, 4] (7)
-                                                                         IterEnd    : [3, 1] (8)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 8
-                                                                                      Start : 7
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                 IsComplete : True
-                      Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
-            IterB   : [1, 1] (0)
-            IterEnd : [3, 1] (8)
-            Success : True
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 1] (0)
+                                                                           IterEnd    : [1, 4] (3)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 4] (3)
+                                                                           IterEnd    : [2, 1] (4)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 4
+                                                                                        Start : 3
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                                2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [2, 1] (4)
+                                                                           IterEnd    : [2, 4] (7)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(4, 7), match='two'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [2, 4] (7)
+                                                                           IterEnd    : [3, 1] (8)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 8
+                                                                                        Start : 7
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                   IsComplete : True
+                        Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [3, 1] (8)
+            Success   : True
             """,
         )
 
@@ -688,38 +688,38 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                 DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 1] (0)
-                                                                         IterEnd    : [1, 4] (3)
-                                                                         Token      : Word
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                      Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
-                                                                         Whitespace : None
-                                                              Phrase   : Word
-                                                   Phrase   : Or: (Word, Newline+)
-                                              1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                         IsIgnored  : False
-                                                                         IterBegin  : [1, 4] (3)
-                                                                         IterEnd    : [2, 1] (4)
-                                                                         Token      : Newline+
-                                                                         Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                      End   : 4
-                                                                                      Start : 3
-                                                                         Whitespace : None
-                                                              Phrase   : Newline+
-                                                   Phrase   : Or: (Word, Newline+)
-                                 IsComplete : True
-                      Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
-            IterB   : [1, 1] (0)
-            IterEnd : [2, 1] (4)
-            Success : False
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 1] (0)
+                                                                           IterEnd    : [1, 4] (3)
+                                                                           Token      : Word
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                        Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
+                                                                           Whitespace : None
+                                                                Phrase   : Word
+                                                     Phrase   : Or: (Word, Newline+)
+                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                           IsIgnored  : False
+                                                                           IterBegin  : [1, 4] (3)
+                                                                           IterEnd    : [2, 1] (4)
+                                                                           Token      : Newline+
+                                                                           Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                        End   : 4
+                                                                                        Start : 3
+                                                                           Whitespace : None
+                                                                Phrase   : Newline+
+                                                     Phrase   : Or: (Word, Newline+)
+                                   IsComplete : True
+                        Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
+            IterBeg__ : [1, 1] (0)
+            IterEnd   : [2, 1] (4)
+            Success   : False
             """,
         )
 

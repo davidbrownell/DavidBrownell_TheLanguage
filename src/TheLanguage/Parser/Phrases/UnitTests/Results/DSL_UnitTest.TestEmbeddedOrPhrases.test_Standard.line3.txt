@@ -1,31 +1,31 @@
 <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-          Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                     Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                             IsIgnored  : False
-                                                             IterBegin  : [3, 1] (9)
-                                                             IterEnd    : [3, 6] (14)
-                                                             Token      : Upper Token
-                                                             Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                          Match : <_sre.SRE_Match object; span=(9, 14), match='THREE'>
-                                                             Whitespace : None
-                                                  Phrase   : Upper Token
-                                             1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                  Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                             IsIgnored  : False
-                                                             IterBegin  : [3, 6] (14)
-                                                             IterEnd    : [4, 1] (15)
-                                                             Token      : Newline+
-                                                             Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                          End   : 15
-                                                                          Start : 14
-                                                             Whitespace : None
-                                                  Phrase   : Newline+
-                                IsComplete : True
-                     Phrase   : Sequence: [Upper Token, Newline+]
-          Phrase   : Or: (Sequence: [Word Token, Newline+], Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+])
-IterB   : [3, 1] (9)
-IterEnd : [4, 1] (15)
-Success : True
+Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                               IsIgnored  : False
+                                                               IterBegin  : [3, 1] (9)
+                                                               IterEnd    : [3, 6] (14)
+                                                               Token      : Upper Token
+                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                            Match : <_sre.SRE_Match object; span=(9, 14), match='THREE'>
+                                                               Whitespace : None
+                                                    Phrase   : Upper Token
+                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                               IsIgnored  : False
+                                                               IterBegin  : [3, 6] (14)
+                                                               IterEnd    : [4, 1] (15)
+                                                               Token      : Newline+
+                                                               Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                            End   : 15
+                                                                            Start : 14
+                                                               Whitespace : None
+                                                    Phrase   : Newline+
+                                  IsComplete : True
+                       Phrase   : Sequence: [Upper Token, Newline+]
+            Phrase   : Or: (Sequence: [Word Token, Newline+], Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+])
+IterBeg__ : [3, 1] (9)
+IterEnd   : [4, 1] (15)
+Success   : True
