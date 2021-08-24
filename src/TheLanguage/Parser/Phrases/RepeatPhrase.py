@@ -138,7 +138,7 @@ class RepeatPhrase(Phrase):
                 ):
                     return None
 
-                return Phrase.ParseResult(True, normalized_iter, data)
+                return Phrase.ParseResult(True, original_normalized_iter, normalized_iter, data)
 
             success = False
 
@@ -151,6 +151,7 @@ class RepeatPhrase(Phrase):
 
             return Phrase.ParseResult(
                 False,
+                original_normalized_iter,
                 end_iter,
                 Phrase.StandardParseResultData(
                     self,

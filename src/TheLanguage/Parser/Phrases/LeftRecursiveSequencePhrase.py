@@ -218,7 +218,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             ):
                 return None
 
-            return Phrase.ParseResult(success, normalized_iter, data)
+            return Phrase.ParseResult(success, original_normalized_iter, normalized_iter, data)
 
     # ----------------------------------------------------------------------
     async def ParseSuffixAsync(

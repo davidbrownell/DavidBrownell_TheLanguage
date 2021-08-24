@@ -20,5 +20,6 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                        Phrase   : Inner
                      IsComplete : True
           Phrase   : Phrase
+IterB   : [1, 1] (0)
 IterE   : [1, 2] (1)
 Success : False

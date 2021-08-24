@@ -75,6 +75,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(0, 4), match='This'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [1, 1] (0)
             IterE   : [1, 5] (4)
             Success : True
             """,
@@ -120,6 +121,7 @@ class TestWords(object):
                                  Whitespace : 0)   4
                                               1)   10
                       Phrase   : Word
+            IterB   : [1, 5] (4)
             IterE   : [1, 13] (12)
             Success : True
             """,
@@ -165,6 +167,7 @@ class TestWords(object):
                                  Whitespace : 0)   12
                                               1)   13
                       Phrase   : Word
+            IterB   : [1, 13] (12)
             IterE   : [1, 15] (14)
             Success : True
             """,
@@ -210,6 +213,7 @@ class TestWords(object):
                                  Whitespace : 0)   14
                                               1)   20
                       Phrase   : Word
+            IterB   : [1, 15] (14)
             IterE   : [1, 25] (24)
             Success : True
             """,
@@ -256,6 +260,7 @@ class TestWords(object):
                                  Whitespace : 0)   24
                                               1)   27
                       Phrase   : Newline+
+            IterB   : [1, 25] (24)
             IterE   : [2, 1] (28)
             Success : True
             """,
@@ -295,6 +300,7 @@ class TestWords(object):
             Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                       Data     : None
                       Phrase   : Word
+            IterB   : [1, 1] (0)
             IterE   : [1, 1] (0)
             Success : False
             """,
@@ -340,6 +346,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [1, 1] (0)
             IterE   : [1, 4] (3)
             Success : True
             """,
@@ -385,6 +392,7 @@ class TestWords(object):
                                               Start : 3
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [1, 4] (3)
             IterE   : [2, 1] (4)
             Success : True
             """,
@@ -431,6 +439,7 @@ class TestWords(object):
                                               Value : 4
                                  Whitespace : None
                       Phrase   : Indent
+            IterB   : [2, 1] (4)
             IterE   : [2, 5] (8)
             Success : True
             """,
@@ -476,6 +485,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(8, 11), match='two'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [2, 5] (8)
             IterE   : [2, 8] (11)
             Success : True
             """,
@@ -520,6 +530,7 @@ class TestWords(object):
                                               Start : 11
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [2, 8] (11)
             IterE   : [3, 1] (12)
             Success : True
             """,
@@ -564,6 +575,7 @@ class TestWords(object):
                                               -- empty dict --
                                  Whitespace : None
                       Phrase   : Dedent
+            IterB   : [3, 1] (12)
             IterE   : [3, 1] (12)
             Success : True
             """,
@@ -670,6 +682,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(0, 3), match='one'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [1, 1] (0)
             IterE   : [1, 4] (3)
             Success : True
 
@@ -685,6 +698,7 @@ class TestWords(object):
                                               Start : 3
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [1, 4] (3)
             IterE   : [2, 1] (4)
             Success : True
 
@@ -701,6 +715,7 @@ class TestWords(object):
                                               Value : 4
                                  Whitespace : None
                       Phrase   : Indent
+            IterB   : [2, 1] (4)
             IterE   : [2, 5] (8)
             Success : True
 
@@ -715,6 +730,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(8, 11), match='two'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [2, 5] (8)
             IterE   : [2, 8] (11)
             Success : True
 
@@ -730,6 +746,7 @@ class TestWords(object):
                                               Start : 11
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [2, 8] (11)
             IterE   : [3, 1] (12)
             Success : True
 
@@ -746,6 +763,7 @@ class TestWords(object):
                                               Value : 8
                                  Whitespace : None
                       Phrase   : Indent
+            IterB   : [3, 1] (12)
             IterE   : [3, 9] (20)
             Success : True
 
@@ -760,6 +778,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(20, 25), match='three'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [3, 9] (20)
             IterE   : [3, 14] (25)
             Success : True
 
@@ -775,6 +794,7 @@ class TestWords(object):
                                               Start : 25
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [3, 14] (25)
             IterE   : [4, 1] (26)
             Success : True
 
@@ -789,6 +809,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(34, 38), match='four'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [4, 1] (26)
             IterE   : [4, 13] (38)
             Success : True
 
@@ -804,6 +825,7 @@ class TestWords(object):
                                               Start : 38
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [4, 13] (38)
             IterE   : [5, 1] (39)
             Success : True
 
@@ -818,6 +840,7 @@ class TestWords(object):
                                               -- empty dict --
                                  Whitespace : None
                       Phrase   : Dedent
+            IterB   : [5, 1] (39)
             IterE   : [5, 5] (43)
             Success : True
 
@@ -832,6 +855,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(43, 47), match='five'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [5, 5] (43)
             IterE   : [5, 9] (47)
             Success : True
 
@@ -847,6 +871,7 @@ class TestWords(object):
                                               Start : 47
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [5, 9] (47)
             IterE   : [6, 1] (48)
             Success : True
 
@@ -863,6 +888,7 @@ class TestWords(object):
                                               Value : 12
                                  Whitespace : None
                       Phrase   : Indent
+            IterB   : [6, 1] (48)
             IterE   : [6, 13] (60)
             Success : True
 
@@ -877,6 +903,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(60, 63), match='six'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [6, 13] (60)
             IterE   : [6, 16] (63)
             Success : True
 
@@ -892,6 +919,7 @@ class TestWords(object):
                                               Start : 63
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [6, 16] (63)
             IterE   : [7, 1] (64)
             Success : True
 
@@ -906,6 +934,7 @@ class TestWords(object):
                                               -- empty dict --
                                  Whitespace : None
                       Phrase   : Dedent
+            IterB   : [7, 1] (64)
             IterE   : [7, 5] (68)
             Success : True
 
@@ -920,6 +949,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(68, 73), match='seven'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [7, 5] (68)
             IterE   : [7, 10] (73)
             Success : True
 
@@ -935,6 +965,7 @@ class TestWords(object):
                                               Start : 73
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [7, 10] (73)
             IterE   : [8, 1] (74)
             Success : True
 
@@ -951,6 +982,7 @@ class TestWords(object):
                                               Value : 8
                                  Whitespace : None
                       Phrase   : Indent
+            IterB   : [8, 1] (74)
             IterE   : [8, 9] (82)
             Success : True
 
@@ -965,6 +997,7 @@ class TestWords(object):
                                               Match : <_sre.SRE_Match object; span=(82, 87), match='eight'>
                                  Whitespace : None
                       Phrase   : Word
+            IterB   : [8, 9] (82)
             IterE   : [8, 14] (87)
             Success : True
 
@@ -980,6 +1013,7 @@ class TestWords(object):
                                               Start : 87
                                  Whitespace : None
                       Phrase   : Newline+
+            IterB   : [8, 14] (87)
             IterE   : [9, 1] (88)
             Success : True
 
@@ -994,6 +1028,7 @@ class TestWords(object):
                                               -- empty dict --
                                  Whitespace : None
                       Phrase   : Dedent
+            IterB   : [9, 1] (88)
             IterE   : [9, 1] (88)
             Success : True
 
@@ -1008,6 +1043,7 @@ class TestWords(object):
                                               -- empty dict --
                                  Whitespace : None
                       Phrase   : Dedent
+            IterB   : [9, 1] (88)
             IterE   : [9, 1] (88)
             Success : True
             """,

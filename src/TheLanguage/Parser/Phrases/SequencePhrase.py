@@ -192,6 +192,8 @@ class SequencePhrase(Phrase):
         # TODO: Figure out a way to cache results to improve algorithm efficiency. Better yet, figure
         #       out a way to avoid duplicate call for left-recursive phrases.
 
+        original_normalized_iter = normalized_iter.Clone()
+
         # ----------------------------------------------------------------------
         def ExtractWhitespaceOrComments() -> Optional[SequencePhrase.ExtractPotentialResults]:
             nonlocal ignored_indentation_level
@@ -278,6 +280,7 @@ class SequencePhrase(Phrase):
 
         return Phrase.ParseResult(
             success,
+            original_normalized_iter,
             normalized_iter,
             Phrase.StandardParseResultData(
                 self,

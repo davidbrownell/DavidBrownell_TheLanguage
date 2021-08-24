@@ -113,5 +113,6 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                        Phrase   : Repeat: {__Repeat__, 2, 2}
                      IsComplete : True
           Phrase   : __Phrase__
+IterB   : [1, 1] (0)
 IterE   : [5, 1] (20)
 Success : True

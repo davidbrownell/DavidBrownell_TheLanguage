@@ -146,5 +146,6 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                        Phrase   : Repeat: {Sequence: [Word Token, Newline+], 1, None}
                      IsComplete : True
           Phrase   : Sequence: [Repeat: {Sequence: [Word Token, Newline+], 0, None}, Repeat: {Sequence: [Number Token, Newline+], 1, None}, Repeat: {Sequence: [Upper Token, Newline+], 0, 1}, Repeat: {Sequence: [Word Token, Newline+], 1, None}]
+IterB   : [1, 1] (0)
 IterE   : [6, 1] (26)
 Success : True

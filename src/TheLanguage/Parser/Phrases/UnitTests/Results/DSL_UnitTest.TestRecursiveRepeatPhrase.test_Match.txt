@@ -125,5 +125,6 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                        Phrase   : Or: (Repeat: {Recursive Phrase, 1, 2}, Sequence: [Word Token, Newline+])
                      IsComplete : True
           Phrase   : Recursive Phrase
+IterB   : [1, 1] (0)
 IterE   : [5, 1] (19)
 Success : True

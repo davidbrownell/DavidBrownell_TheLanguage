@@ -85,5 +85,6 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                        Phrase   : DynamicPhrasesType.Expressions
                      IsComplete : True
           Phrase   : Phrase
+IterB   : [1, 1] (0)
 IterE   : [3, 1] (16)
 Success : False

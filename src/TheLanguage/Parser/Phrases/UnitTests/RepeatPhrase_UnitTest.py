@@ -105,6 +105,7 @@ class TestStandard(object):
                                                    Phrase   : Or: (Word, Newline+)
                                  IsComplete : True
                       Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterB   : [1, 1] (0)
             IterE   : [2, 1] (4)
             Success : True
             """,
@@ -332,6 +333,7 @@ class TestStandard(object):
                                                    Phrase   : Or: (Word, Newline+)
                                  IsComplete : True
                       Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterB   : [1, 1] (0)
             IterE   : [3, 1] (8)
             Success : True
             """,
@@ -413,6 +415,7 @@ class TestStandard(object):
                                                    Phrase   : Or: (Word, Newline+)
                                  IsComplete : True
                       Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterB   : [1, 1] (0)
             IterE   : [3, 1] (8)
             Success : True
             """,
@@ -453,6 +456,7 @@ class TestStandard(object):
                                                    Phrase   : Or: (Word, Newline+)
                                  IsComplete : True
                       Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterB   : [1, 1] (0)
             IterE   : [1, 1] (0)
             Success : False
             """,
@@ -505,6 +509,7 @@ class TestStandard(object):
                                                    Phrase   : Or: (Word, Newline+)
                                  IsComplete : True
                       Phrase   : Repeat: {Or: (Word, Newline+), 2, 4}
+            IterB   : [1, 1] (0)
             IterE   : [1, 4] (3)
             Success : False
             """,
@@ -585,6 +590,7 @@ class TestStandard(object):
                                                    Phrase   : Or: (Word, Newline+)
                                  IsComplete : True
                       Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
+            IterB   : [1, 1] (0)
             IterE   : [3, 1] (8)
             Success : True
             """,
@@ -664,6 +670,7 @@ class TestStandard(object):
                                                    Phrase   : Or: (Word, Newline+)
                                  IsComplete : True
                       Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
+            IterB   : [1, 1] (0)
             IterE   : [3, 1] (8)
             Success : True
             """,
@@ -710,6 +717,7 @@ class TestStandard(object):
                                                    Phrase   : Or: (Word, Newline+)
                                  IsComplete : True
                       Phrase   : Repeat: {Or: (Word, Newline+), 4, 4}
+            IterB   : [1, 1] (0)
             IterE   : [2, 1] (4)
             Success : False
             """,

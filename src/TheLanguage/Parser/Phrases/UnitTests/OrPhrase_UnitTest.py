@@ -104,6 +104,7 @@ class TestStandard(object):
                                             Whitespace : None
                                  Phrase   : lower
                       Phrase   : My Or Phrase
+            IterB   : [1, 1] (0)
             IterE   : [1, 10] (9)
             Success : True
             """,
@@ -135,6 +136,7 @@ class TestStandard(object):
                                             Whitespace : None
                                  Phrase   : upper
                       Phrase   : My Or Phrase
+            IterB   : [1, 1] (0)
             IterE   : [1, 10] (9)
             Success : True
             """,
@@ -166,6 +168,7 @@ class TestStandard(object):
                                             Whitespace : None
                                  Phrase   : number
                       Phrase   : My Or Phrase
+            IterB   : [1, 1] (0)
             IterE   : [1, 9] (8)
             Success : True
             """,
@@ -203,6 +206,7 @@ class TestStandard(object):
                                             Whitespace : None
                                  Phrase   : number
                       Phrase   : My Or Phrase
+            IterB   : [1, 1] (0)
             IterE   : [1, 9] (8)
             Success : True
             """,
@@ -250,6 +254,7 @@ class TestStandard(object):
                                                    Phrase   : Newline+
                                  IsComplete : True
                       Phrase   : My Or Phrase
+            IterB   : [1, 1] (0)
             IterE   : [1, 1] (0)
             Success : False
             """,
@@ -291,6 +296,7 @@ class TestStandard(object):
                                                    Phrase   : Newline+
                                  IsComplete : True
                       Phrase   : My Or Phrase
+            IterB   : [1, 1] (0)
             IterE   : [1, 1] (0)
             Success : False
             """,
@@ -327,6 +333,7 @@ class TestStandard(object):
                                             Phrase   : lower
                                  Phrase   : Or: (lower, number)
                       Phrase   : Or: (upper, Or: (lower, number))
+            IterB   : [1, 1] (0)
             IterE   : [1, 5] (4)
             Success : True
             """,
@@ -361,6 +368,7 @@ class TestStandard(object):
                                             Phrase   : lower
                                  Phrase   : Or: (lower, number)
                       Phrase   : Or: (upper, Or: (lower, number))
+            IterB   : [1, 1] (0)
             IterE   : [1, 5] (4)
             Success : True
             """,
@@ -463,6 +471,7 @@ class TestStandard(object):
                                             Whitespace : None
                                  Phrase   : upper
                       Phrase   : Or: (upper, Or: (lower, number))
+            IterB   : [1, 1] (0)
             IterE   : [1, 5] (4)
             Success : True
             """,
@@ -514,6 +523,7 @@ class TestSort(object):
                                             Whitespace : None
                                  Phrase   : Long
                       Phrase   : Sort
+            IterB   : [1, 1] (0)
             IterE   : [1, 5] (4)
             Success : True
             """,
@@ -543,6 +553,7 @@ class TestSort(object):
                                             Whitespace : None
                                  Phrase   : Short
                       Phrase   : No Sort
+            IterB   : [1, 1] (0)
             IterE   : [1, 3] (2)
             Success : True
             """,
@@ -567,6 +578,7 @@ class TestSort(object):
                                                    Phrase   : Long
                                  IsComplete : True
                       Phrase   : No Sort
+            IterB   : [1, 1] (0)
             IterE   : [1, 1] (0)
             Success : False
             """,

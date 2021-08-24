@@ -193,7 +193,7 @@ class OrPhrase(Phrase):
                 ):
                     return None
 
-                return Phrase.ParseResult(True, best_result.IterE, data)
+                return Phrase.ParseResult(True, normalized_iter, best_result.IterE, data)
 
             # Gather the failure information
             data_items: List[Optional[Phrase.ParseResultData]] = []
@@ -212,6 +212,7 @@ class OrPhrase(Phrase):
 
             return Phrase.ParseResult(
                 False,
+                normalized_iter,
                 max_iter,
                 Phrase.StandardParseResultData(
                     self,
