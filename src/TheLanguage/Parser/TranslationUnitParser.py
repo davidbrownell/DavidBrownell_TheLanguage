@@ -240,12 +240,12 @@ async def ParseAsync(
 
         if not result.Success:
             raise SyntaxInvalidError(
-                result.Iter.Line,
-                result.Iter.Column,
+                result.IterEnd.Line,
+                result.IterEnd.Column,
                 root,
             )
 
-        normalized_iter = result.Iter.Clone()
+        normalized_iter = result.IterEnd.Clone()
 
         # TODO: Eat trailing comments (here or in SequencePhrase.py?)
         # TODO: What happens to file that starts with newlines?
@@ -361,7 +361,7 @@ class _ScopeTracker(object):
             raise InvalidDynamicTraversalError(
                 iter_after.Line,
                 iter_after.Column,
-                last_scope_item.IterAfter,
+                last_scope_item.IterEnd,
             )
 
         this_tracker_node.ScopeItems.append(
@@ -496,7 +496,7 @@ class _ScopeTracker(object):
     @dataclass(frozen=True)
     class _ScopeItem(object):
         IndentLevel: int
-        IterAfter: Phrase.NormalizedIterator
+        IterEnd: Phrase.NormalizedIterator
         Info: DynamicPhrasesInfo
 
     # ----------------------------------------------------------------------
@@ -750,8 +750,8 @@ class _PhraseObserver(Phrase.Observer):
             data.Token,
             data.Whitespace,
             data.Value,
-            data.IterBefore,
-            data.IterAfter,
+            data.IterBegin,
+            data.IterEnd,
             data.IsIgnored,
         )
 

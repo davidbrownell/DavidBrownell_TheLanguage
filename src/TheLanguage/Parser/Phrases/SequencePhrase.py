@@ -167,7 +167,7 @@ class SequencePhrase(Phrase):
                 if not await observer.OnInternalPhraseAsync(
                     [cast(Phrase.StandardParseResultData, result.Data)],
                     original_normalized_iter,
-                    result.Iter,
+                    result.IterEnd,
                 ):
                     return None
 
@@ -192,6 +192,8 @@ class SequencePhrase(Phrase):
         # TODO: Figure out a way to cache results to improve algorithm efficiency. Better yet, figure
         #       out a way to avoid duplicate call for left-recursive phrases.
 
+        original_normalized_iter = normalized_iter.Clone()
+
         # ----------------------------------------------------------------------
         def ExtractWhitespaceOrComments() -> Optional[SequencePhrase.ExtractPotentialResults]:
             nonlocal ignored_indentation_level
@@ -212,7 +214,7 @@ class SequencePhrase(Phrase):
 
                     return SequencePhrase.ExtractPotentialResults(
                         [data_item],
-                        data_item.IterAfter,
+                        data_item.IterEnd,
                     )
 
             return self._ExtractPotentialCommentTokens(normalized_iter)
@@ -240,7 +242,7 @@ class SequencePhrase(Phrase):
                     break
 
                 data_items += potential_prefix_info.Results
-                normalized_iter = potential_prefix_info.Iter
+                normalized_iter = potential_prefix_info.IterEnd
 
             # Process control tokens
             if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
@@ -270,7 +272,7 @@ class SequencePhrase(Phrase):
             if result.Data is not None:
                 data_items.append(result.Data)
 
-            normalized_iter = result.Iter.Clone()
+            normalized_iter = result.IterEnd.Clone()
 
             if not result.Success:
                 success = False
@@ -278,6 +280,7 @@ class SequencePhrase(Phrase):
 
         return Phrase.ParseResult(
             success,
+            original_normalized_iter,
             normalized_iter,
             Phrase.StandardParseResultData(
                 self,
@@ -294,7 +297,7 @@ class SequencePhrase(Phrase):
     @dataclass(frozen=True)
     class ExtractPotentialResults(object):
         Results: List[Phrase.TokenParseResultData]
-        Iter: Phrase.NormalizedIterator
+        IterEnd: Phrase.NormalizedIterator
 
     # ----------------------------------------------------------------------
     # |
@@ -396,7 +399,7 @@ class SequencePhrase(Phrase):
         # Add additional content if we are at the beginning of the line
         if at_beginning_of_line:
             # Capture the trailing newline
-            result = self._ExtractPotentialWhitespaceToken(results[-1].IterAfter)
+            result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
             assert result
 
             results.append(result)
@@ -404,14 +407,14 @@ class SequencePhrase(Phrase):
             # Consume potential dedents, but don't return it with the results (as we absorbed
             # the corresponding indent when we skipped the prefix in the code above)
             if results[0].Whitespace is not None:
-                result = self._ExtractPotentialWhitespaceToken(results[-1].IterAfter)
+                result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
                 assert result
 
                 # Ensure that the iterator is updated to account for the dedent even if
                 # it wasn't returned as part of the results. Comments are special beasts.
-                return SequencePhrase.ExtractPotentialResults(results, result.IterAfter)
+                return SequencePhrase.ExtractPotentialResults(results, result.IterEnd)
 
-        return SequencePhrase.ExtractPotentialResults(results, results[-1].IterAfter)
+        return SequencePhrase.ExtractPotentialResults(results, results[-1].IterEnd)
 
     # ----------------------------------------------------------------------
     @Interface.override

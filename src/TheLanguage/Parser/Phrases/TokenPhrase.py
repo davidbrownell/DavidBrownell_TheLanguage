@@ -91,6 +91,7 @@ class TokenPhrase(Phrase):
                 return Phrase.ParseResult(
                     False,
                     normalized_iter,
+                    normalized_iter,
                     Phrase.StandardParseResultData(self, None, None),
                 )
 
@@ -126,7 +127,7 @@ class TokenPhrase(Phrase):
             ):
                 return None
 
-            return Phrase.ParseResult(True, potential_iter, data)
+            return Phrase.ParseResult(True, normalized_iter.Clone(), potential_iter, data)
 
     # ----------------------------------------------------------------------
     @staticmethod

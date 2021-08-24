@@ -1,38 +1,39 @@
 <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-          Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                     DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                               IsIgnored  : False
-                                                                               IterAfter  : [1, 5] (4)
-                                                                               IterBefore : [1, 1] (0)
-                                                                               Token      : Word Token
-                                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                            Match : <_sre.SRE_Match object; span=(0, 4), match='this'>
-                                                                               Whitespace : None
-                                                                    Phrase   : Word Token
-                                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                    Data     : None
-                                                                    Phrase   : Newline+
-                                                  IsComplete : True
-                                       Phrase   : Word Phrase
-                                  1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                    Data     : None
-                                                                    Phrase   : Number Token
-                                                  IsComplete : True
-                                       Phrase   : Number Phrase
-                                  2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                    Data     : None
-                                                                    Phrase   : Upper Token
-                                                  IsComplete : True
-                                       Phrase   : Upper Phrase
-                     IsComplete : True
-          Phrase   : Or: (Word Phrase, Number Phrase, Upper Phrase)
-Iter    : [1, 5] (4)
-Success : False
+Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                       DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                                    DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                                 IsIgnored  : False
+                                                                                 IterBegin  : [1, 1] (0)
+                                                                                 IterEnd    : [1, 5] (4)
+                                                                                 Token      : Word Token
+                                                                                 Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                              Match : <_sre.SRE_Match object; span=(0, 4), match='this'>
+                                                                                 Whitespace : None
+                                                                      Phrase   : Word Token
+                                                                 1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                      Data     : None
+                                                                      Phrase   : Newline+
+                                                    IsComplete : True
+                                         Phrase   : Word Phrase
+                                    1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                                    DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                      Data     : None
+                                                                      Phrase   : Number Token
+                                                    IsComplete : True
+                                         Phrase   : Number Phrase
+                                    2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                                    DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                      Data     : None
+                                                                      Phrase   : Upper Token
+                                                    IsComplete : True
+                                         Phrase   : Upper Phrase
+                       IsComplete : True
+            Phrase   : Or: (Word Phrase, Number Phrase, Upper Phrase)
+IterBegin : [1, 1] (0)
+IterEnd   : [1, 5] (4)
+Success   : False

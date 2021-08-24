@@ -126,12 +126,13 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_ParseResultEmptyData(self, iterator):
-        assert str(Phrase.ParseResult(True, iterator, None)) == textwrap.dedent(
+        assert str(Phrase.ParseResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : None
-            Iter    : [1, 1] (0)
-            Success : True
+            Data      : None
+            IterBegin : [1, 1] (0)
+            IterEnd   : [1, 1] (0)
+            Success   : True
             """,
         )
 
@@ -139,24 +140,26 @@ class TestStandard(object):
     def test_ParseResultAdvancedIterator(self, iterator):
         iterator.Advance(5)
 
-        assert str(Phrase.ParseResult(True, iterator, None)) == textwrap.dedent(
+        assert str(Phrase.ParseResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : None
-            Iter    : [1, 6] (5)
-            Success : True
+            Data      : None
+            IterBegin : [1, 6] (5)
+            IterEnd   : [1, 6] (5)
+            Success   : True
             """,
         )
 
     # ----------------------------------------------------------------------
     def test_ParseResultWithMyParseResultData(self, iterator):
-        assert str(Phrase.ParseResult(False, iterator, self.MyParseResultData())) == textwrap.dedent(
+        assert str(Phrase.ParseResult(False, iterator, iterator, self.MyParseResultData())) == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
-                      -- empty dict --
-            Iter    : [1, 1] (0)
-            Success : False
+            Data      : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
+                        -- empty dict --
+            IterBegin : [1, 1] (0)
+            IterEnd   : [1, 1] (0)
+            Success   : False
             """,
         )
 
@@ -164,6 +167,7 @@ class TestStandard(object):
     def test_ParseResultWithStandardParseResultData(self, iterator):
         assert Phrase.ParseResult(
             True,
+            iterator,
             iterator,
             Phrase.StandardParseResultData(
                 CreatePhrase(20),
@@ -173,12 +177,13 @@ class TestStandard(object):
         ).ToString() == textwrap.dedent(
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                      Data     : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
-                                 -- empty dict --
-                      Phrase   : The Phrase
-            Iter    : [1, 1] (0)
-            Success : True
+            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                        Data     : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
+                                   -- empty dict --
+                        Phrase   : The Phrase
+            IterBegin : [1, 1] (0)
+            IterEnd   : [1, 1] (0)
+            Success   : True
             """,
         )
 

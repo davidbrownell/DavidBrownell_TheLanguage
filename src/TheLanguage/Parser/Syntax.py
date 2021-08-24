@@ -301,8 +301,8 @@ class Observer(TranslationUnitsParserObserver):
         phrases_info = self.Syntaxes.get(version, None)
         if phrases_info is None:
             raise SyntaxInvalidVersionError(
-                version_data.IterBefore.Line,
-                version_data.IterBefore.Column,
+                version_data.IterBegin.Line,
+                version_data.IterBegin.Column,
                 version,
             )
 
@@ -323,7 +323,7 @@ class Observer(TranslationUnitsParserObserver):
             return SemVer.coerce(token_value), token_data
         except ValueError:
             raise SyntaxInvalidVersionFormatError(
-                token_data.IterBefore.Line,
-                token_data.IterBefore.Column,
+                token_data.IterBegin.Line,
+                token_data.IterBegin.Column,
                 token_value,
             )

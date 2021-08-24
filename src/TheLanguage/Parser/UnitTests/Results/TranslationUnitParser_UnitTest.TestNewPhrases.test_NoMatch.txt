@@ -5,31 +5,31 @@ Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                   Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                     Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Leaf'>
                                                       IsIgnored  : False
-                                                      IterAfter  : [1, 4] (3)
-                                                      IterBefore : [1, 1] (0)
+                                                      IterBegin_ : [1, 1] (0)
+                                                      IterEnd    : [1, 4] (3)
                                                       Type       : Upper <class 'TheLanguage.Parser.Components.Token.RegexToken'>
                                                       Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                    Match : <_sre.SRE_Match object; span=(0, 3), match='ONE'>
                                                       Whitespace : None
-                                    IterAfter  : [1, 4] (3)
-                                    IterBefore : [1, 1] (0)
+                                    IterBegin_ : [1, 1] (0)
+                                    IterEnd    : [1, 4] (3)
                                     Type       : (Upper Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
-                  IterAfter  : [1, 4] (3)
-                  IterBefore : [1, 1] (0)
+                  IterBegin_ : [1, 1] (0)
+                  IterEnd    : [1, 4] (3)
                   Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
              1)   <class 'TheLanguage.Parser.Components.AST.Node'>
                   Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                     Children   : 0)   <class 'TheLanguage.Parser.Components.AST.Node'>
                                                       Children   : -- empty list --
-                                                      IterAfter  : None
-                                                      IterBefore : None
+                                                      IterBegin_ : None
+                                                      IterEnd    : None
                                                       Type       : Upper Phrase <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>
-                                    IterAfter  : None
-                                    IterBefore : None
+                                    IterBegin_ : None
+                                    IterEnd    : None
                                     Type       : (Upper Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>
-                  IterAfter  : None
-                  IterBefore : None
+                  IterBegin_ : None
+                  IterEnd    : None
                   Type       : Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>
-IterAfter  : None
-IterBefore : [1, 1] (0)
+IterBegin_ : [1, 1] (0)
+IterEnd    : None
 Type       : <None>
