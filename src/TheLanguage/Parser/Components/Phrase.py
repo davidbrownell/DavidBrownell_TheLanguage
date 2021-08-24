@@ -17,6 +17,7 @@
 
 import os
 
+from enum import auto, Enum
 from typing import Any, Awaitable, Callable, cast, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
@@ -37,6 +38,15 @@ with InitRelativeImports():
     from .Token import Token as TokenClass
 
 
+
+# ----------------------------------------------------------------------
+class DynamicPhrasesType(Enum):
+    Expressions                             = auto()    # Phrase that returns a value
+    Names                                   = auto()    # Phrase that can be used as a name
+    Statements                              = auto()    # Phrase that doesn't return a value
+    Types                                   = auto()    # Phrase that can be used as a type
+
+
 # ----------------------------------------------------------------------
 class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
     """Abstract base class for all phrases, where a phrase is a collection of tokens"""
@@ -51,7 +61,8 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         """Result returned by calls to ParseAsync"""
 
         Success: bool
-        Iter: NormalizedIterator
+        IterBegin: NormalizedIterator
+        IterEnd: NormalizedIterator
         Data: Optional["Phrase.StandardParseResultData"]
 
         # ----------------------------------------------------------------------
@@ -60,6 +71,8 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
                 self,
                 include_class_info=False,
             )
+
+            assert self.IterBegin.Offset <= self.IterEnd.Offset, self
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
@@ -138,8 +151,8 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
 
         Whitespace: Optional[Tuple[int, int]]
         Value: TokenClass.MatchResult
-        IterBefore: NormalizedIterator
-        IterAfter: NormalizedIterator
+        IterBegin: NormalizedIterator
+        IterEnd: NormalizedIterator
         IsIgnored: bool
 
         # ----------------------------------------------------------------------
@@ -159,6 +172,16 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
             func_infos: List[EnqueueAsyncItemType],
         ) -> Awaitable[Any]:
             """Enqueues the provided functions in an executor"""
+            raise Exception("Abstract method")  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.abstractmethod
+        def GetDynamicPhrases(
+            unique_id: List[str],
+            phrases_type: DynamicPhrasesType,
+        ) -> Tuple[Optional[str], List["Phrase"]]:
+            """Returns a list of dynamic phrases"""
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
@@ -280,24 +303,22 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
             observer: "Phrase.Observer",
             items: List[Any],
             item_decorator_func: Callable[[Any], "Phrase.ParseResultData"],
+            post_filter_dynamic_phrases_func: Optional[
+                Callable[
+                    [
+                        List[str],          # unique_id
+                        List["Phrase"],     # Unfiltered dynamic phrases
+                    ],
+                    List["Phrase"]          # Filtered dynamic phrases
+                ]
+            ]=None,
         ):
-            self._phrase                    = phrase
-            self._unique_id                 = unique_id
-            self._observer                  = observer
-            self._items                     = items
-            self._item_decorator_func       = item_decorator_func
-
-        # ----------------------------------------------------------------------
-        def __getattr__(self, name):
-            value = getattr(self._observer, name)
-
-            # ----------------------------------------------------------------------
-            def Impl(*args, **kwargs):
-                return value(*args, **kwargs)
-
-            # ----------------------------------------------------------------------
-
-            return Impl
+            self._phrase                                = phrase
+            self._unique_id                             = unique_id
+            self._observer                              = observer
+            self._items                                 = items
+            self._item_decorator_func                   = item_decorator_func
+            self._post_filter_dynamic_phrases_func      = post_filter_dynamic_phrases_func
 
         # ----------------------------------------------------------------------
         @Interface.override
@@ -306,6 +327,23 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
             func_infos: List[EnqueueAsyncItemType],
         ) -> Awaitable[Any]:
             return self._observer.Enqueue(func_infos)
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def GetDynamicPhrases(
+            self,
+            unique_id: List[str],
+            phrases_type: DynamicPhrasesType,
+        ) -> Tuple[Optional[str], List["Phrase"]]:
+            phrases = self._observer.GetDynamicPhrases(unique_id, phrases_type)
+
+            if self._post_filter_dynamic_phrases_func:
+                name, phrases = phrases
+
+                phrases = self._post_filter_dynamic_phrases_func(unique_id, phrases)
+                phrases = name, phrases
+
+            return phrases
 
         # ----------------------------------------------------------------------
         @Interface.override

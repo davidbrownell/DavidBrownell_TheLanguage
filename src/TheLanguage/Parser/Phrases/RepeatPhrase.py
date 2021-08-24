@@ -113,7 +113,7 @@ class RepeatPhrase(Phrase):
                     break
 
                 results.append(result.Data)
-                normalized_iter = result.Iter.Clone()
+                normalized_iter = result.IterEnd.Clone()
 
                 if self.MaxMatches is not None and len(results) == self.MaxMatches:
                     break
@@ -138,19 +138,20 @@ class RepeatPhrase(Phrase):
                 ):
                     return None
 
-                return Phrase.ParseResult(True, normalized_iter, data)
+                return Phrase.ParseResult(True, original_normalized_iter, normalized_iter, data)
 
             success = False
 
             # Gather the failure information
             if error_result:
                 results.append(error_result.Data)
-                end_iter = error_result.Iter
+                end_iter = error_result.IterEnd
             else:
                 end_iter = normalized_iter
 
             return Phrase.ParseResult(
                 False,
+                original_normalized_iter,
                 end_iter,
                 Phrase.StandardParseResultData(
                     self,

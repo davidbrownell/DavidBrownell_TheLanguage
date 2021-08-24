@@ -93,3 +93,14 @@ def test_BitManipulation():
             """,
         ),
     ) == ResultsFromFile()
+
+
+# ----------------------------------------------------------------------
+def test_Nested():
+    assert Execute(
+        textwrap.dedent(
+            """\
+            var1 = one + two + three - four == five
+            """,
+        ),
+    ) == ResultsFromFile()

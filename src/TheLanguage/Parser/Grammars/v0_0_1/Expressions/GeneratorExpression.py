@@ -80,6 +80,6 @@ class GeneratorExpression(GrammarPhrase):
                         arity="?",
                     ),
                 ],
-                suffers_from_infinite_recursion=True,
+                is_left_recursive_sequence=True,
             ),
         )

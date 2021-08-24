@@ -15,6 +15,7 @@
 # ----------------------------------------------------------------------
 """Contains types and functions that normalize source content"""
 
+import hashlib
 import os
 
 from enum import auto, Enum
@@ -133,12 +134,25 @@ class NormalizedContent(object):
     Content: str
     ContentLen: int
     LineInfos: List[LineInfo]
+    Hash: Optional[bytes] = None
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         assert self.Content, self
         assert self.ContentLen, self
         assert self.LineInfos, self
+
+        if self.Hash is None:
+            object.__setattr__(self, "Hash", self.CalculateHash(self.Content))
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def CalculateHash(
+        content: str,
+    ) -> bytes:
+        hash = hashlib.sha256()
+        hash.update(content.encode("utf-8"))
+        return hash.digest()
 
 
 # ----------------------------------------------------------------------

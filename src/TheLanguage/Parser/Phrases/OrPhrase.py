@@ -158,7 +158,7 @@ class OrPhrase(Phrase):
                 sort_data = [
                     (
                         1 if result.Success else 0,
-                        result.Iter.Offset,
+                        result.IterEnd.Offset,
                         index,
                     )
                     for index, result in enumerate(results)
@@ -189,11 +189,11 @@ class OrPhrase(Phrase):
                 if not await observer.OnInternalPhraseAsync(
                     [data],
                     normalized_iter,
-                    best_result.Iter,
+                    best_result.IterEnd,
                 ):
                     return None
 
-                return Phrase.ParseResult(True, best_result.Iter, data)
+                return Phrase.ParseResult(True, normalized_iter, best_result.IterEnd, data)
 
             # Gather the failure information
             data_items: List[Optional[Phrase.ParseResultData]] = []
@@ -204,14 +204,15 @@ class OrPhrase(Phrase):
 
                 data_items.append(result.Data)
 
-                if max_iter is None or result.Iter.Offset > max_iter.Offset:
-                    max_iter = result.Iter
+                if max_iter is None or result.IterEnd.Offset > max_iter.Offset:
+                    max_iter = result.IterEnd
 
             assert data_items
             assert max_iter
 
             return Phrase.ParseResult(
                 False,
+                normalized_iter,
                 max_iter,
                 Phrase.StandardParseResultData(
                     self,
