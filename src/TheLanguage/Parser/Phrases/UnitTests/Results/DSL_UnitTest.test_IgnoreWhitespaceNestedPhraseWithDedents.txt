@@ -1,162 +1,163 @@
 <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-          Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                     DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                  IsIgnored  : False
-                                                  IterAfter  : [1, 9] (8)
-                                                  IterBefore : [1, 1] (0)
-                                                  Token      : Word Token
-                                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                               Match : <_sre.SRE_Match object; span=(0, 8), match='newscope'>
-                                                  Whitespace : None
-                                       Phrase   : Word Token
-                                  1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                  IsIgnored  : False
-                                                  IterAfter  : [1, 10] (9)
-                                                  IterBefore : [1, 9] (8)
-                                                  Token      : ':'
-                                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                               Match : <_sre.SRE_Match object; span=(8, 9), match=':'>
-                                                  Whitespace : None
-                                       Phrase   : ':'
-                                  2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                  IsIgnored  : False
-                                                  IterAfter  : [4, 1] (12)
-                                                  IterBefore : [1, 10] (9)
-                                                  Token      : Newline+
-                                                  Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                               End   : 12
-                                                               Start : 9
-                                                  Whitespace : None
-                                       Phrase   : Newline+
-                                  3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                  IsIgnored  : False
-                                                  IterAfter  : [4, 5] (16)
-                                                  IterBefore : [4, 1] (12)
-                                                  Token      : Indent
-                                                  Value      : <class 'TheLanguage.Parser.Components.Token.IndentToken.MatchResult'>
-                                                               End   : 16
-                                                               Start : 12
-                                                               Value : 4
-                                                  Whitespace : None
-                                       Phrase   : Indent
-                                  4)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                                  DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                               IsIgnored  : False
-                                                                               IterAfter  : [4, 10] (21)
-                                                                               IterBefore : [4, 5] (16)
-                                                                               Token      : Word Token
-                                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                            Match : <_sre.SRE_Match object; span=(16, 21), match='worda'>
-                                                                               Whitespace : None
-                                                                    Phrase   : Word Token
-                                                               1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                    IsIgnored  : True
-                                                                    IterAfter  : [5, 1] (22)
-                                                                    IterBefore : [4, 10] (21)
-                                                                    Token      : Newline+
-                                                                    Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                 End   : 22
-                                                                                 Start : 21
-                                                                    Whitespace : None
-                                                               2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                    IsIgnored  : True
-                                                                    IterAfter  : [5, 9] (30)
-                                                                    IterBefore : [5, 1] (22)
-                                                                    Token      : Indent
-                                                                    Value      : <class 'TheLanguage.Parser.Components.Token.IndentToken.MatchResult'>
-                                                                                 End   : 30
-                                                                                 Start : 22
-                                                                                 Value : 8
-                                                                    Whitespace : None
-                                                               3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                               IsIgnored  : False
-                                                                               IterAfter  : [5, 14] (35)
-                                                                               IterBefore : [5, 9] (30)
-                                                                               Token      : Word Token
-                                                                               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                            Match : <_sre.SRE_Match object; span=(30, 35), match='wordb'>
-                                                                               Whitespace : None
-                                                                    Phrase   : Word Token
-                                                               4)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                    IsIgnored  : True
-                                                                    IterAfter  : [7, 1] (37)
-                                                                    IterBefore : [5, 14] (35)
-                                                                    Token      : Newline+
-                                                                    Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                                                 End   : 37
-                                                                                 Start : 35
-                                                                    Whitespace : None
-                                                               5)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                                    IsIgnored  : True
-                                                                    IterAfter  : [7, 5] (41)
-                                                                    IterBefore : [7, 1] (37)
-                                                                    Token      : Dedent
-                                                                    Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
-                                                                                 -- empty dict --
-                                                                    Whitespace : None
-                                                  IsComplete : True
-                                       Phrase   : Nested
-                                  5)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                  IsIgnored  : False
-                                                  IterAfter  : [7, 10] (46)
-                                                  IterBefore : [7, 5] (41)
-                                                  Token      : Word Token
-                                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                               Match : <_sre.SRE_Match object; span=(41, 46), match='wordc'>
-                                                  Whitespace : None
-                                       Phrase   : Word Token
-                                  6)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                  IsIgnored  : False
-                                                  IterAfter  : [8, 1] (47)
-                                                  IterBefore : [7, 10] (46)
-                                                  Token      : Newline+
-                                                  Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                               End   : 47
-                                                               Start : 46
-                                                  Whitespace : None
-                                       Phrase   : Newline+
-                                  7)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                  IsIgnored  : False
-                                                  IterAfter  : [8, 1] (47)
-                                                  IterBefore : [8, 1] (47)
-                                                  Token      : Dedent
-                                                  Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
-                                                               -- empty dict --
-                                                  Whitespace : None
-                                       Phrase   : Dedent
-                                  8)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                  IsIgnored  : False
-                                                  IterAfter  : [8, 6] (52)
-                                                  IterBefore : [8, 1] (47)
-                                                  Token      : Word Token
-                                                  Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                               Match : <_sre.SRE_Match object; span=(47, 52), match='wordd'>
-                                                  Whitespace : None
-                                       Phrase   : Word Token
-                                  9)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                       Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                  IsIgnored  : False
-                                                  IterAfter  : [9, 1] (53)
-                                                  IterBefore : [8, 6] (52)
-                                                  Token      : Newline+
-                                                  Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
-                                                               End   : 53
-                                                               Start : 52
-                                                  Whitespace : None
-                                       Phrase   : Newline+
-                     IsComplete : True
-          Phrase   : Phrase
-Iter    : [9, 1] (53)
-Success : True
+Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                       DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                    IsIgnored  : False
+                                                    IterBegin  : [1, 1] (0)
+                                                    IterEnd    : [1, 9] (8)
+                                                    Token      : Word Token
+                                                    Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                 Match : <_sre.SRE_Match object; span=(0, 8), match='newscope'>
+                                                    Whitespace : None
+                                         Phrase   : Word Token
+                                    1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                    IsIgnored  : False
+                                                    IterBegin  : [1, 9] (8)
+                                                    IterEnd    : [1, 10] (9)
+                                                    Token      : ':'
+                                                    Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                 Match : <_sre.SRE_Match object; span=(8, 9), match=':'>
+                                                    Whitespace : None
+                                         Phrase   : ':'
+                                    2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                    IsIgnored  : False
+                                                    IterBegin  : [1, 10] (9)
+                                                    IterEnd    : [4, 1] (12)
+                                                    Token      : Newline+
+                                                    Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                 End   : 12
+                                                                 Start : 9
+                                                    Whitespace : None
+                                         Phrase   : Newline+
+                                    3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                    IsIgnored  : False
+                                                    IterBegin  : [4, 1] (12)
+                                                    IterEnd    : [4, 5] (16)
+                                                    Token      : Indent
+                                                    Value      : <class 'TheLanguage.Parser.Components.Token.IndentToken.MatchResult'>
+                                                                 End   : 16
+                                                                 Start : 12
+                                                                 Value : 4
+                                                    Whitespace : None
+                                         Phrase   : Indent
+                                    4)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                                                    DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                                 IsIgnored  : False
+                                                                                 IterBegin  : [4, 5] (16)
+                                                                                 IterEnd    : [4, 10] (21)
+                                                                                 Token      : Word Token
+                                                                                 Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                              Match : <_sre.SRE_Match object; span=(16, 21), match='worda'>
+                                                                                 Whitespace : None
+                                                                      Phrase   : Word Token
+                                                                 1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                      IsIgnored  : True
+                                                                      IterBegin  : [4, 10] (21)
+                                                                      IterEnd    : [5, 1] (22)
+                                                                      Token      : Newline+
+                                                                      Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                   End   : 22
+                                                                                   Start : 21
+                                                                      Whitespace : None
+                                                                 2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                      IsIgnored  : True
+                                                                      IterBegin  : [5, 1] (22)
+                                                                      IterEnd    : [5, 9] (30)
+                                                                      Token      : Indent
+                                                                      Value      : <class 'TheLanguage.Parser.Components.Token.IndentToken.MatchResult'>
+                                                                                   End   : 30
+                                                                                   Start : 22
+                                                                                   Value : 8
+                                                                      Whitespace : None
+                                                                 3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                                                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                                 IsIgnored  : False
+                                                                                 IterBegin  : [5, 9] (30)
+                                                                                 IterEnd    : [5, 14] (35)
+                                                                                 Token      : Word Token
+                                                                                 Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                              Match : <_sre.SRE_Match object; span=(30, 35), match='wordb'>
+                                                                                 Whitespace : None
+                                                                      Phrase   : Word Token
+                                                                 4)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                      IsIgnored  : True
+                                                                      IterBegin  : [5, 14] (35)
+                                                                      IterEnd    : [7, 1] (37)
+                                                                      Token      : Newline+
+                                                                      Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                                   End   : 37
+                                                                                   Start : 35
+                                                                      Whitespace : None
+                                                                 5)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                                      IsIgnored  : True
+                                                                      IterBegin  : [7, 1] (37)
+                                                                      IterEnd    : [7, 5] (41)
+                                                                      Token      : Dedent
+                                                                      Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
+                                                                                   -- empty dict --
+                                                                      Whitespace : None
+                                                    IsComplete : True
+                                         Phrase   : Nested
+                                    5)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                    IsIgnored  : False
+                                                    IterBegin  : [7, 5] (41)
+                                                    IterEnd    : [7, 10] (46)
+                                                    Token      : Word Token
+                                                    Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                 Match : <_sre.SRE_Match object; span=(41, 46), match='wordc'>
+                                                    Whitespace : None
+                                         Phrase   : Word Token
+                                    6)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                    IsIgnored  : False
+                                                    IterBegin  : [7, 10] (46)
+                                                    IterEnd    : [8, 1] (47)
+                                                    Token      : Newline+
+                                                    Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                 End   : 47
+                                                                 Start : 46
+                                                    Whitespace : None
+                                         Phrase   : Newline+
+                                    7)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                    IsIgnored  : False
+                                                    IterBegin  : [8, 1] (47)
+                                                    IterEnd    : [8, 1] (47)
+                                                    Token      : Dedent
+                                                    Value      : <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
+                                                                 -- empty dict --
+                                                    Whitespace : None
+                                         Phrase   : Dedent
+                                    8)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                    IsIgnored  : False
+                                                    IterBegin  : [8, 1] (47)
+                                                    IterEnd    : [8, 6] (52)
+                                                    Token      : Word Token
+                                                    Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                 Match : <_sre.SRE_Match object; span=(47, 52), match='wordd'>
+                                                    Whitespace : None
+                                         Phrase   : Word Token
+                                    9)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                                         Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                                                    IsIgnored  : False
+                                                    IterBegin  : [8, 6] (52)
+                                                    IterEnd    : [9, 1] (53)
+                                                    Token      : Newline+
+                                                    Value      : <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                                 End   : 53
+                                                                 Start : 52
+                                                    Whitespace : None
+                                         Phrase   : Newline+
+                       IsComplete : True
+            Phrase   : Phrase
+IterBegin : [1, 1] (0)
+IterEnd   : [9, 1] (53)
+Success   : True

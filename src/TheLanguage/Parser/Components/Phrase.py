@@ -61,7 +61,8 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         """Result returned by calls to ParseAsync"""
 
         Success: bool
-        Iter: NormalizedIterator
+        IterBegin: NormalizedIterator
+        IterEnd: NormalizedIterator
         Data: Optional["Phrase.StandardParseResultData"]
 
         # ----------------------------------------------------------------------
@@ -70,6 +71,8 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
                 self,
                 include_class_info=False,
             )
+
+            assert self.IterBegin.Offset <= self.IterEnd.Offset, self
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
@@ -148,8 +151,8 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
 
         Whitespace: Optional[Tuple[int, int]]
         Value: TokenClass.MatchResult
-        IterBefore: NormalizedIterator
-        IterAfter: NormalizedIterator
+        IterBegin: NormalizedIterator
+        IterEnd: NormalizedIterator
         IsIgnored: bool
 
         # ----------------------------------------------------------------------

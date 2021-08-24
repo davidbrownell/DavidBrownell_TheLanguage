@@ -137,7 +137,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             if not result.Success:
                 return result
 
-            normalized_iter = result.Iter
+            normalized_iter = result.IterEnd
 
             assert result.Data
             result_data.append(result.Data)
@@ -175,7 +175,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                     return None
 
                 if this_result.Success:
-                    normalized_iter = this_result.Iter
+                    normalized_iter = this_result.IterEnd
 
                     assert result.Data is not None
                     result_data.append(this_result.Data)
@@ -193,7 +193,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                 return None
 
             success = result.Success
-            normalized_iter = result.Iter
+            normalized_iter = result.IterEnd
 
             assert result.Data is not None
             assert result.Data.Data is not None
@@ -218,7 +218,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             ):
                 return None
 
-            return Phrase.ParseResult(success, normalized_iter, data)
+            return Phrase.ParseResult(success, original_normalized_iter, normalized_iter, data)
 
     # ----------------------------------------------------------------------
     async def ParseSuffixAsync(

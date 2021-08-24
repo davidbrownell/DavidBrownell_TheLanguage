@@ -88,7 +88,7 @@ class DynamicPhrase(Phrase):
         ):
             dynamic_phrases = self._get_dynamic_phrases_func(unique_id, observer)
             if not dynamic_phrases:
-                return Phrase.ParseResult(False, normalized_iter, None)
+                return Phrase.ParseResult(False, normalized_iter, normalized_iter, None)
 
             phrase_name, dynamic_phrases = dynamic_phrases
             assert isinstance(dynamic_phrases, list), dynamic_phrases
@@ -125,12 +125,12 @@ class DynamicPhrase(Phrase):
                 and not await observer.OnInternalPhraseAsync(
                     [data],
                     normalized_iter,
-                    result.Iter,
+                    result.IterEnd,
                 )
             ):
                 return None
 
-            return Phrase.ParseResult(result.Success, result.Iter, data)
+            return Phrase.ParseResult(result.Success, normalized_iter, result.IterEnd, data)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
