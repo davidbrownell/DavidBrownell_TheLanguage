@@ -240,12 +240,12 @@ async def ParseAsync(
 
         if not result.Success:
             raise SyntaxInvalidError(
-                result.Iter.Line,
-                result.Iter.Column,
+                result.IterE.Line,
+                result.IterE.Column,
                 root,
             )
 
-        normalized_iter = result.Iter.Clone()
+        normalized_iter = result.IterE.Clone()
 
         # TODO: Eat trailing comments (here or in SequencePhrase.py?)
         # TODO: What happens to file that starts with newlines?

@@ -61,7 +61,12 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         """Result returned by calls to ParseAsync"""
 
         Success: bool
-        Iter: NormalizedIterator # TODO: Change name to IterEnd; add IterBegin
+        # BugBug:
+        #   1) Change name to IterEnd__
+        #   2) Add IterBegin
+        #   3) Rename IterEnd__ to IterEnd
+        #   4) Cache in __post_init__ based on IterBegin
+        IterE: NormalizedIterator # BugBug
         Data: Optional["Phrase.StandardParseResultData"]
 
         # ----------------------------------------------------------------------

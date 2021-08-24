@@ -68,5 +68,5 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                        Whitespace : None
                      IsComplete : True
           Phrase   : Phrase
-Iter    : [8, 1] (25)
+IterE   : [8, 1] (25)
 Success : True

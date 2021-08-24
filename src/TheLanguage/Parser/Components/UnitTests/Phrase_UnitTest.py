@@ -130,7 +130,7 @@ class TestStandard(object):
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
             Data    : None
-            Iter    : [1, 1] (0)
+            IterE   : [1, 1] (0)
             Success : True
             """,
         )
@@ -143,7 +143,7 @@ class TestStandard(object):
             """\
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
             Data    : None
-            Iter    : [1, 6] (5)
+            IterE   : [1, 6] (5)
             Success : True
             """,
         )
@@ -155,7 +155,7 @@ class TestStandard(object):
             <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
             Data    : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
                       -- empty dict --
-            Iter    : [1, 1] (0)
+            IterE   : [1, 1] (0)
             Success : False
             """,
         )
@@ -177,7 +177,7 @@ class TestStandard(object):
                       Data     : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
                                  -- empty dict --
                       Phrase   : The Phrase
-            Iter    : [1, 1] (0)
+            IterE   : [1, 1] (0)
             Success : True
             """,
         )

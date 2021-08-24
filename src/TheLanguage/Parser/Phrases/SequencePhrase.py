@@ -167,7 +167,7 @@ class SequencePhrase(Phrase):
                 if not await observer.OnInternalPhraseAsync(
                     [cast(Phrase.StandardParseResultData, result.Data)],
                     original_normalized_iter,
-                    result.Iter,
+                    result.IterE,
                 ):
                     return None
 
@@ -240,7 +240,7 @@ class SequencePhrase(Phrase):
                     break
 
                 data_items += potential_prefix_info.Results
-                normalized_iter = potential_prefix_info.Iter
+                normalized_iter = potential_prefix_info.IterE
 
             # Process control tokens
             if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
@@ -270,7 +270,7 @@ class SequencePhrase(Phrase):
             if result.Data is not None:
                 data_items.append(result.Data)
 
-            normalized_iter = result.Iter.Clone()
+            normalized_iter = result.IterE.Clone()
 
             if not result.Success:
                 success = False
@@ -294,7 +294,7 @@ class SequencePhrase(Phrase):
     @dataclass(frozen=True)
     class ExtractPotentialResults(object):
         Results: List[Phrase.TokenParseResultData]
-        Iter: Phrase.NormalizedIterator
+        IterE: Phrase.NormalizedIterator
 
     # ----------------------------------------------------------------------
     # |

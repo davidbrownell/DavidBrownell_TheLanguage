@@ -88,5 +88,5 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                        Phrase   : Repeat: {__Repeat__, 2, 2}
                      IsComplete : True
           Phrase   : __Phrase__
-Iter    : [4, 1] (16)
+IterE   : [4, 1] (16)
 Success : False

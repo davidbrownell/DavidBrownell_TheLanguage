@@ -267,5 +267,5 @@ Data    : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResul
                                        Phrase   : Sequence: [Word Token, Newline+]
                      IsComplete : True
           Phrase   : Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Recursive, Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]]
-Iter    : [11, 1] (55)
+IterE   : [11, 1] (55)
 Success : True
