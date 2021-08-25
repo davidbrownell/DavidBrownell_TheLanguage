@@ -117,63 +117,6 @@ class SequencePhrase(Phrase):
         self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    async def ParseAsync(
-        self,
-        unique_id: List[str],
-        normalized_iter: Phrase.NormalizedIterator,
-        observer: Phrase.Observer,
-        ignore_whitespace=False,
-        single_threaded=False,
-    ) -> Union[
-        Phrase.ParseResult,
-        None,
-    ]:
-        success = False
-
-        observer.StartPhrase(unique_id, [self])
-        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
-            original_normalized_iter = normalized_iter.Clone()
-
-            ignore_whitespace_ctr = 1 if ignore_whitespace else 0
-
-            # If the first phrase is a control token indicating that whitespace should be
-            # ignored, we need to make sure that the trailing dedents aren't greedily consumed,
-            # but rather we stop consuming them once we end up at the initial level.
-            if (
-                isinstance(self.Phrases[0], TokenPhrase)
-                and isinstance(self.Phrases[0].Token, PushIgnoreWhitespaceControlToken)
-            ):
-                ignored_indentation_level = 0
-            else:
-                ignored_indentation_level = None
-
-            result = await self._MatchAsync(
-                0,
-                unique_id,
-                normalized_iter,
-                observer,
-                single_threaded,
-                ignore_whitespace_ctr,
-                ignored_indentation_level,
-            )
-
-            if result is None:
-                return None
-
-            if result.Success:
-                success = result.Success
-
-                if not await observer.OnInternalPhraseAsync(
-                    [cast(Phrase.StandardParseResultData, result.Data)],
-                    original_normalized_iter,
-                    result.IterEnd,
-                ):
-                    return None
-
-            return result
-
-    # ----------------------------------------------------------------------
     # |
     # |  Protected Methods
     # |
@@ -436,6 +379,63 @@ class SequencePhrase(Phrase):
             self.Name = self._CreateDefaultName(self.Phrases)
 
         return replaced_phrase
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def _ParseAsyncImpl(
+        self,
+        unique_id: List[str],
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
+        ignore_whitespace=False,
+        single_threaded=False,
+    ) -> Union[
+        Phrase.ParseResult,
+        None,
+    ]:
+        success = False
+
+        observer.StartPhrase(unique_id, [self])
+        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
+            original_normalized_iter = normalized_iter.Clone()
+
+            ignore_whitespace_ctr = 1 if ignore_whitespace else 0
+
+            # If the first phrase is a control token indicating that whitespace should be
+            # ignored, we need to make sure that the trailing dedents aren't greedily consumed,
+            # but rather we stop consuming them once we end up at the initial level.
+            if (
+                isinstance(self.Phrases[0], TokenPhrase)
+                and isinstance(self.Phrases[0].Token, PushIgnoreWhitespaceControlToken)
+            ):
+                ignored_indentation_level = 0
+            else:
+                ignored_indentation_level = None
+
+            result = await self._MatchAsync(
+                0,
+                unique_id,
+                normalized_iter,
+                observer,
+                single_threaded,
+                ignore_whitespace_ctr,
+                ignored_indentation_level,
+            )
+
+            if result is None:
+                return None
+
+            if result.Success:
+                success = result.Success
+
+                if not await observer.OnInternalPhraseAsync(
+                    [cast(Phrase.StandardParseResultData, result.Data)],
+                    original_normalized_iter,
+                    result.IterEnd,
+                ):
+                    return None
+
+            return result
 
     # ----------------------------------------------------------------------
     @staticmethod

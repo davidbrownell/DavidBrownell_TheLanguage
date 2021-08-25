@@ -19,7 +19,7 @@ import os
 import threading
 
 from enum import auto, Enum
-from typing import Any, Awaitable, Callable, cast, Generator, List, Optional, TextIO, Tuple, Union
+from typing import Any, Awaitable, Callable, cast, Dict, Generator, List, Optional, TextIO, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -80,7 +80,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         # ----------------------------------------------------------------------
         # Set this value to True to enable basic statistic collection.
         # ----------------------------------------------------------------------
-        if True: # BugBug False:
+        if False:
             _stats = [0]
             _stats_lock = threading.Lock()
 
@@ -305,24 +305,52 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         self.Name                           = name
         self._is_populated                  = False
 
+        self._result_cache_lock                                             = threading.Lock()
+        self._result_cache: Dict[Any, "Phrase.ParseResult"]                 = {}
+
     # ----------------------------------------------------------------------
     def PopulateRecursive(self):
         self.PopulateRecursiveImpl(self)
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
     async def ParseAsync(
+        self,
         unique_id: List[str],
         normalized_iter: NormalizedIterator,
         observer: Observer,
         ignore_whitespace=False,
         single_threaded=False,
-    ) -> Union[
-        "Phrase.ParseResult",               # Result may or may not be successful
-        None,                               # Terminate processing
-    ]:
-        raise Exception("Abstract method")  # pragma: no cover
+    ):
+        # Look for the cached value
+        cache_key = normalized_iter.ToCacheKey()
+
+        with self._result_cache_lock:
+            cached_result = self._result_cache.get(cache_key, None)
+            if cached_result is not None:
+                return cached_result
+
+        # Invoke functionality
+        result = await self._ParseAsyncImpl(
+            unique_id,
+            normalized_iter,
+            observer,
+            ignore_whitespace=ignore_whitespace,
+            single_threaded=single_threaded,
+        )
+
+        if result is None:
+            return None
+
+        # Cache the result; note that we don't want to cache successful results as that will prevent
+        # expected events from being generated for future invocations.
+        #
+        # TODO: It might be good to revist the statement above so that we can send events for cached
+        #       values.
+        if not result.Success:
+            with self._result_cache_lock:
+                self._result_cache[cache_key] = result
+
+        return result
 
     # ----------------------------------------------------------------------
     # |
@@ -526,4 +554,19 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         Populates all instances of types that should be replaced (in the support
         of recursive phrases).
         """
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    async def _ParseAsyncImpl(
+        unique_id: List[str],
+        normalized_iter: NormalizedIterator,
+        observer: Observer,
+        ignore_whitespace=False,
+        single_threaded=False,
+    ) -> Union[
+        "Phrase.ParseResult",               # Result may or may not be successful
+        None,                               # Terminate processing
+    ]:
         raise Exception("Abstract method")  # pragma: no cover

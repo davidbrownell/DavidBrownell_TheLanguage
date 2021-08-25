@@ -215,7 +215,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.IterEnd.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 12
+        assert len(parse_mock.method_calls) == 6
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -227,7 +227,7 @@ class TestStandard(object):
         result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
         assert result is None
 
-        assert len(parse_mock.method_calls) == 11
+        assert len(parse_mock.method_calls) == 5
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -305,7 +305,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.IterEnd.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 10
+        assert len(parse_mock.method_calls) == 0
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -377,11 +377,9 @@ class TestStandard(object):
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
             0) StartPhrase, "Or: (upper, Or: (lower, number))"
-            1) StartPhrase, "upper", "Or: (upper, Or: (lower, number))"
-            2) EndPhrase, "upper" [False], "Or: (upper, Or: (lower, number))" [None]
-            3) StartPhrase, "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
-            4) StartPhrase, "lower", "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
-            5) OnInternalPhraseAsync, 0, 4
+            1) StartPhrase, "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
+            2) StartPhrase, "lower", "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
+            3) OnInternalPhraseAsync, 0, 4
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                            IsIgnored  : False
@@ -404,10 +402,8 @@ class TestStandard(object):
                                              Phrase   : upper
                            IsComplete : False
                 Phrase   : Or: (upper, Or: (lower, number))
-            6) EndPhrase, "lower" [True], "Or: (lower, number)" [None], "Or: (upper, Or: (lower, number))" [None]
-            7) StartPhrase, "number", "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
-            8) EndPhrase, "number" [False], "Or: (lower, number)" [None], "Or: (upper, Or: (lower, number))" [None]
-            9) OnInternalPhraseAsync, 0, 4
+            4) EndPhrase, "lower" [True], "Or: (lower, number)" [None], "Or: (upper, Or: (lower, number))" [None]
+            5) OnInternalPhraseAsync, 0, 4
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
@@ -427,8 +423,8 @@ class TestStandard(object):
                                              Phrase   : upper
                            IsComplete : False
                 Phrase   : Or: (upper, Or: (lower, number))
-            10) EndPhrase, "Or: (lower, number)" [True], "Or: (upper, Or: (lower, number))" [None]
-            11) OnInternalPhraseAsync, 0, 4
+            6) EndPhrase, "Or: (lower, number)" [True], "Or: (upper, Or: (lower, number))" [None]
+            7) OnInternalPhraseAsync, 0, 4
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
@@ -443,7 +439,7 @@ class TestStandard(object):
                                       Phrase   : lower
                            Phrase   : Or: (lower, number)
                 Phrase   : Or: (upper, Or: (lower, number))
-            12) EndPhrase, "Or: (upper, Or: (lower, number))" [True]
+            8) EndPhrase, "Or: (upper, Or: (lower, number))" [True]
             """,
         )
 
@@ -593,19 +589,17 @@ class TestParseReturnsNone(object):
     class EmptyPhrase(Phrase):
         # ----------------------------------------------------------------------
         @Interface.override
-        async def ParseAsync(self, *args, **kwargs):
-            return None
-
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
-        @Interface.override
         def _PopulateRecursiveImpl(
             self,
             new_phrase: Phrase,
         ) -> bool:
             # Nothing to do here
             return False
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def _ParseAsyncImpl(self, *args, **kwargs):
+            return None
 
     # ----------------------------------------------------------------------
 

@@ -132,7 +132,7 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 11
+        assert len(parse_mock.method_calls) == 9
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -200,16 +200,12 @@ class TestStandard(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 11
-
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
             0) StartPhrase, "Dynamic Phrases"
             1) StartPhrase, "Or: (lower, number)", "Dynamic Phrases"
-            2) StartPhrase, "lower", "Or: (lower, number)", "Dynamic Phrases"
-            3) EndPhrase, "lower" [False], "Or: (lower, number)" [None], "Dynamic Phrases" [None]
-            4) StartPhrase, "number", "Or: (lower, number)", "Dynamic Phrases"
-            5) OnInternalPhraseAsync, 0, 4
+            2) StartPhrase, "number", "Or: (lower, number)", "Dynamic Phrases"
+            3) OnInternalPhraseAsync, 0, 4
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
                            IsIgnored  : False
@@ -232,8 +228,8 @@ class TestStandard(object):
                            DataItems  : 0)   None
                            IsComplete : False
                 Phrase   : Dynamic Phrases
-            6) EndPhrase, "number" [True], "Or: (lower, number)" [None], "Dynamic Phrases" [None]
-            7) OnInternalPhraseAsync, 0, 4
+            4) EndPhrase, "number" [True], "Or: (lower, number)" [None], "Dynamic Phrases" [None]
+            5) OnInternalPhraseAsync, 0, 4
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
@@ -251,8 +247,8 @@ class TestStandard(object):
                            DataItems  : 0)   None
                            IsComplete : False
                 Phrase   : Dynamic Phrases
-            8) EndPhrase, "Or: (lower, number)" [True], "Dynamic Phrases" [None]
-            9) OnInternalPhraseAsync, 0, 4
+            6) EndPhrase, "Or: (lower, number)" [True], "Dynamic Phrases" [None]
+            7) OnInternalPhraseAsync, 0, 4
                 <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                 Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
                            Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
@@ -267,7 +263,7 @@ class TestStandard(object):
                                       Phrase   : number
                            Phrase   : Or: (lower, number)
                 Phrase   : Dynamic Phrases
-            10) EndPhrase, "Dynamic Phrases" [True]
+            8) EndPhrase, "Dynamic Phrases" [True]
             """,
         )
 
@@ -304,9 +300,7 @@ class TestStandard(object):
             """\
             0) StartPhrase, "Dynamic Phrases"
             1) StartPhrase, "Or: (lower)", "Dynamic Phrases"
-            2) StartPhrase, "lower", "Or: (lower)", "Dynamic Phrases"
-            3) EndPhrase, "lower" [False], "Or: (lower)" [None], "Dynamic Phrases" [None]
-            4) EndPhrase, "Or: (lower)" [False], "Dynamic Phrases" [None]
-            5) EndPhrase, "Dynamic Phrases" [False]
+            2) EndPhrase, "Or: (lower)" [False], "Dynamic Phrases" [None]
+            3) EndPhrase, "Dynamic Phrases" [False]
             """,
         )

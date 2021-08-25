@@ -152,6 +152,7 @@ def ExecuteEx(
         ["filename"],
         [],
         flag=PatchAndExecuteFlag.Validate,
+        # TODO: We are using too many threads in the pool when not single threaded
         max_num_threads=1,
     )
 

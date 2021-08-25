@@ -45,19 +45,23 @@ with InitRelativeImports():
 def CreatePhrase(result):
 
     # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ResultObject(object):
+        Success: Any
+
+    # ----------------------------------------------------------------------
+
+    result_obj = ResultObject(result)
+
+    # ----------------------------------------------------------------------
     class ThePhrase(Phrase):
         # ----------------------------------------------------------------------
         def __init__(self):
             super(ThePhrase, self).__init__("The Phrase")
 
             self.parse_mock = Mock(
-                return_value=result,
+                return_value=result_obj,
             )
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def ParseAsync(self, *args, **kwargs):
-            return self.parse_mock(*args, **kwargs)
 
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
@@ -69,6 +73,11 @@ def CreatePhrase(result):
         ) -> bool:
             # Nothing to do here
             return True
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def _ParseAsyncImpl(self, *args, **kwargs):
+            return self.parse_mock(*args, **kwargs)
 
     # ----------------------------------------------------------------------
 
@@ -86,14 +95,6 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     class MyPhrase(Phrase):
         # ----------------------------------------------------------------------
-        @staticmethod
-        @Interface.override
-        async def ParseAsync(*args, **kwargs):
-            pass
-
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
         @Interface.override
         def _PopulateRecursiveImpl(
             self,
@@ -101,6 +102,12 @@ class TestStandard(object):
         ) -> bool:
             # Nothing to do here
             return False
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.override
+        async def _ParseAsyncImpl(*args, **kwargs):
+            pass
 
     # ----------------------------------------------------------------------
     class MyParseResultData(Phrase.ParseResultData):
@@ -256,8 +263,8 @@ class TestStandard(object):
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio
 async def test_Parse(iterator, parse_mock):
-    result = await CreatePhrase(1).ParseAsync(iterator, parse_mock)
-    assert result == 1
+    result = await CreatePhrase(1).ParseAsync(["root"], iterator, parse_mock)
+    assert result.Success == 1
 
     assert parse_mock.OnIndent.call_count == 0
     assert parse_mock.OnDedent.call_count == 0

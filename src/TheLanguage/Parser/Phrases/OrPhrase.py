@@ -66,8 +66,30 @@ class OrPhrase(Phrase):
         self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    async def ParseAsync(
+    def _PopulateRecursiveImpl(
+        self,
+        new_phrase: Phrase,
+    ) -> bool:
+        replaced_phrase = False
+
+        for phrase_index, phrase in enumerate(self.Phrases):
+            if isinstance(phrase, RecursivePlaceholderPhrase):
+                self.Phrases[phrase_index] = new_phrase
+                replaced_phrase = True
+            else:
+                replaced_phrase = phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
+
+        if replaced_phrase and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Phrases)
+
+        return replaced_phrase
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def _ParseAsyncImpl(
         self,
         unique_id: List[str],
         normalized_iter: Phrase.NormalizedIterator,
@@ -220,28 +242,6 @@ class OrPhrase(Phrase):
                     unique_id,
                 ),
             )
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        replaced_phrase = False
-
-        for phrase_index, phrase in enumerate(self.Phrases):
-            if isinstance(phrase, RecursivePlaceholderPhrase):
-                self.Phrases[phrase_index] = new_phrase
-                replaced_phrase = True
-            else:
-                replaced_phrase = phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
-
-        if replaced_phrase and self._name_is_default:
-            self.Name = self._CreateDefaultName(self.Phrases)
-
-        return replaced_phrase
 
     # ----------------------------------------------------------------------
     @staticmethod

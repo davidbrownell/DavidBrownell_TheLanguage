@@ -600,7 +600,7 @@ class TestOrPhrases(object):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
 
         assert result is None
-        assert len(parse_mock.method_calls) == 18
+        assert len(parse_mock.method_calls) == 10
 
 
 # ----------------------------------------------------------------------

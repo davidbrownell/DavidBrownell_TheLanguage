@@ -69,8 +69,29 @@ class RepeatPhrase(Phrase):
         self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    async def ParseAsync(
+    def _PopulateRecursiveImpl(
+        self,
+        new_phrase: Phrase,
+    ) -> bool:
+        replaced_phrase = False
+
+        if isinstance(self.Phrase, RecursivePlaceholderPhrase):
+            self.Phrase = new_phrase
+            replaced_phrase = True
+        else:
+            replaced_phrase = self.Phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
+
+        if replaced_phrase and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)
+
+        return replaced_phrase
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def _ParseAsyncImpl(
         self,
         unique_id: List[str],
         normalized_iter: Phrase.NormalizedIterator,
@@ -159,27 +180,6 @@ class RepeatPhrase(Phrase):
                     unique_id,
                 ),
             )
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        replaced_phrase = False
-
-        if isinstance(self.Phrase, RecursivePlaceholderPhrase):
-            self.Phrase = new_phrase
-            replaced_phrase = True
-        else:
-            replaced_phrase = self.Phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
-
-        if replaced_phrase and self._name_is_default:
-            self.Name = self._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)
-
-        return replaced_phrase
 
     # ----------------------------------------------------------------------
     @staticmethod

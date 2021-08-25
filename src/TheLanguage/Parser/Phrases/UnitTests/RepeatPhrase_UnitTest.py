@@ -738,19 +738,17 @@ async def test_parseReturnsNone(parse_mock):
     class NonePhrase(Phrase):
         # ----------------------------------------------------------------------
         @Interface.override
-        async def ParseAsync(self, *args, **kwargs):
-            return None
-
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
-        @Interface.override
         def _PopulateRecursiveImpl(
             self,
             new_phrase: Phrase,
         ) -> bool:
             # Nothing to do here
             return False
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def _ParseAsyncImpl(self, *args, **kwargs):
+            return None
 
     # ----------------------------------------------------------------------
 

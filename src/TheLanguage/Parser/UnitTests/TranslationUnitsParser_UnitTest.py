@@ -3251,7 +3251,7 @@ class TestStandard(object):
             """,
         )
 
-        assert len(observer.on_phrase_complete_mock.call_args_list) == 60
+        assert len(observer.on_phrase_complete_mock.call_args_list) == 57
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio

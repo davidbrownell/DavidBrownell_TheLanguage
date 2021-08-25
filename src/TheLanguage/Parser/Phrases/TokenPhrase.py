@@ -64,8 +64,49 @@ class TokenPhrase(Phrase):
         self.Token                          = token
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    def ExtractWhitespace(
+        normalized_iter: Phrase.NormalizedIterator,
+    ) -> Optional[Tuple[int, int]]:
+        """Consumes any whitespace located at the current offset"""
+
+        if not normalized_iter.AtEnd():
+            if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart:
+                if (
+                    not normalized_iter.LineInfo.HasNewIndent()
+                    and not normalized_iter.LineInfo.HasNewDedents()
+                ):
+                    normalized_iter.SkipPrefix()
+
+            else:
+                start = normalized_iter.Offset
+
+                while (
+                    normalized_iter.Offset < normalized_iter.LineInfo.OffsetEnd
+                    and normalized_iter.Content[normalized_iter.Offset].isspace()
+                    and normalized_iter.Content[normalized_iter.Offset] != "\n"
+                ):
+                    normalized_iter.Advance(1)
+
+                if normalized_iter.Offset != start:
+                    return start, normalized_iter.Offset
+
+        return None
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    async def ParseAsync(
+    def _PopulateRecursiveImpl(
+        self,
+        new_phrase: Phrase,
+    ) -> bool:
+        # Nothing to do here
+        return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def _ParseAsyncImpl(
         self,
         unique_id: List[str],
         normalized_iter: Phrase.NormalizedIterator,
@@ -128,44 +169,3 @@ class TokenPhrase(Phrase):
                 return None
 
             return Phrase.ParseResult(True, normalized_iter.Clone(), potential_iter, data)
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def ExtractWhitespace(
-        normalized_iter: Phrase.NormalizedIterator,
-    ) -> Optional[Tuple[int, int]]:
-        """Consumes any whitespace located at the current offset"""
-
-        if not normalized_iter.AtEnd():
-            if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart:
-                if (
-                    not normalized_iter.LineInfo.HasNewIndent()
-                    and not normalized_iter.LineInfo.HasNewDedents()
-                ):
-                    normalized_iter.SkipPrefix()
-
-            else:
-                start = normalized_iter.Offset
-
-                while (
-                    normalized_iter.Offset < normalized_iter.LineInfo.OffsetEnd
-                    and normalized_iter.Content[normalized_iter.Offset].isspace()
-                    and normalized_iter.Content[normalized_iter.Offset] != "\n"
-                ):
-                    normalized_iter.Advance(1)
-
-                if normalized_iter.Offset != start:
-                    return start, normalized_iter.Offset
-
-        return None
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        # Nothing to do here
-        return False
