@@ -221,12 +221,15 @@ class SequencePhrase(Phrase):
                 success = False
                 break
 
+        # <Too many arguments> pylint: disable=E1121
         return Phrase.ParseResult(
             success,
             original_normalized_iter,
             normalized_iter,
+            # <Too many arguments> pylint: disable=E1121
             Phrase.StandardParseResultData(
                 self,
+                # <Too many arguments> pylint: disable=E1121
                 Phrase.MultipleStandardParseResultData(data_items, True),
                 unique_id,
             ),
@@ -277,6 +280,7 @@ class SequencePhrase(Phrase):
 
             result = token.Match(normalized_iter)
             if result is not None:
+                # <Too many arguments> pylint: disable=E1121
                 return Phrase.TokenParseResultData(
                     token,
                     None,
@@ -292,6 +296,7 @@ class SequencePhrase(Phrase):
 
         result = cls._newline_token.Match(normalized_iter)
         if result is not None:
+            # <Too many arguments> pylint: disable=E1121
             return Phrase.TokenParseResultData(
                 cls._newline_token,
                 potential_whitespace,
@@ -329,6 +334,7 @@ class SequencePhrase(Phrase):
             return None
 
         results = [
+            # <Too many arguments> pylint: disable=E1121
             Phrase.TokenParseResultData(
                 self.CommentToken,
                 potential_whitespace,

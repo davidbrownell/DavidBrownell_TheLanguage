@@ -16,7 +16,6 @@
 """Automated test for Phrase.py"""
 
 import os
-import re
 import textwrap
 
 from unittest.mock import Mock
@@ -90,6 +89,7 @@ def iterator(
 ):
     return NormalizedIterator(Normalize(value))
 
+
 # ----------------------------------------------------------------------
 class TestStandard(object):
     # ----------------------------------------------------------------------
@@ -135,11 +135,11 @@ class TestStandard(object):
     def test_ParseResultEmptyData(self, iterator):
         assert str(Phrase.ParseResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : None
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: None
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: True
             """,
         )
 
@@ -149,30 +149,32 @@ class TestStandard(object):
 
         assert str(Phrase.ParseResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : None
-            IterBegin : [1, 6] (5)
-            IterEnd   : [1, 6] (5)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: None
+            IterBegin: "[1, 6] (5)"
+            IterEnd: "[1, 6] (5)"
+            Success: True
             """,
         )
 
     # ----------------------------------------------------------------------
     def test_ParseResultWithMyParseResultData(self, iterator):
-        assert str(Phrase.ParseResult(False, iterator, iterator, self.MyParseResultData())) == textwrap.dedent(
+        assert str(
+            Phrase.ParseResult(False, iterator, iterator, self.MyParseResultData()),
+        ) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
-                        -- empty dict --
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : False
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
+              {}
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: False
             """,
         )
 
     # ----------------------------------------------------------------------
     def test_ParseResultWithStandardParseResultData(self, iterator):
-        assert Phrase.ParseResult(
+        assert str(Phrase.ParseResult(
             True,
             iterator,
             iterator,
@@ -181,16 +183,16 @@ class TestStandard(object):
                 self.MyParseResultData(),
                 ["id1"],
             ),
-        ).ToString() == textwrap.dedent(
+        )) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
-                                   -- empty dict --
-                        Phrase   : The Phrase
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
+                {}
+              Phrase: "The Phrase"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: True
             """,
         )
 

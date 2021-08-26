@@ -17,8 +17,7 @@
 
 import os
 
-from collections import OrderedDict
-from typing import cast, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -257,6 +256,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             result_data += result.Data.Data.DataItems
 
             # Commit the results
+            # <Too many arguments> pylint: disable=E1121
             data = Phrase.StandardParseResultData(
                 self,
                 Phrase.MultipleStandardParseResultData(result_data, True),
@@ -273,6 +273,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             ):
                 return None
 
+            # <Too many arguments> pylint: disable=E1121
             return Phrase.ParseResult(success, original_normalized_iter, normalized_iter, data)
 
 

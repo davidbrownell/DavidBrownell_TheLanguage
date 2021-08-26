@@ -64,7 +64,7 @@ class DynamicPhrase(Phrase):
     # ----------------------------------------------------------------------
     # Set this value to True to enable basic statistic collection.
     # ----------------------------------------------------------------------
-    if False:
+    if False:  # <constant value> pylint: disable=W0125
         _stats: Dict[
             Tuple[bytes, int],              # (normalized_iter.Hash, normalized_iter.Offset)
             Dict[
@@ -186,6 +186,7 @@ class DynamicPhrase(Phrase):
             assert isinstance(dynamic_phrases, list), dynamic_phrases
 
             if not dynamic_phrases:
+                # <Too many arguments> pylint: disable=E1121
                 return Phrase.ParseResult(False, normalized_iter, normalized_iter, None)
 
             self.UpdateStats(unique_id, normalized_iter)
@@ -215,6 +216,7 @@ class DynamicPhrase(Phrase):
             if result is None:
                 return None
 
+            # <Too many arguments> pylint: disable=E1121
             data = Phrase.StandardParseResultData(self, result.Data, unique_id)
 
             if (
@@ -227,4 +229,5 @@ class DynamicPhrase(Phrase):
             ):
                 return None
 
+            # <Too many arguments> pylint: disable=E1121
             return Phrase.ParseResult(result.Success, normalized_iter, result.IterEnd, data)

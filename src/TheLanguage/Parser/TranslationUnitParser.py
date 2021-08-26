@@ -26,6 +26,7 @@ from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -78,13 +79,13 @@ class SyntaxInvalidError(Error):
             message=str(self),
             line=self.Line,
             column=self.Column,
-            content=self.Root.ToString().rstrip(),
+            content=self.Root.ToYamlString().rstrip(),
         )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
+class DynamicPhrasesInfo(YamlRepr.ObjectReprImplBase):
     """Phrases that should be dynamically added to the active scope"""
 
     # ----------------------------------------------------------------------
@@ -102,9 +103,8 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
     def __post_init__(self):
         phrase_display_func = lambda phrases: ", ".join([phrase.Name for phrase in phrases])
 
-        CommonEnvironment.ObjectReprImplBase.__init__(
+        YamlRepr.ObjectReprImplBase.__init__(
             self,
-            include_class_info=False,
             Expressions=phrase_display_func,
             Names=phrase_display_func,
             Statements=phrase_display_func,

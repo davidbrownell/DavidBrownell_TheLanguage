@@ -206,6 +206,7 @@ class OrPhrase(Phrase):
             best_result = results[best_index]
 
             if best_result.Success:
+                # <Too many arguments> pylint: disable=E1121
                 data = Phrase.StandardParseResultData(self, best_result.Data, unique_id)
 
                 if not await observer.OnInternalPhraseAsync(
@@ -215,6 +216,7 @@ class OrPhrase(Phrase):
                 ):
                     return None
 
+                # <Too many arguments> pylint: disable=E1121
                 return Phrase.ParseResult(True, normalized_iter, best_result.IterEnd, data)
 
             # Gather the failure information
@@ -232,12 +234,15 @@ class OrPhrase(Phrase):
             assert data_items
             assert max_iter
 
+            # <Too many arguments> pylint: disable=E1121
             return Phrase.ParseResult(
                 False,
                 normalized_iter,
                 max_iter,
+                # <Too many arguments> pylint: disable=E1121
                 Phrase.StandardParseResultData(
                     self,
+                    # <Too many arguments> pylint: disable=E1121
                     Phrase.MultipleStandardParseResultData(data_items, True),
                     unique_id,
                 ),

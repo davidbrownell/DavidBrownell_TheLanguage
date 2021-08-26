@@ -24,6 +24,7 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -58,8 +59,8 @@ class ValidationError(Error):
         node: Union[Leaf, Node],
         *args,
     ):
-        line_before = node.IterBegin_.Line if node.IterBegin_ is not None else -1
-        column_before = node.IterBegin_.Column if node.IterBegin_ is not None else -1
+        line_before = node.IterBegin.Line if node.IterBegin is not None else -1
+        column_before = node.IterBegin.Column if node.IterBegin is not None else -1
 
         line_after = node.IterEnd.Line if node.IterEnd is not None else -1
         column_after = node.IterEnd.Column if node.IterEnd is not None else -1
@@ -93,7 +94,7 @@ class ValidationError(Error):
 
 
 # ----------------------------------------------------------------------
-class GrammarPhrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
+class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     """An individual phrase within a grammar"""
 
     # ----------------------------------------------------------------------
@@ -116,11 +117,10 @@ class GrammarPhrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         self,
         type_value: "GrammarPhrase.Type",
         phrase: Phrase,
-        **custom_display_funcs: Callable[[Any], Optional[str]],
+        **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
-        CommonEnvironment.ObjectReprImplBase.__init__(
+        YamlRepr.ObjectReprImplBase.__init__(
             self,
-            include_class_info=False,
             Phrase=lambda phrase: phrase.Name,
             **custom_display_funcs,
         )

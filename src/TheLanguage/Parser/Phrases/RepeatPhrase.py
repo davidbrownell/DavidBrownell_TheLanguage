@@ -143,8 +143,10 @@ class RepeatPhrase(Phrase):
                 assert self.MaxMatches is None or len(results) <= self.MaxMatches
                 success = True
 
+                # <Too many arguments> pylint: disable=E1121
                 data = Phrase.StandardParseResultData(
                     self,
+                    # <Too many arguments> pylint: disable=E1121
                     Phrase.MultipleStandardParseResultData(
                         results,
                         True,
@@ -159,6 +161,7 @@ class RepeatPhrase(Phrase):
                 ):
                     return None
 
+                # <Too many arguments> pylint: disable=E1121
                 return Phrase.ParseResult(True, original_normalized_iter, normalized_iter, data)
 
             success = False
@@ -170,12 +173,15 @@ class RepeatPhrase(Phrase):
             else:
                 end_iter = normalized_iter
 
+            # <Too many arguments> pylint: disable=E1121
             return Phrase.ParseResult(
                 False,
                 original_normalized_iter,
                 end_iter,
+                # <Too many arguments> pylint: disable=E1121
                 Phrase.StandardParseResultData(
                     self,
+                    # <Too many arguments> pylint: disable=E1121
                     Phrase.MultipleStandardParseResultData(results, True),
                     unique_id,
                 ),

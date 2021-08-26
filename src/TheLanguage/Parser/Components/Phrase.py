@@ -25,6 +25,7 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -49,7 +50,7 @@ class DynamicPhrasesType(Enum):
 
 
 # ----------------------------------------------------------------------
-class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
+class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     """Abstract base class for all phrases, where a phrase is a collection of tokens"""
 
     # ----------------------------------------------------------------------
@@ -58,7 +59,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
     # |
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
-    class ParseResult(CommonEnvironment.ObjectReprImplBase):
+    class ParseResult(YamlRepr.ObjectReprImplBase):
         """Result returned by calls to ParseAsync"""
 
         Success: bool
@@ -68,11 +69,6 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            CommonEnvironment.ObjectReprImplBase.__init__(
-                self,
-                include_class_info=False,
-            )
-
             assert self.IterBegin.Offset <= self.IterEnd.Offset, self
 
             self.UpdateStats()
@@ -116,17 +112,16 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
-    class ParseResultData(CommonEnvironment.ObjectReprImplBase):
+    class ParseResultData(YamlRepr.ObjectReprImplBase):
         """Abstract base class for data associated with a ParseResult"""
 
         # ----------------------------------------------------------------------
         def __post_init__(
             self,
-            **custom_display_funcs: Callable[[Any], Optional[str]],
+            **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
         ):
-            CommonEnvironment.ObjectReprImplBase.__init__(
+            YamlRepr.ObjectReprImplBase.__init__(
                 self,
-                include_class_info=False,
                 **custom_display_funcs,
             )
 
@@ -292,13 +287,12 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
     def __init__(
         self,
         name: str,
-        **custom_display_funcs: Callable[[Any], Optional[str]],
+        **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
         assert name
 
-        CommonEnvironment.ObjectReprImplBase.__init__(
+        YamlRepr.ObjectReprImplBase.__init__(
             self,
-            include_class_info=False,
             **custom_display_funcs,
         )
 
@@ -344,7 +338,7 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         # Cache the result; note that we don't want to cache successful results as that will prevent
         # expected events from being generated for future invocations.
         #
-        # TODO: It might be good to revist the statement above so that we can send events for cached
+        # TODO: It might be good to revisit the statement above so that we can send events for cached
         #       values.
         if not result.Success:
             with self._result_cache_lock:
@@ -507,8 +501,10 @@ class Phrase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         ) -> Any:
             return await method_func(
                 data_stack + [
+                    # pylint: disable=too-many-function-args
                     Phrase.StandardParseResultData(
                         self._phrase,
+                        # pylint: disable=too-many-function-args
                         Phrase.MultipleStandardParseResultData(
                             [
                                 None if item is None else self._item_decorator_func(item)

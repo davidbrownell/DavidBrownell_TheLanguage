@@ -129,15 +129,19 @@ class TokenPhrase(Phrase):
 
             result = self.Token.Match(potential_iter)
             if result is None:
+                # <Too many arguments> pylint: disable=E1121
                 return Phrase.ParseResult(
                     False,
                     normalized_iter,
                     normalized_iter,
+                    # <Too many arguments> pylint: disable=E1121
                     Phrase.StandardParseResultData(self, None, None),
                 )
 
+            # <Too many arguments> pylint: disable=E1121
             data = Phrase.StandardParseResultData(
                 self,
+                # <Too many arguments> pylint: disable=E1121
                 Phrase.TokenParseResultData(
                     self.Token,
                     potential_whitespace,
@@ -168,4 +172,5 @@ class TokenPhrase(Phrase):
             ):
                 return None
 
+            # <Too many arguments> pylint: disable=E1121
             return Phrase.ParseResult(True, normalized_iter.Clone(), potential_iter, data)

@@ -91,22 +91,22 @@ class TestStandard(object):
         result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                              IsIgnored  : False
-                                              IterBegin  : [1, 1] (0)
-                                              IterEnd    : [1, 10] (9)
-                                              Token      : lower
-                                              Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                           Match : <_sre.SRE_Match object; span=(0, 9), match='lowercase'>
-                                              Whitespace : None
-                                   Phrase   : lower
-                        Phrase   : My Or Phrase
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 10] (9)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 10] (9)"
+                  Token: "lower"
+                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 9), match='lowercase'>"
+                  Whitespace: None
+                Phrase: "lower"
+              Phrase: "My Or Phrase"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 10] (9)"
+            Success: True
             """,
         )
 
@@ -123,22 +123,22 @@ class TestStandard(object):
         result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                              IsIgnored  : False
-                                              IterBegin  : [1, 1] (0)
-                                              IterEnd    : [1, 10] (9)
-                                              Token      : upper
-                                              Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                           Match : <_sre.SRE_Match object; span=(0, 9), match='UPPERCASE'>
-                                              Whitespace : None
-                                   Phrase   : upper
-                        Phrase   : My Or Phrase
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 10] (9)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 10] (9)"
+                  Token: "upper"
+                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 9), match='UPPERCASE'>"
+                  Whitespace: None
+                Phrase: "upper"
+              Phrase: "My Or Phrase"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 10] (9)"
+            Success: True
             """,
         )
 
@@ -155,22 +155,22 @@ class TestStandard(object):
         result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                              IsIgnored  : False
-                                              IterBegin  : [1, 1] (0)
-                                              IterEnd    : [1, 9] (8)
-                                              Token      : number
-                                              Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                           Match : <_sre.SRE_Match object; span=(0, 8), match='12345678'>
-                                              Whitespace : None
-                                   Phrase   : number
-                        Phrase   : My Or Phrase
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 9] (8)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 9] (8)"
+                  Token: "number"
+                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 8), match='12345678'>"
+                  Whitespace: None
+                Phrase: "number"
+              Phrase: "My Or Phrase"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 9] (8)"
+            Success: True
             """,
         )
 
@@ -193,22 +193,22 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                              IsIgnored  : False
-                                              IterBegin  : [1, 1] (0)
-                                              IterEnd    : [1, 9] (8)
-                                              Token      : number
-                                              Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                           Match : <_sre.SRE_Match object; span=(0, 8), match='12345678'>
-                                              Whitespace : None
-                                   Phrase   : number
-                        Phrase   : My Or Phrase
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 9] (8)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 9] (8)"
+                  Token: "number"
+                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 8), match='12345678'>"
+                  Whitespace: None
+                Phrase: "number"
+              Phrase: "My Or Phrase"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 9] (8)"
+            Success: True
             """,
         )
 
@@ -237,26 +237,27 @@ class TestStandard(object):
         result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : lower
-                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : upper
-                                                2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : number
-                                                3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : Newline+
-                                   IsComplete : True
-                        Phrase   : My Or Phrase
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : False
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                DataItems:
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "lower"
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "upper"
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "number"
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "Newline+"
+                IsComplete: True
+              Phrase: "My Or Phrase"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: False
             """,
         )
 
@@ -279,26 +280,27 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : lower
-                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : upper
-                                                2)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : number
-                                                3)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : Newline+
-                                   IsComplete : True
-                        Phrase   : My Or Phrase
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : False
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                DataItems:
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "lower"
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "upper"
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "number"
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "Newline+"
+                IsComplete: True
+              Phrase: "My Or Phrase"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: False
             """,
         )
 
@@ -318,24 +320,24 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                         IsIgnored  : False
-                                                         IterBegin  : [1, 1] (0)
-                                                         IterEnd    : [1, 5] (4)
-                                                         Token      : lower
-                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                      Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
-                                                         Whitespace : None
-                                              Phrase   : lower
-                                   Phrase   : Or: (lower, number)
-                        Phrase   : Or: (upper, Or: (lower, number))
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 5] (4)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 5] (4)"
+                    Token: "lower"
+                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
+                    Whitespace: None
+                  Phrase: "lower"
+                Phrase: "Or: (lower, number)"
+              Phrase: "Or: (upper, Or: (lower, number))"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 5] (4)"
+            Success: True
             """,
         )
 
@@ -353,24 +355,24 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                         IsIgnored  : False
-                                                         IterBegin  : [1, 1] (0)
-                                                         IterEnd    : [1, 5] (4)
-                                                         Token      : lower
-                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                      Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
-                                                         Whitespace : None
-                                              Phrase   : lower
-                                   Phrase   : Or: (lower, number)
-                        Phrase   : Or: (upper, Or: (lower, number))
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 5] (4)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 5] (4)"
+                    Token: "lower"
+                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
+                    Whitespace: None
+                  Phrase: "lower"
+                Phrase: "Or: (lower, number)"
+              Phrase: "Or: (upper, Or: (lower, number))"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 5] (4)"
+            Success: True
             """,
         )
 
@@ -380,65 +382,67 @@ class TestStandard(object):
             1) StartPhrase, "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
             2) StartPhrase, "lower", "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
             3) OnInternalPhraseAsync, 0, 4
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                           IsIgnored  : False
-                           IterBegin  : [1, 1] (0)
-                           IterEnd    : [1, 5] (4)
-                           Token      : lower
-                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                        Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
-                           Whitespace : None
-                Phrase   : lower
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                           DataItems  : -- empty list --
-                           IsComplete : False
-                Phrase   : Or: (lower, number)
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                           DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                             Data     : None
-                                             Phrase   : upper
-                           IsComplete : False
-                Phrase   : Or: (upper, Or: (lower, number))
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 5] (4)"
+                  Token: "lower"
+                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
+                  Whitespace: None
+                Phrase: "lower"
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems: []
+                  IsComplete: False
+                Phrase: "Or: (lower, number)"
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems:
+                    - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                      Data: None
+                      Phrase: "upper"
+                  IsComplete: False
+                Phrase: "Or: (upper, Or: (lower, number))"
             4) EndPhrase, "lower" [True], "Or: (lower, number)" [None], "Or: (upper, Or: (lower, number))" [None]
             5) OnInternalPhraseAsync, 0, 4
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                           Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                      IsIgnored  : False
-                                      IterBegin  : [1, 1] (0)
-                                      IterEnd    : [1, 5] (4)
-                                      Token      : lower
-                                      Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                   Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
-                                      Whitespace : None
-                           Phrase   : lower
-                Phrase   : Or: (lower, number)
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                           DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                             Data     : None
-                                             Phrase   : upper
-                           IsComplete : False
-                Phrase   : Or: (upper, Or: (lower, number))
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 5] (4)"
+                    Token: "lower"
+                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
+                    Whitespace: None
+                  Phrase: "lower"
+                Phrase: "Or: (lower, number)"
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems:
+                    - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                      Data: None
+                      Phrase: "upper"
+                  IsComplete: False
+                Phrase: "Or: (upper, Or: (lower, number))"
             6) EndPhrase, "Or: (lower, number)" [True], "Or: (upper, Or: (lower, number))" [None]
             7) OnInternalPhraseAsync, 0, 4
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                           Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                 IsIgnored  : False
-                                                 IterBegin  : [1, 1] (0)
-                                                 IterEnd    : [1, 5] (4)
-                                                 Token      : lower
-                                                 Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                              Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
-                                                 Whitespace : None
-                                      Phrase   : lower
-                           Phrase   : Or: (lower, number)
-                Phrase   : Or: (upper, Or: (lower, number))
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                      IsIgnored: False
+                      IterBegin: "[1, 1] (0)"
+                      IterEnd: "[1, 5] (4)"
+                      Token: "lower"
+                      Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                        Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
+                      Whitespace: None
+                    Phrase: "lower"
+                  Phrase: "Or: (lower, number)"
+                Phrase: "Or: (upper, Or: (lower, number))"
             8) EndPhrase, "Or: (upper, Or: (lower, number))" [True]
             """,
         )
@@ -454,22 +458,22 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                              IsIgnored  : False
-                                              IterBegin  : [1, 1] (0)
-                                              IterEnd    : [1, 5] (4)
-                                              Token      : upper
-                                              Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                           Match : <_sre.SRE_Match object; span=(0, 4), match='WORD'>
-                                              Whitespace : None
-                                   Phrase   : upper
-                        Phrase   : Or: (upper, Or: (lower, number))
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 5] (4)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 5] (4)"
+                  Token: "upper"
+                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 4), match='WORD'>"
+                  Whitespace: None
+                Phrase: "upper"
+              Phrase: "Or: (upper, Or: (lower, number))"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 5] (4)"
+            Success: True
             """,
         )
 
@@ -506,22 +510,22 @@ class TestSort(object):
         result = await self._sort_phrase.ParseAsync(["root"], iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                              IsIgnored  : False
-                                              IterBegin  : [1, 1] (0)
-                                              IterEnd    : [1, 5] (4)
-                                              Token      : Long
-                                              Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                           Match : <_sre.SRE_Match object; span=(0, 4), match='1234'>
-                                              Whitespace : None
-                                   Phrase   : Long
-                        Phrase   : Sort
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 5] (4)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 5] (4)"
+                  Token: "Long"
+                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
+                  Whitespace: None
+                Phrase: "Long"
+              Phrase: "Sort"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 5] (4)"
+            Success: True
             """,
         )
 
@@ -536,22 +540,22 @@ class TestSort(object):
         result = await self._no_sort_phrase.ParseAsync(["root"], iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                              IsIgnored  : False
-                                              IterBegin  : [1, 1] (0)
-                                              IterEnd    : [1, 3] (2)
-                                              Token      : Short
-                                              Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                           Match : <_sre.SRE_Match object; span=(0, 2), match='12'>
-                                              Whitespace : None
-                                   Phrase   : Short
-                        Phrase   : No Sort
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 3] (2)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 3] (2)"
+                  Token: "Short"
+                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 2), match='12'>"
+                  Whitespace: None
+                Phrase: "Short"
+              Phrase: "No Sort"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 3] (2)"
+            Success: True
             """,
         )
 
@@ -563,20 +567,21 @@ class TestSort(object):
         result = await self._no_sort_phrase.ParseAsync(["root"], CreateIterator("!1122"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                   DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : Short
-                                                1)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                     Data     : None
-                                                     Phrase   : Long
-                                   IsComplete : True
-                        Phrase   : No Sort
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : False
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                DataItems:
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "Short"
+                  - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: None
+                    Phrase: "Long"
+                IsComplete: True
+              Phrase: "No Sort"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: False
             """,
         )
 

@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the builing blocks for token processing"""
+"""Contains the building blocks for token processing"""
 
 import os
 
@@ -23,6 +23,7 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -36,7 +37,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class Token(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
+class Token(Interface.Interface, YamlRepr.ObjectReprImplBase):
     """Base class for various Token objects"""
 
     # ----------------------------------------------------------------------
@@ -45,14 +46,10 @@ class Token(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
     # |
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
-    class MatchResult(CommonEnvironment.ObjectReprImplBase):
-
+    class MatchResult(YamlRepr.ObjectReprImplBase):
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            CommonEnvironment.ObjectReprImplBase.__init__(
-                self,
-                include_class_info=False,
-            )
+            pass
 
     # ----------------------------------------------------------------------
     # |
@@ -71,13 +68,6 @@ class Token(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
     # |
     # |  Public Methods
     # |
-    # ----------------------------------------------------------------------
-    def __init__(self):
-        CommonEnvironment.ObjectReprImplBase.__init__(
-            self,
-            include_class_info=False,
-        )
-
     # ----------------------------------------------------------------------
     def __hash__(self):
         return tuple(self.__dict__.values()).__hash__()
@@ -122,8 +112,6 @@ class NewlineToken(Token):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            super(NewlineToken.MatchResult, self).__post_init__()
-
             assert self.Start >= 0, self
             assert self.End > self.Start, self
 
@@ -192,8 +180,6 @@ class IndentToken(Token):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            super(IndentToken.MatchResult, self).__post_init__()
-
             assert self.Start >= 0, self
             assert self.End > self.Start, self
             assert self.Value >= 0, self

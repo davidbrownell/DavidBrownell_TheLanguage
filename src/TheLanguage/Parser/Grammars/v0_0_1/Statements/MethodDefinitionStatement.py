@@ -26,6 +26,7 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -263,7 +264,7 @@ class MethodDefinitionStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
-    class NodeInfo(CommonEnvironment.ObjectReprImplBase):
+    class NodeInfo(YamlRepr.ObjectReprImplBase):
         Visibility: VisibilityModifier
         MethodType: "MethodDefinitionStatement.MethodType"
         ReturnType: Union[Leaf, Node]
@@ -274,9 +275,8 @@ class MethodDefinitionStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            CommonEnvironment.ObjectReprImplBase.__init__(
+            YamlRepr.ObjectReprImplBase.__init__(
                 self,
-                include_class_info=False,
                 Statements=lambda statements: None if statements is None else [statement.Type.Name for statement in statements],
             )
 
