@@ -264,6 +264,7 @@ class TestStandard(object):
                 attribute_name="call_args_list",
             ),
             suffix=".events",
+            file_ext=".txt",
         )
 
     # ----------------------------------------------------------------------
@@ -305,6 +306,7 @@ class TestStandard(object):
                 attribute_name="call_args_list",
             ),
             suffix=".events",
+            file_ext=".txt",
         )
 
     # ----------------------------------------------------------------------
@@ -346,6 +348,7 @@ class TestStandard(object):
                 attribute_name="call_args_list",
             ),
             suffix=".events",
+            file_ext=".txt",
         )
 
     # ----------------------------------------------------------------------

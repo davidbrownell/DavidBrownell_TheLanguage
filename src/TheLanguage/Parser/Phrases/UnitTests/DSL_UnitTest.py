@@ -292,7 +292,7 @@ class TestParseIndentAndDedent(object):
 
         assert result.IterEnd.AtEnd()
         CompareResultsFromFile(str(result), suffix=".results")
-        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -411,7 +411,7 @@ class TestEmbeddedPhrases(object):
         )
 
         CompareResultsFromFile(str(result), suffix=".results")
-        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -494,7 +494,7 @@ class TestDynamicPhrases(object):
 
         CompareResultsFromFile(str(result), suffix=".results")
         assert result.IterEnd.AtEnd()
-        CompareResultsFromFile(MethodCallsToString(modified_parse_mock), suffix=".events")
+        CompareResultsFromFile(MethodCallsToString(modified_parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -589,7 +589,7 @@ class TestOrPhrases(object):
         )
 
         CompareResultsFromFile(str(result), suffix=".results")
-        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -753,7 +753,7 @@ class TestRepeatPhrases(object):
 
         CompareResultsFromFile(str(result), suffix=".results")
         assert result.IterEnd.AtEnd()
-        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio

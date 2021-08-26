@@ -98,7 +98,7 @@ class TestSimple(object):
         )
 
         CompareResultsFromFile(str(result), suffix=".results")
-        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio

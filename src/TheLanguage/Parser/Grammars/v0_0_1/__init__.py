@@ -25,5 +25,3 @@
 #     # Comment 2
 
 # TODO: Ensure that everything that uses YamlRepr.ObjectReprImplBase is properly initializing with include_class_info=False
-
-# TODO: Rename events files as .txt
