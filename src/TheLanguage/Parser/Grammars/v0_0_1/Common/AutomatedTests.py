@@ -23,6 +23,9 @@ from io import StringIO
 from typing import cast, Dict, List, Optional, Tuple, Union
 from unittest.mock import patch
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
 from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 

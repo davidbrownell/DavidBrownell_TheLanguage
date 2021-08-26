@@ -20,6 +20,9 @@ import textwrap
 
 import pytest
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
 from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
 
