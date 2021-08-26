@@ -22,7 +22,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,54 +38,62 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_NoArgs():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Func()
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Func()
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_SingleArg():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Func1(arg)
-            Func2((a,))
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Func1(arg)
+                Func2((a,))
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_MultipleArgs():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Func1(a, b, c)
-            Func2(e, InnerFunc(f, (g, h)), i)
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Func1(a, b, c)
+                Func2(e, InnerFunc(f, (g, h)), i)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_WithKeywords():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Func1(a=one, b=two, c=three)
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Func1(a=one, b=two, c=three)
 
-            Func2(
-                a,
-                b,
-                c=three,
-                d=four,
-            )
-            """,
+                Func2(
+                    a,
+                    b,
+                    c=three,
+                    d=four,
+                )
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 # TODO: keyword before pos

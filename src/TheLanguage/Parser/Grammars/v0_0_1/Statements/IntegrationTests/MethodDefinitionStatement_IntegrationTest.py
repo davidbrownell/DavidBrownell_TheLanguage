@@ -22,7 +22,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,200 +38,214 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Int Method1() immutable:
-                pass
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Int Method1() immutable:
+                    pass
 
-            public Int Method2() mutable:
-                pass
+                public Int Method2() mutable:
+                    pass
 
-            override Int Method3() immutable:
-                pass
+                override Int Method3() immutable:
+                    pass
 
-            protected override Int Method4():
-                pass
+                protected override Int Method4():
+                    pass
 
-            private static Char val Method5(
-                pos:
-                    Int a, Bool b,
-                key:
-                    Char c, Double d
-            ):
-                func1()
-                func2()
-            """,
+                private static Char val Method5(
+                    pos:
+                        Int a, Bool b,
+                    key:
+                        Char c, Double d
+                ):
+                    func1()
+                    func2()
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Abstract():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            protected abstract Int Method1()
-            abstract Int Method2() mutable
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                protected abstract Int Method1()
+                abstract Int Method2() mutable
 
-            abstract Int Method3(
-                pos:
-                    Int a,
-                key:
-                    Bool b, Char c
-            )
+                abstract Int Method3(
+                    pos:
+                        Int a,
+                    key:
+                        Bool b, Char c
+                )
 
-            abstract Int Method4(
-                pos:
-                    Int a,
-                key:
-                    Bool b, Char c
-            ) mutable
-            """,
+                abstract Int Method4(
+                    pos:
+                        Int a,
+                    key:
+                        Bool b, Char c
+                ) mutable
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Visibilities():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            public abstract Int PublicMethod1()
-            protected abstract Int ProtectedMethod2()
-            private abstract Int PrivateMethod3()
-            abstract Int DefaultMethod()
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                public abstract Int PublicMethod1()
+                protected abstract Int ProtectedMethod2()
+                private abstract Int PrivateMethod3()
+                abstract Int DefaultMethod()
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_MethodTypes():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            standard Int StandardMethod():
-                pass
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                standard Int StandardMethod():
+                    pass
 
-            static Int StaticMethod():
-                pass
+                static Int StaticMethod():
+                    pass
 
-            abstract Int AbstractMethod()
+                abstract Int AbstractMethod()
 
-            virtual Int VirtualMethod():
-                pass
+                virtual Int VirtualMethod():
+                    pass
 
-            override Int OverrideMethod():
-                pass
+                override Int OverrideMethod():
+                    pass
 
-            final Int FinalMethod():
-                pass
+                final Int FinalMethod():
+                    pass
 
-            # The following method would resolve as a function without the trailing 'immutable'
-            Int DefaultMethod() immutable:
-                pass
-            """,
+                # The following method would resolve as a function without the trailing 'immutable'
+                Int DefaultMethod() immutable:
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_ClassTypes():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            abstract Int MutableMethod() mutable
-            abstract Int ImmutableMethod() immutable
-            abstract Int DefaultMethod()
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                abstract Int MutableMethod() mutable
+                abstract Int ImmutableMethod() immutable
+                abstract Int DefaultMethod()
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Statements():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            virtual Int Method() mutable:
-                Func1()
-                Func2()
-                Func3()
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                virtual Int Method() mutable:
+                    Func1()
+                    Func2()
+                    Func3()
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Operators():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            abstract Int __ToBool__()
-            abstract Int __ToString__()
-            abstract Int __Repr__()
-            abstract Int __Clone__()
-            abstract Int __Serialize__()
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                abstract Int __ToBool__()
+                abstract Int __ToString__()
+                abstract Int __Repr__()
+                abstract Int __Clone__()
+                abstract Int __Serialize__()
 
-            abstract Int __Init__()
-            abstract Int __PreInit__()
+                abstract Int __Init__()
+                abstract Int __PreInit__()
 
-            abstract Int __GetAttribute__()
-            abstract Int __Call__()
-            abstract Int __Cast__()
-            abstract Int __Index__()
+                abstract Int __GetAttribute__()
+                abstract Int __Call__()
+                abstract Int __Cast__()
+                abstract Int __Index__()
 
-            abstract Int __Contains__()
-            abstract Int __Length__()
-            abstract Int __Iter__()
-            abstract Int __AtEnd__()
+                abstract Int __Contains__()
+                abstract Int __Length__()
+                abstract Int __Iter__()
+                abstract Int __AtEnd__()
 
-            abstract Int __Compare__()
-            abstract Int __Equal__()
-            abstract Int __NotEqual__()
-            abstract Int __Less__()
-            abstract Int __LessEqual__()
-            abstract Int __Greater__()
-            abstract Int __GreaterEqual__()
+                abstract Int __Compare__()
+                abstract Int __Equal__()
+                abstract Int __NotEqual__()
+                abstract Int __Less__()
+                abstract Int __LessEqual__()
+                abstract Int __Greater__()
+                abstract Int __GreaterEqual__()
 
-            abstract Int __And__()
-            abstract Int __Or__()
-            abstract Int __Not__()
+                abstract Int __And__()
+                abstract Int __Or__()
+                abstract Int __Not__()
 
-            abstract Int __Add__()
-            abstract Int __Subtract__()
-            abstract Int __Multiply__()
-            abstract Int __Divide__()
-            abstract Int __DivideFloor__()
-            abstract Int __Power__()
-            abstract Int __Mod__()
-            abstract Int __Positive__()
-            abstract Int __Negative__()
+                abstract Int __Add__()
+                abstract Int __Subtract__()
+                abstract Int __Multiply__()
+                abstract Int __Divide__()
+                abstract Int __DivideFloor__()
+                abstract Int __Power__()
+                abstract Int __Mod__()
+                abstract Int __Positive__()
+                abstract Int __Negative__()
 
-            abstract Int __AddInplace__()
-            abstract Int __SubtractInplace__()
-            abstract Int __MultiplyInplace__()
-            abstract Int __DivideInplace__()
-            abstract Int __DivideFloorInplace__()
-            abstract Int __PowerInplace__()
-            abstract Int __ModInplace__()
+                abstract Int __AddInplace__()
+                abstract Int __SubtractInplace__()
+                abstract Int __MultiplyInplace__()
+                abstract Int __DivideInplace__()
+                abstract Int __DivideFloorInplace__()
+                abstract Int __PowerInplace__()
+                abstract Int __ModInplace__()
 
-            abstract Int __ShiftLeft__()
-            abstract Int __ShiftRight__()
-            abstract Int __BitAnd__()
-            abstract Int __BitOr__()
-            abstract Int __BitXor__()
-            abstract Int __BitFlip__()
+                abstract Int __ShiftLeft__()
+                abstract Int __ShiftRight__()
+                abstract Int __BitAnd__()
+                abstract Int __BitOr__()
+                abstract Int __BitXor__()
+                abstract Int __BitFlip__()
 
-            abstract Int __ShiftLeftInplace__()
-            abstract Int __ShiftRightInplace__()
-            abstract Int __BitAndInplace__()
-            abstract Int __BitOrInplace__()
-            abstract Int __BitXorInplace__()
-            """,
+                abstract Int __ShiftLeftInplace__()
+                abstract Int __ShiftRightInplace__()
+                abstract Int __BitAndInplace__()
+                abstract Int __BitOrInplace__()
+                abstract Int __BitXorInplace__()
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------

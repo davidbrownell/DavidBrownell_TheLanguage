@@ -184,6 +184,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         object.__setattr__(
             node,
             "Info",
+            # <Too many arguments> pylint: disable=E1121
             cls.NodeInfo(
                 visibility,
                 return_type,

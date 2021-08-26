@@ -22,7 +22,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,28 +38,32 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_TwoTypes():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            (Int var | Bool) Func():
-                pass
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                (Int var | Bool) Func():
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_MultipleTypes():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            (
-                Int var
-                | Char view
-                | Double
-                | Foo var
-            ) Func():
-                pass
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                (
+                    Int var
+                    | Char view
+                    | Double
+                    | Foo var
+                ) Func():
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

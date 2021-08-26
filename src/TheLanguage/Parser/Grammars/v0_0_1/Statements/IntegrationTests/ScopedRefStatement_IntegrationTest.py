@@ -22,7 +22,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,36 +38,38 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            with var1 as ref:
-                pass
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                with var1 as ref:
+                    pass
 
-            with var2, as ref:
-                pass
+                with var2, as ref:
+                    pass
 
-            with var3, var4 as ref:
-                pass
+                with var3, var4 as ref:
+                    pass
 
-            with var5, var6, as ref:
-                pass
+                with var5, var6, as ref:
+                    pass
 
-            with (var7) as ref:
-                pass
+                with (var7) as ref:
+                    pass
 
-            with (var8, var9, var10) as ref:
-                pass
+                with (var8, var9, var10) as ref:
+                    pass
 
-            with (var11, var12, var13,) as ref:
-                pass
+                with (var11, var12, var13,) as ref:
+                    pass
 
-            with (
-                var14,
-                var15,
-                    var16,
-            ) as ref:
-                pass
-            """,
+                with (
+                    var14,
+                    var15,
+                        var16,
+                ) as ref:
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

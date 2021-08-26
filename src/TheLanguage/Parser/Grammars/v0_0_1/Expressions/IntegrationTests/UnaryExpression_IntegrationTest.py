@@ -22,7 +22,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,53 +38,61 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Logical():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            value1 = not foo
-            value2 = not (a, b, c)
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                value1 = not foo
+                value2 = not (a, b, c)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Transfer():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            value1 = copy foo
-            value2 = copy (a, b, c)
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                value1 = copy foo
+                value2 = copy (a, b, c)
 
-            value3 = move bar
-            value4 = move (e, f,)
-            """,
+                value3 = move bar
+                value4 = move (e, f,)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Mathematical():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            value1 = +foo
-            value2 = +(a, b, c)
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                value1 = +foo
+                value2 = +(a, b, c)
 
-            value3 = -bar
-            value4 = -(d,)
-            """,
+                value3 = -bar
+                value4 = -(d,)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_BitManipulation():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            value1 = ~foo
-            value2 = ~(a, b, c)
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                value1 = ~foo
+                value2 = ~(a, b, c)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

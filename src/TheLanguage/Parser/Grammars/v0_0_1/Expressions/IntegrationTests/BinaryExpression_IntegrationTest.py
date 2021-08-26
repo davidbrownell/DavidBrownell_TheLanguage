@@ -22,7 +22,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,72 +38,82 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Logical():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            var1 = one and two
-            var2 = three or four
-            var3 = five in six
-            var4 = seven is eight
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                var1 = one and two
+                var2 = three or four
+                var3 = five in six
+                var4 = seven is eight
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Comparison():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            var1 = one < two
-            var2 = three <= four
-            var3 = six > seven
-            var4 = eight >= nine
-            var5 = ten == eleven
-            var6 = twelve != thirteen
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                var1 = one < two
+                var2 = three <= four
+                var3 = six > seven
+                var4 = eight >= nine
+                var5 = ten == eleven
+                var6 = twelve != thirteen
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Mathematical():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            var1 = one + two
-            var2 = three - four
-            var3 = five * six
-            var4 = seven ** eight
-            var5 = nine / ten
-            var6 = eleven // twelve
-            var7 = thirteen % fourteen
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                var1 = one + two
+                var2 = three - four
+                var3 = five * six
+                var4 = seven ** eight
+                var5 = nine / ten
+                var6 = eleven // twelve
+                var7 = thirteen % fourteen
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_BitManipulation():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            var1 = one << two
-            var2 = three >> four
-            var3 = five & six
-            var4 = seven | eight
-            var5 = nine ^ ten
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                var1 = one << two
+                var2 = three >> four
+                var3 = five & six
+                var4 = seven | eight
+                var5 = nine ^ ten
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Nested():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            var1 = one + two + three - four == five
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                var1 = one + two + three - four == five
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

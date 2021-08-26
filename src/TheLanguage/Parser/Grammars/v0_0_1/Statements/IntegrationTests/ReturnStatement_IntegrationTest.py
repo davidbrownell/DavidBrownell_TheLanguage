@@ -22,7 +22,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,22 +38,26 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_StandAlone():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            return
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                return
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_Value():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            return value
-            return (a,b)
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                return value
+                return (a,b)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

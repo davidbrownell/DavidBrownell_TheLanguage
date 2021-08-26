@@ -22,7 +22,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -52,76 +52,86 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_NoArgs():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Int Func1():
-                pass
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Int Func1():
+                    pass
 
-            Int var Func2():
-                pass
-            """,
+                Int var Func2():
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 # ----------------------------------------------------------------------
 def test_SingleArg():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Int Func1(Bool b):
-                pass
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Int Func1(Bool b):
+                    pass
 
-            Int var Func2(Bool view b):
-                pass
-            """,
+                Int var Func2(Bool view b):
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 # ----------------------------------------------------------------------
 def test_MultipleArgs():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Int Func1(Bool b, Char c, Double d):
-                pass
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Int Func1(Bool b, Char c, Double d):
+                    pass
 
-            Int var Func2(Bool var b, Char view c, Double val d):
-                pass
-            """,
+                Int var Func2(Bool var b, Char view c, Double val d):
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 # ----------------------------------------------------------------------
 def test_MultipleStatements():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Int Func():
-                pass
-                pass
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Int Func():
+                    pass
+                    pass
 
-                pass
-            """,
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 # ----------------------------------------------------------------------
 def test_WithVisibility():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            public Int Func1():
-                pass
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                public Int Func1():
+                    pass
 
-            protected Bool Func2():
-                pass
+                protected Bool Func2():
+                    pass
 
-            private Char Func3():
-                pass
-            """,
+                private Char Func3():
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 # ----------------------------------------------------------------------
 def test_InvalidVisibilityModifier():
@@ -217,36 +227,42 @@ def test_InvalidParameterName():
 class TestTraditionalFlags(object):
     # ----------------------------------------------------------------------
     def test_Positional(self):
-        assert Execute(
-            textwrap.dedent(
-                """\
-                Int Func(Int a, Int b, /, Int c):
-                    pass
-                """,
+        CompareResultsFromFile(
+            Execute(
+                textwrap.dedent(
+                    """\
+                    Int Func(Int a, Int b, /, Int c):
+                        pass
+                    """,
+                ),
             ),
-        ) == ResultsFromFile()
+            )
 
     # ----------------------------------------------------------------------
     def test_Keyword(self):
-        assert Execute(
-            textwrap.dedent(
-                """\
-                Int Func(Int a, *, Int b, Int c):
-                    pass
-                """,
+        CompareResultsFromFile(
+            Execute(
+                textwrap.dedent(
+                    """\
+                    Int Func(Int a, *, Int b, Int c):
+                        pass
+                    """,
+                ),
             ),
-        ) == ResultsFromFile()
+            )
 
     # ----------------------------------------------------------------------
     def test_PositionalAndKeyword(self):
-        assert Execute(
-            textwrap.dedent(
-                """\
-                Int Func(Int a, /, Int b, Int c, *, Int d, Int e):
-                    pass
-                """,
+        CompareResultsFromFile(
+            Execute(
+                textwrap.dedent(
+                    """\
+                    Int Func(Int a, /, Int b, Int c, *, Int d, Int e):
+                        pass
+                    """,
+                ),
             ),
-        ) == ResultsFromFile()
+            )
 
     # ----------------------------------------------------------------------
     def test_OrderError(self):
@@ -354,98 +370,110 @@ class TestNewStyleFlags(object):
 
     # ----------------------------------------------------------------------
     def test_Positional(self):
-        assert Execute(
-            textwrap.dedent(
-                """\
-                Int Func(pos: Int a, Int b, Int c):
-                    pass
-                """,
+        CompareResultsFromFile(
+            Execute(
+                textwrap.dedent(
+                    """\
+                    Int Func(pos: Int a, Int b, Int c):
+                        pass
+                    """,
+                ),
             ),
-        ) == ResultsFromFile()
+            )
 
     # ----------------------------------------------------------------------
     def test_Any(self):
-        assert Execute(
-            textwrap.dedent(
-                """\
-                Int Func(
-                    any:
-                        Int a,
-                        Int b,
-                        Int c,
-                ):
-                    pass
-                """,
+        CompareResultsFromFile(
+            Execute(
+                textwrap.dedent(
+                    """\
+                    Int Func(
+                        any:
+                            Int a,
+                            Int b,
+                            Int c,
+                    ):
+                        pass
+                    """,
+                ),
             ),
-        ) == ResultsFromFile()
+            )
 
     # ----------------------------------------------------------------------
     def test_Keyword(self):
-        assert Execute(
-            textwrap.dedent(
-                """\
-                Int Func(
-                    key:
-                        Int a,
-                            Int b,
-                                Int c,
-                ):
-                    pass
-                """,
+        CompareResultsFromFile(
+            Execute(
+                textwrap.dedent(
+                    """\
+                    Int Func(
+                        key:
+                            Int a,
+                                Int b,
+                                    Int c,
+                    ):
+                        pass
+                    """,
+                ),
             ),
-        ) == ResultsFromFile()
+            )
 
     # ----------------------------------------------------------------------
     def test_PositionalAndKeyword(self):
-        assert Execute(
-            textwrap.dedent(
-                """\
-                Int Func(
-                    pos: Int a,
-                    key:
-                        Int b,
-                        Int c,
-                ):
-                    pass
-                """,
+        CompareResultsFromFile(
+            Execute(
+                textwrap.dedent(
+                    """\
+                    Int Func(
+                        pos: Int a,
+                        key:
+                            Int b,
+                            Int c,
+                    ):
+                        pass
+                    """,
+                ),
             ),
-        ) == ResultsFromFile()
+            )
 
     # ----------------------------------------------------------------------
     def test_KeywordAndAny(self):
-        assert Execute(
-            textwrap.dedent(
-                """\
-                Int Func(
-                    key:
-                        Int a,
-                            Int b
-                    any:
-                        Int c, Int var d
-                ):
-                    pass
-                """,
+        CompareResultsFromFile(
+            Execute(
+                textwrap.dedent(
+                    """\
+                    Int Func(
+                        key:
+                            Int a,
+                                Int b
+                        any:
+                            Int c, Int var d
+                    ):
+                        pass
+                    """,
+                ),
             ),
-        ) == ResultsFromFile()
+            )
 
     # ----------------------------------------------------------------------
     def test_All(self):
-        assert Execute(
-            textwrap.dedent(
-                """\
-                Int Func(
-                    key:
-                        Int a,
-                            Int b
-                    any:
-                        Int c, Int var d
-                    pos:
-                        Char e
-                ):
-                    pass
-                """,
+        CompareResultsFromFile(
+            Execute(
+                textwrap.dedent(
+                    """\
+                    Int Func(
+                        key:
+                            Int a,
+                                Int b
+                        any:
+                            Int c, Int var d
+                        pos:
+                            Char e
+                    ):
+                        pass
+                    """,
+                ),
             ),
-        ) == ResultsFromFile()
+            )
 
     # ----------------------------------------------------------------------
     def test_DuplicateError(self):
