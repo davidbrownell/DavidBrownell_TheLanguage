@@ -108,7 +108,7 @@ class TokenPhrase(Phrase):
     @Interface.override
     async def _ParseAsyncImpl(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,

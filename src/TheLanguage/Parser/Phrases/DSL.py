@@ -296,7 +296,7 @@ def _PopulateItem(
 
             # ----------------------------------------------------------------------
             def GetDynamicPhrases(
-                unique_id: List[str],
+                unique_id: Tuple[str, ...],
                 observer,
             ) -> Tuple[Optional[str], List[Phrase]]:
                 return observer.GetDynamicPhrases(unique_id, dynamic_phrases_value)

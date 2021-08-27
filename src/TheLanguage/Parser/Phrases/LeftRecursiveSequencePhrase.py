@@ -65,7 +65,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
     # ----------------------------------------------------------------------
     async def ParseSuffixAsync(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
@@ -88,7 +88,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
     @Interface.override
     async def _ParseAsyncImpl(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
@@ -116,7 +116,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
 
             # ----------------------------------------------------------------------
             def FilterDynamicPhrasesPartA(
-                unique_id: List[str],
+                unique_id: Tuple[str, ...],
                 name: Optional[str],
                 phrases: List[Phrase],
             ) -> Tuple[Optional[str], List[Phrase]]:
@@ -156,7 +156,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
 
             result = None
             result = await self.Phrases[0].ParseAsync(
-                unique_id + ["Sequence: {} {}".format(self.Name, part1_unique_id_suffix)],
+                unique_id + ("Sequence: {} {}".format(self.Name, part1_unique_id_suffix), ),
                 normalized_iter,
                 Phrase.ObserverDecorator(
                     self,
@@ -185,7 +185,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             if left_recursive_phrases:
                 # ----------------------------------------------------------------------
                 def FilterDynamicPhrasesPartB(
-                    unique_id: List[str],
+                    unique_id: Tuple[str, ...],
                     name: Optional[str],
                     phrases: List[Phrase],
                 ) -> Tuple[Optional[str], List[Phrase]]:
@@ -211,7 +211,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
 
                 this_result = None
                 this_result = await self.Phrases[0].ParseAsync(
-                    unique_id + ["Sequence: {} {}".format(self.Name, part2_unique_id_suffix)],
+                    unique_id + ("Sequence: {} {}".format(self.Name, part2_unique_id_suffix), ),
                     normalized_iter,
                     Phrase.ObserverDecorator(
                         self,
@@ -304,7 +304,7 @@ class _SuffixWrapper(Phrase):
     @Interface.override
     async def _ParseAsyncImpl(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,

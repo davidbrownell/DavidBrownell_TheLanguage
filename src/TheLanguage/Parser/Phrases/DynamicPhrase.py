@@ -46,7 +46,7 @@ class DynamicPhrase(Phrase):
         self,
         get_dynamic_phrases_func: Callable[
             [
-                List[str],                  # unique_id
+                Tuple[str, ...],            # unique_id
                 Phrase.Observer,
             ],
             Tuple[Optional[str], List[Phrase]],         # List of Phrases and the phase name
@@ -81,12 +81,12 @@ class DynamicPhrase(Phrase):
         # ----------------------------------------------------------------------
         def UpdateStats(
             self,
-            unique_id: List[str],
+            unique_id: Tuple[str, ...],
             normalized_iter: Phrase.NormalizedIterator,
         ):
             with self._stats_lock:
                 data = self._stats.setdefault((cast(bytes, normalized_iter.Hash), normalized_iter.Offset), {})
-                data = data.setdefault(tuple(unique_id), {})
+                data = data.setdefault(unique_id, {})
 
                 key = id(self)
 
@@ -159,7 +159,7 @@ class DynamicPhrase(Phrase):
     @Interface.override
     async def _ParseAsyncImpl(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
@@ -200,7 +200,7 @@ class DynamicPhrase(Phrase):
             )
 
             result = await or_phrase.ParseAsync(
-                unique_id + [or_phrase.Name],
+                unique_id + (or_phrase.Name, ),
                 normalized_iter,
                 Phrase.ObserverDecorator(
                     self,

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Union
+from typing import cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -124,7 +124,7 @@ class SequencePhrase(Phrase):
     async def _MatchAsync(
         self,
         phrase_offset: int,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         single_threaded: bool,
@@ -201,7 +201,7 @@ class SequencePhrase(Phrase):
 
             # Process the phrase
             result = await phrase.ParseAsync(
-                unique_id + ["Sequence: {} [{}]".format(phrase.Name, phrase_index)],
+                unique_id + ("Sequence: {} [{}]".format(phrase.Name, phrase_index), ),
                 normalized_iter.Clone(),
                 observer_decorator,
                 ignore_whitespace=ignore_whitespace_ctr != 0,
@@ -390,7 +390,7 @@ class SequencePhrase(Phrase):
     @Interface.override
     async def _ParseAsyncImpl(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,

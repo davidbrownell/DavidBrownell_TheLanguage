@@ -142,7 +142,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         # ----------------------------------------------------------------------
         Phrase: "Phrase"  # type: ignore
         Data: Optional["Phrase.ParseResultData"]
-        UniqueId: Optional[List[str]]
+        UniqueId: Optional[Tuple[str, ...]]
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
@@ -213,7 +213,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         @staticmethod
         @Interface.abstractmethod
         def GetDynamicPhrases(
-            unique_id: List[str],
+            unique_id: Tuple[str, ...],
             phrases_type: DynamicPhrasesType,
         ) -> Tuple[Optional[str], List["Phrase"]]:
             """Returns a list of dynamic phrases"""
@@ -223,7 +223,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         @staticmethod
         @Interface.abstractmethod
         def StartPhrase(
-            unique_id: List[str],
+            unique_id: Tuple[str, ...],
             phrase_stack: List["Phrase"],
         ) -> None:
             """Called before any event is generated for a particular unique_id"""
@@ -233,7 +233,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         @staticmethod
         @Interface.abstractmethod
         def EndPhrase(
-            unique_id: List[str],
+            unique_id: Tuple[str, ...],
             phrase_info_stack: List[
                 Tuple[
                     "Phrase",
@@ -309,7 +309,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # ----------------------------------------------------------------------
     async def ParseAsync(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: NormalizedIterator,
         observer: Observer,
         ignore_whitespace=False,
@@ -361,14 +361,14 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         def __init__(
             self,
             phrase: "Phrase",
-            unique_id: List[str],
+            unique_id: Tuple[str, ...],
             observer: "Phrase.Observer",
             items: List[Any],
             item_decorator_func: Callable[[Any], "Phrase.ParseResultData"],
             post_filter_dynamic_phrases_func: Optional[
                 Callable[
                     [
-                        List[str],          # unique_id
+                        Tuple[str, ...],    # unique_id
                         Optional[str],      # Unfiltered phrases name
                         List["Phrase"],     # Unfiltered dynamic phrases
                     ],
@@ -395,7 +395,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         @Interface.override
         def GetDynamicPhrases(
             self,
-            unique_id: List[str],
+            unique_id: Tuple[str, ...],
             phrases_type: DynamicPhrasesType,
         ) -> Tuple[Optional[str], List["Phrase"]]:
             name, phrases = self._observer.GetDynamicPhrases(unique_id, phrases_type)
@@ -409,7 +409,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         @Interface.override
         def StartPhrase(
             self,
-            unique_id: List[str],
+            unique_id: Tuple[str, ...],
             phrase_stack: List["Phrase"],
         ):
             return self._observer.StartPhrase(
@@ -421,7 +421,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         @Interface.override
         def EndPhrase(
             self,
-            unique_id: List[str],
+            unique_id: Tuple[str, ...],
             phrase_info_stack: List[
                 Tuple[
                     "Phrase",
@@ -556,7 +556,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     @staticmethod
     @Interface.abstractmethod
     async def _ParseAsyncImpl(
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: NormalizedIterator,
         observer: Observer,
         ignore_whitespace=False,
