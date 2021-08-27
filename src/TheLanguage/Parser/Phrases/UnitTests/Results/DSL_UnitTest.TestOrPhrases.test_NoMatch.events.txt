@@ -2,26 +2,26 @@
 1) StartPhrase, "Word Phrase", "Or: (Word Phrase, Number Phrase, Upper Phrase)"
 2) StartPhrase, "Word Token", "Word Phrase", "Or: (Word Phrase, Number Phrase, Upper Phrase)"
 3) OnInternalPhraseAsync, 0, 4
-    <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-               IsIgnored  : False
-               IterBegin  : [1, 1] (0)
-               IterEnd    : [1, 5] (4)
-               Token      : Word Token
-               Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                            Match : <_sre.SRE_Match object; span=(0, 4), match='this'>
-               Whitespace : None
-    Phrase   : Word Token
-    <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-               DataItems  : -- empty list --
-               IsComplete : False
-    Phrase   : Word Phrase
-    <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-    Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-               DataItems  : -- empty list --
-               IsComplete : False
-    Phrase   : Or: (Word Phrase, Number Phrase, Upper Phrase)
+    # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+    Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+      IsIgnored: False
+      IterBegin: "[1, 1] (0)"
+      IterEnd: "[1, 5] (4)"
+      Token: "Word Token"
+      Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+        Match: "<_sre.SRE_Match object; span=(0, 4), match='this'>"
+      Whitespace: None
+    Phrase: "Word Token"
+    # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+    Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+      DataItems: []
+      IsComplete: False
+    Phrase: "Word Phrase"
+    # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+    Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+      DataItems: []
+      IsComplete: False
+    Phrase: "Or: (Word Phrase, Number Phrase, Upper Phrase)"
 4) EndPhrase, "Word Token" [True], "Word Phrase" [None], "Or: (Word Phrase, Number Phrase, Upper Phrase)" [None]
 5) StartPhrase, "Newline+", "Word Phrase", "Or: (Word Phrase, Number Phrase, Upper Phrase)"
 6) EndPhrase, "Newline+" [False], "Word Phrase" [None], "Or: (Word Phrase, Number Phrase, Upper Phrase)" [None]

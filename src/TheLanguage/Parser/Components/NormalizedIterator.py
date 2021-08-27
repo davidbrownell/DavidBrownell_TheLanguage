@@ -84,6 +84,18 @@ class NormalizedIterator(object):
         return result
 
     # ----------------------------------------------------------------------
+    def ToCacheKey(self):
+        return (
+            self.Hash,
+            self.Offset,
+
+            # Note that Offset is not enough to determine uniqueness, as there are degrees of dedent
+            # consumption.
+            self._consumed_dedent_line,
+            self._consumed_dedent_count,
+        )
+
+    # ----------------------------------------------------------------------
     @property
     def Line(self) -> int:
         """Returns the current (1-based) line number"""

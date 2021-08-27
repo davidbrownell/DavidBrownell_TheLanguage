@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Union
+from typing import List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -63,8 +63,30 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
         )
 
     # ----------------------------------------------------------------------
+    async def ParseSuffixAsync(
+        self,
+        unique_id: List[str],
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
+        ignore_whitespace=False,
+        single_threaded=False,
+    ) -> Union[
+        Phrase.ParseResult,
+        None,
+    ]:
+        return await self._MatchAsync(
+            1,
+            unique_id,
+            normalized_iter,
+            observer,
+            single_threaded,
+            1 if ignore_whitespace else 0,
+            None,
+        )
+
+    # ----------------------------------------------------------------------
     @Interface.override
-    async def ParseAsync(
+    async def _ParseAsyncImpl(
         self,
         unique_id: List[str],
         normalized_iter: Phrase.NormalizedIterator,
@@ -81,43 +103,60 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
         with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
             original_normalized_iter = normalized_iter.Clone()
 
+            part1_unique_id_suffix = "[0 <A>]"
+            part2_unique_id_suffix = "[0 <B>]"
+
             result_data: List[Optional[Phrase.ParseResultData]] = []
 
-            # Match the first phrase. The first part of the process will attempt to match
-            # non-left-recursive phrases; the second part will use that information when
+            # Match the first phrase in the sequence. The first part of the process will attempt
+            # to match non-left-recursive phrases; the second part will use that information when
             # attempting to match left-recursive phrases other than this one.
+            unique_id_depth = len(unique_id)
             left_recursive_phrases = []
 
             # ----------------------------------------------------------------------
             def FilterDynamicPhrasesPartA(
                 unique_id: List[str],
+                name: Optional[str],
                 phrases: List[Phrase],
-            ) -> List[Phrase]:
-                assert unique_id
-                is_left_recursive = unique_id[-1].endswith("[0 <A>]")
+            ) -> Tuple[Optional[str], List[Phrase]]:
 
-                if not is_left_recursive:
-                    return phrases
+                # This filter function will be used for this left-recursive phrase and also downstream
+                # phrases; only filter the list of phrases for this phrase.
+                assert unique_id
+
+                is_this_left_recursive = (
+                    len(unique_id) == unique_id_depth + 1
+                    and unique_id[-1].endswith(part1_unique_id_suffix)
+                    and self.Name in unique_id[-1]
+                )
+
+                if not is_this_left_recursive:
+                    return name, phrases
+
+                # Split the list of phrases into those that are left-recursive and those that are not.
+                # During part A, we will return those phrases that are not left-recursive and save
+                # those that are for part B.
+                assert not left_recursive_phrases
 
                 standard_phrases = []
 
                 for phrase in phrases:
-                    if phrase == self:
-                        continue
-
                     if isinstance(phrase, LeftRecursiveSequencePhrase):
+                        if phrase == self:
+                            continue
+
                         left_recursive_phrases.append(phrase)
                     else:
                         standard_phrases.append(phrase)
 
-                assert standard_phrases
-                return standard_phrases
+                return name, standard_phrases
 
             # ----------------------------------------------------------------------
 
             result = None
             result = await self.Phrases[0].ParseAsync(
-                unique_id + ["Sequence: {} [0 <A>]".format(self.Name)],
+                unique_id + ["Sequence: {} {}".format(self.Name, part1_unique_id_suffix)],
                 normalized_iter,
                 Phrase.ObserverDecorator(
                     self,
@@ -147,17 +186,32 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
                 # ----------------------------------------------------------------------
                 def FilterDynamicPhrasesPartB(
                     unique_id: List[str],
+                    name: Optional[str],
                     phrases: List[Phrase],
-                ) -> List[Phrase]:
-                    # Note that the cast isn't correct here, but we are providing something
-                    # that looks like a Phrase to the DynamicPhrase instance.
-                    return [cast(Phrase, _PrefixWrapper(phrase)) for phrase in left_recursive_phrases]
+                ) -> Tuple[Optional[str], List[Phrase]]:
+
+                    # This filter function will be used for this left-recursive phrase and also downstream
+                    # phrases; only filter the list of phrases for this phrase.
+                    assert unique_id
+
+                    # Make sure that we are processing this phrase and not downstream phrases
+                    is_this_left_recursive = (
+                        len(unique_id) == unique_id_depth + 1
+                        and unique_id[-1].endswith(part2_unique_id_suffix)
+                        and self.Name in unique_id[-1]
+                    )
+
+                    if not is_this_left_recursive:
+                        return name, phrases
+
+                    # Return the left-recursive phrases captured in part A.
+                    return "_SuffixWrappers", [_SuffixWrapper(phrase) for phrase in left_recursive_phrases]
 
                 # ----------------------------------------------------------------------
 
                 this_result = None
                 this_result = await self.Phrases[0].ParseAsync(
-                    unique_id + ["Sequence: {} [0 <B>]".format(self.Name)],
+                    unique_id + ["Sequence: {} {}".format(self.Name, part2_unique_id_suffix)],
                     normalized_iter,
                     Phrase.ObserverDecorator(
                         self,
@@ -202,6 +256,7 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             result_data += result.Data.Data.DataItems
 
             # Commit the results
+            # <Too many arguments> pylint: disable=E1121
             data = Phrase.StandardParseResultData(
                 self,
                 Phrase.MultipleStandardParseResultData(result_data, True),
@@ -218,47 +273,36 @@ class LeftRecursiveSequencePhrase(SequencePhrase):
             ):
                 return None
 
+            # <Too many arguments> pylint: disable=E1121
             return Phrase.ParseResult(success, original_normalized_iter, normalized_iter, data)
 
-    # ----------------------------------------------------------------------
-    async def ParseSuffixAsync(
-        self,
-        unique_id: List[str],
-        normalized_iter: Phrase.NormalizedIterator,
-        observer: Phrase.Observer,
-        ignore_whitespace=False,
-        single_threaded=False,
-    ) -> Union[
-        Phrase.ParseResult,
-        None,
-    ]:
-        return await self._MatchAsync(
-            1,
-            unique_id,
-            normalized_iter,
-            observer,
-            single_threaded,
-            1 if ignore_whitespace else 0,
-            None,
-        )
-
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-class _PrefixWrapper(Phrase):
+class _SuffixWrapper(Phrase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         phrase: LeftRecursiveSequencePhrase,
     ):
-        super(_PrefixWrapper, self).__init__("_PrefixWrapper")
+        super(_SuffixWrapper, self).__init__("_SuffixWrapper ({})".format(phrase.Name))
 
         self._phrase                    = phrase
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    async def ParseAsync(
+    def _PopulateRecursiveImpl(
+        self,
+        new_phrase: Phrase,
+    ) -> bool:
+        raise Exception("This should never be called, as this object should never be instantiated as part of a Phrase hierarchy")
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def _ParseAsyncImpl(
         self,
         unique_id: List[str],
         normalized_iter: Phrase.NormalizedIterator,
@@ -273,13 +317,3 @@ class _PrefixWrapper(Phrase):
             ignore_whitespace=ignore_whitespace,
             single_threaded=single_threaded,
         )
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        raise Exception("This should never be called, as this object should never be instantiated as part of a Phrase hierarchy")

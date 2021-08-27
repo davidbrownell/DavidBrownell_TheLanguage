@@ -20,9 +20,10 @@ import re
 import textwrap
 
 import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -96,8 +97,8 @@ class TestSimple(object):
             single_threaded=True,
         )
 
-        assert str(result) == ResultsFromFile(".results")
-        assert MethodCallsToString(parse_mock) == ResultsFromFile(".events")
+        CompareResultsFromFile(str(result), suffix=".results")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -116,7 +117,7 @@ class TestSimple(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 15
 
     # ----------------------------------------------------------------------
@@ -176,7 +177,7 @@ class TestIndentation(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
 
 
 # ----------------------------------------------------------------------
@@ -206,7 +207,7 @@ class TestNewPhrases(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -232,7 +233,7 @@ class TestNewPhrases(object):
         assert ex.Line == 1
         assert ex.Column == 4
 
-        assert ex.ToDebugString() == ResultsFromFile()
+        CompareResultsFromFile(ex.ToDebugString())
 
 
 # ----------------------------------------------------------------------
@@ -267,7 +268,7 @@ class TestNewScopedPhrases(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -300,7 +301,7 @@ class TestNewScopedPhrases(object):
         assert ex.Line == 4
         assert ex.Column == 1
 
-        assert ex.ToDebugString() == ResultsFromFile()
+        CompareResultsFromFile(ex.ToDebugString())
 
 
 # ----------------------------------------------------------------------
@@ -351,7 +352,7 @@ class TestNewScopedPhrasesComplex(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
 
 
 # ----------------------------------------------------------------------
@@ -379,7 +380,7 @@ class TestEmbeddedPhrases(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
 
 
 # ----------------------------------------------------------------------
@@ -412,7 +413,7 @@ class TestVariedLengthMatches(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
 
 
 # ----------------------------------------------------------------------
@@ -443,7 +444,7 @@ async def test_EmptyDynamicPhrasesInfo(parse_mock):
         parse_mock,
     )
 
-    assert str(result) == ResultsFromFile()
+    CompareResultsFromFile(str(result))
 
 
 # ----------------------------------------------------------------------
@@ -490,7 +491,7 @@ class TestPreventParentTraversal(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -531,8 +532,7 @@ class TestPreventParentTraversal(object):
         assert ex.Line == 6
         assert ex.Column == 1
 
-        assert ex.ToDebugString() == ResultsFromFile()
-
+        CompareResultsFromFile(ex.ToDebugString())
 
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio
@@ -605,7 +605,7 @@ async def test_DynamicExpressions(parse_mock):
         parse_mock,
     )
 
-    assert str(result) == ResultsFromFile()
+    CompareResultsFromFile(str(result))
 
 
 # ----------------------------------------------------------------------
@@ -728,7 +728,7 @@ class TestCatastrophicInclude(object):
             this_parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert this_parse_mock.method_calls == []
 
     # ----------------------------------------------------------------------
@@ -751,7 +751,7 @@ class TestCatastrophicInclude(object):
             this_parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert this_parse_mock.method_calls == []
 
     # ----------------------------------------------------------------------
@@ -772,7 +772,7 @@ class TestCatastrophicInclude(object):
             this_parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert this_parse_mock.method_calls == []
 
     # ----------------------------------------------------------------------
@@ -796,5 +796,5 @@ class TestCatastrophicInclude(object):
             this_parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert this_parse_mock.method_calls == []

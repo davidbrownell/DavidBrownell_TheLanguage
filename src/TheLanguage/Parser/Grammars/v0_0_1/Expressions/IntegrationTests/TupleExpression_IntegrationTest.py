@@ -18,8 +18,11 @@
 import os
 import textwrap
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,38 +38,42 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_SingleExpression():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            var1 = (a,)
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                var1 = (a,)
 
-            var2 = ( # Comment 0
-                # Comment 1
-                a # Comment 2
-                , # Comment 3
-                # Comment 4
-            )
-            """,
+                var2 = ( # Comment 0
+                    # Comment 1
+                    a # Comment 2
+                    , # Comment 3
+                    # Comment 4
+                )
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 # ----------------------------------------------------------------------
 def test_MultipleExpressions():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            val1 = (a, b)
-            val2 = (c, d, )
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                val1 = (a, b)
+                val2 = (c, d, )
 
-            val3 = (e, f, g, h)
-            val4 = (i, j, k, l, )
+                val3 = (e, f, g, h)
+                val4 = (i, j, k, l, )
 
-            val5 = (m, n,
-                o, p,
-                    q,
-            r,)
+                val5 = (m, n,
+                    o, p,
+                        q,
+                r,)
 
-            val6 = ((x, y), z)
-            """,
+                val6 = ((x, y), z)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

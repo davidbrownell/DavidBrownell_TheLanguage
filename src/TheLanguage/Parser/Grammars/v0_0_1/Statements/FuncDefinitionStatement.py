@@ -24,6 +24,7 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -83,7 +84,7 @@ class FuncDefinitionStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
-    class NodeInfo(CommonEnvironment.ObjectReprImplBase):
+    class NodeInfo(YamlRepr.ObjectReprImplBase):
         Visibility: VisibilityModifier
         ReturnType: Union[Leaf, Node]
         Name: str
@@ -92,9 +93,8 @@ class FuncDefinitionStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            CommonEnvironment.ObjectReprImplBase.__init__(
+            YamlRepr.ObjectReprImplBase.__init__(
                 self,
-                include_class_info=False,
                 ReturnType=lambda node: node.Type.Name,
                 Statements=lambda statements: [statement.Type.Name for statement in statements],
             )
@@ -184,6 +184,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         object.__setattr__(
             node,
             "Info",
+            # <Too many arguments> pylint: disable=E1121
             cls.NodeInfo(
                 visibility,
                 return_type,

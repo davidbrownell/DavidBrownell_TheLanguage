@@ -119,7 +119,7 @@ def MethodCallsToString(
                     method_call[1][0].Name,
                     method_call[1][2].Offset,
                     method_call[1][3].Offset,
-                    StringHelpers.LeftJustify(method_call[1][1].ToString(), 4),
+                    StringHelpers.LeftJustify(method_call[1][1].ToYamlString(), 4),
                 ).rstrip(),
             )
 
@@ -147,7 +147,7 @@ def MethodCallsToString(
                     index,
                     method_call[0][1].Offset,
                     method_call[0][2].Offset,
-                    StringHelpers.LeftJustify(method_call[0][0].ToString(), 4),
+                    StringHelpers.LeftJustify(method_call[0][0].ToYamlString(), 4),
                 ).rstrip(),
             )
 
@@ -164,7 +164,7 @@ def MethodCallsToString(
                     method_call[1][1].Offset,
                     method_call[1][2].Offset,
                     StringHelpers.LeftJustify(
-                        "\n".join([data_item.ToString().rstrip() for data_item in method_call[1][0]]),
+                        "\n".join([data_item.ToYamlString().rstrip() for data_item in method_call[1][0]]),
                         4,
                     ),
                 ).rstrip(),

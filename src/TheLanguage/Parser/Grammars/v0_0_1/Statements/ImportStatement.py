@@ -27,6 +27,7 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -96,7 +97,7 @@ class ImportStatement(ImportGrammarStatement):
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
-    class NodeInfo(CommonEnvironment.ObjectReprImplBase):
+    class NodeInfo(YamlRepr.ObjectReprImplBase):
         ImportType: "ImportStatement.ImportType"
         SourceFilename: str
         ImportItems: Dict[str, str]
@@ -108,9 +109,8 @@ class ImportStatement(ImportGrammarStatement):
             assert self.ImportItems
             assert self.ImportItems
 
-            CommonEnvironment.ObjectReprImplBase.__init__(
+            YamlRepr.ObjectReprImplBase.__init__(
                 self,
-                include_class_info=False,
                 ImportItemsLookup=None,
             )
 
@@ -258,8 +258,8 @@ class ImportStatement(ImportGrammarStatement):
                     source_leaf = raw_leaf_lookup[id(raw_source)]
 
                     raise InvalidRelativePathError(
-                        source_leaf.IterBegin_.Line,
-                        source_leaf.IterBegin_.Column,
+                        source_leaf.IterBegin.Line,
+                        source_leaf.IterBegin.Column,
                         raw_source,
                         working_dir,
                         source_leaf.IterEnd.Line,

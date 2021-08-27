@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit tst for PhraseDSL.py"""
+"""Unit test for PhraseDSL.py"""
 
 import os
 import textwrap
 
 import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -79,7 +80,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)", "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (8)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 12
 
@@ -94,7 +95,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)", "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (13)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 12
 
@@ -109,7 +110,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (8)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 12
 
@@ -124,7 +125,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (9)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 12
 
@@ -139,7 +140,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (9)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 12
 
@@ -154,7 +155,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (12)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 12
 
@@ -169,7 +170,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (9)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 12
 
@@ -185,7 +186,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (12)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 12
 
@@ -209,7 +210,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (8)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile(".line1")
+        CompareResultsFromFile(str(result), suffix=".line1")
         assert len(parse_mock.method_calls) == 12
 
         iter = result.IterEnd
@@ -219,7 +220,7 @@ class TestParseSimple(object):
         assert str(iter) == "[2, 1] (8)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[3, 1] (19)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile(".line2")
+        CompareResultsFromFile(str(result), suffix=".line2")
         assert len(parse_mock.method_calls) == 24
         assert result.IterEnd.AtEnd()
 
@@ -235,7 +236,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[5, 1] (17)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 12
 
@@ -251,7 +252,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[1, 8] (7)", "The result iterator should be modified"
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 10
 
 
@@ -290,8 +291,8 @@ class TestParseIndentAndDedent(object):
         )
 
         assert result.IterEnd.AtEnd()
-        assert str(result) == ResultsFromFile(".results")
-        assert MethodCallsToString(parse_mock) == ResultsFromFile(".events")
+        CompareResultsFromFile(str(result), suffix=".results")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -310,7 +311,7 @@ class TestParseIndentAndDedent(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 19
 
     # ----------------------------------------------------------------------
@@ -328,7 +329,7 @@ class TestParseIndentAndDedent(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 10
 
 
@@ -375,7 +376,7 @@ class TestIgnoreWhitespace(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 30
 
@@ -409,15 +410,15 @@ class TestEmbeddedPhrases(object):
             single_threaded=True,
         )
 
-        assert str(result) == ResultsFromFile(".results")
-        assert MethodCallsToString(parse_mock) == ResultsFromFile(".events")
+        CompareResultsFromFile(str(result), suffix=".results")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatchAllInner(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("( one two"), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 16
 
     # ----------------------------------------------------------------------
@@ -425,7 +426,7 @@ class TestEmbeddedPhrases(object):
     async def test_NoMatchPartialInner(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("( one"), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
@@ -433,7 +434,7 @@ class TestEmbeddedPhrases(object):
     async def test_NoMatchFirstOnly(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("( "), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 9
 
 
@@ -491,9 +492,9 @@ class TestDynamicPhrases(object):
             single_threaded=True,
         )
 
-        assert str(result) == ResultsFromFile(".results")
+        CompareResultsFromFile(str(result), suffix=".results")
         assert result.IterEnd.AtEnd()
-        assert MethodCallsToString(modified_parse_mock) == ResultsFromFile(".events")
+        CompareResultsFromFile(MethodCallsToString(modified_parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -512,7 +513,7 @@ class TestDynamicPhrases(object):
             modified_parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(modified_parse_mock.method_calls) == 54
 
 
@@ -555,7 +556,7 @@ class TestOrPhrases(object):
     async def test_WordMatch(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 20
 
@@ -564,7 +565,7 @@ class TestOrPhrases(object):
     async def test_NumberMatch(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("1234"), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 20
 
@@ -573,7 +574,7 @@ class TestOrPhrases(object):
     async def test_UpperMatch(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("WORD"), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 20
 
@@ -587,8 +588,8 @@ class TestOrPhrases(object):
             single_threaded=True,
         )
 
-        assert str(result) == ResultsFromFile(".results")
-        assert MethodCallsToString(parse_mock) == ResultsFromFile(".events")
+        CompareResultsFromFile(str(result), suffix=".results")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -600,7 +601,7 @@ class TestOrPhrases(object):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
 
         assert result is None
-        assert len(parse_mock.method_calls) == 18
+        assert len(parse_mock.method_calls) == 10
 
 
 # ----------------------------------------------------------------------
@@ -628,17 +629,17 @@ class TestEmbeddedOrPhrases(object):
 
         # Line 1
         result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
-        assert str(result) == ResultsFromFile(".line1")
+        CompareResultsFromFile(str(result), suffix=".line1")
         iter = result.IterEnd
 
         # Line 2
         result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
-        assert str(result) == ResultsFromFile(".line2")
+        CompareResultsFromFile(str(result), suffix=".line2")
         iter = result.IterEnd
 
         # Line 3
         result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
-        assert str(result) == ResultsFromFile(".line3")
+        CompareResultsFromFile(str(result), suffix=".line3")
         iter = result.IterEnd
 
         # Done
@@ -678,7 +679,7 @@ class TestRepeatPhrases(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 95
 
@@ -702,7 +703,7 @@ class TestRepeatPhrases(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 77
 
@@ -726,7 +727,7 @@ class TestRepeatPhrases(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
         assert len(parse_mock.method_calls) == 81
 
@@ -750,9 +751,9 @@ class TestRepeatPhrases(object):
             single_threaded=True,
         )
 
-        assert str(result) == ResultsFromFile(".results")
+        CompareResultsFromFile(str(result), suffix=".results")
         assert result.IterEnd.AtEnd()
-        assert MethodCallsToString(parse_mock) == ResultsFromFile(".events")
+        CompareResultsFromFile(MethodCallsToString(parse_mock), suffix=".events", file_ext=".txt")
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -774,7 +775,7 @@ class TestRepeatPhrases(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 33
 
     # ----------------------------------------------------------------------
@@ -795,7 +796,7 @@ class TestRepeatPhrases(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 52
 
     # ----------------------------------------------------------------------
@@ -849,7 +850,7 @@ class TestRepeatSimilarPhrases(object):
     async def test_LargeMatch(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("word 123"), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
 
     # ----------------------------------------------------------------------
@@ -857,7 +858,7 @@ class TestRepeatSimilarPhrases(object):
     async def test_SmallMatch(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
 
 
@@ -908,7 +909,7 @@ class TestNamedPhrases(object):
             modified_parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
 
     # ----------------------------------------------------------------------
@@ -928,7 +929,7 @@ class TestNamedPhrases(object):
             modified_parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
 
 
 # ----------------------------------------------------------------------
@@ -984,7 +985,7 @@ class TestComments(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
 
     # ----------------------------------------------------------------------
@@ -1011,23 +1012,23 @@ class TestComments(object):
 
         # 1-3
         result = await self._indent_phrase.ParseAsync(["root"], iterator, parse_mock)
-        assert str(result) == ResultsFromFile(".section1")
+        CompareResultsFromFile(str(result), suffix=".section1")
         iterator = result.IterEnd
 
         # 4-6
         result = await self._indent_phrase.ParseAsync(["root"], iterator, parse_mock)
-        assert str(result) == ResultsFromFile(".section2")
+        CompareResultsFromFile(str(result), suffix=".section2")
         iterator = result.IterEnd
 
         # 7-9
         result = await self._indent_phrase.ParseAsync(["root"], iterator, parse_mock)
-        assert str(result) == ResultsFromFile(".section3")
+        CompareResultsFromFile(str(result), suffix=".section3")
 
         iterator = result.IterEnd
 
         # 10-12
         result = await self._indent_phrase.ParseAsync(["root"], iterator, parse_mock)
-        assert str(result) == ResultsFromFile(".section4")
+        CompareResultsFromFile(str(result), suffix=".section4")
         iterator = result.IterEnd
 
         assert result.IterEnd.AtEnd()
@@ -1055,7 +1056,7 @@ class TestComments(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
 
 
@@ -1075,7 +1076,7 @@ class TestRecursiveOrPhrases(object):
     async def test_NoRecursion(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("( hello )"), parse_mock)
 
-        assert ResultsFromFile()
+        CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
 
     # ----------------------------------------------------------------------
@@ -1083,7 +1084,7 @@ class TestRecursiveOrPhrases(object):
     async def test_SingleRecursion(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("((hello))"), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
 
     # ----------------------------------------------------------------------
@@ -1091,7 +1092,7 @@ class TestRecursiveOrPhrases(object):
     async def test_DoubleRecursion(self, parse_mock):
         result = await self._phrase.ParseAsync(["root"], CreateIterator("( ( ( hello)))"), parse_mock)
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
 
 
@@ -1126,7 +1127,7 @@ class TestRecursiveRepeatPhrase(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
 
 
@@ -1168,7 +1169,7 @@ class TestRecursiveSequencePhrase(object):
             parse_mock,
         )
 
-        assert str(result) == ResultsFromFile()
+        CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
 
 
@@ -1203,7 +1204,7 @@ async def test_IgnoreWhitespace(parse_mock):
         parse_mock,
     )
 
-    assert str(result) == ResultsFromFile()
+    CompareResultsFromFile(str(result))
     assert result.IterEnd.AtEnd()
 
 
@@ -1247,7 +1248,7 @@ async def test_IgnoreWhitespaceNestedPhrase(parse_mock):
         parse_mock,
     )
 
-    assert str(result) == ResultsFromFile()
+    CompareResultsFromFile(str(result))
     assert result.IterEnd.AtEnd()
 
 
@@ -1297,7 +1298,7 @@ async def test_IgnoreWhitespaceNestedPhraseWithDedents(parse_mock):
         parse_mock,
     )
 
-    assert str(result) == ResultsFromFile()
+    CompareResultsFromFile(str(result))
     assert result.IterEnd.AtEnd()
 
 
@@ -1342,7 +1343,7 @@ async def test_IgnoreWhitespaceNestedPhraseEndWithDedents(parse_mock):
         parse_mock,
     )
 
-    assert str(result) == ResultsFromFile()
+    CompareResultsFromFile(str(result))
     assert result.IterEnd.AtEnd()
 
 
@@ -1356,5 +1357,5 @@ async def test_NestedPhrase(parse_mock):
 
     result = await phrase.ParseAsync(["root"], CreateIterator("test"), parse_mock)
 
-    assert str(result) == ResultsFromFile()
+    CompareResultsFromFile(str(result))
     # assert result.IterEnd.AtEnd()
