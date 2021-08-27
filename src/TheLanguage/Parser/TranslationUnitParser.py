@@ -404,6 +404,10 @@ class _ScopeTracker(object):
         dynamic_phrases_type: DynamicPhrasesType,
     ) -> Tuple[Optional[str], List[Phrase]]:
 
+        # BugBug: Cache this value
+        # BugBug: Add uber left-recursive container that executes all of the left-recursive phrases
+        #         within that category.
+
         if dynamic_phrases_type == DynamicPhrasesType.Expressions:
             attribute_name = "Expressions"
         elif dynamic_phrases_type == DynamicPhrasesType.Names:
