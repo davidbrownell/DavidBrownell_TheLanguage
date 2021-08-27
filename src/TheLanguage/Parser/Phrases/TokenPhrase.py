@@ -64,72 +64,6 @@ class TokenPhrase(Phrase):
         self.Token                          = token
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    async def ParseAsync(
-        self,
-        unique_id: List[str],
-        normalized_iter: Phrase.NormalizedIterator,
-        observer: Phrase.Observer,
-        ignore_whitespace=False,
-        single_threaded=False,
-    ) -> Union[
-        Phrase.ParseResult,
-        None,
-    ]:
-        data: Optional[Phrase.StandardParseResultData] = None
-
-        observer.StartPhrase(unique_id, [self])
-        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, data is not None)])):
-            # We only want to consume whitespace if there is a match that follows; collect
-            # it for now, but do not commit that collection to the input iterator.
-            potential_iter = normalized_iter.Clone()
-            potential_whitespace = self.ExtractWhitespace(potential_iter)
-            potential_iter_begin = potential_iter.Clone()
-
-            result = self.Token.Match(potential_iter)
-            if result is None:
-                return Phrase.ParseResult(
-                    False,
-                    normalized_iter,
-                    normalized_iter,
-                    Phrase.StandardParseResultData(self, None, None),
-                )
-
-            data = Phrase.StandardParseResultData(
-                self,
-                Phrase.TokenParseResultData(
-                    self.Token,
-                    potential_whitespace,
-                    result,
-                    potential_iter_begin,
-                    potential_iter,
-                    IsIgnored=self.Token.IsAlwaysIgnored,
-                ),
-                unique_id,
-            )
-
-            if isinstance(self.Token, IndentToken):
-                await observer.OnIndentAsync(
-                    [data],
-                    potential_iter_begin,
-                    potential_iter,
-                )
-            elif isinstance(self.Token, DedentToken):
-                await observer.OnDedentAsync(
-                    [data],
-                    potential_iter_begin,
-                    potential_iter,
-                )
-            elif not await observer.OnInternalPhraseAsync(
-                [data],
-                potential_iter_begin,
-                potential_iter,
-            ):
-                return None
-
-            return Phrase.ParseResult(True, normalized_iter.Clone(), potential_iter, data)
-
-    # ----------------------------------------------------------------------
     @staticmethod
     def ExtractWhitespace(
         normalized_iter: Phrase.NormalizedIterator,
@@ -169,3 +103,74 @@ class TokenPhrase(Phrase):
     ) -> bool:
         # Nothing to do here
         return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def _ParseAsyncImpl(
+        self,
+        unique_id: List[str],
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
+        ignore_whitespace=False,
+        single_threaded=False,
+    ) -> Union[
+        Phrase.ParseResult,
+        None,
+    ]:
+        data: Optional[Phrase.StandardParseResultData] = None
+
+        observer.StartPhrase(unique_id, [self])
+        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, data is not None)])):
+            # We only want to consume whitespace if there is a match that follows; collect
+            # it for now, but do not commit that collection to the input iterator.
+            potential_iter = normalized_iter.Clone()
+            potential_whitespace = self.ExtractWhitespace(potential_iter)
+            potential_iter_begin = potential_iter.Clone()
+
+            result = self.Token.Match(potential_iter)
+            if result is None:
+                # <Too many arguments> pylint: disable=E1121
+                return Phrase.ParseResult(
+                    False,
+                    normalized_iter,
+                    normalized_iter,
+                    # <Too many arguments> pylint: disable=E1121
+                    Phrase.StandardParseResultData(self, None, None),
+                )
+
+            # <Too many arguments> pylint: disable=E1121
+            data = Phrase.StandardParseResultData(
+                self,
+                # <Too many arguments> pylint: disable=E1121
+                Phrase.TokenParseResultData(
+                    self.Token,
+                    potential_whitespace,
+                    result,
+                    potential_iter_begin,
+                    potential_iter,
+                    IsIgnored=self.Token.IsAlwaysIgnored,
+                ),
+                unique_id,
+            )
+
+            if isinstance(self.Token, IndentToken):
+                await observer.OnIndentAsync(
+                    [data],
+                    potential_iter_begin,
+                    potential_iter,
+                )
+            elif isinstance(self.Token, DedentToken):
+                await observer.OnDedentAsync(
+                    [data],
+                    potential_iter_begin,
+                    potential_iter,
+                )
+            elif not await observer.OnInternalPhraseAsync(
+                [data],
+                potential_iter_begin,
+                potential_iter,
+            ):
+                return None
+
+            # <Too many arguments> pylint: disable=E1121
+            return Phrase.ParseResult(True, normalized_iter.Clone(), potential_iter, data)

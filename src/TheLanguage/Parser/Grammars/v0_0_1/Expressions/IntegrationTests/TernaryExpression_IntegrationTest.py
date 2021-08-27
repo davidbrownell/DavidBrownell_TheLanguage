@@ -18,8 +18,11 @@
 import os
 import textwrap
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,11 +38,13 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            value1 = TrueFunc() if Condition1() else FalseFunc()
-            value2 = (a, b, c) if Condition2() else (d,)
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                value1 = TrueFunc() if Condition1() else FalseFunc()
+                value2 = (a, b, c) if Condition2() else (d,)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

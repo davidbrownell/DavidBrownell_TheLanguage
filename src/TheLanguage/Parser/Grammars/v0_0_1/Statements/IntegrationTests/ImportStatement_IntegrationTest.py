@@ -19,9 +19,10 @@ import os
 import textwrap
 
 import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,7 +36,6 @@ with InitRelativeImports():
     from ...Common.AutomatedTests import PatchAndExecute
 
 
-# ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 class TestStandard(object):
     # In _script_dir
@@ -91,15 +91,18 @@ class TestStandard(object):
         assert len(result) == len(content)
         result = result[self._filename]
 
-        assert str(result) \
-            .replace(
-                self._root2,
-                "<generic_root>",
-            ) \
-            .replace(
-                os.path.sep,
-                "/",
-            ) == ResultsFromFile()
+        CompareResultsFromFile(
+            str(result) \
+                .replace(
+                    self._root2,
+                    "<generic_root>",
+                ) \
+                .replace(
+                    os.path.sep,
+                    "/",
+                ),
+
+        )
 
     # ----------------------------------------------------------------------
     def test_SingleRelativeFilename(self):
@@ -134,15 +137,18 @@ class TestStandard(object):
         assert len(result) == len(content)
         result = result[self._filename]
 
-        assert str(result) \
-            .replace(
-                self._root2,
-                "<generic_root>",
-            ) \
-            .replace(
-                os.path.sep,
-                "/",
-            ) == ResultsFromFile()
+        CompareResultsFromFile(
+            str(result) \
+                .replace(
+                    self._root2,
+                    "<generic_root>",
+                ) \
+                .replace(
+                    os.path.sep,
+                    "/",
+                ),
+
+        )
 
     # ----------------------------------------------------------------------
     def test_SingleAbsoluteFilename(self):
@@ -181,15 +187,18 @@ class TestStandard(object):
         assert len(result) == len(content)
         result = result[self._filename]
 
-        assert str(result) \
-            .replace(
-                self._root2,
-                "<generic_root>",
-            ) \
-            .replace(
-                os.path.sep,
-                "/",
-            ) == ResultsFromFile()
+        CompareResultsFromFile(
+            str(result) \
+                .replace(
+                    self._root2,
+                    "<generic_root>",
+                ) \
+                .replace(
+                    os.path.sep,
+                    "/",
+                ),
+
+        )
 
     # ----------------------------------------------------------------------
     def test_MultipleSingleLine(self):
@@ -211,15 +220,18 @@ class TestStandard(object):
         assert len(result) == len(content)
         result = result[self._filename]
 
-        assert str(result) \
-            .replace(
-                self._root2,
-                "<generic_root>",
-            ) \
-            .replace(
-                os.path.sep,
-                "/",
-            ) == ResultsFromFile()
+        CompareResultsFromFile(
+            str(result) \
+                .replace(
+                    self._root2,
+                    "<generic_root>",
+                ) \
+                .replace(
+                    os.path.sep,
+                    "/",
+                ),
+
+        )
 
     # ----------------------------------------------------------------------
     def test_Grouping(self):
@@ -251,15 +263,18 @@ class TestStandard(object):
         assert len(result) == len(content)
         result = result[self._filename]
 
-        assert str(result) \
-            .replace(
-                self._root2,
-                "<generic_root>",
-            ) \
-            .replace(
-                os.path.sep,
-                "/",
-            ) == ResultsFromFile()
+        CompareResultsFromFile(
+            str(result) \
+                .replace(
+                    self._root2,
+                    "<generic_root>",
+                ) \
+                .replace(
+                    os.path.sep,
+                    "/",
+                ),
+
+        )
 
     # ----------------------------------------------------------------------
     def test_TrailingCommas(self):
@@ -293,15 +308,18 @@ class TestStandard(object):
         assert len(result) == len(content)
         result = result[self._filename]
 
-        assert str(result) \
-            .replace(
-                self._root2,
-                "<generic_root>",
-            ) \
-            .replace(
-                os.path.sep,
-                "/",
-            ) == ResultsFromFile()
+        CompareResultsFromFile(
+            str(result) \
+                .replace(
+                    self._root2,
+                    "<generic_root>",
+                ) \
+                .replace(
+                    os.path.sep,
+                    "/",
+                ),
+
+        )
 
     # ----------------------------------------------------------------------
     def test_RelativePathError(self):

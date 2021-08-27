@@ -44,15 +44,6 @@ class RecursivePlaceholderPhrase(Phrase):
         super(RecursivePlaceholderPhrase, self).__init__("Recursive")
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    async def ParseAsync(
-        self,
-        *args,  # <unused argument> pylint: disable=W0613
-        **kwargs,  # <unused argument> pylint: disable=W0613
-    ):  # <parameters differ from overridden> pylint: disable=W0221
-        raise Exception("'ParseAsync' should never be called on a RecursivePlaceholderPhrase instance")
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -61,3 +52,12 @@ class RecursivePlaceholderPhrase(Phrase):
         new_phrase: Phrase,
     )  -> bool:
         raise Exception("'_PopulateRecursiveImpl' should never be called on a RecursivePlaceholderPhrase instance")
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def _ParseAsyncImpl(
+        self,
+        *args,  # <unused argument> pylint: disable=W0613
+        **kwargs,  # <unused argument> pylint: disable=W0613
+    ):  # <parameters differ from overridden> pylint: disable=W0221
+        raise Exception("'ParseAsync' should never be called on a RecursivePlaceholderPhrase instance")

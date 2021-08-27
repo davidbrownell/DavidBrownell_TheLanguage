@@ -69,8 +69,29 @@ class RepeatPhrase(Phrase):
         self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    async def ParseAsync(
+    def _PopulateRecursiveImpl(
+        self,
+        new_phrase: Phrase,
+    ) -> bool:
+        replaced_phrase = False
+
+        if isinstance(self.Phrase, RecursivePlaceholderPhrase):
+            self.Phrase = new_phrase
+            replaced_phrase = True
+        else:
+            replaced_phrase = self.Phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
+
+        if replaced_phrase and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)
+
+        return replaced_phrase
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def _ParseAsyncImpl(
         self,
         unique_id: List[str],
         normalized_iter: Phrase.NormalizedIterator,
@@ -122,8 +143,10 @@ class RepeatPhrase(Phrase):
                 assert self.MaxMatches is None or len(results) <= self.MaxMatches
                 success = True
 
+                # <Too many arguments> pylint: disable=E1121
                 data = Phrase.StandardParseResultData(
                     self,
+                    # <Too many arguments> pylint: disable=E1121
                     Phrase.MultipleStandardParseResultData(
                         results,
                         True,
@@ -138,6 +161,7 @@ class RepeatPhrase(Phrase):
                 ):
                     return None
 
+                # <Too many arguments> pylint: disable=E1121
                 return Phrase.ParseResult(True, original_normalized_iter, normalized_iter, data)
 
             success = False
@@ -149,37 +173,19 @@ class RepeatPhrase(Phrase):
             else:
                 end_iter = normalized_iter
 
+            # <Too many arguments> pylint: disable=E1121
             return Phrase.ParseResult(
                 False,
                 original_normalized_iter,
                 end_iter,
+                # <Too many arguments> pylint: disable=E1121
                 Phrase.StandardParseResultData(
                     self,
+                    # <Too many arguments> pylint: disable=E1121
                     Phrase.MultipleStandardParseResultData(results, True),
                     unique_id,
                 ),
             )
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        replaced_phrase = False
-
-        if isinstance(self.Phrase, RecursivePlaceholderPhrase):
-            self.Phrase = new_phrase
-            replaced_phrase = True
-        else:
-            replaced_phrase = self.Phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
-
-        if replaced_phrase and self._name_is_default:
-            self.Name = self._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)
-
-        return replaced_phrase
 
     # ----------------------------------------------------------------------
     @staticmethod

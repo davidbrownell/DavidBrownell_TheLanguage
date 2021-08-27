@@ -18,8 +18,11 @@
 import os
 import textwrap
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,25 +38,29 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Single():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            (a,) = value1
-            (b,) = value2
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                (a,) = value1
+                (b,) = value2
 
-            ( # Comment 1
-              b # Comment 2
-            ,) = value3
-            """,
+                ( # Comment 1
+                  b # Comment 2
+                ,) = value3
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 # ----------------------------------------------------------------------
 def test_Multiple():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            (a, (b, c), d,) = value
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                (a, (b, c), d,) = value
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

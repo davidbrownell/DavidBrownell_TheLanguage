@@ -23,8 +23,11 @@ from io import StringIO
 from typing import cast, Dict, List, Optional, Tuple, Union
 from unittest.mock import patch
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -152,6 +155,7 @@ def ExecuteEx(
         ["filename"],
         [],
         flag=PatchAndExecuteFlag.Validate,
+        # TODO: We are using too many threads in the pool when not single threaded
         max_num_threads=1,
     )
 

@@ -18,8 +18,11 @@
 import os
 import textwrap
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,22 +38,26 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_StandAlone():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            throw
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                throw
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_WithValue():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            throw foo
-            throw (a, b)
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                throw foo
+                throw (a, b)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

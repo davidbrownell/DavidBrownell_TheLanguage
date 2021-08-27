@@ -18,8 +18,11 @@
 import os
 import textwrap
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,31 +38,35 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Mathematical():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            value1 += expr1
-            value2 -= expr2
-            value3 *= expr3
-            value4 **= expr4
-            value5 /= expr5
-            value6 //= expr6
-            value7 %= expr7
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                value1 += expr1
+                value2 -= expr2
+                value3 *= expr3
+                value4 **= expr4
+                value5 /= expr5
+                value6 //= expr6
+                value7 %= expr7
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_BitManipulation():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            value1 <<= expr1
-            value2 >>= expr2
-            value3 ^= expr3
-            value4 |= expr4
-            value5 &= expr5
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                value1 <<= expr1
+                value2 >>= expr2
+                value3 ^= expr3
+                value4 |= expr4
+                value5 &= expr5
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
