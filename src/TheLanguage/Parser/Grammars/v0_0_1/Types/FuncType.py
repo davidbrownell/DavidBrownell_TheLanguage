@@ -44,7 +44,9 @@ class FuncType(GrammarPhrase):
         (Int (Char, Bool))
     """
 
+    # <TODOS> pylint: disable=W0511
     # TODO: Add exception and coroutine decorations
+    # TODO: Add support for new-style-args
 
     PHRASE_NAME                               = "Func Type"
 
