@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GeneratorExpression.py
+# |  IndexExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-18 19:13:34
+# |      2021-08-26 16:00:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GeneratorExpression object"""
+"""Contains the IndexExpression object"""
 
 import os
 
@@ -27,27 +27,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
-class GeneratorExpression(GrammarPhrase):
+class IndexExpression(GrammarPhrase):
     """\
-    Expression that generates values.
+    Applies an index operation to an expression.
 
-    <expr> 'for' <name> 'in' <expr> ('if' <expr>)?
+    <expr> '[' <expr> ']'
 
     Examples:
-        AddOne(value) for value in OneToTen()
-        AddOne(value) for value in OneToTen() if value % 2 == 0
+        foo[1]
+        bar[(1, 2)]
     """
 
-    PHRASE_NAME                             = "Generator Expression"
+    PHRASE_NAME                             = "Index Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(GeneratorExpression, self).__init__(
+        super(IndexExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
                 name=self.PHRASE_NAME,
@@ -55,30 +56,14 @@ class GeneratorExpression(GrammarPhrase):
                     # <expr>
                     DynamicPhrasesType.Expressions,
 
-                    # 'for'
-                    "for",
-
-                    # <name>
-                    DynamicPhrasesType.Names,
-
-                    # 'in'
-                    "in",
+                    # '['
+                    "[",
 
                     # <expr>
                     DynamicPhrasesType.Expressions,
 
-                    # ('if' <expr>)?
-                    PhraseItem(
-                        name="Conditional",
-                        item=[
-                            # 'if'
-                            "if",
-
-                            # <expr>>
-                            DynamicPhrasesType.Expressions,
-                        ],
-                        arity="?",
-                    ),
+                    # ']'
+                    "]",
                 ],
             ),
         )

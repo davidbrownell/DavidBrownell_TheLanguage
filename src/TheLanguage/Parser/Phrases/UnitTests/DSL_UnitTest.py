@@ -76,7 +76,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "[1, 1] (0)"
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)", "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (8)", "The result iterator should be modified"
 
@@ -91,7 +91,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "[1, 1] (0)"
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)", "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (13)", "The result iterator should be modified"
 
@@ -106,7 +106,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "[1, 1] (0)"
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (8)", "The result iterator should be modified"
 
@@ -121,7 +121,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "[1, 1] (0)"
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (9)", "The result iterator should be modified"
 
@@ -136,7 +136,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "[1, 1] (0)"
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (9)", "The result iterator should be modified"
 
@@ -151,7 +151,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "[1, 1] (0)"
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (12)", "The result iterator should be modified"
 
@@ -166,7 +166,7 @@ class TestParseSimple(object):
 
         assert str(iter) == "[1, 1] (0)"
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (9)", "The result iterator should be modified"
 
@@ -182,7 +182,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)"
         assert iter.ContentLen == 12
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (12)", "The result iterator should be modified"
 
@@ -206,7 +206,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)"
         assert iter.ContentLen == 19
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[2, 1] (8)", "The result iterator should be modified"
 
@@ -216,7 +216,7 @@ class TestParseSimple(object):
         iter = result.IterEnd
 
         # Line 2
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[2, 1] (8)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[3, 1] (19)", "The result iterator should be modified"
 
@@ -232,7 +232,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)"
         assert iter.ContentLen == 17
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[5, 1] (17)", "The result iterator should be modified"
 
@@ -248,7 +248,7 @@ class TestParseSimple(object):
         assert str(iter) == "[1, 1] (0)"
         assert iter.ContentLen == 14
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
         assert str(result.IterEnd) == "[1, 8] (7)", "The result iterator should be modified"
 
@@ -276,7 +276,7 @@ class TestParseIndentAndDedent(object):
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -298,7 +298,7 @@ class TestParseIndentAndDedent(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -318,7 +318,7 @@ class TestParseIndentAndDedent(object):
     @pytest.mark.asyncio
     async def test_FinishEarly(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -356,7 +356,7 @@ class TestIgnoreWhitespace(object):
     @pytest.mark.asyncio
     async def test_MatchNoExtra(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -404,7 +404,7 @@ class TestEmbeddedPhrases(object):
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator("( one two )"),
             parse_mock,
             single_threaded=True,
@@ -416,7 +416,7 @@ class TestEmbeddedPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatchAllInner(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("( one two"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("( one two"), parse_mock)
 
         CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 16
@@ -424,7 +424,7 @@ class TestEmbeddedPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatchPartialInner(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("( one"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("( one"), parse_mock)
 
         CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 12
@@ -432,7 +432,7 @@ class TestEmbeddedPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatchFirstOnly(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("( "), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("( "), parse_mock)
 
         CompareResultsFromFile(str(result))
         assert len(parse_mock.method_calls) == 9
@@ -478,7 +478,7 @@ class TestDynamicPhrases(object):
     @pytest.mark.asyncio
     async def test_Match(self, modified_parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -500,7 +500,7 @@ class TestDynamicPhrases(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, modified_parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -554,7 +554,7 @@ class TestOrPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_WordMatch(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("word"), parse_mock)
 
         CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
@@ -563,7 +563,7 @@ class TestOrPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NumberMatch(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("1234"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("1234"), parse_mock)
 
         CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
@@ -572,7 +572,7 @@ class TestOrPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_UpperMatch(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("WORD"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("WORD"), parse_mock)
 
         CompareResultsFromFile(str(result))
         assert result.IterEnd.AtEnd()
@@ -582,7 +582,7 @@ class TestOrPhrases(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator("this is not a match"),
             parse_mock,
             single_threaded=True,
@@ -598,7 +598,7 @@ class TestOrPhrases(object):
             side_effect=[True, False],
         )
 
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("word"), parse_mock)
 
         assert result is None
         assert len(parse_mock.method_calls) == 10
@@ -628,17 +628,17 @@ class TestEmbeddedOrPhrases(object):
         )
 
         # Line 1
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         CompareResultsFromFile(str(result), suffix=".line1")
         iter = result.IterEnd
 
         # Line 2
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         CompareResultsFromFile(str(result), suffix=".line2")
         iter = result.IterEnd
 
         # Line 3
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         CompareResultsFromFile(str(result), suffix=".line3")
         iter = result.IterEnd
 
@@ -661,7 +661,7 @@ class TestRepeatPhrases(object):
     @pytest.mark.asyncio
     async def test_Match1(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -687,7 +687,7 @@ class TestRepeatPhrases(object):
     @pytest.mark.asyncio
     async def test_Match2(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -711,7 +711,7 @@ class TestRepeatPhrases(object):
     @pytest.mark.asyncio
     async def test_Match3(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -735,7 +735,7 @@ class TestRepeatPhrases(object):
     @pytest.mark.asyncio
     async def test_Match4(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -759,7 +759,7 @@ class TestRepeatPhrases(object):
     @pytest.mark.asyncio
     async def test_NoMatch1(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -782,7 +782,7 @@ class TestRepeatPhrases(object):
     @pytest.mark.asyncio
     async def test_NoMatch2(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -807,7 +807,7 @@ class TestRepeatPhrases(object):
         )
 
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -848,7 +848,7 @@ class TestRepeatSimilarPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_LargeMatch(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("word 123"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("word 123"), parse_mock)
 
         CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
@@ -856,7 +856,7 @@ class TestRepeatSimilarPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SmallMatch(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("word"), parse_mock)
 
         CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
@@ -895,7 +895,7 @@ class TestNamedPhrases(object):
     @pytest.mark.asyncio
     async def test_Match(self, modified_parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -916,7 +916,7 @@ class TestNamedPhrases(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, modified_parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -963,7 +963,7 @@ class TestComments(object):
     @pytest.mark.asyncio
     async def test_Multiline(self, parse_mock):
         result = await self._multiline_phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -1011,23 +1011,23 @@ class TestComments(object):
         )
 
         # 1-3
-        result = await self._indent_phrase.ParseAsync(["root"], iterator, parse_mock)
+        result = await self._indent_phrase.ParseAsync(("root", ), iterator, parse_mock)
         CompareResultsFromFile(str(result), suffix=".section1")
         iterator = result.IterEnd
 
         # 4-6
-        result = await self._indent_phrase.ParseAsync(["root"], iterator, parse_mock)
+        result = await self._indent_phrase.ParseAsync(("root", ), iterator, parse_mock)
         CompareResultsFromFile(str(result), suffix=".section2")
         iterator = result.IterEnd
 
         # 7-9
-        result = await self._indent_phrase.ParseAsync(["root"], iterator, parse_mock)
+        result = await self._indent_phrase.ParseAsync(("root", ), iterator, parse_mock)
         CompareResultsFromFile(str(result), suffix=".section3")
 
         iterator = result.IterEnd
 
         # 10-12
-        result = await self._indent_phrase.ParseAsync(["root"], iterator, parse_mock)
+        result = await self._indent_phrase.ParseAsync(("root", ), iterator, parse_mock)
         CompareResultsFromFile(str(result), suffix=".section4")
         iterator = result.IterEnd
 
@@ -1037,7 +1037,7 @@ class TestComments(object):
     @pytest.mark.asyncio
     async def test_StandAlone(self, parse_mock):
         result = await self._multiline_phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -1074,7 +1074,7 @@ class TestRecursiveOrPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoRecursion(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("( hello )"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("( hello )"), parse_mock)
 
         CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
@@ -1082,7 +1082,7 @@ class TestRecursiveOrPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SingleRecursion(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("((hello))"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("((hello))"), parse_mock)
 
         CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
@@ -1090,7 +1090,7 @@ class TestRecursiveOrPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_DoubleRecursion(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("( ( ( hello)))"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("( ( ( hello)))"), parse_mock)
 
         CompareResultsFromFile(str(result))
         # assert result.IterEnd.AtEnd()
@@ -1113,7 +1113,7 @@ class TestRecursiveRepeatPhrase(object):
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -1149,7 +1149,7 @@ class TestRecursiveSequencePhrase(object):
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -1187,7 +1187,7 @@ async def test_IgnoreWhitespace(parse_mock):
     )
 
     result = await phrase.ParseAsync(
-        ["root"],
+        ("root", ),
         CreateIterator(
             textwrap.dedent(
                 """\
@@ -1231,7 +1231,7 @@ async def test_IgnoreWhitespaceNestedPhrase(parse_mock):
     )
 
     result = await phrase.ParseAsync(
-        ["root"],
+        ("root", ),
         CreateIterator(
             textwrap.dedent(
                 """\
@@ -1280,7 +1280,7 @@ async def test_IgnoreWhitespaceNestedPhraseWithDedents(parse_mock):
     )
 
     result = await phrase.ParseAsync(
-        ["root"],
+        ("root", ),
         CreateIterator(
             textwrap.dedent(
                 """\
@@ -1326,7 +1326,7 @@ async def test_IgnoreWhitespaceNestedPhraseEndWithDedents(parse_mock):
     )
 
     result = await phrase.ParseAsync(
-        ["root"],
+        ("root", ),
         CreateIterator(
             textwrap.dedent(
                 """\
@@ -1355,7 +1355,7 @@ async def test_NestedPhrase(parse_mock):
         item=[TokenPhrase(_word_token),],
     )
 
-    result = await phrase.ParseAsync(["root"], CreateIterator("test"), parse_mock)
+    result = await phrase.ParseAsync(("root", ), CreateIterator("test"), parse_mock)
 
     CompareResultsFromFile(str(result))
     # assert result.IterEnd.AtEnd()
