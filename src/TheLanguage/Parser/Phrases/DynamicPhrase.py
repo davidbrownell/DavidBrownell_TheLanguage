@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .OrPhrase import OrPhrase
-    from ..Components.Phrase import Phrase
+    from ..Components.Phrase import DynamicPhrasesType, Phrase
 
 
 # ----------------------------------------------------------------------
@@ -44,9 +44,11 @@ class DynamicPhrase(Phrase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
+        phrases_type: DynamicPhrasesType,
         get_dynamic_phrases_func: Callable[
             [
                 Tuple[str, ...],            # unique_id
+                DynamicPhrasesType,
                 Phrase.Observer,
             ],
             Tuple[Optional[str], List[Phrase]],         # List of Phrases and the phase name
@@ -59,7 +61,8 @@ class DynamicPhrase(Phrase):
 
         super(DynamicPhrase, self).__init__(name)
 
-        self._get_dynamic_phrases_func                                      = get_dynamic_phrases_func
+        self.DynamicPhrasesType             = phrases_type
+        self._get_dynamic_phrases_func      = get_dynamic_phrases_func
 
     # ----------------------------------------------------------------------
     # Set this value to True to enable basic statistic collection.
@@ -182,7 +185,11 @@ class DynamicPhrase(Phrase):
                 ],
             ),
         ):
-            phrase_name, dynamic_phrases = self._get_dynamic_phrases_func(unique_id, observer)
+            phrase_name, dynamic_phrases = self._get_dynamic_phrases_func(
+                unique_id,
+                self.DynamicPhrasesType,
+                observer,
+            )
             assert isinstance(dynamic_phrases, list), dynamic_phrases
 
             if not dynamic_phrases:

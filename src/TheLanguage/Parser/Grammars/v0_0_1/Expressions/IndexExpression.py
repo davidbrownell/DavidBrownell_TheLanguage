@@ -65,6 +65,5 @@ class IndexExpression(GrammarPhrase):
                     # ']'
                     "]",
                 ],
-                is_left_recursive_sequence=True,
             ),
         )

@@ -37,7 +37,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-def BugBugtest_Standard():
+def test_Standard():
     CompareResultsFromFile(
         Execute(
             textwrap.dedent(
@@ -55,7 +55,3 @@ def BugBugtest_Standard():
             ),
         ),
     )
-
-# BugBug: Remove this
-def test_BugBug():
-    assert True

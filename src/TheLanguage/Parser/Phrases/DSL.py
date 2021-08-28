@@ -34,7 +34,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .DynamicPhrase import DynamicPhrase
-    from .LeftRecursiveSequencePhrase import LeftRecursiveSequencePhrase
     from .OrPhrase import OrPhrase
     from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
     from .RepeatPhrase import RepeatPhrase
@@ -107,7 +106,6 @@ def CreatePhrase(
     item: PhraseItem.ItemType,
     name: str=None,
     comment_token: RegexToken=None,
-    is_left_recursive_sequence: Optional[bool]=None,
 ) -> Phrase:
 
     comment_token = comment_token or CommentToken
@@ -121,11 +119,7 @@ def CreatePhrase(
             name=name,
         )
 
-    phrase = _PopulateItem(
-        comment_token,
-        item,
-        is_left_recursive_sequence,
-    )
+    phrase = _PopulateItem(comment_token, item)
 
     phrase.PopulateRecursive()
 
@@ -258,7 +252,6 @@ def ExtractSequence(
 def _PopulateItem(
     comment_token: RegexToken,
     item: PhraseItem.ItemType,
-    is_left_recursive_sequence: Optional[bool],
 ) -> Phrase:
 
     if not isinstance(item, PhraseItem):
@@ -267,7 +260,7 @@ def _PopulateItem(
     name = None
 
     if isinstance(item.item, PhraseItem):
-        phrase = _PopulateItem(comment_token, item.item, is_left_recursive_sequence)
+        phrase = _PopulateItem(comment_token, item.item)
         name = item.name
 
     elif isinstance(item.item, Phrase):
@@ -275,8 +268,6 @@ def _PopulateItem(
         name = item.name
 
     else:
-        assert is_left_recursive_sequence is None or isinstance(item.item, list), (is_left_recursive_sequence, item.item)
-
         if isinstance(item.item, Token):
             phrase = TokenPhrase(
                 item.item,
@@ -292,61 +283,30 @@ def _PopulateItem(
             )
 
         elif isinstance(item.item, DynamicPhrasesType):
-            dynamic_phrases_value = item.item
-
-            # ----------------------------------------------------------------------
-            def GetDynamicPhrases(
-                unique_id: Tuple[str, ...],
-                observer,
-            ) -> Tuple[Optional[str], List[Phrase]]:
-                return observer.GetDynamicPhrases(unique_id, dynamic_phrases_value)
-
-            # ----------------------------------------------------------------------
-
             phrase = DynamicPhrase(
-                GetDynamicPhrases,
+                item.item,
+                lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type),
                 name=item.name or str(item.item),
             )
 
         elif isinstance(item.item, list):
-            sequence_phrases = []
+            sequence_phrases = [
+                _PopulateItem(comment_token, phrase_item) for phrase_item in item.item
+            ]
 
-            for phrase_item in item.item:
-                sequence_phrase = _PopulateItem(
-                    comment_token,
-                    phrase_item,
-                    None,
-                )
-
-                sequence_phrases.append(sequence_phrase)
-
-            if is_left_recursive_sequence is None or not is_left_recursive_sequence:
-                phrase = SequencePhrase(
-                    comment_token,
-                    sequence_phrases,
-                    name=item.name,
-                )
-            else:
-                phrase = LeftRecursiveSequencePhrase(
-                    comment_token,
-                    sequence_phrases,
-                    name=item.name,
-                )
+            phrase = SequencePhrase(
+                comment_token,
+                sequence_phrases,
+                name=item.name,
+            )
 
         elif isinstance(item.item, tuple):
-            or_options = []
-
-            for phrase_item in item.item:
-                option_phrase = _PopulateItem(
-                    comment_token,
-                    phrase_item,
-                    None,
-                )
-
-                or_options.append(option_phrase)
+            or_phrases = [
+                _PopulateItem(comment_token, phrase_item) for phrase_item in item.item
+            ]
 
             phrase = OrPhrase(
-                or_options,
+                or_phrases,
                 name=item.name,
             )
 

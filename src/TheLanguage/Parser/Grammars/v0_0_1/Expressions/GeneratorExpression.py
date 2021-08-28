@@ -80,6 +80,5 @@ class GeneratorExpression(GrammarPhrase):
                         arity="?",
                     ),
                 ],
-                is_left_recursive_sequence=True,
             ),
         )

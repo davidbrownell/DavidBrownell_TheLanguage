@@ -42,6 +42,8 @@ with InitRelativeImports():
 
     from .Phrases.DSL import DynamicPhrasesType
     from .Phrases.DynamicPhrase import DynamicPhrase
+    from .Phrases.LeftRecursiveSequencePhraseWrapper import LeftRecursiveSequencePhraseWrapper
+    from .Phrases.SequencePhrase import SequencePhrase
     from .Phrases.TokenPhrase import TokenPhrase
 
 
@@ -205,17 +207,9 @@ async def ParseAsync(
         initial_phrase_info,
     )
 
-    # ----------------------------------------------------------------------
-    def GetDynamicPhrases(
-        unique_id: Tuple[str, ...],
-        observer,
-    ) -> Tuple[Optional[str], List[Phrase]]:
-        return observer.GetDynamicPhrases(unique_id, DynamicPhrasesType.Statements)
-
-    # ----------------------------------------------------------------------
-
     phrase = DynamicPhrase(
-        GetDynamicPhrases,
+        DynamicPhrasesType.Statements,
+        lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type),
         name=name,
     )
 
@@ -255,6 +249,7 @@ async def ParseAsync(
 
         # TODO: Eat trailing comments (here or in SequencePhrase.py?)
         # TODO: What happens to file that starts with newlines?
+        # TODO: Handle empty file
 
     assert normalized_iter.AtEnd()
     return root
@@ -427,16 +422,7 @@ class _ScopeTracker(object):
         dynamic_phrases_type: DynamicPhrasesType,
     ) -> Tuple[Optional[str], List[Phrase]]:
 
-        # BugBug: Need to be smarted about the cache key; unique_id is too granular
-        # BugBug cache_key = (unique_id, dynamic_phrases_type) # BugBug
-        # BugBug
-        # BugBug cached_value = self._cache.get(cache_key, None)
-        # BugBug if cached_value is not None:
-        # BugBug     assert False, "BugBug"
-        # BugBug     return cached_value
-
-        # BugBug: Add uber left-recursive container that executes all of the left-recursive phrases
-        #         within that category.
+        # TODO: cache results
 
         if dynamic_phrases_type == DynamicPhrasesType.Expressions:
             attribute_name = "Expressions"
@@ -516,9 +502,31 @@ class _ScopeTracker(object):
             if not should_continue:
                 break
 
-        result = " / ".join(all_names), all_phrases
+        # Combine the phrases into 2 groups, those that are left-recursive and those that are not
+        standard_phrases = []
+        left_recursive_phrases = []
 
-        # BugBug self._cache[cache_key] = result
+        for phrase in all_phrases:
+            if LeftRecursiveSequencePhraseWrapper.IsLeftRecursivePhrase(
+                phrase,
+                dynamic_phrases_type,
+            ):
+                left_recursive_phrases.append(phrase)
+            else:
+                standard_phrases.append(phrase)
+
+        if left_recursive_phrases:
+            standard_phrases.append(
+                LeftRecursiveSequencePhraseWrapper(
+                    dynamic_phrases_type,
+                    list(standard_phrases),
+                    left_recursive_phrases,
+                    prefix_name="Left Recursive Wrapper",
+                ),
+            )
+
+        result = " / ".join(all_names), standard_phrases
+
         return result
 
     # ----------------------------------------------------------------------
