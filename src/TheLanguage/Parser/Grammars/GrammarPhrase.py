@@ -109,6 +109,17 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         Type                                = auto()
 
     # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class NodeInfo(YamlRepr.ObjectReprImplBase):
+
+        # ----------------------------------------------------------------------
+        def __post_init__(
+            self,
+            **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
+        ):
+            YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
+
+    # ----------------------------------------------------------------------
     # |
     # |  Public Methods
     # |

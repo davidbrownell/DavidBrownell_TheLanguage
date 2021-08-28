@@ -283,7 +283,6 @@ def Create():
 
 
 # ----------------------------------------------------------------------
-# TODO: Change this method to Extract, return NodeInfo
 def Extract(
     node: Node,
 ) -> Dict[ParametersType, List[Node]]:
