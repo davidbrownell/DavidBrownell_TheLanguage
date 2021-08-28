@@ -95,6 +95,5 @@ class BinaryExpression(GrammarPhrase):
                     # <expr>
                     DynamicPhrasesType.Expressions,
                 ],
-                is_left_recursive_sequence=True,
             ),
         )

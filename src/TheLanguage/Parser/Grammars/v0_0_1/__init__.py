@@ -2,7 +2,6 @@
 
 # Expressions:
 # ---
-#   - Index (easy):         <expr> '[' <expr> ']'
 #   - LambdaDefinition:     ???
 
 # Statements:
@@ -11,7 +10,7 @@
 #   - Type Alias
 #   - Docstring
 #   - ClassAttribute
-#   - SmartIf
+#   - SmartIf (Python's match statement)
 #   - ClassCompilerData
 
 

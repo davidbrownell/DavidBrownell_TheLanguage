@@ -88,7 +88,7 @@ class TestStandard(object):
     async def test_MatchLower(self, parse_mock):
         iter = CreateIterator("lowercase")
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -120,7 +120,7 @@ class TestStandard(object):
     async def test_MatchUpper(self, parse_mock):
         iter = CreateIterator("UPPERCASE")
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -152,7 +152,7 @@ class TestStandard(object):
     async def test_MatchNumber(self, parse_mock):
         iter = CreateIterator("12345678")
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -185,7 +185,7 @@ class TestStandard(object):
         iter = CreateIterator("12345678")
 
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             iter,
             parse_mock,
             single_threaded=True,
@@ -224,7 +224,7 @@ class TestStandard(object):
 
         iter = CreateIterator("12345678")
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert result is None
 
         assert len(parse_mock.method_calls) == 5
@@ -234,7 +234,7 @@ class TestStandard(object):
     async def test_NoMatch(self, parse_mock):
         iter = CreateIterator("!1122334")
 
-        result = await self._phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -272,7 +272,7 @@ class TestStandard(object):
         iter = CreateIterator("!1122334")
 
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             iter,
             parse_mock,
             single_threaded=True,
@@ -313,7 +313,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_NestedLower(self, parse_mock):
         result = await self._outer_nested_phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator("word"),
             parse_mock,
         )
@@ -347,7 +347,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_NestedLowerEvents(self, parse_mock):
         result = await self._outer_nested_phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator("word"),
             parse_mock,
             single_threaded=True,
@@ -451,7 +451,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_NestedUpper(self, parse_mock):
         result = await self._outer_nested_phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator("WORD"),
             parse_mock,
         )
@@ -507,7 +507,7 @@ class TestSort(object):
     async def test_Sort(self, parse_mock):
         iter = CreateIterator("1234")
 
-        result = await self._sort_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._sort_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -537,7 +537,7 @@ class TestSort(object):
     async def test_NoSort(self, parse_mock):
         iter = CreateIterator("1234")
 
-        result = await self._no_sort_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._no_sort_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -564,7 +564,7 @@ class TestSort(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatchNoSort(self, parse_mock):
-        result = await self._no_sort_phrase.ParseAsync(["root"], CreateIterator("!1122"), parse_mock)
+        result = await self._no_sort_phrase.ParseAsync(("root", ), CreateIterator("!1122"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -619,7 +619,7 @@ class TestParseReturnsNone(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Standard(self, parse_mock):
-        result = await self._phrase.ParseAsync(["root"], CreateIterator("test"), parse_mock)
+        result = await self._phrase.ParseAsync(("root", ), CreateIterator("test"), parse_mock)
         assert result is None
 
         assert len(parse_mock.method_calls) == 2
@@ -628,7 +628,7 @@ class TestParseReturnsNone(object):
     @pytest.mark.asyncio
     async def test_StandardSingleThreaded(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator("test"),
             parse_mock,
             single_threaded=True,

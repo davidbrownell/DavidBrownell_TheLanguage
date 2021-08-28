@@ -61,7 +61,7 @@ class TestWords(object):
         iter = CreateIterator("This      is\ta \t\t   test\t  \n")
 
         # This
-        result = await self._word_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._word_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -106,7 +106,7 @@ class TestWords(object):
         parse_mock.reset_mock()
 
         # is
-        result = await self._word_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._word_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -154,7 +154,7 @@ class TestWords(object):
         parse_mock.reset_mock()
 
         # a
-        result = await self._word_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._word_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -202,7 +202,7 @@ class TestWords(object):
         parse_mock.reset_mock()
 
         # test
-        result = await self._word_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._word_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -250,7 +250,7 @@ class TestWords(object):
         parse_mock.reset_mock()
 
         # Newline
-        result = await self._newline_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._newline_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -301,7 +301,7 @@ class TestWords(object):
     async def test_NotAMatch(self, parse_mock):
         iter = CreateIterator("te__")
 
-        result = await self._word_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._word_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -340,7 +340,7 @@ class TestWords(object):
         )
 
         # One
-        result = await self._word_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._word_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -385,7 +385,7 @@ class TestWords(object):
         parse_mock.reset_mock()
 
         # Newline
-        result = await self._newline_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._newline_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -431,7 +431,7 @@ class TestWords(object):
         parse_mock.reset_mock()
 
         # Indent
-        result = await self._indent_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._indent_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -479,7 +479,7 @@ class TestWords(object):
         parse_mock.reset_mock()
 
         # two
-        result = await self._word_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._word_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -523,7 +523,7 @@ class TestWords(object):
         parse_mock.reset_mock()
 
         # Newline
-        result = await self._newline_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._newline_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -569,7 +569,7 @@ class TestWords(object):
         parse_mock.reset_mock()
 
         # Dedent
-        result = await self._dedent_phrase.ParseAsync(["root"], iter, parse_mock)
+        result = await self._dedent_phrase.ParseAsync(("root", ), iter, parse_mock)
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
@@ -672,7 +672,7 @@ class TestWords(object):
             self._dedent_phrase,
             self._dedent_phrase,
         ]:
-            results.append(await expected_phrase.ParseAsync(["root"], iter, parse_mock))
+            results.append(await expected_phrase.ParseAsync(("root", ), iter, parse_mock))
             iter = results[-1].IterEnd.Clone()
 
         assert iter.AtEnd()

@@ -61,7 +61,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_MatchSingleLine(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -269,7 +269,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_MatchTwoLines(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -351,7 +351,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_MatchThreeLines(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -434,7 +434,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_NoMatch(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -477,7 +477,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_partialMatch(self, parse_mock):
         result = await self._phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -532,7 +532,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_ExactMatch(self, parse_mock):
         result = await self._exact_phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -612,7 +612,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_ExactLimitedMatch(self, parse_mock):
         result = await self._exact_phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator(
                 textwrap.dedent(
                     """\
@@ -693,7 +693,7 @@ class TestStandard(object):
     @pytest.mark.asyncio
     async def test_ExactNoMatch(self, parse_mock):
         result = await self._exact_phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator("one"),
             parse_mock,
         )
@@ -768,7 +768,7 @@ async def test_parseReturnsNone(parse_mock):
 
     phrase = RepeatPhrase(NonePhrase("None Phrase"), 1, None)
 
-    result = await phrase.ParseAsync(["root"], CreateIterator("test"), parse_mock)
+    result = await phrase.ParseAsync(("root", ), CreateIterator("test"), parse_mock)
     assert result is None
 
 # ----------------------------------------------------------------------
@@ -779,7 +779,7 @@ async def test_OnInternalPhraseFalse(parse_mock):
     Phrase = RepeatPhrase(TokenPhrase(NewlineToken()), 1, None)
 
     result = await Phrase.ParseAsync(
-        ["root"],
+        ("root", ),
         CreateIterator(
             textwrap.dedent(
                 """\

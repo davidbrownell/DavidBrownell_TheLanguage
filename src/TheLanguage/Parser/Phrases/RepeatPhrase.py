@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Union
+from typing import List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -93,7 +93,7 @@ class RepeatPhrase(Phrase):
     @Interface.override
     async def _ParseAsyncImpl(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
@@ -113,7 +113,7 @@ class RepeatPhrase(Phrase):
 
             while not normalized_iter.AtEnd():
                 result = await self.Phrase.ParseAsync(
-                    unique_id + ["Repeat: {} [{}]".format(self.Phrase.Name, len(results))],
+                    unique_id + ("Repeat: {} [{}]".format(self.Phrase.Name, len(results)), ),
                     normalized_iter.Clone(),
                     Phrase.ObserverDecorator(
                         self,

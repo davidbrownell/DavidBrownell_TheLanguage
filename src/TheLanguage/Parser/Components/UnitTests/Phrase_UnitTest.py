@@ -265,7 +265,7 @@ class TestStandard(object):
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio
 async def test_Parse(iterator, parse_mock):
-    result = await CreatePhrase(1).ParseAsync(["root"], iterator, parse_mock)
+    result = await CreatePhrase(1).ParseAsync(("root", ), iterator, parse_mock)
     assert result.Success == 1
 
     assert parse_mock.OnIndent.call_count == 0
