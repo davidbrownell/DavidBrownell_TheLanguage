@@ -18,8 +18,11 @@
 import os
 import textwrap
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,14 +38,16 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            del foo
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                del foo
 
-            # This statement isn't valid, but it should parse correctly before
-            # an error is produced.
-            del (a, b,)
-            """,
+                # This statement isn't valid, but it should parse correctly before
+                # an error is produced.
+                del (a, b,)
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )

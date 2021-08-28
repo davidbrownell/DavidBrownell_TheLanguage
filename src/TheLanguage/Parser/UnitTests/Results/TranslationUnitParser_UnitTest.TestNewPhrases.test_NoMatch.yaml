@@ -1,0 +1,40 @@
+The syntax is not recognized [1, 4]
+
+# <class 'TheLanguage.Parser.Components.AST.RootNode'>
+Children:
+  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+            IsIgnored: False
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 4] (3)"
+            Type: "Upper <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(0, 3), match='ONE'>"
+            Whitespace: None
+        IterBegin: "[1, 1] (0)"
+        IterEnd: "[1, 4] (3)"
+        Type: "(Upper Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[1, 1] (0)"
+    IterEnd: "[1, 4] (3)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Parser.Components.AST.Node'>
+            Children: []
+            IterBegin: None
+            IterEnd: None
+            Type: "Upper Phrase <class 'TheLanguage.Parser.Phrases.TokenPhrase.TokenPhrase'>"
+        IterBegin: None
+        IterEnd: None
+        Type: "(Upper Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: None
+    IterEnd: None
+    Type: "Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+IterBegin: "[1, 1] (0)"
+IterEnd: None
+Type: "<None>"

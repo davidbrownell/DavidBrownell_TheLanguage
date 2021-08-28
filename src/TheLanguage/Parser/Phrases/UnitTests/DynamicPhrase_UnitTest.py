@@ -49,29 +49,32 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Single(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase]))
+        phrase = DynamicPhrase(
+            DynamicPhrasesType.Statements,
+            lambda *args, **kwargs: (None, [self._lower_phrase]),
+        )
 
-        result = await phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
+        result = await phrase.ParseAsync(("root", ), CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                         IsIgnored  : False
-                                                         IterBegin  : [1, 1] (0)
-                                                         IterEnd    : [1, 5] (4)
-                                                         Token      : lower
-                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                      Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
-                                                         Whitespace : None
-                                              Phrase   : lower
-                                   Phrase   : Or: (lower)
-                        Phrase   : Dynamic Phrases
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 5] (4)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 5] (4)"
+                    Token: "lower"
+                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
+                    Whitespace: None
+                  Phrase: "lower"
+                Phrase: "Or: (lower)"
+              Phrase: "Dynamic Phrases"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 5] (4)"
+            Success: True
             """,
         )
 
@@ -80,24 +83,28 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SingleNoMatch(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase]))
+        phrase = DynamicPhrase(
+            DynamicPhrasesType.Statements,
+            lambda *args, **kwargs: (None, [self._lower_phrase]),
+        )
 
-        result = await phrase.ParseAsync(["root"], CreateIterator("1234"), parse_mock)
+        result = await phrase.ParseAsync(("root", ), CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                              DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                Data     : None
-                                                                Phrase   : lower
-                                              IsComplete : True
-                                   Phrase   : Or: (lower)
-                        Phrase   : Dynamic Phrases
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : False
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems:
+                    - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                      Data: None
+                      Phrase: "lower"
+                  IsComplete: True
+                Phrase: "Or: (lower)"
+              Phrase: "Dynamic Phrases"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: False
             """,
         )
 
@@ -106,60 +113,66 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MultipleNumber(self, parse_mock):
-        phrase = DynamicPhrase(lambda uniqud_id, observer: (None, [self._lower_phrase, self._number_phrase]))
+        phrase = DynamicPhrase(
+            DynamicPhrasesType.Statements,
+            lambda *args, **kwargs: (None, [self._lower_phrase, self._number_phrase]),
+        )
 
-        result = await phrase.ParseAsync(["root"], CreateIterator("1234"), parse_mock)
+        result = await phrase.ParseAsync(("root", ), CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                         IsIgnored  : False
-                                                         IterBegin  : [1, 1] (0)
-                                                         IterEnd    : [1, 5] (4)
-                                                         Token      : number
-                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                      Match : <_sre.SRE_Match object; span=(0, 4), match='1234'>
-                                                         Whitespace : None
-                                              Phrase   : number
-                                   Phrase   : Or: (lower, number)
-                        Phrase   : Dynamic Phrases
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 5] (4)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 5] (4)"
+                    Token: "number"
+                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
+                    Whitespace: None
+                  Phrase: "number"
+                Phrase: "Or: (lower, number)"
+              Phrase: "Dynamic Phrases"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 5] (4)"
+            Success: True
             """,
         )
 
-        assert len(parse_mock.method_calls) == 11
+        assert len(parse_mock.method_calls) == 9
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MultipleLower(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase, self._number_phrase]))
+        phrase = DynamicPhrase(
+            DynamicPhrasesType.Statements,
+            lambda *args, **kwargs: (None, [self._lower_phrase, self._number_phrase]),
+        )
 
-        result = await phrase.ParseAsync(["root"], CreateIterator("word"), parse_mock)
+        result = await phrase.ParseAsync(("root", ), CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                         IsIgnored  : False
-                                                         IterBegin  : [1, 1] (0)
-                                                         IterEnd    : [1, 5] (4)
-                                                         Token      : lower
-                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                      Match : <_sre.SRE_Match object; span=(0, 4), match='word'>
-                                                         Whitespace : None
-                                              Phrase   : lower
-                                   Phrase   : Or: (lower, number)
-                        Phrase   : Dynamic Phrases
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 5] (4)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 5] (4)"
+                    Token: "lower"
+                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
+                    Whitespace: None
+                  Phrase: "lower"
+                Phrase: "Or: (lower, number)"
+              Phrase: "Dynamic Phrases"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 5] (4)"
+            Success: True
             """,
         )
 
@@ -168,10 +181,13 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MultipleNumberEvents(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase, self._number_phrase]))
+        phrase = DynamicPhrase(
+            DynamicPhrasesType.Statements,
+            lambda *args, **kwargs: (None, [self._lower_phrase, self._number_phrase]),
+        )
 
         result = await phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator("1234"),
             parse_mock,
             single_threaded=True,
@@ -179,124 +195,127 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                              Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                         IsIgnored  : False
-                                                         IterBegin  : [1, 1] (0)
-                                                         IterEnd    : [1, 5] (4)
-                                                         Token      : number
-                                                         Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                      Match : <_sre.SRE_Match object; span=(0, 4), match='1234'>
-                                                         Whitespace : None
-                                              Phrase   : number
-                                   Phrase   : Or: (lower, number)
-                        Phrase   : Dynamic Phrases
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 5] (4)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 5] (4)"
+                    Token: "number"
+                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
+                    Whitespace: None
+                  Phrase: "number"
+                Phrase: "Or: (lower, number)"
+              Phrase: "Dynamic Phrases"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 5] (4)"
+            Success: True
             """,
         )
-
-        assert len(parse_mock.method_calls) == 11
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
             0) StartPhrase, "Dynamic Phrases"
             1) StartPhrase, "Or: (lower, number)", "Dynamic Phrases"
-            2) StartPhrase, "lower", "Or: (lower, number)", "Dynamic Phrases"
-            3) EndPhrase, "lower" [False], "Or: (lower, number)" [None], "Dynamic Phrases" [None]
-            4) StartPhrase, "number", "Or: (lower, number)", "Dynamic Phrases"
+            2) StartPhrase, "number", "Or: (lower, number)", "Dynamic Phrases"
+            3) OnInternalPhraseAsync, 0, 4
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 5] (4)"
+                  Token: "number"
+                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
+                  Whitespace: None
+                Phrase: "number"
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems:
+                    - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                      Data: None
+                      Phrase: "lower"
+                  IsComplete: False
+                Phrase: "Or: (lower, number)"
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems:
+                    - None
+                  IsComplete: False
+                Phrase: "Dynamic Phrases"
+            4) EndPhrase, "number" [True], "Or: (lower, number)" [None], "Dynamic Phrases" [None]
             5) OnInternalPhraseAsync, 0, 4
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                           IsIgnored  : False
-                           IterBegin  : [1, 1] (0)
-                           IterEnd    : [1, 5] (4)
-                           Token      : number
-                           Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                        Match : <_sre.SRE_Match object; span=(0, 4), match='1234'>
-                           Whitespace : None
-                Phrase   : number
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                           DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                             Data     : None
-                                             Phrase   : lower
-                           IsComplete : False
-                Phrase   : Or: (lower, number)
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                           DataItems  : 0)   None
-                           IsComplete : False
-                Phrase   : Dynamic Phrases
-            6) EndPhrase, "number" [True], "Or: (lower, number)" [None], "Dynamic Phrases" [None]
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 5] (4)"
+                    Token: "number"
+                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
+                    Whitespace: None
+                  Phrase: "number"
+                Phrase: "Or: (lower, number)"
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems:
+                    - None
+                  IsComplete: False
+                Phrase: "Dynamic Phrases"
+            6) EndPhrase, "Or: (lower, number)" [True], "Dynamic Phrases" [None]
             7) OnInternalPhraseAsync, 0, 4
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                           Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                      IsIgnored  : False
-                                      IterBegin  : [1, 1] (0)
-                                      IterEnd    : [1, 5] (4)
-                                      Token      : number
-                                      Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                   Match : <_sre.SRE_Match object; span=(0, 4), match='1234'>
-                                      Whitespace : None
-                           Phrase   : number
-                Phrase   : Or: (lower, number)
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                           DataItems  : 0)   None
-                           IsComplete : False
-                Phrase   : Dynamic Phrases
-            8) EndPhrase, "Or: (lower, number)" [True], "Dynamic Phrases" [None]
-            9) OnInternalPhraseAsync, 0, 4
-                <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                           Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                      Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
-                                                 IsIgnored  : False
-                                                 IterBegin  : [1, 1] (0)
-                                                 IterEnd    : [1, 5] (4)
-                                                 Token      : number
-                                                 Value      : <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                              Match : <_sre.SRE_Match object; span=(0, 4), match='1234'>
-                                                 Whitespace : None
-                                      Phrase   : number
-                           Phrase   : Or: (lower, number)
-                Phrase   : Dynamic Phrases
-            10) EndPhrase, "Dynamic Phrases" [True]
+                # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                    Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                      IsIgnored: False
+                      IterBegin: "[1, 1] (0)"
+                      IterEnd: "[1, 5] (4)"
+                      Token: "number"
+                      Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                        Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
+                      Whitespace: None
+                    Phrase: "number"
+                  Phrase: "Or: (lower, number)"
+                Phrase: "Dynamic Phrases"
+            8) EndPhrase, "Dynamic Phrases" [True]
             """,
         )
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_SingleNoMatchEvents(self, parse_mock):
-        phrase = DynamicPhrase(lambda unique_id, observer: (None, [self._lower_phrase]))
+        phrase = DynamicPhrase(
+            DynamicPhrasesType.Statements,
+            lambda *args, **kwargs: (None, [self._lower_phrase]),
+        )
 
         result = await phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             CreateIterator("1234"),
             parse_mock,
             single_threaded=True,
         )
         assert str(result) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                   Data     : <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
-                                              DataItems  : 0)   <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                                                                Data     : None
-                                                                Phrase   : lower
-                                              IsComplete : True
-                                   Phrase   : Or: (lower)
-                        Phrase   : Dynamic Phrases
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : False
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems:
+                    - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                      Data: None
+                      Phrase: "lower"
+                  IsComplete: True
+                Phrase: "Or: (lower)"
+              Phrase: "Dynamic Phrases"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: False
             """,
         )
 
@@ -304,9 +323,7 @@ class TestStandard(object):
             """\
             0) StartPhrase, "Dynamic Phrases"
             1) StartPhrase, "Or: (lower)", "Dynamic Phrases"
-            2) StartPhrase, "lower", "Or: (lower)", "Dynamic Phrases"
-            3) EndPhrase, "lower" [False], "Or: (lower)" [None], "Dynamic Phrases" [None]
-            4) EndPhrase, "Or: (lower)" [False], "Dynamic Phrases" [None]
-            5) EndPhrase, "Dynamic Phrases" [False]
+            2) EndPhrase, "Or: (lower)" [False], "Dynamic Phrases" [None]
+            3) EndPhrase, "Dynamic Phrases" [False]
             """,
         )

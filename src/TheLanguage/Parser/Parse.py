@@ -42,7 +42,7 @@ with InitRelativeImports():
 
     from .Grammars.GrammarPhrase import GrammarPhrase, ImportGrammarStatement
 
-    # TODO: Consider adding if functionality for target similar to the Syntax decorator
+    # TODO: Consider adding if functionality for targets and configuration similar to the Syntax decorator
     from .Syntax import Observer as SyntaxObserver
 
     from .TranslationUnitsParser import (

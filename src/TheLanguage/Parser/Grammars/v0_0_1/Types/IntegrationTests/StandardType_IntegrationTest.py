@@ -19,9 +19,10 @@ import os
 import textwrap
 
 import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -37,29 +38,33 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_NoModifier():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Int Func():
-                pass
-            """,
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Int Func():
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------
 def test_WithModifier():
-    assert Execute(
-        textwrap.dedent(
-            """\
-            Int var Func1():
-                pass
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                Int var Func1():
+                    pass
 
-            Char view Func2():
-                pass
-            """,
+                Char view Func2():
+                    pass
+                """,
+            ),
         ),
-    ) == ResultsFromFile()
+    )
 
 
 # ----------------------------------------------------------------------

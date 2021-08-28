@@ -26,6 +26,7 @@ from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -41,6 +42,8 @@ with InitRelativeImports():
 
     from .Phrases.DSL import DynamicPhrasesType
     from .Phrases.DynamicPhrase import DynamicPhrase
+    from .Phrases.LeftRecursiveSequencePhraseWrapper import LeftRecursiveSequencePhraseWrapper
+    from .Phrases.SequencePhrase import SequencePhrase
     from .Phrases.TokenPhrase import TokenPhrase
 
 
@@ -78,13 +81,13 @@ class SyntaxInvalidError(Error):
             message=str(self),
             line=self.Line,
             column=self.Column,
-            content=self.Root.ToString().rstrip(),
+            content=self.Root.ToYamlString().rstrip(),
         )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
+class DynamicPhrasesInfo(YamlRepr.ObjectReprImplBase):
     """Phrases that should be dynamically added to the active scope"""
 
     # ----------------------------------------------------------------------
@@ -102,9 +105,8 @@ class DynamicPhrasesInfo(CommonEnvironment.ObjectReprImplBase):
     def __post_init__(self):
         phrase_display_func = lambda phrases: ", ".join([phrase.Name for phrase in phrases])
 
-        CommonEnvironment.ObjectReprImplBase.__init__(
+        YamlRepr.ObjectReprImplBase.__init__(
             self,
-            include_class_info=False,
             Expressions=phrase_display_func,
             Names=phrase_display_func,
             Statements=phrase_display_func,
@@ -206,10 +208,8 @@ async def ParseAsync(
     )
 
     phrase = DynamicPhrase(
-        lambda unique_id, observer: cast(
-                _PhraseObserver,
-                observer,
-            ).GetDynamicPhrases(unique_id, DynamicPhrasesType.Statements),
+        DynamicPhrasesType.Statements,
+        lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type),
         name=name,
     )
 
@@ -219,7 +219,7 @@ async def ParseAsync(
         phrase_observer.ClearNodeCache()
 
         result = await phrase.ParseAsync(
-            ["root"],
+            ("root", ),
             normalized_iter,
             phrase_observer,
             ignore_whitespace=False,
@@ -249,6 +249,7 @@ async def ParseAsync(
 
         # TODO: Eat trailing comments (here or in SequencePhrase.py?)
         # TODO: What happens to file that starts with newlines?
+        # TODO: Handle empty file
 
     assert normalized_iter.AtEnd()
     return root
@@ -270,7 +271,11 @@ class _ScopeTracker(object):
         normalized_iter: Phrase.NormalizedIterator,
         initial_phrase_info: DynamicPhrasesInfo,
     ):
-        tracker_nodes: Dict[Union[str, _ScopeTracker._DefaultScopeTrackerTag], _ScopeTracker._TrackerNode] = OrderedDict()
+        # Initialize the tracker nodes
+        tracker_nodes: Dict[
+            Union[str, _ScopeTracker._DefaultScopeTrackerTag],
+            _ScopeTracker._TrackerNode
+        ] = OrderedDict()
 
         tracker_nodes[self._DefaultScopeTrackerTagInstance] = _ScopeTracker._TrackerNode("")
 
@@ -282,12 +287,23 @@ class _ScopeTracker(object):
             ),
         )
 
+        # Create the cache info
+        cache: Dict[
+            Tuple[
+                Tuple[str, ...],            # unique_id
+                DynamicPhrasesType,
+            ],
+            Tuple[Optional[str], List[Phrase]]
+        ] = {}
+
+        # Commit the information
         self._tracker_nodes                 = tracker_nodes
+        self._cache                         = cache
 
     # ----------------------------------------------------------------------
     def AddNode(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
     ) -> None:
         d = self._tracker_nodes
 
@@ -299,10 +315,12 @@ class _ScopeTracker(object):
 
             d = node.Children
 
+        self._cache.clear()
+
     # ----------------------------------------------------------------------
     def RemoveNode(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         was_successful: bool,
     ) -> None:
         # Get the tracker node
@@ -327,10 +345,12 @@ class _ScopeTracker(object):
 
         tracker_node.Children = {}
 
+        self._cache.clear()
+
     # ----------------------------------------------------------------------
     def AddScopeItem(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         indentation_level: int,
         iter_after: Phrase.NormalizedIterator,
         phrases_info: DynamicPhrasesInfo,
@@ -372,10 +392,12 @@ class _ScopeTracker(object):
             ),
         )
 
+        self._cache.clear()
+
     # ----------------------------------------------------------------------
     def RemoveScopeItems(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         indentation_level: int,
     ) -> None:
         for tracker_node in self._EnumPrevious(unique_id):
@@ -391,12 +413,16 @@ class _ScopeTracker(object):
                 else:
                     item_index += 1
 
+        self._cache.clear()
+
     # ----------------------------------------------------------------------
     def GetDynamicPhrases(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         dynamic_phrases_type: DynamicPhrasesType,
     ) -> Tuple[Optional[str], List[Phrase]]:
+
+        # TODO: cache results
 
         if dynamic_phrases_type == DynamicPhrasesType.Expressions:
             attribute_name = "Expressions"
@@ -418,7 +444,7 @@ class _ScopeTracker(object):
         should_continue = True
 
         # Process the phrases from most recently added to those added long ago (this is the reason
-        # for 'reversed' below)
+        # for the use of 'reversed' in the code that follows)
         previous_tracker_nodes = list(self._EnumPrevious(unique_id))
 
         for tracker_node in reversed(previous_tracker_nodes):
@@ -476,7 +502,32 @@ class _ScopeTracker(object):
             if not should_continue:
                 break
 
-        return " / ".join(all_names), all_phrases
+        # Combine the phrases into 2 groups, those that are left-recursive and those that are not
+        standard_phrases = []
+        left_recursive_phrases = []
+
+        for phrase in all_phrases:
+            if LeftRecursiveSequencePhraseWrapper.IsLeftRecursivePhrase(
+                phrase,
+                dynamic_phrases_type,
+            ):
+                left_recursive_phrases.append(phrase)
+            else:
+                standard_phrases.append(phrase)
+
+        if left_recursive_phrases:
+            standard_phrases.append(
+                LeftRecursiveSequencePhraseWrapper(
+                    dynamic_phrases_type,
+                    list(standard_phrases),
+                    left_recursive_phrases,
+                    prefix_name="Left Recursive Wrapper",
+                ),
+            )
+
+        result = " / ".join(all_names), standard_phrases
+
+        return result
 
     # ----------------------------------------------------------------------
     # |
@@ -523,7 +574,7 @@ class _ScopeTracker(object):
     # ----------------------------------------------------------------------
     def _EnumPrevious(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
     ) -> Generator["_ScopeTracker._TrackerNode", None, None]:
         yield self._tracker_nodes[self._DefaultScopeTrackerTagInstance]
 
@@ -568,20 +619,17 @@ class _PhraseObserver(Phrase.Observer):
         self,
         phrase: Phrase,
         data: Optional[Phrase.ParseResultData],
-        unique_id: Optional[List[str]],
+        unique_id: Optional[Tuple[str, ...]],
         parent: Optional[Union[AST.RootNode, AST.Node]],
     ) -> Union[AST.Leaf, AST.Node]:
 
-        # Look for the cached value
-        if unique_id is not None:
-            key = tuple(unique_id)
-        else:
-            key = None
-
         node: Optional[Union[AST.Leaf, AST.Node]] = None
+
+        # Look for the cached value
+        cache_key = unique_id
         was_cached = False
 
-        potential_node = self._node_cache.get(key, None)
+        potential_node = self._node_cache.get(cache_key, None)
         if potential_node is not None:
             node = potential_node
             was_cached = True
@@ -613,8 +661,8 @@ class _PhraseObserver(Phrase.Observer):
                     else:
                         assert False, data_item  # pragma: no cover
 
-            if key is not None:
-                self._node_cache[key] = node
+            if cache_key is not None:
+                self._node_cache[cache_key] = node
 
         return node
 
@@ -622,7 +670,7 @@ class _PhraseObserver(Phrase.Observer):
     @Interface.override
     def GetDynamicPhrases(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         phrases_type: DynamicPhrasesType,
     ) -> Tuple[Optional[str], List[Phrase]]:
         with self._scope_tracker_lock:
@@ -640,7 +688,7 @@ class _PhraseObserver(Phrase.Observer):
     @Interface.override
     def StartPhrase(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         phrase_stack: List[Phrase],
     ):
         with self._scope_tracker_lock:
@@ -650,7 +698,7 @@ class _PhraseObserver(Phrase.Observer):
     @Interface.override
     def EndPhrase(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         phrase_info_stack: List[Tuple[Phrase, Optional[bool]]],
     ):
         was_successful = bool(phrase_info_stack[0][1])

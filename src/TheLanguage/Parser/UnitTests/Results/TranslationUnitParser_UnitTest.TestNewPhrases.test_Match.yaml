@@ -1,0 +1,57 @@
+# <class 'TheLanguage.Parser.Components.AST.RootNode'>
+Children:
+  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+            IsIgnored: False
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 4] (3)"
+            Type: "Upper <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(0, 3), match='ONE'>"
+            Whitespace: None
+        IterBegin: "[1, 1] (0)"
+        IterEnd: "[1, 4] (3)"
+        Type: "(Upper Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[1, 1] (0)"
+    IterEnd: "[1, 4] (3)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Parser.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[1, 5] (4)"
+                IterEnd: "[1, 8] (7)"
+                Type: "Lower <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
+                Whitespace:
+                  - 3
+                  - 4
+              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[1, 8] (7)"
+                IterEnd: "[2, 1] (8)"
+                Type: "Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>"
+                Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                  End: 8
+                  Start: 7
+                Whitespace: None
+            IterBegin: "[1, 5] (4)"
+            IterEnd: "[2, 1] (8)"
+            Type: "Lower Phrase <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+        IterBegin: "[1, 5] (4)"
+        IterEnd: "[2, 1] (8)"
+        Type: "(Upper Phrase) / (Lower Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[1, 5] (4)"
+    IterEnd: "[2, 1] (8)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[2, 1] (8)"
+Type: "<None>"

@@ -42,6 +42,7 @@ with InitRelativeImports():
 async def test_Parse(parse_mock):
     with pytest.raises(Exception) as ex:
         await RecursivePlaceholderPhrase().ParseAsync(
+            ("root", ),
             CreateIterator("test"),
             parse_mock,
         )

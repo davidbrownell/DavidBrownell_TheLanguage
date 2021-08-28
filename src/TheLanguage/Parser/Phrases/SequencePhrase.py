@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Union
+from typing import cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -117,10 +117,76 @@ class SequencePhrase(Phrase):
         self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    async def ParseAsync(
+    async def ParseSuffixAsync(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
+        ignore_whitespace=False,
+        single_threaded=False,
+    ) -> Union[
+        Phrase.ParseResult,
+        None,
+    ]:
+        return await self._ParseSequenceItemsAsync(
+            1,
+            unique_id,
+            normalized_iter,
+            observer,
+            single_threaded,
+            1 if ignore_whitespace else 0,
+            None,
+        )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ExtractPotentialResults(object):
+        Results: List[Phrase.TokenParseResultData]
+        IterEnd: Phrase.NormalizedIterator
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    _indent_token                           = IndentToken()
+    _dedent_token                           = DedentToken()
+    _newline_token                          = NewlineToken()
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _PopulateRecursiveImpl(
+        self,
+        new_phrase: Phrase,
+    ) -> bool:
+        replaced_phrase = False
+
+        for phrase_index, phrase in enumerate(self.Phrases):
+            if isinstance(phrase, RecursivePlaceholderPhrase):
+                self.Phrases[phrase_index] = new_phrase
+                replaced_phrase = True
+
+            else:
+                replaced_phrase = phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
+
+        if replaced_phrase and self._name_is_default:
+            self.Name = self._CreateDefaultName(self.Phrases)
+
+        return replaced_phrase
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def _ParseAsyncImpl(
+        self,
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
@@ -148,7 +214,7 @@ class SequencePhrase(Phrase):
             else:
                 ignored_indentation_level = None
 
-            result = await self._MatchAsync(
+            result = await self._ParseSequenceItemsAsync(
                 0,
                 unique_id,
                 normalized_iter,
@@ -174,14 +240,117 @@ class SequencePhrase(Phrase):
             return result
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
+    @classmethod
+    def _ExtractPotentialWhitespaceToken(
+        cls,
+        normalized_iter: Phrase.NormalizedIterator,
+        consume_dedent=True,
+    ) -> Optional[Phrase.TokenParseResultData]:
+        """Eats any whitespace token when requested"""
+
+        normalized_iter_begin = normalized_iter.Clone()
+        normalized_iter = normalized_iter.Clone()
+
+        # Potential indent or dedent
+        for token in [
+            cls._indent_token,
+            cls._dedent_token,
+        ]:
+            if not consume_dedent and token == cls._dedent_token:
+                continue
+
+            result = token.Match(normalized_iter)
+            if result is not None:
+                # <Too many arguments> pylint: disable=E1121
+                return Phrase.TokenParseResultData(
+                    token,
+                    None,
+                    result,
+                    normalized_iter_begin,
+                    normalized_iter,
+                    IsIgnored=True,
+                )
+
+        # A potential newline
+        potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
+        normalized_iter_begin = normalized_iter.Clone()
+
+        result = cls._newline_token.Match(normalized_iter)
+        if result is not None:
+            # <Too many arguments> pylint: disable=E1121
+            return Phrase.TokenParseResultData(
+                cls._newline_token,
+                potential_whitespace,
+                result,
+                normalized_iter_begin,
+                normalized_iter,
+                IsIgnored=True,
+            )
+
+        return None
+
     # ----------------------------------------------------------------------
-    async def _MatchAsync(
+    def _ExtractPotentialCommentTokens(
+        self,
+        normalized_iter: Phrase.NormalizedIterator,
+    ) -> Optional["SequencePhrase.ExtractPotentialResults"]:
+        """Eats any comment (stand-alone or trailing) when requested"""
+
+        normalized_iter = normalized_iter.Clone()
+
+        at_beginning_of_line = normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
+
+        if at_beginning_of_line and normalized_iter.LineInfo.HasNewIndent():
+            normalized_iter_begin = normalized_iter.Clone()
+            normalized_iter.SkipPrefix()
+
+            potential_whitespace = normalized_iter_begin.Offset, normalized_iter.Offset
+        else:
+            potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
+
+        normalized_iter_begin = normalized_iter.Clone()
+
+        result = self.CommentToken.Match(normalized_iter)
+        if result is None:
+            return None
+
+        results = [
+            # <Too many arguments> pylint: disable=E1121
+            Phrase.TokenParseResultData(
+                self.CommentToken,
+                potential_whitespace,
+                result,
+                normalized_iter_begin,
+                normalized_iter,
+                IsIgnored=True,
+            ),
+        ]
+
+        # Add additional content if we are at the beginning of the line
+        if at_beginning_of_line:
+            # Capture the trailing newline
+            result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
+            assert result
+
+            results.append(result)
+
+            # Consume potential dedents, but don't return it with the results (as we absorbed
+            # the corresponding indent when we skipped the prefix in the code above)
+            if results[0].Whitespace is not None:
+                result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
+                assert result
+
+                # Ensure that the iterator is updated to account for the dedent even if
+                # it wasn't returned as part of the results. Comments are special beasts.
+                return SequencePhrase.ExtractPotentialResults(results, result.IterEnd)
+
+        return SequencePhrase.ExtractPotentialResults(results, results[-1].IterEnd)
+
+    # ----------------------------------------------------------------------
+    async def _ParseSequenceItemsAsync(
         self,
         phrase_offset: int,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         single_threaded: bool,
@@ -258,7 +427,7 @@ class SequencePhrase(Phrase):
 
             # Process the phrase
             result = await phrase.ParseAsync(
-                unique_id + ["Sequence: {} [{}]".format(phrase.Name, phrase_index)],
+                unique_id + ("Sequence: {} [{}]".format(phrase.Name, phrase_index), ),
                 normalized_iter.Clone(),
                 observer_decorator,
                 ignore_whitespace=ignore_whitespace_ctr != 0,
@@ -278,164 +447,19 @@ class SequencePhrase(Phrase):
                 success = False
                 break
 
+        # <Too many arguments> pylint: disable=E1121
         return Phrase.ParseResult(
             success,
             original_normalized_iter,
             normalized_iter,
+            # <Too many arguments> pylint: disable=E1121
             Phrase.StandardParseResultData(
                 self,
+                # <Too many arguments> pylint: disable=E1121
                 Phrase.MultipleStandardParseResultData(data_items, True),
                 unique_id,
             ),
         )
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class ExtractPotentialResults(object):
-        Results: List[Phrase.TokenParseResultData]
-        IterEnd: Phrase.NormalizedIterator
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _indent_token                           = IndentToken()
-    _dedent_token                           = DedentToken()
-    _newline_token                          = NewlineToken()
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Methods
-    # |
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _ExtractPotentialWhitespaceToken(
-        cls,
-        normalized_iter: Phrase.NormalizedIterator,
-        consume_dedent=True,
-    ) -> Optional[Phrase.TokenParseResultData]:
-        """Eats any whitespace token when requested"""
-
-        normalized_iter_begin = normalized_iter.Clone()
-        normalized_iter = normalized_iter.Clone()
-
-        # Potential indent or dedent
-        for token in [
-            cls._indent_token,
-            cls._dedent_token,
-        ]:
-            if not consume_dedent and token == cls._dedent_token:
-                continue
-
-            result = token.Match(normalized_iter)
-            if result is not None:
-                return Phrase.TokenParseResultData(
-                    token,
-                    None,
-                    result,
-                    normalized_iter_begin,
-                    normalized_iter,
-                    IsIgnored=True,
-                )
-
-        # A potential newline
-        potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
-        normalized_iter_begin = normalized_iter.Clone()
-
-        result = cls._newline_token.Match(normalized_iter)
-        if result is not None:
-            return Phrase.TokenParseResultData(
-                cls._newline_token,
-                potential_whitespace,
-                result,
-                normalized_iter_begin,
-                normalized_iter,
-                IsIgnored=True,
-            )
-
-        return None
-
-    # ----------------------------------------------------------------------
-    def _ExtractPotentialCommentTokens(
-        self,
-        normalized_iter: Phrase.NormalizedIterator,
-    ) -> Optional["SequencePhrase.ExtractPotentialResults"]:
-        """Eats any comment (stand-alone or trailing) when requested"""
-
-        normalized_iter = normalized_iter.Clone()
-
-        at_beginning_of_line = normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
-
-        if at_beginning_of_line and normalized_iter.LineInfo.HasNewIndent():
-            normalized_iter_begin = normalized_iter.Clone()
-            normalized_iter.SkipPrefix()
-
-            potential_whitespace = normalized_iter_begin.Offset, normalized_iter.Offset
-        else:
-            potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
-
-        normalized_iter_begin = normalized_iter.Clone()
-
-        result = self.CommentToken.Match(normalized_iter)
-        if result is None:
-            return None
-
-        results = [
-            Phrase.TokenParseResultData(
-                self.CommentToken,
-                potential_whitespace,
-                result,
-                normalized_iter_begin,
-                normalized_iter,
-                IsIgnored=True,
-            ),
-        ]
-
-        # Add additional content if we are at the beginning of the line
-        if at_beginning_of_line:
-            # Capture the trailing newline
-            result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
-            assert result
-
-            results.append(result)
-
-            # Consume potential dedents, but don't return it with the results (as we absorbed
-            # the corresponding indent when we skipped the prefix in the code above)
-            if results[0].Whitespace is not None:
-                result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
-                assert result
-
-                # Ensure that the iterator is updated to account for the dedent even if
-                # it wasn't returned as part of the results. Comments are special beasts.
-                return SequencePhrase.ExtractPotentialResults(results, result.IterEnd)
-
-        return SequencePhrase.ExtractPotentialResults(results, results[-1].IterEnd)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        replaced_phrase = False
-
-        for phrase_index, phrase in enumerate(self.Phrases):
-            if isinstance(phrase, RecursivePlaceholderPhrase):
-                self.Phrases[phrase_index] = new_phrase
-                replaced_phrase = True
-
-            else:
-                replaced_phrase = phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
-
-        if replaced_phrase and self._name_is_default:
-            self.Name = self._CreateDefaultName(self.Phrases)
-
-        return replaced_phrase
 
     # ----------------------------------------------------------------------
     @staticmethod

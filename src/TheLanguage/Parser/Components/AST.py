@@ -26,6 +26,7 @@ from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -42,7 +43,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class _ASTBase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
+class _ASTBase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     """Common base class for nodes and leaves"""
 
     Type: Union[None, Phrase, Token]
@@ -53,9 +54,8 @@ class _ASTBase(Interface.Interface, CommonEnvironment.ObjectReprImplBase):
         self,
         **custom_display_funcs: Callable[[Any], Optional[str]],
     ):
-        CommonEnvironment.ObjectReprImplBase.__init__(
+        YamlRepr.ObjectReprImplBase.__init__(
             self,
-            include_class_info=False,
             Type=lambda value: "<None>" if value is None else "{} {}".format(value.Name, type(value)),
             Parent=None,
             **custom_display_funcs,
@@ -81,7 +81,7 @@ class _Node(_ASTBase):
 
     # ----------------------------------------------------------------------
     @property
-    def IterBegin_(self) -> Optional[NormalizedIterator]: # TODO: Change this to IterBegin once there is better tooling support to do so
+    def IterBegin(self) -> Optional[NormalizedIterator]:
         node = self
 
         while isinstance(node, _Node):
@@ -90,7 +90,7 @@ class _Node(_ASTBase):
 
             node = node.Children[0]  # <unscriptable> pylint: disable=E1136
 
-        return cast(Leaf, node).IterBegin_
+        return cast(Leaf, node).IterBegin
 
     @property
     def IterEnd(self) -> Optional[NormalizedIterator]:
@@ -167,7 +167,7 @@ class Leaf(_ASTBase):
 
     Whitespace: Optional[Tuple[int, int]]   # Whitespace immediately before the token
     Value: Token.MatchResult                # Result of the call to Token.Match
-    IterBegin_: NormalizedIterator          # NormalizedIterator before the token
+    IterBegin: NormalizedIterator          # NormalizedIterator before the token
     IterEnd: NormalizedIterator           # NormalizedIterator after the token has been consumed
     IsIgnored: bool                         # True if the result is whitespace while whitespace is being ignored
 

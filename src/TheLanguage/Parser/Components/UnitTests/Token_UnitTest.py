@@ -568,9 +568,9 @@ def test_NewlineMatch():
 
     assert str(result) == textwrap.dedent(
         """\
-        <class 'Token.NewlineToken.MatchResult'>
-        End   : 2
-        Start : 0
+        # <class 'Token.NewlineToken.MatchResult'>
+        End: 2
+        Start: 0
         """,
     )
 
@@ -586,10 +586,10 @@ def test_IndentMatch():
 
     assert str(result) == textwrap.dedent(
         """\
-        <class 'Token.IndentToken.MatchResult'>
-        End   : 4
-        Start : 0
-        Value : 4
+        # <class 'Token.IndentToken.MatchResult'>
+        End: 4
+        Start: 0
+        Value: 4
         """,
     )
 
@@ -612,8 +612,8 @@ def test_DedentMatch():
 
     assert str(result) == textwrap.dedent(
         """\
-        <class 'Token.DedentToken.MatchResult'>
-        -- empty dict --
+        # <class 'Token.DedentToken.MatchResult'>
+        {}
         """,
     )
 
@@ -629,7 +629,7 @@ def test_RegexMatch():
 
     assert str(result) == textwrap.dedent(
         """\
-        <class 'Token.RegexToken.MatchResult'>
-        Match : <_sre.SRE_Match object; span=(0, 3), match='foo'>
+        # <class 'Token.RegexToken.MatchResult'>
+        Match: "<_sre.SRE_Match object; span=(0, 3), match='foo'>"
         """,
     )

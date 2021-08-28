@@ -18,8 +18,11 @@
 import os
 import textwrap
 
+import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import ResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,7 +38,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    assert Execute(
+    result = Execute(
         textwrap.dedent(
             """\
             value1 = one or (two and three)
@@ -54,4 +57,6 @@ def test_Standard():
             )
             """,
         ),
-    ) == ResultsFromFile()
+    )
+
+    CompareResultsFromFile(result)

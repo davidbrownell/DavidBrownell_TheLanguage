@@ -16,7 +16,6 @@
 """Automated test for Phrase.py"""
 
 import os
-import re
 import textwrap
 
 from unittest.mock import Mock
@@ -45,19 +44,23 @@ with InitRelativeImports():
 def CreatePhrase(result):
 
     # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ResultObject(object):
+        Success: Any
+
+    # ----------------------------------------------------------------------
+
+    result_obj = ResultObject(result)
+
+    # ----------------------------------------------------------------------
     class ThePhrase(Phrase):
         # ----------------------------------------------------------------------
         def __init__(self):
             super(ThePhrase, self).__init__("The Phrase")
 
             self.parse_mock = Mock(
-                return_value=result,
+                return_value=result_obj,
             )
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def ParseAsync(self, *args, **kwargs):
-            return self.parse_mock(*args, **kwargs)
 
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
@@ -70,6 +73,11 @@ def CreatePhrase(result):
             # Nothing to do here
             return True
 
+        # ----------------------------------------------------------------------
+        @Interface.override
+        async def _ParseAsyncImpl(self, *args, **kwargs):
+            return self.parse_mock(*args, **kwargs)
+
     # ----------------------------------------------------------------------
 
     return ThePhrase()
@@ -81,18 +89,11 @@ def iterator(
 ):
     return NormalizedIterator(Normalize(value))
 
+
 # ----------------------------------------------------------------------
 class TestStandard(object):
     # ----------------------------------------------------------------------
     class MyPhrase(Phrase):
-        # ----------------------------------------------------------------------
-        @staticmethod
-        @Interface.override
-        async def ParseAsync(*args, **kwargs):
-            pass
-
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         @Interface.override
         def _PopulateRecursiveImpl(
@@ -101,6 +102,12 @@ class TestStandard(object):
         ) -> bool:
             # Nothing to do here
             return False
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.override
+        async def _ParseAsyncImpl(*args, **kwargs):
+            pass
 
     # ----------------------------------------------------------------------
     class MyParseResultData(Phrase.ParseResultData):
@@ -128,11 +135,11 @@ class TestStandard(object):
     def test_ParseResultEmptyData(self, iterator):
         assert str(Phrase.ParseResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : None
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: None
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: True
             """,
         )
 
@@ -142,30 +149,32 @@ class TestStandard(object):
 
         assert str(Phrase.ParseResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : None
-            IterBegin : [1, 6] (5)
-            IterEnd   : [1, 6] (5)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: None
+            IterBegin: "[1, 6] (5)"
+            IterEnd: "[1, 6] (5)"
+            Success: True
             """,
         )
 
     # ----------------------------------------------------------------------
     def test_ParseResultWithMyParseResultData(self, iterator):
-        assert str(Phrase.ParseResult(False, iterator, iterator, self.MyParseResultData())) == textwrap.dedent(
+        assert str(
+            Phrase.ParseResult(False, iterator, iterator, self.MyParseResultData()),
+        ) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
-                        -- empty dict --
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : False
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
+              {}
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: False
             """,
         )
 
     # ----------------------------------------------------------------------
     def test_ParseResultWithStandardParseResultData(self, iterator):
-        assert Phrase.ParseResult(
+        assert str(Phrase.ParseResult(
             True,
             iterator,
             iterator,
@@ -174,16 +183,16 @@ class TestStandard(object):
                 self.MyParseResultData(),
                 ["id1"],
             ),
-        ).ToString() == textwrap.dedent(
+        )) == textwrap.dedent(
             """\
-            <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
-            Data      : <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
-                        Data     : <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
-                                   -- empty dict --
-                        Phrase   : The Phrase
-            IterBegin : [1, 1] (0)
-            IterEnd   : [1, 1] (0)
-            Success   : True
+            # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+            Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+              Data: # <class 'TheLanguage.Parser.Components.UnitTests.Phrase_UnitTest.TestStandard.MyParseResultData'>
+                {}
+              Phrase: "The Phrase"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 1] (0)"
+            Success: True
             """,
         )
 
@@ -256,8 +265,8 @@ class TestStandard(object):
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio
 async def test_Parse(iterator, parse_mock):
-    result = await CreatePhrase(1).ParseAsync(iterator, parse_mock)
-    assert result == 1
+    result = await CreatePhrase(1).ParseAsync(("root", ), iterator, parse_mock)
+    assert result.Success == 1
 
     assert parse_mock.OnIndent.call_count == 0
     assert parse_mock.OnDedent.call_count == 0

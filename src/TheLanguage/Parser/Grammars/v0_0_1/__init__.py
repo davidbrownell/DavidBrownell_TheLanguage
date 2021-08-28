@@ -2,7 +2,6 @@
 
 # Expressions:
 # ---
-#   - Index (easy):         <expr> '[' <expr> ']'
 #   - LambdaDefinition:     ???
 
 # Statements:
@@ -11,7 +10,7 @@
 #   - Type Alias
 #   - Docstring
 #   - ClassAttribute
-#   - SmartIf
+#   - SmartIf (Python's match statement)
 #   - ClassCompilerData
 
 
@@ -24,4 +23,4 @@
 #     # Comment 1
 #     # Comment 2
 
-# TODO: Ensure that everything that uses CommonEnvironment.ObjectReprImplBase is properly initializing with include_class_info=False
+# TODO: Ensure that everything that uses YamlRepr.ObjectReprImplBase is properly initializing with include_class_info=False
