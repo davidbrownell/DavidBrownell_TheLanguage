@@ -2,7 +2,7 @@
 
 # Expressions:
 # ---
-#   - LambdaDefinition:     ???
+#   - SmartIf (Python's match statement)
 
 # Statements:
 #   - If
@@ -10,7 +10,6 @@
 #   - Type Alias
 #   - Docstring
 #   - ClassAttribute
-#   - SmartIf (Python's match statement)
 #   - ClassCompilerData
 
 

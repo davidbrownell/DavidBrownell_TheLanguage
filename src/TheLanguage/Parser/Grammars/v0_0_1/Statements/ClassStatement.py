@@ -26,7 +26,6 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -168,13 +167,13 @@ class ClassStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
-    class BaseInfo(YamlRepr.ObjectReprImplBase):
+    class BaseInfo(GrammarPhrase.NodeInfo):
         Visibility: VisibilityModifier
         Name: str
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
-    class NodeInfo(YamlRepr.ObjectReprImplBase):
+    class NodeInfo(GrammarPhrase.NodeInfo):
         Type: "ClassStatement.ClassType"
         Name: str
         Visibility: VisibilityModifier
@@ -187,8 +186,7 @@ class ClassStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            YamlRepr.ObjectReprImplBase.__init__(
-                self,
+            super(ClassStatement.NodeInfo, self).__post_init__(
                 Statements=None,
             )
 
