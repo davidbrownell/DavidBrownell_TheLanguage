@@ -44,6 +44,8 @@ class FuncType(GrammarPhrase):
         (Int (Char, Bool))
     """
 
+    # TODO: Add exception and coroutine decorations
+
     PHRASE_NAME                               = "Func Type"
 
     # ----------------------------------------------------------------------

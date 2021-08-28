@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Union
+from typing import List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -91,7 +91,7 @@ class OrPhrase(Phrase):
     @Interface.override
     async def _ParseAsyncImpl(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
@@ -130,7 +130,7 @@ class OrPhrase(Phrase):
             # ----------------------------------------------------------------------
             async def ExecuteAsync(phrase_index, phrase):
                 return await phrase.ParseAsync(
-                    unique_id + ["Or: {} [{}]".format(phrase.Name, phrase_index)],
+                    unique_id + ("Or: {} [{}]".format(phrase.Name, phrase_index), ),
                     normalized_iter.Clone(),
                     observer_decorator,
                     ignore_whitespace=ignore_whitespace,

@@ -57,6 +57,5 @@ class TernaryExpression(GrammarPhrase):
                     "else",
                     DynamicPhrasesType.Expressions,
                 ],
-                is_left_recursive_sequence=True,
             ),
         )

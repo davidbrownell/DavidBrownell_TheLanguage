@@ -69,6 +69,5 @@ class CastExpression(GrammarPhrase):
                         ),
                     ),
                 ],
-                is_left_recursive_sequence=True,
             ),
         )

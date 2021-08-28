@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .OrPhrase import OrPhrase
-    from ..Components.Phrase import Phrase
+    from ..Components.Phrase import DynamicPhrasesType, Phrase
 
 
 # ----------------------------------------------------------------------
@@ -44,9 +44,11 @@ class DynamicPhrase(Phrase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
+        phrases_type: DynamicPhrasesType,
         get_dynamic_phrases_func: Callable[
             [
-                List[str],                  # unique_id
+                Tuple[str, ...],            # unique_id
+                DynamicPhrasesType,
                 Phrase.Observer,
             ],
             Tuple[Optional[str], List[Phrase]],         # List of Phrases and the phase name
@@ -59,7 +61,8 @@ class DynamicPhrase(Phrase):
 
         super(DynamicPhrase, self).__init__(name)
 
-        self._get_dynamic_phrases_func                                      = get_dynamic_phrases_func
+        self.DynamicPhrasesType             = phrases_type
+        self._get_dynamic_phrases_func      = get_dynamic_phrases_func
 
     # ----------------------------------------------------------------------
     # Set this value to True to enable basic statistic collection.
@@ -81,12 +84,12 @@ class DynamicPhrase(Phrase):
         # ----------------------------------------------------------------------
         def UpdateStats(
             self,
-            unique_id: List[str],
+            unique_id: Tuple[str, ...],
             normalized_iter: Phrase.NormalizedIterator,
         ):
             with self._stats_lock:
                 data = self._stats.setdefault((cast(bytes, normalized_iter.Hash), normalized_iter.Offset), {})
-                data = data.setdefault(tuple(unique_id), {})
+                data = data.setdefault(unique_id, {})
 
                 key = id(self)
 
@@ -159,7 +162,7 @@ class DynamicPhrase(Phrase):
     @Interface.override
     async def _ParseAsyncImpl(
         self,
-        unique_id: List[str],
+        unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
@@ -182,7 +185,11 @@ class DynamicPhrase(Phrase):
                 ],
             ),
         ):
-            phrase_name, dynamic_phrases = self._get_dynamic_phrases_func(unique_id, observer)
+            phrase_name, dynamic_phrases = self._get_dynamic_phrases_func(
+                unique_id,
+                self.DynamicPhrasesType,
+                observer,
+            )
             assert isinstance(dynamic_phrases, list), dynamic_phrases
 
             if not dynamic_phrases:
@@ -200,7 +207,7 @@ class DynamicPhrase(Phrase):
             )
 
             result = await or_phrase.ParseAsync(
-                unique_id + [or_phrase.Name],
+                unique_id + (or_phrase.Name, ),
                 normalized_iter,
                 Phrase.ObserverDecorator(
                     self,
