@@ -530,7 +530,8 @@ Children:
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Expressions.LambdaExpression.LambdaExpression.NodeInfo'>
                           Expression: "Tuple Expression"
-                          Parameters:   ParametersType.pos:
+                          Parameters:
+                            ParametersType.pos:
                               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                                 Children:
                                   - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -976,7 +977,8 @@ Children:
                                                     Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
                                                 Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Expressions.LambdaExpression.LambdaExpression.NodeInfo'>
                                                   Expression: "Variable Expression"
-                                                  Parameters:   ParametersType.key:
+                                                  Parameters:
+                                                    ParametersType.key:
                                                       - # <class 'TheLanguage.Parser.Components.AST.Node'>
                                                         Children:
                                                           - # <class 'TheLanguage.Parser.Components.AST.Node'>

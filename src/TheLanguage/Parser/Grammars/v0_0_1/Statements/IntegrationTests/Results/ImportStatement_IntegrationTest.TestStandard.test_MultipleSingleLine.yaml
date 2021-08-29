@@ -213,7 +213,8 @@ Children:
                   Start: 74
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   obj1: "obj1"
+              ImportItems:
+                obj1: "obj1"
                 obj2: "obj2Decorated"
                 obj3: "obj3Decorated"
                 obj4: "obj4"
