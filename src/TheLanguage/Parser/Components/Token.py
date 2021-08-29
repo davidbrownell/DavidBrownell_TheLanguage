@@ -47,13 +47,7 @@ class Token(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class MatchResult(YamlRepr.ObjectReprImplBase):
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            # TODO: Remove this once changes are complete in Common_Environment
-            YamlRepr.ObjectReprImplBase.__init__(
-                self,
-                use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
-            )
+        pass
 
     # ----------------------------------------------------------------------
     # |
@@ -72,14 +66,6 @@ class Token(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # |
     # |  Public Methods
     # |
-    # ----------------------------------------------------------------------
-    # TODO: Remove this once changes are complete in Common_Environment
-    def __init__(self):
-        YamlRepr.ObjectReprImplBase.__init__(
-            self,
-            use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
-        )
-
     # ----------------------------------------------------------------------
     def __hash__(self):
         return tuple(self.__dict__.values()).__hash__()
@@ -124,8 +110,6 @@ class NewlineToken(Token):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            super(NewlineToken.MatchResult, self).__post_init__()
-
             assert self.Start >= 0, self
             assert self.End > self.Start, self
 
@@ -194,8 +178,6 @@ class IndentToken(Token):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            super(IndentToken.MatchResult, self).__post_init__()
-
             assert self.Start >= 0, self
             assert self.End > self.Start, self
             assert self.Value >= 0, self
@@ -248,10 +230,7 @@ class DedentToken(Token):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class MatchResult(Token.MatchResult):
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            super(DedentToken.MatchResult, self).__post_init__()
+        pass
 
     # ----------------------------------------------------------------------
     # |
@@ -301,10 +280,6 @@ class RegexToken(Token):
     class MatchResult(Token.MatchResult):
         # ----------------------------------------------------------------------
         Match: TypingMatch
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            super(RegexToken.MatchResult, self).__post_init__()
 
     # ----------------------------------------------------------------------
     # |

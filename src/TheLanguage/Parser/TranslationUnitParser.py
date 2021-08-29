@@ -107,7 +107,6 @@ class DynamicPhrasesInfo(YamlRepr.ObjectReprImplBase):
 
         YamlRepr.ObjectReprImplBase.__init__(
             self,
-            use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
             Expressions=phrase_display_func,
             Names=phrase_display_func,
             Statements=phrase_display_func,

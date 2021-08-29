@@ -117,11 +117,7 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
             self,
             **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
         ):
-            YamlRepr.ObjectReprImplBase.__init__(
-                self,
-                use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
-                **custom_display_funcs,
-            )
+            YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
 
     # ----------------------------------------------------------------------
     # |
@@ -136,7 +132,6 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     ):
         YamlRepr.ObjectReprImplBase.__init__(
             self,
-            use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
             Phrase=lambda phrase: phrase.Name,
             **custom_display_funcs,
         )

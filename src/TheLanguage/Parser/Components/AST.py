@@ -56,7 +56,6 @@ class _ASTBase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     ):
         YamlRepr.ObjectReprImplBase.__init__(
             self,
-            use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
             Type=lambda value: "<None>" if value is None else "{} {}".format(value.Name, type(value)),
             Parent=None,
             **custom_display_funcs,
