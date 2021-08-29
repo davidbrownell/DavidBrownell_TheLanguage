@@ -426,10 +426,8 @@ def _EnumNewStyle(
         # Get the parameters
         parameters = list(
             itertools.chain(
-                [
-                    [nodes[2]],
-                    [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Node, nodes[3])))],
-                ],
+                [nodes[2]],
+                [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[3])))],
             ),
         )
 

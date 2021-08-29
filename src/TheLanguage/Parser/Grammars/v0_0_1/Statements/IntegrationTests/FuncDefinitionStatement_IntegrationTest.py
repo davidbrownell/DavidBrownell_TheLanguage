@@ -236,7 +236,7 @@ class TestTraditionalFlags(object):
                     """,
                 ),
             ),
-            )
+        )
 
     # ----------------------------------------------------------------------
     def test_Keyword(self):
@@ -249,7 +249,7 @@ class TestTraditionalFlags(object):
                     """,
                 ),
             ),
-            )
+        )
 
     # ----------------------------------------------------------------------
     def test_PositionalAndKeyword(self):
@@ -262,7 +262,7 @@ class TestTraditionalFlags(object):
                     """,
                 ),
             ),
-            )
+        )
 
     # ----------------------------------------------------------------------
     def test_OrderError(self):
@@ -379,7 +379,7 @@ class TestNewStyleFlags(object):
                     """,
                 ),
             ),
-            )
+        )
 
     # ----------------------------------------------------------------------
     def test_Any(self):
@@ -397,7 +397,7 @@ class TestNewStyleFlags(object):
                     """,
                 ),
             ),
-            )
+        )
 
     # ----------------------------------------------------------------------
     def test_Keyword(self):
@@ -415,7 +415,7 @@ class TestNewStyleFlags(object):
                     """,
                 ),
             ),
-            )
+        )
 
     # ----------------------------------------------------------------------
     def test_PositionalAndKeyword(self):
@@ -433,7 +433,7 @@ class TestNewStyleFlags(object):
                     """,
                 ),
             ),
-            )
+        )
 
     # ----------------------------------------------------------------------
     def test_KeywordAndAny(self):
@@ -452,7 +452,7 @@ class TestNewStyleFlags(object):
                     """,
                 ),
             ),
-            )
+        )
 
     # ----------------------------------------------------------------------
     def test_All(self):
@@ -473,7 +473,7 @@ class TestNewStyleFlags(object):
                     """,
                 ),
             ),
-            )
+        )
 
     # ----------------------------------------------------------------------
     def test_DuplicateError(self):
