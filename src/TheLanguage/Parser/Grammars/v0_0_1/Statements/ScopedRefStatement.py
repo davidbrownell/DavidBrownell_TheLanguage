@@ -38,21 +38,21 @@ class ScopedRefStatement(GrammarPhrase):
     """\
     Acquires the reference of a variable while the scope is active.
 
-    'with' (<refs_expression>| '(' <refs_expression> ')') ':'
+    'with' (<refs_expression>| '(' <refs_expression> ')') 'as' 'ref' ':'
         <statement>+
 
     Examples:
         with var1 as ref:
             pass
 
-        with var1 as ref, var2 as ref:
+        with (var1, var2) as ref:
             pass
 
         with (
-            var1 as ref,
-            var2 as ref,
-            var3 as ref,
-        ):
+            var1,
+            var2,
+            var3,
+        ) as ref:
             pass
     """
 

@@ -48,6 +48,7 @@ with InitRelativeImports():
     from .Statements.ForStatement import ForStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
     from .Statements.FuncInvocationStatement import FuncInvocationStatement
+    from .Statements.IfStatement import IfStatement
     from .Statements.ImportStatement import ImportStatement
     from .Statements.MethodDefinitionStatement import MethodDefinitionStatement
     from .Statements.PassStatement import PassStatement
@@ -90,6 +91,7 @@ GrammarPhrases                              = [
     ForStatement(),
     FuncDefinitionStatement(),
     FuncInvocationStatement(),
+    IfStatement(),
     ImportStatement(".TheLanguage",),       # TODO: Update this once the language has a name
     MethodDefinitionStatement(),
     PassStatement(),
