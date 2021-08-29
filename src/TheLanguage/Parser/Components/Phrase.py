@@ -71,12 +71,6 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         def __post_init__(self):
             assert self.IterBegin.Offset <= self.IterEnd.Offset, self
 
-            # TODO: Remove this once changes are complete in Common_Environment
-            YamlRepr.ObjectReprImplBase.__init__(
-                self,
-                use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
-            )
-
             self.UpdateStats()
 
         # ----------------------------------------------------------------------
@@ -126,11 +120,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
             self,
             **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
         ):
-            YamlRepr.ObjectReprImplBase.__init__(
-                self,
-                use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
-                **custom_display_funcs,
-            )
+            YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
 
         # ----------------------------------------------------------------------
         @Interface.extensionmethod
@@ -298,11 +288,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     ):
         assert name
 
-        YamlRepr.ObjectReprImplBase.__init__(
-            self,
-            use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
-            **custom_display_funcs,
-        )
+        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
 
         self.Name                           = name
         self._is_populated                  = False
