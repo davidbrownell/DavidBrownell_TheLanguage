@@ -47,9 +47,7 @@ class Token(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class MatchResult(YamlRepr.ObjectReprImplBase):
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            pass
+        pass
 
     # ----------------------------------------------------------------------
     # |

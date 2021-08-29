@@ -24,7 +24,6 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -75,6 +74,8 @@ class FuncDefinitionStatement(GrammarPhrase):
             pass
     """
 
+    # TODO: Captures
+
     PHRASE_NAME                             = "Func Definition Statement"
     VALIDATION_EXPRESSION                   = re.compile(r"^_?[A-Z][a-zA-Z0-9_]+\??(?!<__)$")
 
@@ -84,7 +85,7 @@ class FuncDefinitionStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
-    class NodeInfo(YamlRepr.ObjectReprImplBase):
+    class NodeInfo(GrammarPhrase.NodeInfo):
         Visibility: VisibilityModifier
         ReturnType: Union[Leaf, Node]
         Name: str
@@ -93,8 +94,7 @@ class FuncDefinitionStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            YamlRepr.ObjectReprImplBase.__init__(
-                self,
+            super(FuncDefinitionStatement.NodeInfo, self).__post_init__(
                 ReturnType=lambda node: node.Type.Name,
                 Statements=lambda statements: [statement.Type.Name for statement in statements],
             )

@@ -153,7 +153,8 @@ Children:
                   Start: 47
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   obj1: "obj1"
+              ImportItems:
+                obj1: "obj1"
                 obj2: "obj2Decorated"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Statements/File1.TheLanguage"
@@ -493,7 +494,8 @@ Children:
                   Start: 160
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   obj3: "obj3Decorated"
+              ImportItems:
+                obj3: "obj3Decorated"
                 obj4: "obj4"
                 obj5: "obj5Decorated"
                 obj6: "obj6"

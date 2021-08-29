@@ -27,7 +27,6 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -97,7 +96,7 @@ class ImportStatement(ImportGrammarStatement):
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
-    class NodeInfo(YamlRepr.ObjectReprImplBase):
+    class NodeInfo(ImportGrammarStatement.NodeInfo):
         ImportType: "ImportStatement.ImportType"
         SourceFilename: str
         ImportItems: Dict[str, str]
@@ -109,8 +108,7 @@ class ImportStatement(ImportGrammarStatement):
             assert self.ImportItems
             assert self.ImportItems
 
-            YamlRepr.ObjectReprImplBase.__init__(
-                self,
+            super(ImportStatement.NodeInfo, self).__post_init__(
                 ImportItemsLookup=None,
             )
 

@@ -87,7 +87,8 @@ Children:
                   Start: 20
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   File1: "File1"
+              ImportItems:
+                File1: "File1"
               ImportType: "ImportType.SourceIsDirectory"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/File1.TheLanguage"
             IterBegin: "[1, 1] (0)"
@@ -214,7 +215,8 @@ Children:
                   Start: 53
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   obj1: "obj1"
+              ImportItems:
+                obj1: "obj1"
                 obj2: "obj2"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/File2.TheLanguage"
@@ -396,7 +398,8 @@ Children:
                   Start: 111
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   obj3: "obj3Decorated"
+              ImportItems:
+                obj3: "obj3Decorated"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Dir1/File3.TheLanguage"
             IterBegin: "[4, 1] (55)"
@@ -580,7 +583,8 @@ Children:
                   Start: 161
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   obj4: "obj4"
+              ImportItems:
+                obj4: "obj4"
                 obj5: "obj5"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir2/Dir3/File4.TheLanguage"
