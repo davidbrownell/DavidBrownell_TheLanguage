@@ -378,7 +378,8 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncDefinitionStatement.FuncDefinitionStatement.NodeInfo'>
               Name: "Func"
-              Parameters:   ParametersType.any:
+              Parameters:
+                ParametersType.any:
                   - # <class 'TheLanguage.Parser.Components.AST.Node'>
                     Children:
                       - # <class 'TheLanguage.Parser.Components.AST.Node'>

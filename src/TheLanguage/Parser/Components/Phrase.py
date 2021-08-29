@@ -71,6 +71,12 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         def __post_init__(self):
             assert self.IterBegin.Offset <= self.IterEnd.Offset, self
 
+            # TODO: Remove this once changes are complete in Common_Environment
+            YamlRepr.ObjectReprImplBase.__init__(
+                self,
+                use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
+            )
+
             self.UpdateStats()
 
         # ----------------------------------------------------------------------
@@ -122,6 +128,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         ):
             YamlRepr.ObjectReprImplBase.__init__(
                 self,
+                use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
                 **custom_display_funcs,
             )
 
@@ -293,6 +300,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
 
         YamlRepr.ObjectReprImplBase.__init__(
             self,
+            use_correct=True, # TODO: Remove this once changes are complete in Common_Environment
             **custom_display_funcs,
         )
 

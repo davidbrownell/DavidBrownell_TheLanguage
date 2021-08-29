@@ -79,7 +79,8 @@ Children:
                   Start: 19
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   File1: "File1"
+              ImportItems:
+                File1: "File1"
               ImportType: "ImportType.SourceIsDirectory"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/File1.TheLanguage"
             IterBegin: "[1, 1] (0)"
@@ -195,7 +196,8 @@ Children:
                   Start: 57
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   File1: "File1Decorated"
+              ImportItems:
+                File1: "File1Decorated"
               ImportType: "ImportType.SourceIsDirectory"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/File1.TheLanguage"
             IterBegin: "[2, 1] (20)"
@@ -286,7 +288,8 @@ Children:
                   Start: 80
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   File2: "File2"
+              ImportItems:
+                File2: "File2"
               ImportType: "ImportType.SourceIsDirectory"
               SourceFilename: "<generic_root>/File2.TheLanguage"
             IterBegin: "[4, 1] (59)"
@@ -402,7 +405,8 @@ Children:
                   Start: 120
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   File2: "File2Decorated"
+              ImportItems:
+                File2: "File2Decorated"
               ImportType: "ImportType.SourceIsDirectory"
               SourceFilename: "<generic_root>/File2.TheLanguage"
             IterBegin: "[5, 1] (81)"
@@ -493,7 +497,8 @@ Children:
                   Start: 147
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   File3: "File3"
+              ImportItems:
+                File3: "File3"
               ImportType: "ImportType.SourceIsDirectory"
               SourceFilename: "<generic_root>/Dir1/File3.TheLanguage"
             IterBegin: "[7, 1] (122)"
@@ -609,7 +614,8 @@ Children:
                   Start: 191
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   File3: "File3Decorated"
+              ImportItems:
+                File3: "File3Decorated"
               ImportType: "ImportType.SourceIsDirectory"
               SourceFilename: "<generic_root>/Dir1/File3.TheLanguage"
             IterBegin: "[8, 1] (148)"
@@ -700,7 +706,8 @@ Children:
                   Start: 221
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   File4: "File4"
+              ImportItems:
+                File4: "File4"
               ImportType: "ImportType.SourceIsDirectory"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir2/Dir3/File4.TheLanguage"
             IterBegin: "[10, 1] (193)"
@@ -816,7 +823,8 @@ Children:
                   Start: 268
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
-              ImportItems:   File4: "File4Decorated"
+              ImportItems:
+                File4: "File4Decorated"
               ImportType: "ImportType.SourceIsDirectory"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir2/Dir3/File4.TheLanguage"
             IterBegin: "[11, 1] (222)"
