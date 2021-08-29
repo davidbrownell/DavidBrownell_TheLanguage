@@ -640,7 +640,8 @@ Children:
               ClassType: "ClassType.immutable"
               MethodType: "MethodType.abstract"
               Name: "Method3"
-              Parameters:   ParametersType.pos:
+              Parameters:
+                ParametersType.pos:
                   - # <class 'TheLanguage.Parser.Components.AST.Node'>
                     Children:
                       - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -1205,7 +1206,8 @@ Children:
               ClassType: "ClassType.mutable"
               MethodType: "MethodType.abstract"
               Name: "Method4"
-              Parameters:   ParametersType.pos:
+              Parameters:
+                ParametersType.pos:
                   - # <class 'TheLanguage.Parser.Components.AST.Node'>
                     Children:
                       - # <class 'TheLanguage.Parser.Components.AST.Node'>

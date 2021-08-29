@@ -1416,7 +1416,8 @@ Children:
               ClassType: None
               MethodType: "MethodType.static"
               Name: "Method5"
-              Parameters:   ParametersType.pos:
+              Parameters:
+                ParametersType.pos:
                   - # <class 'TheLanguage.Parser.Components.AST.Node'>
                     Children:
                       - # <class 'TheLanguage.Parser.Components.AST.Node'>
