@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IfStatement.py
+# |  TryCatchStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-28 21:45:29
+# |      2021-08-29 05:38:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IfStatement object"""
+"""Contains the TryCatchStatement object"""
 
 import os
 
+from typing import cast, List, Optional, Tuple, Union
+
+from dataclasses import dataclass
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,57 +34,93 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+
+    from ....Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractRepeat,
+        ExtractSequence,
+        Leaf,
+        Node,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------
-class IfStatement(GrammarPhrase):
+class TryCatchStatement(GrammarPhrase):
     """\
-    If/Else If/Else statement.
+    Try/catch blocks.
 
-    'if <expr> ':'
+    'try' ':'
         <statement>+
     (
-        'elif' <expr> ':'
+        'catch' <type> <name> ':'
             <statement>+
     )*
     (
-        'else' ':'
+        'catch' ':'
             <statement>+
     )?
 
     Examples:
-        if cond1:
+        try:
             Func1()
-        elif cond2:
+        catch Exception ex:
             Func2()
+        catch (Exception1 | Exception2) ex:
             Func3()
-        elif cond3:
+        catch:
             Func4()
-        else:
-            Func5()
-            Func6()
     """
 
-    PHRASE_NAME                             = "If Statement"
+    PHRASE_NAME                             = "Try Catch Statement"
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class NodeInfo(GrammarPhrase.NodeInfo):
+        TryStatements: List[Union[Leaf, Node]]
+        CatchVarStatements: List[
+            Tuple[
+                Tuple[Node, Leaf],          # Exception Type, name
+                List[Union[Leaf, Node]],    # Statements
+            ]
+        ]
+        CatchStatements: List[Union[Leaf, Node]]
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            super(TryCatchStatement.NodeInfo, self).__post_init__(
+                TryStatements=lambda statements: [statement.Type.Name for statement in statements],
+                CatchVarStatements=lambda items: ["{}, {}, {}".format(ex_type, ex_name, ", ".join([statement.Type.Name for statement in statements])) for (ex_type, ex_name), statements in items],
+                CatchStatements=lambda statements: [statement.Type.Name for statement in statements],
+            )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     def __init__(self):
         # TODO: Single line statement
         statements_item = PhraseItem(
+            name="Statements",
             item=DynamicPhrasesType.Statements,
             arity="+",
         )
 
-        super(IfStatement, self).__init__(
+        super(TryCatchStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # 'if' <expr> ':'
+                    # 'try' ':'
                     #     <statement>+
-                    "if",
-                    DynamicPhrasesType.Expressions,
+                    "try",
                     ":",
                     CommonTokens.Newline,
                     CommonTokens.Indent,
@@ -87,14 +128,15 @@ class IfStatement(GrammarPhrase):
                     CommonTokens.Dedent,
 
                     # (
-                    #     'elif' <expr> ':'
-                    #          <statement>+
+                    #     'catch' <type> <name> ':'
+                    #         <statement>+
                     # )*
                     PhraseItem(
-                        name="Elif",
+                        name="Catch Var",
                         item=[
-                            "elif",
-                            DynamicPhrasesType.Expressions,
+                            "catch",
+                            DynamicPhrasesType.Types,
+                            DynamicPhrasesType.Names,
                             ":",
                             CommonTokens.Newline,
                             CommonTokens.Indent,
@@ -105,13 +147,13 @@ class IfStatement(GrammarPhrase):
                     ),
 
                     # (
-                    #     'else' ':'
+                    #     'catch' ':'
                     #         <statement>+
                     # )?
                     PhraseItem(
-                        name="Else",
+                        name="Catch",
                         item=[
-                            "else",
+                            "catch",
                             ":",
                             CommonTokens.Newline,
                             CommonTokens.Indent,
