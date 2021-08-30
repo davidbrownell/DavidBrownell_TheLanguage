@@ -62,7 +62,7 @@ def test_SingleLine():
 
 
 # ----------------------------------------------------------------------
-def test_MultiLine():
+def test_Multiline():
     CompareResultsFromFile(
         Execute(
             textwrap.dedent(
