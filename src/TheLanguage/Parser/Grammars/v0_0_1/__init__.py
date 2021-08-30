@@ -5,7 +5,6 @@
 #   - SmartIf (Python's match statement)
 
 # Statements:
-#   - Type Alias
 #   - ClassAttribute
 #   - ClassCompilerData
 
