@@ -125,6 +125,39 @@ class NormalizedContent(object):
 # |  Public Functions
 # |
 # ----------------------------------------------------------------------
+MULTILINE_PHRASE_TOKEN_LENGTH               = 3
+
+def IsMultilinePhraseToken(
+    content: str,
+    start_index=0,
+    end_index=None,
+) -> bool:
+    """See Comments in `Normalize`"""
+
+    if end_index is None:
+        end_index = len(content)
+
+    if start_index == end_index:
+        return False
+
+    if (end_index - start_index) % MULTILINE_PHRASE_TOKEN_LENGTH != 0:
+        return False
+
+    while start_index != end_index:
+        # The character must be a symbol
+        if content[start_index].isalnum():
+            return False
+
+        for offset in range(start_index + 1, start_index + MULTILINE_PHRASE_TOKEN_LENGTH):
+            if content[offset] != content[start_index]:
+                return False
+
+        start_index += MULTILINE_PHRASE_TOKEN_LENGTH
+
+    return True
+
+
+# ----------------------------------------------------------------------
 def Normalize(
     content: str,
 ) -> NormalizedContent:
@@ -211,7 +244,6 @@ def Normalize(
     # ----------------------------------------------------------------------
     def CreateLineInfo() -> LineInfo:
         nonlocal offset
-        nonlocal multiline_token_opening_line_index
 
         line_start_offset = offset
         line_end_offset: Optional[int] = None
@@ -290,7 +322,7 @@ def Normalize(
             new_indentation_value = None
 
         # <Too many positional arguments> pylint: disable=E1121
-        result = LineInfo(
+        return LineInfo(
             line_start_offset,
             line_end_offset,
             content_start_offset,
@@ -299,45 +331,21 @@ def Normalize(
             NewIndentationValue=new_indentation_value,
         )
 
-        # Toggle indentation tracking (if necessary)
-        toggle_token_length = 3
-
-        if (
-            result.PosEnd != result.PosStart
-            and (result.PosEnd - result.PosStart) % toggle_token_length == 0
-        ):
-            index = result.PosStart
-
-            while index < result.PosEnd:
-                matches = True
-
-                # The character must be a symbol
-                if content[index].isalpha() or content[index].isdigit():
-                    break
-
-                for toggle_offset in range(index + 1, index + toggle_token_length - 1):
-                    if content[index] != content[toggle_offset]:
-                        matches = False
-                        break
-
-                if not matches:
-                    break
-
-                index += toggle_token_length
-
-            if index == result.PosEnd:
-                # Toggle the value
-                if multiline_token_opening_line_index is None:
-                    multiline_token_opening_line_index = len(line_infos)
-                else:
-                    multiline_token_opening_line_index = None
-
-        return result
-
     # ----------------------------------------------------------------------
 
     while offset < len_content:
         line_infos.append(CreateLineInfo())
+
+        if IsMultilinePhraseToken(
+            content,
+            start_index=line_infos[-1].PosStart,
+            end_index=line_infos[-1].PosEnd,
+        ):
+            # Toggle the value
+            if multiline_token_opening_line_index is None:
+                multiline_token_opening_line_index = len(line_infos) - 1
+            else:
+                multiline_token_opening_line_index = None
 
     if multiline_token_opening_line_index is not None:
         index = cast(int, multiline_token_opening_line_index)

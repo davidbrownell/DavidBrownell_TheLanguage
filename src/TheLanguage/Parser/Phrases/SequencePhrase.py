@@ -211,8 +211,6 @@ class SequencePhrase(Phrase):
                 isinstance(self.Phrases[0], TokenPhrase)
                 and isinstance(self.Phrases[0].Token, PushIgnoreWhitespaceControlToken)
             ):
-                # BugBug: Set the current indentation level and do what is necessary to restore it
-                #         upon successful completion of the phrase.
                 ignored_indentation_level = 0
             else:
                 ignored_indentation_level = None

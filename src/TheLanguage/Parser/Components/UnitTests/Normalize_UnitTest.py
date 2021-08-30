@@ -341,8 +341,119 @@ class TestNormalize(object):
         assert ex.value.Column == 4
 
     # ----------------------------------------------------------------------
-    def test_NoClosingMultilineTokenError(self):
-        pass # BugBug
+    def test_MultilineUniformToken(self):
+        self.Test(
+            textwrap.dedent(
+                """\
+                if True:
+                    !!!
+                    One
+                        Two
+                  Three
+                    Four
+                    !!!
 
-    # BugBug: Test multi-line token
-    # BugBug: Test multi-part token
+                    StatementA
+                StatementB
+                """,
+            ),
+            [
+                LineInfo(0, 8, 0, 8),
+                LineInfo(9, 16, 13, 16, None, 4),
+                LineInfo(17, 24, 21, 24),
+                LineInfo(25, 36, 33, 36),
+                LineInfo(37, 44, 39, 44),
+                LineInfo(45, 53, 49, 53),
+                LineInfo(54, 61, 58, 61),
+                LineInfo(62, 62, 62, 62),
+                LineInfo(63, 77, 67, 77),
+                LineInfo(78, 88, 78, 88, 1, None),
+            ],
+        )
+
+    # ----------------------------------------------------------------------
+    def test_MultilineDifferntToken(self):
+        self.Test(
+            textwrap.dedent(
+                """\
+                if True:
+                    !!!
+                    One
+                        Two
+                  Three
+                    Four
+                    >>>
+
+                    StatementA
+                StatementB
+                """,
+            ),
+            [
+                LineInfo(0, 8, 0, 8),
+                LineInfo(9, 16, 13, 16, None, 4),
+                LineInfo(17, 24, 21, 24),
+                LineInfo(25, 36, 33, 36),
+                LineInfo(37, 44, 39, 44),
+                LineInfo(45, 53, 49, 53),
+                LineInfo(54, 61, 58, 61),
+                LineInfo(62, 62, 62, 62),
+                LineInfo(63, 77, 67, 77),
+                LineInfo(78, 88, 78, 88, 1, None),
+            ],
+        )
+
+    # ----------------------------------------------------------------------
+    def test_MultilineMultipartToken(self):
+        self.Test(
+            textwrap.dedent(
+                """\
+                if True:
+                    <<<!!!
+                    One
+                        Two
+                  Three
+                    Four
+                    !!!>>>
+
+                    StatementA
+                StatementB
+                """,
+            ),
+            [
+                LineInfo(0, 8, 0, 8),
+                LineInfo(9, 19, 13, 19, None, 4),
+                LineInfo(20, 27, 24, 27),
+                LineInfo(28, 39, 36, 39),
+                LineInfo(40, 47, 42, 47),
+                LineInfo(48, 56, 52, 56),
+                LineInfo(57, 67, 61, 67),
+                LineInfo(68, 68, 68, 68),
+                LineInfo(69, 83, 73, 83),
+                LineInfo(84, 94, 84, 94, 1, None),
+            ],
+        )
+
+    # ----------------------------------------------------------------------
+    def test_NoClosingMultilineTokenError(self):
+        with pytest.raises(NoClosingMultilineTokenError) as ex:
+            Normalize("\n    <<<\n    Never-ending\n")
+
+        ex = ex.value
+
+        assert ex.Line == 2
+        assert ex.Column == 5
+
+        with pytest.raises(NoClosingMultilineTokenError) as ex:
+            Normalize(
+                textwrap.dedent(
+                    """\
+                    <<<Invalid open
+                    >>>
+                    """,
+                ),
+            )
+
+        ex = ex.value
+
+        assert ex.Line == 2
+        assert ex.Column == 1

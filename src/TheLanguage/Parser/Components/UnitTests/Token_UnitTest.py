@@ -635,3 +635,38 @@ def test_RegexMatch():
         Match: "<_sre.SRE_Match object; span=(0, 3), match='foo'>"
         """,
     )
+
+# ----------------------------------------------------------------------
+def test_InvalidMultilineOpeningToken():
+    with pytest.raises(AssertionError) as ex:
+        RegexToken(
+            "Invalid",
+            re.compile(r"<<!(?P<value>.+?)>>>", re.DOTALL | re.MULTILINE),
+            is_multiline=True,
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "('<<!(?P<value>.+?)>>>', 'The opening token must be a multiline phrase token')"
+
+# ----------------------------------------------------------------------
+def test_InvalidMultilineClosingToken():
+    with pytest.raises(AssertionError) as ex:
+        RegexToken(
+            "Invalid",
+            re.compile(r"<<<(?P<value>.+?)a>>", re.DOTALL | re.MULTILINE),
+            is_multiline=True,
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "('<<<(?P<value>.+?)a>>', 'The closing token must be a multiline phrase token')"
+
+# ----------------------------------------------------------------------
+def test_InvalidNonMultilineToken():
+    with pytest.raises(AssertionError) as ex:
+        RegexToken("Invalid", re.compile(r"---"))
+
+    ex = ex.value
+
+    assert str(ex) == "('---', 'The regex must not match a multiline phrase token')"
