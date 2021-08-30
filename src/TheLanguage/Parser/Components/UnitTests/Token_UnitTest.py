@@ -44,7 +44,7 @@ def test_Equal():
 
 # ----------------------------------------------------------------------
 def test_NewlineToken():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -75,7 +75,7 @@ def test_NewlineToken():
 
 # ----------------------------------------------------------------------
 def test_NewlineTokenWithWhitespace():
-    iter = NormalizedIterator(Normalize("\n\n    \nlast_line  \n\n"))
+    iter = NormalizedIterator.FromNormalizedContent(Normalize("\n\n    \nlast_line  \n\n"))
 
     token = NewlineToken()
 
@@ -90,14 +90,14 @@ def test_NewlineTokenWithWhitespace():
     assert iter.Offset == 16
 
     assert token.Match(iter) is None
-    iter.SkipSuffix()
+    iter.SkipWhitespaceSuffix()
     assert token.Match(iter) == NewlineToken.MatchResult(18, 20)
 
     assert iter.AtEnd()
 
 # ----------------------------------------------------------------------
 def test_NonGreedyNewline():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -158,7 +158,7 @@ def test_NonGreedyNewline():
 
 # ----------------------------------------------------------------------
 def test_Indent():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -196,26 +196,27 @@ def test_Indent():
 
     # Line 4
     assert token.Match(iter) is None
-    iter.SkipPrefix()
+    iter.SkipWhitespacePrefix()
     iter.Advance(len("four"))
     iter.Advance(1)
 
     # Line 5
+    iter.ConsumeDedent()
     assert token.Match(iter) is None
-    iter.SkipPrefix()
+    iter.SkipWhitespacePrefix()
     iter.Advance(len("five"))
     iter.Advance(1)
 
     # Skip the dedent line
     assert iter.AtEnd() == False
-    assert iter.HasTrailingDedents()
-    iter.Advance(0)
+    assert iter.HasEndOfFileDedents()
+    iter.ConsumeDedent()
 
     assert iter.AtEnd()
 
 # ----------------------------------------------------------------------
 def test_Dedent():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -244,19 +245,19 @@ def test_Dedent():
 
     # Line 2
     assert token.Match(iter) is None
-    iter.SkipPrefix()
+    iter.SkipWhitespacePrefix()
     iter.Advance(len("two"))
     iter.Advance(1)
 
     # Line 3
     assert token.Match(iter) is None
-    iter.SkipPrefix()
+    iter.SkipWhitespacePrefix()
     iter.Advance(len("three"))
     iter.Advance(1)
 
     # Line 4
     assert token.Match(iter) is None
-    iter.SkipPrefix()
+    iter.SkipWhitespacePrefix()
     iter.Advance(len("four"))
     iter.Advance(1)
 
@@ -268,13 +269,13 @@ def test_Dedent():
 
     # Line 6
     assert token.Match(iter) is None
-    iter.SkipPrefix()
+    iter.SkipWhitespacePrefix()
     iter.Advance(len("six"))
     iter.Advance(1)
 
     # Line 7
     assert token.Match(iter) is None
-    iter.SkipPrefix()
+    iter.SkipWhitespacePrefix()
     iter.Advance(len("seven"))
     iter.Advance(1)
 
@@ -290,7 +291,7 @@ def test_Dedent():
 
 # ----------------------------------------------------------------------
 def test_Regex():
-    iter = NormalizedIterator(Normalize("aaabbb bb b ccc"))
+    iter = NormalizedIterator.FromNormalizedContent(Normalize("aaabbb bb b ccc"))
 
     token = RegexToken("test", re.compile("(?P<value>b+)"))
 
@@ -319,7 +320,7 @@ def test_RegexErrors():
 
 # ----------------------------------------------------------------------
 def test_MultilineRegex():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 '''\
@@ -371,7 +372,7 @@ def test_ControlTokens():
 # ----------------------------------------------------------------------
 @pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexTokenSingleDelimiter():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -416,7 +417,7 @@ def test_MultilineRegexTokenSingleDelimiter():
 # ----------------------------------------------------------------------
 @pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexTokenMultipleDelimiterFirstMatch():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -458,7 +459,7 @@ def test_MultilineRegexTokenMultipleDelimiterFirstMatch():
 # ----------------------------------------------------------------------
 @pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexTokenMultipleDelimiterSecondMatch():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -490,7 +491,7 @@ def test_MultilineRegexTokenMultipleDelimiterSecondMatch():
 # ----------------------------------------------------------------------
 @pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexNoMatch():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -512,7 +513,7 @@ def test_MultilineRegexNoMatch():
 # ----------------------------------------------------------------------
 @pytest.mark.skip("TODO: MultilineRegex may not be necessary")
 def test_MultilineRegexCustomGroup():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -554,7 +555,7 @@ def test_PopIgnoreWhitespaceControlToken():
 # ----------------------------------------------------------------------
 def test_NewlineMatch():
     result = NewlineToken().Match(
-        NormalizedIterator(
+        NormalizedIterator.FromNormalizedContent(
             Normalize(
                 textwrap.dedent(
                     """\
@@ -577,7 +578,7 @@ def test_NewlineMatch():
 # ----------------------------------------------------------------------
 def test_IndentMatch():
     result = IndentToken().Match(
-        NormalizedIterator(
+        NormalizedIterator.FromNormalizedContent(
             Normalize(
                 "    foo",
             ),
@@ -595,7 +596,7 @@ def test_IndentMatch():
 
 # ----------------------------------------------------------------------
 def test_DedentMatch():
-    iter = NormalizedIterator(
+    iter = NormalizedIterator.FromNormalizedContent(
         Normalize(
             textwrap.dedent(
                 """\
@@ -620,7 +621,7 @@ def test_DedentMatch():
 # ----------------------------------------------------------------------
 def test_RegexMatch():
     result = RegexToken("Token", re.compile("foo")).Match(
-        NormalizedIterator(
+        NormalizedIterator.FromNormalizedContent(
             Normalize(
                 "foo",
             ),

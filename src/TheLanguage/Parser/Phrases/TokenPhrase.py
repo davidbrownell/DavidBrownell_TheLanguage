@@ -31,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Components.NormalizedIterator import NormalizedIterator
     from ..Components.Phrase import Phrase
 
     from ..Components.Token import (
@@ -71,14 +72,15 @@ class TokenPhrase(Phrase):
         """Consumes any whitespace located at the current offset"""
 
         if not normalized_iter.AtEnd():
-            if normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart:
-                if (
-                    not normalized_iter.LineInfo.HasNewIndent()
-                    and not normalized_iter.LineInfo.HasNewDedents()
-                ):
-                    normalized_iter.SkipPrefix()
+            next_token = normalized_iter.GetNextToken()
 
-            else:
+            if next_token == NormalizedIterator.TokenType.WhitespacePrefix:
+                normalized_iter.SkipWhitespacePrefix()
+
+            elif (
+                next_token == NormalizedIterator.TokenType.Content
+                or next_token == NormalizedIterator.TokenType.WhitespaceSuffix
+            ):
                 start = normalized_iter.Offset
 
                 while (

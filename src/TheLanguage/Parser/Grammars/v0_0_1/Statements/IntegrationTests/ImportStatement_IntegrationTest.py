@@ -94,13 +94,10 @@ class TestStandard(object):
         CompareResultsFromFile(
             str(result) \
                 .replace(
-                    self._root2,
+                    self._root2.replace("\\", "\\\\"),
                     "<generic_root>",
                 ) \
-                .replace(
-                    os.path.sep,
-                    "/",
-                ),
+                .replace("\\\\", "/")
         )
 
     # ----------------------------------------------------------------------
@@ -139,13 +136,10 @@ class TestStandard(object):
         CompareResultsFromFile(
             str(result) \
                 .replace(
-                    self._root2,
+                    self._root2.replace("\\", "\\\\"),
                     "<generic_root>",
                 ) \
-                .replace(
-                    os.path.sep,
-                    "/",
-                ),
+                .replace("\\\\", "/"),
         )
 
     # ----------------------------------------------------------------------
@@ -188,13 +182,10 @@ class TestStandard(object):
         CompareResultsFromFile(
             str(result) \
                 .replace(
-                    self._root2,
+                    self._root2.replace("\\", "\\\\"),
                     "<generic_root>",
                 ) \
-                .replace(
-                    os.path.sep,
-                    "/",
-                ),
+                .replace("\\\\", "/"),
         )
 
     # ----------------------------------------------------------------------
@@ -220,13 +211,10 @@ class TestStandard(object):
         CompareResultsFromFile(
             str(result) \
                 .replace(
-                    self._root2,
+                    self._root2.replace("\\", "\\\\"),
                     "<generic_root>",
                 ) \
-                .replace(
-                    os.path.sep,
-                    "/",
-                ),
+                .replace("\\\\", "/"),
         )
 
     # ----------------------------------------------------------------------
@@ -262,13 +250,10 @@ class TestStandard(object):
         CompareResultsFromFile(
             str(result) \
                 .replace(
-                    self._root2,
+                    self._root2.replace("\\", "\\\\"),
                     "<generic_root>",
                 ) \
-                .replace(
-                    os.path.sep,
-                    "/",
-                ),
+                .replace("\\\\", "/"),
         )
 
     # ----------------------------------------------------------------------
@@ -306,13 +291,10 @@ class TestStandard(object):
         CompareResultsFromFile(
             str(result) \
                 .replace(
-                    self._root2,
+                    self._root2.replace("\\", "\\\\"),
                     "<generic_root>",
                 ) \
-                .replace(
-                    os.path.sep,
-                    "/",
-                ),
+                .replace("\\\\", "/"),
         )
 
     # ----------------------------------------------------------------------
