@@ -1139,7 +1139,7 @@ class TestRecursiveSequencePhrase(object):
             [_upper_token, NewlineToken()],
             (
                 None,
-                [RegexToken("Delimiter", re.compile(r"---")), NewlineToken()],
+                [RegexToken("Delimiter", re.compile(r"----")), NewlineToken()],
             ),
             [_word_token, NewlineToken()],
         ],
@@ -1159,7 +1159,7 @@ class TestRecursiveSequencePhrase(object):
                     UPPERB
                     789
                     UPPERC
-                    ---
+                    ----
                     worda
                     wordb
                     wordc

@@ -368,9 +368,6 @@ class SequencePhrase(Phrase):
         ignored_indentation_level: Optional[int],
     ) -> Optional[Phrase.ParseResult]:
 
-        # TODO: Figure out a way to cache results to improve algorithm efficiency. Better yet, figure
-        #       out a way to avoid duplicate call for left-recursive phrases.
-
         original_normalized_iter = normalized_iter.Clone()
 
         # ----------------------------------------------------------------------

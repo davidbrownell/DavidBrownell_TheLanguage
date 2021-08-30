@@ -33,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Normalize import IsMultilinePhraseToken, MULTILINE_PHRASE_TOKEN_LENGTH
     from .NormalizedIterator import NormalizedIterator
 
 
@@ -275,6 +276,32 @@ class RegexToken(Token):
 
         assert name
 
+        # Validate the regular expression
+        pattern = regex.pattern.replace("\\", "")
+
+        if is_multiline:
+            # Note that these checks are only checking that there is an opening
+            # and closing token, but not that the entirety of the tokens are valid
+            # (for example, the invalid token "<<<!!" would not be detected).
+            # Take special care when working with multiline RegexTokens.
+
+            # Check the opening token
+            assert IsMultilinePhraseToken(
+                pattern,
+                start_index=0,
+                end_index=MULTILINE_PHRASE_TOKEN_LENGTH,
+            ), (pattern, "The opening token must be a multiline phrase token")
+
+            # Check the closing token
+            assert IsMultilinePhraseToken(
+                pattern,
+                start_index=len(pattern) - MULTILINE_PHRASE_TOKEN_LENGTH,
+            ), (pattern, "The closing token must be a multiline phrase token")
+
+        else:
+            assert not IsMultilinePhraseToken(pattern), (pattern, "The regex must not match a multiline phrase token")
+
+        # Commit the data
         self._name                          = name
 
         self.Regex                          = regex
@@ -377,7 +404,10 @@ def _AdvanceMultiline(
 ):
     # The match may span multiple lines, so we have to be intentional about how we advance
     while delta:
-        this_delta = min(delta, normalized_iter.LineInfo.PosEnd - normalized_iter.Offset)
+        while normalized_iter.GetNextToken() == NormalizedIterator.TokenType.Dedent:
+            normalized_iter.ConsumeDedent()
+
+        this_delta = min(delta, normalized_iter.LineInfo.OffsetEnd - normalized_iter.Offset)
 
         # The amount to advance can be 0 if we are looking at a blank line
         if this_delta:
