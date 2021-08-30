@@ -327,7 +327,8 @@ def test_MultilineRegex():
                 """
                 one
                 two
-                """after
+                """
+                after
                 ''',
             ),
         ),

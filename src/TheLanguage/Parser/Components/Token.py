@@ -275,6 +275,9 @@ class RegexToken(Token):
 
         assert name
 
+        # BugBug: If multiline, verify that the starting and ending tokens in the regex are triplicates
+        # BugBug: Error if providing something that looks like a multiline token but it isn't
+
         self._name                          = name
 
         self.Regex                          = regex
@@ -377,7 +380,10 @@ def _AdvanceMultiline(
 ):
     # The match may span multiple lines, so we have to be intentional about how we advance
     while delta:
-        this_delta = min(delta, normalized_iter.LineInfo.PosEnd - normalized_iter.Offset)
+        while normalized_iter.GetNextToken() == NormalizedIterator.TokenType.Dedent:
+            normalized_iter.ConsumeDedent()
+
+        this_delta = min(delta, normalized_iter.LineInfo.OffsetEnd - normalized_iter.Offset)
 
         # The amount to advance can be 0 if we are looking at a blank line
         if this_delta:

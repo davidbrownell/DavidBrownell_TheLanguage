@@ -18,7 +18,7 @@
 import hashlib
 import os
 
-from typing import List, Optional
+from typing import cast, List, Optional
 
 from dataclasses import dataclass, field
 
@@ -45,6 +45,13 @@ with InitRelativeImports():
 @dataclass(frozen=True)
 class InvalidTabsAndSpacesNormalizeError(Error):
     MessageTemplate                         = Interface.DerivedProperty("The spaces and/or tabs used to indent this line differ from the spaces and/or tabs used on previous lines.")
+
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class NoClosingMultilineTokenError(Error):
+    MessageTemplate                         = Interface.DerivedProperty("A closing token was not found to match this multi-line opening token.")
 
 
 # ----------------------------------------------------------------------
@@ -123,6 +130,65 @@ def Normalize(
 ) -> NormalizedContent:
     """Normalizes the provided content to prevent repeated calculations"""
 
+    # This code is intended to be a general purpose normalization algorithm, with no special
+    # knowledge of underling grammars. In most cases, it is fairly straight forward to maintain
+    # this architectural distinction. However, multi-line phrases present a problem.
+    #
+    # We track indentation change for each line, but multi-line phrases are special in that
+    # any indentation changes that happen within that phrase should not impact the subsequent
+    # phrases.
+    #
+    # Consider this python content:
+    #
+    #                                         Indentation Level   Indentation Stack
+    #                                         -----------------   -----------------
+    #     if True:                          #         0           [0]
+    #         print(                        #         4           [0, 4]
+    #             textwrap.dedent(          #         8           [0, 4, 8]
+    #                 """\                  #        12           [0, 4, 8, 12]
+    #                 Proper indentation.   #        12           [0, 4, 8, 12]
+    #               Wonky indentation.      #        10           [0, 4, 8, 10]
+    #                 Normal indentation.   #        12           [0, 4, 8, 10, 12]
+    #                 """,                  #        12           [0, 4, 8, 10, 12]
+    #             ),                        #         8           [0, 4, 8]             !!! Note that 2 dedents were introduced, rather than the 1 that was expected
+    #         )                             #         4           [0, 4]
+    #                                       #         0           [0]
+    #
+    # Since indents and dedents are meaningful, this presents a problem. To work around this, we
+    # introduce the opt-in concept that (some/most?) multi-line phrases should not make changes
+    # to the indentation stack. With this in place, the example above becomes:
+    #
+    #                                         Indentation Level   Indentation Stack
+    #                                         -----------------   -----------------
+    #     if True:                          #         0           [0]
+    #         print(                        #         4           [0, 4]
+    #             textwrap.dedent(          #         8           [0, 4, 8]
+    #                 """\                  #        12           [0, 4, 8, 12]
+    #                 Proper indentation.   #        12           ????
+    #               Wonky indentation.      #        10           ????
+    #                 Normal indentation.   #        12           ????
+    #                 """,                  #        12           [0, 4, 8, 12]
+    #             ),                        #         8           [0, 4, 8]             !!! Note that the indentation stack is the same existing the multi-line phrase as it was entering it
+    #         )                             #         4           [0, 4]
+    #                                       #         0           [0]
+    #
+    # However, this presents a new challenge - how do we recognize multi-line phrases without
+    # any knowledge of the underlying grammar? We could hard-code knowledge of python
+    # triple-quoted-strings, but that is not sufficient to support the dynamic generation of new
+    # phrases at runtime.
+    #
+    # Therefore, this compromise has been implemented. The presence of a line with one or more
+    # triplets represents the beginning and end of a multi-line phrase. Indentation tracking will
+    # pause when one of these lines is found and resume when another is encountered. Examples of
+    # these triples are:
+    #
+    #       Enter Multiline Phrase  Exit Multiline Phrase
+    #       ----------------------  ---------------------
+    #                """                    """
+    #                <<<                    >>>         !!! Note that the enter and exit triplets do not have to be the same
+    #               <<<!!!                !!!>>>        !!! Note that there can be multiple triplets on the line
+    #
+
     # ----------------------------------------------------------------------
     @dataclass
     class IndentationInfo(object):
@@ -135,14 +201,17 @@ def Normalize(
         content += "\n"
 
     len_content = len(content)
-    offset = 0
 
     line_infos: List[LineInfo] = []
     indentation_stack = [IndentationInfo(0, 0)]
 
+    offset = 0
+    multiline_token_opening_line_index: Optional[int] = None
+
     # ----------------------------------------------------------------------
     def CreateLineInfo() -> LineInfo:
         nonlocal offset
+        nonlocal multiline_token_opening_line_index
 
         line_start_offset = offset
         line_end_offset: Optional[int] = None
@@ -181,15 +250,16 @@ def Normalize(
                                 offset - line_start_offset + 1,
                             )
 
-                        # Detect dedents
-                        while num_chars < indentation_stack[-1].num_chars:
-                            indentation_stack.pop()
-                            num_dedents += 1
+                        if multiline_token_opening_line_index is None:
+                            # Detect dedents
+                            while num_chars < indentation_stack[-1].num_chars:
+                                indentation_stack.pop()
+                                num_dedents += 1
 
-                        # Detect indents
-                        if num_chars > indentation_stack[-1].num_chars:
-                            indentation_stack.append(IndentationInfo(num_chars, indentation_value))
-                            new_indentation_value = indentation_value
+                            # Detect indents
+                            if num_chars > indentation_stack[-1].num_chars:
+                                indentation_stack.append(IndentationInfo(num_chars, indentation_value))
+                                new_indentation_value = indentation_value
 
                     indentation_value = None
                     content_start_offset = offset
@@ -213,20 +283,70 @@ def Normalize(
         assert content_start_offset is not None
         assert content_end_offset is not None
 
+        if multiline_token_opening_line_index is None:
+            num_dedents = num_dedents or None
+        else:
+            num_dedents = None
+            new_indentation_value = None
+
         # <Too many positional arguments> pylint: disable=E1121
-        return LineInfo(
+        result = LineInfo(
             line_start_offset,
             line_end_offset,
             content_start_offset,
             content_end_offset,
-            NumDedents=num_dedents if num_dedents != 0 else None,
+            NumDedents=num_dedents,
             NewIndentationValue=new_indentation_value,
         )
+
+        # Toggle indentation tracking (if necessary)
+        toggle_token_length = 3
+
+        if (
+            result.PosEnd != result.PosStart
+            and (result.PosEnd - result.PosStart) % toggle_token_length == 0
+        ):
+            index = result.PosStart
+
+            while index < result.PosEnd:
+                matches = True
+
+                # The character must be a symbol
+                if content[index].isalpha() or content[index].isdigit():
+                    break
+
+                for toggle_offset in range(index + 1, index + toggle_token_length - 1):
+                    if content[index] != content[toggle_offset]:
+                        matches = False
+                        break
+
+                if not matches:
+                    break
+
+                index += toggle_token_length
+
+            if index == result.PosEnd:
+                # Toggle the value
+                if multiline_token_opening_line_index is None:
+                    multiline_token_opening_line_index = len(line_infos)
+                else:
+                    multiline_token_opening_line_index = None
+
+        return result
 
     # ----------------------------------------------------------------------
 
     while offset < len_content:
         line_infos.append(CreateLineInfo())
+
+    if multiline_token_opening_line_index is not None:
+        index = cast(int, multiline_token_opening_line_index)
+        line_info = line_infos[index]  # pylint: disable=invalid-sequence-index
+
+        raise NoClosingMultilineTokenError(
+            index + 1,
+            line_info.PosStart - line_info.OffsetStart + 1,
+        )
 
     if len(indentation_stack) > 1:
         line_infos.append(

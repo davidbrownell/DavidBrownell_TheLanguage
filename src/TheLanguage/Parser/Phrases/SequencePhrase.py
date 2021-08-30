@@ -211,6 +211,8 @@ class SequencePhrase(Phrase):
                 isinstance(self.Phrases[0], TokenPhrase)
                 and isinstance(self.Phrases[0].Token, PushIgnoreWhitespaceControlToken)
             ):
+                # BugBug: Set the current indentation level and do what is necessary to restore it
+                #         upon successful completion of the phrase.
                 ignored_indentation_level = 0
             else:
                 ignored_indentation_level = None
@@ -367,9 +369,6 @@ class SequencePhrase(Phrase):
         ignore_whitespace_ctr: int,
         ignored_indentation_level: Optional[int],
     ) -> Optional[Phrase.ParseResult]:
-
-        # TODO: Figure out a way to cache results to improve algorithm efficiency. Better yet, figure
-        #       out a way to avoid duplicate call for left-recursive phrases.
 
         original_normalized_iter = normalized_iter.Clone()
 

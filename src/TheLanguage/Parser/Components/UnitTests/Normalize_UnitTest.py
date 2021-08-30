@@ -339,3 +339,10 @@ class TestNormalize(object):
 
         assert ex.value.Line == 3
         assert ex.value.Column == 4
+
+    # ----------------------------------------------------------------------
+    def test_NoClosingMultilineTokenError(self):
+        pass # BugBug
+
+    # BugBug: Test multi-line token
+    # BugBug: Test multi-part token
