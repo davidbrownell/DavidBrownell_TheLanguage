@@ -45,6 +45,7 @@ with InitRelativeImports():
     from .Statements.BinaryStatement import BinaryStatement
     from .Statements.ClassStatement import ClassStatement
     from .Statements.DeleteStatement import DeleteStatement
+    from .Statements.DocstringStatement import DocstringStatement
     from .Statements.ForStatement import ForStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
     from .Statements.FuncInvocationStatement import FuncInvocationStatement
@@ -89,6 +90,7 @@ GrammarPhrases                              = [
     BinaryStatement(),
     ClassStatement(),
     DeleteStatement(),
+    DocstringStatement(),
     ForStatement(),
     FuncDefinitionStatement(),
     FuncInvocationStatement(),

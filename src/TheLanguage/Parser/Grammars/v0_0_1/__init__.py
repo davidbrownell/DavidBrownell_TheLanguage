@@ -6,7 +6,6 @@
 
 # Statements:
 #   - Type Alias
-#   - Docstring
 #   - ClassAttribute
 #   - ClassCompilerData
 
