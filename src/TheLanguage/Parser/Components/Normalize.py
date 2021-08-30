@@ -3,7 +3,7 @@
 # |  Normalize.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-07 22:59:16
+# |      2021-08-29 09:25:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,13 +18,13 @@
 import hashlib
 import os
 
-from enum import auto, Enum
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -44,97 +44,55 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidTabsAndSpacesNormalizeError(Error):
-    MessageTemplate                         = Interface.DerivedProperty("The tabs and/or spaces used to indent this line differ from the tabs and/or spaces used on previous lines")
+    MessageTemplate                         = Interface.DerivedProperty("The spaces and/or tabs used to indent this line differ from the spaces and/or tabs used on previous lines.")
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidIndentationNormalizeError(Error):
-    MessageTemplate                         = Interface.DerivedProperty("The unindent level on this line does not match any outer indentation level")
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class LineInfo(object):
+@dataclass(frozen=True, repr=False)
+class LineInfo(YamlRepr.ObjectReprImplBase):
     """Information about a line"""
 
-    # ----------------------------------------------------------------------
-    # |  Public Types
-    class IndentType(Enum):
-        Indent                              = auto()
-        Dedent                              = auto()
-
-    # ----------------------------------------------------------------------
-    # |  Public Data
     OffsetStart: int
     OffsetEnd: int
 
     PosStart: int
     PosEnd: int
 
-    IndentationLevel: int                   # 0-based relative level (not the actual indentation size)
-
-    IndentationInfo: Optional[
-        Tuple[
-            IndentType,
-            int,                            # When...
-                                            #   Indent: indentation value
-                                            #   Dedent: number of dedents
-        ]
-    ]
+    NumDedents: Optional[int]               = field(default=None)
+    NewIndentationValue: Optional[int]      = field(default=None)
 
     # ----------------------------------------------------------------------
-    # |  Public Methods
     def __post_init__(self):
         assert self.OffsetStart >= 0, self
         assert self.OffsetEnd >= self.OffsetStart, self
         assert self.PosStart >= self.OffsetStart, self
         assert self.PosEnd >= self.PosStart, self
         assert self.PosEnd <= self.OffsetEnd, self
-        assert self.IndentationLevel >= 0, self
+        assert self.NumDedents is None or self.NumDedents > 0, self
+        assert self.NewIndentationValue is None or self.NewIndentationValue > 0, self
 
     # ----------------------------------------------------------------------
     def HasWhitespacePrefix(self):
-        return self.PosStart > self.OffsetStart
+        return self.PosStart != self.OffsetStart
+
+    # ----------------------------------------------------------------------
+    def HasContent(self):
+        return self.PosStart != self.PosEnd
 
     # ----------------------------------------------------------------------
     def HasWhitespaceSuffix(self):
-        return self.PosEnd < self.OffsetEnd
-
-    # ----------------------------------------------------------------------
-    def HasNewIndent(self):
-        return self.IndentationInfo is not None and self.IndentationInfo[0] == LineInfo.IndentType.Indent
-
-    # ----------------------------------------------------------------------
-    def HasNewDedents(self):
-        return self.IndentationInfo is not None and self.IndentationInfo[0] == LineInfo.IndentType.Dedent
-
-    # ----------------------------------------------------------------------
-    def IndentationValue(self) -> Optional[int]:
-        if not self.HasNewIndent():
-            return None
-
-        assert self.IndentationInfo
-        return self.IndentationInfo[1]
-
-    # ----------------------------------------------------------------------
-    def NumDedents(self) -> int:
-        if not self.HasNewDedents():
-            return 0
-
-        assert self.IndentationInfo
-        return self.IndentationInfo[1]
+        return self.PosEnd != self.OffsetEnd
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, unsafe_hash=True)
+@dataclass(frozen=True)
 class NormalizedContent(object):
-    """Data returned from calls to the function `Normalize`"""
+    """Data returned from calls to `Normalize`"""
 
     Content: str
     ContentLen: int
     LineInfos: List[LineInfo]
-    Hash: Optional[bytes] = None
+    Hash: bytes                             = field(default=None)  # type: ignore
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -183,8 +141,7 @@ def Normalize(
     indentation_stack = [IndentationInfo(0, 0)]
 
     # ----------------------------------------------------------------------
-    def CreateLineInfo():
-        nonlocal len_content
+    def CreateLineInfo() -> LineInfo:
         nonlocal offset
 
         line_start_offset = offset
@@ -204,41 +161,35 @@ def Normalize(
                 if character == " ":
                     indentation_value += 1
                 elif character == "\t":
-                    # Ensure that " \t" compares as different from "\t "
+                    # Ensure that " \t" compares as different from "\t " and that "\t"
+                    # compares different from " "
                     indentation_value += (offset - line_start_offset + 1) * 100
                 else:
                     assert character == "\n" or not character.isspace(), character
 
+                    num_chars = offset - line_start_offset
+
                     if character != "\n":
-                        num_chars = offset - line_start_offset
-
-                        if num_chars:
-                            # Ensure that the whitespace prefix for this line uses the same max of
-                            # tabs and spaces as the indentation associated with the previous line.
-                            if (
-                                num_chars == indentation_stack[-1].num_chars
-                                and indentation_value != indentation_stack[-1].value
-                            ):
-                                raise InvalidTabsAndSpacesNormalizeError(
-                                    len(line_infos) + 1,
-                                    offset - line_start_offset + 1,
-                                )
-
-                            # Dedent indents
-                            if num_chars > indentation_stack[-1].num_chars:
-                                indentation_stack.append(IndentationInfo(num_chars, indentation_value))
-                                new_indentation_value = indentation_value
+                        # Ensure that the whitespace prefix for this line uses the same max of
+                        # tabs and spaces as the indentation associated with the previous line.
+                        if (
+                            num_chars == indentation_stack[-1].num_chars
+                            and indentation_value != indentation_stack[-1].value
+                        ):
+                            raise InvalidTabsAndSpacesNormalizeError(
+                                len(line_infos) + 1,
+                                offset - line_start_offset + 1,
+                            )
 
                         # Detect dedents
                         while num_chars < indentation_stack[-1].num_chars:
                             indentation_stack.pop()
                             num_dedents += 1
 
-                            if num_chars > indentation_stack[-1].num_chars:
-                                raise InvalidIndentationNormalizeError(
-                                    len(line_infos) + 1,
-                                    offset - line_start_offset + 1,
-                                )
+                        # Detect indents
+                        if num_chars > indentation_stack[-1].num_chars:
+                            indentation_stack.append(IndentationInfo(num_chars, indentation_value))
+                            new_indentation_value = indentation_value
 
                     indentation_value = None
                     content_start_offset = offset
@@ -247,7 +198,7 @@ def Normalize(
                 line_end_offset = offset
                 offset += 1
 
-                # Remove trailing whitespace
+                # Account for the trailing whitespace
                 content_end_offset = line_end_offset
 
                 assert content_start_offset is not None
@@ -262,22 +213,14 @@ def Normalize(
         assert content_start_offset is not None
         assert content_end_offset is not None
 
-        if isinstance(new_indentation_value, int):
-            assert num_dedents == 0, num_dedents
-            indentation_info = (LineInfo.IndentType.Indent, new_indentation_value)
-        elif num_dedents:
-            assert new_indentation_value is None, new_indentation_value
-            indentation_info = (LineInfo.IndentType.Dedent, num_dedents)
-        else:
-            indentation_info = None
-
+        # <Too many positional arguments> pylint: disable=E1121
         return LineInfo(
             line_start_offset,
             line_end_offset,
             content_start_offset,
             content_end_offset,
-            len(indentation_stack) - 1,
-            indentation_info,
+            NumDedents=num_dedents if num_dedents != 0 else None,
+            NewIndentationValue=new_indentation_value,
         )
 
     # ----------------------------------------------------------------------
@@ -287,18 +230,14 @@ def Normalize(
 
     if len(indentation_stack) > 1:
         line_infos.append(
+            # <Too many positional arguments> pylint: disable=E1121
             LineInfo(
                 offset,
                 offset,
                 offset,
                 offset,
-                0,
-                (LineInfo.IndentType.Dedent, len(indentation_stack) - 1),
+                NumDedents=len(indentation_stack) - 1,
             ),
         )
 
-    return NormalizedContent(
-        content,
-        len_content,
-        line_infos,
-    )
+    return NormalizedContent(content, len_content, line_infos)
