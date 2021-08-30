@@ -87,7 +87,7 @@ def CreatePhrase(result):
 def iterator(
     value="This is the content",
 ):
-    return NormalizedIterator(Normalize(value))
+    return NormalizedIterator.FromNormalizedContent(Normalize(value))
 
 
 # ----------------------------------------------------------------------

@@ -61,7 +61,7 @@ def parse_mock():
 def CreateIterator(
     content: str,
 ) -> NormalizedIterator:
-    return NormalizedIterator(Normalize(content))
+    return NormalizedIterator.FromNormalizedContent(Normalize(content))
 
 
 # ----------------------------------------------------------------------

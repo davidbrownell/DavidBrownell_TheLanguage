@@ -17,12 +17,11 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import List, Tuple, Union
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,9 +37,6 @@ with InitRelativeImports():
     from ....Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractRepeat,
-        ExtractSequence,
         Leaf,
         Node,
         PhraseItem,
