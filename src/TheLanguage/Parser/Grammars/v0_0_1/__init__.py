@@ -5,10 +5,6 @@
 #   - SmartIf (Python's match statement)
 
 # Statements:
-#   - If
-#   - Try/Catch
-#   - Type Alias
-#   - Docstring
 #   - ClassAttribute
 #   - ClassCompilerData
 

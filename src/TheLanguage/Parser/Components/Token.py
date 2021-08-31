@@ -33,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Normalize import IsMultilinePhraseToken, MULTILINE_PHRASE_TOKEN_LENGTH
     from .NormalizedIterator import NormalizedIterator
 
 
@@ -66,10 +67,6 @@ class Token(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # |
     # |  Public Methods
     # |
-    # ----------------------------------------------------------------------
-    def __hash__(self):
-        return tuple(self.__dict__.values()).__hash__()
-
     # ----------------------------------------------------------------------
     def __eq__(self, other):
         if self.__dict__ != other.__dict__:
@@ -141,22 +138,18 @@ class NewlineToken(Token):
         self,
         normalized_iter: NormalizedIterator,
     ) -> Optional["MatchResult"]:
-        if (
-            not normalized_iter.AtEnd()
-            and normalized_iter.Offset == normalized_iter.LineInfo.OffsetEnd
-            and normalized_iter.HasConsumedAllDedents()
-        ):
-            newline_start = normalized_iter.Offset
+        if normalized_iter.GetNextToken() != NormalizedIterator.TokenType.EndOfLine:
+            return None
 
-            normalized_iter.Advance(0 if normalized_iter.AtTrailingDedents() else 1)
+        newline_start = normalized_iter.Offset
 
-            if self.CaptureMany:
-                while normalized_iter.IsBlankLine():
-                    normalized_iter.SkipLine()
+        normalized_iter.Advance(1)
 
-            return NewlineToken.MatchResult(newline_start, normalized_iter.Offset)
+        if self.CaptureMany:
+            while normalized_iter.IsBlankLine():
+                normalized_iter.SkipLine()
 
-        return None
+        return NewlineToken.MatchResult(newline_start, normalized_iter.Offset)
 
 
 # ----------------------------------------------------------------------
@@ -199,23 +192,16 @@ class IndentToken(Token):
     def Match(
         normalized_iter: NormalizedIterator,
     ) -> Optional["MatchResult"]:
-        if normalized_iter.AtEnd():
+        if normalized_iter.GetNextToken() != NormalizedIterator.TokenType.Indent:
             return None
 
-        if (
-            not normalized_iter.AtEnd()
-            and normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
-            and normalized_iter.LineInfo.HasNewIndent()
-        ):
-            normalized_iter.SkipPrefix()
+        normalized_iter.SkipWhitespacePrefix()
 
-            return IndentToken.MatchResult(
-                normalized_iter.LineInfo.OffsetStart,
-                normalized_iter.LineInfo.PosStart,
-                cast(int, normalized_iter.LineInfo.IndentationValue()),
-            )
-
-        return None
+        return IndentToken.MatchResult(
+            normalized_iter.LineInfo.OffsetStart,
+            normalized_iter.LineInfo.PosStart,
+            cast(int, normalized_iter.LineInfo.NewIndentationValue),
+        )
 
 
 # ----------------------------------------------------------------------
@@ -249,22 +235,15 @@ class DedentToken(Token):
     def Match(
         normalized_iter: NormalizedIterator,
     ) -> Optional["MatchResult"]:
-        if (
-            not normalized_iter.AtEnd()
-            and normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
-            and not normalized_iter.HasConsumedAllDedents()
-        ):
-            normalized_iter.ConsumeDedent()
+        if normalized_iter.GetNextToken() != NormalizedIterator.TokenType.Dedent:
+            return None
 
-            if normalized_iter.HasConsumedAllDedents():
-                normalized_iter.SkipPrefix()
+        normalized_iter.ConsumeDedent()
 
-                if normalized_iter.AtTrailingDedents():
-                    normalized_iter.Advance(0)
+        if normalized_iter.GetNextToken() == NormalizedIterator.TokenType.WhitespacePrefix:
+            normalized_iter.SkipWhitespacePrefix()
 
-            return DedentToken.MatchResult()
-
-        return None
+        return DedentToken.MatchResult()
 
 
 # ----------------------------------------------------------------------
@@ -297,6 +276,32 @@ class RegexToken(Token):
 
         assert name
 
+        # Validate the regular expression
+        pattern = regex.pattern.replace("\\", "")
+
+        if is_multiline:
+            # Note that these checks are only checking that there is an opening
+            # and closing token, but not that the entirety of the tokens are valid
+            # (for example, the invalid token "<<<!!" would not be detected).
+            # Take special care when working with multiline RegexTokens.
+
+            # Check the opening token
+            assert IsMultilinePhraseToken(
+                pattern,
+                start_index=0,
+                end_index=MULTILINE_PHRASE_TOKEN_LENGTH,
+            ), (pattern, "The opening token must be a multiline phrase token")
+
+            # Check the closing token
+            assert IsMultilinePhraseToken(
+                pattern,
+                start_index=len(pattern) - MULTILINE_PHRASE_TOKEN_LENGTH,
+            ), (pattern, "The closing token must be a multiline phrase token")
+
+        else:
+            assert not IsMultilinePhraseToken(pattern), (pattern, "The regex must not match a multiline phrase token")
+
+        # Commit the data
         self._name                          = name
 
         self.Regex                          = regex
@@ -315,7 +320,7 @@ class RegexToken(Token):
         self,
         normalized_iter: NormalizedIterator,
     ) -> Optional["MatchResult"]:
-        if normalized_iter.AtEnd() or not normalized_iter.HasConsumedAllDedents():
+        if normalized_iter.GetNextToken() != NormalizedIterator.TokenType.Content:
             return None
 
         match = self.Regex.match(
@@ -399,7 +404,10 @@ def _AdvanceMultiline(
 ):
     # The match may span multiple lines, so we have to be intentional about how we advance
     while delta:
-        this_delta = min(delta, normalized_iter.LineInfo.PosEnd - normalized_iter.Offset)
+        while normalized_iter.GetNextToken() == NormalizedIterator.TokenType.Dedent:
+            normalized_iter.ConsumeDedent()
+
+        this_delta = min(delta, normalized_iter.LineInfo.OffsetEnd - normalized_iter.Offset)
 
         # The amount to advance can be 0 if we are looking at a blank line
         if this_delta:

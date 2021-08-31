@@ -257,7 +257,7 @@ async def ParseAsync(
 
                         root = await TranslationUnitParseAsync(
                             initial_phrases_info,
-                            NormalizedIterator(Normalize(content)),
+                            NormalizedIterator.FromNormalizedContent(Normalize(content)),
                             translation_unit_observer,
                             single_threaded=single_threaded,
                         )

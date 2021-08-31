@@ -3,7 +3,7 @@
 # |  NormalizedIterator.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-07 23:27:15
+# |      2021-08-29 12:03:34
 # |
 # ----------------------------------------------------------------------
 # |
@@ -16,6 +16,9 @@
 """Contains the NormalizedIterator object"""
 
 import os
+
+from enum import auto, Enum
+from typing import cast, List, Optional
 
 import CommonEnvironment
 
@@ -35,20 +38,87 @@ class NormalizedIterator(object):
     """Object used to iterate through content generated via calls to `Normalize`"""
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    class TokenType(Enum):
+        Dedent                              = auto()
+        Indent                              = auto()
+        WhitespacePrefix                    = auto()
+        Content                             = auto()
+        WhitespaceSuffix                    = auto()
+        EndOfLine                           = auto()
+        EndOfFile                           = auto()
+
+        # ----------------------------------------------------------------------
+        def __eq__(self, other):
+            return self.value == other.value
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    @classmethod
+    def FromNormalizedContent(
+        cls,
+        normalized_content: NormalizedContent,
+    ) -> "NormalizedIterator":
+        return NormalizedIterator(
+            normalized_content.Content,
+            normalized_content.ContentLen,
+            normalized_content.LineInfos,
+            normalized_content.Hash,
+        )
+
+    # ----------------------------------------------------------------------
     def __init__(
         self,
-        normalized_content: NormalizedContent,
+        content: str,
+        content_len: int,
+        line_infos: List[LineInfo],
+        content_hash: bytes,
     ):
-        self.Content                        = normalized_content.Content
-        self.ContentLen                     = normalized_content.ContentLen
-        self.LineInfos                      = normalized_content.LineInfos
-        self.Hash                           = normalized_content.Hash
+        self.Content                        = content
+        self.ContentLen                     = content_len
+        self.LineInfos                      = line_infos
+        self.Hash                           = content_hash
 
         self._line_info_index               = 0
         self._offset                        = 0
 
-        self._consumed_dedent_line          = None
-        self._consumed_dedent_count         = None
+        self._consumed_dedent_line_index: Optional[int] = None
+        self._consumed_dedent_count: Optional[int]      = None
+
+    # ----------------------------------------------------------------------
+    def Clone(self) -> "NormalizedIterator":
+        result = NormalizedIterator(
+            self.Content,
+            self.ContentLen,
+            self.LineInfos,
+            self.Hash,
+        )
+
+        result._line_info_index = self._line_info_index
+        result._offset = self._offset
+
+        result._consumed_dedent_line_index = self._consumed_dedent_line_index
+        result._consumed_dedent_count = self._consumed_dedent_count
+
+        return result
+
+    # ----------------------------------------------------------------------
+    def ToCacheKey(self):
+        return (
+            self.Hash,
+            self._offset,
+
+            # Note that Offset is not enough to determine uniqueness, as there are degrees of dedent
+            # consumption.
+            self._consumed_dedent_line_index,
+            self._consumed_dedent_count,
+        )
 
     # ----------------------------------------------------------------------
     def __repr__(self):
@@ -58,48 +128,25 @@ class NormalizedIterator(object):
     def __eq__(self, other):
         return (
             self.Hash == other.Hash
-            and self._line_info_index == other._line_info_index
             and self._offset == other._offset
-            and self._consumed_dedent_line == other._consumed_dedent_line
+            and self._consumed_dedent_line_index == other._consumed_dedent_line_index
             and self._consumed_dedent_count == other._consumed_dedent_count
         )
 
     # ----------------------------------------------------------------------
-    def Clone(self) -> "NormalizedIterator":
-        result = self.__class__(
-            NormalizedContent(
-                self.Content,
-                self.ContentLen,
-                self.LineInfos,
-                self.Hash,
-            ),
-        )
+    @property
+    def Offset(self) -> int:
+        return self._offset
 
-        result._line_info_index = self._line_info_index
-        result._offset = self._offset
+    @property
+    def LineInfo(self) -> LineInfo:
+        assert not self.AtEnd()
+        return self.LineInfos[self._line_info_index]
 
-        result._consumed_dedent_line = self._consumed_dedent_line
-        result._consumed_dedent_count = self._consumed_dedent_count
-
-        return result
-
-    # ----------------------------------------------------------------------
-    def ToCacheKey(self):
-        return (
-            self.Hash,
-            self.Offset,
-
-            # Note that Offset is not enough to determine uniqueness, as there are degrees of dedent
-            # consumption.
-            self._consumed_dedent_line,
-            self._consumed_dedent_count,
-        )
-
-    # ----------------------------------------------------------------------
     @property
     def Line(self) -> int:
         """Returns the current (1-based) line number"""
-        return self._line_info_index + (0 if self.HasTrailingDedents() and self.AtEnd() else 1)
+        return self._line_info_index + 1
 
     @property
     def Column(self) -> int:
@@ -109,61 +156,72 @@ class NormalizedIterator(object):
 
         return self._offset - self.LineInfo.OffsetStart + 1
 
-    @property
-    def LineInfo(self) -> LineInfo:
-        assert not self.AtEnd()
-        return self.LineInfos[self._line_info_index]
-
-    @property
-    def Offset(self) -> int:
-        return self._offset
-
     # ----------------------------------------------------------------------
     def AtEnd(self) -> bool:
-        return self._line_info_index == len(self.LineInfos)
+        if self._line_info_index == len(self.LineInfos):
+            return True
+
+        if (
+            self.HasEndOfFileDedents()
+            and self._line_info_index == len(self.LineInfos) - 1
+            and self._consumed_dedent_line_index == self._line_info_index
+            and self._consumed_dedent_count == self.LineInfos[-1].NumDedents
+        ):
+            return True
+
+        return False
 
     # ----------------------------------------------------------------------
-    def HasTrailingDedents(self) -> bool:
+    def GetNextToken(self) -> "NormalizedIterator.TokenType":
+        if self.AtEnd():
+            return NormalizedIterator.TokenType.EndOfFile
+
+        line_info = self.LineInfo
+
+        if (
+            line_info.NumDedents is not None
+            and (
+                self._consumed_dedent_line_index != self._line_info_index
+                or self._consumed_dedent_count != line_info.NumDedents
+            )
+        ):
+            return NormalizedIterator.TokenType.Dedent
+
+        if self._offset < line_info.PosStart:
+            if line_info.NewIndentationValue is not None:
+                return NormalizedIterator.TokenType.Indent
+            else:
+                return NormalizedIterator.TokenType.WhitespacePrefix
+
+        if self._offset < line_info.PosEnd:
+            return NormalizedIterator.TokenType.Content
+
+        if self._offset >= line_info.PosEnd and self._offset < line_info.OffsetEnd:
+            return NormalizedIterator.TokenType.WhitespaceSuffix
+
+        if self._offset == line_info.OffsetEnd:
+            return NormalizedIterator.TokenType.EndOfLine
+
+        assert False, self._offset
+
+    # ----------------------------------------------------------------------
+    def HasEndOfFileDedents(self) -> bool:
         return (
             bool(self.LineInfos)
-            and self.LineInfos[-1].HasNewDedents()
+            and self.LineInfos[-1].NumDedents is not None
+            and cast(int, self.LineInfos[-1].NumDedents) > 0
             and self.LineInfos[-1].OffsetStart == self.LineInfos[-1].OffsetEnd
-            and self.LineInfos[-1].OffsetStart == self.LineInfos[-1].PosStart
-            and self.LineInfos[-1].OffsetEnd == self.LineInfos[-1].PosEnd
-        )
-
-    # ----------------------------------------------------------------------
-    def AtTrailingDedents(self) -> bool:
-        return self.HasTrailingDedents() and self._line_info_index == len(self.LineInfos) - 1
-
-    # ----------------------------------------------------------------------
-    def HasConsumedAllDedents(self) -> bool:
-        """\
-        Returns True if the dedents on the current line have been consumed.
-
-        Dedents on lines without a prefix are troublesome, as there isn't any
-        way to indicate that they have already been consumed. Because of this,
-        we can find ourselves in an infinite loop when attempting to consume
-        a dedent line this over and over.
-
-        Maintain the line of the last dedent consumed so that we can determine
-        if the dedent has already been consumed or not.
-        """
-
-        return (
-            not self.LineInfo.HasNewDedents()
-            or (
-                self._consumed_dedent_line == self._line_info_index
-                and self._consumed_dedent_count == self.LineInfo.NumDedents()
-            )
+            and self.LineInfos[-1].PosStart == self.LineInfos[-1].OffsetStart
+            and self.LineInfos[-1].PosEnd == self.LineInfos[-1].OffsetEnd
         )
 
     # ----------------------------------------------------------------------
     def ConsumeDedent(self):
-        assert self.LineInfo.HasNewDedents()
+        assert self.LineInfo.NumDedents is not None
+        assert self._offset == self.LineInfo.OffsetStart
 
-        if self._consumed_dedent_line != self._line_info_index:
-            self._consumed_dedent_line = self._line_info_index
+        if self._consumed_dedent_line_index != self._line_info_index:
+            self._consumed_dedent_line_index = self._line_info_index
             self._consumed_dedent_count = 0
         else:
             assert isinstance(self._consumed_dedent_count, int)
@@ -178,15 +236,15 @@ class NormalizedIterator(object):
         if self.AtEnd():
             return False
 
-        # The trailing dedent lines should not be consided blank lines
+        # The trailing dedent lines should not be considered blank lines
         if (
             self._line_info_index == len(self.LineInfos) - 1
-            and self.HasTrailingDedents()
+            and self.HasEndOfFileDedents()
         ):
             return False
 
-        info = self.LineInfo
-        return info.PosEnd == info.PosStart
+        line_info = self.LineInfo
+        return line_info.PosEnd == line_info.PosStart
 
     # ----------------------------------------------------------------------
     def SkipLine(self) -> "NormalizedIterator":
@@ -196,26 +254,26 @@ class NormalizedIterator(object):
         return self.Advance(1)
 
     # ----------------------------------------------------------------------
-    def SkipPrefix(self) -> "NormalizedIterator":
+    def SkipWhitespacePrefix(self) -> "NormalizedIterator":
         offset = self.Offset
-        info = self.LineInfo
+        line_info = self.LineInfo
 
-        assert offset == info.OffsetStart
+        assert offset == line_info.OffsetStart
 
-        delta = info.PosStart - info.OffsetStart
+        delta = line_info.PosStart - line_info.OffsetStart
         if delta == 0:
             return self
 
         return self.Advance(delta)
 
     # ----------------------------------------------------------------------
-    def SkipSuffix(self) -> "NormalizedIterator":
+    def SkipWhitespaceSuffix(self) -> "NormalizedIterator":
         offset = self.Offset
-        info = self.LineInfo
+        line_info = self.LineInfo
 
-        assert offset == info.PosEnd
+        assert offset == line_info.PosEnd
 
-        delta = info.OffsetEnd - info.PosEnd
+        delta = line_info.OffsetEnd - line_info.PosEnd
         if delta == 0:
             return self
 
@@ -226,29 +284,29 @@ class NormalizedIterator(object):
         self,
         delta: int,
     ) -> "NormalizedIterator":
-        info = self.LineInfo
+        assert self.AtEnd() == False
+
         offset = self.Offset
+        line_info = self.LineInfo
 
-        if offset == info.OffsetEnd:
-            if (
-                self._line_info_index + 1 == len(self.LineInfos)
-                and self.HasTrailingDedents()
-            ):
-                assert delta == 0, delta
-            else:
-                assert delta == 1, delta
-
-            if not self.AtEnd():
-                self._line_info_index += 1
+        if offset == line_info.OffsetEnd:
+            assert delta == 1, delta
+            assert self.GetNextToken() == NormalizedIterator.TokenType.EndOfLine, self.GetNextToken()
+            self._line_info_index += 1
 
         else:
-            assert offset >= info.OffsetStart and offset <= info.OffsetEnd, (offset, info)
-            assert offset + delta <= info.OffsetEnd, (delta, offset, info)
+            assert offset >= line_info.OffsetStart and offset <= line_info.OffsetEnd, (offset, line_info)
+            assert offset + delta <= line_info.OffsetEnd, (delta, offset, line_info)
             assert (
-                offset >= info.PosStart
-                or (offset == info.OffsetStart and offset + delta == info.PosStart)
-                or (delta == info.OffsetEnd - info.OffsetStart)
-            ), (offset, info)
+                offset >= line_info.PosStart
+                or (
+                    offset == line_info.OffsetStart
+                    and (
+                        offset + delta == line_info.PosStart
+                        or delta == line_info.OffsetEnd - line_info.OffsetStart
+                    )
+                )
+            ), (offset, line_info)
 
         self._offset += delta
 

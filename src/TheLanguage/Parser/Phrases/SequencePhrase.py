@@ -36,6 +36,7 @@ with InitRelativeImports():
     from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
     from .TokenPhrase import TokenPhrase
 
+    from ..Components.NormalizedIterator import NormalizedIterator
     from ..Components.Phrase import Phrase
 
     from ..Components.Token import (
@@ -253,8 +254,8 @@ class SequencePhrase(Phrase):
 
         # Potential indent or dedent
         for token in [
-            cls._indent_token,
             cls._dedent_token,
+            cls._indent_token,
         ]:
             if not consume_dedent and token == cls._dedent_token:
                 continue
@@ -297,15 +298,24 @@ class SequencePhrase(Phrase):
         """Eats any comment (stand-alone or trailing) when requested"""
 
         normalized_iter = normalized_iter.Clone()
+        next_token = normalized_iter.GetNextToken()
 
-        at_beginning_of_line = normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
+        if next_token == NormalizedIterator.TokenType.Indent:
+            at_beginning_of_line = True
 
-        if at_beginning_of_line and normalized_iter.LineInfo.HasNewIndent():
             normalized_iter_begin = normalized_iter.Clone()
-            normalized_iter.SkipPrefix()
+            normalized_iter.SkipWhitespacePrefix()
 
-            potential_whitespace = normalized_iter_begin.Offset, normalized_iter.Offset
+            potential_whitespace = (normalized_iter_begin.Offset, normalized_iter.Offset)
+
+        elif next_token == NormalizedIterator.TokenType.WhitespacePrefix:
+            at_beginning_of_line = True
+
+            normalized_iter.SkipWhitespacePrefix()
+            potential_whitespace = None
+
         else:
+            at_beginning_of_line = normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
             potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
 
         normalized_iter_begin = normalized_iter.Clone()
@@ -357,9 +367,6 @@ class SequencePhrase(Phrase):
         ignore_whitespace_ctr: int,
         ignored_indentation_level: Optional[int],
     ) -> Optional[Phrase.ParseResult]:
-
-        # TODO: Figure out a way to cache results to improve algorithm efficiency. Better yet, figure
-        #       out a way to avoid duplicate call for left-recursive phrases.
 
         original_normalized_iter = normalized_iter.Clone()
 

@@ -108,7 +108,7 @@ class LambdaExpression(GrammarPhrase):
     def ValidateNodeSyntax(
         cls,
         node: Node,
-    ) -> Optional[bool]:                    # False to prevent child traversal
+    ) -> Optional[bool]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 4
 
