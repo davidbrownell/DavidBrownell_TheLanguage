@@ -101,7 +101,6 @@ class ClassStatement(GrammarPhrase):
     """
 
     PHRASE_NAME                             = "Class Statement"
-    VALIDATION_EXPRESSION                   = re.compile(r"^_?[A-Z][a-zA-Z0-9_\.]+(?!<__)$")
 
     # ----------------------------------------------------------------------
     # |
@@ -208,7 +207,7 @@ class ClassStatement(GrammarPhrase):
                 ),
 
                 # <name>
-                CommonTokens.GenericName,
+                CommonTokens.TypeName,
             ],
         )
 
@@ -257,7 +256,7 @@ class ClassStatement(GrammarPhrase):
                     ),
 
                     # <name> (class)
-                    CommonTokens.GenericName,
+                    CommonTokens.TypeName,
 
                     # '('
                     "(",
@@ -348,14 +347,11 @@ class ClassStatement(GrammarPhrase):
                 class_visibility = VisibilityModifier.private
         else:
             class_visibility = VisibilityModifier.Extract(
-                cast(Leaf, ExtractRepeat(cast(Node, nodes[0]))),
+                cast(Node, ExtractRepeat(cast(Node, nodes[0]))),
             )
 
         # Class name
         class_name = cast(str, ExtractToken(cast(Leaf, nodes[2])))
-
-        if not cls.VALIDATION_EXPRESSION.match(class_name):
-            raise InvalidClassNameError.FromNode(cast(Leaf, nodes[2]), class_name)
 
         # Base info
         if nodes[5] is None:
@@ -437,15 +433,15 @@ class ClassStatement(GrammarPhrase):
                 visibility = VisibilityModifier.private
             else:
                 visibility = VisibilityModifier.Extract(
-                    cast(Leaf, ExtractRepeat(cast(Node, base_items[0]))),
+                    cast(Node, ExtractRepeat(cast(Node, base_items[0]))),
                 )
 
             # Name
             name = cast(str, ExtractToken(cast(Leaf, base_items[1])))
 
-            if not cls.VALIDATION_EXPRESSION.match(name):
-                raise InvalidClassNameError.FromNode(cast(Leaf, base_items[1]), name)
+            # Commit the results
 
+            # pylint: disable=too-many-function-args
             results.append(cls.BaseInfo(visibility, name))
 
         return results

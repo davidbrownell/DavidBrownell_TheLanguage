@@ -34,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .DynamicPhrase import DynamicPhrase
+    from .LeftRecursiveSequencePhraseWrapper import LeftRecursiveSequencePhraseWrapper
     from .OrPhrase import OrPhrase
     from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
     from .RepeatPhrase import RepeatPhrase
@@ -84,6 +85,7 @@ class PhraseItem(object):
         str,                                # Valid values are "?", "*", "+"
         Tuple[int, Optional[int]],
     ]                                       = field(default_factory=lambda: (1, 1))
+    exclude: List[Union[str, Phrase]]       = field(default_factory=list)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -186,7 +188,7 @@ def ExtractRepeat(
     assert isinstance(node.Type, RepeatPhrase), node.Type
 
     if node.Type.MaxMatches == 1:
-        assert node.Children or node.Type.MinMatches == 1, node.Type.MinMatches
+        assert node.Children or node.Type.MinMatches == 0, node.Type.MinMatches
         return node.Children[0] if node.Children else None
 
     return node.Children
@@ -259,6 +261,8 @@ def _PopulateItem(
 
     name = None
 
+    assert not item.exclude or isinstance(item.item, DynamicPhrasesType), item
+
     if isinstance(item.item, PhraseItem):
         phrase = _PopulateItem(comment_token, item.item)
         name = item.name
@@ -283,9 +287,45 @@ def _PopulateItem(
             )
 
         elif isinstance(item.item, DynamicPhrasesType):
+            if item.exclude:
+                exclude_names = set(
+                    [
+                        phrase.Name if isinstance(phrase, Phrase) else phrase
+                        for phrase in item.exclude
+                    ],
+                )
+
+                # ----------------------------------------------------------------------
+                def GetDynamicPhrases(
+                    unique_id: Tuple[str, ...],
+                    phrases_type: DynamicPhrasesType,
+                    observer: Phrase.Observer,
+                ) -> Tuple[Optional[str], List[Phrase]]:
+                    name, phrases = observer.GetDynamicPhrases(unique_id, phrases_type)
+
+                    updated_phrases = []
+
+                    for phrase in phrases:
+                        if isinstance(phrase, LeftRecursiveSequencePhraseWrapper):
+                            phrase.ExcludePhrases(exclude_names)
+
+                        if phrase.Name in exclude_names:
+                            continue
+
+                        updated_phrases.append(phrase)
+
+                    return name, updated_phrases
+
+                # ----------------------------------------------------------------------
+
+                func = GetDynamicPhrases
+
+            else:
+                func = lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type)
+
             phrase = DynamicPhrase(
                 item.item,
-                lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type),
+                func,
                 name=item.name or str(item.item),
             )
 

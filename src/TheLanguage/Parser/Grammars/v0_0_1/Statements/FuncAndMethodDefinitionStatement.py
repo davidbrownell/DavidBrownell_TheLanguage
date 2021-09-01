@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  MethodDefinitionStatement.py
+# |  FuncAndMethodDefinitionStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-18 08:53:39
+# |      2021-08-31 21:48:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the MethodDefinition object"""
+"""Contains the FuncAndMethodDefinitionStatment object"""
 
 import os
-import re
-import textwrap
 
 from enum import auto, Enum
 from typing import Any, cast, List, Optional, Union
@@ -35,10 +33,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .ClassStatement import ClassStatement
+
     from ..Common import Tokens as CommonTokens
     from ..Common import ParametersPhraseItem
     from ..Common.VisibilityModifier import VisibilityModifier
+
     from ...GrammarPhrase import GrammarPhrase, ValidationError
+
     from ....Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
@@ -55,10 +57,26 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMethodNameError(ValidationError):
-    Name: str
+class InvalidMethodTypeApplicationError(ValidationError):
+    MessageTemplate                         = Interface.DerivedProperty("Method modifiers may not be used on functions.")
 
-    MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid method name; names must start with an uppercase letter and be at least 2 characters.")
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidOperatorApplicationError(ValidationError):
+    MessageTemplate                         = Interface.DerivedProperty("Operators must be methods.")
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidClassTypeApplicationFunctionError(ValidationError):
+    MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on functions.")
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidClassTypeApplicationStaticError(ValidationError):
+    MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on static methods.")
 
 
 # ----------------------------------------------------------------------
@@ -71,13 +89,13 @@ class InvalidOperatorNameError(ValidationError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidClassRestrictionError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Class restrictions may not be applied to methods marked as 'static'.")
+class FunctionStatementsRequiredError(ValidationError):
+    MessageTemplate                         = Interface.DerivedProperty("Statements are required for functions.")
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class StatementsRequiredError(ValidationError):
+class MethodStatementsRequiredError(ValidationError):
     MessageTemplate                         = Interface.DerivedProperty("Statements are required for methods not marked as 'abstract'.")
 
 
@@ -88,41 +106,12 @@ class StatementsUnexpectedError(ValidationError):
 
 
 # ----------------------------------------------------------------------
-class MethodDefinitionStatement(GrammarPhrase):
+class FuncAndMethodDefinitionStatement(GrammarPhrase):
     """\
-    Defines a method associated with a class.
-
-    <visibility>?
-        ('static'|'abstract'|'virtual'|'override'|'final')?
-        <type>
-        <name>
-        <parameter_phrase_item>
-        ('mutable'|'immutable')?
-        (':'
-            <statement>+
-        )?
-
-    Examples:
-        public static Int StaticFunc():
-            pass
-
-        public Int ImmutableFunc() immutable:
-            pass
-
-        private abstract Int AbstractFunc1() immutable
-        private abstract Int AbstractFunc2() mutable
+    Defines a function (or method when used within a class statement).
     """
 
-    PHRASE_NAME                             = "Method Definition Statement"
-    VALIDATION_EXPRESSION                   = re.compile(
-        textwrap.dedent(
-            r"""(?#
-                Operator Method             )(?:^__[A-Z][a-zA-Z0-9_]+__\??$)(?#
-                    - or -                  )|(?#
-                Standard Method             )(?:^_?[A-Z][a-zA-Z0-9_]+\??(?!<__)$)(?#
-            )""",
-        ),
-    )
+    PHRASE_NAME                             = "Func And Method Definition Statement"
 
     # ----------------------------------------------------------------------
     # |
@@ -147,7 +136,7 @@ class MethodDefinitionStatement(GrammarPhrase):
         def Extract(
             cls,
             node: Node,
-        ) -> "MethodDefinitionStatement.MethodType":
+        ) -> "FuncAndMethodDefinitionStatement.MethodType":
             return cls[
                 cast(
                     str,
@@ -173,7 +162,7 @@ class MethodDefinitionStatement(GrammarPhrase):
         def Extract(
             cls,
             node: Node,
-        ) -> "MethodDefinitionStatement.ClassType":
+        ) -> "FuncAndMethodDefinitionStatement.ClassType":
             return cls[
                 cast(
                     str,
@@ -264,17 +253,29 @@ class MethodDefinitionStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class NodeInfo(GrammarPhrase.NodeInfo):
+        IsFunction: bool
         Visibility: VisibilityModifier
-        MethodType: "MethodDefinitionStatement.MethodType"
+        MethodType: Optional["FuncAndMethodDefinitionStatement.MethodType"]
         ReturnType: Union[Leaf, Node]
-        Name: Union[str, "MethodDefinitionStatement.OperatorType"]
+        Name: Union[str, "FuncAndMethodDefinitionStatement.OperatorType"]
         Parameters: Any  # Defined in ParametersPhraseItem.py
-        ClassType: Optional["MethodDefinitionStatement.ClassType"]
+        ClassType: Optional["FuncAndMethodDefinitionStatement.ClassType"]
         Statements: Optional[List[Union[Leaf, Node]]]
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            super(MethodDefinitionStatement.NodeInfo, self).__post_init__(
+            if self.IsFunction:
+                assert self.MethodType is None, self
+                assert isinstance(self.Name, str), self
+                assert self.ClassType is None, self
+                assert self.Statements, self
+
+            else:
+                assert self.MethodType is not None, self
+                assert self.ClassType is not None, self
+                assert self.Statements or self.MethodType == FuncAndMethodDefinitionStatement.MethodType.abstract, self
+
+            super(FuncAndMethodDefinitionStatement.NodeInfo, self).__post_init__(
                 Statements=lambda statements: None if statements is None else [statement.Type.Name for statement in statements],
             )
 
@@ -284,7 +285,7 @@ class MethodDefinitionStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(MethodDefinitionStatement, self).__init__(
+        super(FuncAndMethodDefinitionStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
                 name=self.PHRASE_NAME,
@@ -296,7 +297,7 @@ class MethodDefinitionStatement(GrammarPhrase):
                         arity="?",
                     ),
 
-                    # Method Type
+                    # <method_type>?
                     PhraseItem(
                         name="Method Type",
                         item=self.MethodType.CreatePhraseItem(),
@@ -307,24 +308,25 @@ class MethodDefinitionStatement(GrammarPhrase):
                     DynamicPhrasesType.Types,
 
                     # <name>
-                    CommonTokens.GenericName,
+                    CommonTokens.MethodName,
 
-                    # <parameter_phrase_item>
+                    # <parameters>
                     ParametersPhraseItem.Create(),
 
-                    # Class Type
+                    # <class_type>?
                     PhraseItem(
                         name="Class Type",
                         item=self.ClassType.CreatePhraseItem(),
                         arity="?",
                     ),
 
-                    # Definition or newline
+                    # - Multi-line Definition
+                    # - Single-line Definition
+                    # - Newline
                     (
                         PhraseItem(
-                            name="Definition",
+                            name="Multi-line Definition",
                             item=[
-                                # ':'
                                 ":",
                                 CommonTokens.Newline,
                                 CommonTokens.Indent,
@@ -341,95 +343,155 @@ class MethodDefinitionStatement(GrammarPhrase):
                             ],
                         ),
 
-                        # Newline
+                        PhraseItem(
+                            name="Single-line Definition",
+                            item=[
+                                ":",
+                                DynamicPhrasesType.Statements,
+                            ],
+                        ),
+
                         CommonTokens.Newline,
-                    ),
+                    )
                 ],
             ),
         )
 
     # ----------------------------------------------------------------------
-    @classmethod
     @Interface.override
     def ValidateNodeSyntax(
-        cls,
+        self,
         node: Node,
     ):
+        # Determine if this is function or a method. This is a function if:
+        #   - It is embedded within another function/method
+        #   - It is not embedded within a class
+
+        # ----------------------------------------------------------------------
+        def IsFunction() -> bool:
+            parent = node.Parent
+
+            while parent:
+                if parent.Type is not None:
+                    if parent.Type.Name == self.Phrase.Name:
+                        return True
+
+                    if parent.Type.Name == self._class_statement_name:
+                        return False
+
+                parent = parent.Parent
+
+            return True
+
+        # ----------------------------------------------------------------------
+
+        is_function = IsFunction()
+
+        # Extract the info
         nodes = ExtractSequence(node)
         assert len(nodes) == 7
 
-        # Visibility
+        # <visibility>?
         if nodes[0] is None:
             visibility = VisibilityModifier.private
         else:
             visibility = VisibilityModifier.Extract(
-                cast(Leaf, ExtractRepeat(cast(Node, nodes[0]))),
+                cast(Node, ExtractRepeat(cast(Node, nodes[0]))),
             )
 
-        # Method type
+        # <method_type>?
         if nodes[1] is None:
-            method_type = cls.MethodType.standard
+            if is_function:
+                method_type = None
+            else:
+                method_type = self.MethodType.standard
         else:
-            method_type = cls.MethodType.Extract(cast(Node, ExtractRepeat(cast(Node, nodes[1]))))
+            if is_function:
+                raise InvalidMethodTypeApplicationError.FromNode(nodes[1])
 
-        # Return type
+            method_type = self.MethodType.Extract(cast(Node, ExtractRepeat(cast(Node, nodes[1]))))
+
+        # <type>
         return_type = ExtractDynamic(cast(Node, nodes[2]))
 
-        # Method Name
+        # <name>
         method_name_leaf = cast(Leaf, nodes[3])
         method_name = cast(str, ExtractToken(method_name_leaf))
 
-        if not cls.VALIDATION_EXPRESSION.match(method_name):
-            raise InvalidMethodNameError.FromNode(method_name_leaf, method_name)
-
         if method_name.startswith("__") and method_name.endswith("__"):
+            if is_function:
+                raise InvalidOperatorApplicationError.FromNode(method_name_leaf)
+
             try:
-                method_name = cls.OperatorType[method_name[2:-2]]
+                method_name = self.OperatorType[method_name[2:-2]]
             except KeyError:
                 raise InvalidOperatorNameError.FromNode(method_name_leaf, method_name)
 
-        # Parameters
+        # <parameters>
         parameters = ParametersPhraseItem.Extract(cast(Node, nodes[4]))
 
-        # Class type
+        # <class_type>?
         if nodes[5] is None:
-            if method_type == cls.MethodType.static:
+            if is_function:
                 class_type = None
             else:
-                class_type = cls.ClassType.immutable
+                class_type = self.ClassType.immutable
         else:
-            class_type_node = cast(Node, nodes[5])
+            if is_function:
+                raise InvalidClassTypeApplicationFunctionError.FromNode(nodes[5])
 
-            class_type = cls.ClassType.Extract(cast(Node, ExtractRepeat(class_type_node)))
+            if method_type == self.MethodType.static:
+                raise InvalidClassTypeApplicationStaticError.FromNode(nodes[5])
 
-            if method_type == cls.MethodType.static:
-                raise InvalidClassRestrictionError.FromNode(class_type_node)
+            class_type = self.ClassType.Extract(cast(Node, ExtractRepeat(cast(Node, nodes[5]))))
 
         # Statements
-        definition_or_newline_node = ExtractOr(cast(Node, nodes[6]))
-        assert definition_or_newline_node.Type
+        statement_node = ExtractOr(cast(Node, nodes[6]))
 
-        if definition_or_newline_node.Type.Name == "Definition":
-            if method_type == cls.MethodType.abstract:
-                raise StatementsUnexpectedError.FromNode(node)
-
-            statements_nodes = ExtractSequence(cast(Node, definition_or_newline_node))
-            assert len(statements_nodes) == 5
-
-            statements = [ExtractDynamic(statement_node) for statement_node in cast(List[Node], ExtractRepeat(cast(Node, statements_nodes[3])))]
-
-        else:
-            if method_type != cls.MethodType.abstract:
-                raise StatementsRequiredError.FromNode(node)
+        if isinstance(statement_node, Leaf):
+            if method_type != self.MethodType.abstract:
+                if is_function:
+                    raise FunctionStatementsRequiredError.FromNode(statement_node)
+                else:
+                    raise MethodStatementsRequiredError.FromNode(statement_node)
 
             statements = None
+
+        else:
+            assert isinstance(statement_node, Node)
+            assert statement_node.Type
+
+            if method_type == self.MethodType.abstract:
+                raise StatementsUnexpectedError.FromNode(statement_node)
+
+            statements_nodes = ExtractSequence(statement_node)
+
+            if statement_node.Type.Name == "Multi-line Definition":
+                assert len(statements_nodes) == 5
+
+                statements = [
+                    ExtractDynamic(statement_node)
+                    for statement_node in cast(List[Node], ExtractRepeat(cast(Node, statements_nodes[3])))
+                ]
+
+            elif statement_node.Type.Name == "Single-line Definition":
+                assert len(statements_nodes) == 2
+
+                statements = [
+                    ExtractDynamic(cast(Node, statements_nodes[1])),
+                ]
+
+            else:
+                assert False, statement_node.Type
+
+            assert statements
 
         # Commit the info
         object.__setattr__(
             node,
             "Info",
-            # pylint: disable=too-many-function-args
-            cls.NodeInfo(
+            self.NodeInfo(
+                is_function,
                 visibility,
                 method_type,
                 return_type,
@@ -439,3 +501,10 @@ class MethodDefinitionStatement(GrammarPhrase):
                 statements,
             ),
         )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    _class_statement_name                   = ClassStatement().Phrase.Name

@@ -231,9 +231,11 @@ class TestNewPhrases(object):
 
         assert str(ex) == "The syntax is not recognized"
         assert ex.Line == 1
-        assert ex.Column == 4
+        assert ex.Column == 5
 
-        CompareResultsFromFile(ex.ToDebugString())
+        CompareResultsFromFile(
+            ex.ToDebugString(),
+        )
 
 
 # ----------------------------------------------------------------------
@@ -301,7 +303,9 @@ class TestNewScopedPhrases(object):
         assert ex.Line == 4
         assert ex.Column == 1
 
-        CompareResultsFromFile(ex.ToDebugString())
+        CompareResultsFromFile(
+            ex.ToDebugString(),
+        )
 
 
 # ----------------------------------------------------------------------
@@ -532,7 +536,9 @@ class TestPreventParentTraversal(object):
         assert ex.Line == 6
         assert ex.Column == 1
 
-        CompareResultsFromFile(ex.ToDebugString())
+        CompareResultsFromFile(
+            ex.ToDebugString(),
+        )
 
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio

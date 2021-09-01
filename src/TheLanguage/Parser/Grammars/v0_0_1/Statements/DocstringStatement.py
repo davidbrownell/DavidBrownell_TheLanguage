@@ -43,9 +43,9 @@ with InitRelativeImports():
         ExtractToken,
         Leaf,
         Node,
-        PhraseItem,
     )
 
+# TODO: The lexer should not have knowledge of this statement; it should be part of the NodeInfo for the associated class/func/etc.
 
 # ----------------------------------------------------------------------
 _HEADER                                     = "<<<"

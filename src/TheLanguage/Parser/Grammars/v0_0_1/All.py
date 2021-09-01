@@ -34,6 +34,8 @@ with InitRelativeImports():
     from .Expressions.GroupExpression import GroupExpression
     from .Expressions.IndexExpression import IndexExpression
     from .Expressions.LambdaExpression import LambdaExpression
+    # from .Expressions.MatchTypeExpression import MatchTypeExpression
+    # from .Expressions.MatchValueExpression import MatchValueExpression
     from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.TupleExpression import TupleExpression
     from .Expressions.UnaryExpression import UnaryExpression
@@ -47,11 +49,10 @@ with InitRelativeImports():
     from .Statements.DeleteStatement import DeleteStatement
     from .Statements.DocstringStatement import DocstringStatement
     from .Statements.ForStatement import ForStatement
-    from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
+    from .Statements.FuncAndMethodDefinitionStatement import FuncAndMethodDefinitionStatement
     from .Statements.FuncInvocationStatement import FuncInvocationStatement
     from .Statements.IfStatement import IfStatement
     from .Statements.ImportStatement import ImportStatement
-    from .Statements.MethodDefinitionStatement import MethodDefinitionStatement
     from .Statements.PassStatement import PassStatement
     from .Statements.ReturnStatement import ReturnStatement
     from .Statements.ScopedRefStatement import ScopedRefStatement
@@ -78,6 +79,8 @@ GrammarPhrases                              = [
     GroupExpression(),
     IndexExpression(),
     LambdaExpression(),
+    # MatchTypeExpression(),
+    # MatchValueExpression(),
     TernaryExpression(),
     TupleExpression(),
     UnaryExpression(),
@@ -93,11 +96,10 @@ GrammarPhrases                              = [
     DeleteStatement(),
     DocstringStatement(),
     ForStatement(),
-    FuncDefinitionStatement(),
+    FuncAndMethodDefinitionStatement(),
     FuncInvocationStatement(),
     IfStatement(),
     ImportStatement(".TheLanguage",),       # TODO: Update this once the language has a name
-    MethodDefinitionStatement(),
     PassStatement(),
     ReturnStatement(),
     ScopedRefStatement(),

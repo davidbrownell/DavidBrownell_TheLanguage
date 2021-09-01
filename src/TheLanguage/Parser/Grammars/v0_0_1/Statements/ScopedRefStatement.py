@@ -29,6 +29,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common.TypeModifier import TypeModifier
+
+    from ..Names.TupleName import TupleName
+
     from ...GrammarPhrase import GrammarPhrase
     from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
@@ -64,8 +67,17 @@ class ScopedRefStatement(GrammarPhrase):
             name="Refs",
             item=[
                 # <ref_expression>
-                DynamicPhrasesType.Names,
+                PhraseItem(
+                    item=DynamicPhrasesType.Names,
 
+                    # Ambiguity is introduced between this statement and TupleName without this
+                    # explicit exclusion. For example, "(a, b, c)" could be interpreted as a tuple
+                    # or as a grouped collection of refs. In this context, "a grouped collection of
+                    # refs" is correct.
+                    exclude=[TupleName().Phrase],
+                ),
+
+                # (',' <ref_expression>)*
                 PhraseItem(
                     name="Comma and Ref",
                     item=[
@@ -75,6 +87,7 @@ class ScopedRefStatement(GrammarPhrase):
                     arity="*",
                 ),
 
+                # ','?
                 PhraseItem(
                     name="Trailing Comma",
                     item=",",

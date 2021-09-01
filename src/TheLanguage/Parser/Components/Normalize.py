@@ -18,7 +18,7 @@
 import hashlib
 import os
 
-from typing import cast, List, Optional
+from typing import cast, List, Optional, Set
 
 from dataclasses import dataclass, field
 
@@ -160,6 +160,11 @@ def IsMultilinePhraseToken(
 # ----------------------------------------------------------------------
 def Normalize(
     content: str,
+
+    # A set of tokens that look and feel like multi-line toggle tokens, but should not be considered
+    # as such. An example of when to use this would be "---" when parsing yaml files.
+    multiline_tokens_to_ignore: Optional[Set[str]]=None,
+
 ) -> NormalizedContent:
     """Normalizes the provided content to prevent repeated calculations"""
 
@@ -333,13 +338,20 @@ def Normalize(
 
     # ----------------------------------------------------------------------
 
+    # Parse the content
     while offset < len_content:
         line_infos.append(CreateLineInfo())
 
-        if IsMultilinePhraseToken(
-            content,
-            start_index=line_infos[-1].PosStart,
-            end_index=line_infos[-1].PosEnd,
+        if (
+            IsMultilinePhraseToken(
+                content,
+                start_index=line_infos[-1].PosStart,
+                end_index=line_infos[-1].PosEnd,
+            )
+            and (
+                multiline_tokens_to_ignore is None
+                or content[line_infos[-1].PosStart : line_infos[-1].PosEnd] not in multiline_tokens_to_ignore
+            )
         ):
             # Toggle the value
             if multiline_token_opening_line_index is None:
@@ -347,6 +359,7 @@ def Normalize(
             else:
                 multiline_token_opening_line_index = None
 
+    # Detect error when a multiline token has not been closed
     if multiline_token_opening_line_index is not None:
         index = cast(int, multiline_token_opening_line_index)
         line_info = line_infos[index]  # pylint: disable=invalid-sequence-index
@@ -356,6 +369,7 @@ def Normalize(
             line_info.PosStart - line_info.OffsetStart + 1,
         )
 
+    # Add trailing dedents (if necessary)
     if len(indentation_stack) > 1:
         line_infos.append(
             # <Too many positional arguments> pylint: disable=E1121

@@ -16,16 +16,11 @@
 """Functionality associated with visibility modifiers"""
 
 import os
-import re
-import textwrap
 
 from enum import auto, Enum
 from typing import cast
 
-from dataclasses import dataclass
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,9 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....Components.Token import RegexToken
-    from ...GrammarPhrase import ValidationError
-    from ....Phrases.DSL import ExtractToken, Leaf, Node
+    from ....Phrases.DSL import ExtractOr, ExtractToken, Leaf, Node
 
 
 # ----------------------------------------------------------------------
@@ -51,61 +44,22 @@ class VisibilityModifier(Enum):
     public                                  = auto()
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    def CreatePhraseItem():
-        # This code is attempting to walk a fine line - errors indicating that a modifier isn't
-        # valid are much better than generic syntax errors. If we look for the exact modifier
-        # tokens, we will produce syntax errors when it isn't found. However, if we just look for a
-        # general string, we will greedily consume other tokens are produce syntax errors. So here,
-        # we are producing a regular expression that is "close" to what a user might likely type
-        # without requiring an exact match.
-        return RegexToken(
-            "Type Modifier",
-            re.compile(
-                textwrap.dedent(
-                    r"""(?#
-                        Word that starts with a 'p'     )p[a-z]{2}[a-z]+\b(?#
-                    )""",
-                ),
+    @classmethod
+    def CreatePhraseItem(cls):
+        return tuple(e.name for e in cls)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Extract(
+        cls,
+        node: Node,
+    ) -> "VisibilityModifier":
+        value = cast(
+            str,
+            ExtractToken(
+                cast(Leaf, ExtractOr(node)),
+                use_match=True,
             ),
         )
 
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def Extract(
-        leaf: Leaf,
-    ) -> "VisibilityModifier":
-        return _ExtractImpl(leaf)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidVisibilityModifierError(ValidationError):
-    Name: str
-
-    MessageTemplate                         = Interface.DerivedProperty(
-        "The visibility modifier '{{Name}}' is not valid; values may be {}.".format(
-            ", ".join(["'{}'".format(e.name) for e in VisibilityModifier]),
-        ),
-    )
-
-
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-def _ExtractImpl(
-    leaf: Leaf,
-) -> VisibilityModifier:
-
-    name = cast(
-        str,
-        ExtractToken(
-            leaf,
-            use_match=True,
-        ),
-    )
-
-    try:
-        return VisibilityModifier[name]
-    except KeyError:
-        raise InvalidVisibilityModifierError.FromNode(leaf, name)
+        return cls[value]

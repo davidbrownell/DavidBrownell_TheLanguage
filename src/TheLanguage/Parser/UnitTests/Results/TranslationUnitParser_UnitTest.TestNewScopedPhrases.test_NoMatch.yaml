@@ -1,5 +1,6 @@
 The syntax is not recognized [4, 1]
 
+
 # <class 'TheLanguage.Parser.Components.AST.RootNode'>
 Children:
   - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -145,5 +146,26 @@ Children:
     IterEnd: None
     Type: "Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
 IterBegin: "[1, 1] (0)"
-IterEnd: None
+IterEnd: "[4, 1] (13)"
 Type: "<None>"
+
+
+# <class 'TheLanguage.Parser.Components.AST.Node'>
+Children:
+  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+        IsIgnored: False
+        IterBegin: "[2, 8] (11)"
+        IterEnd: "[4, 1] (13)"
+        Type: "Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>"
+        Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+          End: 13
+          Start: 11
+        Whitespace: None
+    IterBegin: "[2, 8] (11)"
+    IterEnd: "[4, 1] (13)"
+    Type: "(Upper Phrase, Newline Phrase, Indent Phrase, Dedent Phrase) / (Lower Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+IterBegin: "[2, 8] (11)"
+IterEnd: "[4, 1] (13)"
+Type: "Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"

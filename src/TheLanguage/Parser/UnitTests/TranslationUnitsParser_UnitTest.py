@@ -23,6 +23,7 @@ from typing import Dict, Optional
 from unittest.mock import Mock
 
 import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
 from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
@@ -454,7 +455,7 @@ class TestStandard(object):
 
         assert str(results) == "The syntax is not recognized"
         assert results.Line == 1
-        assert results.Column == 2
+        assert results.Column == 3
         assert results.FullyQualifiedName == "one"
 
     # ----------------------------------------------------------------------
@@ -511,10 +512,12 @@ class TestStandard(object):
         results = results[0]
 
         assert results.Line == 4
-        assert results.Column == 2
+        assert results.Column == 3
         assert str(results) == "The syntax is not recognized"
 
-        CompareResultsFromFile(results.ToDebugString())
+        CompareResultsFromFile(
+            results.ToDebugString(),
+        )
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio

@@ -8,14 +8,19 @@ Children:
             Children:
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
+                        IterBegin: "[2, 1] (73)"
+                        IterEnd: "[2, 7] (79)"
+                        Type: "'public' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(73, 79), match='public'>"
+                        Whitespace: None
                     IterBegin: "[2, 1] (73)"
                     IterEnd: "[2, 7] (79)"
-                    Type: "Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(73, 79), match='public'>"
-                    Whitespace: None
+                    Type: "Visibility <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                 IterBegin: "[2, 1] (73)"
                 IterEnd: "[2, 7] (79)"
                 Type: "Repeat: {Visibility, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
@@ -38,7 +43,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[2, 14] (86)"
                 IterEnd: "[2, 25] (97)"
-                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(86, 97), match='PublicClass'>"
                 Whitespace:
@@ -156,14 +161,19 @@ Children:
             Children:
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
+                        IterBegin: "[5, 1] (111)"
+                        IterEnd: "[5, 10] (120)"
+                        Type: "'protected' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(111, 120), match='protected'>"
+                        Whitespace: None
                     IterBegin: "[5, 1] (111)"
                     IterEnd: "[5, 10] (120)"
-                    Type: "Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(111, 120), match='protected'>"
-                    Whitespace: None
+                    Type: "Visibility <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                 IterBegin: "[5, 1] (111)"
                 IterEnd: "[5, 10] (120)"
                 Type: "Repeat: {Visibility, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
@@ -186,7 +196,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[5, 17] (127)"
                 IterEnd: "[5, 31] (141)"
-                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(127, 141), match='ProtectedClass'>"
                 Whitespace:
@@ -304,14 +314,19 @@ Children:
             Children:
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
+                        IterBegin: "[8, 1] (155)"
+                        IterEnd: "[8, 8] (162)"
+                        Type: "'private' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(155, 162), match='private'>"
+                        Whitespace: None
                     IterBegin: "[8, 1] (155)"
                     IterEnd: "[8, 8] (162)"
-                    Type: "Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(155, 162), match='private'>"
-                    Whitespace: None
+                    Type: "Visibility <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                 IterBegin: "[8, 1] (155)"
                 IterEnd: "[8, 8] (162)"
                 Type: "Repeat: {Visibility, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
@@ -334,7 +349,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[8, 15] (169)"
                 IterEnd: "[8, 27] (181)"
-                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(169, 181), match='PrivateClass'>"
                 Whitespace:
@@ -467,7 +482,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[11, 7] (201)"
                 IterEnd: "[11, 19] (213)"
-                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(201, 213), match='DefaultClass'>"
                 Whitespace:
@@ -585,14 +600,19 @@ Children:
             Children:
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
+                        IterBegin: "[15, 1] (300)"
+                        IterEnd: "[15, 7] (306)"
+                        Type: "'public' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(300, 306), match='public'>"
+                        Whitespace: None
                     IterBegin: "[15, 1] (300)"
                     IterEnd: "[15, 7] (306)"
-                    Type: "Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(300, 306), match='public'>"
-                    Whitespace: None
+                    Type: "Visibility <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                 IterBegin: "[15, 1] (300)"
                 IterEnd: "[15, 7] (306)"
                 Type: "Repeat: {Visibility, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
@@ -615,7 +635,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[15, 18] (317)"
                 IterEnd: "[15, 33] (332)"
-                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(317, 332), match='PublicException'>"
                 Whitespace:
@@ -748,7 +768,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[18, 11] (356)"
                 IterEnd: "[18, 27] (372)"
-                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(356, 372), match='DefaultException'>"
                 Whitespace:
@@ -866,14 +886,19 @@ Children:
             Children:
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
+                        IterBegin: "[22, 1] (459)"
+                        IterEnd: "[22, 7] (465)"
+                        Type: "'public' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(459, 465), match='public'>"
+                        Whitespace: None
                     IterBegin: "[22, 1] (459)"
                     IterEnd: "[22, 7] (465)"
-                    Type: "Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(459, 465), match='public'>"
-                    Whitespace: None
+                    Type: "Visibility <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                 IterBegin: "[22, 1] (459)"
                 IterEnd: "[22, 7] (465)"
                 Type: "Repeat: {Visibility, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
@@ -896,7 +921,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[22, 13] (471)"
                 IterEnd: "[22, 23] (481)"
-                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(471, 481), match='PublicEnum'>"
                 Whitespace:
@@ -1014,14 +1039,19 @@ Children:
             Children:
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
+                        IterBegin: "[25, 1] (495)"
+                        IterEnd: "[25, 10] (504)"
+                        Type: "'protected' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(495, 504), match='protected'>"
+                        Whitespace: None
                     IterBegin: "[25, 1] (495)"
                     IterEnd: "[25, 10] (504)"
-                    Type: "Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(495, 504), match='protected'>"
-                    Whitespace: None
+                    Type: "Visibility <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                 IterBegin: "[25, 1] (495)"
                 IterEnd: "[25, 10] (504)"
                 Type: "Repeat: {Visibility, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
@@ -1044,7 +1074,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[25, 21] (515)"
                 IterEnd: "[25, 39] (533)"
-                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(515, 533), match='ProtectedInterface'>"
                 Whitespace:
@@ -1162,14 +1192,19 @@ Children:
             Children:
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
+                        IterBegin: "[28, 1] (547)"
+                        IterEnd: "[28, 8] (554)"
+                        Type: "'private' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(547, 554), match='private'>"
+                        Whitespace: None
                     IterBegin: "[28, 1] (547)"
                     IterEnd: "[28, 8] (554)"
-                    Type: "Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(547, 554), match='private'>"
-                    Whitespace: None
+                    Type: "Visibility <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                 IterBegin: "[28, 1] (547)"
                 IterEnd: "[28, 8] (554)"
                 Type: "Repeat: {Visibility, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
@@ -1192,7 +1227,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[28, 15] (561)"
                 IterEnd: "[28, 27] (573)"
-                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(561, 573), match='PrivateMixin'>"
                 Whitespace:

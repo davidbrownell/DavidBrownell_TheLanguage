@@ -8,14 +8,19 @@ Children:
             Children:
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
+                        IterBegin: "[1, 1] (0)"
+                        IterEnd: "[1, 4] (3)"
+                        Type: "'var' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(0, 3), match='var'>"
+                        Whitespace: None
                     IterBegin: "[1, 1] (0)"
                     IterEnd: "[1, 4] (3)"
-                    Type: "Type Modifier <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(0, 3), match='var'>"
-                    Whitespace: None
+                    Type: "Modifier <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                 IterBegin: "[1, 1] (0)"
                 IterEnd: "[1, 4] (3)"
                 Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"

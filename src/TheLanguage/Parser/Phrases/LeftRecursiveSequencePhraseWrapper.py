@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple
+from typing import cast, List, Optional, Set, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -89,15 +89,34 @@ class LeftRecursiveSequencePhraseWrapper(Phrase):
         self.StandardPhrases                = standard_phrases
         self.LeftRecursivePhrases           = left_recursive_phrases
 
-        self._prefix_phrase                 = OrPhrase(
-            standard_phrases,
-            name=prefix_name or "{} <Prefix>".format(name),
-        )
+        self._prefix_name                   = prefix_name or "{} <Prefix>".format(name)
+        self._suffix_name                   = suffix_name or "{} <Suffix>".format(name)
 
-        self._suffix_phrase                 = OrPhrase(
-            [_SuffixWrapper(phrase) for phrase in left_recursive_phrases],
-            name=suffix_name or "{} <Suffix>".format(name),
-        )
+        self._prefix_phrase                 = None      # Updated below
+        self._suffix_phrase                 = None      # Updated below
+
+        self._UpdateInternalPhrases()
+
+    # ----------------------------------------------------------------------
+    def ExcludePhrases(
+        self,
+        phrases: Union[
+            List[Union[str, Phrase]],
+            Set[str],
+        ],
+    ):
+        if not isinstance(phrases, set):
+            phrases = set(
+                [
+                    phrase.Name if isinstance(phrase, Phrase) else phrase
+                    for phrase in phrases
+                ],
+            )
+
+        self.StandardPhrases = [phrase for phrase in self.StandardPhrases if phrase.Name not in phrases]
+        self.LeftRecursivePhrases = [phrase for phrase in self.LeftRecursivePhrases if phrase.Name not in phrases]
+
+        self._UpdateInternalPhrases()
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -125,6 +144,8 @@ class LeftRecursiveSequencePhraseWrapper(Phrase):
         data_items: List[Optional[Phrase.ParseResultData]] = []
 
         # Evaluate the prefix
+        assert self._prefix_phrase is not None
+
         result = await self._prefix_phrase.ParseAsync(
             unique_id + ("Prefix", ),
             normalized_iter,
@@ -141,6 +162,8 @@ class LeftRecursiveSequencePhraseWrapper(Phrase):
 
         # Evaluate the suffix
         if result.Success:
+            assert self._suffix_phrase is not None
+
             iteration = 0
 
             while True:
@@ -227,6 +250,18 @@ class LeftRecursiveSequencePhraseWrapper(Phrase):
 
         # <Too many positional arguments> pylint: disable=E1121
         return Phrase.ParseResult(True, original_normalized_iter, normalized_iter, root)
+
+    # ----------------------------------------------------------------------
+    def _UpdateInternalPhrases(self):
+        self._prefix_phrase = OrPhrase(
+            self.StandardPhrases,
+            name=self._prefix_name,
+        )
+
+        self._suffix_phrase = OrPhrase(
+            [_SuffixWrapper(phrase) for phrase in self.LeftRecursivePhrases],
+            name=self._suffix_name,
+        )
 
 
 # ----------------------------------------------------------------------
