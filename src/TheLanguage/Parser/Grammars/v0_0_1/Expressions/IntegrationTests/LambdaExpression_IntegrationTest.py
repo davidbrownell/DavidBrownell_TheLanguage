@@ -102,27 +102,6 @@ def test_MultilineArgs():
 
 
 # ----------------------------------------------------------------------
-def test_InvalidParameterType():
-    with pytest.raises(InvalidTypeError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                var1 = lambda (invalid a): value
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "'invalid' is not a valid type name; names must start with an uppercase letter and be at least 2 characters."
-    assert ex.Name == "invalid"
-    assert ex.Line == 1
-    assert ex.Column == 16
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == ex.Column + len(ex.Name)
-
-
-# ----------------------------------------------------------------------
 def test_InvalidParameterName():
     with pytest.raises(InvalidVariableNameError) as ex:
         Execute(

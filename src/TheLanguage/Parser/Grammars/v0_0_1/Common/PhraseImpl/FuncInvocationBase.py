@@ -15,7 +15,6 @@
 # ----------------------------------------------------------------------
 """Contains the FuncInvocationBase object"""
 
-import itertools
 import os
 
 import CommonEnvironment

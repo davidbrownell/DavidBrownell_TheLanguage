@@ -16,13 +16,14 @@
 """Functionality used to parse a single translation unit"""
 
 import os
+import sys
 import textwrap
 import threading
 
 from collections import OrderedDict
 from typing import Any, Awaitable, cast, Dict, Generator, List, Optional, Tuple, Union
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -40,10 +41,9 @@ with InitRelativeImports():
     from .Components.Error import Error
     from .Components.Phrase import Phrase
 
-    from .Phrases.DSL import DynamicPhrasesType
+    from .Phrases.DSL import DynamicPhrasesType, Leaf
     from .Phrases.DynamicPhrase import DynamicPhrase
     from .Phrases.LeftRecursiveSequencePhraseWrapper import LeftRecursiveSequencePhraseWrapper
-    from .Phrases.SequencePhrase import SequencePhrase
     from .Phrases.TokenPhrase import TokenPhrase
 
 
@@ -62,9 +62,76 @@ class InvalidDynamicTraversalError(Error):
 class SyntaxInvalidError(Error):
     """Exception thrown when no matching phrases were found"""
 
+    iter_begin: InitVar[Phrase.NormalizedIterator]
+
     Root: AST.RootNode
+    LastMatch: AST.Node                     = field(init=False)
 
     MessageTemplate                         = Interface.DerivedProperty("The syntax is not recognized")
+
+    # TODO: Add functionality that discusses naming conventions if the wrong type of name is used
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, iter_begin):
+        last_matches: List[
+            Tuple[
+                Union[AST.Leaf, AST.Node, AST.RootNode],
+                int,
+            ]
+        ] = []
+
+        compare_begin_iters = iter_begin.Line != self.Line or iter_begin.Column != self.Column
+
+        for node in self.Root.Enum():
+            if isinstance(node, AST.Leaf):
+                continue
+
+            # Get the begin value
+            node_iter_begin = node.IterBegin
+            if node_iter_begin is None:
+                continue
+
+            # Get the end value
+            iter_end = node.IterEnd
+            if iter_end is None:
+                continue
+
+            if (
+                iter_end.Line == self.Line
+                and iter_end.Column == self.Column
+                and (
+                    not compare_begin_iters
+                    or (
+                        node_iter_begin.Line == iter_begin.Line
+                        and node_iter_begin.Column == iter_begin.Column
+                    )
+                )
+            ):
+                # Calculate the depth of this node
+                depth = 0
+
+                parent = node
+                while parent is not None:
+                    depth += 1
+                    parent = parent.Parent  # type: ignore
+
+                last_matches.append((node, depth))
+
+        assert last_matches
+
+        # Select the node with the lowest depth (as this is likely to include the other nodes)
+        last_matches.sort(
+            key=lambda value: value[-1] if value[-1] != 1 else sys.maxsize
+        )
+
+        last_match = last_matches[0][0]
+
+        object.__setattr__(self, "LastMatch", last_match)
+
+        # If necessary, adjust the column to account for whitespace
+        potential_whitespace = TokenPhrase.ExtractWhitespace(last_match.IterEnd.Clone())  # type: ignore
+        if potential_whitespace is not None:
+            object.__setattr__(self, "Column", self.Column + potential_whitespace[1] - potential_whitespace[0])
 
     # ----------------------------------------------------------------------
     def ToDebugString(
@@ -75,13 +142,19 @@ class SyntaxInvalidError(Error):
             """\
             {message} [{line}, {column}]
 
+
             {content}
+
+
+            {last_match_content}
             """,
         ).format(
             message=str(self),
             line=self.Line,
             column=self.Column,
             content=self.Root.ToYamlString().rstrip(),
+            # pylint: disable=no-member
+            last_match_content=self.LastMatch.ToYamlString().rstrip(),
         )
 
 
@@ -215,6 +288,16 @@ async def ParseAsync(
 
     root = AST.RootNode(None)
 
+    # ----------------------------------------------------------------------
+    def FinalInit():
+        for node in root.Enum(children_first=True):
+            if isinstance(node, Leaf):
+                continue
+
+            node.FinalInit()
+
+    # ----------------------------------------------------------------------
+
     while not normalized_iter.AtEnd():
         phrase_observer.ClearNodeCache()
 
@@ -239,9 +322,12 @@ async def ParseAsync(
         )
 
         if not result.Success:
+            FinalInit()
+
             raise SyntaxInvalidError(
                 result.IterEnd.Line,
                 result.IterEnd.Column,
+                result.IterBegin,  # type: ignore
                 root,
             )
 
@@ -250,6 +336,8 @@ async def ParseAsync(
         # TODO: Eat trailing comments (here or in SequencePhrase.py?)
         # TODO: What happens to file that starts with newlines?
         # TODO: Handle empty file
+
+    FinalInit()
 
     assert normalized_iter.AtEnd()
     return root

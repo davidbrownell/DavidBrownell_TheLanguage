@@ -31,7 +31,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..DSL import CommentToken
     from ..OrPhrase import *
+    from ..SequencePhrase import SequencePhrase
 
     from ..TokenPhrase import (
         NewlineToken,
@@ -636,3 +638,77 @@ class TestParseReturnsNone(object):
         assert result is None
 
         assert len(parse_mock.method_calls) == 2
+
+
+# ----------------------------------------------------------------------
+@pytest.mark.asyncio
+async def test_BigFailuresTrumpSmallSuccesses(parse_mock):
+    lower_phrase = TokenPhrase(RegexToken("lower", re.compile(r"(?P<value>[a-z]+[0-9]*)")))
+    upper_phrase = TokenPhrase(RegexToken("upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)")))
+
+    short_phrase = SequencePhrase(CommentToken, [lower_phrase])
+    long_phrase = SequencePhrase(CommentToken, [lower_phrase, lower_phrase, upper_phrase])
+
+    or_phrase = OrPhrase([short_phrase, long_phrase])
+
+    iter = CreateIterator("one two three")
+
+    result = await or_phrase.ParseAsync(("root", ), iter, parse_mock)
+    assert str(result) == textwrap.dedent(
+        """\
+        # <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+        Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+          Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+            DataItems:
+              - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems:
+                    - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                      Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                        IsIgnored: False
+                        IterBegin: "[1, 1] (0)"
+                        IterEnd: "[1, 4] (3)"
+                        Token: "lower"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+                        Whitespace: None
+                      Phrase: "lower"
+                  IsComplete: True
+                Phrase: "Sequence: [lower]"
+              - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+                  DataItems:
+                    - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                      Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                        IsIgnored: False
+                        IterBegin: "[1, 1] (0)"
+                        IterEnd: "[1, 4] (3)"
+                        Token: "lower"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+                        Whitespace: None
+                      Phrase: "lower"
+                    - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                      Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+                        IsIgnored: False
+                        IterBegin: "[1, 5] (4)"
+                        IterEnd: "[1, 8] (7)"
+                        Token: "lower"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
+                        Whitespace:
+                          - 3
+                          - 4
+                      Phrase: "lower"
+                    - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+                      Data: None
+                      Phrase: "upper"
+                  IsComplete: True
+                Phrase: "Sequence: [lower, lower, upper]"
+            IsComplete: True
+          Phrase: "Or: (Sequence: [lower], Sequence: [lower, lower, upper])"
+        IterBegin: "[1, 1] (0)"
+        IterEnd: "[1, 8] (7)"
+        Success: False
+        """,
+    )

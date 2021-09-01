@@ -64,7 +64,10 @@ class CastExpression(GrammarPhrase):
                     PhraseItem(
                         name="Type or Modifier",
                         item=(
-                            TypeModifier.CreatePhraseItem(),
+                            PhraseItem(
+                                name="Modifier",
+                                item=TypeModifier.CreatePhraseItem(),
+                            ),
                             DynamicPhrasesType.Types,
                         ),
                     ),

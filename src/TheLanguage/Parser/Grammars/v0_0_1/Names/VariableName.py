@@ -74,7 +74,9 @@ class VariableName(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
 
-                # TODO: Does this need to be in a sequence?
+                # Note that this needs to be a sequence rather than just the name as this is the only
+                # way to ensure that the validation below is invoked. If just the name, there would
+                # be nothing to tie the token to this phrase.
                 item=[CommonTokens.GenericName],
             ),
         )

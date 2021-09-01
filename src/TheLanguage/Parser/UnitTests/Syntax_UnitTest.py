@@ -21,6 +21,7 @@ import textwrap
 from unittest.mock import Mock
 
 import pytest
+pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 from asynctest import CoroutineMock
 from semantic_version import Version as SemVer
@@ -174,7 +175,9 @@ class TestStandard(object):
         assert result.Line == 8
         assert result.Column == 1
 
-        CompareResultsFromFile(result.ToDebugString())
+        CompareResultsFromFile(
+            result.ToDebugString(),
+        )
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio

@@ -412,6 +412,8 @@ class SequencePhrase(Phrase):
             phrase_index += phrase_offset
 
             # Extract whitespace or comments
+            pre_whitespace_iter = normalized_iter.Clone()
+
             while not normalized_iter.AtEnd():
                 potential_prefix_info = ExtractWhitespaceOrComments()
                 if potential_prefix_info is None:
@@ -448,7 +450,12 @@ class SequencePhrase(Phrase):
             if result.Data is not None:
                 data_items.append(result.Data)
 
-            normalized_iter = result.IterEnd.Clone()
+            # Update the iterator
+            if result.IterEnd == normalized_iter:
+                # Nothing was matched, so revert back to the iterator before whitespace was consumed
+                normalized_iter = pre_whitespace_iter
+            else:
+                normalized_iter = result.IterEnd.Clone()
 
             if not result.Success:
                 success = False

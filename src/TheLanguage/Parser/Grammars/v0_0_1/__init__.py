@@ -3,13 +3,24 @@
 # Expressions:
 # ---
 #   - SmartIf (Python's match statement)
+#
+#        'match' <expr> ':'
+#            (
+#                'case' <expr> (',' <expr>)* ','? ':' <expr> (or next line)
+#            )+
+#            (    'default' ':' <expr> (or next line)
+#            )?
+#
+#        or type
 
 # Statements:
 #   - ClassAttribute
 #   - ClassCompilerData
 
 
-# TODO: Ensure that all phrases are as forgiving as possible during parsing.
+# TODO: Ensure that all phrases are as forgiving as possible during parsing; note that this might not be the way
+#       to go now that errors are more precise and ambiguities are properly detected. Make things less forgiving
+#       if it makes more sense to go in this direction.
 
 # TODO: Problems when ending with comments:
 #     class Foo():
