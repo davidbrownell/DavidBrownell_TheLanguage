@@ -66,6 +66,8 @@ def _LoadDynamicPhrasesFromFile(
     filename: str,
     module_attribute_name: str=None,
 ) -> DynamicPhrasesInfo:
+    # TODO: Ensure that all names are unique
+
     assert os.path.isfile(filename), filename
 
     dirname, basename = os.path.split(filename)
@@ -100,6 +102,7 @@ def _LoadDynamicPhrasesFromFile(
 
         del sys.modules[basename]
 
+        # pylint: disable=too-many-function-args
         return DynamicPhrasesInfo(
             expressions,
             names,
@@ -238,6 +241,8 @@ class _ParseObserver(TranslationUnitsObserver):
         node: RootNode,
     ) -> DynamicPhrasesInfo:
         # TODO
+
+        # pylint: disable=too-many-function-args
         return DynamicPhrasesInfo([], [], [], [])
 
     # ----------------------------------------------------------------------

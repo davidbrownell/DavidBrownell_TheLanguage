@@ -28,7 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+
+    from ..Names.TupleName import TupleName
 
 
 # ----------------------------------------------------------------------
@@ -51,9 +53,16 @@ class VariableExpression(GrammarPhrase):
         super(VariableExpression, self).__init__(
             GrammarPhrase.Type.Expression,
             CreatePhrase(
-                name=self.PHRASE_NAME,
-
                 # <name>
-                item=DynamicPhrasesType.Names,
+                PhraseItem(
+                    name=self.PHRASE_NAME,
+                    item=DynamicPhrasesType.Names,
+
+                    # Ambiguity is introduced between this statement and TupleName without this
+                    # explicit exclusion. For example, is "(a, b, c)" a tuple name or tuple
+                    # expression? In this context, "tuple expression" is correct, so remove tuple
+                    # name as a viable candidate.
+                    exclude=[TupleName().Phrase],
+                ),
             ),
         )

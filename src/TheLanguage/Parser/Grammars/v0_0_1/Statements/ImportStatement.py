@@ -123,20 +123,23 @@ class ImportStatement(ImportGrammarStatement):
     ):
         assert file_extensions
 
-        # (<name> 'as' <name>) | <name>
+        # <name> ('as' <name>)?
         content_item = PhraseItem(
             name="Content Item",
-            item=(
-                # <name> 'as' <name>
-                [
-                    CommonTokens.GenericName,
-                    "as",
-                    CommonTokens.GenericName,
-                ],
-
+            item=[
                 # <name>
                 CommonTokens.GenericName,
-            ),
+
+                # ('as' <name>)?
+                PhraseItem(
+                    name="Suffix",
+                    item=[
+                        "as",
+                        CommonTokens.GenericName,
+                    ],
+                    arity="?",
+                ),
+            ],
         )
 
         # <content_item> (',' <content_item>)* ','?
@@ -367,27 +370,23 @@ class ImportStatement(ImportGrammarStatement):
             [content_items[0]],
             [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Node, content_items[1])))],
         ):
-            content_item = ExtractOr(cast(Node, content_item))
+            content_nodes = ExtractSequence(cast(Node, content_item))
+            assert len(content_nodes) == 2
 
-            if isinstance(content_item, Leaf):
-                key_leaf = content_item
-                key = ExtractToken(key_leaf)
+            key_leaf = cast(Leaf, content_nodes[0])
+            key = cast(str, ExtractToken(key_leaf))
 
+            as_node = ExtractRepeat(cast(Node, content_nodes[1]))
+
+            if as_node is None:
                 value_leaf = key_leaf
                 value = key
-
-            elif isinstance(content_item, Node):
-                as_items = ExtractSequence(content_item)
-                assert len(as_items) == 3
-
-                key_leaf = cast(Leaf, as_items[0])
-                key = ExtractToken(key_leaf)
-
-                value_leaf = cast(Leaf, as_items[2])
-                value = ExtractToken(value_leaf)
-
             else:
-                assert False, content_item  # pragma: no cover
+                as_nodes = ExtractSequence(cast(Node, as_node))
+                assert len(as_nodes) == 2
+
+                value_leaf = cast(Leaf, as_nodes[1])
+                value = cast(str, ExtractToken(value_leaf))
 
             assert key
             assert value

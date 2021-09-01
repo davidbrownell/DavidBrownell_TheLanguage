@@ -70,6 +70,8 @@ class TryCatchStatement(GrammarPhrase):
             Func4()
     """
 
+    # TODO: Change this to 'except' to be more consistent with python
+
     PHRASE_NAME                             = "Try Catch Statement"
 
     # ----------------------------------------------------------------------
@@ -90,6 +92,7 @@ class TryCatchStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
+            # <Parameters differ> pylint: disable=W0221
             super(TryCatchStatement.NodeInfo, self).__post_init__(
                 TryStatements=lambda statements: [statement.Type.Name for statement in statements],
                 CatchVarStatements=lambda items: ["{}, {}, {}".format(ex_type, ex_name, ", ".join([statement.Type.Name for statement in statements])) for (ex_type, ex_name), statements in items],

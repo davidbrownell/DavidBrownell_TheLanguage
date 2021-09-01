@@ -68,7 +68,6 @@ class TupleBase(GrammarPhrase):
         else:
             assert False, grammar_phrase_type  # pragma: no cover
 
-
         super(TupleBase, self).__init__(
             grammar_phrase_type,
             CreatePhrase(

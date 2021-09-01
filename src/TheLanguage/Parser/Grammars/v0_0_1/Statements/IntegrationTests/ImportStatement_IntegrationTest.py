@@ -97,7 +97,7 @@ class TestStandard(object):
                     self._root2.replace("\\", "\\\\"),
                     "<generic_root>",
                 ) \
-                .replace("\\\\", "/")
+                .replace("\\\\", "/"),
         )
 
     # ----------------------------------------------------------------------

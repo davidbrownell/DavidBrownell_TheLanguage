@@ -17,10 +17,7 @@
 
 import os
 
-from typing import cast
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,13 +30,10 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common.TypeModifier import TypeModifier
     from ...GrammarPhrase import GrammarPhrase
+
     from ....Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
-        ExtractRepeat,
-        ExtractSequence,
-        Leaf,
-        Node,
         PhraseItem,
     )
 
@@ -83,16 +77,3 @@ class VariableDeclarationStatement(GrammarPhrase):
                 ],
             ),
         )
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ValidateNodeSyntax(
-        node: Node,
-    ):
-        nodes = ExtractSequence(node)
-        assert len(nodes) == 5
-
-        # Validate the modifier
-        if nodes[0] is not None:
-            TypeModifier.Extract(cast(Leaf, ExtractRepeat(cast(Node, nodes[0]))))
