@@ -387,7 +387,7 @@ Children:
                 IterEnd: "[8, 1] (76)"
                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              ClassType: None
+              ClassModifier: None
               IsFunction: True
               MethodType: None
               Name: "Func"

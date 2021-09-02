@@ -101,7 +101,7 @@ def _CreateGenericName():
     for do_not_match_keyword in DoNotMatchKeywords:
         regex_suffixes.append(r"(?<!{})".format(re.escape(do_not_match_keyword)))
 
-    regex = r"(?P<value>[a-zA-Z0-9_\.]+\??)\b{}".format("".join(regex_suffixes))
+    regex = r"(?P<value>_?[a-zA-Z0-9_\.]+\??)\b{}".format("".join(regex_suffixes))
 
     return RegexToken("<generic_name>", re.compile(regex))
 

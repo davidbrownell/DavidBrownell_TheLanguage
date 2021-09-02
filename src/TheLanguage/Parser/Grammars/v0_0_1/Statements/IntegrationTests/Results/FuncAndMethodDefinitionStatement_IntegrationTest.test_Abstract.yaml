@@ -189,7 +189,7 @@ Children:
                                 IterEnd: "[3, 1] (60)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.abstract"
                               Name: "PublicAbstractMethod"
@@ -334,7 +334,7 @@ Children:
                                 IterEnd: "[4, 1] (114)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.abstract"
                               Name: "ProtectedAbstractMethod"
@@ -479,7 +479,7 @@ Children:
                                 IterEnd: "[5, 1] (164)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.abstract"
                               Name: "PrivateAbstractMethod"
