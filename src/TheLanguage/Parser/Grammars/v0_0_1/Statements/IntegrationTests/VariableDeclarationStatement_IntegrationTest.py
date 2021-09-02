@@ -34,7 +34,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..VariableDeclarationStatement import *
     from ...Common.AutomatedTests import Execute
-    from ...Common.TypeModifier import InvalidTypeModifierError
     from ...Names.VariableName import InvalidVariableNameError
 
 
@@ -102,19 +101,5 @@ def test_InvalidRightHandSide():
     assert ex.Name == "InvalidName"
     assert ex.Line == 1
     assert ex.Column == 7
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == ex.Column + len(ex.Name)
-
-# ----------------------------------------------------------------------
-def test_InvalidModifier():
-    with pytest.raises(InvalidTypeModifierError) as ex:
-        Execute("varied one = value")
-
-    ex = ex.value
-
-    assert str(ex) == "The type modifier 'varied' is not valid; values may be 'mutable', 'immutable', 'isolated', 'shared', 'var', 'ref', 'val', 'view'."
-    assert ex.Name == "varied"
-    assert ex.Line == 1
-    assert ex.Column == 1
     assert ex.LineEnd == 1
     assert ex.ColumnEnd == ex.Column + len(ex.Name)

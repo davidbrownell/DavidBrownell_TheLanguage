@@ -124,7 +124,7 @@ Children:
                                     IsIgnored: False
                                     IterBegin: "[3, 7] (24)"
                                     IterEnd: "[3, 17] (34)"
-                                    Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                    Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                       Match: "<_sre.SRE_Match object; span=(24, 34), match='Exception1'>"
                                     Whitespace:
@@ -275,7 +275,7 @@ Children:
                                     IsIgnored: False
                                     IterBegin: "[5, 7] (65)"
                                     IterEnd: "[5, 17] (75)"
-                                    Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                    Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                       Match: "<_sre.SRE_Match object; span=(65, 75), match='Exception2'>"
                                     Whitespace:

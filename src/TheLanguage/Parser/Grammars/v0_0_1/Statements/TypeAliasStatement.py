@@ -17,10 +17,7 @@
 
 import os
 
-from typing import cast, Optional
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,16 +28,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ..Types.StandardType import InvalidTypeError, StandardType
     from ...GrammarPhrase import GrammarPhrase
 
     from ....Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
-        ExtractSequence,
-        ExtractToken,
-        Leaf,
-        Node,
     )
 
 
@@ -68,7 +60,7 @@ class TypeAliasStatement(GrammarPhrase):
                     "using",
 
                     # <type>
-                    CommonTokens.GenericName,
+                    CommonTokens.TypeName,
 
                     # '='
                     "=",
@@ -80,19 +72,3 @@ class TypeAliasStatement(GrammarPhrase):
                 ],
             ),
         )
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ValidateNodeSyntax(
-        node: Node,
-    ) -> Optional[bool]:
-        nodes = ExtractSequence(node)
-        assert len(nodes) == 5
-
-        # Validate the name
-        leaf = cast(Leaf, nodes[1])
-        name = cast(str, ExtractToken(leaf))
-
-        if not StandardType.VALIDATION_EXPRESSION.match(name):
-            raise InvalidTypeError.FromNode(leaf, name)

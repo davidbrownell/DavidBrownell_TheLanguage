@@ -1,0 +1,492 @@
+# <class 'TheLanguage.Parser.Components.AST.RootNode'>
+Children:
+  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Parser.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                Children:
+                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 6] (5)"
+                    Type: "'class' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 5), match='class'>"
+                    Whitespace: None
+                IterBegin: "[1, 1] (0)"
+                IterEnd: "[1, 6] (5)"
+                Type: "Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[1, 7] (6)"
+                IterEnd: "[1, 10] (9)"
+                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(6, 9), match='Foo'>"
+                Whitespace:
+                  - 5
+                  - 6
+              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[1, 10] (9)"
+                IterEnd: "[1, 11] (10)"
+                Type: "'(' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(9, 10), match='('>"
+                Whitespace: None
+              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[1, 11] (10)"
+                IterEnd: "[1, 12] (11)"
+                Type: "')' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(10, 11), match=')'>"
+                Whitespace: None
+              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[1, 12] (11)"
+                IterEnd: "[1, 13] (12)"
+                Type: "':' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(11, 12), match=':'>"
+                Whitespace: None
+              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[1, 13] (12)"
+                IterEnd: "[2, 1] (13)"
+                Type: "Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>"
+                Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                  End: 13
+                  Start: 12
+                Whitespace: None
+              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[2, 1] (13)"
+                IterEnd: "[2, 5] (17)"
+                Type: "Indent <class 'TheLanguage.Parser.Components.Token.IndentToken'>"
+                Value: # <class 'TheLanguage.Parser.Components.Token.IndentToken.MatchResult'>
+                  End: 17
+                  Start: 13
+                  Value: 4
+                Whitespace: None
+              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                Children:
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                        Children:
+                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                            Children:
+                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children:
+                                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                        Children:
+                                          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                            IsIgnored: False
+                                            IterBegin: "[2, 5] (17)"
+                                            IterEnd: "[2, 8] (20)"
+                                            Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                              Match: "<_sre.SRE_Match object; span=(17, 20), match='Int'>"
+                                            Whitespace: None
+                                        IterBegin: "[2, 5] (17)"
+                                        IterEnd: "[2, 8] (20)"
+                                        Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                    IterBegin: "[2, 5] (17)"
+                                    IterEnd: "[2, 8] (20)"
+                                    Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                IterBegin: "[2, 5] (17)"
+                                IterEnd: "[2, 8] (20)"
+                                Type: "DynamicPhrasesType.Types <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                IsIgnored: False
+                                IterBegin: "[2, 9] (21)"
+                                IterEnd: "[2, 16] (28)"
+                                Type: "<method_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                  Match: "<_sre.SRE_Match object; span=(21, 28), match='Method1'>"
+                                Whitespace:
+                                  - 20
+                                  - 21
+                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                    IsIgnored: False
+                                    IterBegin: "[2, 16] (28)"
+                                    IterEnd: "[2, 17] (29)"
+                                    Type: "'(' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                      Match: "<_sre.SRE_Match object; span=(28, 29), match='('>"
+                                    Whitespace: None
+                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                    IsIgnored: False
+                                    IterBegin: "[2, 17] (29)"
+                                    IterEnd: "[2, 18] (30)"
+                                    Type: "')' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                      Match: "<_sre.SRE_Match object; span=(29, 30), match=')'>"
+                                    Whitespace: None
+                                IterBegin: "[2, 16] (28)"
+                                IterEnd: "[2, 18] (30)"
+                                Type: "Parameters <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children:
+                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                        IsIgnored: False
+                                        IterBegin: "[2, 18] (30)"
+                                        IterEnd: "[2, 19] (31)"
+                                        Type: "':' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                          Match: "<_sre.SRE_Match object; span=(30, 31), match=':'>"
+                                        Whitespace: None
+                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                        IsIgnored: False
+                                        IterBegin: "[2, 19] (31)"
+                                        IterEnd: "[3, 1] (32)"
+                                        Type: "Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>"
+                                        Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                          End: 32
+                                          Start: 31
+                                        Whitespace: None
+                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                        IsIgnored: False
+                                        IterBegin: "[3, 1] (32)"
+                                        IterEnd: "[3, 9] (40)"
+                                        Type: "Indent <class 'TheLanguage.Parser.Components.Token.IndentToken'>"
+                                        Value: # <class 'TheLanguage.Parser.Components.Token.IndentToken.MatchResult'>
+                                          End: 40
+                                          Start: 32
+                                          Value: 8
+                                        Whitespace: None
+                                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                        Children:
+                                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                            Children:
+                                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                                Children:
+                                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                                    Children:
+                                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                        IsIgnored: False
+                                                        IterBegin: "[3, 9] (40)"
+                                                        IterEnd: "[3, 13] (44)"
+                                                        Type: "'pass' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                          Match: "<_sre.SRE_Match object; span=(40, 44), match='pass'>"
+                                                        Whitespace: None
+                                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                        IsIgnored: False
+                                                        IterBegin: "[3, 13] (44)"
+                                                        IterEnd: "[5, 1] (46)"
+                                                        Type: "Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>"
+                                                        Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                          End: 46
+                                                          Start: 44
+                                                        Whitespace: None
+                                                    IterBegin: "[3, 9] (40)"
+                                                    IterEnd: "[5, 1] (46)"
+                                                    Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                IterBegin: "[3, 9] (40)"
+                                                IterEnd: "[5, 1] (46)"
+                                                Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                            IterBegin: "[3, 9] (40)"
+                                            IterEnd: "[5, 1] (46)"
+                                            Type: "Statements <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                                        IterBegin: "[3, 9] (40)"
+                                        IterEnd: "[5, 1] (46)"
+                                        Type: "Repeat: {Statements, 1, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                        IsIgnored: False
+                                        IterBegin: "[5, 1] (46)"
+                                        IterEnd: "[5, 5] (50)"
+                                        Type: "Dedent <class 'TheLanguage.Parser.Components.Token.DedentToken'>"
+                                        Value: # <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
+                                          {}
+                                        Whitespace: None
+                                    IterBegin: "[2, 18] (30)"
+                                    IterEnd: "[5, 5] (50)"
+                                    Type: "Multi-line Definition <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                IterBegin: "[2, 18] (30)"
+                                IterEnd: "[5, 5] (50)"
+                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                            Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
+                              ClassType: "ClassType.immutable"
+                              IsFunction: False
+                              MethodType: "MethodType.standard"
+                              Name: "Method1"
+                              Parameters: {}
+                              ReturnType: # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                    IsIgnored: False
+                                    IterBegin: "[2, 5] (17)"
+                                    IterEnd: "[2, 8] (20)"
+                                    Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                      Match: "<_sre.SRE_Match object; span=(17, 20), match='Int'>"
+                                    Whitespace: None
+                                IterBegin: "[2, 5] (17)"
+                                IterEnd: "[2, 8] (20)"
+                                Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                              Statements:
+                                - "Pass Statement"
+                              Visibility: "VisibilityModifier.private"
+                            IterBegin: "[2, 5] (17)"
+                            IterEnd: "[5, 5] (50)"
+                            Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        IterBegin: "[2, 5] (17)"
+                        IterEnd: "[5, 5] (50)"
+                        Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                    IterBegin: "[2, 5] (17)"
+                    IterEnd: "[5, 5] (50)"
+                    Type: "Statements <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                        Children:
+                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                            Children:
+                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children:
+                                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                        Children:
+                                          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                            IsIgnored: False
+                                            IterBegin: "[5, 5] (50)"
+                                            IterEnd: "[5, 8] (53)"
+                                            Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                              Match: "<_sre.SRE_Match object; span=(50, 53), match='Int'>"
+                                            Whitespace: None
+                                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                            Children:
+                                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                                Children:
+                                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                    IsIgnored: False
+                                                    IterBegin: "[5, 9] (54)"
+                                                    IterEnd: "[5, 12] (57)"
+                                                    Type: "'var' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                      Match: "<_sre.SRE_Match object; span=(54, 57), match='var'>"
+                                                    Whitespace:
+                                                      - 53
+                                                      - 54
+                                                IterBegin: "[5, 9] (54)"
+                                                IterEnd: "[5, 12] (57)"
+                                                Type: "Modifier <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                            IterBegin: "[5, 9] (54)"
+                                            IterEnd: "[5, 12] (57)"
+                                            Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                        IterBegin: "[5, 5] (50)"
+                                        IterEnd: "[5, 12] (57)"
+                                        Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                    IterBegin: "[5, 5] (50)"
+                                    IterEnd: "[5, 12] (57)"
+                                    Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                IterBegin: "[5, 5] (50)"
+                                IterEnd: "[5, 12] (57)"
+                                Type: "DynamicPhrasesType.Types <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                IsIgnored: False
+                                IterBegin: "[5, 13] (58)"
+                                IterEnd: "[5, 20] (65)"
+                                Type: "<method_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                  Match: "<_sre.SRE_Match object; span=(58, 65), match='Method2'>"
+                                Whitespace:
+                                  - 57
+                                  - 58
+                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                    IsIgnored: False
+                                    IterBegin: "[5, 20] (65)"
+                                    IterEnd: "[5, 21] (66)"
+                                    Type: "'(' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                      Match: "<_sre.SRE_Match object; span=(65, 66), match='('>"
+                                    Whitespace: None
+                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                    IsIgnored: False
+                                    IterBegin: "[5, 21] (66)"
+                                    IterEnd: "[5, 22] (67)"
+                                    Type: "')' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                      Match: "<_sre.SRE_Match object; span=(66, 67), match=')'>"
+                                    Whitespace: None
+                                IterBegin: "[5, 20] (65)"
+                                IterEnd: "[5, 22] (67)"
+                                Type: "Parameters <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children:
+                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                        IsIgnored: False
+                                        IterBegin: "[5, 22] (67)"
+                                        IterEnd: "[5, 23] (68)"
+                                        Type: "':' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                          Match: "<_sre.SRE_Match object; span=(67, 68), match=':'>"
+                                        Whitespace: None
+                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                        IsIgnored: False
+                                        IterBegin: "[5, 23] (68)"
+                                        IterEnd: "[6, 1] (69)"
+                                        Type: "Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>"
+                                        Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                          End: 69
+                                          Start: 68
+                                        Whitespace: None
+                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                        IsIgnored: False
+                                        IterBegin: "[6, 1] (69)"
+                                        IterEnd: "[6, 9] (77)"
+                                        Type: "Indent <class 'TheLanguage.Parser.Components.Token.IndentToken'>"
+                                        Value: # <class 'TheLanguage.Parser.Components.Token.IndentToken.MatchResult'>
+                                          End: 77
+                                          Start: 69
+                                          Value: 8
+                                        Whitespace: None
+                                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                        Children:
+                                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                            Children:
+                                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                                Children:
+                                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                                    Children:
+                                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                        IsIgnored: False
+                                                        IterBegin: "[6, 9] (77)"
+                                                        IterEnd: "[6, 13] (81)"
+                                                        Type: "'pass' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                          Match: "<_sre.SRE_Match object; span=(77, 81), match='pass'>"
+                                                        Whitespace: None
+                                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                        IsIgnored: False
+                                                        IterBegin: "[6, 13] (81)"
+                                                        IterEnd: "[7, 1] (82)"
+                                                        Type: "Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>"
+                                                        Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+                                                          End: 82
+                                                          Start: 81
+                                                        Whitespace: None
+                                                    IterBegin: "[6, 9] (77)"
+                                                    IterEnd: "[7, 1] (82)"
+                                                    Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                IterBegin: "[6, 9] (77)"
+                                                IterEnd: "[7, 1] (82)"
+                                                Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                            IterBegin: "[6, 9] (77)"
+                                            IterEnd: "[7, 1] (82)"
+                                            Type: "Statements <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                                        IterBegin: "[6, 9] (77)"
+                                        IterEnd: "[7, 1] (82)"
+                                        Type: "Repeat: {Statements, 1, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                        IsIgnored: False
+                                        IterBegin: "[7, 1] (82)"
+                                        IterEnd: "[7, 1] (82)"
+                                        Type: "Dedent <class 'TheLanguage.Parser.Components.Token.DedentToken'>"
+                                        Value: # <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
+                                          {}
+                                        Whitespace: None
+                                    IterBegin: "[5, 22] (67)"
+                                    IterEnd: "[7, 1] (82)"
+                                    Type: "Multi-line Definition <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                IterBegin: "[5, 22] (67)"
+                                IterEnd: "[7, 1] (82)"
+                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                            Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
+                              ClassType: "ClassType.immutable"
+                              IsFunction: False
+                              MethodType: "MethodType.standard"
+                              Name: "Method2"
+                              Parameters: {}
+                              ReturnType: # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                    IsIgnored: False
+                                    IterBegin: "[5, 5] (50)"
+                                    IterEnd: "[5, 8] (53)"
+                                    Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                      Match: "<_sre.SRE_Match object; span=(50, 53), match='Int'>"
+                                    Whitespace: None
+                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                    Children:
+                                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+                                        Children:
+                                          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                            IsIgnored: False
+                                            IterBegin: "[5, 9] (54)"
+                                            IterEnd: "[5, 12] (57)"
+                                            Type: "'var' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                              Match: "<_sre.SRE_Match object; span=(54, 57), match='var'>"
+                                            Whitespace:
+                                              - 53
+                                              - 54
+                                        IterBegin: "[5, 9] (54)"
+                                        IterEnd: "[5, 12] (57)"
+                                        Type: "Modifier <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                    IterBegin: "[5, 9] (54)"
+                                    IterEnd: "[5, 12] (57)"
+                                    Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                IterBegin: "[5, 5] (50)"
+                                IterEnd: "[5, 12] (57)"
+                                Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                              Statements:
+                                - "Pass Statement"
+                              Visibility: "VisibilityModifier.private"
+                            IterBegin: "[5, 5] (50)"
+                            IterEnd: "[7, 1] (82)"
+                            Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        IterBegin: "[5, 5] (50)"
+                        IterEnd: "[7, 1] (82)"
+                        Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                    IterBegin: "[5, 5] (50)"
+                    IterEnd: "[7, 1] (82)"
+                    Type: "Statements <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                IterBegin: "[2, 5] (17)"
+                IterEnd: "[7, 1] (82)"
+                Type: "Repeat: {Statements, 1, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[7, 1] (82)"
+                IterEnd: "[7, 1] (82)"
+                Type: "Dedent <class 'TheLanguage.Parser.Components.Token.DedentToken'>"
+                Value: # <class 'TheLanguage.Parser.Components.Token.DedentToken.MatchResult'>
+                  {}
+                Whitespace: None
+            Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Base: None
+              Interfaces: []
+              Mixins: []
+              Name: "Foo"
+              Type: "ClassType.Class"
+              Visibility: "VisibilityModifier.private"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[7, 1] (82)"
+            Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+        IterBegin: "[1, 1] (0)"
+        IterEnd: "[7, 1] (82)"
+        Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[1, 1] (0)"
+    IterEnd: "[7, 1] (82)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[7, 1] (82)"
+Type: "<None>"

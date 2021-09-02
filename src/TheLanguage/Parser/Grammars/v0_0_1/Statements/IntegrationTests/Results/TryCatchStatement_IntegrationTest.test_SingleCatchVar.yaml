@@ -124,7 +124,7 @@ Children:
                                     IsIgnored: False
                                     IterBegin: "[3, 7] (24)"
                                     IterEnd: "[3, 16] (33)"
-                                    Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                    Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                       Match: "<_sre.SRE_Match object; span=(24, 33), match='Exception'>"
                                     Whitespace:
@@ -407,7 +407,7 @@ Children:
                                                 IsIgnored: False
                                                 IterBegin: "[8, 8] (77)"
                                                 IterEnd: "[8, 18] (87)"
-                                                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                                                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                   Match: "<_sre.SRE_Match object; span=(77, 87), match='Exception1'>"
                                                 Whitespace: None
@@ -440,7 +440,7 @@ Children:
                                                 IsIgnored: False
                                                 IterBegin: "[8, 21] (90)"
                                                 IterEnd: "[8, 31] (100)"
-                                                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                                                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                   Match: "<_sre.SRE_Match object; span=(90, 100), match='Exception2'>"
                                                 Whitespace:

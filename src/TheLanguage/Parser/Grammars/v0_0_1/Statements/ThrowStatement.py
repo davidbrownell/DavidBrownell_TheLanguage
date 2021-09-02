@@ -45,6 +45,8 @@ class ThrowStatement(GrammarPhrase):
         throw (a, b, c)
     """
 
+    # TODO: Change this to 'raise' to be more consistent with python
+
     PHRASE_NAME                             = "Throw Statement"
 
     # ----------------------------------------------------------------------

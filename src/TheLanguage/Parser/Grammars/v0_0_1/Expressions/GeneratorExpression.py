@@ -30,6 +30,8 @@ with InitRelativeImports():
     from ...GrammarPhrase import GrammarPhrase
     from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
+    from .TernaryExpression import TernaryExpression
+
 
 # ----------------------------------------------------------------------
 class GeneratorExpression(GrammarPhrase):
@@ -65,7 +67,14 @@ class GeneratorExpression(GrammarPhrase):
                     "in",
 
                     # <expr>
-                    DynamicPhrasesType.Expressions,
+                    PhraseItem(
+                        item=DynamicPhrasesType.Expressions,
+
+                        # Don't let the TernaryExpression capture the 'if' token that may follow, as
+                        # the TernaryExpression expects an 'else' clause, but the following 'if' will
+                        # never have one.
+                        exclude=[TernaryExpression().Phrase],  # type: ignore
+                    ),
 
                     # ('if' <expr>)?
                     PhraseItem(
@@ -74,7 +83,7 @@ class GeneratorExpression(GrammarPhrase):
                             # 'if'
                             "if",
 
-                            # <expr>>
+                            # <expr>
                             DynamicPhrasesType.Expressions,
                         ],
                         arity="?",

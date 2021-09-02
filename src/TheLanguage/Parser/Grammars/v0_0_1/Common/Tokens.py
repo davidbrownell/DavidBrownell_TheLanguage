@@ -17,6 +17,7 @@
 
 import os
 import re
+import textwrap
 
 import CommonEnvironment
 
@@ -58,13 +59,6 @@ PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 # We should not generically match these keywords:
 #
 DoNotMatchKeywords                          = [
-    # TODO: Once the grammar is complete, attempt to remove each of these from the list and see if
-    #       we still see ambiguities.
-
-    # ../Statements/ClassStatement.py
-    "implements",
-    "uses",
-
     # ../Statements/DeleteStatement.py
     "del",
 
@@ -103,8 +97,24 @@ def _CreateGenericName():
 
     return RegexToken("<generic_name>", re.compile(regex))
 
-
 GenericName                                 = _CreateGenericName()
 
-
 del _CreateGenericName
+
+TypeName                                    = RegexToken(
+    "<type_name>",
+    re.compile(r"(?P<value>_?[A-Z][A-Za-z0-9_]+(?!<__))\b"),
+)
+
+MethodName                                  = RegexToken(
+    "<method_name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+                Operator Method             )(?:__[A-Z][A-Za-z0-9_]+(?:\.\.\.)?\??__\b)(?#
+                    - or -                  )|(?#
+                Standard Method             )(?:_?[A-Z][A-Za-z0-9_]+(?:\.\.\.)?\??(?!<__)\b)(?#
+            ))""",
+        ),
+    ),
+)

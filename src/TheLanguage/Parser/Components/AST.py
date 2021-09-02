@@ -20,7 +20,7 @@ for the parser.
 
 import os
 
-from typing import Any, Callable, cast, List, Optional, TextIO, Tuple, Union
+from typing import Any, Callable, Generator, List, Optional, TextIO, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -47,7 +47,7 @@ class _ASTBase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     """Common base class for nodes and leaves"""
 
     Type: Union[None, Phrase, Token]
-    Parent: Optional[Phrase]                = field(default=None, init=False)
+    Parent: Optional["_ASTBase"]            = field(default=None, init=False)
 
     # ----------------------------------------------------------------------
     def __post_init__(
@@ -71,6 +71,16 @@ class _ASTBase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         """Writes debugging output to the provided stream"""
         raise Exception("Abstract method")  # pragma: no cover
 
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def Enum(
+        leaves_only=False,
+        children_first=False,
+    ) -> Generator[Union["Leaf", "Node", "RootNode"], None, None]:
+        """Enumerates this item and all of its children"""
+        raise Exception("Abstract method")  # pragma: no cover
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -79,31 +89,43 @@ class _Node(_ASTBase):
 
     Children: List[Union["Node", "Leaf"]]   = field(default_factory=list)
 
+    IterBegin: Optional[NormalizedIterator] = field(init=False, default=None)
+    IterEnd: Optional[NormalizedIterator]   = field(init=False, default=None)
+
     # ----------------------------------------------------------------------
-    @property
-    def IterBegin(self) -> Optional[NormalizedIterator]:
-        node = self
+    def FinalInit(self):
+        # Calculate the extent of the iterators. Note that this cannot be done during __post_init__,
+        # as all of the children are not yet known.
+        min_iter = None
+        max_iter = None
 
-        while isinstance(node, _Node):
-            if not node.Children:
-                return None
+        # pylint: disable=not-an-iterable
+        for child in self.Children:
+            if isinstance(child, Leaf) and child.IsIgnored:
+                continue
 
-            node = node.Children[0]  # <unscriptable> pylint: disable=E1136
+            child_min_iter = child.IterBegin
+            if (
+                child_min_iter is not None
+                and (
+                    min_iter is None
+                    or child_min_iter.Offset < min_iter.Offset
+                )
+            ):
+                min_iter = child_min_iter
 
-        return cast(Leaf, node).IterBegin
+            child_max_iter = child.IterEnd
+            if (
+                child_max_iter is not None
+                and (
+                    max_iter is None
+                    or child_max_iter.Offset > max_iter.Offset
+                )
+            ):
+                max_iter = child_max_iter
 
-    @property
-    def IterEnd(self) -> Optional[NormalizedIterator]:
-        node = self
-
-        while isinstance(node, _Node):
-            if not node.Children:
-                return None
-
-            node = node.Children[-1]  # <unscriptable> pylint: disable=E1136
-
-        return cast(Leaf, node).IterEnd
-
+        object.__setattr__(self, "IterBegin", min_iter)
+        object.__setattr__(self, "IterEnd", max_iter)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -115,8 +137,29 @@ class _Node(_ASTBase):
         if indentation_prefix is None:
             indentation_prefix = ""
 
-        for child in self.Children:  # type: ignore
+        # pylint: disable=not-an-iterable
+        for child in self.Children:
             child.DebugOutput(output_stream, indentation_prefix)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Enum(
+        self,
+        leaves_only=False,
+        children_first=False,
+    ) -> Generator[Union["Leaf", "Node", "RootNode"], None, None]:
+        if not leaves_only and not children_first:
+            yield self  # type: ignore
+
+        # pylint: disable=not-an-iterable
+        for child in self.Children:
+            yield from child.Enum(
+                leaves_only=leaves_only,
+                children_first=children_first,
+            )
+
+        if not leaves_only and children_first:
+            yield self  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -189,3 +232,12 @@ class Leaf(_ASTBase):
                 " [{}]".format(self.Value.Match) if isinstance(self.Value, RegexToken.MatchResult) else "",
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Enum(
+        self,
+        leaves_only=False,
+        children_first=False,
+    ) -> Generator[Union["Leaf", Node, RootNode], None, None]:
+        yield self

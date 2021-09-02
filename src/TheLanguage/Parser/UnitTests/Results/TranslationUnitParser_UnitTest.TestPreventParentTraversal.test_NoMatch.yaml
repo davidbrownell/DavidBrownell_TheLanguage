@@ -1,5 +1,6 @@
 The syntax is not recognized [6, 1]
 
+
 # <class 'TheLanguage.Parser.Components.AST.RootNode'>
 Children:
   - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -199,5 +200,39 @@ Children:
     IterEnd: None
     Type: "Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
 IterBegin: "[1, 1] (0)"
-IterEnd: None
+IterEnd: "[6, 1] (32)"
 Type: "<None>"
+
+
+# <class 'TheLanguage.Parser.Components.AST.Node'>
+Children:
+  - # <class 'TheLanguage.Parser.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Parser.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+            IsIgnored: False
+            IterBegin: "[4, 5] (26)"
+            IterEnd: "[4, 9] (30)"
+            Type: "Lower <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(26, 30), match='four'>"
+            Whitespace: None
+          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+            IsIgnored: False
+            IterBegin: "[4, 9] (30)"
+            IterEnd: "[6, 1] (32)"
+            Type: "Newline+ <class 'TheLanguage.Parser.Components.Token.NewlineToken'>"
+            Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+              End: 32
+              Start: 30
+            Whitespace: None
+        IterBegin: "[4, 5] (26)"
+        IterEnd: "[6, 1] (32)"
+        Type: "Lower Phrase <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+    IterBegin: "[4, 5] (26)"
+    IterEnd: "[6, 1] (32)"
+    Type: "(Lower Phrase, Dedent Phrase) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+IterBegin: "[4, 5] (26)"
+IterEnd: "[6, 1] (32)"
+Type: "Dynamic Phrases <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"

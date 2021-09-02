@@ -48,24 +48,3 @@ def test_Standard():
             ),
         ),
     )
-
-
-# ----------------------------------------------------------------------
-def test_InvalidName():
-    with pytest.raises(InvalidTypeError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                using invalid = Int
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "'invalid' is not a valid type name; names must start with an uppercase letter and be at least 2 characters."
-    assert ex.Name == "invalid"
-    assert ex.Line == 1
-    assert ex.Column == 7
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == ex.Column + len(ex.Name)

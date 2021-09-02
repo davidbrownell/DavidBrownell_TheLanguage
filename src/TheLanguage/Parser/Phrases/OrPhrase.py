@@ -16,6 +16,7 @@
 """Contains the OrPhrase object"""
 
 import os
+import textwrap
 
 from typing import List, Optional, Tuple, Union
 
@@ -174,13 +175,13 @@ class OrPhrase(Phrase):
 
             if self.SortResults:
                 # Stable sort according to:
-                #   - Success
                 #   - Longest matched context
+                #   - Success
 
                 sort_data = [
                     (
-                        1 if result.Success else 0,
                         result.IterEnd.Offset,
+                        1 if result.Success else 0,
                         index,
                     )
                     for index, result in enumerate(results)
@@ -189,6 +190,28 @@ class OrPhrase(Phrase):
                 sort_data.sort(
                     key=lambda value: value[:-1],
                     reverse=True,
+                )
+
+                assert (
+                    len(sort_data) == 1
+                    or sort_data[0][1] == 0
+                    or sort_data[0][:-1] != sort_data[1][:-1]
+                ), textwrap.dedent(
+                    """\
+                    Assertions here indicate a grammar that requires context to parse correctly; please modify
+                    the grammar so that context is no longer required.
+
+
+
+                    {}
+
+
+
+                    {}
+                    """,
+                ).format(
+                    results[sort_data[0][-1]],
+                    results[sort_data[1][-1]],
                 )
 
                 best_index = sort_data[0][-1]
@@ -219,31 +242,19 @@ class OrPhrase(Phrase):
                 # <Too many arguments> pylint: disable=E1121
                 return Phrase.ParseResult(True, normalized_iter, best_result.IterEnd, data)
 
-            # Gather the failure information
-            data_items: List[Optional[Phrase.ParseResultData]] = []
-            max_iter: Optional[Phrase.NormalizedIterator] = None
-
-            for result in results:
-                assert not result.Success
-
-                data_items.append(result.Data)
-
-                if max_iter is None or result.IterEnd.Offset > max_iter.Offset:
-                    max_iter = result.IterEnd
-
-            assert data_items
-            assert max_iter
-
             # <Too many arguments> pylint: disable=E1121
             return Phrase.ParseResult(
                 False,
                 normalized_iter,
-                max_iter,
+                best_result.IterEnd,
                 # <Too many arguments> pylint: disable=E1121
                 Phrase.StandardParseResultData(
                     self,
                     # <Too many arguments> pylint: disable=E1121
-                    Phrase.MultipleStandardParseResultData(data_items, True),
+                    Phrase.MultipleStandardParseResultData(
+                        [result.Data for result in results],
+                        True,
+                    ),
                     unique_id,
                 ),
             )
