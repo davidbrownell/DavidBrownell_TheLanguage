@@ -150,10 +150,10 @@ Children:
                                           - 39
                                     IterBegin: "[2, 27] (39)"
                                     IterEnd: "[2, 36] (48)"
-                                    Type: "Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                    Type: "Class Modifier <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                 IterBegin: "[2, 27] (39)"
                                 IterEnd: "[2, 36] (48)"
-                                Type: "Repeat: {Class Type, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                Type: "Repeat: {Class Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                                 Children:
                                   - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -237,7 +237,7 @@ Children:
                                 IterEnd: "[5, 5] (68)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.standard"
                               Name: "ImmutableMethod"
@@ -343,10 +343,10 @@ Children:
                                           - 88
                                     IterBegin: "[5, 25] (88)"
                                     IterEnd: "[5, 32] (95)"
-                                    Type: "Class Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                    Type: "Class Modifier <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                 IterBegin: "[5, 25] (88)"
                                 IterEnd: "[5, 32] (95)"
-                                Type: "Repeat: {Class Type, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                Type: "Repeat: {Class Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                                 Children:
                                   - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -430,7 +430,7 @@ Children:
                                 IterEnd: "[8, 5] (115)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.mutable"
+                              ClassModifier: "ClassModifier.mutable"
                               IsFunction: False
                               MethodType: "MethodType.standard"
                               Name: "MutableMethod"
@@ -603,7 +603,7 @@ Children:
                                 IterEnd: "[10, 1] (149)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.standard"
                               Name: "DefaultMethod"

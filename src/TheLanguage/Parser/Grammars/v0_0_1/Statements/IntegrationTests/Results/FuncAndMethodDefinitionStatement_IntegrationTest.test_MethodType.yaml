@@ -237,7 +237,7 @@ Children:
                                 IterEnd: "[5, 5] (66)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.standard"
                               Name: "StandardMethod"
@@ -432,7 +432,7 @@ Children:
                                 IterEnd: "[8, 5] (111)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.static"
                               Name: "StaticMethod"
@@ -559,7 +559,7 @@ Children:
                                 IterEnd: "[10, 1] (142)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.abstract"
                               Name: "AbstractMethod"
@@ -752,7 +752,7 @@ Children:
                                 IterEnd: "[13, 5] (193)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.virtual"
                               Name: "VirtualMethod"
@@ -947,7 +947,7 @@ Children:
                                 IterEnd: "[16, 5] (242)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.override"
                               Name: "OverrideMethod"
@@ -1142,7 +1142,7 @@ Children:
                                 IterEnd: "[19, 5] (285)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.final"
                               Name: "FinalMethod"
@@ -1317,7 +1317,7 @@ Children:
                                 IterEnd: "[21, 1] (319)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.standard"
                               Name: "DefaultMethod"

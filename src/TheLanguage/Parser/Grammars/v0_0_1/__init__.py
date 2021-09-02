@@ -1,7 +1,6 @@
 # TODO:
 
 # Statements:
-#   - ClassAttribute
 #   - ClassCompilerData
 
 

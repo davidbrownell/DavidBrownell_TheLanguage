@@ -163,7 +163,7 @@ Children:
                 IterEnd: "[4, 1] (27)"
                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              ClassType: None
+              ClassModifier: None
               IsFunction: True
               MethodType: None
               Name: "Func1"
@@ -376,7 +376,7 @@ Children:
                 IterEnd: "[6, 1] (55)"
                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              ClassType: None
+              ClassModifier: None
               IsFunction: True
               MethodType: None
               Name: "Func2"

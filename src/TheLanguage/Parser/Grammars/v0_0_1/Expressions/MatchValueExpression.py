@@ -27,7 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.PhraseImpl.MatchExpressionBase import MatchExpressionBase
+    from ..Common.Impl.MatchExpressionBase import MatchExpressionBase
     from ....Phrases.DSL import DynamicPhrasesType
 
 

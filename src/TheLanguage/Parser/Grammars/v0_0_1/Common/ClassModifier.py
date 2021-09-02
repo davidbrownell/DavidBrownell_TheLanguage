@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VisibilityModifier.py
+# |  ClassModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-11 15:25:18
+# |      2021-09-02 12:10:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality associated with visibility modifiers"""
+"""Contains the FileModifier object"""
 
 import os
 
@@ -34,11 +34,10 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class VisibilityModifier(ModifierBase):
+class ClassModifier(ModifierBase):
     """\
-    Modifies the external visibility of a function, method, class attribute, etc.
+    Modifies the mutability of a method or attribute.
     """
 
-    private                                 = auto()
-    protected                               = auto()
-    public                                  = auto()
+    immutable                               = auto()
+    mutable                                 = auto()
