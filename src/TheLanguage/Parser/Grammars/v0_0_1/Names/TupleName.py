@@ -43,6 +43,8 @@ class TupleName(TupleBase):
         (a, b, (c, d)) = value
     """
 
+    PHRASE_NAME                             = "Tuple Name"
+
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleName, self).__init__(GrammarPhrase.Type.Name)
+        super(TupleName, self).__init__(GrammarPhrase.Type.Name, self.PHRASE_NAME)

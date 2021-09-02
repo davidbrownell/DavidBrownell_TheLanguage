@@ -114,6 +114,8 @@ class ClassStatement(GrammarPhrase):
         Interface                           = "interface"
         Mixin                               = "mixin"
 
+        # TODO: Add struct; struct must be private; members are public by default; can have public mutable members.
+
         # ----------------------------------------------------------------------
         @classmethod
         def CreatePhraseItem(cls):
@@ -281,23 +283,28 @@ class ClassStatement(GrammarPhrase):
                             self.BaseTypeIndicator.CreatePhraseItem(),
 
                             # Items
-                            (
-                                # '(' <base_items> ')'
-                                PhraseItem(
-                                    name="Grouped",
-                                    item=[
-                                        "(",
-                                        CommonTokens.PushIgnoreWhitespaceControl,
+                            PhraseItem(
+                                item=(
+                                    # '(' <base_items> ')'
+                                    PhraseItem(
+                                        name="Grouped",
+                                        item=[
+                                            "(",
+                                            CommonTokens.PushIgnoreWhitespaceControl,
 
-                                        base_items,
+                                            base_items,
 
-                                        CommonTokens.PopIgnoreWhitespaceControl,
-                                        ")",
-                                    ],
+                                            CommonTokens.PopIgnoreWhitespaceControl,
+                                            ")",
+                                        ],
+                                    ),
+
+                                    # <base_items>
+                                    base_items,
                                 ),
 
-                                # <base_items>
-                                base_items,
+                                # Use the order to disambiguate between group clauses and tuples.
+                                ordered_by_priority=True,
                             ),
                         ],
                         arity="*",

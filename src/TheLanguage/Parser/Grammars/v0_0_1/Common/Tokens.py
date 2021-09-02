@@ -34,7 +34,9 @@ with InitRelativeImports():
         IndentToken,
         NewlineToken,
         PopIgnoreWhitespaceControlToken,
+        PopPreserveWhitespaceControlToken,
         PushIgnoreWhitespaceControlToken,
+        PushPreserveWhitespaceControlToken,
         RegexToken,
     )
 
@@ -43,11 +45,17 @@ with InitRelativeImports():
 Dedent                                      = DedentToken()
 Indent                                      = IndentToken()
 Newline                                     = NewlineToken()
+
 PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
-# These keywords are special and should not be consumed by the generic expression below. Without
-# this special consideration, the phrase (for example):
+PopPreserveWhitespaceControl                = PopPreserveWhitespaceControlToken()
+PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken()
+
+
+# ----------------------------------------------------------------------
+# The following keywords are special and should not be consumed by the generic expression below.
+# Without this special consideration, the phrase (for example):
 #
 #   value = move (foo,)
 #

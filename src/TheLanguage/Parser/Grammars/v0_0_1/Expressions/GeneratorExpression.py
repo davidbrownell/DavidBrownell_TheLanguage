@@ -73,7 +73,7 @@ class GeneratorExpression(GrammarPhrase):
                         # Don't let the TernaryExpression capture the 'if' token that may follow, as
                         # the TernaryExpression expects an 'else' clause, but the following 'if' will
                         # never have one.
-                        exclude=[TernaryExpression().Phrase],  # type: ignore
+                        exclude=[TernaryExpression.PHRASE_NAME],
                     ),
 
                     # ('if' <expr>)?

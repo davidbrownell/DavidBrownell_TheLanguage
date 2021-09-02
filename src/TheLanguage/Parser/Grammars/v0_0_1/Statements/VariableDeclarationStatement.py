@@ -71,6 +71,7 @@ class VariableDeclarationStatement(GrammarPhrase):
 
                     "=",
 
+                    # TODO: Add optional functionality where someone can add a newline, indent here and a dedent after the final newline
                     # <expr>
                     DynamicPhrasesType.Expressions,
                     CommonTokens.Newline,
