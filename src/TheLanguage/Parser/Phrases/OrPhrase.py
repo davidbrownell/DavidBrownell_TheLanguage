@@ -50,6 +50,11 @@ class OrPhrase(Phrase):
         phrases: List[Phrase],
         sort_results=True,
         name: str=None,
+
+        # By default, ambiguity results when multiple phrases are successful matches for the same
+        # amount of data. When this value is set to True, the phrase order will be used to resolve
+        # this ambiguity when there is a tie.
+        ordered_by_priority: Optional[bool]=None,
     ):
         assert phrases
         assert all(phrase for phrase in phrases)
@@ -63,6 +68,7 @@ class OrPhrase(Phrase):
         super(OrPhrase, self).__init__(name)
 
         self.Phrases                        = phrases
+        self.OrderedByPriority              = False if ordered_by_priority is None else ordered_by_priority
         self.SortResults                    = sort_results
         self._name_is_default               = name_is_default
 
@@ -177,44 +183,51 @@ class OrPhrase(Phrase):
                 # Stable sort according to:
                 #   - Longest matched context
                 #   - Success
+                #   - Index
 
                 sort_data = [
                     (
                         result.IterEnd.Offset,
                         1 if result.Success else 0,
-                        index,
+                        # Ensure that phrases that appear earlier in the list are considered as
+                        # better when all else is equal.
+                        -index,
                     )
                     for index, result in enumerate(results)
                 ]
 
-                sort_data.sort(
-                    key=lambda value: value[:-1],
-                    reverse=True,
-                )
+                sort_data.sort()
 
-                assert (
-                    len(sort_data) == 1
-                    or sort_data[0][1] == 0
-                    or sort_data[0][:-1] != sort_data[1][:-1]
-                ), textwrap.dedent(
-                    """\
-                    Assertions here indicate a grammar that requires context to parse correctly; please modify
-                    the grammar so that context is no longer required.
+                if (
+                    not self.OrderedByPriority
+                    and sort_data[-1][1] == 1
+                    and len(sort_data) > 1
+                    and sort_data[-1][:-1] == sort_data[-2][:-1]
+                ):
+                    # Find any additional ambiguities
+                    index = -2
+
+                    for index in range(index - 1, -len(sort_data) - 1, -1):
+                        if sort_data[index][:-1] != sort_data[-1][:-1]:
+                            break
+
+                    assert False, textwrap.dedent(
+                        """\
+                        Assertions here indicate a grammar that requires context to parse correctly; please modify
+                        the grammar so that context is no longer required.
+
+                        {} ambiguities detected.
 
 
 
-                    {}
+                        {}
+                        """,
+                    ).format(
+                        -index,
+                        "\n\n\n".join([str(results[-sort_data[index][-1]]) for index in range(-1, index - 1, -1)]),
+                    )
 
-
-
-                    {}
-                    """,
-                ).format(
-                    results[sort_data[0][-1]],
-                    results[sort_data[1][-1]],
-                )
-
-                best_index = sort_data[0][-1]
+                best_index = -sort_data[-1][-1]
 
             else:
                 for index, result in enumerate(results):

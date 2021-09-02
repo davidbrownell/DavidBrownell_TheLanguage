@@ -140,6 +140,7 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         self.Phrase                         = phrase
 
     # ----------------------------------------------------------------------
+    # TODO: Validate can return a func that is executed after all the nodes have been validated; can be used to validate in relationship to ancestors/descendants.
     @staticmethod
     @Interface.extensionmethod
     def ValidateNodeSyntax(

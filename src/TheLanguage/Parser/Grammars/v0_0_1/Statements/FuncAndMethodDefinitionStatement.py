@@ -373,10 +373,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
             while parent:
                 if parent.Type is not None:
-                    if parent.Type.Name == self.Phrase.Name:
+                    if parent.Type.Name == self.PHRASE_NAME:
                         return True
 
-                    if parent.Type.Name == self._class_statement_name:
+                    if parent.Type.Name == ClassStatement.PHRASE_NAME:
                         return False
 
                 parent = parent.Parent
@@ -501,10 +501,3 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                 statements,
             ),
         )
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _class_statement_name                   = ClassStatement().Phrase.Name
