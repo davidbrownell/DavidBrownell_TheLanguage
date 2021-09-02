@@ -27,7 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.PhraseImpl.FuncInvocationBase import FuncInvocationBase
+    from ..Common.Impl.FuncInvocationBase import FuncInvocationBase
     from ...GrammarPhrase import GrammarPhrase
 
 

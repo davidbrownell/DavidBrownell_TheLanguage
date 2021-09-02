@@ -17,9 +17,8 @@
 
 import itertools
 import os
-import re
 
-from enum import auto, Enum
+from enum import auto
 from typing import cast, List, Optional, Union
 
 from dataclasses import dataclass
@@ -36,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
+    from ..Common.Impl.ModifierBase import CreateModifierBaseClass, ModifierBase
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ...GrammarPhrase import GrammarPhrase, ValidationError
@@ -107,7 +107,11 @@ class ClassStatement(GrammarPhrase):
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
-    class ClassType(Enum):
+    class ClassType(
+        CreateModifierBaseClass(
+            by_value=True,
+        ),
+    ):
         Class                               = "class"
         Enum                                = "enum"
         Exception                           = "exception"
@@ -116,55 +120,10 @@ class ClassStatement(GrammarPhrase):
 
         # TODO: Add struct; struct must be private; members are public by default; can have public mutable members.
 
-        # ----------------------------------------------------------------------
-        @classmethod
-        def CreatePhraseItem(cls):
-            return tuple(e.value for e in cls)
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def Extract(
-            cls,
-            node: Node,
-        ) -> "ClassStatement.ClassType":
-            value = cast(
-                str,
-                ExtractToken(
-                    cast(Leaf, ExtractOr(node)),
-                    use_match=True,
-                ),
-            )
-
-            for e in cls:
-                if e.value == value:
-                    return e
-
-            assert False, value
-
     # ----------------------------------------------------------------------
-    class BaseTypeIndicator(Enum):
+    class BaseTypeIndicator(ModifierBase):
         implements                          = auto()
         uses                                = auto()
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def CreatePhraseItem(cls):
-            return tuple(e.name for e in cls)
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def Extract(
-            cls,
-            node: Node,
-        ) -> "ClassStatement.BaseTypeIndicator":
-            value = cast(
-                str,
-                ExtractToken(
-                    cast(Leaf, ExtractOr(node)),
-                    use_match=True,
-                ),
-            )
-            return cls[value]
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)

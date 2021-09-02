@@ -18,7 +18,6 @@
 import os
 
 from enum import auto, IntFlag
-from typing import cast
 
 import CommonEnvironment
 
@@ -30,11 +29,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....Phrases.DSL import ExtractOr, ExtractToken, Leaf, Node
+    from .Impl.ModifierBase import CreateModifierBaseClass
 
 
 # ----------------------------------------------------------------------
-class TypeModifier(IntFlag):
+class TypeModifier(
+    CreateModifierBaseClass(
+        base_class=IntFlag,
+    ),
+):
     """\
     Modifies the behavior of a type.
 
@@ -55,24 +58,3 @@ class TypeModifier(IntFlag):
     ref                                     = (mutable << 4) | shared
     val                                     = (immutable << 4) | isolated
     view                                    = (immutable << 4) | shared
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def CreatePhraseItem(cls):
-        return tuple(e.name for e in cls)
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Extract(
-        cls,
-        node: Node,
-    ) -> "TypeModifier":
-        value = cast(
-            str,
-            ExtractToken(
-                cast(Leaf, ExtractOr(node)),
-                use_match=True,
-            ),
-        )
-
-        return cls[value]
