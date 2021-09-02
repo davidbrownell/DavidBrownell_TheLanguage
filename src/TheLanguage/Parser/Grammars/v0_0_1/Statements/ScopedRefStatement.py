@@ -67,15 +67,7 @@ class ScopedRefStatement(GrammarPhrase):
             name="Refs",
             item=[
                 # <ref_expression>
-                PhraseItem(
-                    item=DynamicPhrasesType.Names,
-
-                    # Ambiguity is introduced between this statement and TupleName without this
-                    # explicit exclusion. For example, "(a, b, c)" could be interpreted as a tuple
-                    # or as a grouped collection of refs. In this context, "a grouped collection of
-                    # refs" is correct.
-                    exclude=[TupleName().Phrase],
-                ),
+                DynamicPhrasesType.Names,
 
                 # (',' <ref_expression>)*
                 PhraseItem(
@@ -105,26 +97,31 @@ class ScopedRefStatement(GrammarPhrase):
                     "with",
 
                     # Refs
-                    (
-                        # '(' <refs_expression> ')'
-                        PhraseItem(
-                            name="Grouped",
-                            item=[
-                                # '('
-                                "(",
-                                CommonTokens.PushIgnoreWhitespaceControl,
+                    PhraseItem(
+                        item=(
+                            # '(' <refs_expression> ')'
+                            PhraseItem(
+                                name="Grouped",
+                                item=[
+                                    # '('
+                                    "(",
+                                    CommonTokens.PushIgnoreWhitespaceControl,
 
-                                # <refs_expression>
-                                refs_expression,
+                                    # <refs_expression>
+                                    refs_expression,
 
-                                # ')'
-                                CommonTokens.PopIgnoreWhitespaceControl,
-                                ")",
-                            ],
+                                    # ')'
+                                    CommonTokens.PopIgnoreWhitespaceControl,
+                                    ")",
+                                ],
+                            ),
+
+                            # <refs_expression>
+                            refs_expression,
                         ),
 
-                        # <refs_expression>
-                        refs_expression,
+                        # Use the order to disambiguate between group clauses and tuples.
+                        ordered_by_priority=True,
                     ),
 
                     # 'as'

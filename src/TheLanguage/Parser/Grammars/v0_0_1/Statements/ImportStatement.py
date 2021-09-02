@@ -183,26 +183,31 @@ class ImportStatement(ImportGrammarStatement):
                     "import",
 
                     # Content Items
-                    (
-                        # '(' <content_items> ')'
-                        PhraseItem(
-                            name="Grouped",
-                            item=[
-                                # '('
-                                "(",
-                                CommonTokens.PushIgnoreWhitespaceControl,
+                    PhraseItem(
+                        item=(
+                            # '(' <content_items> ')'
+                            PhraseItem(
+                                name="Grouped",
+                                item=[
+                                    # '('
+                                    "(",
+                                    CommonTokens.PushIgnoreWhitespaceControl,
 
-                                # <content_items>
-                                content_items,
+                                    # <content_items>
+                                    content_items,
 
-                                # ')'
-                                CommonTokens.PopIgnoreWhitespaceControl,
-                                ")",
-                            ],
+                                    # ')'
+                                    CommonTokens.PopIgnoreWhitespaceControl,
+                                    ")",
+                                ],
+                            ),
+
+                            # <content_items>
+                            content_items,
                         ),
 
-                        # <content_items>
-                        content_items,
+                        # Use the order to disambiguate between group clauses and tuples.
+                        ordered_by_priority=True,
                     ),
 
                     CommonTokens.Newline,

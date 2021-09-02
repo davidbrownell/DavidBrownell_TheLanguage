@@ -44,6 +44,8 @@ class TupleType(TupleBase):
             <statements>
     """
 
+    PHRASE_NAME                             = "Tuple Type"
+
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleType, self).__init__(GrammarPhrase.Type.Type)
+        super(TupleType, self).__init__(GrammarPhrase.Type.Type, self.PHRASE_NAME)

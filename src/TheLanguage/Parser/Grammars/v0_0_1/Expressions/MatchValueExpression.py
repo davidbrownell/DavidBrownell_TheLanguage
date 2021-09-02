@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleExpression.py
+# |  MatchValueExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 16:59:59
+# |      2021-08-30 15:47:58
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleExpression object"""
+"""Contains the MatchValueExpression object"""
 
 import os
 
@@ -27,25 +27,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.PhraseImpl.TupleBase import TupleBase
-    from ...GrammarPhrase import GrammarPhrase
+    from ..Common.PhraseImpl.MatchExpressionBase import MatchExpressionBase
+    from ....Phrases.DSL import DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
-class TupleExpression(TupleBase):
+class MatchValueExpression(MatchExpressionBase):
     """\
-    Creates a tuple that can be used as an expression.
+    Typed version of a match expression.
 
-    '(' <expr> ',' ')'
-    '(' <expr> (',' <expr>)+ ','? ')'
-
-    Example:
-        var = (a, b)
-        Func((a, b, c), (d,))
+    Examples:
+        match value Add(1, 2):
+            case 1, 2: "Too low"
+            case 3: "Correct"
+            default: "Way off!"
     """
 
-    PHRASE_NAME                             = "Tuple Expression"
+    PHRASE_NAME                             = "Match Value Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleExpression, self).__init__(GrammarPhrase.Type.Expression, self.PHRASE_NAME)
+        super(MatchValueExpression, self).__init__(DynamicPhrasesType.Expressions, self.PHRASE_NAME)

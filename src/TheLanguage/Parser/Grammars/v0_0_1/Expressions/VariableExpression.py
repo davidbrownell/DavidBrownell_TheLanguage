@@ -62,7 +62,7 @@ class VariableExpression(GrammarPhrase):
                     # explicit exclusion. For example, is "(a, b, c)" a tuple name or tuple
                     # expression? In this context, "tuple expression" is correct, so remove tuple
                     # name as a viable candidate.
-                    exclude=[TupleName().Phrase],
+                    exclude=[TupleName.PHRASE_NAME],
                 ),
             ),
         )

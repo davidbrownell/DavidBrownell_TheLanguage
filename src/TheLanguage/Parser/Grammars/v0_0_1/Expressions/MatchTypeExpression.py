@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleExpression.py
+# |  MatchTypeExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 16:59:59
+# |      2021-08-30 15:47:58
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleExpression object"""
+"""Contains the MatchTypeExpression object"""
 
 import os
 
@@ -27,25 +27,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.PhraseImpl.TupleBase import TupleBase
-    from ...GrammarPhrase import GrammarPhrase
+    from ..Common.PhraseImpl.MatchExpressionBase import MatchExpressionBase
+    from ....Phrases.DSL import DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
-class TupleExpression(TupleBase):
+class MatchTypeExpression(MatchExpressionBase):
     """\
-    Creates a tuple that can be used as an expression.
+    Typed version of a match expression.
 
-    '(' <expr> ',' ')'
-    '(' <expr> (',' <expr>)+ ','? ')'
-
-    Example:
-        var = (a, b)
-        Func((a, b, c), (d,))
+    Examples:
+        match type Add(1, 2):
+            case Int: match_value
+            case String: ConvertToInt(match_value)
+            default: throw UnexpectedType(match_type)
     """
 
-    PHRASE_NAME                             = "Tuple Expression"
+    PHRASE_NAME                             = "Match Type Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleExpression, self).__init__(GrammarPhrase.Type.Expression, self.PHRASE_NAME)
+        super(MatchTypeExpression, self).__init__(DynamicPhrasesType.Types, self.PHRASE_NAME)
