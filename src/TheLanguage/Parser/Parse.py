@@ -22,7 +22,7 @@ import sys
 
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Awaitable, cast, Callable, Dict, List, Optional, Union
+from typing import Any, Awaitable, cast, Callable, Dict, List, Optional, Set, Union
 
 from semantic_version import Version as SemVer
 
@@ -66,8 +66,6 @@ def _LoadDynamicPhrasesFromFile(
     filename: str,
     module_attribute_name: str=None,
 ) -> DynamicPhrasesInfo:
-    # TODO: Ensure that all names are unique
-
     assert os.path.isfile(filename), filename
 
     dirname, basename = os.path.split(filename)
@@ -84,6 +82,7 @@ def _LoadDynamicPhrasesFromFile(
         names: List[Phrase] = []
         statements: List[Phrase] = []
         types: List[Phrase] = []
+        name_lookup: Set[str] = set()
 
         for grammar_phrase in grammar_phrases:
             if grammar_phrase.TypeValue == GrammarPhrase.Type.Expression:
@@ -99,6 +98,10 @@ def _LoadDynamicPhrasesFromFile(
 
             assert grammar_phrase.Phrase not in GrammarPhraseLookup, grammar_phrase.Phrase
             GrammarPhraseLookup[grammar_phrase.Phrase] = grammar_phrase
+
+            # Ensure that phrase names are unique
+            assert grammar_phrase.Phrase.Name not in name_lookup, grammar_phrase.Phrase.Name
+            name_lookup.add(grammar_phrase.Phrase.Name)
 
         del sys.modules[basename]
 
@@ -360,8 +363,13 @@ def _ValidateRoot(
     root: RootNode,
 ):
     try:
+        funcs: List[Callable[[], None]] = []
+
         for child in root.Children:
-            _ValidateNode(child)
+            funcs += _ValidateNode(child)
+
+        for func in funcs:
+            func()
 
     except Exception as ex:
         if not hasattr(ex, "FullyQualifiedName"):
@@ -373,13 +381,24 @@ def _ValidateRoot(
 # ----------------------------------------------------------------------
 def _ValidateNode(
     node: Union[Leaf, Node],
-):
+) -> List[Callable[[], None]]:
+
+    funcs: List[Callable[[], None]] = []
+
     if isinstance(node.Type, Phrase):
         grammar_phrase = GrammarPhraseLookup.get(node.Type, None)
         if grammar_phrase is not None:
-            result = grammar_phrase.ValidateNodeSyntax(cast(Node, node))
-            if isinstance(result, bool) and not result:
-                return
+            result = grammar_phrase.ValidateSyntax(cast(Node, node))
+            if result is not None:
+                assert isinstance(result, GrammarPhrase.ValidateSyntaxResult), result
+
+                if result.PostValidationFunc is not None:
+                    funcs.append(result.PostValidationFunc)
+
+                if not result.AllowChildTraversal:
+                    return funcs
 
     for child in getattr(node, "Children", []):
-        _ValidateNode(child)
+        funcs += _ValidateNode(child)
+
+    return funcs

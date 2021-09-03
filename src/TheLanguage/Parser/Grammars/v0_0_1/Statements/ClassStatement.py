@@ -108,6 +108,7 @@ class ClassStatement(GrammarPhrase):
             by_value=True,
         ),
     ):
+        # <Line too long> pylint: disable=C0301
         """\
         |-----------|--------------------|----------------------------|---------------------------|-----------------------------|---------------------|------------------------------------------------------|--------------------------------|------------------------|-------------------------|-------------------------------------|----------------------|-------------------------------------|--------------------------------------------------|--------|-------------|---------|-----------|
         |           | Default Visibility |    Allowed Visibilities    | Default Member Visibility | Allowed Member Visibilities | Default Method Type |               Allowed Method Types                   |    Allow Method Definitions?   | Default Class Modifier | Allowed Class Modifiers | Requires Special Member Definitions | Allows Data Members? | Allows Mutable Public Data Members? |          Can Be Instantiated Directly?           | Bases? | Interfaces? | Mixins? |           |
@@ -304,10 +305,10 @@ class ClassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateNodeSyntax(
+    def ValidateSyntax(
         cls,
         node: Node,
-    ):
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 16
 
