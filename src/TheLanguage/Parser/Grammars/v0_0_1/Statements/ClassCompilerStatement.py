@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DocstringStatement.py
+# |  ClassCompilerStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-29 06:25:24
+# |      2021-09-03 09:54:46
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the DocstringStatement object"""
+"""Contains the ClassCompilerStatement object"""
 
 import os
 
@@ -34,37 +34,24 @@ with InitRelativeImports():
     from ....Phrases.DSL import Leaf, Node
 
 
-# TODO: The lexer should not have knowledge of this statement; it should be part of the NodeInfo for the associated class/func/etc.
-
 # ----------------------------------------------------------------------
-class DocstringStatement(MultilineStatementBase):
+class ClassCompilerStatement(MultilineStatementBase):
     """\
-    Documentation for a parent node.
+    A statement that contains instructions used during the complication process.
 
-    '<<<'
+    '<<<!!!'
     <content>
-    '>>>'
-
-    Examples:
-        <<<
-        This is a docstring with one line.
-        >>>
-
-        <<<
-        This is a
-        multi-line
-        docstring.
-        >>>
+    '!!!>>>'
     """
 
-    PHRASE_NAME                             = "Docstring Statement"
+    PHRASE_NAME                             = "Class Compiler Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(DocstringStatement, self).__init__(
+        super(ClassCompilerStatement, self).__init__(
             self.PHRASE_NAME,
-            "<<<",
-            ">>>",
+            "<<<!!!",
+            "!!!>>>",
         )
 
     # ----------------------------------------------------------------------

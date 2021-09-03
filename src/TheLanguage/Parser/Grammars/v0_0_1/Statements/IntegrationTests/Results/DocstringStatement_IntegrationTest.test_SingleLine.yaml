@@ -10,7 +10,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[1, 1] (0)"
                 IterEnd: "[3, 4] (22)"
-                Type: "Docstring <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "Multi-line Content <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(0, 22), match='<<<\\nSingle line 1.\\n>>>'>"
                 Whitespace: None
@@ -121,7 +121,7 @@ Children:
                                 IsIgnored: False
                                 IterBegin: "[6, 5] (37)"
                                 IterEnd: "[8, 8] (67)"
-                                Type: "Docstring <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                Type: "Multi-line Content <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                   Match: "<_sre.SRE_Match object; span=(37, 67), match='<<<\\n    Single line 2.\\n    >>>'>"
                                 Whitespace: None
@@ -174,7 +174,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[10, 1] (69)"
                 IterEnd: "[12, 4] (93)"
-                Type: "Docstring <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "Multi-line Content <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(69, 93), match='<<<\\nWith escape \\\\>>>\\n>>>'>"
                 Whitespace: None
