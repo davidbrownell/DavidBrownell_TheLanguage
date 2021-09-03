@@ -336,9 +336,6 @@ def test_MultilineRegex():
 
     regex = re.compile(r'"""(?P<content>.+?)"""', re.DOTALL | re.MULTILINE)
 
-    # The match should fail when multiline is not set
-    assert RegexToken("Should not match", regex).Match(iter) is None
-
     # The match should succeed when multiline is set
     result = RegexToken(
         "Should match",
@@ -369,175 +366,6 @@ def test_ControlTokens():
 
     with pytest.raises(Exception):
         MyControlToken.Match(None)
-
-# ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
-def test_MultilineRegexTokenSingleDelimiter():
-    iter = NormalizedIterator.FromNormalizedContent(
-        Normalize(
-            textwrap.dedent(
-                """\
-                if True:
-                    # Line 1
-                    # Line 2
-
-                    # Line 3
-
-                    <end>
-                """,
-            ),
-        ),
-    )
-
-    token = MultilineRegexToken(
-        "This Token",
-        re.compile(r"[ \t]+<end>"),
-    )
-
-    assert token.Name == "This Token"
-
-    result = token.Match(iter)
-
-    assert result is not None
-    assert result.Match.group("value") == textwrap.dedent(
-        """\
-        if True:
-            # Line 1
-            # Line 2
-
-            # Line 3
-
-        """,
-    )
-
-    assert result.Match.start() == 0
-    assert result.Match.end() == 50
-
-    assert iter.Offset == 50
-
-# ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
-def test_MultilineRegexTokenMultipleDelimiterFirstMatch():
-    iter = NormalizedIterator.FromNormalizedContent(
-        Normalize(
-            textwrap.dedent(
-                """\
-                if True:
-                    # Line 1
-                    # Line 2
-
-                    # Line 3
-
-                    <end>
-                """,
-            ),
-        ),
-    )
-
-    result = MultilineRegexToken(
-        "Token",
-        re.compile(r"[ \t]+<end>"),
-        re.compile(r"this_will_never_match"),
-    ).Match(iter)
-
-    assert result is not None
-    assert result.Match.group("value") == textwrap.dedent(
-        """\
-        if True:
-            # Line 1
-            # Line 2
-
-            # Line 3
-
-        """,
-    )
-
-    assert result.Match.start() == 0
-    assert result.Match.end() == 50
-
-    assert iter.Offset == 50
-
-# ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
-def test_MultilineRegexTokenMultipleDelimiterSecondMatch():
-    iter = NormalizedIterator.FromNormalizedContent(
-        Normalize(
-            textwrap.dedent(
-                """\
-                if True:
-                    # Line 1
-                    # Line 2
-
-                    # Line 3
-
-                    <end>
-                """,
-            ),
-        ),
-    )
-
-    result = MultilineRegexToken(
-        "Token",
-        re.compile(r"[ \t]+<end>"),
-        re.compile(r"# Line 3"),
-    ).Match(iter)
-
-    assert result is not None
-    assert result.Match.group("value") == "if True:\n    # Line 1\n    # Line 2\n\n    "
-    assert result.Match.start() == 0
-    assert result.Match.end() == 40
-
-    assert iter.Offset == 40
-
-# ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
-def test_MultilineRegexNoMatch():
-    iter = NormalizedIterator.FromNormalizedContent(
-        Normalize(
-            textwrap.dedent(
-                """\
-                one
-                two
-                three
-                """,
-            ),
-        ),
-    )
-
-    result = MultilineRegexToken(
-        "Token",
-        re.compile(r"This will never match"),
-    ).Match(iter)
-
-    assert result is None
-
-# ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: MultilineRegex may not be necessary")
-def test_MultilineRegexCustomGroup():
-    iter = NormalizedIterator.FromNormalizedContent(
-        Normalize(
-            textwrap.dedent(
-                """\
-                orange
-                green
-                blue
-                """,
-            ),
-        ),
-    )
-
-    result = MultilineRegexToken(
-        "Token",
-        re.compile(r"green"),
-        regex_match_group_name="custom_name",
-    ).Match(iter)
-
-    assert result is not None
-    assert result.Match.group("custom_name") == "orange\n"
-    assert result.Match.start() == 0
-    assert result.Match.end() == 7
-
-    assert iter.Offset == 7
 
 # ----------------------------------------------------------------------
 def test_PushIgnoreWhitespaceControlToken():
@@ -663,7 +491,7 @@ def test_InvalidMultilineClosingToken():
     assert str(ex) == "('<<<(?P<value>.+?)a>>', 'The closing token must be a multiline phrase token')"
 
 # ----------------------------------------------------------------------
-def test_InvalidNonMultilineToken():
+def test_InvalidNonMultilineTokenHeader():
     with pytest.raises(AssertionError) as ex:
         RegexToken("Invalid", re.compile(r"---"))
 

@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Normalize import IsMultilinePhraseToken, MULTILINE_PHRASE_TOKEN_LENGTH
+    from .Normalize import GetNumMultilineTriplets, MULTILINE_PHRASE_TOKEN_LENGTH
     from .NormalizedIterator import NormalizedIterator
 
 
@@ -180,7 +180,7 @@ class IndentToken(Token):
     # |  Public Data
     # |
     # ----------------------------------------------------------------------
-    Name                                    = Interface.DerivedProperty("Indent")
+    Name                                    = Interface.DerivedProperty("Indent")  # type: ignore
 
     # ----------------------------------------------------------------------
     # |
@@ -223,7 +223,7 @@ class DedentToken(Token):
     # |  Public Data
     # |
     # ----------------------------------------------------------------------
-    Name                                    = Interface.DerivedProperty("Dedent")
+    Name                                    = Interface.DerivedProperty("Dedent")  # type: ignore
 
     # ----------------------------------------------------------------------
     # |
@@ -278,6 +278,7 @@ class RegexToken(Token):
 
         # Validate the regular expression
         pattern = regex.pattern.replace("\\", "")
+        pattern_len = len(pattern)
 
         if is_multiline:
             # Note that these checks are only checking that there is an opening
@@ -286,20 +287,24 @@ class RegexToken(Token):
             # Take special care when working with multiline RegexTokens.
 
             # Check the opening token
-            assert IsMultilinePhraseToken(
+            assert GetNumMultilineTriplets(
                 pattern,
                 start_index=0,
-                end_index=MULTILINE_PHRASE_TOKEN_LENGTH,
-            ), (pattern, "The opening token must be a multiline phrase token")
+                end_index=min(pattern_len, MULTILINE_PHRASE_TOKEN_LENGTH),
+            ) == 1, (pattern, "The opening token must be a multiline phrase token")
 
             # Check the closing token
-            assert IsMultilinePhraseToken(
+            assert GetNumMultilineTriplets(
                 pattern,
-                start_index=len(pattern) - MULTILINE_PHRASE_TOKEN_LENGTH,
-            ), (pattern, "The closing token must be a multiline phrase token")
+                start_index=max(0, pattern_len - MULTILINE_PHRASE_TOKEN_LENGTH),
+            ) == 1, (pattern, "The closing token must be a multiline phrase token")
 
         else:
-            assert not IsMultilinePhraseToken(pattern), (pattern, "The regex must not match a multiline phrase token")
+            assert GetNumMultilineTriplets(
+                pattern,
+                start_index=0,
+                end_index=pattern_len,
+            ) == 0, (pattern, "The regex must not match a multiline phrase token")
 
         # Commit the data
         self._name                          = name
@@ -375,8 +380,8 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
     whitespace matching.
     """
 
-    Name                                    = Interface.DerivedProperty("PushIgnoreWhitespaceControl")
-    ClosingToken                            = "PopIgnoreWhitespaceControlToken" # Set below
+    Name                                    = Interface.DerivedProperty("PushIgnoreWhitespaceControl")  # type: ignore
+    ClosingToken                            = "PopIgnoreWhitespaceControlToken"   # type: ignore # Set below
 
 
 # ----------------------------------------------------------------------
@@ -388,8 +393,8 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
     See `PushIgnoreWhitespaceControlToken` for more information.
     """
 
-    Name                                    = Interface.DerivedProperty("PopIgnoreWhitespaceControl")
-    OpeningToken                            = PushIgnoreWhitespaceControlToken
+    Name                                    = Interface.DerivedProperty("PopIgnoreWhitespaceControl")  # type: ignore
+    OpeningToken                            = PushIgnoreWhitespaceControlToken  # type: ignore
 
 
 PushIgnoreWhitespaceControlToken.ClosingToken           = PopIgnoreWhitespaceControlToken  # type: ignore
@@ -402,8 +407,8 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
     Signals that newline, indent, and dedent whitespace should be preserved.
     """
 
-    Name                                    = Interface.DerivedProperty("PushPreserveWhitespaceControlToken")
-    ClosingToken                            = "PopIgnoreWhitespaceControlToken" # Set below
+    Name                                    = Interface.DerivedProperty("PushPreserveWhitespaceControlToken")  # type: ignore
+    ClosingToken                            = "PopIgnoreWhitespaceControlToken"  # type: ignore # Set below
 
 
 # ----------------------------------------------------------------------
@@ -416,8 +421,8 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
     See `PushPreserveWhitespaceControlToken` for more information.
     """
 
-    Name                                    = Interface.DerivedProperty("PopPreserveWhitespaceControlToken")
-    OpeningToken                            = PushPreserveWhitespaceControlToken
+    Name                                    = Interface.DerivedProperty("PopPreserveWhitespaceControlToken")  # type: ignore
+    OpeningToken                            = PushPreserveWhitespaceControlToken  # type: ignore
 
 
 PushPreserveWhitespaceControlToken.ClosingToken         = PopPreserveWhitespaceControlToken  # type: ignore

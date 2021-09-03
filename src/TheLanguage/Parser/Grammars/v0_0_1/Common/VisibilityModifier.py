@@ -34,7 +34,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class VisibilityModifier(ModifierBase):
+class VisibilityModifier(ModifierBase):  # type: ignore
     """\
     Modifies the external visibility of a function, method, class attribute, etc.
     """

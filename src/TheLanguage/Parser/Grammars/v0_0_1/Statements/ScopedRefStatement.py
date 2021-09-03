@@ -128,7 +128,7 @@ class ScopedRefStatement(GrammarPhrase):
                     "as",
 
                     # 'ref'
-                    TypeModifier.ref.name,
+                    TypeModifier.ref.name,  # type: ignore
 
                     # ':"
                     ":",
