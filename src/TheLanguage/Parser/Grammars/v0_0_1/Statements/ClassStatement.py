@@ -54,16 +54,6 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidClassNameError(ValidationError):
-    Name: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Name}' is not a valid class name; names must start with an uppercase letter and be at least 2 characters.",
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
 class DuplicateInterfacesTypeError(ValidationError):
     Type: str
 
