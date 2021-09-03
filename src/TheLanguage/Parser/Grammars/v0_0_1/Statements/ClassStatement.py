@@ -57,7 +57,9 @@ with InitRelativeImports():
 class InvalidClassNameError(ValidationError):
     Name: str
 
-    MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid class name; names must start with an uppercase letter and be at least 2 characters.")
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "'{Name}' is not a valid class name; names must start with an uppercase letter and be at least 2 characters.",
+    )
 
 
 # ----------------------------------------------------------------------
@@ -65,13 +67,17 @@ class InvalidClassNameError(ValidationError):
 class DuplicateInterfacesTypeError(ValidationError):
     Type: str
 
-    MessageTemplate                         = Interface.DerivedProperty("The base type indicator '{Type}' may only appear once.")
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "The base type indicator '{Type}' may only appear once.",
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class MultipleBasesError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Classes can have only one base class; consider using mixins and interfaces instead.")
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Classes can have only one base class; consider using mixins and interfaces instead.",
+    )
 
 
 # ----------------------------------------------------------------------

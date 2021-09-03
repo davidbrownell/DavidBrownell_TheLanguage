@@ -61,7 +61,7 @@ class SyntaxInvalidVersionFormatError(Error):
     # correct format
     InvalidVersion: str
 
-    MessageTemplate                         = Interface.DerivedProperty("The syntax version '{InvalidVersion}' is not a valid version")
+    MessageTemplate                         = Interface.DerivedProperty("The syntax version '{InvalidVersion}' is not a valid version")  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -69,7 +69,7 @@ class SyntaxInvalidVersionFormatError(Error):
 class SyntaxInvalidVersionError(Error):
     InvalidVersion: SemVer
 
-    MessageTemplate                         = Interface.DerivedProperty("The syntax version '{InvalidVersion}' is not recognized")
+    MessageTemplate                         = Interface.DerivedProperty("The syntax version '{InvalidVersion}' is not recognized")  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -100,7 +100,7 @@ def _CreateSyntaxStatements():
 
     # Note that this statement is more complicated that what we would prefer, as we aren't relying
     # on the DynamicPhrases capabilities for expressions (as we don't want these expressions to be
-    # used in other contextes). The syntax for these statements are relatively straight forward, so
+    # used in other contexts). The syntax for these statements are relatively straight forward, so
     # this isn't as big of an issues as it would be if we tried to do this with any reasonably sized
     # grammar.
 

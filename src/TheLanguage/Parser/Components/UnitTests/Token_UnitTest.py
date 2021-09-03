@@ -336,9 +336,6 @@ def test_MultilineRegex():
 
     regex = re.compile(r'"""(?P<content>.+?)"""', re.DOTALL | re.MULTILINE)
 
-    # The match should fail when multiline is not set
-    assert RegexToken("Should not match", regex).Match(iter) is None
-
     # The match should succeed when multiline is set
     result = RegexToken(
         "Should match",
@@ -494,7 +491,7 @@ def test_InvalidMultilineClosingToken():
     assert str(ex) == "('<<<(?P<value>.+?)a>>', 'The closing token must be a multiline phrase token')"
 
 # ----------------------------------------------------------------------
-def test_InvalidNonMultilineToken():
+def test_InvalidNonMultilineTokenHeader():
     with pytest.raises(AssertionError) as ex:
         RegexToken("Invalid", re.compile(r"---"))
 

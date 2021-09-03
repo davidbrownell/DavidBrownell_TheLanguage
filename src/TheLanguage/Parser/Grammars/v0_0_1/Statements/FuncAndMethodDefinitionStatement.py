@@ -61,25 +61,25 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidMethodTypeApplicationError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Method modifiers may not be used on functions.")
+    MessageTemplate                         = Interface.DerivedProperty("Method modifiers may not be used on functions.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidOperatorApplicationError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Operators must be methods.")
+    MessageTemplate                         = Interface.DerivedProperty("Operators must be methods.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidClassModifierApplicationFunctionError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on functions.")
+    MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on functions.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidClassModifierApplicationStaticError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on static methods.")
+    MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on static methods.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -87,25 +87,25 @@ class InvalidClassModifierApplicationStaticError(ValidationError):
 class InvalidOperatorNameError(ValidationError):
     Name: str
 
-    MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid operator name.")
+    MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid operator name.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class FunctionStatementsRequiredError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Statements are required for functions.")
+    MessageTemplate                         = Interface.DerivedProperty("Statements are required for functions.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class MethodStatementsRequiredError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Statements are required for methods not marked as 'abstract'.")
+    MessageTemplate                         = Interface.DerivedProperty("Statements are required for methods not marked as 'abstract'.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class StatementsUnexpectedError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Statements can not be provided for methods marked as 'abstract' (use 'virtual' instead).")
+    MessageTemplate                         = Interface.DerivedProperty("Statements can not be provided for methods marked as 'abstract' (use 'virtual' instead).")  # type: ignore
 
 
 # ----------------------------------------------------------------------

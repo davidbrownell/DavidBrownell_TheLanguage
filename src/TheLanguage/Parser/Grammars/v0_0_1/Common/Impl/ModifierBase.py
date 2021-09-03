@@ -51,7 +51,7 @@ def CreateModifierBaseClass(
             def Extract(
                 cls,
                 node: Node,
-            ) -> cls:  # type: ignore
+            ):
                 value = cast(
                     str,
                     ExtractToken(
@@ -83,7 +83,7 @@ def CreateModifierBaseClass(
             cls,
             node: Node,
             match_by_value=False,
-        ) -> cls:  # type: ignore
+        ):
             value = cast(
                 str,
                 ExtractToken(
