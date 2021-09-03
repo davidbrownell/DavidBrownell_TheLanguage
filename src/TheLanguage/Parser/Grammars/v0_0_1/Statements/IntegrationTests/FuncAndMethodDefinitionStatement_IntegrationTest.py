@@ -265,7 +265,7 @@ def test_MethodType():
 
 
 # ----------------------------------------------------------------------
-def test_ClassType():
+def test_ClassModifier():
     CompareResultsFromFile(
         Execute(
             textwrap.dedent(
@@ -315,7 +315,7 @@ def test_Operators():
                     abstract Int __Serialize__()
 
                     abstract Int __Init__()
-                    abstract Int __PreInit__()
+                    abstract Int __PostInit__()
 
                     abstract Int __GetAttribute__()
                     abstract Int __Call__()
@@ -725,8 +725,8 @@ def test_InvalidOperatorApplicationError():
 
 
 # ----------------------------------------------------------------------
-def test_InvalidClassTypeApplicationFunctionError():
-    with pytest.raises(InvalidClassTypeApplicationFunctionError) as ex:
+def test_InvalidClassModifierApplicationFunctionError():
+    with pytest.raises(InvalidClassModifierApplicationFunctionError) as ex:
         Execute(
             textwrap.dedent(
                 """\
@@ -746,8 +746,8 @@ def test_InvalidClassTypeApplicationFunctionError():
 
 
 # ----------------------------------------------------------------------
-def test_InvalidClassTypeApplicationStaticError():
-    with pytest.raises(InvalidClassTypeApplicationStaticError) as ex:
+def test_InvalidClassModifierApplicationStaticError():
+    with pytest.raises(InvalidClassModifierApplicationStaticError) as ex:
         Execute(
             textwrap.dedent(
                 """\

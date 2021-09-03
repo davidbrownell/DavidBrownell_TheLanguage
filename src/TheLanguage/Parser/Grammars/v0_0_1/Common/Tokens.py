@@ -34,7 +34,9 @@ with InitRelativeImports():
         IndentToken,
         NewlineToken,
         PopIgnoreWhitespaceControlToken,
+        PopPreserveWhitespaceControlToken,
         PushIgnoreWhitespaceControlToken,
+        PushPreserveWhitespaceControlToken,
         RegexToken,
     )
 
@@ -43,11 +45,17 @@ with InitRelativeImports():
 Dedent                                      = DedentToken()
 Indent                                      = IndentToken()
 Newline                                     = NewlineToken()
+
 PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
 PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
-# These keywords are special and should not be consumed by the generic expression below. Without
-# this special consideration, the phrase (for example):
+PopPreserveWhitespaceControl                = PopPreserveWhitespaceControlToken()
+PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken()
+
+
+# ----------------------------------------------------------------------
+# The following keywords are special and should not be consumed by the generic expression below.
+# Without this special consideration, the phrase (for example):
 #
 #   value = move (foo,)
 #
@@ -93,7 +101,7 @@ def _CreateGenericName():
     for do_not_match_keyword in DoNotMatchKeywords:
         regex_suffixes.append(r"(?<!{})".format(re.escape(do_not_match_keyword)))
 
-    regex = r"(?P<value>[a-zA-Z0-9_\.]+\??)\b{}".format("".join(regex_suffixes))
+    regex = r"(?P<value>_?[a-zA-Z0-9_\.]+\??)\b{}".format("".join(regex_suffixes))
 
     return RegexToken("<generic_name>", re.compile(regex))
 

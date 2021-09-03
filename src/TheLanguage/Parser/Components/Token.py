@@ -396,6 +396,34 @@ PushIgnoreWhitespaceControlToken.ClosingToken           = PopIgnoreWhitespaceCon
 
 
 # ----------------------------------------------------------------------
+@Interface.staticderived
+class PushPreserveWhitespaceControlToken(ControlTokenBase):
+    """\
+    Signals that newline, indent, and dedent whitespace should be preserved.
+    """
+
+    Name                                    = Interface.DerivedProperty("PushPreserveWhitespaceControlToken")
+    ClosingToken                            = "PopIgnoreWhitespaceControlToken" # Set below
+
+
+# ----------------------------------------------------------------------
+@Interface.staticderived
+class PopPreserveWhitespaceControlToken(ControlTokenBase):
+    """\
+    Restores whitespace processing to what it was prior to `PushPreserveWhitespaceControlToken`
+    begin invoked.
+
+    See `PushPreserveWhitespaceControlToken` for more information.
+    """
+
+    Name                                    = Interface.DerivedProperty("PopPreserveWhitespaceControlToken")
+    OpeningToken                            = PushPreserveWhitespaceControlToken
+
+
+PushPreserveWhitespaceControlToken.ClosingToken         = PopPreserveWhitespaceControlToken  # type: ignore
+
+
+# ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def _AdvanceMultiline(

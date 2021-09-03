@@ -52,17 +52,15 @@ class TupleBase(GrammarPhrase):
     def __init__(
         self,
         grammar_phrase_type: GrammarPhrase.Type,
+        phrase_name: str,
     ):
         if grammar_phrase_type == GrammarPhrase.Type.Expression:
-            name_suffix = "Expression"
             tuple_element_item = DynamicPhrasesType.Expressions
 
         elif grammar_phrase_type == GrammarPhrase.Type.Name:
-            name_suffix = "Name"
             tuple_element_item = DynamicPhrasesType.Names
 
         elif grammar_phrase_type == GrammarPhrase.Type.Type:
-            name_suffix = "Type"
             tuple_element_item = DynamicPhrasesType.Types
 
         else:
@@ -71,59 +69,64 @@ class TupleBase(GrammarPhrase):
         super(TupleBase, self).__init__(
             grammar_phrase_type,
             CreatePhrase(
-                name="Tuple {}".format(name_suffix),
-                item=(
-                    # Multiple Elements
-                    #   '(' <tuple_element> (',' <tuple_element>)+ ','? ')'
-                    PhraseItem(
-                        name=self.MULTIPLE_PHRASE_NAME,
-                        item=[
-                            # '('
-                            "(",
-                            CommonTokens.PushIgnoreWhitespaceControl,
+                item=PhraseItem(
+                    name=phrase_name,
+                    item=(
+                        # Multiple Elements
+                        #   '(' <tuple_element> (',' <tuple_element>)+ ','? ')'
+                        PhraseItem(
+                            name=self.MULTIPLE_PHRASE_NAME,
+                            item=[
+                                # '('
+                                "(",
+                                CommonTokens.PushIgnoreWhitespaceControl,
 
-                            # <tuple_element> (',' <tuple_element>)+ ','?
-                            tuple_element_item,
+                                # <tuple_element> (',' <tuple_element>)+ ','?
+                                tuple_element_item,
 
-                            PhraseItem(
-                                name="Comma and Element",
-                                item=[
-                                    ",",
-                                    tuple_element_item,
-                                ],
-                                arity="+",
-                            ),
+                                PhraseItem(
+                                    name="Comma and Element",
+                                    item=[
+                                        ",",
+                                        tuple_element_item,
+                                    ],
+                                    arity="+",
+                                ),
 
-                            PhraseItem(
-                                name="Trailing Comma",
-                                item=",",
-                                arity="?",
-                            ),
+                                PhraseItem(
+                                    name="Trailing Comma",
+                                    item=",",
+                                    arity="?",
+                                ),
 
-                            # ')'
-                            CommonTokens.PopIgnoreWhitespaceControl,
-                            ")",
-                        ],
+                                # ')'
+                                CommonTokens.PopIgnoreWhitespaceControl,
+                                ")",
+                            ],
+                        ),
+
+                        # Single Element
+                        #   '(' <tuple_element> ',' ')'
+                        PhraseItem(
+                            name=self.SINGLE_PHRASE_NAME,
+                            item=[
+                                # '('
+                                "(",
+                                CommonTokens.PushIgnoreWhitespaceControl,
+
+                                # <tuple_element> ','
+                                tuple_element_item,
+                                ",",
+
+                                # ')'
+                                CommonTokens.PopIgnoreWhitespaceControl,
+                                ")",
+                            ],
+                        ),
                     ),
 
-                    # Single Element
-                    #   '(' <tuple_element> ',' ')'
-                    PhraseItem(
-                        name=self.SINGLE_PHRASE_NAME,
-                        item=[
-                            # '('
-                            "(",
-                            CommonTokens.PushIgnoreWhitespaceControl,
-
-                            # <tuple_element> ','
-                            tuple_element_item,
-                            ",",
-
-                            # ')'
-                            CommonTokens.PopIgnoreWhitespaceControl,
-                            ")",
-                        ],
-                    ),
+                    # Use the order to disambiguate between group clauses and tuples.
+                    ordered_by_priority=True,
                 ),
             ),
         )

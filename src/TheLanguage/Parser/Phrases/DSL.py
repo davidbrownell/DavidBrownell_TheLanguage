@@ -86,6 +86,7 @@ class PhraseItem(object):
         Tuple[int, Optional[int]],
     ]                                       = field(default_factory=lambda: (1, 1))
     exclude: List[Union[str, Phrase]]       = field(default_factory=list)
+    ordered_by_priority: Optional[bool]     = field(default=None)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -261,7 +262,10 @@ def _PopulateItem(
 
     name = None
 
-    assert not item.exclude or isinstance(item.item, DynamicPhrasesType), item
+    assert not item.exclude or isinstance(item.item, (DynamicPhrasesType, DynamicPhrase)), item
+
+    # Phrase priorities should only be used for OrPhrases
+    assert item.ordered_by_priority is None or isinstance(item.item, (tuple, OrPhrase))
 
     if isinstance(item.item, PhraseItem):
         phrase = _PopulateItem(comment_token, item.item)
@@ -348,6 +352,7 @@ def _PopulateItem(
             phrase = OrPhrase(
                 or_phrases,
                 name=item.name,
+                ordered_by_priority=item.ordered_by_priority,
             )
 
         elif item.item is None:

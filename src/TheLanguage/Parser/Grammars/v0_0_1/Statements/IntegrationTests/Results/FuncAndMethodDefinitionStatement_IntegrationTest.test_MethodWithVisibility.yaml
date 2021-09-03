@@ -237,7 +237,7 @@ Children:
                                 IterEnd: "[5, 5] (60)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.standard"
                               Name: "PublicFunc"
@@ -432,7 +432,7 @@ Children:
                                 IterEnd: "[8, 5] (110)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.standard"
                               Name: "ProtectedFunc"
@@ -627,7 +627,7 @@ Children:
                                 IterEnd: "[11, 5] (156)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.standard"
                               Name: "PrivateFunc"
@@ -802,7 +802,7 @@ Children:
                                 IterEnd: "[13, 1] (191)"
                                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                              ClassType: "ClassType.immutable"
+                              ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
                               MethodType: "MethodType.standard"
                               Name: "DefaultFunc"

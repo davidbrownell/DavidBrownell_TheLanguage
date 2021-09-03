@@ -34,8 +34,8 @@ with InitRelativeImports():
     from .Expressions.GroupExpression import GroupExpression
     from .Expressions.IndexExpression import IndexExpression
     from .Expressions.LambdaExpression import LambdaExpression
-    # from .Expressions.MatchTypeExpression import MatchTypeExpression
-    # from .Expressions.MatchValueExpression import MatchValueExpression
+    from .Expressions.MatchTypeExpression import MatchTypeExpression
+    from .Expressions.MatchValueExpression import MatchValueExpression
     from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.TupleExpression import TupleExpression
     from .Expressions.UnaryExpression import UnaryExpression
@@ -45,6 +45,7 @@ with InitRelativeImports():
     from .Names.VariableName import VariableName
 
     from .Statements.BinaryStatement import BinaryStatement
+    from .Statements.ClassAttributeStatement import ClassAttributeStatement
     from .Statements.ClassStatement import ClassStatement
     from .Statements.DeleteStatement import DeleteStatement
     from .Statements.DocstringStatement import DocstringStatement
@@ -79,8 +80,8 @@ GrammarPhrases                              = [
     GroupExpression(),
     IndexExpression(),
     LambdaExpression(),
-    # MatchTypeExpression(),
-    # MatchValueExpression(),
+    MatchTypeExpression(),
+    MatchValueExpression(),
     TernaryExpression(),
     TupleExpression(),
     UnaryExpression(),
@@ -92,6 +93,7 @@ GrammarPhrases                              = [
 
     # Statements
     BinaryStatement(),
+    ClassAttributeStatement(),
     ClassStatement(),
     DeleteStatement(),
     DocstringStatement(),

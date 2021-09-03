@@ -1,20 +1,6 @@
 # TODO:
 
-# Expressions:
-# ---
-#   - SmartIf (Python's match statement)
-#
-#        'match' <expr> ':'
-#            (
-#                'case' <expr> (',' <expr>)* ','? ':' <expr> (or next line)
-#            )+
-#            (    'default' ':' <expr> (or next line)
-#            )?
-#
-#        or type
-
 # Statements:
-#   - ClassAttribute
 #   - ClassCompilerData
 
 

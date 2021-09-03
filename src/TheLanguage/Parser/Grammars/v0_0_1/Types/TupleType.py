@@ -27,7 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.PhraseImpl.TupleBase import TupleBase
+    from ..Common.Impl.TupleBase import TupleBase
     from ...GrammarPhrase import GrammarPhrase
 
 
@@ -44,6 +44,8 @@ class TupleType(TupleBase):
             <statements>
     """
 
+    PHRASE_NAME                             = "Tuple Type"
+
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleType, self).__init__(GrammarPhrase.Type.Type)
+        super(TupleType, self).__init__(GrammarPhrase.Type.Type, self.PHRASE_NAME)

@@ -45,7 +45,9 @@ with InitRelativeImports():
         IndentToken,
         NewlineToken,
         PopIgnoreWhitespaceControlToken,
+        PopPreserveWhitespaceControlToken,
         PushIgnoreWhitespaceControlToken,
+        PushPreserveWhitespaceControlToken,
         RegexToken,
     )
 
@@ -346,7 +348,7 @@ class SequencePhrase(Phrase):
 
             # Consume potential dedents, but don't return it with the results (as we absorbed
             # the corresponding indent when we skipped the prefix in the code above)
-            if results[0].Whitespace is not None:
+            if results[0].Whitespace is not None and results[-1].IterEnd.GetNextToken() == NormalizedIterator.TokenType.Dedent:
                 result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
                 assert result
 
@@ -400,6 +402,8 @@ class SequencePhrase(Phrase):
         success = True
         data_items: List[Optional[Phrase.ParseResultData]] = []
 
+        preserved_ignore_whitespace_ctr: Optional[int] = None
+
         observer_decorator = Phrase.ObserverDecorator(
             self,
             unique_id,
@@ -426,9 +430,23 @@ class SequencePhrase(Phrase):
             if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
                 if isinstance(phrase.Token, PushIgnoreWhitespaceControlToken):
                     ignore_whitespace_ctr += 1
+
                 elif isinstance(phrase.Token, PopIgnoreWhitespaceControlToken):
                     assert ignore_whitespace_ctr != 0
                     ignore_whitespace_ctr -= 1
+
+                elif isinstance(phrase.Token, PushPreserveWhitespaceControlToken):
+                    assert preserved_ignore_whitespace_ctr is None, preserved_ignore_whitespace_ctr
+                    preserved_ignore_whitespace_ctr = ignore_whitespace_ctr
+
+                    ignore_whitespace_ctr = 0
+
+                elif isinstance(phrase.Token, PopPreserveWhitespaceControlToken):
+                    assert preserved_ignore_whitespace_ctr is not None
+
+                    ignore_whitespace_ctr = preserved_ignore_whitespace_ctr
+                    preserved_ignore_whitespace_ctr = None
+
                 else:
                     assert False, phrase.Token  # pragma: no cover
 

@@ -163,7 +163,7 @@ Children:
                 IterEnd: "[4, 1] (35)"
                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              ClassType: None
+              ClassModifier: None
               IsFunction: True
               MethodType: None
               Name: "PublicFunc"
@@ -358,7 +358,7 @@ Children:
                 IterEnd: "[7, 1] (77)"
                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              ClassType: None
+              ClassModifier: None
               IsFunction: True
               MethodType: None
               Name: "ProtectedFunc"
@@ -553,7 +553,7 @@ Children:
                 IterEnd: "[10, 1] (115)"
                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              ClassType: None
+              ClassModifier: None
               IsFunction: True
               MethodType: None
               Name: "PrivateFunc"
@@ -728,7 +728,7 @@ Children:
                 IterEnd: "[12, 1] (146)"
                 Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              ClassType: None
+              ClassModifier: None
               IsFunction: True
               MethodType: None
               Name: "DefaultFunc"

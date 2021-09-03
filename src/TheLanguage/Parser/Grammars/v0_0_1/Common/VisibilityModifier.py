@@ -17,7 +17,7 @@
 
 import os
 
-from enum import auto, Enum
+from enum import auto
 from typing import cast
 
 import CommonEnvironment
@@ -30,11 +30,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....Phrases.DSL import ExtractOr, ExtractToken, Leaf, Node
+    from .Impl.ModifierBase import ModifierBase
 
 
 # ----------------------------------------------------------------------
-class VisibilityModifier(Enum):
+class VisibilityModifier(ModifierBase):
     """\
     Modifies the external visibility of a function, method, class attribute, etc.
     """
@@ -42,24 +42,3 @@ class VisibilityModifier(Enum):
     private                                 = auto()
     protected                               = auto()
     public                                  = auto()
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def CreatePhraseItem(cls):
-        return tuple(e.name for e in cls)
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Extract(
-        cls,
-        node: Node,
-    ) -> "VisibilityModifier":
-        value = cast(
-            str,
-            ExtractToken(
-                cast(Leaf, ExtractOr(node)),
-                use_match=True,
-            ),
-        )
-
-        return cls[value]

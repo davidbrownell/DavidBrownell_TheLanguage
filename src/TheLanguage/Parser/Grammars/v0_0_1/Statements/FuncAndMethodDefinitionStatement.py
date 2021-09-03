@@ -35,9 +35,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ClassStatement import ClassStatement
 
-    from ..Common import Tokens as CommonTokens
+    from ..Common.ClassModifier import ClassModifier
     from ..Common import ParametersPhraseItem
+    from ..Common import Tokens as CommonTokens
     from ..Common.VisibilityModifier import VisibilityModifier
+
+    from ..Common.Impl.ModifierBase import ModifierBase
 
     from ...GrammarPhrase import GrammarPhrase, ValidationError
 
@@ -69,13 +72,13 @@ class InvalidOperatorApplicationError(ValidationError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidClassTypeApplicationFunctionError(ValidationError):
+class InvalidClassModifierApplicationFunctionError(ValidationError):
     MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on functions.")
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidClassTypeApplicationStaticError(ValidationError):
+class InvalidClassModifierApplicationStaticError(ValidationError):
     MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on static methods.")
 
 
@@ -118,60 +121,13 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
-    class MethodType(Enum):
+    class MethodType(ModifierBase):
         standard                            = auto()
         static                              = auto()
         abstract                            = auto()
         virtual                             = auto()
         override                            = auto()
         final                               = auto()
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def CreatePhraseItem(cls):
-            return tuple(e.name for e in cls)
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def Extract(
-            cls,
-            node: Node,
-        ) -> "FuncAndMethodDefinitionStatement.MethodType":
-            return cls[
-                cast(
-                    str,
-                    ExtractToken(
-                        cast(Leaf, ExtractOr(node)),
-                        use_match=True,
-                    ),
-                )
-            ]
-
-    # ----------------------------------------------------------------------
-    class ClassType(Enum):
-        immutable                           = auto()
-        mutable                             = auto()
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def CreatePhraseItem(cls):
-            return tuple(e.name for e in cls)
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def Extract(
-            cls,
-            node: Node,
-        ) -> "FuncAndMethodDefinitionStatement.ClassType":
-            return cls[
-                cast(
-                    str,
-                    ExtractToken(
-                        cast(Leaf, ExtractOr(node)),
-                        use_match=True,
-                    ),
-                )
-            ]
 
     # ----------------------------------------------------------------------
     class OperatorType(Enum):
@@ -187,9 +143,8 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         Clone                               = auto()
         Serialize                           = auto()
 
-        # Initialization (TODO: These names need work)
         Init                                = auto()
-        PreInit                             = auto()
+        PostInit                            = auto()
 
         # Dynamic
         GetAttribute                        = auto()
@@ -259,7 +214,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         ReturnType: Union[Leaf, Node]
         Name: Union[str, "FuncAndMethodDefinitionStatement.OperatorType"]
         Parameters: Any  # Defined in ParametersPhraseItem.py
-        ClassType: Optional["FuncAndMethodDefinitionStatement.ClassType"]
+        ClassModifier: Optional[ClassModifier]
         Statements: Optional[List[Union[Leaf, Node]]]
 
         # ----------------------------------------------------------------------
@@ -267,12 +222,12 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             if self.IsFunction:
                 assert self.MethodType is None, self
                 assert isinstance(self.Name, str), self
-                assert self.ClassType is None, self
+                assert self.ClassModifier is None, self
                 assert self.Statements, self
 
             else:
                 assert self.MethodType is not None, self
-                assert self.ClassType is not None, self
+                assert self.ClassModifier is not None, self
                 assert self.Statements or self.MethodType == FuncAndMethodDefinitionStatement.MethodType.abstract, self
 
             super(FuncAndMethodDefinitionStatement.NodeInfo, self).__post_init__(
@@ -315,10 +270,12 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
                     # <class_type>?
                     PhraseItem(
-                        name="Class Type",
-                        item=self.ClassType.CreatePhraseItem(),
+                        name="Class Modifier",
+                        item=ClassModifier.CreatePhraseItem(),
                         arity="?",
                     ),
+
+                    # TODO: Move ':' here
 
                     # - Multi-line Definition
                     # - Single-line Definition
@@ -373,10 +330,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
             while parent:
                 if parent.Type is not None:
-                    if parent.Type.Name == self.Phrase.Name:
+                    if parent.Type.Name == self.PHRASE_NAME:
                         return True
 
-                    if parent.Type.Name == self._class_statement_name:
+                    if parent.Type.Name == ClassStatement.PHRASE_NAME:
                         return False
 
                 parent = parent.Parent
@@ -435,15 +392,15 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             if is_function:
                 class_type = None
             else:
-                class_type = self.ClassType.immutable
+                class_type = ClassModifier.immutable
         else:
             if is_function:
-                raise InvalidClassTypeApplicationFunctionError.FromNode(nodes[5])
+                raise InvalidClassModifierApplicationFunctionError.FromNode(nodes[5])
 
             if method_type == self.MethodType.static:
-                raise InvalidClassTypeApplicationStaticError.FromNode(nodes[5])
+                raise InvalidClassModifierApplicationStaticError.FromNode(nodes[5])
 
-            class_type = self.ClassType.Extract(cast(Node, ExtractRepeat(cast(Node, nodes[5]))))
+            class_type = ClassModifier.Extract(cast(Node, ExtractRepeat(cast(Node, nodes[5]))))
 
         # Statements
         statement_node = ExtractOr(cast(Node, nodes[6]))
@@ -501,10 +458,3 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                 statements,
             ),
         )
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _class_statement_name                   = ClassStatement().Phrase.Name

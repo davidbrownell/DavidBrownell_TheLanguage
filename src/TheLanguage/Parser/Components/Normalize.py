@@ -127,6 +127,7 @@ class NormalizedContent(object):
 # ----------------------------------------------------------------------
 MULTILINE_PHRASE_TOKEN_LENGTH               = 3
 
+# TODO: Update this to return the number of triplets matched, and then toggle based on matched number. Comments and tests will likely need to be updated.
 def IsMultilinePhraseToken(
     content: str,
     start_index=0,
