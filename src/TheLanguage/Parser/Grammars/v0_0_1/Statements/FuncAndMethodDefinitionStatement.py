@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncAndMethodDefinitionStatment object"""
+"""Contains the FuncAndMethodDefinitionStatement object"""
 
 import os
 
@@ -116,12 +116,14 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
     PHRASE_NAME                             = "Func And Method Definition Statement"
 
+    # TODO: Captures
+
     # ----------------------------------------------------------------------
     # |
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
-    class MethodType(ModifierBase):
+    class MethodType(ModifierBase):  # type: ignore
         standard                            = auto()
         static                              = auto()
         abstract                            = auto()
@@ -449,12 +451,12 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             "Info",
             self.NodeInfo(
                 is_function,
-                visibility,
+                visibility,  # type: ignore
                 method_type,
                 return_type,
                 method_name,
                 parameters,
-                class_type,
+                class_type,  # type: ignore
                 statements,
             ),
         )

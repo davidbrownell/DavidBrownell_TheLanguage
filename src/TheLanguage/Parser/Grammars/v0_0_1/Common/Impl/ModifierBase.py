@@ -40,7 +40,7 @@ def CreateModifierBaseClass(
 ):
     if by_value:
         # ----------------------------------------------------------------------
-        class ModifierImpl(base_class):
+        class ByValueModifierImpl(base_class):
             # ----------------------------------------------------------------------
             @classmethod
             def CreatePhraseItem(cls):
@@ -51,7 +51,7 @@ def CreateModifierBaseClass(
             def Extract(
                 cls,
                 node: Node,
-            ):
+            ) -> cls:  # type: ignore
                 value = cast(
                     str,
                     ExtractToken(
@@ -68,34 +68,35 @@ def CreateModifierBaseClass(
 
         # ----------------------------------------------------------------------
 
-    else:
+        return ByValueModifierImpl
+
+    # ----------------------------------------------------------------------
+    class StandardModifierImpl(base_class):
         # ----------------------------------------------------------------------
-        class ModifierImpl(base_class):
-            # ----------------------------------------------------------------------
-            @classmethod
-            def CreatePhraseItem(cls):
-                return tuple(e.name for e in cls)  # type: ignore
-
-            # ----------------------------------------------------------------------
-            @classmethod
-            def Extract(
-                cls,
-                node: Node,
-                match_by_value=False,
-            ):
-                value = cast(
-                    str,
-                    ExtractToken(
-                        cast(Leaf, ExtractOr(node)),
-                        use_match=True,
-                    ),
-                )
-
-                return cls[value]  # type: ignore
+        @classmethod
+        def CreatePhraseItem(cls):
+            return tuple(e.name for e in cls)  # type: ignore
 
         # ----------------------------------------------------------------------
+        @classmethod
+        def Extract(
+            cls,
+            node: Node,
+            match_by_value=False,
+        ) -> cls:  # type: ignore
+            value = cast(
+                str,
+                ExtractToken(
+                    cast(Leaf, ExtractOr(node)),
+                    use_match=True,
+                ),
+            )
 
-    return ModifierImpl
+            return cls[value]  # type: ignore
+
+    # ----------------------------------------------------------------------
+
+    return StandardModifierImpl
 
 
 # ----------------------------------------------------------------------

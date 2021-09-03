@@ -108,7 +108,7 @@ class ClassStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     class ClassType(
-        CreateModifierBaseClass(
+        CreateModifierBaseClass(  # type: ignore
             by_value=True,
         ),
     ):
@@ -121,7 +121,7 @@ class ClassStatement(GrammarPhrase):
         # TODO: Add struct; struct must be private; members are public by default; can have public mutable members.
 
     # ----------------------------------------------------------------------
-    class BaseTypeIndicator(ModifierBase):
+    class BaseTypeIndicator(ModifierBase):  # type: ignore
         implements                          = auto()
         uses                                = auto()
 
@@ -365,7 +365,7 @@ class ClassStatement(GrammarPhrase):
             cls.NodeInfo(
                 class_type,
                 class_name,
-                class_visibility,
+                class_visibility,  # type: ignore
                 base_info,
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, []),
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, []),
@@ -408,6 +408,6 @@ class ClassStatement(GrammarPhrase):
             # Commit the results
 
             # pylint: disable=too-many-function-args
-            results.append(cls.BaseInfo(visibility, name))
+            results.append(cls.BaseInfo(visibility, name))  # type: ignore
 
         return results
