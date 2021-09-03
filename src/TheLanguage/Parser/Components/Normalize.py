@@ -44,14 +44,14 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidTabsAndSpacesNormalizeError(Error):
-    MessageTemplate                         = Interface.DerivedProperty("The spaces and/or tabs used to indent this line differ from the spaces and/or tabs used on previous lines.")
+    MessageTemplate                         = Interface.DerivedProperty("The spaces and/or tabs used to indent this line differ from the spaces and/or tabs used on previous lines.")  # type: ignore
 
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class NoClosingMultilineTokenError(Error):
-    MessageTemplate                         = Interface.DerivedProperty("A closing token was not found to match this multi-line opening token.")
+    MessageTemplate                         = Interface.DerivedProperty("A closing token was not found to match this multi-line opening token.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -127,13 +127,17 @@ class NormalizedContent(object):
 # ----------------------------------------------------------------------
 MULTILINE_PHRASE_TOKEN_LENGTH               = 3
 
-# TODO: Update this to return the number of triplets matched, and then toggle based on matched number. Comments and tests will likely need to be updated.
-def IsMultilinePhraseToken(
+# ----------------------------------------------------------------------
+def GetNumMultilineTriplets(
     content: str,
     start_index=0,
     end_index=None,
-) -> bool:
-    """See Comments in `Normalize`"""
+) -> int:
+    """\
+    Returns the number of valid multiline triplets in the provided content.
+
+    See the comments in `Normalize` for more information.
+    """
 
     if end_index is None:
         end_index = len(content)
@@ -143,6 +147,8 @@ def IsMultilinePhraseToken(
 
     if (end_index - start_index) % MULTILINE_PHRASE_TOKEN_LENGTH != 0:
         return False
+
+    original_start_index = start_index
 
     while start_index != end_index:
         # The character must be a symbol
@@ -155,7 +161,7 @@ def IsMultilinePhraseToken(
 
         start_index += MULTILINE_PHRASE_TOKEN_LENGTH
 
-    return True
+    return (end_index - original_start_index) / MULTILINE_PHRASE_TOKEN_LENGTH
 
 
 # ----------------------------------------------------------------------
@@ -235,9 +241,18 @@ def Normalize(
         value: int
 
     # ----------------------------------------------------------------------
+    @dataclass
+    class MultilineTokenInfo(object):
+        index: int
+        num_triplets: int
+
+    # ----------------------------------------------------------------------
 
     if not content or content[-1] != "\n":
         content += "\n"
+
+    if multiline_tokens_to_ignore is None:
+        multiline_tokens_to_ignore = set()
 
     len_content = len(content)
 
@@ -245,7 +260,7 @@ def Normalize(
     indentation_stack = [IndentationInfo(0, 0)]
 
     offset = 0
-    multiline_token_opening_line_index: Optional[int] = None
+    multiline_token_info: Optional[MultilineTokenInfo] = None
 
     # ----------------------------------------------------------------------
     def CreateLineInfo() -> LineInfo:
@@ -288,7 +303,7 @@ def Normalize(
                                 offset - line_start_offset + 1,
                             )
 
-                        if multiline_token_opening_line_index is None:
+                        if multiline_token_info is None:
                             # Detect dedents
                             while num_chars < indentation_stack[-1].num_chars:
                                 indentation_stack.pop()
@@ -321,7 +336,7 @@ def Normalize(
         assert content_start_offset is not None
         assert content_end_offset is not None
 
-        if multiline_token_opening_line_index is None:
+        if multiline_token_info is None:
             num_dedents = num_dedents or None
         else:
             num_dedents = None
@@ -343,30 +358,27 @@ def Normalize(
     while offset < len_content:
         line_infos.append(CreateLineInfo())
 
+        num_multiline_triplits = GetNumMultilineTriplets(
+            content,
+            start_index=line_infos[-1].PosStart,
+            end_index=line_infos[-1].PosEnd,
+        )
+
         if (
-            IsMultilinePhraseToken(
-                content,
-                start_index=line_infos[-1].PosStart,
-                end_index=line_infos[-1].PosEnd,
-            )
-            and (
-                multiline_tokens_to_ignore is None
-                or content[line_infos[-1].PosStart : line_infos[-1].PosEnd] not in multiline_tokens_to_ignore
-            )
+            num_multiline_triplits != 0
+            and content[line_infos[-1].PosStart : line_infos[-1].PosEnd] not in multiline_tokens_to_ignore
         ):
-            # Toggle the value
-            if multiline_token_opening_line_index is None:
-                multiline_token_opening_line_index = len(line_infos) - 1
-            else:
-                multiline_token_opening_line_index = None
+            if multiline_token_info is None:
+                multiline_token_info = MultilineTokenInfo(len(line_infos) - 1, num_multiline_triplits)
+            elif num_multiline_triplits == multiline_token_info.num_triplets:
+                multiline_token_info = None
 
     # Detect error when a multiline token has not been closed
-    if multiline_token_opening_line_index is not None:
-        index = cast(int, multiline_token_opening_line_index)
-        line_info = line_infos[index]  # pylint: disable=invalid-sequence-index
+    if multiline_token_info is not None:
+        line_info = line_infos[multiline_token_info.index]
 
         raise NoClosingMultilineTokenError(
-            index + 1,
+            multiline_token_info.index + 1,
             line_info.PosStart - line_info.OffsetStart + 1,
         )
 

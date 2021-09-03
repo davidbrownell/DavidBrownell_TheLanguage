@@ -49,7 +49,9 @@ with InitRelativeImports():
 class InvalidVariableNameError(ValidationError):
     Name: str
 
-    MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid variable or parameter name; names must start with a lowercase letter.")
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "'{Name}' is not a valid variable or parameter name; names must start with a lowercase letter.",
+    )
 
 
 # ----------------------------------------------------------------------

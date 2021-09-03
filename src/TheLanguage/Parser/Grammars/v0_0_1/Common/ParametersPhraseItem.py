@@ -93,13 +93,13 @@ class TraditionalParameterType(object):
 class NewStyleParameterGroupDuplicateError(ValidationError):
     GroupName: str
 
-    MessageTemplate                         = Interface.DerivedProperty("The parameter group '{GroupName}' has already been specified.")
+    MessageTemplate                         = Interface.DerivedProperty("The parameter group '{GroupName}' has already been specified.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class TraditionalDelimiterOrderError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty(
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The positional delimiter ('{}') must appear before the keyword delimiter ('{}').".format(
             TraditionalParameterType.Positional,
             TraditionalParameterType.Keyword,
@@ -110,7 +110,7 @@ class TraditionalDelimiterOrderError(ValidationError):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class TraditionalDelimiterDuplicatePositionalError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty(
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The positional delimiter ('{}') may only appear once in a list of parameters.".format(
             TraditionalParameterType.Positional,
         ),
@@ -120,7 +120,7 @@ class TraditionalDelimiterDuplicatePositionalError(ValidationError):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class TraditionalDelimiterDuplicateKeywordError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty(
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The keyword delimiter ('{}') may only appear once in a list of parameters.".format(
             TraditionalParameterType.Keyword,
         ),
@@ -130,7 +130,7 @@ class TraditionalDelimiterDuplicateKeywordError(ValidationError):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class TraditionalDelimiterPositionalError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty(
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The positional delimiter ('{}') must appear after at least 1 parameter.".format(
             TraditionalParameterType.Positional,
         ),
@@ -140,7 +140,7 @@ class TraditionalDelimiterPositionalError(ValidationError):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class TraditionalDelimiterKeywordError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty(
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The keyword delimiter ('{}') must appear before at least 1 parameter.".format(
             TraditionalParameterType.Keyword,
         ),

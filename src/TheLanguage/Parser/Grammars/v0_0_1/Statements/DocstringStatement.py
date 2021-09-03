@@ -55,7 +55,9 @@ _FOOTER                                     = ">>>"
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidDocstringHeaderError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("The header ('{}') must be followed by a new line.".format(_HEADER))
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "The header ('{}') must be followed by a new line.".format(_HEADER),
+    )
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -76,7 +78,12 @@ class InvalidDocstringHeaderError(ValidationError):
 class InvalidDocstringFooterError(ValidationError):
     LineOffset: int
 
-    MessageTemplate                         = Interface.DerivedProperty("The footer ('{}') must be aligned vertically with the header ('{}') [Docstring line {{LineOffset}}].".format(_FOOTER, _HEADER))
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "The footer ('{}') must be aligned vertically with the header ('{}') [Docstring line {{LineOffset}}].".format(
+            _FOOTER,
+            _HEADER,
+        ),
+    )
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -99,13 +106,17 @@ class InvalidDocstringFooterError(ValidationError):
 class InvalidDocstringIndentError(ValidationError):
     LineOffset: int
 
-    MessageTemplate                         = Interface.DerivedProperty("Docstring content must be aligned vertically with the header ('{}') [Docstring line {{LineOffset}}].".format(_HEADER))
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Docstring content must be aligned vertically with the header ('{}') [Docstring line {{LineOffset}}].".format(
+            _HEADER,
+        ),
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidDocstringContentError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Docstrings cannot be empty.")
+    MessageTemplate                         = Interface.DerivedProperty("Docstrings cannot be empty.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
