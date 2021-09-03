@@ -17,8 +17,9 @@
 
 import hashlib
 import os
+import textwrap
 
-from typing import cast, List, Optional, Set
+from typing import List, Optional, Set
 
 from dataclasses import dataclass, field
 
@@ -125,7 +126,25 @@ class NormalizedContent(object):
 # |  Public Functions
 # |
 # ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# Note that this regular expression template needs to change any time that there is a change with
+# `MULTILINE_PHRASE_TOKEN_LENGTH` or `GetNumMultilineTriplets`
+# ----------------------------------------------------------------------
+TripletContentRegexTemplate                 = textwrap.dedent(
+    r"""{{header}}(?#
+        Don't consume other triplets                    )(?!{triplet_item}{triplet_item}{triplet_item})(?#
+        Value                                           )(?P<value>.*?)(?#
+        No slash as a prefix to the closing triplet[s]  )(?<!\\)(?#
+        ){{footer}}""",
+).format(
+    triplet_item=r"[^A-Za-z0-9 \t\n]",
+)
+
+
+# ----------------------------------------------------------------------
 MULTILINE_PHRASE_TOKEN_LENGTH               = 3
+
 
 # ----------------------------------------------------------------------
 def GetNumMultilineTriplets(

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DocstringStatement_IntegrationTest.py
+# |  ClassCompilerStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-29 06:36:44
+# |      2021-09-03 11:41:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for DocstringStatement.py"""
+"""Automated test for ClassCompilerStatement.py"""
 
 import os
 import textwrap
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..DocstringStatement import *
+    from ..ClassCompilerStatement import *
     from ...Common.AutomatedTests import Execute
 
     from ...Common.Impl.MultilineStatementBase import (
@@ -51,18 +51,18 @@ def test_SingleLine():
         Execute(
             textwrap.dedent(
                 """\
-                <<<
+                <<<!!!
                 Single line 1.
-                >>>
+                !!!>>>
 
                 if cond:
-                    <<<
+                    <<<!!!
                     Single line 2.
-                    >>>
+                    !!!>>>
 
-                <<<
-                With escape \\>>>
-                >>>
+                <<<!!!
+                With escape \\!!!>>>
+                !!!>>>
                 """,
             ),
         ),
@@ -75,26 +75,47 @@ def test_Multiline():
         Execute(
             textwrap.dedent(
                 """\
-                <<<
+                <<<!!!
                 Multi
                 line
                 1
-                >>>
+                !!!>>>
 
                 if cond:
-                    <<<
+                    <<<!!!
                     Multi
                     line
                         **1**
                       **2**
-                    >>>
+                    !!!>>>
 
-                <<<
+                <<<!!!
                 With
                 escape
-                \\>>>
+                \\!!!>>>
                 more.
+                !!!>>>
+                """,
+            ),
+        ),
+    )
+
+
+# ----------------------------------------------------------------------
+def test_Nested():
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                <<<!!!
+                We should see
+
+                <<<
+                All
                 >>>
+
+                of this content.
+                !!!>>>
                 """,
             ),
         ),
@@ -107,8 +128,8 @@ def test_InvalidHeaderError():
         Execute(
             textwrap.dedent(
                 """\
-                <<<This is not valid
-                >>>
+                <<<!!!This is not valid
+                !!!>>>
                 """,
             ),
         )
@@ -124,8 +145,8 @@ def test_InvalidHeaderError():
             textwrap.dedent(
                 """\
                 if cond:
-                    <<<This is not valid
-                    >>>
+                    <<<!!!This is not valid
+                    !!!>>>
                 """,
             ),
         )
@@ -143,8 +164,8 @@ def test_InvalidFooterError():
         Execute(
             textwrap.dedent(
                 """\
-                <<<
-                Text>>>
+                <<<!!!
+                Text!!!>>>
                 """,
             ),
         )
@@ -160,8 +181,8 @@ def test_InvalidFooterError():
             textwrap.dedent(
                 """\
                 if cond:
-                    <<<
-                    Text>>>
+                    <<<!!!
+                    Text!!!>>>
                 """,
             ),
         )
@@ -180,21 +201,21 @@ def test_InvalidIndentError():
             textwrap.dedent(
                 """\
                 if cond:
-                    <<<
+                    <<<!!!
                     One
                 Two
-                    >>>
+                    !!!>>>
                 """,
             ),
         )
 
     ex = ex.value
 
-    assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<') [Line 2]."
+    assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<!!!') [Line 2]."
     assert ex.Line == 2
     assert ex.Column == 5
     assert ex.LineEnd == 5
-    assert ex.ColumnEnd == 8
+    assert ex.ColumnEnd == 11
 
     # More complicated test
     with pytest.raises(InvalidMultilineIndentError) as ex:
@@ -202,24 +223,24 @@ def test_InvalidIndentError():
             textwrap.dedent(
                 """\
                 if cond:
-                    <<<
+                    <<<!!!
                     One
                         Two
                       Three
                    Four
                     Five
-                    >>>
+                    !!!>>>
                 """,
             ),
         )
 
     ex = ex.value
 
-    assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<') [Line 4]."
+    assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<!!!') [Line 4]."
     assert ex.Line == 2
     assert ex.Column == 5
     assert ex.LineEnd == 8
-    assert ex.ColumnEnd == 8
+    assert ex.ColumnEnd == 11
 
 # ----------------------------------------------------------------------
 def test_EmptyContentError():
@@ -227,8 +248,8 @@ def test_EmptyContentError():
         Execute(
             textwrap.dedent(
                 """\
-                <<<
-                >>>
+                <<<!!!
+                !!!>>>
                 """,
             ),
         )
@@ -239,7 +260,7 @@ def test_EmptyContentError():
     assert ex.Line == 1
     assert ex.Column == 1
     assert ex.LineEnd == 2
-    assert ex.ColumnEnd == 4
+    assert ex.ColumnEnd == 7
 
     # With indent
     with pytest.raises(InvalidMultilineContentError) as ex:
@@ -247,8 +268,8 @@ def test_EmptyContentError():
             textwrap.dedent(
                 """\
                 if cond:
-                    <<<
-                    >>>
+                    <<<!!!
+                    !!!>>>
                 """,
             ),
         )
@@ -259,4 +280,4 @@ def test_EmptyContentError():
     assert ex.Line == 2
     assert ex.Column == 5
     assert ex.LineEnd == 3
-    assert ex.ColumnEnd == 8
+    assert ex.ColumnEnd == 11

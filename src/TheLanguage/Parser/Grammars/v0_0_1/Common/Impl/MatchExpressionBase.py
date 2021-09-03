@@ -77,7 +77,7 @@ class MatchExpressionBase(GrammarPhrase):
         )
     """
 
-    # Generally speaking, the different between statements and expressions is that
+    # Generally speaking, the difference between statements and expressions is that
     # expressions return a value, are smaller, and don't care about whitespace. Match expressions
     # are a bit of a hybrid between statements and expressions - the return a value, but are
     # large and do care about whitespace.
