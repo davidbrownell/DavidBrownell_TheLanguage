@@ -247,6 +247,7 @@ class SequencePhrase(Phrase):
     def _ExtractPotentialWhitespaceToken(
         cls,
         normalized_iter: Phrase.NormalizedIterator,
+        consume_indent=True,
         consume_dedent=True,
     ) -> Optional[Phrase.TokenParseResultData]:
         """Eats any whitespace token when requested"""
@@ -259,6 +260,9 @@ class SequencePhrase(Phrase):
             cls._dedent_token,
             cls._indent_token,
         ]:
+            if not consume_indent and token == cls._indent_token:
+                continue
+
             if not consume_dedent and token == cls._dedent_token:
                 continue
 
@@ -296,6 +300,9 @@ class SequencePhrase(Phrase):
     def _ExtractPotentialCommentTokens(
         self,
         normalized_iter: Phrase.NormalizedIterator,
+        *,
+        next_phrase_is_indent: bool,
+        next_phrase_is_dedent: bool,
     ) -> Optional["SequencePhrase.ExtractPotentialResults"]:
         """Eats any comment (stand-alone or trailing) when requested"""
 
@@ -303,6 +310,32 @@ class SequencePhrase(Phrase):
         next_token = normalized_iter.GetNextToken()
 
         if next_token == NormalizedIterator.TokenType.Indent:
+            # There are 2 scenarios to consider here:
+            #
+            #     1) The indent that we are looking at is because the comment itself
+            #        is indented. Example:
+            #
+            #           Line 1: Int value = 1       # The first line of the comment
+            #           Line 2:                     # The second line of the comment
+            #           Line 3: value += 1
+            #
+            #        In this scenario, Line 2 starts with an indent and Line 3 starts with
+            #        a dedent. We want to consume and ignore both the indent and dedent.
+            #
+            #     2) The indent is a meaningful part of the statement. Example:
+            #
+            #           Line 1: class Foo():
+            #           Line 2:     # A comment
+            #           Line 3:     Int value = 1
+            #
+            #        In this scenario, Line 2 is part of the class declaration and we want
+            #        the indent to be officially consumed before we process the comment.
+
+            if next_phrase_is_indent:
+                # We are in scenario #2
+                return None
+
+            # If here, we are in scenario #1
             at_beginning_of_line = True
 
             normalized_iter_begin = normalized_iter.Clone()
@@ -317,7 +350,10 @@ class SequencePhrase(Phrase):
             potential_whitespace = None
 
         else:
-            at_beginning_of_line = normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
+            at_beginning_of_line = (
+                normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
+                or normalized_iter.Offset == normalized_iter.LineInfo.PosStart
+            )
             potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
 
         normalized_iter_begin = normalized_iter.Clone()
@@ -348,7 +384,11 @@ class SequencePhrase(Phrase):
 
             # Consume potential dedents, but don't return it with the results (as we absorbed
             # the corresponding indent when we skipped the prefix in the code above)
-            if results[0].Whitespace is not None and results[-1].IterEnd.GetNextToken() == NormalizedIterator.TokenType.Dedent:
+            if (
+                results[0].Whitespace is not None
+                and results[-1].IterEnd.GetNextToken() == NormalizedIterator.TokenType.Dedent
+                and not next_phrase_is_dedent
+            ):
                 result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
                 assert result
 
@@ -373,13 +413,37 @@ class SequencePhrase(Phrase):
         original_normalized_iter = normalized_iter.Clone()
 
         # ----------------------------------------------------------------------
-        def ExtractWhitespaceOrComments() -> Optional[SequencePhrase.ExtractPotentialResults]:
+        def ExtractWhitespaceOrComments(
+            *,
+            next_phrase_is_indent: bool,
+            next_phrase_is_dedent: bool,
+        ) -> Optional[SequencePhrase.ExtractPotentialResults]:
             nonlocal ignored_indentation_level
 
-            if ignore_whitespace_ctr:
+            if normalized_iter.Offset == 0:
+                # If we are at the beginning of the content, consume any leading
+                # newlines. We don't need to worry about a content that starts with
+                # newline-comment-newline as the comment extract code will handle
+                # the newline(s) that appears after the comment.
+                process_whitespace = True
+                consume_indent = False
+                consume_dedent = False
+
+            elif ignore_whitespace_ctr:
+                process_whitespace = True
+                consume_indent = True
+                consume_dedent = ignored_indentation_level != 0
+
+            else:
+                process_whitespace = False
+                consume_indent = False
+                consume_dedent = False
+
+            if process_whitespace:
                 data_item = self._ExtractPotentialWhitespaceToken(
                     normalized_iter,
-                    consume_dedent=ignored_indentation_level != 0,
+                    consume_indent=consume_indent,
+                    consume_dedent=consume_dedent,
                 )
 
                 if data_item is not None:
@@ -395,7 +459,11 @@ class SequencePhrase(Phrase):
                         data_item.IterEnd,
                     )
 
-            return self._ExtractPotentialCommentTokens(normalized_iter)
+            return self._ExtractPotentialCommentTokens(
+                normalized_iter,
+                next_phrase_is_indent=next_phrase_is_indent,
+                next_phrase_is_dedent=next_phrase_is_dedent,
+            )
 
         # ----------------------------------------------------------------------
 
@@ -418,13 +486,59 @@ class SequencePhrase(Phrase):
             # Extract whitespace or comments
             pre_whitespace_iter = normalized_iter.Clone()
 
+            if isinstance(phrase, TokenPhrase):
+                next_phrase_is_indent = isinstance(phrase.Token, IndentToken)
+                next_phrase_is_dedent = isinstance(phrase.Token, DedentToken)
+            else:
+                next_phrase_is_indent = False
+                next_phrase_is_dedent = False
+
             while not normalized_iter.AtEnd():
-                potential_prefix_info = ExtractWhitespaceOrComments()
+                potential_prefix_info = ExtractWhitespaceOrComments(
+                    next_phrase_is_indent=next_phrase_is_indent,
+                    next_phrase_is_dedent=next_phrase_is_dedent,
+                )
+
                 if potential_prefix_info is None:
                     break
 
                 data_items += potential_prefix_info.Results
                 normalized_iter = potential_prefix_info.IterEnd
+
+            # It shouldn't be considered an error when whitespace/comments
+            # were encountered at the end of the content when processing the
+            # first phrase in the list of phrases.
+            if (
+                normalized_iter.AtEnd()
+                and normalized_iter.Offset != original_normalized_iter.Offset
+                and phrase_index - phrase_offset == 0
+            ):
+                # This sequence has failed
+                success = False
+
+                # <Too many arguments> pylint: disable=E1121
+                return Phrase.ParseResult(
+                    True,
+                    original_normalized_iter,
+                    normalized_iter,
+                    # <Too many arguments> pylint: disable=E1121
+                    Phrase.StandardParseResultData(
+                        # Note that this phrase will never be used directly, but
+                        # needs to be of a type that is expected to contain
+                        # MultipleStandardParseResultData items.
+                        SequencePhrase(
+                            self.CommentToken,
+                            [
+                                TokenPhrase(self.CommentToken),
+                                TokenPhrase(self._newline_token),
+                            ],
+                            name="End of File Whitespace and/or Comment(s)",
+                        ),
+                        # <Too many arguments> pylint: disable=E1121
+                        Phrase.MultipleStandardParseResultData(data_items, True),
+                        unique_id,
+                    ),
+                )
 
             # Process control tokens
             if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:

@@ -1,0 +1,20 @@
+# <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+    Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+      DataItems:
+        - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+          IsIgnored: True
+          IterBegin: "[1, 1] (0)"
+          IterEnd: "[2, 1] (1)"
+          Token: "Newline+"
+          Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+            End: 1
+            Start: 0
+          Whitespace: None
+      IsComplete: True
+    Phrase: "End of File Whitespace and/or Comment(s)"
+  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[2, 1] (1)"
+Success: True
