@@ -53,7 +53,7 @@ with InitRelativeImports():
 class UnknownSourceError(Error):
     SourceName: str
 
-    MessageTemplate                         = Interface.DerivedProperty("'{SourceName}' could not be found")
+    MessageTemplate                         = Interface.DerivedProperty("'{SourceName}' could not be found")  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -133,7 +133,7 @@ class Observer(Interface.Interface):
     ) -> Union[
         bool,                               # True to continue processing, False to terminate
         DynamicPhrasesInfo,                 # Dynamic phases (if any) resulting from the parsed phrase
-        "Observer.ImportInfo",              # Import infromation (if any) resulting from the parsed phrase
+        "Observer.ImportInfo",              # Import information (if any) resulting from the parsed phrase
     ]:
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -192,6 +192,7 @@ async def ParseAsync(
                 if source_info is None:
                     del thread_info.source_lookup[fully_qualified_name]
 
+                    # pylint: disable=too-many-function-args
                     final_result = DynamicPhrasesInfo([], [], [], [])
                 else:
                     final_result = source_info.DynamicInfo

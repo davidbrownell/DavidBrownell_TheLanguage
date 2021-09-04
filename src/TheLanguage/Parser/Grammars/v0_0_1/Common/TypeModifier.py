@@ -34,7 +34,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class TypeModifier(
-    CreateModifierBaseClass(
+    CreateModifierBaseClass(  # type: ignore
         base_class=IntFlag,
     ),
 ):

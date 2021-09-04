@@ -34,7 +34,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class ClassModifier(ModifierBase):
+class ClassModifier(ModifierBase):  # type: ignore
     """\
     Modifies the mutability of a method or attribute.
     """

@@ -54,24 +54,20 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidClassNameError(ValidationError):
-    Name: str
-
-    MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid class name; names must start with an uppercase letter and be at least 2 characters.")
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
 class DuplicateInterfacesTypeError(ValidationError):
     Type: str
 
-    MessageTemplate                         = Interface.DerivedProperty("The base type indicator '{Type}' may only appear once.")
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "The base type indicator '{Type}' may only appear once.",
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class MultipleBasesError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Classes can have only one base class; consider using mixins and interfaces instead.")
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Classes can have only one base class; consider using mixins and interfaces instead.",
+    )
 
 
 # ----------------------------------------------------------------------
@@ -108,7 +104,7 @@ class ClassStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     class ClassType(
-        CreateModifierBaseClass(
+        CreateModifierBaseClass(  # type: ignore
             by_value=True,
         ),
     ):
@@ -121,7 +117,7 @@ class ClassStatement(GrammarPhrase):
         # TODO: Add struct; struct must be private; members are public by default; can have public mutable members.
 
     # ----------------------------------------------------------------------
-    class BaseTypeIndicator(ModifierBase):
+    class BaseTypeIndicator(ModifierBase):  # type: ignore
         implements                          = auto()
         uses                                = auto()
 
@@ -365,7 +361,7 @@ class ClassStatement(GrammarPhrase):
             cls.NodeInfo(
                 class_type,
                 class_name,
-                class_visibility,
+                class_visibility,  # type: ignore
                 base_info,
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, []),
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, []),
@@ -408,6 +404,6 @@ class ClassStatement(GrammarPhrase):
             # Commit the results
 
             # pylint: disable=too-many-function-args
-            results.append(cls.BaseInfo(visibility, name))
+            results.append(cls.BaseInfo(visibility, name))  # type: ignore
 
         return results

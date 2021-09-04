@@ -54,7 +54,9 @@ class InvalidDynamicTraversalError(Error):
 
     ExistingDynamicPhrases: Phrase.NormalizedIterator
 
-    MessageTemplate                         = Interface.DerivedProperty("Dynamic phrases that prohibit parent traversal should never be applied over other dynamic phrases within the same lexical scope; consider making these dynamic phrases the first ones applied in this lexical scope.")
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Dynamic phrases that prohibit parent traversal should never be applied over other dynamic phrases within the same lexical scope; consider making these dynamic phrases the first ones applied in this lexical scope.",
+    )
 
 
 # ----------------------------------------------------------------------
@@ -67,7 +69,7 @@ class SyntaxInvalidError(Error):
     Root: AST.RootNode
     LastMatch: AST.Node                     = field(init=False)
 
-    MessageTemplate                         = Interface.DerivedProperty("The syntax is not recognized")
+    MessageTemplate                         = Interface.DerivedProperty("The syntax is not recognized")  # type: ignore
 
     # TODO: Add functionality that discusses naming conventions if the wrong type of name is used
 
