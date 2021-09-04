@@ -17,6 +17,8 @@
 
 import os
 
+from typing import Optional
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -136,9 +138,9 @@ class FuncInvocationBase(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ValidateNodeSyntax(
+    def ValidateSyntax(
         node: Node,
-    ):
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) in [6, 7]
 

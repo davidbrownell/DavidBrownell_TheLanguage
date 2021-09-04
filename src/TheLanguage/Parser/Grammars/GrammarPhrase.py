@@ -20,7 +20,7 @@ import os
 from enum import auto, Enum
 from typing import Any, Callable, List, Optional, Union
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -120,6 +120,15 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
             YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
 
     # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ValidateSyntaxResult(object):
+        # Function that should be called once all the nodes have been validated individually. This
+        # can be used by phrases who need context information from their parents to complete
+        # validation but can only do so after the parent itself has been validated.
+        PostValidationFunc: Optional[Callable[[], None]]                    = field(default=None)
+        AllowChildTraversal: bool                                           = field(default=True)
+
+    # ----------------------------------------------------------------------
     # |
     # |  Public Methods
     # |
@@ -140,12 +149,11 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         self.Phrase                         = phrase
 
     # ----------------------------------------------------------------------
-    # TODO: Validate can return a func that is executed after all the nodes have been validated; can be used to validate in relationship to ancestors/descendants.
     @staticmethod
     @Interface.extensionmethod
-    def ValidateNodeSyntax(
+    def ValidateSyntax(
         node: Node,
-    ) -> Optional[bool]:                    # False to prevent child traversal
+    ) -> Optional["GrammarPhrase.ValidateSyntaxResult"]:
         """\
         Opportunity to validate the syntax of a node.
 

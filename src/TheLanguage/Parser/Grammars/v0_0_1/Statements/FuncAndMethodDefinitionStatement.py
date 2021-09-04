@@ -318,10 +318,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateNodeSyntax(
+    def ValidateSyntax(
         self,
         node: Node,
-    ):
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         # Determine if this is function or a method. This is a function if:
         #   - It is embedded within another function/method
         #   - It is not embedded within a class
