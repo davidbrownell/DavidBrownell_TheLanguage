@@ -105,10 +105,10 @@ class LambdaExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateNodeSyntax(
+    def ValidateSyntax(
         cls,
         node: Node,
-    ) -> Optional[bool]:
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 4
 

@@ -31,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.Impl.MultilineStatementBase import MultilineStatementBase
+    from ...GrammarPhrase import GrammarPhrase
     from ....Phrases.DSL import Leaf, Node
 
 
@@ -58,11 +59,11 @@ class ClassCompilerStatement(MultilineStatementBase):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
-    def _ValidateNodeSyntaxImpl(
+    def _ValidateSyntaxImpl(
         self,
         node: Node,
         leaf: Leaf,
         value: str,
-    ) -> Optional[bool]:
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         # Persist the info
         object.__setattr__(node, "Info", value)

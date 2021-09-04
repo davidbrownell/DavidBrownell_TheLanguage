@@ -2,11 +2,6 @@
 #       to go now that errors are more precise and ambiguities are properly detected. Make things less forgiving
 #       if it makes more sense to go in this direction.
 
-# TODO: Problems when ending with comments:
-#     class Foo():
-#         pass
-#
-#     # Comment 1
-#     # Comment 2
+# TODO: Improve performance
 
 # TODO: Ensure that everything that uses YamlRepr.ObjectReprImplBase is properly initializing with include_class_info=False
