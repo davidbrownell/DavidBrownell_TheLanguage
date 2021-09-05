@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ThrowStatement.py
+# |  RaiseStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-08-10 23:41:14
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ThrowStatement object"""
+"""Contains the RaiseStatement object"""
 
 import os
 
@@ -33,30 +33,28 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class ThrowStatement(GrammarPhrase):
+class RaiseStatement(GrammarPhrase):
     """\
-    Throws an exception.
+    Raises an exception.
 
-    'throw' <expr>?
+    'raise' <expr>?
 
     Examples:
-        throw
-        throw foo
-        throw (a, b, c)
+        raise
+        raise foo
+        raise (a, b, c)
     """
 
-    # TODO: Change this to 'raise' to be more consistent with python
-
-    PHRASE_NAME                             = "Throw Statement"
+    PHRASE_NAME                             = "Raise Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(ThrowStatement, self).__init__(
+        super(RaiseStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    "throw",
+                    "raise",
                     PhraseItem(
                         item=DynamicPhrasesType.Expressions,
                         arity="?",

@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ThrowStatement_IntegrationTest.py
+# |  RaiseStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-08-10 23:39:41
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for ThrowStatement.py"""
+"""Automated tests for RaiseStatement.py"""
 
 import os
 import textwrap
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ThrowStatement import *
+    from ..RaiseStatement import *
     from ...Common.AutomatedTests import Execute
 
 
@@ -42,7 +42,7 @@ def test_StandAlone():
         Execute(
             textwrap.dedent(
                 """\
-                throw
+                raise
                 """,
             ),
         ),
@@ -55,8 +55,8 @@ def test_WithValue():
         Execute(
             textwrap.dedent(
                 """\
-                throw foo
-                throw (a, b)
+                raise foo
+                raise (a, b)
                 """,
             ),
         ),
