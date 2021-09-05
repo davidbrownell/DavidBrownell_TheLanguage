@@ -56,10 +56,10 @@ with InitRelativeImports():
     from .Statements.IfStatement import IfStatement
     from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
+    from .Statements.RaiseStatement import RaiseStatement
     from .Statements.ReturnStatement import ReturnStatement
     from .Statements.ScopedRefStatement import ScopedRefStatement
-    from .Statements.ThrowStatement import ThrowStatement
-    from .Statements.TryCatchStatement import TryCatchStatement
+    from .Statements.TryExceptStatement import TryExceptStatement
     from .Statements.TypeAliasStatement import TypeAliasStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
     from .Statements.WhileStatement import WhileStatement
@@ -105,10 +105,10 @@ GrammarPhrases                              = [
     IfStatement(),
     ImportStatement(".TheLanguage",),       # TODO: Update this once the language has a name
     PassStatement(),
+    RaiseStatement(),
     ReturnStatement(),
     ScopedRefStatement(),
-    ThrowStatement(),
-    TryCatchStatement(),
+    TryExceptStatement(),
     TypeAliasStatement(),
     VariableDeclarationStatement(),
     WhileStatement(),
