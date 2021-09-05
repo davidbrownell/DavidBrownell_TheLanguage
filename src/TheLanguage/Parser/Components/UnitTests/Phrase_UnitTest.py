@@ -208,61 +208,6 @@ class TestStandard(object):
 
 
 # ----------------------------------------------------------------------
-# TODO: Restore this test
-# class TestMultipleParseResultData(object):
-#     _token                                  = RegexToken("My Word Token", re.compile(r"(?P<value>[a-zA-Z0-9]+)"))
-#     _phrase                                 = TokenPhrase(_token)
-#     _iterator                               = CreateIterator("one two")
-#
-#     _data                                   = Phrase.MultipleStandardParseResultData(
-#         [
-#             Phrase.StandardParseResultData(
-#                 _phrase,
-#                 Phrase.TokenParseResultData(
-#                     _token,
-#                     None,
-#                     Token.RegexMatch(_token.Regex.match("one")),
-#                     _iterator,
-#                     _iterator,
-#                     False,
-#                 ),
-#                 ["id1"],
-#             ),
-#             Phrase.StandardParseResultData(
-#                 _phrase,
-#                 Phrase.TokenParseResultData(
-#                     _token,
-#                     None,
-#                     Token.RegexMatch(_token.Regex.match("two")),
-#                     _iterator,
-#                     _iterator,
-#                     False,
-#                 ),
-#                 ["id2"],
-#             ),
-#         ],
-#         True,
-#     )
-#
-#     # ----------------------------------------------------------------------
-#     def test_String(self):
-#         assert str(self._data) == textwrap.dedent(
-#             """\
-#             My Word Token
-#                 My Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='one'>>> ws:None [1, 1 -> 1, 1]
-#             My Word Token
-#                 My Word Token <<Regex: <_sre.SRE_Match object; span=(0, 3), match='two'>>> ws:None [1, 1 -> 1, 1]
-#             """,
-#         )
-#
-#     # ----------------------------------------------------------------------
-#     def test_Enum(self):
-#         assert list(self._data.Enum()) == [
-#             (self._phrase, self._data.DataItems[0].Data, self._data.DataItems[0].UniqueId),
-#             (self._phrase, self._data.DataItems[1].Data, self._data.DataItems[1].UniqueId),
-#         ]
-
-# ----------------------------------------------------------------------
 @pytest.mark.asyncio
 async def test_Parse(iterator, parse_mock):
     result = await CreatePhrase(1).ParseAsync(("root", ), iterator, parse_mock)
