@@ -42,6 +42,7 @@ with InitRelativeImports():
     from ....Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractOptional,
         ExtractOr,
         ExtractRepeat,
         ExtractSequence,
@@ -72,6 +73,7 @@ class MultipleBasesError(ValidationError):
 
 # ----------------------------------------------------------------------
 # TODO: Add modifier to control what can be in class ("mutable", "immutable")
+# TODO: Single-line statement
 class ClassStatement(GrammarPhrase):
     """\
     Statement that creates a class.
@@ -326,7 +328,7 @@ class ClassStatement(GrammarPhrase):
                 class_visibility = VisibilityModifier.private
         else:
             class_visibility = VisibilityModifier.Extract(
-                cast(Node, ExtractRepeat(cast(Node, nodes[0]))),
+                cast(Node, ExtractOptional(cast(Node, nodes[0]))),
             )
 
         # Class name
@@ -336,7 +338,7 @@ class ClassStatement(GrammarPhrase):
         if nodes[5] is None:
             base_info = None
         else:
-            base_infos = cls._ExtractBaseInfo(cast(Node, ExtractRepeat(cast(Node, nodes[5]))))
+            base_infos = cls._ExtractBaseInfo(cast(Node, ExtractOptional(cast(Node, nodes[5]))))
             assert base_infos
 
             if len(base_infos) > 1:
@@ -412,7 +414,7 @@ class ClassStatement(GrammarPhrase):
                 visibility = VisibilityModifier.private
             else:
                 visibility = VisibilityModifier.Extract(
-                    cast(Node, ExtractRepeat(cast(Node, base_items[0]))),
+                    cast(Node, ExtractOptional(cast(Node, base_items[0]))),
                 )
 
             # Name

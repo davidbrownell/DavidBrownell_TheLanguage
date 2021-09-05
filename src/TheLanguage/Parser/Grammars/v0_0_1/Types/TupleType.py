@@ -41,7 +41,7 @@ class TupleType(TupleBase):
 
     Example:
         (Int, Char) Func():
-            <statements>
+            <statement>+
     """
 
     PHRASE_NAME                             = "Tuple Type"

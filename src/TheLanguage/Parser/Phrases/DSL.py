@@ -196,6 +196,16 @@ def ExtractRepeat(
 
 
 # ----------------------------------------------------------------------
+def ExtractOptional(
+    node: Optional[Node],
+) -> Optional[Union[Leaf, Node]]:
+    if node is None:
+        return None
+
+    return cast(Optional[Union[Leaf, Node]], ExtractRepeat(node))
+
+
+# ----------------------------------------------------------------------
 def ExtractSequence(
     node: Node,
 ) -> List[Union[Leaf, Node, None]]:

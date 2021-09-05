@@ -246,6 +246,7 @@ def test_MethodType():
                         pass
 
                     abstract Int AbstractMethod()
+                    deferred Int DeferredMethod()
 
                     virtual Int VirtualMethod():
                         pass
@@ -295,6 +296,22 @@ def test_Abstract():
                     public abstract Int PublicAbstractMethod()
                     protected abstract Bool ProtectedAbstractMethod()
                     private abstract Char PrivateAbstractMethod()
+                """,
+            ),
+        ),
+    )
+
+
+# ----------------------------------------------------------------------
+def test_Deferred():
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                class Foo():
+                    public deferred Int PublicDeferredMethod()
+                    protected deferred Bool ProtectedDeferredMethod()
+                    private deferred Char PrivateDeferredMethod()
                 """,
             ),
         ),
@@ -824,7 +841,7 @@ def test_MethodStatementsRequiredError():
 
     ex = ex.value
 
-    assert str(ex) == "Statements are required for methods not marked as 'abstract'."
+    assert str(ex) == "Statements are required for methods not marked as 'abstract' or 'deferred'."
     assert ex.Line == 2
     assert ex.Column == 17
     assert ex.LineEnd == 3
@@ -833,6 +850,7 @@ def test_MethodStatementsRequiredError():
 
 # ----------------------------------------------------------------------
 def test_StatementsUnexpectedError():
+    # 'abstract'
     with pytest.raises(StatementsUnexpectedError) as ex:
         Execute(
             textwrap.dedent(
@@ -846,7 +864,27 @@ def test_StatementsUnexpectedError():
 
     ex = ex.value
 
-    assert str(ex) == "Statements can not be provided for methods marked as 'abstract' (use 'virtual' instead)."
+    assert str(ex) == "Statements can not be provided for methods marked as 'abstract' or 'deferred'."
+    assert ex.Line == 2
+    assert ex.Column == 26
+    assert ex.LineEnd == 4
+    assert ex.ColumnEnd == 1
+
+    # 'deferred'
+    with pytest.raises(StatementsUnexpectedError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                class Foo():
+                    deferred Int Method():
+                        pass
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "Statements can not be provided for methods marked as 'abstract' or 'deferred'."
     assert ex.Line == 2
     assert ex.Column == 26
     assert ex.LineEnd == 4
