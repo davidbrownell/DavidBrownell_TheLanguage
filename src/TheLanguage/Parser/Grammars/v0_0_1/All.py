@@ -59,7 +59,7 @@ with InitRelativeImports():
     from .Statements.RaiseStatement import RaiseStatement
     from .Statements.ReturnStatement import ReturnStatement
     from .Statements.ScopedRefStatement import ScopedRefStatement
-    from .Statements.TryCatchStatement import TryCatchStatement
+    from .Statements.TryExceptStatement import TryExceptStatement
     from .Statements.TypeAliasStatement import TypeAliasStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
     from .Statements.WhileStatement import WhileStatement
@@ -108,7 +108,7 @@ GrammarPhrases                              = [
     RaiseStatement(),
     ReturnStatement(),
     ScopedRefStatement(),
-    TryCatchStatement(),
+    TryExceptStatement(),
     TypeAliasStatement(),
     VariableDeclarationStatement(),
     WhileStatement(),
