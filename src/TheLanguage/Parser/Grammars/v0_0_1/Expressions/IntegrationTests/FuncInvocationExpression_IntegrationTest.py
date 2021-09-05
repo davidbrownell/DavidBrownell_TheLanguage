@@ -33,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..FuncInvocationExpression import *
+
+    from ...Common.ArgumentsPhraseItem import PositionalAfterKeywordError
     from ...Common.AutomatedTests import Execute
 
 
@@ -96,4 +98,22 @@ def test_WithKeywords():
         ),
     )
 
-# TODO: keyword before pos
+
+# ----------------------------------------------------------------------
+def test_PositionalAfterKeywordError():
+    with pytest.raises(PositionalAfterKeywordError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                value = Func(a, b, c=three, dee, e=five)
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "Positional arguments may not appear after keyword arguments."
+    assert ex.Line == 1
+    assert ex.Column == 29
+    assert ex.LineEnd == 1
+    assert ex.ColumnEnd == 32
