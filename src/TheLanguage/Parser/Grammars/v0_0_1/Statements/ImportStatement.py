@@ -41,6 +41,7 @@ with InitRelativeImports():
 
     from ....Phrases.DSL import (
         CreatePhrase,
+        ExtractOptional,
         ExtractOr,
         ExtractRepeat,
         ExtractSequence,
@@ -381,7 +382,7 @@ class ImportStatement(ImportGrammarStatement):
             key_leaf = cast(Leaf, content_nodes[0])
             key = cast(str, ExtractToken(key_leaf))
 
-            as_node = ExtractRepeat(cast(Node, content_nodes[1]))
+            as_node = ExtractOptional(cast(Node, content_nodes[1]))
 
             if as_node is None:
                 value_leaf = key_leaf

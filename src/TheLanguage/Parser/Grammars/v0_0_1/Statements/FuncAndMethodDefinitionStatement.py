@@ -48,6 +48,7 @@ with InitRelativeImports():
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
+        ExtractOptional,
         ExtractOr,
         ExtractRepeat,
         ExtractSequence,
@@ -99,13 +100,13 @@ class FunctionStatementsRequiredError(ValidationError):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class MethodStatementsRequiredError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Statements are required for methods not marked as 'abstract'.")  # type: ignore
+    MessageTemplate                         = Interface.DerivedProperty("Statements are required for methods not marked as 'abstract' or 'deferred'.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class StatementsUnexpectedError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Statements can not be provided for methods marked as 'abstract' (use 'virtual' instead).")  # type: ignore
+    MessageTemplate                         = Interface.DerivedProperty("Statements can not be provided for methods marked as 'abstract' or 'deferred'.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -124,6 +125,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     class MethodType(ModifierBase):  # type: ignore
+        deferred                            = auto()
         standard                            = auto()
         static                              = auto()
         abstract                            = auto()
@@ -230,7 +232,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             else:
                 assert self.MethodType is not None, self
                 assert self.ClassModifier is not None, self
-                assert self.Statements or self.MethodType == FuncAndMethodDefinitionStatement.MethodType.abstract, self
+                assert self.Statements or self.MethodType in (
+                    FuncAndMethodDefinitionStatement.MethodType.abstract,
+                    FuncAndMethodDefinitionStatement.MethodType.deferred,
+                ), self
 
             super(FuncAndMethodDefinitionStatement.NodeInfo, self).__post_init__(
                 Statements=lambda statements: None if statements is None else [statement.Type.Name for statement in statements],
@@ -277,12 +282,11 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                         arity="?",
                     ),
 
-                    # TODO: Move ':' here
-
                     # - Multi-line Definition
                     # - Single-line Definition
                     # - Newline
                     (
+                        # Multi-line Definition
                         PhraseItem(
                             name="Multi-line Definition",
                             item=[
@@ -302,6 +306,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                             ],
                         ),
 
+                        # Single-line Definition
                         PhraseItem(
                             name="Single-line Definition",
                             item=[
@@ -310,6 +315,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                             ],
                         ),
 
+                        # Newline (no content)
                         CommonTokens.Newline,
                     )
                 ],
@@ -355,7 +361,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             visibility = VisibilityModifier.private
         else:
             visibility = VisibilityModifier.Extract(
-                cast(Node, ExtractRepeat(cast(Node, nodes[0]))),
+                cast(Node, ExtractOptional(cast(Node, nodes[0]))),
             )
 
         # <method_type>?
@@ -368,7 +374,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             if is_function:
                 raise InvalidMethodTypeApplicationError.FromNode(nodes[1])
 
-            method_type = self.MethodType.Extract(cast(Node, ExtractRepeat(cast(Node, nodes[1]))))
+            method_type = self.MethodType.Extract(cast(Node, ExtractOptional(cast(Node, nodes[1]))))
 
         # <type>
         return_type = ExtractDynamic(cast(Node, nodes[2]))
@@ -402,13 +408,13 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             if method_type == self.MethodType.static:
                 raise InvalidClassModifierApplicationStaticError.FromNode(nodes[5])
 
-            class_type = ClassModifier.Extract(cast(Node, ExtractRepeat(cast(Node, nodes[5]))))
+            class_type = ClassModifier.Extract(cast(Node, ExtractOptional(cast(Node, nodes[5]))))
 
         # Statements
         statement_node = ExtractOr(cast(Node, nodes[6]))
 
         if isinstance(statement_node, Leaf):
-            if method_type != self.MethodType.abstract:
+            if method_type not in (self.MethodType.abstract, self.MethodType.deferred):
                 if is_function:
                     raise FunctionStatementsRequiredError.FromNode(statement_node)
                 else:
@@ -420,7 +426,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             assert isinstance(statement_node, Node)
             assert statement_node.Type
 
-            if method_type == self.MethodType.abstract:
+            if method_type in (self.MethodType.abstract, self.MethodType.deferred):
                 raise StatementsUnexpectedError.FromNode(statement_node)
 
             statements_nodes = ExtractSequence(statement_node)
