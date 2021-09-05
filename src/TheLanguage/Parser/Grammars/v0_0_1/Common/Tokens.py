@@ -70,14 +70,14 @@ DoNotMatchKeywords                          = [
     # ../Statements/DeleteStatement.py
     "del",
 
+    # ../Statements/RaiseStatement.py
+    "raise",
+
     # ../Statements/ReturnStatement.py
     "return",
 
     # ../Statements/ScopedRefStatement.py
     "as",
-
-    # ../Statements/ThrowStatement.py
-    "throw",
 
     # ../Statements/YieldStatement.py
     "yield",

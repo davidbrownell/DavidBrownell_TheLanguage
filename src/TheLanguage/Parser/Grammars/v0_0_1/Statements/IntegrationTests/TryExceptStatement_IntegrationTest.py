@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  TryCatchStatement_IntegrationTest.py
+# |  TryExceptStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-08-29 05:49:49
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for TryCatchStatement.py"""
+"""Automated test for TryExceptStatement.py"""
 
 import os
 import textwrap
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..TryCatchStatement import *
+    from ..TryExceptStatement import *
     from ...Common.AutomatedTests import Execute
 
     from ...Names.VariableName import InvalidVariableNameError
@@ -47,13 +47,13 @@ def test_Simple():
                 """\
                 try:
                     Func1a()
-                catch:
+                except:
                     Func1b()
 
                 try:
                     Func2a()
                     Func2b()
-                catch:
+                except:
                     Func2c()
                     Func2d()
                 """,
@@ -63,19 +63,19 @@ def test_Simple():
 
 
 # ----------------------------------------------------------------------
-def test_SingleCatchVar():
+def test_SingleExceptVar():
     CompareResultsFromFile(
         Execute(
             textwrap.dedent(
                 """\
                 try:
                     Func1a()
-                catch Exception ex:
+                except Exception ex:
                     Func1b()
 
                 try:
                     Func2a()
-                catch (Exception1 | Exception2) ex:
+                except (Exception1 | Exception2) ex:
                     Func2b()
                     Func2c()
                 """,
@@ -85,16 +85,16 @@ def test_SingleCatchVar():
 
 
 # ----------------------------------------------------------------------
-def test_SingleCatchVarWithAll():
+def test_SingleExceptVarWithAll():
     CompareResultsFromFile(
         Execute(
             textwrap.dedent(
                 """\
                 try:
                     Func1a()
-                catch Exception ex:
+                except Exception ex:
                     Func2a()
-                catch:
+                except:
                     Func3a()
                 """,
             ),
@@ -103,16 +103,16 @@ def test_SingleCatchVarWithAll():
 
 
 # ----------------------------------------------------------------------
-def test_MultipleCatchVar():
+def test_MultipleExceptVar():
     CompareResultsFromFile(
         Execute(
             textwrap.dedent(
                 """\
                 try:
                     Func1a()
-                catch Exception1 exception:
+                except Exception1 exception:
                     Func1b()
-                catch Exception2 ex:
+                except Exception2 ex:
                     Func1c()
                 """,
             ),
@@ -121,18 +121,18 @@ def test_MultipleCatchVar():
 
 
 # ----------------------------------------------------------------------
-def test_MultipleCatchVarWithAll():
+def test_MultipleExceptVarWithAll():
     CompareResultsFromFile(
         Execute(
             textwrap.dedent(
                 """\
                 try:
                     Func1a()
-                catch Exception1 exception:
+                except Exception1 exception:
                     Func1b()
-                catch Exception2 ex:
+                except Exception2 ex:
                     Func1c()
-                catch:
+                except:
                     Func1d()
                 """,
             ),

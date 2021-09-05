@@ -10,9 +10,9 @@ Children:
                 IsIgnored: False
                 IterBegin: "[1, 1] (0)"
                 IterEnd: "[1, 6] (5)"
-                Type: "'throw' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "'raise' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                  Match: "<_sre.SRE_Match object; span=(0, 5), match='throw'>"
+                  Match: "<_sre.SRE_Match object; span=(0, 5), match='raise'>"
                 Whitespace: None
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
@@ -65,7 +65,7 @@ Children:
                 Whitespace: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (10)"
-            Type: "Throw Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+            Type: "Raise Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (10)"
         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
@@ -82,9 +82,9 @@ Children:
                 IsIgnored: False
                 IterBegin: "[2, 1] (10)"
                 IterEnd: "[2, 6] (15)"
-                Type: "'throw' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                Type: "'raise' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                  Match: "<_sre.SRE_Match object; span=(10, 15), match='throw'>"
+                  Match: "<_sre.SRE_Match object; span=(10, 15), match='raise'>"
                 Whitespace: None
               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                 Children:
@@ -226,7 +226,7 @@ Children:
                 Whitespace: None
             IterBegin: "[2, 1] (10)"
             IterEnd: "[3, 1] (23)"
-            Type: "Throw Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+            Type: "Raise Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
         IterBegin: "[2, 1] (10)"
         IterEnd: "[3, 1] (23)"
         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"

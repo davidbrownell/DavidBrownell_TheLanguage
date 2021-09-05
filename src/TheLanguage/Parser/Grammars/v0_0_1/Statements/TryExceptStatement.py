@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  TryCatchStatement.py
+# |  TryExceptStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-08-29 05:38:39
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TryCatchStatement object"""
+"""Contains the TryExceptStatement object"""
 
 import os
 
@@ -44,35 +44,33 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class TryCatchStatement(GrammarPhrase):
+class TryExceptStatement(GrammarPhrase):
     """\
-    Try/catch blocks.
+    Try/except blocks.
 
     'try' ':'
         <statement>+
     (
-        'catch' <type> <name> ':'
+        'except' <type> <name> ':'
             <statement>+
     )*
     (
-        'catch' ':'
+        'except' ':'
             <statement>+
     )?
 
     Examples:
         try:
             Func1()
-        catch Exception ex:
+        except Exception ex:
             Func2()
-        catch (Exception1 | Exception2) ex:
+        except (Exception1 | Exception2) ex:
             Func3()
-        catch:
+        except:
             Func4()
     """
 
-    # TODO: Change this to 'except' to be more consistent with python
-
-    PHRASE_NAME                             = "Try Catch Statement"
+    PHRASE_NAME                             = "Try Except Statement"
 
     # ----------------------------------------------------------------------
     # |
@@ -82,21 +80,21 @@ class TryCatchStatement(GrammarPhrase):
     @dataclass(frozen=True, repr=False)
     class NodeInfo(GrammarPhrase.NodeInfo):
         TryStatements: List[Union[Leaf, Node]]
-        CatchVarStatements: List[
+        ExceptVarStatements: List[
             Tuple[
                 Tuple[Node, Leaf],          # Exception Type, name
                 List[Union[Leaf, Node]],    # Statements
             ]
         ]
-        CatchStatements: List[Union[Leaf, Node]]
+        ExceptStatements: List[Union[Leaf, Node]]
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
             # <Parameters differ> pylint: disable=W0221
-            super(TryCatchStatement.NodeInfo, self).__post_init__(
+            super(TryExceptStatement.NodeInfo, self).__post_init__(
                 TryStatements=lambda statements: [statement.Type.Name for statement in statements],
-                CatchVarStatements=lambda items: ["{}, {}, {}".format(ex_type, ex_name, ", ".join([statement.Type.Name for statement in statements])) for (ex_type, ex_name), statements in items],
-                CatchStatements=lambda statements: [statement.Type.Name for statement in statements],
+                ExceptVarStatements=lambda items: ["{}, {}, {}".format(ex_type, ex_name, ", ".join([statement.Type.Name for statement in statements])) for (ex_type, ex_name), statements in items],
+                ExceptStatements=lambda statements: [statement.Type.Name for statement in statements],
             )
 
     # ----------------------------------------------------------------------
@@ -112,7 +110,7 @@ class TryCatchStatement(GrammarPhrase):
             arity="+",
         )
 
-        super(TryCatchStatement, self).__init__(
+        super(TryExceptStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
                 name=self.PHRASE_NAME,
@@ -127,13 +125,13 @@ class TryCatchStatement(GrammarPhrase):
                     CommonTokens.Dedent,
 
                     # (
-                    #     'catch' <type> <name> ':'
+                    #     'except' <type> <name> ':'
                     #         <statement>+
                     # )*
                     PhraseItem(
-                        name="Catch Var",
+                        name="Except Var",
                         item=[
-                            "catch",
+                            "except",
                             DynamicPhrasesType.Types,
                             DynamicPhrasesType.Names,
                             ":",
@@ -146,13 +144,13 @@ class TryCatchStatement(GrammarPhrase):
                     ),
 
                     # (
-                    #     'catch' ':'
+                    #     'except' ':'
                     #         <statement>+
                     # )?
                     PhraseItem(
-                        name="Catch",
+                        name="Except",
                         item=[
-                            "catch",
+                            "except",
                             ":",
                             CommonTokens.Newline,
                             CommonTokens.Indent,
