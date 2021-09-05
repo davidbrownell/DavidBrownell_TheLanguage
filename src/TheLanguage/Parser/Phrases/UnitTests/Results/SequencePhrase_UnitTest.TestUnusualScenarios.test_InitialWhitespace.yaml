@@ -1,0 +1,74 @@
+# <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+    Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+      DataItems:
+        - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+          IsIgnored: True
+          IterBegin: "[1, 1] (0)"
+          IterEnd: "[3, 1] (2)"
+          Token: "Newline+"
+          Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+            End: 2
+            Start: 0
+          Whitespace: None
+        - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+          Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+            IsIgnored: False
+            IterBegin: "[3, 1] (2)"
+            IterEnd: "[3, 7] (8)"
+            Token: "lower"
+            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(2, 8), match='lower1'>"
+            Whitespace: None
+          Phrase: "lower"
+        - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+          Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+            IsIgnored: False
+            IterBegin: "[3, 7] (8)"
+            IterEnd: "[4, 1] (9)"
+            Token: "Newline+"
+            Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+              End: 9
+              Start: 8
+            Whitespace: None
+          Phrase: "Newline+"
+      IsComplete: True
+    Phrase: "Sequence: [lower, Newline+]"
+  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[4, 1] (9)"
+Success: True
+
+# <class 'TheLanguage.Parser.Components.Phrase.Phrase.ParseResult'>
+Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+  Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+    Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.MultipleStandardParseResultData'>
+      DataItems:
+        - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+          Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+            IsIgnored: False
+            IterBegin: "[4, 1] (9)"
+            IterEnd: "[4, 7] (15)"
+            Token: "lower"
+            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(9, 15), match='lower2'>"
+            Whitespace: None
+          Phrase: "lower"
+        - # <class 'TheLanguage.Parser.Components.Phrase.Phrase.StandardParseResultData'>
+          Data: # <class 'TheLanguage.Parser.Components.Phrase.Phrase.TokenParseResultData'>
+            IsIgnored: False
+            IterBegin: "[4, 7] (15)"
+            IterEnd: "[5, 1] (16)"
+            Token: "Newline+"
+            Value: # <class 'TheLanguage.Parser.Components.Token.NewlineToken.MatchResult'>
+              End: 16
+              Start: 15
+            Whitespace: None
+          Phrase: "Newline+"
+      IsComplete: True
+    Phrase: "Sequence: [lower, Newline+]"
+  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+IterBegin: "[4, 1] (9)"
+IterEnd: "[5, 1] (16)"
+Success: True

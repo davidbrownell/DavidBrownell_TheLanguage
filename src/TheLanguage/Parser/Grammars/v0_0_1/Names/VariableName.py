@@ -18,7 +18,7 @@
 import os
 import re
 
-from typing import cast
+from typing import cast, Optional
 
 from dataclasses import dataclass
 
@@ -86,10 +86,10 @@ class VariableName(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateNodeSyntax(
+    def ValidateSyntax(
         cls,
         node: Node,
-    ):
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 

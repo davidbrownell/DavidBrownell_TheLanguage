@@ -432,7 +432,6 @@ async def test_EmptyDynamicPhrasesInfo(parse_mock):
             [],
             [],
             [
-                CreatePhrase(name="Newline Phrase", item=NewlineToken()),
                 CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()]),
             ],
             [],
@@ -448,7 +447,9 @@ async def test_EmptyDynamicPhrasesInfo(parse_mock):
         parse_mock,
     )
 
-    CompareResultsFromFile(str(result))
+    CompareResultsFromFile(
+        str(result),
+    )
 
 
 # ----------------------------------------------------------------------

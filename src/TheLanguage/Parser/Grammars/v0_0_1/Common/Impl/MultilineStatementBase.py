@@ -170,10 +170,10 @@ class MultilineStatementBase(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateNodeSyntax(
+    def ValidateSyntax(
         self,
         node: Node,
-    ) -> Optional[bool]:
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
@@ -207,16 +207,16 @@ class MultilineStatementBase(GrammarPhrase):
         if not value:
             raise InvalidMultilineContentError.FromNode(leaf)
 
-        return self._ValidateNodeSyntaxImpl(node, leaf, value)
+        return self._ValidateSyntaxImpl(node, leaf, value)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.abstractmethod
-    def _ValidateNodeSyntaxImpl(
+    def _ValidateSyntaxImpl(
         self,
         node: Node,
         leaf: Leaf,
         value: str,
-    ) -> Optional[bool]:
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         raise Exception("Abstract method")  # pragma: no cover

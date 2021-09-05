@@ -18,7 +18,7 @@
 import os
 import textwrap
 
-from typing import List, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -33,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
+    from .SequencePhrase import SequencePhrase
+    from .TokenPhrase import TokenPhrase
     from ..Components.Phrase import Phrase
 
 
@@ -198,36 +200,53 @@ class OrPhrase(Phrase):
 
                 sort_data.sort()
 
+                best_index = -sort_data[-1][-1]
+
                 if (
                     not self.OrderedByPriority
                     and sort_data[-1][1] == 1
                     and len(sort_data) > 1
                     and sort_data[-1][:-1] == sort_data[-2][:-1]
                 ):
-                    # Find any additional ambiguities
-                    index = -2
+                    # It's not ambiguous if all of the match content will ultimately be ignored
+                    best_result = results[best_index]
+                    assert best_result.Data is not None
 
-                    for index in range(index - 1, -len(sort_data) - 1, -1):
-                        if sort_data[index][:-1] != sort_data[-1][:-1]:
-                            break
+                    if not (
+                        (
+                            isinstance(best_result.Data.Data, Phrase.TokenParseResultData)
+                            and best_result.Data.Data.IsIgnored
+                        )
+                        or (
+                            isinstance(best_result.Data.Data, Phrase.MultipleStandardParseResultData)
+                            and all(
+                                isinstance(data, Phrase.TokenParseResultData) and data.IsIgnored
+                                for data in best_result.Data.Data.DataItems
+                            )
+                        )
+                    ):
+                        # Find any additional ambiguities
+                        index = -2
 
-                    assert False, textwrap.dedent(
-                        """\
-                        Assertions here indicate a grammar that requires context to parse correctly; please modify
-                        the grammar so that context is no longer required.
+                        for index in range(index - 1, -len(sort_data) - 1, -1):
+                            if sort_data[index][:-1] != sort_data[-1][:-1]:
+                                break
 
-                        {} ambiguities detected.
+                        assert False, textwrap.dedent(
+                            """\
+                            Assertions here indicate a grammar that requires context to parse correctly; please modify
+                            the grammar so that context is no longer required.
+
+                            {} ambiguities detected.
 
 
 
-                        {}
-                        """,
-                    ).format(
-                        -index,
-                        "\n\n\n".join([str(results[-sort_data[index][-1]]) for index in range(-1, index - 1, -1)]),
-                    )
-
-                best_index = -sort_data[-1][-1]
+                            {}
+                            """,
+                        ).format(
+                            -index,
+                            "\n\n\n".join([str(results[-sort_data[index][-1]]) for index in range(-1, index - 1, -1)]),
+                        )
 
             else:
                 for index, result in enumerate(results):
