@@ -49,3 +49,16 @@ def test_Standard():
             ),
         ),
     )
+
+
+# ----------------------------------------------------------------------
+def test_SingleLine():
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                while value: Func1()
+                """,
+            ),
+        ),
+    )
