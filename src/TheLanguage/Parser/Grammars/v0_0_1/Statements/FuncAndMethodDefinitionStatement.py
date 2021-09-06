@@ -37,6 +37,7 @@ with InitRelativeImports():
 
     from ..Common.ClassModifier import ClassModifier
     from ..Common import ParametersPhraseItem
+    from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
     from ..Common.VisibilityModifier import VisibilityModifier
 
@@ -50,7 +51,6 @@ with InitRelativeImports():
         ExtractDynamic,
         ExtractOptional,
         ExtractOr,
-        ExtractRepeat,
         ExtractSequence,
         ExtractToken,
         Leaf,
@@ -286,34 +286,8 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                     # - Single-line Definition
                     # - Newline
                     (
-                        # Multi-line Definition
-                        PhraseItem(
-                            name="Multi-line Definition",
-                            item=[
-                                ":",
-                                CommonTokens.Newline,
-                                CommonTokens.Indent,
-
-                                # <statement>+
-                                PhraseItem(
-                                    name="Statements",
-                                    item=DynamicPhrasesType.Statements,
-                                    arity="+",
-                                ),
-
-                                # End
-                                CommonTokens.Dedent,
-                            ],
-                        ),
-
-                        # Single-line Definition
-                        PhraseItem(
-                            name="Single-line Definition",
-                            item=[
-                                ":",
-                                DynamicPhrasesType.Statements,
-                            ],
-                        ),
+                        # Multi-line, Single-line
+                        StatementsPhraseItem.Create(),
 
                         # Newline (no content)
                         CommonTokens.Newline,
@@ -423,32 +397,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             statements = None
 
         else:
-            assert isinstance(statement_node, Node)
-            assert statement_node.Type
-
             if method_type in (self.MethodType.abstract, self.MethodType.deferred):
                 raise StatementsUnexpectedError.FromNode(statement_node)
 
-            statements_nodes = ExtractSequence(statement_node)
-
-            if statement_node.Type.Name == "Multi-line Definition":
-                assert len(statements_nodes) == 5
-
-                statements = [
-                    ExtractDynamic(statement_node)
-                    for statement_node in cast(List[Node], ExtractRepeat(cast(Node, statements_nodes[3])))
-                ]
-
-            elif statement_node.Type.Name == "Single-line Definition":
-                assert len(statements_nodes) == 2
-
-                statements = [
-                    ExtractDynamic(cast(Node, statements_nodes[1])),
-                ]
-
-            else:
-                assert False, statement_node.Type
-
+            statements = StatementsPhraseItem.Extract(statement_node)
             assert statements
 
         # Commit the info

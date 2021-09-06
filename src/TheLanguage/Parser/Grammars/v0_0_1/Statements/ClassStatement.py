@@ -34,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
     from ..Common.Impl.ModifierBase import CreateModifierBaseClass, ModifierBase
     from ..Common.VisibilityModifier import VisibilityModifier
@@ -41,7 +42,6 @@ with InitRelativeImports():
     from ...GrammarPhrase import GrammarPhrase, ValidationError
     from ....Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractOptional,
         ExtractOr,
         ExtractRepeat,
@@ -73,7 +73,6 @@ class MultipleBasesError(ValidationError):
 
 # ----------------------------------------------------------------------
 # TODO: Add modifier to control what can be in class ("mutable", "immutable")
-# TODO: Single-line statement
 class ClassStatement(GrammarPhrase):
     """\
     Statement that creates a class.
@@ -283,23 +282,9 @@ class ClassStatement(GrammarPhrase):
                         ],
                         arity="*",
                     ),
-
                     CommonTokens.PopIgnoreWhitespaceControl,
 
-                    # ':'
-                    ":",
-                    CommonTokens.Newline,
-                    CommonTokens.Indent,
-
-                    # <statement>+
-                    PhraseItem(
-                        name="Statements",
-                        item=DynamicPhrasesType.Statements,
-                        arity="+",
-                    ),
-
-                    # End
-                    CommonTokens.Dedent,
+                    StatementsPhraseItem.Create(),
                 ],
             ),
         )
@@ -312,7 +297,7 @@ class ClassStatement(GrammarPhrase):
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         nodes = ExtractSequence(node)
-        assert len(nodes) == 16
+        assert len(nodes) == 12
 
         # Get the class type before the visibility, as the class type will impact the default value
         # applied for the visibility if one wasn't explicitly specified.
@@ -370,7 +355,7 @@ class ClassStatement(GrammarPhrase):
             interfaces_and_mixins[base_type] = cls._ExtractBaseInfo(cast(Node, base_node_items))
 
         # Statements
-        statements = cast(List[Union[Leaf, Node]], ExtractRepeat(cast(Node, nodes[14])))
+        statements = StatementsPhraseItem.Extract(cast(Node, nodes[11]))
 
         # Commit the results
         object.__setattr__(
