@@ -27,6 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
     from ..Common.TypeModifier import TypeModifier
 
@@ -130,21 +131,8 @@ class ScopedRefStatement(GrammarPhrase):
                     # 'ref'
                     TypeModifier.ref.name,  # type: ignore
 
-                    # ':"
-                    ":",
-                    CommonTokens.Newline,
-                    CommonTokens.Indent,
-
-                    # TODO2: Support single-line statement
-                    # <statement>+
-                    PhraseItem(
-                        name="Statements",
-                        item=DynamicPhrasesType.Statements,
-                        arity="+",
-                    ),
-
-                    # End
-                    CommonTokens.Dedent,
+                    # ':' <statement>+
+                    StatementsPhraseItem.Create(),
                 ],
             ),
         )
