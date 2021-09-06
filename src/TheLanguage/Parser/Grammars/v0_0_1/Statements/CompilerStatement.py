@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassCompilerStatement.py
+# |  CompilerStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-09-03 09:54:46
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ClassCompilerStatement object"""
+"""Contains the CompilerStatement object"""
 
 import os
 
@@ -36,8 +36,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-# TODO: Rename 'CompilerStatement'
-class ClassCompilerStatement(MultilineStatementBase):
+class CompilerStatement(MultilineStatementBase):
     """\
     A statement that contains instructions used during the complication process.
 
@@ -46,11 +45,11 @@ class ClassCompilerStatement(MultilineStatementBase):
     '!!!>>>'
     """
 
-    PHRASE_NAME                             = "Class Compiler Statement"
+    PHRASE_NAME                             = "Compiler Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(ClassCompilerStatement, self).__init__(
+        super(CompilerStatement, self).__init__(
             self.PHRASE_NAME,
             "<<<!!!",
             "!!!>>>",

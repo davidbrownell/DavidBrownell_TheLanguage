@@ -29,7 +29,7 @@ Children:
               1
             IterBegin: "[1, 1] (0)"
             IterEnd: "[7, 1] (28)"
-            Type: "Class Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+            Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
         IterBegin: "[1, 1] (0)"
         IterEnd: "[7, 1] (28)"
         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
@@ -150,7 +150,7 @@ Children:
                                             **2**
                                         IterBegin: "[8, 5] (41)"
                                         IterEnd: "[15, 1] (105)"
-                                        Type: "Class Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                        Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                     IterBegin: "[8, 5] (41)"
                                     IterEnd: "[15, 1] (105)"
                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
@@ -216,7 +216,7 @@ Children:
               more.
             IterBegin: "[15, 1] (105)"
             IterEnd: "[21, 1] (145)"
-            Type: "Class Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+            Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
         IterBegin: "[15, 1] (105)"
         IterEnd: "[21, 1] (145)"
         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"

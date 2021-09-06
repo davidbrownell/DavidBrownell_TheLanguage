@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassCompilerStatement_IntegrationTest.py
+# |  CompilerStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-09-03 11:41:52
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for ClassCompilerStatement.py"""
+"""Automated test for CompilerStatement.py"""
 
 import os
 import textwrap
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ClassCompilerStatement import *
+    from ..CompilerStatement import *
     from ...Common.AutomatedTests import Execute
 
     from ...Common.Impl.MultilineStatementBase import (
