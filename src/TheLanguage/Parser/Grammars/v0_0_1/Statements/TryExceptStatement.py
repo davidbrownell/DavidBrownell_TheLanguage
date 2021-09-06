@@ -103,7 +103,7 @@ class TryExceptStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     def __init__(self):
-        # TODO: Single line statement
+        # TODO2: Support single-line statement
         statements_item = PhraseItem(
             name="Statements",
             item=DynamicPhrasesType.Statements,

@@ -73,7 +73,6 @@ class MultipleBasesError(ValidationError):
 
 # ----------------------------------------------------------------------
 # TODO: Add modifier to control what can be in class ("mutable", "immutable")
-# TODO: Single-line statement
 class ClassStatement(GrammarPhrase):
     """\
     Statement that creates a class.
@@ -291,6 +290,7 @@ class ClassStatement(GrammarPhrase):
                     CommonTokens.Newline,
                     CommonTokens.Indent,
 
+                    # TODO2: Support single-line statement
                     # <statement>+
                     PhraseItem(
                         name="Statements",

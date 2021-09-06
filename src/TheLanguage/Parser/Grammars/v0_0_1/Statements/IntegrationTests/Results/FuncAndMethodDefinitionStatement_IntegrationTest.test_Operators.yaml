@@ -167,7 +167,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[2, 30] (42)"
                                 IterEnd: "[3, 1] (43)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -292,7 +292,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[3, 32] (74)"
                                 IterEnd: "[4, 1] (75)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -417,7 +417,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[4, 28] (102)"
                                 IterEnd: "[5, 1] (103)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -542,7 +542,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[5, 29] (131)"
                                 IterEnd: "[6, 1] (132)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -667,7 +667,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[6, 33] (164)"
                                 IterEnd: "[8, 1] (166)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -792,7 +792,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[8, 28] (193)"
                                 IterEnd: "[9, 1] (194)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -917,7 +917,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[9, 32] (225)"
                                 IterEnd: "[11, 1] (227)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -1042,7 +1042,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[11, 36] (262)"
                                 IterEnd: "[12, 1] (263)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -1167,7 +1167,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[12, 28] (290)"
                                 IterEnd: "[13, 1] (291)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -1292,7 +1292,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[13, 28] (318)"
                                 IterEnd: "[14, 1] (319)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -1417,7 +1417,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[14, 29] (347)"
                                 IterEnd: "[16, 1] (349)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -1542,7 +1542,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[16, 32] (380)"
                                 IterEnd: "[17, 1] (381)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -1667,7 +1667,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[17, 30] (410)"
                                 IterEnd: "[18, 1] (411)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -1792,7 +1792,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[18, 28] (438)"
                                 IterEnd: "[19, 1] (439)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -1917,7 +1917,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[19, 29] (467)"
                                 IterEnd: "[21, 1] (469)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -2042,7 +2042,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[21, 31] (499)"
                                 IterEnd: "[22, 1] (500)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -2167,7 +2167,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[22, 29] (528)"
                                 IterEnd: "[23, 1] (529)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -2292,7 +2292,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[23, 32] (560)"
                                 IterEnd: "[24, 1] (561)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -2417,7 +2417,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[24, 28] (588)"
                                 IterEnd: "[25, 1] (589)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -2542,7 +2542,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[25, 33] (621)"
                                 IterEnd: "[26, 1] (622)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -2667,7 +2667,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[26, 31] (652)"
                                 IterEnd: "[27, 1] (653)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -2792,7 +2792,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[27, 36] (688)"
                                 IterEnd: "[29, 1] (690)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -2917,7 +2917,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[29, 27] (716)"
                                 IterEnd: "[30, 1] (717)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -3042,7 +3042,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[30, 26] (742)"
                                 IterEnd: "[31, 1] (743)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -3167,7 +3167,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[31, 27] (769)"
                                 IterEnd: "[33, 1] (771)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -3292,7 +3292,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[33, 27] (797)"
                                 IterEnd: "[34, 1] (798)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -3417,7 +3417,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[34, 32] (829)"
                                 IterEnd: "[35, 1] (830)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -3542,7 +3542,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[35, 32] (861)"
                                 IterEnd: "[36, 1] (862)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -3667,7 +3667,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[36, 30] (891)"
                                 IterEnd: "[37, 1] (892)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -3792,7 +3792,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[37, 35] (926)"
                                 IterEnd: "[38, 1] (927)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -3917,7 +3917,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[38, 29] (955)"
                                 IterEnd: "[39, 1] (956)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -4042,7 +4042,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[39, 27] (982)"
                                 IterEnd: "[40, 1] (983)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -4167,7 +4167,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[40, 32] (1014)"
                                 IterEnd: "[41, 1] (1015)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -4292,7 +4292,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[41, 32] (1046)"
                                 IterEnd: "[43, 1] (1048)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -4417,7 +4417,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[43, 34] (1081)"
                                 IterEnd: "[44, 1] (1082)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -4542,7 +4542,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[44, 39] (1120)"
                                 IterEnd: "[45, 1] (1121)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -4667,7 +4667,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[45, 39] (1159)"
                                 IterEnd: "[46, 1] (1160)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -4792,7 +4792,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[46, 37] (1196)"
                                 IterEnd: "[47, 1] (1197)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -4917,7 +4917,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[47, 42] (1238)"
                                 IterEnd: "[48, 1] (1239)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -5042,7 +5042,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[48, 36] (1274)"
                                 IterEnd: "[49, 1] (1275)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -5167,7 +5167,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[49, 34] (1308)"
                                 IterEnd: "[51, 1] (1310)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -5292,7 +5292,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[51, 33] (1342)"
                                 IterEnd: "[52, 1] (1343)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -5417,7 +5417,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[52, 34] (1376)"
                                 IterEnd: "[53, 1] (1377)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -5542,7 +5542,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[53, 30] (1406)"
                                 IterEnd: "[54, 1] (1407)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -5667,7 +5667,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[54, 29] (1435)"
                                 IterEnd: "[55, 1] (1436)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -5792,7 +5792,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[55, 30] (1465)"
                                 IterEnd: "[56, 1] (1466)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -5917,7 +5917,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[56, 31] (1496)"
                                 IterEnd: "[58, 1] (1498)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -6042,7 +6042,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[58, 40] (1537)"
                                 IterEnd: "[59, 1] (1538)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -6167,7 +6167,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[59, 41] (1578)"
                                 IterEnd: "[60, 1] (1579)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -6292,7 +6292,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[60, 37] (1615)"
                                 IterEnd: "[61, 1] (1616)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -6417,7 +6417,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[61, 36] (1651)"
                                 IterEnd: "[62, 1] (1652)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -6542,7 +6542,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[62, 37] (1688)"
                                 IterEnd: "[63, 1] (1689)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False

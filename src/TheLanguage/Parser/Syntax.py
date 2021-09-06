@@ -76,6 +76,7 @@ class SyntaxInvalidVersionError(Error):
 def _CreateSyntaxStatements():
     version_token = RegexToken("<semantic_version>", re.compile(r"(?P<value>[a-zA-Z0-9_\-\.]+)\b"))
 
+    # TODO2: Support single-line statement
     statements_phrase = PhraseItem(
         DynamicPhrasesType.Statements,
         arity="+",

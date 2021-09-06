@@ -187,7 +187,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[2, 47] (59)"
                                 IterEnd: "[3, 1] (60)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -332,7 +332,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[3, 54] (113)"
                                 IterEnd: "[4, 1] (114)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False
@@ -477,7 +477,7 @@ Children:
                                     Whitespace: None
                                 IterBegin: "[4, 50] (163)"
                                 IterEnd: "[5, 1] (164)"
-                                Type: "Or: (Multi-line Definition, Single-line Definition, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                               ClassModifier: "ClassModifier.immutable"
                               IsFunction: False

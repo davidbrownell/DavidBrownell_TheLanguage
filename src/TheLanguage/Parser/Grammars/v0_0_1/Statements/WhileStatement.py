@@ -68,6 +68,7 @@ class WhileStatement(GrammarPhrase):
                     CommonTokens.Newline,
                     CommonTokens.Indent,
 
+                    # TODO2: Support single-line statement
                     # <statement>+
                     PhraseItem(
                         name="Statements",
