@@ -33,7 +33,7 @@ Children:
               of this content.
             IterBegin: "[1, 1] (0)"
             IterEnd: "[10, 1] (59)"
-            Type: "Class Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+            Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
         IterBegin: "[1, 1] (0)"
         IterEnd: "[10, 1] (59)"
         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
