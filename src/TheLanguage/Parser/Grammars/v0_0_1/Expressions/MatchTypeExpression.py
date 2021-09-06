@@ -40,7 +40,7 @@ class MatchTypeExpression(MatchExpressionBase):
         match type Add(1, 2):
             case Int: match_value
             case String: ConvertToInt(match_value)
-            default: throw UnexpectedType(match_type)
+            default: raise UnexpectedType(match_type)
     """
 
     PHRASE_NAME                             = "Match Type Expression"

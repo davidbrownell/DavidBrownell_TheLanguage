@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,15 +30,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .. import ArgumentsPhraseItem
     from .. import Tokens as CommonTokens
+
     from ....GrammarPhrase import GrammarPhrase
 
     from .....Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractSequence,
+        ExtractToken,
+        Leaf,
         Node,
-        PhraseItem,
     )
 
 
@@ -47,7 +49,7 @@ class FuncInvocationBase(GrammarPhrase):
     """\
     Base class for function invocations.
 
-    <generic_name> '(' (<argument> (',' <argument>)* ','?)? ')'
+    <generic_name> <<Arguments>> <function_name> <function_args>
 
     Examples:
         Func1()
@@ -62,64 +64,11 @@ class FuncInvocationBase(GrammarPhrase):
         phrase_name: str,
         grammar_phrase_type: GrammarPhrase.Type,
     ):
-        argument = PhraseItem(
-            name="Argument",
-            item=(
-                # <name> '=' <expr>
-                PhraseItem(
-                    name="Keyword",
-                    item=[
-                        DynamicPhrasesType.Names,
-                        "=",
-                        DynamicPhrasesType.Expressions,
-                    ],
-                ),
-
-                # <expr>
-                PhraseItem(
-                    name="Standard",
-                    item=DynamicPhrasesType.Expressions,
-                ),
-            ),
-        )
-
         phrase_items = [
             # <generic_name>
             CommonTokens.GenericName,
 
-            # '('
-            "(",
-            CommonTokens.PushIgnoreWhitespaceControl,
-
-            # (<argument> (',' <argument>)* ','?)?
-            PhraseItem(
-                name="Arguments",
-                item=[
-                    # <argument>
-                    argument,
-
-                    # (',' <argument>)*
-                    PhraseItem(
-                        name="Comma and Argument",
-                        item=[
-                            ",",
-                            argument,
-                        ],
-                        arity="*",
-                    ),
-
-                    PhraseItem(
-                        name="Trailing Comma",
-                        item=",",
-                        arity="?",
-                    ),
-                ],
-                arity="?",
-            ),
-
-            # ')'
-            CommonTokens.PopIgnoreWhitespaceControl,
-            ")",
+            ArgumentsPhraseItem.Create(),
 
             # TODO: Chained calls
         ]
@@ -142,9 +91,11 @@ class FuncInvocationBase(GrammarPhrase):
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         nodes = ExtractSequence(node)
-        assert len(nodes) in [6, 7]
+        assert len(nodes) in [2, 3], nodes
 
+        # Func Name
+        leaf = cast(Leaf, nodes[0])
+        name = cast(str, ExtractToken(leaf))
 
-
-        # TODO: Validate keyword arguments are VariableName phrases
-        # TODO: Validate no positional params after keyword params
+        # Arguments
+        arguments = ArgumentsPhraseItem.Extract(cast(Node, nodes[1]))

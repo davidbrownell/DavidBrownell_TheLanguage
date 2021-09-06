@@ -38,6 +38,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import ValidationError
     from ....Phrases.DSL import (
         DynamicPhrasesType,
+        ExtractOptional,
         ExtractOr,
         ExtractRepeat,
         ExtractSequence,
@@ -148,7 +149,7 @@ class TraditionalDelimiterKeywordError(ValidationError):
 
 
 # ----------------------------------------------------------------------
-def Create():
+def Create() -> PhraseItem:
     """\
     '(' <parameters>? ')'
     """
@@ -294,9 +295,15 @@ def Extract(
     parameters_dict = {}
 
     if nodes[2] is not None:
-        node = cast(Node, nodes[2])
-        node = cast(Node, ExtractRepeat(node))          # Drill into the repeat node
-        node = cast(Node, ExtractOr(node))              # Drill into the or node
+        node = cast(
+            Node,
+            ExtractOr(
+                cast(
+                    Node,
+                    ExtractOptional(cast(Node, nodes[2])),
+                ),
+            ),
+        )
 
         assert node.Type
 
@@ -334,7 +341,12 @@ def _EnumTraditional(
     for parameter_node_index, parameter_node in enumerate(
         itertools.chain(
             [nodes[0]],
-            [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Node, nodes[1])))],
+            [
+                ExtractSequence(node)[1] for node in cast(
+                    List[Node],
+                    ExtractRepeat(cast(Node, nodes[1])),
+                )
+            ],
         ),
     ):
         # Drill into the or node

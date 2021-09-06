@@ -50,7 +50,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidDynamicTraversalError(Error):
-    """Exception thrown when dynamic phrases that prohibit parent traversal are applied over other dynamic phrases"""
+    """Exception raised when dynamic phrases that prohibit parent traversal are applied over other dynamic phrases"""
 
     ExistingDynamicPhrases: Phrase.NormalizedIterator
 
@@ -62,7 +62,7 @@ class InvalidDynamicTraversalError(Error):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class SyntaxInvalidError(Error):
-    """Exception thrown when no matching phrases were found"""
+    """Exception raised when no matching phrases were found"""
 
     iter_begin: InitVar[Phrase.NormalizedIterator]
 
@@ -334,10 +334,6 @@ async def ParseAsync(
             )
 
         normalized_iter = result.IterEnd.Clone()
-
-        # TODO: Eat trailing comments (here or in SequencePhrase.py?)
-        # TODO: What happens to file that starts with newlines?
-        # TODO: Handle empty file
 
     FinalInit()
 
