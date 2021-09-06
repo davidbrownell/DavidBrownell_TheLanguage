@@ -42,7 +42,6 @@ with InitRelativeImports():
     from ...GrammarPhrase import GrammarPhrase, ValidationError
     from ....Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractOptional,
         ExtractOr,
         ExtractRepeat,

@@ -31,8 +31,6 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common.TypeModifier import TypeModifier
 
-    from ..Names.TupleName import TupleName
-
     from ...GrammarPhrase import GrammarPhrase
     from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
