@@ -36,6 +36,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+# TODO: Rename 'CompilerStatement'
 class ClassCompilerStatement(MultilineStatementBase):
     """\
     A statement that contains instructions used during the complication process.

@@ -76,7 +76,11 @@ class SyntaxInvalidVersionError(Error):
 def _CreateSyntaxStatements():
     version_token = RegexToken("<semantic_version>", re.compile(r"(?P<value>[a-zA-Z0-9_\-\.]+)\b"))
 
-    # TODO2: Support single-line statement
+    # Note that with phrases in grammars, we have the option of a multi-line phrases and
+    # a single-line phrase. Unfortunately, we can't do that here as we are relying on
+    # the indent events to invoke functionality as these phrases are so fundamental
+    # to the way in which grammars are consumed.
+
     statements_phrase = PhraseItem(
         DynamicPhrasesType.Statements,
         arity="+",
