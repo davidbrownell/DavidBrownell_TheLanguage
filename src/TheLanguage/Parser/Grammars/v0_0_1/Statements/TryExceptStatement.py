@@ -31,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase
 
@@ -103,12 +104,7 @@ class TryExceptStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     def __init__(self):
-        # TODO2: Support single-line statement
-        statements_item = PhraseItem(
-            name="Statements",
-            item=DynamicPhrasesType.Statements,
-            arity="+",
-        )
+        statements_item = StatementsPhraseItem.Create()
 
         super(TryExceptStatement, self).__init__(
             GrammarPhrase.Type.Statement,
@@ -118,11 +114,7 @@ class TryExceptStatement(GrammarPhrase):
                     # 'try' ':'
                     #     <statement>+
                     "try",
-                    ":",
-                    CommonTokens.Newline,
-                    CommonTokens.Indent,
                     statements_item,
-                    CommonTokens.Dedent,
 
                     # (
                     #     'except' <type> <name> ':'
@@ -134,11 +126,7 @@ class TryExceptStatement(GrammarPhrase):
                             "except",
                             DynamicPhrasesType.Types,
                             DynamicPhrasesType.Names,
-                            ":",
-                            CommonTokens.Newline,
-                            CommonTokens.Indent,
                             statements_item,
-                            CommonTokens.Dedent,
                         ],
                         arity="*",
                     ),
@@ -151,11 +139,7 @@ class TryExceptStatement(GrammarPhrase):
                         name="Except",
                         item=[
                             "except",
-                            ":",
-                            CommonTokens.Newline,
-                            CommonTokens.Indent,
                             statements_item,
-                            CommonTokens.Dedent,
                         ],
                         arity="?",
                     ),
