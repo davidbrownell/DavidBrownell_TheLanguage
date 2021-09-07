@@ -18,9 +18,9 @@
 import os
 
 from enum import auto, Enum
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields, _PARAMS as DATACLASS_PARAMS
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -111,13 +111,47 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class NodeInfo(YamlRepr.ObjectReprImplBase):
+        TokenLookup: Dict[str, Union[Leaf, Node, None]]
 
         # ----------------------------------------------------------------------
         def __post_init__(
             self,
             **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
         ):
-            YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
+            # Validate the the parent class has been created correctly
+            assert hasattr(self, DATACLASS_PARAMS) and not getattr(self, DATACLASS_PARAMS).repr, "Derived classes must be dataclasses with 'repr' set to False"
+
+            # Ensure that everything that needs to have an entry in TokenLookup has one
+            for field in fields(self):
+                if field.name == "TokenLookup":
+                    continue
+
+                if field.type == Any:
+                    continue
+
+                value = getattr(self, field.name)
+                if value is None:
+                    continue
+
+                if isinstance(value, list):
+                    if value:
+                        assert isinstance(value[0], (Node, GrammarPhrase.NodeInfo)), (field.name, field.type, value)
+
+                    continue
+
+                if isinstance(value, (Node, GrammarPhrase.NodeInfo)):
+                    continue
+
+                assert field.name in self.TokenLookup, ("Missing item in TokenLookup", field)
+
+            for k, v in self.TokenLookup.items():
+                assert v is not None, k
+
+            YamlRepr.ObjectReprImplBase.__init__(
+                self,
+                TokenLookup=None,
+                **custom_display_funcs,
+            )
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
