@@ -69,8 +69,6 @@ class FuncInvocationBase(GrammarPhrase):
             CommonTokens.GenericName,
 
             ArgumentsPhraseItem.Create(),
-
-            # TODO: Chained calls
         ]
 
         if grammar_phrase_type == GrammarPhrase.Type.Statement:
