@@ -217,6 +217,8 @@ class ClassStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
+                    # TODO: Attributes
+
                     # <visibility>? (class)
                     PhraseItem(
                         name="Visibility",

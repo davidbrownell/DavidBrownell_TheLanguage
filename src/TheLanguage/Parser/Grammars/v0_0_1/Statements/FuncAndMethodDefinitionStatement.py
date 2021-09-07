@@ -252,6 +252,8 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
+                    # TODO: Attributes
+
                     # <visibility>?
                     PhraseItem(
                         name="Visibility",
