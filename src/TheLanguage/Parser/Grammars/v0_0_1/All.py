@@ -45,7 +45,7 @@ with InitRelativeImports():
     from .Names.VariableName import VariableName
 
     from .Statements.BinaryStatement import BinaryStatement
-    from .Statements.ClassAttributeStatement import ClassAttributeStatement
+    from .Statements.ClassMemberStatement import ClassMemberStatement
     from .Statements.ClassStatement import ClassStatement
     from .Statements.CompilerStatement import CompilerStatement
     from .Statements.DeleteStatement import DeleteStatement
@@ -94,7 +94,7 @@ GrammarPhrases                              = [
 
     # Statements
     BinaryStatement(),
-    ClassAttributeStatement(),
+    ClassMemberStatement(),
     ClassStatement(),
     CompilerStatement(),
     DeleteStatement(),

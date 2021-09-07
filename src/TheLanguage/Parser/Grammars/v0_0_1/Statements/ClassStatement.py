@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto
-from typing import cast, List, Optional, Union
+from typing import Any, cast, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -34,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common import AttributesPhraseItem
     from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
     from ..Common.Impl.ModifierBase import CreateModifierBaseClass, ModifierBase
@@ -77,7 +78,7 @@ class ClassStatement(GrammarPhrase):
     """\
     Statement that creates a class.
 
-    <visibility>? 'class'|'interface'|'mixin'|'enum'|'exception' <name>
+    <attributes>? <visibility>? 'class'|'interface'|'mixin'|'enum'|'exception' <name>
         '(' (<base_visibility>? <name>)? ')'
             ('implements'|'uses' <name> (',' <name>)* ','?)){2}
     ':'
@@ -148,9 +149,10 @@ class ClassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class NodeInfo(GrammarPhrase.NodeInfo):
+        Attributes: Any # Defined in AttributesPhraseItem.py
+        Visibility: VisibilityModifier
         Type: "ClassStatement.ClassType"
         Name: str
-        Visibility: VisibilityModifier
         Base: Optional["ClassStatement.BaseInfo"]
         Interfaces: List["ClassStatement.BaseInfo"]
         Mixins: List["ClassStatement.BaseInfo"]
@@ -217,6 +219,9 @@ class ClassStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
+                    # <attributes>?
+                    AttributesPhraseItem.Create(),
+
                     # <visibility>? (class)
                     PhraseItem(
                         name="Visibility",
@@ -297,44 +302,46 @@ class ClassStatement(GrammarPhrase):
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         nodes = ExtractSequence(node)
-        assert len(nodes) == 12
+        assert len(nodes) == 13, nodes
+
+        attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
 
         # Get the class type before the visibility, as the class type will impact the default value
         # applied for the visibility if one wasn't explicitly specified.
 
         # Class type
-        class_type = cls.ClassType.Extract(cast(Node, nodes[1]))
+        class_type = cls.ClassType.Extract(cast(Node, nodes[2]))
 
         # Validate the visibility modifier
-        if nodes[0] is None:
+        if nodes[1] is None:
             if class_type == cls.ClassType.Exception:
                 class_visibility = VisibilityModifier.public
             else:
                 class_visibility = VisibilityModifier.private
         else:
             class_visibility = VisibilityModifier.Extract(
-                cast(Node, ExtractOptional(cast(Node, nodes[0]))),
+                cast(Node, ExtractOptional(cast(Node, nodes[1]))),
             )
 
         # Class name
-        class_name = cast(str, ExtractToken(cast(Leaf, nodes[2])))
+        class_name = cast(str, ExtractToken(cast(Leaf, nodes[3])))
 
         # Base info
-        if nodes[5] is None:
+        if nodes[6] is None:
             base_info = None
         else:
-            base_infos = cls._ExtractBaseInfo(cast(Node, ExtractOptional(cast(Node, nodes[5]))))
+            base_infos = cls._ExtractBaseInfo(cast(Node, ExtractOptional(cast(Node, nodes[6]))))
             assert base_infos
 
             if len(base_infos) > 1:
-                raise MultipleBasesError.FromNode(cast(Node, nodes[5]))
+                raise MultipleBasesError.FromNode(cast(Node, nodes[6]))
 
             base_info = base_infos[0]
 
         # Interfaces and mixins
         interfaces_and_mixins = {}
 
-        for base_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[9]))):
+        for base_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[10]))):
             base_nodes = ExtractSequence(base_node)
             assert len(base_nodes) == 2
 
@@ -355,7 +362,7 @@ class ClassStatement(GrammarPhrase):
             interfaces_and_mixins[base_type] = cls._ExtractBaseInfo(cast(Node, base_node_items))
 
         # Statements
-        statements = StatementsPhraseItem.Extract(cast(Node, nodes[11]))
+        statements = StatementsPhraseItem.Extract(cast(Node, nodes[12]))
 
         # Commit the results
         object.__setattr__(
@@ -363,9 +370,10 @@ class ClassStatement(GrammarPhrase):
             "Info",
             # pylint: disable=too-many-function-args
             cls.NodeInfo(
+                attributes,
+                class_visibility,  # type: ignore
                 class_type,
                 class_name,
-                class_visibility,  # type: ignore
                 base_info,
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, []),
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, []),
