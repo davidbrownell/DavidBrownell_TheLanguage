@@ -650,7 +650,7 @@ Children:
               Modifier: None
               Name: "DefaultClass"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[11, 1] (195)"
             IterEnd: "[14, 1] (227)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -970,7 +970,7 @@ Children:
               Modifier: None
               Name: "DefaultException"
               Type: "ClassType.Exception"
-              Visibility: "VisibilityModifier.public"
+              Visibility: None
             IterBegin: "[18, 1] (346)"
             IterEnd: "[21, 1] (386)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

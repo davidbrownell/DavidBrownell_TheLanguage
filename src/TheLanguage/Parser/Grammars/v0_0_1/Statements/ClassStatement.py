@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto
-from typing import Any, cast, List, Optional, Union
+from typing import Any, cast, List, Optional
 
 from dataclasses import dataclass
 
@@ -143,23 +143,21 @@ class ClassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class BaseInfo(GrammarPhrase.NodeInfo):
-        Visibility: VisibilityModifier
+        Visibility: Optional[VisibilityModifier]
         Name: str
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class NodeInfo(GrammarPhrase.NodeInfo):
-        Attributes: Any # Defined in AttributesPhraseItem.py
-        Visibility: VisibilityModifier
+        Attributes: Any                                 # Defined in AttributesPhraseItem.py
+        Visibility: Optional[VisibilityModifier]
         Modifier: Optional[ClassModifier]
         Type: "ClassStatement.ClassType"
         Name: str
         Base: Optional["ClassStatement.BaseInfo"]
         Interfaces: List["ClassStatement.BaseInfo"]
         Mixins: List["ClassStatement.BaseInfo"]
-        Statements: List[Union[Leaf, Node]]
-
-        # TODO: Need to store leaf info for all of this
+        Statements: Any                                 # Defined in StatementsPhraseItem.py
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
@@ -230,7 +228,7 @@ class ClassStatement(GrammarPhrase):
                         arity="?",
                     ),
 
-                    # <class_type>?
+                    # <class_modifier>?
                     PhraseItem(
                         name="Class Modifier",
                         item=ClassModifier.CreatePhraseItem(),
@@ -310,51 +308,56 @@ class ClassStatement(GrammarPhrase):
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         nodes = ExtractSequence(node)
-        assert len(nodes) == 14, nodes
+        assert len(nodes) == 14
 
+        token_lookup = {}
+
+        # <attributes>?
         attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
 
-        # Get the class type before the visibility, as the class type will impact the default value
-        # applied for the visibility if one wasn't explicitly specified.
+        # <visibility>?
+        visibility_node = cast(Optional[Node], nodes[1])
 
-        # Class type
-        class_type = cls.ClassType.Extract(cast(Node, nodes[3]))
-
-        # Visibility
-        if nodes[1] is None:
-            if class_type == cls.ClassType.Exception:
-                class_visibility = VisibilityModifier.public
-            else:
-                class_visibility = VisibilityModifier.private
+        if visibility_node is not None:
+            visibility = VisibilityModifier.Extract(ExtractOptional(visibility_node))
+            token_lookup["Visibility"] = visibility_node
         else:
-            class_visibility = VisibilityModifier.Extract(
-                cast(Node, ExtractOptional(cast(Node, nodes[1]))),
-            )
+            visibility = None
 
-        # Modifier
-        if nodes[2] is None:
+        # <class_modifier>?
+        class_modifier_node = cast(Optional[Node], nodes[2])
+
+        if class_modifier_node is not None:
+            class_modifier = ClassModifier.Extract(ExtractOptional(class_modifier_node))
+            token_lookup["Modifier"] = class_modifier_node
+        else:
             class_modifier = None
-        else:
-            class_modifier = ClassModifier.Extract(
-                cast(Node, ExtractOptional(cast(Node, nodes[2]))),
-            )
 
-        # Class name
-        class_name = cast(str, ExtractToken(cast(Leaf, nodes[4])))
+        # <class_type>
+        class_type_node = cast(Node, nodes[3])
+        class_type = cls.ClassType.Extract(class_type_node)
+        token_lookup["Type"] = class_type_node
 
-        # Base info
-        if nodes[7] is None:
+        # <name>
+        class_name_leaf = cast(Leaf, nodes[4])
+        class_name = cast(str, ExtractToken(class_name_leaf))
+        token_lookup["Name"] = class_name_leaf
+
+        # Base Info
+        base_info_node = cast(Optional[Node], nodes[7])
+
+        if base_info_node is None:
             base_info = None
         else:
-            base_infos = cls._ExtractBaseInfo(cast(Node, ExtractOptional(cast(Node, nodes[7]))))
+            base_infos = cls._ExtractBaseInfo(cast(Node, ExtractOptional(base_info_node)))
             assert base_infos
 
             if len(base_infos) > 1:
-                raise MultipleBasesError.FromNode(cast(Node, nodes[7]))
+                raise MultipleBasesError.FromNode(base_info_node)
 
             base_info = base_infos[0]
 
-        # Interfaces and mixins
+        # Interfaces and Mixins
         interfaces_and_mixins = {}
 
         for base_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[11]))):
@@ -370,7 +373,7 @@ class ClassStatement(GrammarPhrase):
 
             # Items
             base_node_items = cast(Node, ExtractOr(cast(Node, base_nodes[1])))
-            assert base_node_items.Type
+            assert base_node_items.Type is not None
 
             if base_node_items.Type.Name == "Grouped":
                 base_node_items = ExtractSequence(base_node_items)[2]
@@ -380,14 +383,14 @@ class ClassStatement(GrammarPhrase):
         # Statements
         statements = StatementsPhraseItem.Extract(cast(Node, nodes[13]))
 
-        # Commit the results
+        # Commit the data
         object.__setattr__(
             node,
             "Info",
-            # pylint: disable=too-many-function-args
             cls.NodeInfo(
+                token_lookup,
                 attributes,
-                class_visibility,  # type: ignore
+                visibility,
                 class_modifier,
                 class_type,
                 class_name,
@@ -406,11 +409,10 @@ class ClassStatement(GrammarPhrase):
         cls,
         node: Node,
     ) -> List["ClassStatement.BaseInfo"]:
-
-        results = []
-
         nodes = ExtractSequence(node)
         assert len(nodes) == 3
+
+        results: List[ClassStatement.BaseInfo] = []
 
         for base_item in itertools.chain(
             [nodes[0]],
@@ -419,20 +421,30 @@ class ClassStatement(GrammarPhrase):
             base_items = ExtractSequence(cast(Node, base_item))
             assert len(base_items) == 2
 
-            # Visibility
-            if base_items[0] is None:
-                visibility = VisibilityModifier.private
-            else:
-                visibility = VisibilityModifier.Extract(
-                    cast(Node, ExtractOptional(cast(Node, base_items[0]))),
-                )
+            token_lookup = {}
 
-            # Name
-            name = cast(str, ExtractToken(cast(Leaf, base_items[1])))
+            # <visibility>?
+            visibility_node = cast(Optional[Node], base_items[0])
+
+            if visibility_node is not None:
+                visibility = VisibilityModifier.Extract(ExtractOptional(visibility_node))
+                token_lookup["Visibility"] = visibility_node
+            else:
+                visibility = None
+
+            # <name>
+            name_leaf = cast(Leaf, base_items[1])
+            name = cast(str, ExtractToken(name_leaf))
+            token_lookup["Name"] = name_leaf
 
             # Commit the results
-
-            # pylint: disable=too-many-function-args
-            results.append(cls.BaseInfo(visibility, name))  # type: ignore
+            results.append(
+                # <Too many positional arguments> pylint: disable=too-many-function-args
+                cls.BaseInfo(
+                    token_lookup,
+                    visibility,  # type: ignore
+                    name,
+                ),
+            )
 
         return results

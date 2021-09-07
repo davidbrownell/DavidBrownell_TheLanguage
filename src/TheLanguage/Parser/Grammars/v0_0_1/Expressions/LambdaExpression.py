@@ -67,7 +67,7 @@ class LambdaExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class NodeInfo(GrammarPhrase.NodeInfo):
-        Parameters: Any  # Defined in ParametersPhraseItem.py
+        Parameters: Any                     # Defined in ParametersPhraseItem.py
         Expression: Union[Leaf, Node]
 
         # ----------------------------------------------------------------------
@@ -123,6 +123,7 @@ class LambdaExpression(GrammarPhrase):
             node,
             "Info",
             cls.NodeInfo(
+                {},
                 parameters,
                 expression,
             ),

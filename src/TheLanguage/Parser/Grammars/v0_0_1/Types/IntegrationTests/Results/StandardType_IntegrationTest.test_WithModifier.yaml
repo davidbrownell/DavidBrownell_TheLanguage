@@ -175,7 +175,6 @@ Children:
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
               Attributes: []
               ClassModifier: None
-              IsFunction: True
               MethodType: None
               Name: "Func1"
               Parameters: {}
@@ -212,9 +211,7 @@ Children:
                 IterBegin: "[1, 1] (0)"
                 IterEnd: "[1, 8] (7)"
                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-              Statements:
-                - "Pass Statement"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[4, 1] (27)"
             Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -399,7 +396,6 @@ Children:
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
               Attributes: []
               ClassModifier: None
-              IsFunction: True
               MethodType: None
               Name: "Func2"
               Parameters: {}
@@ -436,9 +432,7 @@ Children:
                 IterBegin: "[4, 1] (27)"
                 IterEnd: "[4, 10] (36)"
                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-              Statements:
-                - "Pass Statement"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[4, 1] (27)"
             IterEnd: "[6, 1] (55)"
             Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

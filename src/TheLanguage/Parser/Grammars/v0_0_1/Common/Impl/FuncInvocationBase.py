@@ -88,6 +88,8 @@ class FuncInvocationBase(GrammarPhrase):
     def ValidateSyntax(
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        # TODO: Revisit this
+
         nodes = ExtractSequence(node)
         assert len(nodes) in [2, 3], nodes
 

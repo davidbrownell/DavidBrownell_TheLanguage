@@ -174,6 +174,8 @@ class MultilineStatementBase(GrammarPhrase):
         self,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        # TODO: Revisit this
+
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
