@@ -182,6 +182,7 @@ Children:
                 Visibility: "VisibilityModifier.public"
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "Class1"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -356,6 +357,7 @@ Children:
                 Visibility: "VisibilityModifier.private"
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "Class2"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -561,6 +563,7 @@ Children:
                 Visibility: "VisibilityModifier.protected"
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "Class3"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"

@@ -42,6 +42,7 @@ with InitRelativeImports():
         TraditionalDelimiterKeywordError,
         TraditionalDelimiterOrderError,
         TraditionalDelimiterPositionalError,
+        RequiredParameterAfterDefaultError,
     )
 
 
@@ -889,3 +890,24 @@ def test_StatementsUnexpectedError():
     assert ex.Column == 26
     assert ex.LineEnd == 4
     assert ex.ColumnEnd == 1
+
+
+# ----------------------------------------------------------------------
+def test_RequiredParameterAfterDefaultError():
+    with pytest.raises(RequiredParameterAfterDefaultError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                Int Func(Int a=1, Bool bee):
+                    pass
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "A required parameter may not appear after a parameter with a default value."
+    assert ex.Line == 1
+    assert ex.Column == 19
+    assert ex.LineEnd == 1
+    assert ex.ColumnEnd == 27

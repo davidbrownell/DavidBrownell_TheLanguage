@@ -66,6 +66,10 @@ class BinaryExpression(GrammarPhrase):
                             "in",           # Collection membership
                             "is",           # Object identity
 
+                            # Function Invocation
+                            ".",
+                            "->",
+
                             # Comparison
                             "<",            # Less than
                             "<=",           # Less than or equal to

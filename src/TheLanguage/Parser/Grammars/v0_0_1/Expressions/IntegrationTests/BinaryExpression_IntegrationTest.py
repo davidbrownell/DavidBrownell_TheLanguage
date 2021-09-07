@@ -71,6 +71,26 @@ def test_Comparison():
 
 
 # ----------------------------------------------------------------------
+def test_FunctionInvocation():
+    CompareResultsFromFile(
+        Execute(
+            textwrap.dedent(
+                """\
+                var1 = func1().func2().func3()
+                var2 = func4()->func5()->func6()
+
+                var3 = (
+                    funcA()
+                        .funcB()
+                        .funcC()
+                )
+                """,
+            ),
+        ),
+    )
+
+
+# ----------------------------------------------------------------------
 def test_Mathematical():
     CompareResultsFromFile(
         Execute(
