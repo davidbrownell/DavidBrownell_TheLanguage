@@ -190,6 +190,7 @@ Children:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Mixin1"
                   Visibility: "VisibilityModifier.private"
+              Modifier: None
               Name: "Class1"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -405,6 +406,7 @@ Children:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Mixin2"
                   Visibility: "VisibilityModifier.private"
+              Modifier: None
               Name: "Class2"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -641,6 +643,7 @@ Children:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Mixin3"
                   Visibility: "VisibilityModifier.private"
+              Modifier: None
               Name: "Class3"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -897,6 +900,7 @@ Children:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Mixin4"
                   Visibility: "VisibilityModifier.public"
+              Modifier: None
               Name: "Class4"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"

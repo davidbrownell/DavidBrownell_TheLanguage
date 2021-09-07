@@ -19,12 +19,13 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Dict, Generator, List, Optional, Tuple
+from typing import cast, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,6 +39,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import ValidationError
     from ....Phrases.DSL import (
         DynamicPhrasesType,
+        ExtractDynamic,
         ExtractOptional,
         ExtractOr,
         ExtractRepeat,
@@ -48,7 +50,6 @@ with InitRelativeImports():
         PhraseItem,
     )
 
-# TODO: Validate no args with defaults after any with default
 
 # ----------------------------------------------------------------------
 class ParametersType(Enum):
@@ -146,6 +147,23 @@ class TraditionalDelimiterKeywordError(ValidationError):
             TraditionalParameterType.Keyword,
         ),
     )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class RequiredParameterAfterDefaultError(ValidationError):
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "A required parameter may not appear after a parameter with a default value.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class Parameter(YamlRepr.ObjectReprImplBase):
+    Type: Union[Leaf, Node]
+    IsVarArgs: bool
+    Name: Union[Leaf, Node]
+    Default: Optional[Union[Leaf, Node]]
 
 
 # ----------------------------------------------------------------------
@@ -286,7 +304,7 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: Node,
-) -> Dict[ParametersType, List[Node]]:
+) -> Dict[ParametersType, List[Parameter]]:
 
     # Drill into the parameters node
     nodes = ExtractSequence(node)
@@ -313,7 +331,38 @@ def Extract(
             enum_method = _EnumNewStyle
 
         # Create the info
-        for parameters_type, parameters in enum_method(node):
+        encountered_default = False
+
+        for parameters_type, parameter_nodes in enum_method(node):
+            parameters = []
+
+            for parameter_node in parameter_nodes:
+                parameter_nodes = ExtractSequence(parameter_node)
+                assert len(parameter_nodes) == 4
+
+                parameter_type = ExtractDynamic(cast(Node, parameter_nodes[0]))
+                is_var_args = bool(parameter_nodes[1])
+                parameter_name = ExtractDynamic(cast(Node, parameter_nodes[2]))
+
+                default_node = cast(Optional[Node], parameter_nodes[3])
+
+                if default_node is not None:
+                    encountered_default = True
+
+
+                    default_nodes = ExtractSequence(cast(Node, ExtractOptional(default_node)))
+                    assert len(default_nodes) == 2
+
+                    default_node = ExtractDynamic(cast(Node, default_nodes[1]))
+
+                elif encountered_default:
+                    raise RequiredParameterAfterDefaultError.FromNode(parameter_node)
+
+                parameters.append(
+                    Parameter(parameter_type, is_var_args, parameter_name, default_node),
+                )
+
+            assert parameters
             assert parameters_type not in parameters_dict, parameters_dict
             parameters_dict[parameters_type] = parameters
 

@@ -543,6 +543,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "Foo"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
