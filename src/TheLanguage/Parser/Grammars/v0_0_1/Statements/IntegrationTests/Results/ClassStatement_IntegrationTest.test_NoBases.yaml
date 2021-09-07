@@ -157,6 +157,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PublicClass"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.public"
@@ -326,6 +327,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "ProtectedClass"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.protected"
@@ -495,6 +497,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PrivateClass"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -644,6 +647,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "DefaultClass"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -813,6 +817,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PublicException"
               Type: "ClassType.Exception"
               Visibility: "VisibilityModifier.public"
@@ -962,6 +967,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "DefaultException"
               Type: "ClassType.Exception"
               Visibility: "VisibilityModifier.public"
@@ -1131,6 +1137,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PublicEnum"
               Type: "ClassType.Enum"
               Visibility: "VisibilityModifier.public"
@@ -1300,6 +1307,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "ProtectedInterface"
               Type: "ClassType.Interface"
               Visibility: "VisibilityModifier.protected"
@@ -1469,6 +1477,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PrivateMixin"
               Type: "ClassType.Mixin"
               Visibility: "VisibilityModifier.private"

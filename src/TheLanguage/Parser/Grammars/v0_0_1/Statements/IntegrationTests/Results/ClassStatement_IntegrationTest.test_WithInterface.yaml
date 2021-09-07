@@ -190,6 +190,7 @@ Children:
                   Name: "Interface1"
                   Visibility: "VisibilityModifier.private"
               Mixins: []
+              Modifier: None
               Name: "Class1"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -405,6 +406,7 @@ Children:
                   Name: "Interface2"
                   Visibility: "VisibilityModifier.private"
               Mixins: []
+              Modifier: None
               Name: "Class2"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -605,6 +607,7 @@ Children:
                   Name: "Interface3"
                   Visibility: "VisibilityModifier.private"
               Mixins: []
+              Modifier: None
               Name: "Class3"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -818,6 +821,7 @@ Children:
                   Name: "Interface4"
                   Visibility: "VisibilityModifier.private"
               Mixins: []
+              Modifier: None
               Name: "Class4"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -1038,6 +1042,7 @@ Children:
                   Name: "Interface5"
                   Visibility: "VisibilityModifier.public"
               Mixins: []
+              Modifier: None
               Name: "Class5"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -1261,6 +1266,7 @@ Children:
                   Name: "Interface6"
                   Visibility: "VisibilityModifier.private"
               Mixins: []
+              Modifier: None
               Name: "Class6"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -1495,6 +1501,7 @@ Children:
                   Name: "Interface7"
                   Visibility: "VisibilityModifier.private"
               Mixins: []
+              Modifier: None
               Name: "Class7"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"

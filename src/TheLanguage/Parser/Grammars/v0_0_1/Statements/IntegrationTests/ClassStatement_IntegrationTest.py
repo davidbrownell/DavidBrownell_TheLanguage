@@ -291,7 +291,7 @@ def test_Complex():
                 class Class4(Base4) uses Mixin4, implements Interface4A, Interface4B,:
                     pass
 
-                protected class Class5(Base5)
+                protected immutable class Class5(Base5)
                     implements (
                         Interface5A,
                         Interface5B,
