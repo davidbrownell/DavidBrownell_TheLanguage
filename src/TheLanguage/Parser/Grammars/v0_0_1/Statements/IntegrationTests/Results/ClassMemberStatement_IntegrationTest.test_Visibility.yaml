@@ -509,7 +509,7 @@ Children:
               Modifier: None
               Name: "Foo"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[5, 1] (118)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

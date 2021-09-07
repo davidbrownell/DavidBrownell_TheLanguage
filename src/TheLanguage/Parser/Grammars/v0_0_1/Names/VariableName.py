@@ -45,6 +45,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+# TODO: Is is probably safe to remove this, as CommonTokens.GenericName is now pretty much an exact match for the validation expression
 @dataclass(frozen=True)
 class InvalidVariableNameError(ValidationError):
     Name: str
@@ -90,6 +91,8 @@ class VariableName(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        # TODO: Revisit this
+
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 

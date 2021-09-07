@@ -19,9 +19,8 @@ import itertools
 import os
 import re
 
-from collections import OrderedDict
 from enum import auto, Enum
-from typing import Callable, cast, Dict, List, Optional, Tuple, Union
+from typing import Callable, cast, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -96,22 +95,17 @@ class ImportStatement(ImportGrammarStatement):
         SourceIsDirectory                   = auto()
 
     # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
+    @dataclass(frozen=True, repr=False)
+    class ImportItemInfo(ImportGrammarStatement.NodeInfo):
+        Name: str
+        Alias: Optional[str]
+
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
     class NodeInfo(ImportGrammarStatement.NodeInfo):
         ImportType: "ImportStatement.ImportType"
         SourceFilename: str
-        ImportItems: Dict[str, str]
-        ImportItemsLookup: Dict[int, Leaf]
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            assert self.SourceFilename
-            assert self.ImportItems
-            assert self.ImportItems
-
-            super(ImportStatement.NodeInfo, self).__post_init__(
-                ImportItemsLookup=None,
-            )
+        ImportItems: List["ImportStatement.ImportItemInfo"]
 
     # ----------------------------------------------------------------------
     # |
@@ -229,11 +223,7 @@ class ImportStatement(ImportGrammarStatement):
 
         assert fully_qualified_name
 
-        (
-            raw_source,
-            raw_items,
-            raw_leaf_lookup,
-        ) = self._ExtractRawInfo(node)
+        source, source_leaf, import_items = self._ExtractRawInfo(node)
 
         # We need to get the source and the items to import, however that information depends on
         # context. The content will fall into one of these scenarios:
@@ -246,10 +236,10 @@ class ImportStatement(ImportGrammarStatement):
         working_dir = os.path.dirname(fully_qualified_name)
 
         # The all dots scenario is special
-        if all(char if char == "." else None for char in raw_source):
-            importing_source_parts = [""] * len(raw_source)
+        if all(char if char == "." else None for char in source):
+            importing_source_parts = [""] * len(source)
         else:
-            importing_source_parts = raw_source.split(".")
+            importing_source_parts = source.split(".")
 
         assert importing_source_parts
 
@@ -262,12 +252,10 @@ class ImportStatement(ImportGrammarStatement):
                 potential_importing_root = os.path.dirname(importing_root)
 
                 if potential_importing_root == importing_root:
-                    source_leaf = raw_leaf_lookup[id(raw_source)]
-
                     raise InvalidRelativePathError(
                         source_leaf.IterBegin.Line,
                         source_leaf.IterBegin.Column,
-                        raw_source,
+                        source,
                         working_dir,
                         source_leaf.IterEnd.Line,
                         source_leaf.IterEnd.Column,
@@ -308,8 +296,8 @@ class ImportStatement(ImportGrammarStatement):
         source_filename = FindSource(lambda name: os.path.isdir(os.path.dirname(name)))
         if source_filename is not None:
             import_type = ImportStatement.ImportType.SourceIsModule
-        elif len(raw_items) == 1:
-            potential_module_name = next(iter(raw_items.keys()))
+        elif len(import_items) == 1:
+            potential_module_name = import_items[0].Name
 
             source_filename = FindSource(
                 os.path.isdir,
@@ -320,7 +308,7 @@ class ImportStatement(ImportGrammarStatement):
                 import_type = ImportStatement.ImportType.SourceIsDirectory
 
         if source_filename is None:
-            return TranslationUnitsParserObserver.ImportInfo(raw_source, None)
+            return TranslationUnitsParserObserver.ImportInfo(source, None)
 
         assert import_type is not None
 
@@ -329,14 +317,17 @@ class ImportStatement(ImportGrammarStatement):
             node,
             "Info",
             ImportStatement.NodeInfo(
+                {
+                    "ImportType": node,
+                    "SourceFilename": source_leaf,
+                },
                 import_type,
                 source_filename,
-                raw_items,
-                raw_leaf_lookup,
+                import_items,
             ),
         )
 
-        return TranslationUnitsParserObserver.ImportInfo(raw_source, source_filename)
+        return TranslationUnitsParserObserver.ImportInfo(source, source_filename)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -344,61 +335,62 @@ class ImportStatement(ImportGrammarStatement):
     @staticmethod
     def _ExtractRawInfo(
         node: Node,
-    ) -> Tuple[str, Dict[str, str], Dict[int, Leaf]]:
+    ) -> Tuple[
+        str,                                            # source
+        Leaf,                                           # source leaf
+        List["ImportStatement.ImportItemInfo"],         # import items
+    ]:
 
         nodes = ExtractSequence(node)
         assert len(nodes) == 5
-
-        leaf_lookup: Dict[int, Leaf] = {}
 
         # <source>
         source_leaf = cast(Leaf, nodes[1])
         source = cast(str, ExtractToken(source_leaf))
 
-        leaf_lookup[id(source)] = source_leaf
-
         # Content items
-        items: Dict[str, str] = OrderedDict()
+        content_nodes = cast(Node, ExtractOr(cast(Node, nodes[3])))
+        assert content_nodes.Type
 
-        content_items = ExtractOr(cast(Node, nodes[3]))
-        assert content_items.Type
+        if content_nodes.Type.Name == "Grouped":
+            content_nodes = cast(Node, ExtractSequence(content_nodes)[2])
 
-        if content_items.Type.Name == "Grouped":
-            content_items = ExtractSequence(cast(Node, content_items))
-            assert len(content_items) == 5
+        content_nodes = ExtractSequence(content_nodes)
+        assert len(content_nodes) == 3
 
-            content_items = content_items[2]
+        import_items: List[ImportStatement.ImportItemInfo] = []
 
-        content_items = ExtractSequence(cast(Node, content_items))
-        assert len(content_items) == 3
-
-        for content_item in itertools.chain(
-            [content_items[0]],
-            [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Node, content_items[1])))],
+        for content_item_node in itertools.chain(
+            [content_nodes[0]],
+            [ExtractSequence(content_node)[1] for content_node in cast(List[Node], ExtractRepeat(cast(Node, content_nodes[1])))],
         ):
-            content_nodes = ExtractSequence(cast(Node, content_item))
-            assert len(content_nodes) == 2
+            content_item_nodes = ExtractSequence(cast(Node, content_item_node))
+            assert len(content_item_nodes) == 2
 
-            key_leaf = cast(Leaf, content_nodes[0])
+            content_item_lookup = {}
+
+            key_leaf = cast(Leaf, content_item_nodes[0])
             key = cast(str, ExtractToken(key_leaf))
+            content_item_lookup["Name"] = key_leaf
 
-            as_node = ExtractOptional(cast(Node, content_nodes[1]))
-
-            if as_node is None:
-                value_leaf = key_leaf
-                value = key
-            else:
+            as_node = ExtractOptional(cast(Optional[Node], content_item_nodes[1]))
+            if as_node is not None:
                 as_nodes = ExtractSequence(cast(Node, as_node))
                 assert len(as_nodes) == 2
 
                 value_leaf = cast(Leaf, as_nodes[1])
                 value = cast(str, ExtractToken(value_leaf))
+                content_item_lookup["Alias"] = value_leaf
+            else:
+                value = None
 
-            assert key
-            assert value
+            import_items.append(
+                # pylint: disable=too-many-function-args
+                ImportStatement.ImportItemInfo(
+                    content_item_lookup,
+                    key,
+                    value,
+                ),
+            )
 
-            items[key] = value
-            leaf_lookup[id(key)] = key_leaf
-            leaf_lookup[id(value)] = value_leaf
-
-        return source, items, leaf_lookup
+        return source, source_leaf, import_items

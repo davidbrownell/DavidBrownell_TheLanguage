@@ -360,7 +360,6 @@ Children:
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
               Attributes: []
               ClassModifier: None
-              IsFunction: True
               MethodType: None
               Name: "Func"
               Parameters: {}
@@ -582,9 +581,7 @@ Children:
                 IterBegin: "[1, 1] (0)"
                 IterEnd: "[6, 2] (58)"
                 Type: "Variant Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-              Statements:
-                - "Pass Statement"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[8, 1] (76)"
             Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

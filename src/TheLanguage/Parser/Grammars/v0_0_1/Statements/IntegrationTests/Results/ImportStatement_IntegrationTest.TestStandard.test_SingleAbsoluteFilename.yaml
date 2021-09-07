@@ -85,7 +85,9 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj1: "obj1"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: None
+                  Name: "obj1"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Statements/File1.TheLanguage"
             IterBegin: "[1, 1] (0)"
@@ -207,7 +209,9 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj1: "obj1Decorated"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: "obj1Decorated"
+                  Name: "obj1"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Statements/File1.TheLanguage"
             IterBegin: "[2, 1] (23)"
@@ -304,7 +308,9 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj2: "obj2"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: None
+                  Name: "obj2"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/File2.TheLanguage"
             IterBegin: "[4, 1] (64)"
@@ -426,7 +432,9 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj2: "obj2Decorated"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: "obj2Decorated"
+                  Name: "obj2"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/File2.TheLanguage"
             IterBegin: "[5, 1] (87)"
@@ -523,7 +531,9 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj3: "obj3"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: None
+                  Name: "obj3"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir1/File3.TheLanguage"
             IterBegin: "[7, 1] (128)"
@@ -645,7 +655,9 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj3: "obj3Decorated"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: "obj3Decorated"
+                  Name: "obj3"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir1/File3.TheLanguage"
             IterBegin: "[8, 1] (151)"
@@ -742,7 +754,9 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj4: "obj4"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: None
+                  Name: "obj4"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir1/Dir1/Dir2/File4.TheLanguage"
             IterBegin: "[10, 1] (192)"
@@ -864,7 +878,9 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj4: "obj4Decorated"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: "obj4Decorated"
+                  Name: "obj4"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir1/Dir1/Dir2/File4.TheLanguage"
             IterBegin: "[11, 1] (225)"

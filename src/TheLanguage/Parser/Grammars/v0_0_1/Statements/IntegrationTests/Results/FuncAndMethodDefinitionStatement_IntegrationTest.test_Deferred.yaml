@@ -196,8 +196,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.deferred"
                                           Name: "PublicDeferredMethod"
                                           Parameters: {}
@@ -342,8 +341,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.deferred"
                                           Name: "ProtectedDeferredMethod"
                                           Parameters: {}
@@ -488,8 +486,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.deferred"
                                           Name: "PrivateDeferredMethod"
                                           Parameters: {}
@@ -546,7 +543,7 @@ Children:
               Modifier: None
               Name: "Foo"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[5, 1] (164)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

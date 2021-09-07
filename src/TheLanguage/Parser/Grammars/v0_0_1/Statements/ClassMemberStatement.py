@@ -56,6 +56,7 @@ class ClassMemberStatement(GrammarPhrase):
     PHRASE_NAME                             = "Class Member Statement"
 
     # TODO (Lexer Impl): Potential Attributes: Init, ToStr, Serialize, Equality # <TODO> pylint: disable=W0511
+    # TODO (Lexer Impl): Check validity against class type info
 
     # ----------------------------------------------------------------------
     def __init__(self):
