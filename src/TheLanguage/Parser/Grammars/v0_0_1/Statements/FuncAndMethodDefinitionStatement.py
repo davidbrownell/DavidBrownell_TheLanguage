@@ -35,8 +35,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ClassStatement import ClassStatement
 
+    from ..Common import AttributesPhraseItem
     from ..Common.ClassModifier import ClassModifier
     from ..Common import ParametersPhraseItem
+    from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
     from ..Common.VisibilityModifier import VisibilityModifier
 
@@ -50,7 +52,6 @@ with InitRelativeImports():
         ExtractDynamic,
         ExtractOptional,
         ExtractOr,
-        ExtractRepeat,
         ExtractSequence,
         ExtractToken,
         Leaf,
@@ -213,6 +214,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     @dataclass(frozen=True, repr=False)
     class NodeInfo(GrammarPhrase.NodeInfo):
         IsFunction: bool
+        Attributes: Any # Defined in AttributesPhrseItem.py
         Visibility: VisibilityModifier
         MethodType: Optional["FuncAndMethodDefinitionStatement.MethodType"]
         ReturnType: Union[Leaf, Node]
@@ -252,6 +254,9 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
+                    # <attributes>*
+                    AttributesPhraseItem.Create(),
+
                     # <visibility>?
                     PhraseItem(
                         name="Visibility",
@@ -286,34 +291,8 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                     # - Single-line Definition
                     # - Newline
                     (
-                        # Multi-line Definition
-                        PhraseItem(
-                            name="Multi-line Definition",
-                            item=[
-                                ":",
-                                CommonTokens.Newline,
-                                CommonTokens.Indent,
-
-                                # <statement>+
-                                PhraseItem(
-                                    name="Statements",
-                                    item=DynamicPhrasesType.Statements,
-                                    arity="+",
-                                ),
-
-                                # End
-                                CommonTokens.Dedent,
-                            ],
-                        ),
-
-                        # Single-line Definition
-                        PhraseItem(
-                            name="Single-line Definition",
-                            item=[
-                                ":",
-                                DynamicPhrasesType.Statements,
-                            ],
-                        ),
+                        # Multi-line, Single-line
+                        StatementsPhraseItem.Create(),
 
                         # Newline (no content)
                         CommonTokens.Newline,
@@ -354,33 +333,36 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
         # Extract the info
         nodes = ExtractSequence(node)
-        assert len(nodes) == 7
+        assert len(nodes) == 8, nodes
+
+        # <attributes>*
+        attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
 
         # <visibility>?
-        if nodes[0] is None:
+        if nodes[1] is None:
             visibility = VisibilityModifier.private
         else:
             visibility = VisibilityModifier.Extract(
-                cast(Node, ExtractOptional(cast(Node, nodes[0]))),
+                cast(Node, ExtractOptional(cast(Node, nodes[1]))),
             )
 
         # <method_type>?
-        if nodes[1] is None:
+        if nodes[2] is None:
             if is_function:
                 method_type = None
             else:
                 method_type = self.MethodType.standard
         else:
             if is_function:
-                raise InvalidMethodTypeApplicationError.FromNode(nodes[1])
+                raise InvalidMethodTypeApplicationError.FromNode(nodes[2])
 
-            method_type = self.MethodType.Extract(cast(Node, ExtractOptional(cast(Node, nodes[1]))))
+            method_type = self.MethodType.Extract(cast(Node, ExtractOptional(cast(Node, nodes[2]))))
 
         # <type>
-        return_type = ExtractDynamic(cast(Node, nodes[2]))
+        return_type = ExtractDynamic(cast(Node, nodes[3]))
 
         # <name>
-        method_name_leaf = cast(Leaf, nodes[3])
+        method_name_leaf = cast(Leaf, nodes[4])
         method_name = cast(str, ExtractToken(method_name_leaf))
 
         if method_name.startswith("__") and method_name.endswith("__"):
@@ -393,25 +375,25 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                 raise InvalidOperatorNameError.FromNode(method_name_leaf, method_name)
 
         # <parameters>
-        parameters = ParametersPhraseItem.Extract(cast(Node, nodes[4]))
+        parameters = ParametersPhraseItem.Extract(cast(Node, nodes[5]))
 
         # <class_type>?
-        if nodes[5] is None:
+        if nodes[6] is None:
             if is_function:
                 class_type = None
             else:
                 class_type = ClassModifier.immutable
         else:
             if is_function:
-                raise InvalidClassModifierApplicationFunctionError.FromNode(nodes[5])
+                raise InvalidClassModifierApplicationFunctionError.FromNode(nodes[6])
 
             if method_type == self.MethodType.static:
-                raise InvalidClassModifierApplicationStaticError.FromNode(nodes[5])
+                raise InvalidClassModifierApplicationStaticError.FromNode(nodes[6])
 
-            class_type = ClassModifier.Extract(cast(Node, ExtractOptional(cast(Node, nodes[5]))))
+            class_type = ClassModifier.Extract(cast(Node, ExtractOptional(cast(Node, nodes[6]))))
 
         # Statements
-        statement_node = ExtractOr(cast(Node, nodes[6]))
+        statement_node = ExtractOr(cast(Node, nodes[7]))
 
         if isinstance(statement_node, Leaf):
             if method_type not in (self.MethodType.abstract, self.MethodType.deferred):
@@ -423,32 +405,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             statements = None
 
         else:
-            assert isinstance(statement_node, Node)
-            assert statement_node.Type
-
             if method_type in (self.MethodType.abstract, self.MethodType.deferred):
                 raise StatementsUnexpectedError.FromNode(statement_node)
 
-            statements_nodes = ExtractSequence(statement_node)
-
-            if statement_node.Type.Name == "Multi-line Definition":
-                assert len(statements_nodes) == 5
-
-                statements = [
-                    ExtractDynamic(statement_node)
-                    for statement_node in cast(List[Node], ExtractRepeat(cast(Node, statements_nodes[3])))
-                ]
-
-            elif statement_node.Type.Name == "Single-line Definition":
-                assert len(statements_nodes) == 2
-
-                statements = [
-                    ExtractDynamic(cast(Node, statements_nodes[1])),
-                ]
-
-            else:
-                assert False, statement_node.Type
-
+            statements = StatementsPhraseItem.Extract(statement_node)
             assert statements
 
         # Commit the info
@@ -457,6 +417,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             "Info",
             self.NodeInfo(
                 is_function,
+                attributes,
                 visibility,  # type: ignore
                 method_type,
                 return_type,

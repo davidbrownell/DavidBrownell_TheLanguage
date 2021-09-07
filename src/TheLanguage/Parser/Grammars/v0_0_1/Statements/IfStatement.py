@@ -27,7 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import Tokens as CommonTokens
+    from ..Common import StatementsPhraseItem
     from ...GrammarPhrase import GrammarPhrase
     from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 
@@ -65,11 +65,7 @@ class IfStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        # TODO: Single line statement
-        statements_item = PhraseItem(
-            item=DynamicPhrasesType.Statements,
-            arity="+",
-        )
+        statements_item = StatementsPhraseItem.Create()
 
         super(IfStatement, self).__init__(
             GrammarPhrase.Type.Statement,
@@ -80,11 +76,7 @@ class IfStatement(GrammarPhrase):
                     #     <statement>+
                     "if",
                     DynamicPhrasesType.Expressions,
-                    ":",
-                    CommonTokens.Newline,
-                    CommonTokens.Indent,
                     statements_item,
-                    CommonTokens.Dedent,
 
                     # (
                     #     'elif' <expr> ':'
@@ -95,11 +87,7 @@ class IfStatement(GrammarPhrase):
                         item=[
                             "elif",
                             DynamicPhrasesType.Expressions,
-                            ":",
-                            CommonTokens.Newline,
-                            CommonTokens.Indent,
                             statements_item,
-                            CommonTokens.Dedent,
                         ],
                         arity="*",
                     ),
@@ -112,11 +100,7 @@ class IfStatement(GrammarPhrase):
                         name="Else",
                         item=[
                             "else",
-                            ":",
-                            CommonTokens.Newline,
-                            CommonTokens.Indent,
                             statements_item,
-                            CommonTokens.Dedent,
                         ],
                         arity="?",
                     ),

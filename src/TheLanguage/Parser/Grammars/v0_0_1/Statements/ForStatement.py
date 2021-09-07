@@ -27,9 +27,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import Tokens as CommonTokens
+    from ..Common import StatementsPhraseItem
     from ...GrammarPhrase import GrammarPhrase
-    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+    from ....Phrases.DSL import CreatePhrase, DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
@@ -69,20 +69,8 @@ class ForStatement(GrammarPhrase):
                     # <expr>
                     DynamicPhrasesType.Expressions,
 
-                    # ':'
-                    ":",
-                    CommonTokens.Newline,
-                    CommonTokens.Indent,
-
-                    # <statement>+
-                    PhraseItem(
-                        name="Statements",
-                        item=DynamicPhrasesType.Statements,
-                        arity="+",
-                    ),
-
-                    # End
-                    CommonTokens.Dedent,
+                    # ':' <statement>+
+                    StatementsPhraseItem.Create(),
                 ],
             ),
         )
