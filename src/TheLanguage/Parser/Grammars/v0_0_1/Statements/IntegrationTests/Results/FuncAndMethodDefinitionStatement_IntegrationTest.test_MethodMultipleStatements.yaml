@@ -297,6 +297,7 @@ Children:
                                             IterEnd: "[7, 1] (71)"
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
+                                          Attributes: []
                                           ClassModifier: "ClassModifier.immutable"
                                           IsFunction: False
                                           MethodType: "MethodType.standard"
@@ -350,6 +351,7 @@ Children:
                 IterEnd: "[7, 1] (71)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []

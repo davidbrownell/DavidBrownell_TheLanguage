@@ -253,6 +253,7 @@ Children:
                                             IterEnd: "[5, 5] (60)"
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
+                                          Attributes: []
                                           ClassModifier: "ClassModifier.immutable"
                                           IsFunction: False
                                           MethodType: "MethodType.standard"
@@ -458,6 +459,7 @@ Children:
                                             IterEnd: "[8, 5] (110)"
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
+                                          Attributes: []
                                           ClassModifier: "ClassModifier.immutable"
                                           IsFunction: False
                                           MethodType: "MethodType.standard"
@@ -663,6 +665,7 @@ Children:
                                             IterEnd: "[11, 5] (156)"
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
+                                          Attributes: []
                                           ClassModifier: "ClassModifier.immutable"
                                           IsFunction: False
                                           MethodType: "MethodType.standard"
@@ -848,6 +851,7 @@ Children:
                                             IterEnd: "[13, 1] (191)"
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
+                                          Attributes: []
                                           ClassModifier: "ClassModifier.immutable"
                                           IsFunction: False
                                           MethodType: "MethodType.standard"
@@ -899,6 +903,7 @@ Children:
                 IterEnd: "[13, 1] (191)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []

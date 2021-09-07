@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassAttributeStatement_IntegrationTest.py
+# |  ClassMemberStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-09-02 13:24:18
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for ClassAttributeStatement.py"""
+"""Automated test for ClassMemberStatement.py"""
 
 import os
 import textwrap
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ClassAttributeStatement import *
+    from ..ClassMemberStatement import *
     from ...Common.AutomatedTests import Execute
 
 
@@ -103,8 +103,12 @@ def test_TypeNameClassModifierSingleLineAttribute():
             textwrap.dedent(
                 """\
                 class Foo():
-                    Int value1: +Init
-                    Char var value2: -Serialization
+                    @Member(init=true)
+                    Int value1
+
+                    @Member(init=true)
+                    @Member(serialize=false)
+                    Char var value2
                 """,
             ),
         ),
@@ -118,10 +122,10 @@ def test_TypeNameClassModifierSingleLineAttributes():
             textwrap.dedent(
                 """\
                 class Foo():
-                    Int value1: +Init, -Serialization
-                    Int value2: +Init, -Serialization,
-                    Char var value3: (+Init, -Comparison)
-                    Char var value4: (+Init, -Comparison,)
+                    @Member(init=true) @Member(serialize=false) Int value1
+                    @Member(serialize=false) Int value2
+                    @Member(init=true, comparison=false) Char var value3
+                    @Member(comparison=false) Char var value4
                 """,
             ),
         ),
@@ -135,15 +139,17 @@ def test_TypeNameClassModifierMultiLineAttributes():
             textwrap.dedent(
                 """\
                 class Foo():
-                    Char var value3: (
-                        +Init,
-                        -Comparison,
+                    @Member(
+                        init=true,
+                        comparison=false,
                     )
+                    Char var value3
 
-                    Char var value4: (
-                        +Init,
-                            -Comparison,
+                    @Member(
+                        init=true,
+                            comparison=false,
                     )
+                    Char var value4
                 """,
             ),
         ),
@@ -159,10 +165,7 @@ def test_Visibility():
                 class Foo():
                     private Char value1
                     protected Char var value2 = rhs1
-                    public Char var value3 immutable = rhs2: (
-                        +Init,
-                        -Comparison,
-                    )
+                    public Char var value3 immutable = rhs2
                 """,
             ),
         ),
