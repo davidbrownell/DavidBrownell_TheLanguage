@@ -40,8 +40,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Components.ThreadPool import CreateThreadPool
 
-    from .Grammars.GrammarPhrase import GrammarPhrase, ImportGrammarStatement
-
     # TODO: Consider adding if functionality for targets and configuration similar to the Syntax decorator
     from .Syntax import Observer as SyntaxObserver
 
@@ -54,6 +52,8 @@ with InitRelativeImports():
         Phrase,
         RootNode,
     )
+
+    from ..Grammars.GrammarPhrase import GrammarPhrase, ImportGrammarStatement
 
 
 # ----------------------------------------------------------------------
@@ -116,7 +116,7 @@ def _LoadDynamicPhrasesFromFile(
 
 
 # ----------------------------------------------------------------------
-Grammars[SemVer("0.0.1")]                   = _LoadDynamicPhrasesFromFile(os.path.join(_script_dir, "Grammars", "v0_0_1", "All.py"))
+Grammars[SemVer("0.0.1")]                   = _LoadDynamicPhrasesFromFile(os.path.join(_script_dir, "..", "Grammars", "v0_0_1", "All.py"))
 
 
 # ----------------------------------------------------------------------
