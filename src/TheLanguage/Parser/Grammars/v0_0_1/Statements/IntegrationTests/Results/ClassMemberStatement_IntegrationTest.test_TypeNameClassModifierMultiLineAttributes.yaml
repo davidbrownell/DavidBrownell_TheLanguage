@@ -415,7 +415,7 @@ Children:
                                             Whitespace: None
                                         IterBegin: "[2, 5] (17)"
                                         IterEnd: "[8, 1] (98)"
-                                        Type: "Class Attribute Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                        Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                     IterBegin: "[2, 5] (17)"
                                     IterEnd: "[8, 1] (98)"
                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
@@ -757,7 +757,7 @@ Children:
                                             Whitespace: None
                                         IterBegin: "[8, 5] (102)"
                                         IterEnd: "[13, 1] (186)"
-                                        Type: "Class Attribute Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                        Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                     IterBegin: "[8, 5] (102)"
                                     IterEnd: "[13, 1] (186)"
                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"

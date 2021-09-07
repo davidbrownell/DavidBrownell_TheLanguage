@@ -150,7 +150,7 @@ Children:
                                             Whitespace: None
                                         IterBegin: "[2, 5] (17)"
                                         IterEnd: "[3, 1] (37)"
-                                        Type: "Class Attribute Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                        Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                     IterBegin: "[2, 5] (17)"
                                     IterEnd: "[3, 1] (37)"
                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
@@ -302,7 +302,7 @@ Children:
                                             Whitespace: None
                                         IterBegin: "[3, 5] (41)"
                                         IterEnd: "[4, 1] (74)"
-                                        Type: "Class Attribute Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                        Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                     IterBegin: "[3, 5] (41)"
                                     IterEnd: "[4, 1] (74)"
                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
@@ -474,7 +474,7 @@ Children:
                                             Whitespace: None
                                         IterBegin: "[4, 5] (78)"
                                         IterEnd: "[5, 1] (118)"
-                                        Type: "Class Attribute Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                        Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                     IterBegin: "[4, 5] (78)"
                                     IterEnd: "[5, 1] (118)"
                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"

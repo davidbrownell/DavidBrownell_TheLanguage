@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassAttributeStatement.py
+# |  ClassMemberStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-09-02 12:03:44
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ClassAttributeStatement object"""
+"""Contains the ClassMemberStatement object"""
 
 import os
 
@@ -36,12 +36,11 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-# TODO: Rename to ClassMemberStatement (since Attribute has meaning)
-class ClassAttributeStatement(GrammarPhrase):
+class ClassMemberStatement(GrammarPhrase):
     """\
-    Defines a class attribute.
+    Defines a class member.
 
-    <attributes>? <visibility>? <type> <name> <class_modifier>? ('=' <expr>)? (':' <<Attribute Items>>)?
+    <attributes>? <visibility>? <type> <name> <class_modifier>? ('=' <expr>)?
 
     Examples:
         Int foo
@@ -54,13 +53,13 @@ class ClassAttributeStatement(GrammarPhrase):
         Int var biz immutable = 42
     """
 
-    PHRASE_NAME                             = "Class Attribute Statement"
+    PHRASE_NAME                             = "Class Member Statement"
 
     # TODO (Lexer Impl): Potential Attributes: Init, ToStr, Serialize, Equality # <TODO> pylint: disable=W0511
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(ClassAttributeStatement, self).__init__(
+        super(ClassMemberStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
                 name=self.PHRASE_NAME,

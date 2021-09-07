@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassAttributeStatement_IntegrationTest.py
+# |  ClassMemberStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-09-02 13:24:18
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for ClassAttributeStatement.py"""
+"""Automated test for ClassMemberStatement.py"""
 
 import os
 import textwrap
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ClassAttributeStatement import *
+    from ..ClassMemberStatement import *
     from ...Common.AutomatedTests import Execute
 
 
