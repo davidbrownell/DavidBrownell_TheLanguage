@@ -405,6 +405,7 @@ Children:
                 IterEnd: "[3, 1] (43)"
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
+              Attributes: []
               ClassModifier: None
               IsFunction: True
               MethodType: None
