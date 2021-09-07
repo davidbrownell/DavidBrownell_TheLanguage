@@ -350,6 +350,7 @@ Children:
                 IterEnd: "[7, 1] (71)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []

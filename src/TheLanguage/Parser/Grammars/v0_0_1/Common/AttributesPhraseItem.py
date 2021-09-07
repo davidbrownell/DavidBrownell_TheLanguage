@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, cast, List, Tuple
+from typing import Any, cast, List, Optional, Tuple
 
 import CommonEnvironment
 
@@ -81,7 +81,7 @@ def Create(
 
 # ----------------------------------------------------------------------
 def Extract(
-    node: Node,
+    node: Optional[Node],
 ) -> List[
     Tuple[
         str,                                # Name of function

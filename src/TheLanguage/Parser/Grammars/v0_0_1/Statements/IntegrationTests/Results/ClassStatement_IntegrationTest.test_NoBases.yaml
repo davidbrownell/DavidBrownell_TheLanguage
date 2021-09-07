@@ -153,6 +153,7 @@ Children:
                 IterEnd: "[5, 1] (111)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []
@@ -321,6 +322,7 @@ Children:
                 IterEnd: "[8, 1] (155)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []
@@ -489,6 +491,7 @@ Children:
                 IterEnd: "[11, 1] (195)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []
@@ -637,6 +640,7 @@ Children:
                 IterEnd: "[14, 1] (227)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []
@@ -805,6 +809,7 @@ Children:
                 IterEnd: "[18, 1] (346)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []
@@ -953,6 +958,7 @@ Children:
                 IterEnd: "[21, 1] (386)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []
@@ -1121,6 +1127,7 @@ Children:
                 IterEnd: "[25, 1] (495)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []
@@ -1289,6 +1296,7 @@ Children:
                 IterEnd: "[28, 1] (547)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []
@@ -1457,6 +1465,7 @@ Children:
                 IterEnd: "[30, 1] (586)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
+              Attributes: []
               Base: None
               Interfaces: []
               Mixins: []
