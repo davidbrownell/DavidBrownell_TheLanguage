@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableName_IntegrationTest.py
+# |  VariableNameLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 15:44:30
+# |      2021-09-08 14:30:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,18 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for VariableName.py"""
+"""Contains the VariableNameLexerInfo object"""
 
 import os
-import textwrap
 
-import pytest
-
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -34,18 +29,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..VariableName import *
-    from ...Common.AutomatedTests import Execute
+    from ...LexerInfo import LexerInfo
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                one = value
-                """,
-            ),
-        ),
-    )
+@dataclass(frozen=True, repr=False)
+class VariableNameLexerInfo(LexerInfo):
+    Name: str

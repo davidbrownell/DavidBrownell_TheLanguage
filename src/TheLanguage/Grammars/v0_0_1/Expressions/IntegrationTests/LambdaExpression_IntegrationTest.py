@@ -35,9 +35,6 @@ with InitRelativeImports():
     from ..LambdaExpression import *
     from ...Common.AutomatedTests import Execute
 
-    from ...Names.VariableName import InvalidVariableNameError
-    from ...Types.StandardType import InvalidTypeError
-
 # ----------------------------------------------------------------------
 def test_NoArgs():
     CompareResultsFromFile(
@@ -99,24 +96,3 @@ def test_MultilineArgs():
             ),
         ),
     )
-
-
-# ----------------------------------------------------------------------
-def test_InvalidParameterName():
-    with pytest.raises(InvalidVariableNameError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                var1 = lambda (Int INVALID): value
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "'INVALID' is not a valid variable or parameter name; names must start with a lowercase letter."
-    assert ex.Name == "INVALID"
-    assert ex.Line == 1
-    assert ex.Column == 20
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == ex.Column + len(ex.Name)

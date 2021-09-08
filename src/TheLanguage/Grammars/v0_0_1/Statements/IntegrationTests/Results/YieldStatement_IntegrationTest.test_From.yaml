@@ -53,6 +53,8 @@ Children:
                                             Whitespace:
                                               - 10
                                               - 11
+                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                          Name: "foo"
                                         IterBegin: "[1, 12] (11)"
                                         IterEnd: "[1, 15] (14)"
                                         Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -161,6 +163,8 @@ Children:
                                                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                               Match: "<_sre.SRE_Match object; span=(27, 28), match='a'>"
                                                             Whitespace: None
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                          Name: "a"
                                                         IterBegin: "[2, 13] (27)"
                                                         IterEnd: "[2, 14] (28)"
                                                         Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -206,6 +210,8 @@ Children:
                                                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                       Match: "<_sre.SRE_Match object; span=(29, 30), match='b'>"
                                                                     Whitespace: None
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                  Name: "b"
                                                                 IterBegin: "[2, 15] (29)"
                                                                 IterEnd: "[2, 16] (30)"
                                                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -252,6 +258,8 @@ Children:
                                                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                       Match: "<_sre.SRE_Match object; span=(31, 32), match='c'>"
                                                                     Whitespace: None
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                  Name: "c"
                                                                 IterBegin: "[2, 17] (31)"
                                                                 IterEnd: "[2, 18] (32)"
                                                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

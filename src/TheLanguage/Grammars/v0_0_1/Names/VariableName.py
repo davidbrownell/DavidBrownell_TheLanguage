@@ -18,7 +18,7 @@
 import os
 import re
 
-from typing import cast, Optional
+from typing import cast, Dict, Optional, Union
 
 from dataclasses import dataclass
 
@@ -34,24 +34,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase, ValidationError
+    from ...GrammarPhrase import GrammarPhrase
+
+    from ....Lexer.ParserInterfaces.Names.VariableNameLexerInfo import VariableNameLexerInfo
+
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
         ExtractSequence,
         ExtractToken,
         Leaf,
         Node,
-    )
-
-
-# ----------------------------------------------------------------------
-# TODO: Is is probably safe to remove this, as CommonTokens.GenericName is now pretty much an exact match for the validation expression
-@dataclass(frozen=True)
-class InvalidVariableNameError(ValidationError):
-    Name: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Name}' is not a valid variable or parameter name; names must start with a lowercase letter.",
     )
 
 
@@ -68,7 +60,6 @@ class VariableName(GrammarPhrase):
     """
 
     PHRASE_NAME                             = "Variable Name"
-    VALIDATION_EXPRESSION                   = re.compile(r"^_?[a-z][a-zA-Z0-9_]*(?!<__)$")
 
     # ----------------------------------------------------------------------
     def __init__(self):
@@ -91,13 +82,24 @@ class VariableName(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
-        # TODO: Revisit this
+        token_lookup: Dict[str, Union[Leaf, Node]] = {
+            "self": node,
+        }
 
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
-        leaf = cast(Leaf, nodes[0])
-        name = cast(str, ExtractToken(leaf))
+        name_leaf = cast(Leaf, nodes[0])
+        name = cast(str, ExtractToken(name_leaf))
+        token_lookup["Name"] = name_leaf
 
-        if not cls.VALIDATION_EXPRESSION.match(name):
-            raise InvalidVariableNameError.FromNode(leaf, name)
+        # Commit the data
+        object.__setattr__(
+            node,
+            "Info",
+            # pylint: disable=too-many-function-args
+            VariableNameLexerInfo(
+                token_lookup,
+                name,
+            ),
+        )

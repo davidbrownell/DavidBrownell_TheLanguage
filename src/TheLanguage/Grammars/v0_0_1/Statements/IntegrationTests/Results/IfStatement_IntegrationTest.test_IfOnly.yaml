@@ -34,6 +34,8 @@ Children:
                                     Whitespace:
                                       - 2
                                       - 4
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                  Name: "cond1"
                                 IterBegin: "[1, 5] (4)"
                                 IterEnd: "[1, 10] (9)"
                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -200,6 +202,8 @@ Children:
                                     Whitespace:
                                       - 27
                                       - 28
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                  Name: "cond2"
                                 IterBegin: "[4, 4] (28)"
                                 IterEnd: "[4, 9] (33)"
                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

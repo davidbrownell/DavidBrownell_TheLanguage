@@ -35,9 +35,6 @@ with InitRelativeImports():
     from ..TryExceptStatement import *
     from ...Common.AutomatedTests import Execute
 
-    from ...Names.VariableName import InvalidVariableNameError
-    from ...Types.StandardType import InvalidTypeError
-
 
 # ----------------------------------------------------------------------
 def test_Simple():

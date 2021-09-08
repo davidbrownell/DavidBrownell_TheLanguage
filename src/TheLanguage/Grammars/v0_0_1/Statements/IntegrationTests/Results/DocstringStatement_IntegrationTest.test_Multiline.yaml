@@ -70,6 +70,8 @@ Children:
                                     Whitespace:
                                       - 24
                                       - 25
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                  Name: "cond"
                                 IterBegin: "[7, 4] (25)"
                                 IterEnd: "[7, 8] (29)"
                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

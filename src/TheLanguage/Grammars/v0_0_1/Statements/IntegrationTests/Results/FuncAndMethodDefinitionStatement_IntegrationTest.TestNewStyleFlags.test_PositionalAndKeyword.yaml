@@ -121,6 +121,8 @@ Children:
                                                     Whitespace:
                                                       - 22
                                                       - 23
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                  Name: "a"
                                                 IterBegin: "[2, 14] (23)"
                                                 IterEnd: "[2, 15] (24)"
                                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -213,6 +215,8 @@ Children:
                                                     Whitespace:
                                                       - 46
                                                       - 47
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                  Name: "b"
                                                 IterBegin: "[4, 13] (47)"
                                                 IterEnd: "[4, 14] (48)"
                                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -278,6 +282,8 @@ Children:
                                                             Whitespace:
                                                               - 61
                                                               - 62
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                          Name: "c"
                                                         IterBegin: "[5, 13] (62)"
                                                         IterEnd: "[5, 14] (63)"
                                                         Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -445,6 +451,8 @@ Children:
                           Whitespace:
                             - 22
                             - 23
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                        Name: "a"
                       IterBegin: "[2, 14] (23)"
                       IterEnd: "[2, 15] (24)"
                       Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -479,6 +487,8 @@ Children:
                           Whitespace:
                             - 46
                             - 47
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                        Name: "b"
                       IterBegin: "[4, 13] (47)"
                       IterEnd: "[4, 14] (48)"
                       Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -510,6 +520,8 @@ Children:
                           Whitespace:
                             - 61
                             - 62
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                        Name: "c"
                       IterBegin: "[5, 13] (62)"
                       IterEnd: "[5, 14] (63)"
                       Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

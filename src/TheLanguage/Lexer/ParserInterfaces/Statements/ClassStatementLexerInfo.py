@@ -466,6 +466,7 @@ class ClassStatementLexerInfo(LexerInfo):
     ):
         assert visibility is not None
 
+        # pylint: disable=no-member
         if visibility not in self.TypeInfo.AllowedMemberVisibilities:
             raise InvalidMemberVisibilityError.FromNode(
                 token_lookup[token_lookup_key_name],
@@ -483,6 +484,7 @@ class ClassStatementLexerInfo(LexerInfo):
     ):
         assert class_modifier is not None
 
+        # pylint: disable=no-member
         if class_modifier not in self.TypeInfo.AllowedClassModifiers:
             raise InvalidMemberClassModifierError.FromNode(
                 token_lookup[token_lookup_key_name],
