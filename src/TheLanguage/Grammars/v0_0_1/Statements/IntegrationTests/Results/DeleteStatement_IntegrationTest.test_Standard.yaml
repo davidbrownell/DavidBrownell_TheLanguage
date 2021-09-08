@@ -185,6 +185,12 @@ Children:
                             IterBegin: "[5, 5] (104)"
                             IterEnd: "[5, 12] (111)"
                             Type: "Multiple <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.TupleNameLexerInfo.TupleNameLexerInfo'>
+                          Names:
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                              Name: "a"
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                              Name: "b"
                         IterBegin: "[5, 5] (104)"
                         IterEnd: "[5, 12] (111)"
                         Type: "Tuple Name <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"

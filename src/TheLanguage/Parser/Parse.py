@@ -368,7 +368,7 @@ def _ValidateRoot(
         for child in root.Children:
             funcs += _ValidateNode(child)
 
-        for func in funcs:
+        for func in reversed(funcs):
             func()
 
     except Exception as ex:

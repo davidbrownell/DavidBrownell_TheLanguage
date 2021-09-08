@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Dict, List, Optional, Union
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,6 +32,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common.Impl.TupleBase import TupleBase
     from ...GrammarPhrase import GrammarPhrase
+
+    from ....Lexer.ParserInterfaces.Names.TupleNameLexerInfo import LexerInfo, TupleNameLexerInfo
+
+    from ....Parser.Phrases.DSL import (
+        Leaf,
+        Node,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -48,3 +58,35 @@ class TupleName(TupleBase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(TupleName, self).__init__(GrammarPhrase.Type.Name, self.PHRASE_NAME)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ValidateSyntax(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            token_lookup: Dict[str, Union[Leaf, Node]] = {
+                "self": node,
+            }
+
+            names: List[LexerInfo] = []
+
+            for child in cls.EnumNodeValues(node):
+                names.append(child.Info)  # type: ignore
+
+            object.__setattr__(
+                node,
+                "Info",
+                # pylint: disable=too-many-function-args
+                TupleNameLexerInfo(
+                    token_lookup,
+                    names,
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)

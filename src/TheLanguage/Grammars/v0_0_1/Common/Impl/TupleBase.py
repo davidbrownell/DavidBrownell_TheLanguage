@@ -15,6 +15,7 @@
 # ----------------------------------------------------------------------
 """Contains the TupleBase object"""
 
+import itertools
 import os
 
 from typing import cast, Generator, List, Union
@@ -35,6 +36,7 @@ with InitRelativeImports():
     from .....Parser.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractDynamic,
         ExtractOr,
         ExtractRepeat,
         ExtractSequence,
@@ -45,9 +47,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class TupleBase(GrammarPhrase):
     """Base class for Tuple expressions, names, statements, and types"""
-
-    MULTIPLE_PHRASE_NAME                    = "Multiple"
-    SINGLE_PHRASE_NAME                      = "Single"
 
     # ----------------------------------------------------------------------
     def __init__(
@@ -76,7 +75,7 @@ class TupleBase(GrammarPhrase):
                         # Multiple Elements
                         #   '(' <tuple_element> (',' <tuple_element>)+ ','? ')'
                         PhraseItem(
-                            name=self.MULTIPLE_PHRASE_NAME,
+                            name="Multiple",
                             item=[
                                 # '('
                                 "(",
@@ -109,7 +108,7 @@ class TupleBase(GrammarPhrase):
                         # Single Element
                         #   '(' <tuple_element> ',' ')'
                         PhraseItem(
-                            name=self.SINGLE_PHRASE_NAME,
+                            name="Single",
                             item=[
                                 # '('
                                 "(",
@@ -145,19 +144,27 @@ class TupleBase(GrammarPhrase):
         node = cast(Node, ExtractOr(node))
         assert node.Type
 
-        values = ExtractSequence(node)
+        nodes = ExtractSequence(node)
+        assert len(nodes) >= 2
 
-        if node.Type.Name == cls.MULTIPLE_PHRASE_NAME:
-            assert len(values) == 7
-            yield cast(Node, values[2])
+        enumeration_items = [
+            [nodes[2]],
+        ]
 
-            for value in cast(List[Node], ExtractRepeat(cast(Node, values[3]))):
-                value = ExtractSequence(value)
-                yield cast(Node, value[0])
+        if node.Type.Name == "Multiple":
+            assert len(nodes) == 7
 
-        elif node.Type.Name == cls.SINGLE_PHRASE_NAME:
-            assert len(values) == 6
-            yield cast(Node, values[2])
+            enumeration_items.append(
+                [
+                    ExtractSequence(child_node)[1] for child_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[3])))
+                ],
+            )
+
+        elif node.Type.Name == "Single":
+            assert len(nodes) == 6
 
         else:
             assert False, node.Type  # pragma: no cover
+
+        for item in itertools.chain(*enumeration_items):
+            yield ExtractDynamic(cast(Node, item))

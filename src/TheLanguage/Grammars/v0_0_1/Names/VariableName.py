@@ -16,11 +16,8 @@
 """Contains the VariableName object"""
 
 import os
-import re
 
 from typing import cast, Dict, Optional, Union
-
-from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface

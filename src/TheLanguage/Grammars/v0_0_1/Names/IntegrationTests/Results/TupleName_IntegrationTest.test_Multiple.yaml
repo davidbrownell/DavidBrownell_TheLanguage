@@ -158,6 +158,12 @@ Children:
                                                     IterBegin: "[1, 5] (4)"
                                                     IterEnd: "[1, 11] (10)"
                                                     Type: "Multiple <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.TupleNameLexerInfo.TupleNameLexerInfo'>
+                                                  Names:
+                                                    - # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                      Name: "b"
+                                                    - # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                      Name: "c"
                                                 IterBegin: "[1, 5] (4)"
                                                 IterEnd: "[1, 11] (10)"
                                                 Type: "Tuple Name <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
@@ -237,6 +243,18 @@ Children:
                             IterBegin: "[1, 1] (0)"
                             IterEnd: "[1, 16] (15)"
                             Type: "Multiple <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.TupleNameLexerInfo.TupleNameLexerInfo'>
+                          Names:
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                              Name: "a"
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Names.TupleNameLexerInfo.TupleNameLexerInfo'>
+                              Names:
+                                - # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                  Name: "b"
+                                - # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                  Name: "c"
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                              Name: "d"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 16] (15)"
                         Type: "Tuple Name <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
