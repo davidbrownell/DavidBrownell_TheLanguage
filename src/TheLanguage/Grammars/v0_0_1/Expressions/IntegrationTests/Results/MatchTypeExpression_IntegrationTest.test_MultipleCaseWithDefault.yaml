@@ -196,6 +196,9 @@ Children:
                                                                     Whitespace:
                                                                       - 45
                                                                       - 46
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                                  Modifier: None
+                                                                  TypeName: "Int1"
                                                                 IterBegin: "[3, 14] (46)"
                                                                 IterEnd: "[3, 18] (50)"
                                                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -308,6 +311,9 @@ Children:
                                                                     Whitespace:
                                                                       - 72
                                                                       - 73
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                                  Modifier: None
+                                                                  TypeName: "Int2"
                                                                 IterBegin: "[4, 14] (73)"
                                                                 IterEnd: "[4, 18] (77)"
                                                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -420,6 +426,9 @@ Children:
                                                                     Whitespace:
                                                                       - 99
                                                                       - 100
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                                  Modifier: None
+                                                                  TypeName: "Int3"
                                                                 IterBegin: "[5, 14] (100)"
                                                                 IterEnd: "[5, 18] (104)"
                                                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

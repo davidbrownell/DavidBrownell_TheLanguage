@@ -389,6 +389,9 @@ Children:
                                                         Whitespace:
                                                           - 60
                                                           - 61
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                      Modifier: None
+                                                      TypeName: "Int"
                                                     IterBegin: "[2, 49] (61)"
                                                     IterEnd: "[2, 52] (64)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -599,6 +602,9 @@ Children:
                                                         Whitespace:
                                                           - 100
                                                           - 101
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                      Modifier: None
+                                                      TypeName: "Int"
                                                     IterBegin: "[3, 30] (101)"
                                                     IterEnd: "[3, 33] (104)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -932,6 +938,9 @@ Children:
                                                         IterBegin: "[4, 47] (158)"
                                                         IterEnd: "[4, 50] (161)"
                                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                      Modifier: TypeModifier.var
+                                                      TypeName: "Char"
                                                     IterBegin: "[4, 42] (153)"
                                                     IterEnd: "[4, 50] (161)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1162,6 +1171,9 @@ Children:
                                                         IterBegin: "[5, 36] (204)"
                                                         IterEnd: "[5, 39] (207)"
                                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                      Modifier: TypeModifier.var
+                                                      TypeName: "Char"
                                                     IterBegin: "[5, 31] (199)"
                                                     IterEnd: "[5, 39] (207)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

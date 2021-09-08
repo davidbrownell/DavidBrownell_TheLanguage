@@ -278,6 +278,9 @@ Children:
                                                                                                         Whitespace:
                                                                                                           - 68
                                                                                                           - 69
+                                                                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                                                                      Modifier: None
+                                                                                                      TypeName: "Int1"
                                                                                                     IterBegin: "[5, 18] (69)"
                                                                                                     IterEnd: "[5, 22] (73)"
                                                                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -390,6 +393,9 @@ Children:
                                                                                                         Whitespace:
                                                                                                           - 98
                                                                                                           - 99
+                                                                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                                                                      Modifier: None
+                                                                                                      TypeName: "Int2"
                                                                                                     IterBegin: "[6, 18] (99)"
                                                                                                     IterEnd: "[6, 22] (103)"
                                                                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNameLexerInfo.py
+# |  StandardTypeLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:42:59
+# |      2021-09-08 16:24:25
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNameLexerInfo object"""
+"""Contains the StandardTypeLexerInfo object"""
 
 import os
 
-from typing import List
+from typing import Optional
 
 from dataclasses import dataclass
 
@@ -31,12 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common.TypeModifier import TypeModifier
     from ...LexerInfo import LexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerInfo(LexerInfo):
-    Names: List[LexerInfo]
-
-    # TODO: Check for unique names
+class StandardTypeLexerInfo(LexerInfo):
+    TypeName: str
+    Modifier: Optional[TypeModifier]

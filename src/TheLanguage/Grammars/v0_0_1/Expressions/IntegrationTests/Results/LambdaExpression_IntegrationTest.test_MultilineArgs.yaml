@@ -114,6 +114,9 @@ Children:
                                                                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                   Match: "<_sre.SRE_Match object; span=(33, 36), match='Int'>"
                                                                 Whitespace: None
+                                                            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                              Modifier: None
+                                                              TypeName: "Int"
                                                             IterBegin: "[3, 9] (33)"
                                                             IterEnd: "[3, 12] (36)"
                                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -181,6 +184,9 @@ Children:
                                                                         Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                           Match: "<_sre.SRE_Match object; span=(48, 52), match='Bool'>"
                                                                         Whitespace: None
+                                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                                      Modifier: None
+                                                                      TypeName: "Bool"
                                                                     IterBegin: "[4, 9] (48)"
                                                                     IterEnd: "[4, 13] (52)"
                                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -281,6 +287,9 @@ Children:
                                                                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                   Match: "<_sre.SRE_Match object; span=(73, 77), match='Char'>"
                                                                 Whitespace: None
+                                                            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                              Modifier: None
+                                                              TypeName: "Char"
                                                             IterBegin: "[6, 9] (73)"
                                                             IterEnd: "[6, 13] (77)"
                                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -576,6 +585,9 @@ Children:
                                       Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match: "<_sre.SRE_Match object; span=(33, 36), match='Int'>"
                                       Whitespace: None
+                                  Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                    Modifier: None
+                                    TypeName: "Int"
                                   IterBegin: "[3, 9] (33)"
                                   IterEnd: "[3, 12] (36)"
                                   Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -609,6 +621,9 @@ Children:
                                       Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match: "<_sre.SRE_Match object; span=(48, 52), match='Bool'>"
                                       Whitespace: None
+                                  Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                    Modifier: None
+                                    TypeName: "Bool"
                                   IterBegin: "[4, 9] (48)"
                                   IterEnd: "[4, 13] (52)"
                                   Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -643,6 +658,9 @@ Children:
                                       Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                         Match: "<_sre.SRE_Match object; span=(73, 77), match='Char'>"
                                       Whitespace: None
+                                  Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                    Modifier: None
+                                    TypeName: "Char"
                                   IterBegin: "[6, 9] (73)"
                                   IterEnd: "[6, 13] (77)"
                                   Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -817,6 +835,9 @@ Children:
                                                                                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                               Match: "<_sre.SRE_Match object; span=(146, 152), match='Double'>"
                                                                                             Whitespace: None
+                                                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                                                          Modifier: None
+                                                                                          TypeName: "Double"
                                                                                         IterBegin: "[12, 13] (146)"
                                                                                         IterEnd: "[12, 19] (152)"
                                                                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -971,6 +992,9 @@ Children:
                                                                   Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                     Match: "<_sre.SRE_Match object; span=(146, 152), match='Double'>"
                                                                   Whitespace: None
+                                                              Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                                Modifier: None
+                                                                TypeName: "Double"
                                                               IterBegin: "[12, 13] (146)"
                                                               IterEnd: "[12, 19] (152)"
                                                               Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
