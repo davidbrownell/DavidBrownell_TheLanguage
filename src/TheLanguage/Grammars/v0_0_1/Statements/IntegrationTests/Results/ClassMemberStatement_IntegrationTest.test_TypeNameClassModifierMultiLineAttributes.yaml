@@ -347,10 +347,10 @@ Children:
                                                     Type: "Repeat: {Newline+, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                                 IterBegin: "[2, 5] (17)"
                                                 IterEnd: "[6, 1] (77)"
-                                                Type: "Attributes <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                Type: "Attribute <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                             IterBegin: "[2, 5] (17)"
                                             IterEnd: "[6, 1] (77)"
-                                            Type: "Repeat: {Attributes, 0, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                            Type: "Repeat: {Attribute, 0, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                           - # <class 'TheLanguage.Parser.Components.AST.Node'>
                                             Children:
                                               - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -413,6 +413,12 @@ Children:
                                               End: 98
                                               Start: 96
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
+                                          ClassModifier: "ClassModifier.immutable"
+                                          DefaultValue: None
+                                          Name: "value3"
+                                          Type: None
+                                          Visibility: "VisibilityModifier.private"
                                         IterBegin: "[2, 5] (17)"
                                         IterEnd: "[8, 1] (98)"
                                         Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -689,10 +695,10 @@ Children:
                                                     Type: "Repeat: {Newline+, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                                 IterBegin: "[8, 5] (102)"
                                                 IterEnd: "[12, 1] (166)"
-                                                Type: "Attributes <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                Type: "Attribute <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                             IterBegin: "[8, 5] (102)"
                                             IterEnd: "[12, 1] (166)"
-                                            Type: "Repeat: {Attributes, 0, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                            Type: "Repeat: {Attribute, 0, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                           - # <class 'TheLanguage.Parser.Components.AST.Node'>
                                             Children:
                                               - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -755,6 +761,12 @@ Children:
                                               End: 186
                                               Start: 185
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
+                                          ClassModifier: "ClassModifier.immutable"
+                                          DefaultValue: None
+                                          Name: "value4"
+                                          Type: None
+                                          Visibility: "VisibilityModifier.private"
                                         IterBegin: "[8, 5] (102)"
                                         IterEnd: "[13, 1] (186)"
                                         Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -786,12 +798,12 @@ Children:
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
-              ClassModifier: None
+              ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
               Interfaces: []
               Mixins: []
               Name: "Foo"
-              Visibility: None
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[13, 1] (186)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

@@ -184,15 +184,15 @@ Children:
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
-              ClassModifier: None
+              ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
               Interfaces: []
               Mixins:
                 - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Mixin1"
-                  Visibility: None
+                  Visibility: "VisibilityModifier.private"
               Name: "Class1"
-              Visibility: None
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[4, 1] (38)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -399,15 +399,15 @@ Children:
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
-              ClassModifier: None
+              ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
               Interfaces: []
               Mixins:
                 - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Mixin2"
-                  Visibility: None
+                  Visibility: "VisibilityModifier.private"
               Name: "Class2"
-              Visibility: None
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[4, 1] (38)"
             IterEnd: "[7, 1] (77)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -635,15 +635,15 @@ Children:
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
-              ClassModifier: None
+              ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
               Interfaces: []
               Mixins:
                 - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Mixin3"
-                  Visibility: None
+                  Visibility: "VisibilityModifier.private"
               Name: "Class3"
-              Visibility: None
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[7, 1] (77)"
             IterEnd: "[12, 1] (124)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -891,7 +891,7 @@ Children:
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
-              ClassModifier: None
+              ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
               Interfaces: []
               Mixins:
@@ -899,7 +899,7 @@ Children:
                   Name: "Mixin4"
                   Visibility: "VisibilityModifier.public"
               Name: "Class4"
-              Visibility: None
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[12, 1] (124)"
             IterEnd: "[16, 1] (177)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

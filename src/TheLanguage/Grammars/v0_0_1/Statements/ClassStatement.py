@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import Any, cast, List, Optional
+from typing import Any, cast, Dict, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -258,28 +258,30 @@ class ClassStatement(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        token_lookup: Dict[str, Union[Leaf, Node]] = {
+            "self": node,
+        }
+
         nodes = ExtractSequence(node)
         assert len(nodes) == 14
-
-        token_lookup = {}
 
         # <attributes>?
         attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
 
         # <visibility>?
-        visibility_node = cast(Optional[Node], nodes[1])
+        visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
 
         if visibility_node is not None:
-            visibility = VisibilityModifier.Extract(cast(Node, ExtractOptional(visibility_node)))
+            visibility = VisibilityModifier.Extract(visibility_node)
             token_lookup["Visibility"] = visibility_node
         else:
             visibility = None
 
         # <class_modifier>?
-        class_modifier_node = cast(Optional[Node], nodes[2])
+        class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
 
         if class_modifier_node is not None:
-            class_modifier = ClassModifier.Extract(cast(Node, ExtractOptional(class_modifier_node)))
+            class_modifier = ClassModifier.Extract(class_modifier_node)
             token_lookup["ClassModifier"] = class_modifier_node
         else:
             class_modifier = None
@@ -295,12 +297,12 @@ class ClassStatement(GrammarPhrase):
         token_lookup["Name"] = class_name_leaf
 
         # Base Info
-        base_info_node = cast(Optional[Node], nodes[7])
+        base_info_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[7])))
 
         if base_info_node is None:
             base_info = None
         else:
-            base_infos = cls._ExtractBaseInfo(cast(Node, ExtractOptional(base_info_node)))
+            base_infos = cls._ExtractBaseInfo(base_info_node)
             assert base_infos
 
             if len(base_infos) > 1:
@@ -354,6 +356,24 @@ class ClassStatement(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def GetContainingClassLexerInfo(
+        cls,
+        child_node: Node,
+    ) -> Optional[ClassStatementLexerInfo]:
+        """Returns the LexerInfo for the class that contains the given node"""
+
+        node = child_node
+
+        while node is not None:
+            if node.Type and node.Type.Name == cls.PHRASE_NAME:
+                return getattr(node, "Info")
+
+            node = node.Parent
+
+        return None
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     _CreateClassTypePhraseItem              = staticmethod(ModifierImpl.CreateByValueCreatePhraseItemFunc(ClassType))
@@ -374,16 +394,20 @@ class ClassStatement(GrammarPhrase):
             [nodes[0]],
             [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[1])))],
         ):
+            assert base_item is not None
+
+            token_lookup: Dict[str, Union[Leaf, Node]] = {
+                "self": base_item,
+            }
+
             base_items = ExtractSequence(cast(Node, base_item))
             assert len(base_items) == 2
 
-            token_lookup = {}
-
             # <visibility>?
-            visibility_node = cast(Optional[Node], base_items[0])
+            visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], base_items[0])))
 
             if visibility_node is not None:
-                visibility = VisibilityModifier.Extract(cast(Node, ExtractOptional(visibility_node)))
+                visibility = VisibilityModifier.Extract(visibility_node)
                 token_lookup["Visibility"] = visibility_node
             else:
                 visibility = None

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 from dataclasses import (
     dataclass,
@@ -26,6 +26,7 @@ from dataclasses import (
 )
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -55,6 +56,8 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
             and not getattr(self, DATACLASS_PARAMS).repr,
         ), "Derived classes should be based on `dataclass` with `repr` set to `False`"
 
+        assert "self" in self.TokenLookup
+
         # Ensure that everything that needs to have an entry in TokenLookup has one
         for field in fields(self):
             if field.name == "TokenLookup":
@@ -76,6 +79,9 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
             if isinstance(value, (Node, LexerInfo)):
                 continue
 
+            if field.name in custom_display_funcs and custom_display_funcs[field.name] is None:
+                continue
+
             assert field.name in self.TokenLookup, ("Missing item in TokenLookup", field.name)
 
         # Ensure that all the lookup values are not None
@@ -87,3 +93,62 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
             TokenLookup=None,
             **custom_display_funcs,
         )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class Error(Exception, Interface.Interface):
+    """Base error for all Lexer-related errors"""
+
+    Line: int
+    Column: int
+    LineEnd: int
+    ColumnEnd: int
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def FromNode(
+        cls,
+        node: Union[Leaf, Node],
+        *args,
+    ):
+        # ----------------------------------------------------------------------
+        def GetLineColumn(iterator) -> Tuple[int, int]:
+            if iterator is None:
+                return -1, -1
+
+            return iterator.Line, iterator.Column
+
+        # ----------------------------------------------------------------------
+
+        line_before, column_before = GetLineColumn(node.IterBegin)
+        line_after, column_after = GetLineColumn(node.IterEnd)
+
+        if isinstance(node, Leaf) and node.Whitespace is not None:
+            column_before += node.Whitespace[1] - node.Whitespace[0] - 1
+
+        return cls(
+            line_before,
+            column_before,
+            line_after,
+            column_after,
+            *args,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Line >= 1
+        assert self.Column >= 1
+        assert self.Line <= self.LineEnd
+        assert self.Line != self.LineEnd or self.Column <= self.ColumnEnd
+
+    # ----------------------------------------------------------------------
+    def __str__(self):
+        # pylint: disable=no-member
+        return self.MessageTemplate.format(**self.__dict__)
+
+    # ----------------------------------------------------------------------
+    @Interface.abstractmethod
+    def MessageTemplate(self) -> str:
+        """Template used when generating the exception string"""
+        raise Exception("Abstract method")  # pragma: no cover

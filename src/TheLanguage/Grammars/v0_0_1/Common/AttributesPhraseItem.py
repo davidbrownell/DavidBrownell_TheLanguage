@@ -53,15 +53,8 @@ def Create(
     ('@' <name> <<Arguments>>? <newline>?)?    # If allow_multiple is False
     """
 
-    if allow_multiple:
-        name = "Attributes"
-        arity = "*"
-    else:
-        name = "Attribute"
-        arity = "?"
-
     return PhraseItem(
-        name=name,
+        name="Attribute",
         item=[
             "@",
             CommonTokens.MethodName,
@@ -75,7 +68,7 @@ def Create(
                 arity="?",
             ),
         ],
-        arity=arity,
+        arity="*" if allow_multiple else "?",
     )
 
 
@@ -92,16 +85,12 @@ def Extract(
     if node is None:
         return []
 
-    assert node.Type
+    node_or_nodes = ExtractRepeat(node)
 
-    if node.Type.Name == "Attribute":
-        return [_ExtractAttribute(node)]
+    if isinstance(node_or_nodes, list):
+        return [_ExtractAttribute(cast(Node, child)) for child in node_or_nodes]
 
-    elif node.Type.Name == "Attributes":
-        return [_ExtractAttribute(child) for child in cast(List[Node], ExtractRepeat(node))]
-
-    else:
-        assert False, node.Type
+    return [_ExtractAttribute(cast(Node, node_or_nodes))]
 
 
 # ----------------------------------------------------------------------

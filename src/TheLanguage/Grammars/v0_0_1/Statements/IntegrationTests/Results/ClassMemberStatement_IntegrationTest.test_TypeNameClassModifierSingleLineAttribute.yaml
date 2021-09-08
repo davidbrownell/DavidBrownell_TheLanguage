@@ -237,10 +237,10 @@ Children:
                                                     Type: "Repeat: {Newline+, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                                 IterBegin: "[2, 5] (17)"
                                                 IterEnd: "[3, 1] (36)"
-                                                Type: "Attributes <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                Type: "Attribute <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                             IterBegin: "[2, 5] (17)"
                                             IterEnd: "[3, 1] (36)"
-                                            Type: "Repeat: {Attributes, 0, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                            Type: "Repeat: {Attribute, 0, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                           - # <class 'TheLanguage.Parser.Components.AST.Node'>
                                             Children:
                                               - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -283,6 +283,12 @@ Children:
                                               End: 52
                                               Start: 50
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
+                                          ClassModifier: "ClassModifier.immutable"
+                                          DefaultValue: None
+                                          Name: "value1"
+                                          Type: None
+                                          Visibility: "VisibilityModifier.private"
                                         IterBegin: "[2, 5] (17)"
                                         IterEnd: "[5, 1] (52)"
                                         Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -449,7 +455,7 @@ Children:
                                                     Type: "Repeat: {Newline+, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                                 IterBegin: "[5, 5] (56)"
                                                 IterEnd: "[6, 1] (75)"
-                                                Type: "Attributes <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                Type: "Attribute <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                               - # <class 'TheLanguage.Parser.Components.AST.Node'>
                                                 Children:
                                                   - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
@@ -599,10 +605,10 @@ Children:
                                                     Type: "Repeat: {Newline+, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                                 IterBegin: "[6, 5] (79)"
                                                 IterEnd: "[7, 1] (104)"
-                                                Type: "Attributes <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                Type: "Attribute <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                             IterBegin: "[5, 5] (56)"
                                             IterEnd: "[7, 1] (104)"
-                                            Type: "Repeat: {Attributes, 0, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                            Type: "Repeat: {Attribute, 0, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                           - # <class 'TheLanguage.Parser.Components.AST.Node'>
                                             Children:
                                               - # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -665,6 +671,12 @@ Children:
                                               End: 124
                                               Start: 123
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
+                                          ClassModifier: "ClassModifier.immutable"
+                                          DefaultValue: None
+                                          Name: "value2"
+                                          Type: None
+                                          Visibility: "VisibilityModifier.private"
                                         IterBegin: "[5, 5] (56)"
                                         IterEnd: "[8, 1] (124)"
                                         Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -696,12 +708,12 @@ Children:
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
-              ClassModifier: None
+              ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
               Interfaces: []
               Mixins: []
               Name: "Foo"
-              Visibility: None
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[8, 1] (124)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

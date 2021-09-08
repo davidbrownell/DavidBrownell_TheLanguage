@@ -87,7 +87,7 @@ def test_TypeModifierNameClassModifier():
         Execute(
             textwrap.dedent(
                 """\
-                class Foo():
+                mutable class Foo():
                     Int foo immutable
                     Int var _bar mutable
                 """,

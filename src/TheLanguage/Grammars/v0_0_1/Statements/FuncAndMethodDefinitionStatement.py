@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import Any, cast, List, Optional, Union
+from typing import Any, cast, Dict, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -251,10 +251,12 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        token_lookup: Dict[str, Union[Leaf, Node]] = {
+            "self": node,
+        }
+
         nodes = ExtractSequence(node)
         assert len(nodes) == 8
-
-        token_lookup = {}
 
         # <attributes>*
         attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))

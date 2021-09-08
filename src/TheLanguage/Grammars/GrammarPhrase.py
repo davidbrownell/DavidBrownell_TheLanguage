@@ -114,6 +114,7 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         Type                                = auto()
 
     # ----------------------------------------------------------------------
+    # TODO: This will go away in favor of LexerInfo
     @dataclass(frozen=True, repr=False)
     class NodeInfo(YamlRepr.ObjectReprImplBase):
         TokenLookup: Dict[str, Union[Leaf, Node, None]]
@@ -123,35 +124,6 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
             self,
             **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
         ):
-            # Validate the the parent class has been created correctly
-            assert hasattr(self, DATACLASS_PARAMS) and not getattr(self, DATACLASS_PARAMS).repr, "Derived classes must be dataclasses with 'repr' set to False"
-
-            # Ensure that everything that needs to have an entry in TokenLookup has one
-            for field in fields(self):
-                if field.name == "TokenLookup":
-                    continue
-
-                if field.type == Any:
-                    continue
-
-                value = getattr(self, field.name)
-                if value is None:
-                    continue
-
-                if isinstance(value, list):
-                    if value:
-                        assert isinstance(value[0], (Node, GrammarPhrase.NodeInfo)), (field.name, field.type, value)
-
-                    continue
-
-                if isinstance(value, (Node, GrammarPhrase.NodeInfo)):
-                    continue
-
-                assert field.name in self.TokenLookup, ("Missing item in TokenLookup", field)
-
-            for k, v in self.TokenLookup.items():
-                assert v is not None, k
-
             YamlRepr.ObjectReprImplBase.__init__(
                 self,
                 TokenLookup=None,
