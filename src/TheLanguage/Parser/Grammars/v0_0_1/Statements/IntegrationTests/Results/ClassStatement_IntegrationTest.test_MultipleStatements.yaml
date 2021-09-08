@@ -221,6 +221,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PublicClass"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.public"

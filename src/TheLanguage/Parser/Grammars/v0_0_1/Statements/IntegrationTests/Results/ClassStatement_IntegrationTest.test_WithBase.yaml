@@ -182,9 +182,10 @@ Children:
                 Visibility: "VisibilityModifier.public"
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "Class1"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[4, 1] (38)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -353,12 +354,13 @@ Children:
               Attributes: []
               Base: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                 Name: "Base2"
-                Visibility: "VisibilityModifier.private"
+                Visibility: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "Class2"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[4, 1] (38)"
             IterEnd: "[7, 1] (69)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -561,9 +563,10 @@ Children:
                 Visibility: "VisibilityModifier.protected"
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "Class3"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[7, 1] (69)"
             IterEnd: "[12, 1] (120)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

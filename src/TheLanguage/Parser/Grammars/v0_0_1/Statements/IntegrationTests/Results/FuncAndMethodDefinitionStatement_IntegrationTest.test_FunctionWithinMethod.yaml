@@ -332,7 +332,6 @@ Children:
                                                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                                                           Attributes: []
                                                                           ClassModifier: None
-                                                                          IsFunction: True
                                                                           MethodType: None
                                                                           Name: "Inner"
                                                                           Parameters: {}
@@ -349,9 +348,7 @@ Children:
                                                                             IterBegin: "[3, 9] (38)"
                                                                             IterEnd: "[3, 12] (41)"
                                                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                                                          Statements:
-                                                                            - "Pass Statement"
-                                                                          Visibility: "VisibilityModifier.private"
+                                                                          Visibility: None
                                                                         IterBegin: "[3, 9] (38)"
                                                                         IterEnd: "[5, 1] (68)"
                                                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -386,9 +383,8 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
-                                          MethodType: "MethodType.standard"
+                                          ClassModifier: None
+                                          MethodType: None
                                           Name: "Outer"
                                           Parameters: {}
                                           ReturnType: # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -404,9 +400,7 @@ Children:
                                             IterBegin: "[2, 5] (17)"
                                             IterEnd: "[2, 8] (20)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Statements:
-                                            - "Func And Method Definition Statement"
-                                          Visibility: "VisibilityModifier.private"
+                                          Visibility: None
                                         IterBegin: "[2, 5] (17)"
                                         IterEnd: "[5, 1] (68)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -441,9 +435,10 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "Foo"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[5, 1] (68)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

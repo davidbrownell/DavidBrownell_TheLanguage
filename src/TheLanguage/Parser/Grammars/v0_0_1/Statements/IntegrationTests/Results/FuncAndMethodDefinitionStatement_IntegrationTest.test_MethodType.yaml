@@ -254,8 +254,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.standard"
                                           Name: "StandardMethod"
                                           Parameters: {}
@@ -274,9 +273,7 @@ Children:
                                             IterBegin: "[2, 14] (26)"
                                             IterEnd: "[2, 17] (29)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Statements:
-                                            - "Pass Statement"
-                                          Visibility: "VisibilityModifier.private"
+                                          Visibility: None
                                         IterBegin: "[2, 5] (17)"
                                         IterEnd: "[5, 5] (66)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -460,8 +457,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.static"
                                           Name: "StaticMethod"
                                           Parameters: {}
@@ -480,9 +476,7 @@ Children:
                                             IterBegin: "[5, 12] (73)"
                                             IterEnd: "[5, 15] (76)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Statements:
-                                            - "Pass Statement"
-                                          Visibility: "VisibilityModifier.private"
+                                          Visibility: None
                                         IterBegin: "[5, 5] (66)"
                                         IterEnd: "[8, 5] (111)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -588,8 +582,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.abstract"
                                           Name: "AbstractMethod"
                                           Parameters: {}
@@ -608,7 +601,7 @@ Children:
                                             IterBegin: "[8, 14] (120)"
                                             IterEnd: "[8, 17] (123)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Visibility: "VisibilityModifier.private"
+                                          Visibility: None
                                         IterBegin: "[8, 5] (111)"
                                         IterEnd: "[9, 1] (141)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -714,8 +707,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.deferred"
                                           Name: "DeferredMethod"
                                           Parameters: {}
@@ -734,7 +726,7 @@ Children:
                                             IterBegin: "[9, 14] (154)"
                                             IterEnd: "[9, 17] (157)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Visibility: "VisibilityModifier.private"
+                                          Visibility: None
                                         IterBegin: "[9, 5] (145)"
                                         IterEnd: "[11, 1] (176)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -918,8 +910,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.virtual"
                                           Name: "VirtualMethod"
                                           Parameters: {}
@@ -938,9 +929,7 @@ Children:
                                             IterBegin: "[11, 13] (188)"
                                             IterEnd: "[11, 16] (191)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Statements:
-                                            - "Pass Statement"
-                                          Visibility: "VisibilityModifier.private"
+                                          Visibility: None
                                         IterBegin: "[11, 5] (180)"
                                         IterEnd: "[14, 5] (227)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1124,8 +1113,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.override"
                                           Name: "OverrideMethod"
                                           Parameters: {}
@@ -1144,9 +1132,7 @@ Children:
                                             IterBegin: "[14, 14] (236)"
                                             IterEnd: "[14, 17] (239)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Statements:
-                                            - "Pass Statement"
-                                          Visibility: "VisibilityModifier.private"
+                                          Visibility: None
                                         IterBegin: "[14, 5] (227)"
                                         IterEnd: "[17, 5] (276)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1330,8 +1316,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
+                                          ClassModifier: None
                                           MethodType: "MethodType.final"
                                           Name: "FinalMethod"
                                           Parameters: {}
@@ -1350,9 +1335,7 @@ Children:
                                             IterBegin: "[17, 11] (282)"
                                             IterEnd: "[17, 14] (285)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Statements:
-                                            - "Pass Statement"
-                                          Visibility: "VisibilityModifier.private"
+                                          Visibility: None
                                         IterBegin: "[17, 5] (276)"
                                         IterEnd: "[20, 5] (319)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1516,9 +1499,8 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
                                           Attributes: []
-                                          ClassModifier: "ClassModifier.immutable"
-                                          IsFunction: False
-                                          MethodType: "MethodType.standard"
+                                          ClassModifier: None
+                                          MethodType: None
                                           Name: "DefaultMethod"
                                           Parameters: {}
                                           ReturnType: # <class 'TheLanguage.Parser.Components.AST.Node'>
@@ -1534,9 +1516,7 @@ Children:
                                             IterBegin: "[20, 5] (319)"
                                             IterEnd: "[20, 8] (322)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Statements:
-                                            - "Pass Statement"
-                                          Visibility: "VisibilityModifier.private"
+                                          Visibility: None
                                         IterBegin: "[20, 5] (319)"
                                         IterEnd: "[22, 1] (353)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1571,9 +1551,10 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "Foo"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[22, 1] (353)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

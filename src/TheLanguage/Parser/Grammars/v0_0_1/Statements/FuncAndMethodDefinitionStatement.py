@@ -62,52 +62,10 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMethodTypeApplicationError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Method modifiers may not be used on functions.")  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidOperatorApplicationError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Operators must be methods.")  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidClassModifierApplicationFunctionError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on functions.")  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidClassModifierApplicationStaticError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Class modifiers may not be used on static methods.")  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
 class InvalidOperatorNameError(ValidationError):
     Name: str
 
     MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid operator name.")  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class FunctionStatementsRequiredError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Statements are required for functions.")  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class MethodStatementsRequiredError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Statements are required for methods not marked as 'abstract' or 'deferred'.")  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class StatementsUnexpectedError(ValidationError):
-    MessageTemplate                         = Interface.DerivedProperty("Statements can not be provided for methods marked as 'abstract' or 'deferred'.")  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -126,8 +84,8 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     class MethodType(ModifierBase):  # type: ignore
-        deferred                            = auto()
         standard                            = auto()
+        deferred                            = auto()
         static                              = auto()
         abstract                            = auto()
         virtual                             = auto()
@@ -213,34 +171,19 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class NodeInfo(GrammarPhrase.NodeInfo):
-        IsFunction: bool
-        Attributes: Any # Defined in AttributesPhrseItem.py
-        Visibility: VisibilityModifier
+        Attributes: Any                                                     # Defined in AttributesPhrseItem.py
+        Visibility: Optional[VisibilityModifier]
         MethodType: Optional["FuncAndMethodDefinitionStatement.MethodType"]
         ReturnType: Union[Leaf, Node]
         Name: Union[str, "FuncAndMethodDefinitionStatement.OperatorType"]
-        Parameters: Any  # Defined in ParametersPhraseItem.py
+        Parameters: Any                                                     # Defined in ParametersPhraseItem.py
         ClassModifier: Optional[ClassModifier]
         Statements: Optional[List[Union[Leaf, Node]]]
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
-            if self.IsFunction:
-                assert self.MethodType is None, self
-                assert isinstance(self.Name, str), self
-                assert self.ClassModifier is None, self
-                assert self.Statements, self
-
-            else:
-                assert self.MethodType is not None, self
-                assert self.ClassModifier is not None, self
-                assert self.Statements or self.MethodType in (
-                    FuncAndMethodDefinitionStatement.MethodType.abstract,
-                    FuncAndMethodDefinitionStatement.MethodType.deferred,
-                ), self
-
             super(FuncAndMethodDefinitionStatement.NodeInfo, self).__post_init__(
-                Statements=lambda statements: None if statements is None else [statement.Type.Name for statement in statements],
+                Statements=None,
             )
 
     # ----------------------------------------------------------------------
@@ -267,7 +210,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                     # <method_type>?
                     PhraseItem(
                         name="Method Type",
-                        item=self.MethodType.CreatePhraseItem(),
+                        item=FuncAndMethodDefinitionStatement.MethodType.CreatePhraseItem(),
                         arity="?",
                     ),
 
@@ -280,7 +223,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                     # <parameters>
                     ParametersPhraseItem.Create(),
 
-                    # <class_type>?
+                    # <class_modifier>?
                     PhraseItem(
                         name="Class Modifier",
                         item=ClassModifier.CreatePhraseItem(),
@@ -302,61 +245,37 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
+    @classmethod
     @Interface.override
     def ValidateSyntax(
-        self,
+        cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
-        # Determine if this is function or a method. This is a function if:
-        #   - It is embedded within another function/method
-        #   - It is not embedded within a class
-
-        # ----------------------------------------------------------------------
-        def IsFunction() -> bool:
-            parent = node.Parent
-
-            while parent:
-                if parent.Type is not None:
-                    if parent.Type.Name == self.PHRASE_NAME:
-                        return True
-
-                    if parent.Type.Name == ClassStatement.PHRASE_NAME:
-                        return False
-
-                parent = parent.Parent
-
-            return True
-
-        # ----------------------------------------------------------------------
-
-        is_function = IsFunction()
-
-        # Extract the info
         nodes = ExtractSequence(node)
-        assert len(nodes) == 8, nodes
+        assert len(nodes) == 8
+
+        token_lookup = {}
 
         # <attributes>*
         attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
 
         # <visibility>?
-        if nodes[1] is None:
-            visibility = VisibilityModifier.private
+        visibility_node = cast(Optional[Node], nodes[1])
+
+        if visibility_node is not None:
+            visibility = VisibilityModifier.Extract(ExtractOptional(visibility_node))
+            token_lookup["Visibility"] = visibility_node
         else:
-            visibility = VisibilityModifier.Extract(
-                cast(Node, ExtractOptional(cast(Node, nodes[1]))),
-            )
+            visibility = None
 
         # <method_type>?
-        if nodes[2] is None:
-            if is_function:
-                method_type = None
-            else:
-                method_type = self.MethodType.standard
-        else:
-            if is_function:
-                raise InvalidMethodTypeApplicationError.FromNode(nodes[2])
+        method_type_node = cast(Optional[Node], nodes[2])
 
-            method_type = self.MethodType.Extract(cast(Node, ExtractOptional(cast(Node, nodes[2]))))
+        if method_type_node is not None:
+            method_type = cls.MethodType.Extract(ExtractOptional(method_type_node))
+            token_lookup["MethodType"] = method_type_node
+        else:
+            method_type = None
 
         # <type>
         return_type = ExtractDynamic(cast(Node, nodes[3]))
@@ -364,66 +283,47 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         # <name>
         method_name_leaf = cast(Leaf, nodes[4])
         method_name = cast(str, ExtractToken(method_name_leaf))
+        token_lookup["Name"] = method_name_leaf
 
         if method_name.startswith("__") and method_name.endswith("__"):
-            if is_function:
-                raise InvalidOperatorApplicationError.FromNode(method_name_leaf)
-
             try:
-                method_name = self.OperatorType[method_name[2:-2]]
+                method_name = cls.OperatorType[method_name[2:-2]]
             except KeyError:
                 raise InvalidOperatorNameError.FromNode(method_name_leaf, method_name)
 
         # <parameters>
         parameters = ParametersPhraseItem.Extract(cast(Node, nodes[5]))
 
-        # <class_type>?
-        if nodes[6] is None:
-            if is_function:
-                class_type = None
-            else:
-                class_type = ClassModifier.immutable
+        # <class_modifier>?
+        class_modifier_node = cast(Optional[Node], nodes[6])
+
+        if class_modifier_node is not None:
+            class_modifier = ClassModifier.Extract(ExtractOptional(class_modifier_node))
+            token_lookup["ClassModifier"] = class_modifier_node
         else:
-            if is_function:
-                raise InvalidClassModifierApplicationFunctionError.FromNode(nodes[6])
+            class_modifier = None
 
-            if method_type == self.MethodType.static:
-                raise InvalidClassModifierApplicationStaticError.FromNode(nodes[6])
+        # <statements> or Newline
+        statements_node = cast(Node, ExtractOr(cast(Node, nodes[7])))
 
-            class_type = ClassModifier.Extract(cast(Node, ExtractOptional(cast(Node, nodes[6]))))
-
-        # Statements
-        statement_node = ExtractOr(cast(Node, nodes[7]))
-
-        if isinstance(statement_node, Leaf):
-            if method_type not in (self.MethodType.abstract, self.MethodType.deferred):
-                if is_function:
-                    raise FunctionStatementsRequiredError.FromNode(statement_node)
-                else:
-                    raise MethodStatementsRequiredError.FromNode(statement_node)
-
+        if isinstance(statements_node, Leaf):
             statements = None
-
         else:
-            if method_type in (self.MethodType.abstract, self.MethodType.deferred):
-                raise StatementsUnexpectedError.FromNode(statement_node)
+            statements = StatementsPhraseItem.Extract(statements_node)
 
-            statements = StatementsPhraseItem.Extract(statement_node)
-            assert statements
-
-        # Commit the info
+        # Commit the data
         object.__setattr__(
             node,
             "Info",
-            self.NodeInfo(
-                is_function,
+            cls.NodeInfo(
+                token_lookup,
                 attributes,
-                visibility,  # type: ignore
+                visibility,
                 method_type,
                 return_type,
                 method_name,
                 parameters,
-                class_type,  # type: ignore
+                class_modifier,
                 statements,
             ),
         )

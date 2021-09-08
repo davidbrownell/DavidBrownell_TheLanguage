@@ -219,7 +219,6 @@ Children:
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
               Attributes: []
               ClassModifier: None
-              IsFunction: True
               MethodType: None
               Name: "Func"
               Parameters: {}
@@ -300,9 +299,7 @@ Children:
                 IterBegin: "[1, 1] (0)"
                 IterEnd: "[1, 11] (10)"
                 Type: "Tuple Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
-              Statements:
-                - "Pass Statement"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (28)"
             Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

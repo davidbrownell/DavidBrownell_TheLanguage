@@ -42,6 +42,7 @@ with InitRelativeImports():
         TraditionalDelimiterKeywordError,
         TraditionalDelimiterOrderError,
         TraditionalDelimiterPositionalError,
+        RequiredParameterAfterDefaultError,
     )
 
 
@@ -700,91 +701,6 @@ class TestTraditionalParameterFlags(object):
 
 
 # ----------------------------------------------------------------------
-def test_InvalidMethodTypeApplicationError():
-    with pytest.raises(InvalidMethodTypeApplicationError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                virtual Int Func():
-                    pass
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "Method modifiers may not be used on functions."
-    assert ex.Line == 1
-    assert ex.Column == 1
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == 8
-
-
-# ----------------------------------------------------------------------
-def test_InvalidOperatorApplicationError():
-    with pytest.raises(InvalidOperatorApplicationError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                Int __ToBool__():
-                    pass
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "Operators must be methods."
-    assert ex.Line == 1
-    assert ex.Column == 5
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == 15
-
-
-# ----------------------------------------------------------------------
-def test_InvalidClassModifierApplicationFunctionError():
-    with pytest.raises(InvalidClassModifierApplicationFunctionError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                Int Func() immutable:
-                    pass
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "Class modifiers may not be used on functions."
-    assert ex.Line == 1
-    assert ex.Column == 12
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == 21
-
-
-# ----------------------------------------------------------------------
-def test_InvalidClassModifierApplicationStaticError():
-    with pytest.raises(InvalidClassModifierApplicationStaticError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                class Foo():
-                    static Int Method() immutable:
-                        pass
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "Class modifiers may not be used on static methods."
-    assert ex.Line == 2
-    assert ex.Column == 25
-    assert ex.LineEnd == 2
-    assert ex.ColumnEnd == 34
-
-
-# ----------------------------------------------------------------------
 def test_InvalidOperatorNameError():
     with pytest.raises(InvalidOperatorNameError) as ex:
         Execute(
@@ -808,84 +724,21 @@ def test_InvalidOperatorNameError():
 
 
 # ----------------------------------------------------------------------
-def test_FunctionStatementsRequiredError():
-    with pytest.raises(FunctionStatementsRequiredError) as ex:
+def test_RequiredParameterAfterDefaultError():
+    with pytest.raises(RequiredParameterAfterDefaultError) as ex:
         Execute(
             textwrap.dedent(
                 """\
-                Int Func()
+                Int Func(Int a=1, Bool bee):
+                    pass
                 """,
             ),
         )
 
     ex = ex.value
 
-    assert str(ex) == "Statements are required for functions."
+    assert str(ex) == "A required parameter may not appear after a parameter with a default value."
     assert ex.Line == 1
-    assert ex.Column == 11
-    assert ex.LineEnd == 2
-    assert ex.ColumnEnd == 1
-
-
-# ----------------------------------------------------------------------
-def test_MethodStatementsRequiredError():
-    with pytest.raises(MethodStatementsRequiredError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                class Foo():
-                    Int Method()
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "Statements are required for methods not marked as 'abstract' or 'deferred'."
-    assert ex.Line == 2
-    assert ex.Column == 17
-    assert ex.LineEnd == 3
-    assert ex.ColumnEnd == 1
-
-
-# ----------------------------------------------------------------------
-def test_StatementsUnexpectedError():
-    # 'abstract'
-    with pytest.raises(StatementsUnexpectedError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                class Foo():
-                    abstract Int Method():
-                        pass
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "Statements can not be provided for methods marked as 'abstract' or 'deferred'."
-    assert ex.Line == 2
-    assert ex.Column == 26
-    assert ex.LineEnd == 4
-    assert ex.ColumnEnd == 1
-
-    # 'deferred'
-    with pytest.raises(StatementsUnexpectedError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                class Foo():
-                    deferred Int Method():
-                        pass
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "Statements can not be provided for methods marked as 'abstract' or 'deferred'."
-    assert ex.Line == 2
-    assert ex.Column == 26
-    assert ex.LineEnd == 4
-    assert ex.ColumnEnd == 1
+    assert ex.Column == 19
+    assert ex.LineEnd == 1
+    assert ex.ColumnEnd == 27

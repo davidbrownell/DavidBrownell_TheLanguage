@@ -157,6 +157,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PublicClass"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.public"
@@ -326,6 +327,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "ProtectedClass"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.protected"
@@ -495,6 +497,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PrivateClass"
               Type: "ClassType.Class"
               Visibility: "VisibilityModifier.private"
@@ -644,9 +647,10 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "DefaultClass"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[11, 1] (195)"
             IterEnd: "[14, 1] (227)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -813,6 +817,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PublicException"
               Type: "ClassType.Exception"
               Visibility: "VisibilityModifier.public"
@@ -962,9 +967,10 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "DefaultException"
               Type: "ClassType.Exception"
-              Visibility: "VisibilityModifier.public"
+              Visibility: None
             IterBegin: "[18, 1] (346)"
             IterEnd: "[21, 1] (386)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1131,6 +1137,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PublicEnum"
               Type: "ClassType.Enum"
               Visibility: "VisibilityModifier.public"
@@ -1300,6 +1307,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "ProtectedInterface"
               Type: "ClassType.Interface"
               Visibility: "VisibilityModifier.protected"
@@ -1469,6 +1477,7 @@ Children:
               Base: None
               Interfaces: []
               Mixins: []
+              Modifier: None
               Name: "PrivateMixin"
               Type: "ClassType.Mixin"
               Visibility: "VisibilityModifier.private"

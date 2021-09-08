@@ -221,14 +221,15 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface1A"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface1B"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
               Mixins: []
+              Modifier: None
               Name: "Class1"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[4, 1] (62)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -472,14 +473,15 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface2A"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface2B"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
               Mixins: []
+              Modifier: None
               Name: "Class2"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[4, 1] (62)"
             IterEnd: "[7, 1] (125)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -731,14 +733,15 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface3A"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface3B"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
               Mixins: []
+              Modifier: None
               Name: "Class3"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[7, 1] (125)"
             IterEnd: "[10, 1] (189)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1003,14 +1006,15 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface4A"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface4B"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
               Mixins: []
+              Modifier: None
               Name: "Class4"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[10, 1] (189)"
             IterEnd: "[13, 1] (254)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1260,14 +1264,15 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface5A"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface5B"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
               Mixins: []
+              Modifier: None
               Name: "Class5"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[13, 1] (254)"
             IterEnd: "[19, 1] (328)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1575,9 +1580,10 @@ Children:
                   Name: "Interface6B"
                   Visibility: "VisibilityModifier.public"
               Mixins: []
+              Modifier: None
               Name: "Class6"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[19, 1] (328)"
             IterEnd: "[25, 1] (420)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1918,23 +1924,24 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface7A"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface7B"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface7C"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface7D"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
                 - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
                   Name: "Interface7E"
-                  Visibility: "VisibilityModifier.private"
+                  Visibility: None
               Mixins: []
+              Modifier: None
               Name: "Class7"
               Type: "ClassType.Class"
-              Visibility: "VisibilityModifier.private"
+              Visibility: None
             IterBegin: "[25, 1] (420)"
             IterEnd: "[32, 1] (552)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

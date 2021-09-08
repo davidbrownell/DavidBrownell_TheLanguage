@@ -164,8 +164,12 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj1: "obj1"
-                obj2: "obj2Decorated"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: None
+                  Name: "obj1"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: "obj2Decorated"
+                  Name: "obj2"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/Statements/File1.TheLanguage"
             IterBegin: "[1, 1] (0)"
@@ -591,10 +595,18 @@ Children:
                 Whitespace: None
             Info: # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
               ImportItems:
-                obj3: "obj3Decorated"
-                obj4: "obj4"
-                obj5: "obj5Decorated"
-                obj6: "obj6"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: "obj3Decorated"
+                  Name: "obj3"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: None
+                  Name: "obj4"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: "obj5Decorated"
+                  Name: "obj5"
+                - # <class 'TheLanguage.Parser.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Alias: None
+                  Name: "obj6"
               ImportType: "ImportType.SourceIsModule"
               SourceFilename: "<generic_root>/File2.TheLanguage"
             IterBegin: "[3, 1] (49)"
