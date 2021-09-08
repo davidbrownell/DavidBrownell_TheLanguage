@@ -87,6 +87,11 @@ Children:
                             IterBegin: "[1, 1] (0)"
                             IterEnd: "[1, 11] (10)"
                             Type: "Single <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.TupleTypeLexerInfo.TupleTypeLexerInfo'>
+                          Types:
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                              Modifier: TypeModifier.var
+                              TypeName: "Int"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 11] (10)"
                         Type: "Tuple Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"

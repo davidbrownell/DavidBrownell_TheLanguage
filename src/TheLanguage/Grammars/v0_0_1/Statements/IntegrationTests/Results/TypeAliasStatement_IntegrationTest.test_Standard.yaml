@@ -256,6 +256,17 @@ Children:
                             IterBegin: "[2, 17] (37)"
                             IterEnd: "[2, 34] (54)"
                             Type: "Multiple <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.TupleTypeLexerInfo.TupleTypeLexerInfo'>
+                          Types:
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                              Modifier: None
+                              TypeName: "Int"
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                              Modifier: None
+                              TypeName: "Bool"
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                              Modifier: None
+                              TypeName: "Char"
                         IterBegin: "[2, 17] (37)"
                         IterEnd: "[2, 34] (54)"
                         Type: "Tuple Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
