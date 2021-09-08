@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from enum import auto
+from enum import auto, Enum
 from typing import Any, cast, List, Optional
 
 from dataclasses import dataclass
@@ -35,13 +35,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import AttributesPhraseItem
-    from ..Common.ClassModifier import ClassModifier
+    from ..Common import ClassModifier
     from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
-    from ..Common.Impl.ModifierBase import CreateModifierBaseClass, ModifierBase
-    from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Common import VisibilityModifier
+    from ..Common.Impl import ModifierImpl
 
     from ...GrammarPhrase import GrammarPhrase, ValidationError
+
+    from ....Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo import (
+        ClassDependencyLexerInfo,
+        ClassStatementLexerInfo,
+        ClassType,
+    )
+
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
         ExtractOptional,
@@ -105,65 +112,9 @@ class ClassStatement(GrammarPhrase):
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
-    class ClassType(
-        CreateModifierBaseClass(  # type: ignore
-            by_value=True,
-        ),
-    ):
-        # <Line too long> pylint: disable=C0301
-        """\
-        |-----------|--------------------|----------------------------|---------------------------|-----------------------------|---------------------|------------------------------------------------------|--------------------------------|------------------------|-------------------------|-------------------------------------|----------------------|-------------------------------------|--------------------------------------------------|--------|-------------|---------|-----------|
-        |           | Default Visibility |    Allowed Visibilities    | Default Member Visibility | Allowed Member Visibilities | Default Method Type |               Allowed Method Types                   |    Allow Method Definitions?   | Default Class Modifier | Allowed Class Modifiers | Requires Special Member Definitions | Allows Data Members? | Allows Mutable Public Data Members? |          Can Be Instantiated Directly?           | Bases? | Interfaces? | Mixins? |           |
-        |-----------|--------------------|----------------------------|---------------------------|-----------------------------|---------------------|------------------------------------------------------|--------------------------------|------------------------|-------------------------|-------------------------------------|----------------------|-------------------------------------|--------------------------------------------------|--------|-------------|---------|-----------|
-        | Primitive |      private       | public, protected, private |          public           |           public            |      deferred       |        deferred, standard (for special members)      | yes (only for special members) |        immutable       |    mutable, immutable   |                 yes                 |          yes         |                 no                  |                       yes                        |   no   |      no     |   no    | Primitive |
-        | Class     |      private       | public, protected, private |          private          | public, protected, private  |      standard       | standard, static, abstract, virtual, override, final |               yes              |        immutable       |    mutable, immutable   |   no (defaults will be generated)   |          yes         |                 no                  |                       yes                        |   yes  |      yes    |   yes   |     Class |
-        | Struct    |      private       |          private           |          public           |           public            |      standard       | standard, static, abstract, virtual, override, final |               yes              |         mutable        |         mutable         |   no (defaults will be generated)   |          yes         |                 yes                 |                       yes                        |   yes  |      no     |   no    |    Struct |
-        | Exception |      public        |          public            |          public           | public, protected, private  |      standard       | standard, static, abstract, virtual, override, final |               yes              |        immutable       |        immutable        |   no (defaults will be generated)   |          yes         |                 no                  |                       yes                        |   yes  |      yes    |   yes   | Exception |
-        | Enum      |      private       | public, protected, private |          public           |           public            |      standard       | standard, static, abstract, virtual, override, final |               yes              |        immutable       |    mutable, immutable   |   no (defaults will be generated)   |          yes         |                 no                  |                       yes                        |   yes  |      no     |   no    |      Enum |
-        | Interface |      private       | public, protected, private |          public           |           public            |      abstract       |       static, abstract, virtual, override, final     |               yes              |        immutable       |    mutable, immutable   |   no (defaults will be generated)   |          no          |                 no                  |     no (must be implemented by a super class)    |   no   |      yes    |   no    | Interface |
-        | Mixin     |      private       | public, protected, private |          private          | public, protected, private  |      standard       | standard, static, abstract, virtual, override, final |               yes              |        immutable       |    mutable, immutable   |                 no                  |          yes         |                 no                  | no (functionality is "grafted" into super class) |   yes  |      no     |   yes   |     Mixin |
-        |-----------|--------------------|----------------------------|---------------------------|-----------------------------|---------------------|------------------------------------------------------|--------------------------------|------------------------|-------------------------|-------------------------------------|----------------------|-------------------------------------|--------------------------------------------------|--------|-------------|---------|-----------|
-        """
-
-        Primitive                           = "primitive"
-        Class                               = "class"
-        Struct                              = "struct"
-        Exception                           = "exception"
-        Enum                                = "enum"
-        Interface                           = "interface"
-        Mixin                               = "mixin"
-
-        # TODO: Enum doesn't seem to fit here
-
-    # ----------------------------------------------------------------------
-    class BaseTypeIndicator(ModifierBase):  # type: ignore
+    class BaseTypeIndicator(ModifierImpl.StandardMixin, Enum):
         implements                          = auto()
         uses                                = auto()
-
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True, repr=False)
-    class BaseInfo(GrammarPhrase.NodeInfo):
-        Visibility: Optional[VisibilityModifier]
-        Name: str
-
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True, repr=False)
-    class NodeInfo(GrammarPhrase.NodeInfo):
-        Attributes: Any                                 # Defined in AttributesPhraseItem.py
-        Visibility: Optional[VisibilityModifier]
-        Modifier: Optional[ClassModifier]
-        Type: "ClassStatement.ClassType"
-        Name: str
-        Base: Optional["ClassStatement.BaseInfo"]
-        Interfaces: List["ClassStatement.BaseInfo"]
-        Mixins: List["ClassStatement.BaseInfo"]
-        Statements: Any                                 # Defined in StatementsPhraseItem.py
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            super(ClassStatement.NodeInfo, self).__post_init__(
-                Statements=None,
-            )
 
     # ----------------------------------------------------------------------
     # |
@@ -238,7 +189,7 @@ class ClassStatement(GrammarPhrase):
                     # 'class'|'interface'|'mixin'|'enum'|'exception'
                     PhraseItem(
                         name="Class Type",
-                        item=self.ClassType.CreatePhraseItem(),
+                        item=self._CreateClassTypePhraseItem(),
                     ),
 
                     # <name> (class)
@@ -319,7 +270,7 @@ class ClassStatement(GrammarPhrase):
         visibility_node = cast(Optional[Node], nodes[1])
 
         if visibility_node is not None:
-            visibility = VisibilityModifier.Extract(ExtractOptional(visibility_node))
+            visibility = VisibilityModifier.Extract(cast(Node, ExtractOptional(visibility_node)))
             token_lookup["Visibility"] = visibility_node
         else:
             visibility = None
@@ -328,15 +279,15 @@ class ClassStatement(GrammarPhrase):
         class_modifier_node = cast(Optional[Node], nodes[2])
 
         if class_modifier_node is not None:
-            class_modifier = ClassModifier.Extract(ExtractOptional(class_modifier_node))
-            token_lookup["Modifier"] = class_modifier_node
+            class_modifier = ClassModifier.Extract(cast(Node, ExtractOptional(class_modifier_node)))
+            token_lookup["ClassModifier"] = class_modifier_node
         else:
             class_modifier = None
 
         # <class_type>
         class_type_node = cast(Node, nodes[3])
-        class_type = cls.ClassType.Extract(class_type_node)
-        token_lookup["Type"] = class_type_node
+        class_type = cls._ExtractClassType(class_type_node)
+        token_lookup["ClassType"] = class_type_node
 
         # <name>
         class_name_leaf = cast(Leaf, nodes[4])
@@ -383,36 +334,41 @@ class ClassStatement(GrammarPhrase):
         # Statements
         statements = StatementsPhraseItem.Extract(cast(Node, nodes[13]))
 
+        # TODO: Leverage attributes and statements
+
         # Commit the data
         object.__setattr__(
             node,
             "Info",
-            cls.NodeInfo(
+            # pylint: disable=too-many-function-args
+            ClassStatementLexerInfo(
                 token_lookup,
-                attributes,
-                visibility,
-                class_modifier,
+                visibility,  # type: ignore
+                class_modifier,  # type: ignore
                 class_type,
                 class_name,
                 base_info,
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, []),
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, []),
-                statements,
             ),
         )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
+    _CreateClassTypePhraseItem              = staticmethod(ModifierImpl.CreateByValueCreatePhraseItemFunc(ClassType))
+    _ExtractClassType                       = staticmethod(ModifierImpl.CreateByValueExtractFunc(ClassType))
+
+    # ----------------------------------------------------------------------
     @classmethod
     def _ExtractBaseInfo(
         cls,
         node: Node,
-    ) -> List["ClassStatement.BaseInfo"]:
+    ) -> List[ClassDependencyLexerInfo]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 3
 
-        results: List[ClassStatement.BaseInfo] = []
+        results: List[ClassDependencyLexerInfo] = []
 
         for base_item in itertools.chain(
             [nodes[0]],
@@ -427,7 +383,7 @@ class ClassStatement(GrammarPhrase):
             visibility_node = cast(Optional[Node], base_items[0])
 
             if visibility_node is not None:
-                visibility = VisibilityModifier.Extract(ExtractOptional(visibility_node))
+                visibility = VisibilityModifier.Extract(cast(Node, ExtractOptional(visibility_node)))
                 token_lookup["Visibility"] = visibility_node
             else:
                 visibility = None
@@ -440,7 +396,7 @@ class ClassStatement(GrammarPhrase):
             # Commit the results
             results.append(
                 # <Too many positional arguments> pylint: disable=too-many-function-args
-                cls.BaseInfo(
+                ClassDependencyLexerInfo(
                     token_lookup,
                     visibility,  # type: ignore
                     name,

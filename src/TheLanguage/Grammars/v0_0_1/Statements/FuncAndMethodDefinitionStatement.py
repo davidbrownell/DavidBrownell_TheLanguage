@@ -36,11 +36,11 @@ with InitRelativeImports():
     from .ClassStatement import ClassStatement
 
     from ..Common import AttributesPhraseItem
-    from ..Common.ClassModifier import ClassModifier
+    from ..Common import ClassModifier
     from ..Common import ParametersPhraseItem
     from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
-    from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Common import VisibilityModifier
 
     from ..Common.Impl.ModifierBase import ModifierBase
 
@@ -172,12 +172,12 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     @dataclass(frozen=True, repr=False)
     class NodeInfo(GrammarPhrase.NodeInfo):
         Attributes: Any                                                     # Defined in AttributesPhrseItem.py
-        Visibility: Optional[VisibilityModifier]
+        Visibility: Optional[VisibilityModifier.Enum]
         MethodType: Optional["FuncAndMethodDefinitionStatement.MethodType"]
         ReturnType: Union[Leaf, Node]
         Name: Union[str, "FuncAndMethodDefinitionStatement.OperatorType"]
         Parameters: Any                                                     # Defined in ParametersPhraseItem.py
-        ClassModifier: Optional[ClassModifier]
+        ClassModifier: Optional[ClassModifier.Enum]
         Statements: Optional[List[Union[Leaf, Node]]]
 
         # ----------------------------------------------------------------------

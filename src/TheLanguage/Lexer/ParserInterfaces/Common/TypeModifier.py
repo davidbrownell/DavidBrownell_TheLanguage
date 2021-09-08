@@ -3,7 +3,7 @@
 # |  TypeModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-07 22:32:04
+# |      2021-09-07 22:30:47
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,20 +17,35 @@
 
 import os
 
-import CommonEnvironment
+from enum import auto, IntFlag
 
-from CommonEnvironmentEx.Package import InitRelativeImports
+import CommonEnvironment
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-with InitRelativeImports():
-    from .Impl import ModifierImpl
-    from ....Lexer.ParserInterfaces.Common.TypeModifier import TypeModifier as Enum
-
 
 # ----------------------------------------------------------------------
-CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(Enum)
-Extract                                     = ModifierImpl.CreateStandardExtractFunc(Enum)
+class TypeModifier(IntFlag):
+    """\
+    Modifies the behavior of a type.
+
+    |-----------|----------|--------|
+    |           | isolated | shared |
+    |-----------|----------|--------|
+    | mutable   |    var   |   ref  |
+    | immutable |    val   |  view  |
+    |-----------|----------|--------|
+    """
+
+    mutable                                 = auto()
+    immutable                               = auto()
+    isolated                                = auto()
+    shared                                  = auto()
+
+    var                                     = (mutable << 4) | isolated
+    ref                                     = (mutable << 4) | shared
+    val                                     = (immutable << 4) | isolated
+    view                                    = (immutable << 4) | shared

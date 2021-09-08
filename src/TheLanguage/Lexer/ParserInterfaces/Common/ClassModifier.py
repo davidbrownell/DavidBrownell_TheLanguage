@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeModifier.py
+# |  ClassModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-07 22:32:04
+# |      2021-09-07 15:27:09
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,24 +13,25 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality associated with type modifiers"""
+"""Contains the ClassModifier object"""
 
 import os
 
-import CommonEnvironment
+from enum import auto, Enum
 
-from CommonEnvironmentEx.Package import InitRelativeImports
+import CommonEnvironment
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-with InitRelativeImports():
-    from .Impl import ModifierImpl
-    from ....Lexer.ParserInterfaces.Common.TypeModifier import TypeModifier as Enum
-
 
 # ----------------------------------------------------------------------
-CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(Enum)
-Extract                                     = ModifierImpl.CreateStandardExtractFunc(Enum)
+class ClassModifier(Enum):  # type: ignore
+    """\
+    Modifies the mutability of a method or attribute.
+    """
+
+    immutable                               = auto()
+    mutable                                 = auto()

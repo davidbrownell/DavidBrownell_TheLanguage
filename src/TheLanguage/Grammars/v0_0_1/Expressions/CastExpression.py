@@ -27,7 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.TypeModifier import TypeModifier
+    from ..Common import TypeModifier
     from ...GrammarPhrase import GrammarPhrase
     from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
 

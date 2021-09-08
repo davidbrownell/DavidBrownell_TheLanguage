@@ -17,9 +17,6 @@
 
 import os
 
-from enum import auto
-from typing import cast
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -30,15 +27,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Impl.ModifierBase import ModifierBase
+    from .Impl import ModifierImpl
+    from ....Lexer.ParserInterfaces.Common.VisibilityModifier import VisibilityModifier as Enum
 
 
 # ----------------------------------------------------------------------
-class VisibilityModifier(ModifierBase):  # type: ignore
-    """\
-    Modifies the external visibility of a function, method, class attribute, etc.
-    """
-
-    private                                 = auto()
-    protected                               = auto()
-    public                                  = auto()
+CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(Enum)
+Extract                                     = ModifierImpl.CreateStandardExtractFunc(Enum)

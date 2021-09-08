@@ -13,12 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FileModifier object"""
+"""Functionality associated with class modifiers"""
 
 import os
-
-from enum import auto
-from typing import cast
 
 import CommonEnvironment
 
@@ -30,14 +27,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Impl.ModifierBase import ModifierBase
+    from .Impl import ModifierImpl
+    from ....Lexer.ParserInterfaces.Common.ClassModifier import ClassModifier as Enum
 
 
 # ----------------------------------------------------------------------
-class ClassModifier(ModifierBase):  # type: ignore
-    """\
-    Modifies the mutability of a method or attribute.
-    """
-
-    immutable                               = auto()
-    mutable                                 = auto()
+CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(Enum)
+Extract                                     = ModifierImpl.CreateStandardExtractFunc(Enum)

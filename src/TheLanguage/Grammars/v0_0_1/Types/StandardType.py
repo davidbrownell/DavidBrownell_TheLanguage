@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ..Common.TypeModifier import TypeModifier
+    from ..Common import TypeModifier
     from ...GrammarPhrase import GrammarPhrase, ValidationError
     from ....Parser.Phrases.DSL import (
         CreatePhrase,

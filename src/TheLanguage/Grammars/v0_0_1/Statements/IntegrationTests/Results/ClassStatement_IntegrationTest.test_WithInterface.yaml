@@ -182,17 +182,16 @@ Children:
                 IterBegin: "[1, 37] (36)"
                 IterEnd: "[4, 1] (48)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
+              ClassModifier: None
+              ClassType: "ClassType.Class"
               Interfaces:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
+                - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface1"
                   Visibility: None
               Mixins: []
-              Modifier: None
               Name: "Class1"
-              Type: "ClassType.Class"
               Visibility: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[4, 1] (48)"
@@ -398,17 +397,16 @@ Children:
                 IterBegin: "[4, 38] (85)"
                 IterEnd: "[7, 1] (97)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
+              ClassModifier: None
+              ClassType: "ClassType.Class"
               Interfaces:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
+                - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface2"
                   Visibility: None
               Mixins: []
-              Modifier: None
               Name: "Class2"
-              Type: "ClassType.Class"
               Visibility: None
             IterBegin: "[4, 1] (48)"
             IterEnd: "[7, 1] (97)"
@@ -599,17 +597,16 @@ Children:
                 IterBegin: "[9, 1] (138)"
                 IterEnd: "[12, 1] (150)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
+              ClassModifier: None
+              ClassType: "ClassType.Class"
               Interfaces:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
+                - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface3"
                   Visibility: None
               Mixins: []
-              Modifier: None
               Name: "Class3"
-              Type: "ClassType.Class"
               Visibility: None
             IterBegin: "[7, 1] (97)"
             IterEnd: "[12, 1] (150)"
@@ -813,17 +810,16 @@ Children:
                 IterBegin: "[14, 1] (192)"
                 IterEnd: "[17, 1] (204)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
+              ClassModifier: None
+              ClassType: "ClassType.Class"
               Interfaces:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
+                - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface4"
                   Visibility: None
               Mixins: []
-              Modifier: None
               Name: "Class4"
-              Type: "ClassType.Class"
               Visibility: None
             IterBegin: "[12, 1] (150)"
             IterEnd: "[17, 1] (204)"
@@ -1034,17 +1030,16 @@ Children:
                 IterBegin: "[19, 1] (252)"
                 IterEnd: "[22, 1] (264)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
+              ClassModifier: None
+              ClassType: "ClassType.Class"
               Interfaces:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
+                - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface5"
                   Visibility: "VisibilityModifier.public"
               Mixins: []
-              Modifier: None
               Name: "Class5"
-              Type: "ClassType.Class"
               Visibility: None
             IterBegin: "[17, 1] (204)"
             IterEnd: "[22, 1] (264)"
@@ -1258,17 +1253,16 @@ Children:
                 IterBegin: "[22, 39] (302)"
                 IterEnd: "[25, 1] (314)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
+              ClassModifier: None
+              ClassType: "ClassType.Class"
               Interfaces:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
+                - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface6"
                   Visibility: None
               Mixins: []
-              Modifier: None
               Name: "Class6"
-              Type: "ClassType.Class"
               Visibility: None
             IterBegin: "[22, 1] (264)"
             IterEnd: "[25, 1] (314)"
@@ -1493,17 +1487,16 @@ Children:
                 IterBegin: "[29, 1] (372)"
                 IterEnd: "[31, 1] (383)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
               Base: None
+              ClassModifier: None
+              ClassType: "ClassType.Class"
               Interfaces:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ClassStatement.ClassStatement.BaseInfo'>
+                - # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface7"
                   Visibility: None
               Mixins: []
-              Modifier: None
               Name: "Class7"
-              Type: "ClassType.Class"
               Visibility: None
             IterBegin: "[25, 1] (314)"
             IterEnd: "[31, 1] (383)"

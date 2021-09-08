@@ -33,6 +33,8 @@ with InitRelativeImports():
     from .....Parser.Phrases.DSL import ExtractOr, ExtractToken, Leaf, Node
 
 
+# TODO: This will eventually go away in favor of ModifierMixin
+
 # ----------------------------------------------------------------------
 def CreateModifierBaseClass(
     by_value=False,

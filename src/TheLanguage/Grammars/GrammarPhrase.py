@@ -52,7 +52,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class ValidationError(Error):
-    """Extend the Error baase class to include ending line and column attributes"""
+    """Extend the Error base class to include ending line and column attributes"""
 
     LineEnd: int
     ColumnEnd: int
