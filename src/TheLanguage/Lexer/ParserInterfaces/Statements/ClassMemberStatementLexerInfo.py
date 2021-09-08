@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ClassMemberStatementLexerInfo object"""
+"""Contains the ClassMemberStatementLexerInfo object and exceptions"""
 
 import os
 
-from typing import Any, Optional, List
+from typing import Any, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ClassStatementLexerInfo import ClassStatementLexerInfo, TYPE_INFOS
+    from .ClassStatementLexerInfo import ClassStatementLexerInfo
 
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
@@ -86,6 +86,10 @@ class ClassMemberStatementLexerInfo(LexerInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, class_lexer_info, visibility, class_modifier):
+        self.ValidateTokenLookup(
+            fields_to_skip=set(["Visibility", "ClassModifier"]),
+        )
+
         if class_lexer_info is None:
             raise InvalidClassMemberError.FromNode(
                 self.TokenLookup["self"],

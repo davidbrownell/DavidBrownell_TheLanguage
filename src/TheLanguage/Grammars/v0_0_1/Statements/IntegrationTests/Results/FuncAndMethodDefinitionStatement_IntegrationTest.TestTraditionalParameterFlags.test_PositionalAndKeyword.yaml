@@ -578,10 +578,9 @@ Children:
                 IterBegin: "[1, 50] (49)"
                 IterEnd: "[3, 1] (60)"
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
-              MethodType: None
+              MethodType: "MethodType.standard"
               Name: "Func"
               Parameters:
                 ParametersType.pos:
@@ -750,20 +749,8 @@ Children:
                       IterBegin: "[1, 44] (43)"
                       IterEnd: "[1, 47] (46)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-              ReturnType: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
-                    IterBegin: "[1, 1] (0)"
-                    IterEnd: "[1, 4] (3)"
-                    Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(0, 3), match='Int'>"
-                    Whitespace: None
-                IterBegin: "[1, 1] (0)"
-                IterEnd: "[1, 4] (3)"
-                Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-              Visibility: None
+              Type: None
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (60)"
             Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

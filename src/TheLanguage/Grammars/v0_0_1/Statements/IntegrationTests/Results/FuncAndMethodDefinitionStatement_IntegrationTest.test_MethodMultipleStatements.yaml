@@ -296,26 +296,13 @@ Children:
                                             IterBegin: "[2, 17] (29)"
                                             IterEnd: "[7, 1] (71)"
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
-                                        Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-                                          Attributes: []
-                                          ClassModifier: None
-                                          MethodType: None
+                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                                          ClassModifier: "ClassModifier.immutable"
+                                          MethodType: "MethodType.standard"
                                           Name: "Method"
                                           Parameters: {}
-                                          ReturnType: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                            Children:
-                                              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                IsIgnored: False
-                                                IterBegin: "[2, 5] (17)"
-                                                IterEnd: "[2, 8] (20)"
-                                                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                  Match: "<_sre.SRE_Match object; span=(17, 20), match='Int'>"
-                                                Whitespace: None
-                                            IterBegin: "[2, 5] (17)"
-                                            IterEnd: "[2, 8] (20)"
-                                            Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Visibility: None
+                                          Type: None
+                                          Visibility: "VisibilityModifier.private"
                                         IterBegin: "[2, 5] (17)"
                                         IterEnd: "[7, 1] (71)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

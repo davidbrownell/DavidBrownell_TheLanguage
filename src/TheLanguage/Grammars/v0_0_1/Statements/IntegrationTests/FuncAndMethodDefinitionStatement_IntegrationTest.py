@@ -247,7 +247,6 @@ def test_MethodType():
                         pass
 
                     abstract Int AbstractMethod()
-                    deferred Int DeferredMethod()
 
                     virtual Int VirtualMethod():
                         pass
@@ -260,6 +259,9 @@ def test_MethodType():
 
                     Int DefaultMethod():
                         pass
+
+                primitive Bar():
+                    deferred Int DeferredMethod()
                 """,
             ),
         ),
@@ -272,7 +274,7 @@ def test_ClassModifier():
         Execute(
             textwrap.dedent(
                 """\
-                class Foo():
+                mutable class Foo():
                     Int ImmutableMethod() immutable:
                         pass
 
@@ -309,10 +311,8 @@ def test_Deferred():
         Execute(
             textwrap.dedent(
                 """\
-                class Foo():
+                primitive Foo():
                     public deferred Int PublicDeferredMethod()
-                    protected deferred Bool ProtectedDeferredMethod()
-                    private deferred Char PrivateDeferredMethod()
                 """,
             ),
         ),

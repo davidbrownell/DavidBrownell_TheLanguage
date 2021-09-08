@@ -31,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassStatement import ClassStatement
+    from .FuncAndMethodDefinitionStatement import FuncAndMethodDefinitionStatement
 
     from ..Common import AttributesPhraseItem
     from ..Common import Tokens as CommonTokens
@@ -195,7 +196,10 @@ class ClassMemberStatement(GrammarPhrase):
                 # pylint: disable=too-many-function-args
                 ClassMemberStatementLexerInfo(
                     token_lookup,
-                    ClassStatement.GetContainingClassLexerInfo(node),
+                    ClassStatement.GetContainingClassLexerInfo(
+                        node,
+                        FuncAndMethodDefinitionStatement.PHRASE_NAME,
+                    ),  # type: ignore
                     visibility,  # type: ignore
                     type_info,
                     name,

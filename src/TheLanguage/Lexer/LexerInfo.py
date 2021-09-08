@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Optional, Set, Tuple, Union
 
 from dataclasses import (
     dataclass,
@@ -46,15 +46,12 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
     TokenLookup: Dict[str, Union[Leaf, Node]]
 
     # ----------------------------------------------------------------------
-    def __post_init__(
+    def ValidateTokenLookup(
         self,
-        **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
+        fields_to_skip: Optional[Set[str]]=None,
     ):
-        # Ensure that the derived class has been created correctly
-        assert (  # type: ignore
-            hasattr(self, DATACLASS_PARAMS)
-            and not getattr(self, DATACLASS_PARAMS).repr,
-        ), "Derived classes should be based on `dataclass` with `repr` set to `False`"
+        if fields_to_skip is None:
+            fields_to_skip = set()
 
         assert "self" in self.TokenLookup
 
@@ -64,6 +61,9 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
                 continue
 
             if field.type == Any:
+                continue
+
+            if field.name in fields_to_skip:
                 continue
 
             value = getattr(self, field.name)
@@ -79,14 +79,28 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
             if isinstance(value, (Node, LexerInfo)):
                 continue
 
-            if field.name in custom_display_funcs and custom_display_funcs[field.name] is None:
-                continue
-
             assert field.name in self.TokenLookup, ("Missing item in TokenLookup", field.name)
 
         # Ensure that all the lookup values are not None
         for k, v in self.TokenLookup.items():
             assert v is not None, k
+
+    # ----------------------------------------------------------------------
+    def __post_init__(
+        self,
+        **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
+    ):
+        # Ensure that the derived class has been created correctly
+        assert \
+            hasattr(self, DATACLASS_PARAMS) \
+            and not getattr(self, DATACLASS_PARAMS).repr \
+        , "Derived classes should be based on `dataclass` with `repr` set to `False`"
+
+        self.ValidateTokenLookup(
+            fields_to_skip=set(
+                k for k, v in custom_display_funcs.items() if v is None
+            ),
+        )
 
         YamlRepr.ObjectReprImplBase.__init__(
             self,

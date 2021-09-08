@@ -17,7 +17,7 @@
 
 import os
 
-from enum import Enum
+from enum import auto, Enum
 from typing import Dict, Optional, List, Union
 
 from dataclasses import dataclass, field, InitVar
@@ -35,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
+
     from ...LexerInfo import Error, LexerInfo
 
     from ....Parser.Components.AST import Leaf, Node
@@ -66,6 +67,21 @@ class ClassType(Enum):
     Mixin                                   = "mixin"
 
     # TODO: Enum doesn't seem to fit here
+
+
+# ----------------------------------------------------------------------
+class MethodType(Enum):  # type: ignore
+    """\
+    Modifies how a method should be consumed
+    """
+
+    standard                                = auto()
+    deferred                                = auto()
+    static                                  = auto()
+    abstract                                = auto()
+    virtual                                 = auto()
+    override                                = auto()
+    final                                   = auto()
 
 
 # ----------------------------------------------------------------------
@@ -119,12 +135,41 @@ class InvalidMemberClassModifierError(Error):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidMutableClassModifierError(Error):
-    ClassName: str
     ClassType: str
     Modifier: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Modifier}' is not a valid member modifier for '{ClassName}', which is an immutable '{ClassType}' type.",
+        "'{Modifier}' is not a valid member modifier for an immutable '{ClassType} type.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidBaseError(Error):
+    ClassType: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Base classes cannot be used with '{ClassType}' types.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidInterfacesError(Error):
+    ClassType: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Interfaces cannot be used with '{ClassType}' types.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidMixinsError(Error):
+    ClassType: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Mixins cannot be used with '{ClassType}' types.",
     )
 
 
@@ -140,8 +185,8 @@ class TypeInfo(object):
     DefaultClassModifier: ClassModifier
     AllowedClassModifiers: List[ClassModifier]
 
-    # TODO: DefaultMethodType: MethodType
-    # TODO: AllowedMethodTypes: List[MethodType]
+    DefaultMethodType: MethodType
+    AllowedMethodTypes: List[MethodType]
 
     AllowDataMembers: bool
     AllowMutablePublicDataMembers: bool
@@ -160,6 +205,7 @@ class TypeInfo(object):
 # ----------------------------------------------------------------------
 _all_visibilities                           = list(VisibilityModifier)
 _all_class_modifiers                        = list(ClassModifier)
+_non_deferred_method_types                  = [m for m in MethodType if m != MethodType.deferred]
 
 TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
     ClassType.Primitive: TypeInfo(
@@ -171,6 +217,9 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
 
         ClassModifier.immutable,
         _all_class_modifiers,
+
+        MethodType.deferred,
+        [MethodType.deferred],
 
         AllowDataMembers=True,
         AllowMutablePublicDataMembers=False,
@@ -189,6 +238,9 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
         ClassModifier.immutable,
         _all_class_modifiers,
 
+        MethodType.standard,
+        _non_deferred_method_types,
+
         AllowDataMembers=True,
         AllowMutablePublicDataMembers=False,
         AllowBases=True,
@@ -205,6 +257,9 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
 
         ClassModifier.mutable,
         [ClassModifier.mutable],
+
+        MethodType.standard,
+        _non_deferred_method_types,
 
         AllowDataMembers=True,
         AllowMutablePublicDataMembers=True,
@@ -223,6 +278,9 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
         ClassModifier.immutable,
         [ClassModifier.immutable],
 
+        MethodType.standard,
+        _non_deferred_method_types,
+
         AllowDataMembers=True,
         AllowMutablePublicDataMembers=False,
         AllowBases=True,
@@ -239,6 +297,9 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
 
         ClassModifier.immutable,
         _all_class_modifiers,
+
+        MethodType.standard,
+        _non_deferred_method_types,
 
         AllowDataMembers=True,
         AllowMutablePublicDataMembers=False,
@@ -257,6 +318,9 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
         ClassModifier.immutable,
         _all_class_modifiers,
 
+        MethodType.abstract,
+        [m for m in _non_deferred_method_types if m != MethodType.static],
+
         AllowDataMembers=False,
         AllowMutablePublicDataMembers=False,
         AllowBases=False,
@@ -274,6 +338,9 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
         ClassModifier.immutable,
         _all_class_modifiers,
 
+        MethodType.standard,
+        _non_deferred_method_types,
+
         AllowDataMembers=True,
         AllowMutablePublicDataMembers=False,
         AllowBases=True,
@@ -282,6 +349,7 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
     ),
 }
 
+del _non_deferred_method_types
 del _all_class_modifiers
 del _all_visibilities
 
@@ -296,6 +364,10 @@ class ClassDependencyLexerInfo(LexerInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, visibility):
+        self.ValidateTokenLookup(
+            fields_to_skip=set(["Visibility"]),
+        )
+
         # Set default values and validate as necessary
         if visibility is None:
             visibility = VisibilityModifier.private
@@ -326,6 +398,10 @@ class ClassStatementLexerInfo(LexerInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, visibility, class_modifier):
+        self.ValidateTokenLookup(
+            fields_to_skip=set(["Visibility", "ClassModifier", "TypeInfo"]),
+        )
+
         type_info = TYPE_INFOS[self.ClassType]
 
         # Set default values and validate as necessary
@@ -353,6 +429,25 @@ class ClassStatementLexerInfo(LexerInfo):
                 ", ".join(["'{}'".format(m.name) for m in type_info.AllowedClassModifiers]),
             )
 
+        # Validate bases, interfaces, and mixins
+        if self.Base is not None and not type_info.AllowBases:
+            raise InvalidBaseError.FromNode(
+                self.Base.TokenLookup["self"],
+                self.ClassType.value,
+            )
+
+        if self.Interfaces and not type_info.AllowInterfaces:
+            raise InvalidInterfacesError.FromNode(
+                self.Interfaces[0].TokenLookup["self"],
+                self.ClassType.value,
+            )
+
+        if self.Mixins and not type_info.AllowMixins:
+            raise InvalidMixinsError.FromNode(
+                self.Mixins[0].TokenLookup["self"],
+                self.ClassType.value,
+            )
+
         # Set the values
         object.__setattr__(self, "TypeInfo", type_info)
         object.__setattr__(self, "Visibility", visibility)
@@ -376,7 +471,7 @@ class ClassStatementLexerInfo(LexerInfo):
                 token_lookup[token_lookup_key_name],
                 self.ClassType.value,
                 visibility.name,
-                ", ".join(["'{}'".format(v) for v in self.TypeInfo.AllowedMemberVisibilities]),
+                ", ".join(["'{}'".format(v.name) for v in self.TypeInfo.AllowedMemberVisibilities]),
             )
 
     # ----------------------------------------------------------------------
@@ -393,7 +488,7 @@ class ClassStatementLexerInfo(LexerInfo):
                 token_lookup[token_lookup_key_name],
                 self.ClassType.value,
                 class_modifier.name,
-                ", ".join(["'{}'".format(m) for m in self.TypeInfo.AllowedClassModifiers]),
+                ", ".join(["'{}'".format(m.name) for m in self.TypeInfo.AllowedClassModifiers]),
             )
 
         if (
@@ -402,7 +497,6 @@ class ClassStatementLexerInfo(LexerInfo):
         ):
             raise InvalidMutableClassModifierError.FromNode(
                 token_lookup[token_lookup_key_name],
-                self.Name,
                 self.ClassType.value,
                 class_modifier.name,
             )

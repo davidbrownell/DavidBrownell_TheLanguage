@@ -360,14 +360,21 @@ class ClassStatement(GrammarPhrase):
     def GetContainingClassLexerInfo(
         cls,
         child_node: Node,
+        # Taking this as a parameter to avoid circular dependencies, as
+        # FuncAndMethodDefinitionStatement.py imports this file.
+        func_and_method_statement_name: str,
     ) -> Optional[ClassStatementLexerInfo]:
         """Returns the LexerInfo for the class that contains the given node"""
 
-        node = child_node
+        node = child_node.Parent
 
         while node is not None:
-            if node.Type and node.Type.Name == cls.PHRASE_NAME:
-                return getattr(node, "Info")
+            if node.Type:
+                if node.Type.Name == cls.PHRASE_NAME:
+                    return getattr(node, "Info")
+
+                if node.Type.Name == func_and_method_statement_name:
+                    return None
 
             node = node.Parent
 

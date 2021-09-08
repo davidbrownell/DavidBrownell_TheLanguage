@@ -17,8 +17,7 @@
 
 import os
 
-from enum import auto, Enum
-from typing import Any, cast, Dict, List, Optional, Union
+from typing import cast, Dict, Optional, Union
 
 from dataclasses import dataclass
 
@@ -42,9 +41,15 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
-    from ..Common.Impl.ModifierBase import ModifierBase
+    from ..Common.Impl import ModifierImpl
 
     from ...GrammarPhrase import GrammarPhrase, ValidationError
+
+    from ....Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo import (
+        FuncAndMethodDefinitionStatementLexerInfo,
+        MethodType,
+        OperatorType,
+    )
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -83,108 +88,80 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
-    class MethodType(ModifierBase):  # type: ignore
-        standard                            = auto()
-        deferred                            = auto()
-        static                              = auto()
-        abstract                            = auto()
-        virtual                             = auto()
-        override                            = auto()
-        final                               = auto()
-
-    # ----------------------------------------------------------------------
-    class OperatorType(Enum):
-        """\
-        Note that operators are defined as '__<enum_name>__' such as '__ToBool__',
-        '__Compare__", and "__Add__".
-        """
-
+    OperatorNameMap                         = {
         # Foundational
-        ToBool                              = auto()
-        ToString                            = auto()
-        Repr                                = auto()
-        Clone                               = auto()
-        Serialize                           = auto()
+        OperatorType.ToBool: "__ToBool__",
+        OperatorType.ToString: "__ToString__",
+        OperatorType.Repr: "__Repr__",
+        OperatorType.Clone: "__Clone__",
+        OperatorType.Serialize: "__Serialize__",
 
-        Init                                = auto()
-        PostInit                            = auto()
+        OperatorType.Init: "__Init__",
+        OperatorType.PostInit: "__PostInit__",
 
         # Dynamic
-        GetAttribute                        = auto()
-        Call                                = auto()
-        Cast                                = auto()
-        Index                               = auto()
+        OperatorType.GetAttribute: "__GetAttribute__",
+        OperatorType.Call: "__Call__",
+        OperatorType.Cast: "__Cast__",
+        OperatorType.Index: "__Index__",
 
         # Container
-        Contains                            = auto()
-        Length                              = auto()
-        Iter                                = auto()
-        AtEnd                               = auto()
+        OperatorType.Contains: "__Contains__",
+        OperatorType.Length: "__Length__",
+        OperatorType.Iter: "__Iter__",
+        OperatorType.AtEnd: "__AtEnd__",
 
         # Comparison
-        Compare                             = auto()
-        Equal                               = auto()
-        NotEqual                            = auto()
-        Less                                = auto()
-        LessEqual                           = auto()
-        Greater                             = auto()
-        GreaterEqual                        = auto()
+        OperatorType.Compare: "__Compare__",
+        OperatorType.Equal: "__Equal__",
+        OperatorType.NotEqual: "__NotEqual__",
+        OperatorType.Less: "__Less__",
+        OperatorType.LessEqual: "__LessEqual__",
+        OperatorType.Greater: "__Greater__",
+        OperatorType.GreaterEqual: "__GreaterEqual__",
 
         # Logical
-        And                                 = auto()
-        Or                                  = auto()
-        Not                                 = auto()
+        OperatorType.And: "__And__",
+        OperatorType.Or: "__Or__",
+        OperatorType.Not: "__Not__",
 
         # Mathematical
-        Add                                 = auto()
-        Subtract                            = auto()
-        Multiply                            = auto()
-        Divide                              = auto()
-        DivideFloor                         = auto()
-        Power                               = auto()
-        Mod                                 = auto()
-        Positive                            = auto()
-        Negative                            = auto()
+        OperatorType.Add: "__Add__",
+        OperatorType.Subtract: "__Subtract__",
+        OperatorType.Multiply: "__Multiply__",
+        OperatorType.Divide: "__Divide__",
+        OperatorType.DivideFloor: "__DivideFloor__",
+        OperatorType.Power: "__Power__",
+        OperatorType.Mod: "__Mod__",
+        OperatorType.Positive: "__Positive__",
+        OperatorType.Negative: "__Negative__",
 
-        AddInplace                          = auto()
-        SubtractInplace                     = auto()
-        MultiplyInplace                     = auto()
-        DivideInplace                       = auto()
-        DivideFloorInplace                  = auto()
-        PowerInplace                        = auto()
-        ModInplace                          = auto()
+        OperatorType.AddInplace: "__AddInplace__",
+        OperatorType.SubtractInplace: "__SubtractInplace__",
+        OperatorType.MultiplyInplace: "__MultiplyInplace__",
+        OperatorType.DivideInplace: "__DivideInplace__",
+        OperatorType.DivideFloorInplace: "__DivideFloorInplace__",
+        OperatorType.PowerInplace: "__PowerInplace__",
+        OperatorType.ModInplace: "__ModInplace__",
 
         # Bit Manipulation
-        ShiftLeft                           = auto()
-        ShiftRight                          = auto()
-        BitAnd                              = auto()
-        BitOr                               = auto()
-        BitXor                              = auto()
-        BitFlip                             = auto()
+        OperatorType.ShiftLeft: "__ShiftLeft__",
+        OperatorType.ShiftRight: "__ShiftRight__",
+        OperatorType.BitAnd: "__BitAnd__",
+        OperatorType.BitOr: "__BitOr__",
+        OperatorType.BitXor: "__BitXor__",
+        OperatorType.BitFlip: "__BitFlip__",
 
-        ShiftLeftInplace                    = auto()
-        ShiftRightInplace                   = auto()
-        BitAndInplace                       = auto()
-        BitOrInplace                        = auto()
-        BitXorInplace                       = auto()
+        OperatorType.ShiftLeftInplace: "__ShiftLeftInplace__",
+        OperatorType.ShiftRightInplace: "__ShiftRightInplace__",
+        OperatorType.BitAndInplace: "__BitAndInplace__",
+        OperatorType.BitOrInplace: "__BitOrInplace__",
+        OperatorType.BitXorInplace: "__BitXorInplace__",
+    }
 
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True, repr=False)
-    class NodeInfo(GrammarPhrase.NodeInfo):
-        Attributes: Any                                                     # Defined in AttributesPhrseItem.py
-        Visibility: Optional[VisibilityModifier.Enum]
-        MethodType: Optional["FuncAndMethodDefinitionStatement.MethodType"]
-        ReturnType: Union[Leaf, Node]
-        Name: Union[str, "FuncAndMethodDefinitionStatement.OperatorType"]
-        Parameters: Any                                                     # Defined in ParametersPhraseItem.py
-        ClassModifier: Optional[ClassModifier.Enum]
-        Statements: Optional[List[Union[Leaf, Node]]]
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            super(FuncAndMethodDefinitionStatement.NodeInfo, self).__post_init__(
-                Statements=None,
-            )
+    NameOperatorMap                         = {
+        v: k for k, v in OperatorNameMap.items()
+    }
 
     # ----------------------------------------------------------------------
     # |
@@ -192,6 +169,13 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     def __init__(self):
+        # Ensure that the OperatorNameMap is fully populated
+        for v in OperatorType:
+            assert v in self.OperatorNameMap, v
+
+        assert len(self.OperatorNameMap) == len(list(OperatorType))
+
+        # Initialize the phrase
         super(FuncAndMethodDefinitionStatement, self).__init__(
             GrammarPhrase.Type.Statement,
             CreatePhrase(
@@ -207,10 +191,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                         arity="?",
                     ),
 
-                    # <method_type>?
+                    # <method_type_modifier>?
                     PhraseItem(
                         name="Method Type",
-                        item=FuncAndMethodDefinitionStatement.MethodType.CreatePhraseItem(),
+                        item=self._CreateMethodTypePhraseItem(),
                         arity="?",
                     ),
 
@@ -262,25 +246,25 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
 
         # <visibility>?
-        visibility_node = cast(Optional[Node], nodes[1])
+        visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
 
         if visibility_node is not None:
-            visibility = VisibilityModifier.Extract(ExtractOptional(visibility_node))
+            visibility = VisibilityModifier.Extract(visibility_node)
             token_lookup["Visibility"] = visibility_node
         else:
             visibility = None
 
-        # <method_type>?
-        method_type_node = cast(Optional[Node], nodes[2])
+        # <method_type_modifier>?
+        method_type_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
 
-        if method_type_node is not None:
-            method_type = cls.MethodType.Extract(ExtractOptional(method_type_node))
-            token_lookup["MethodType"] = method_type_node
+        if method_type_modifier_node is not None:
+            method_type_modifier = cls._ExtractMethodType(method_type_modifier_node)
+            token_lookup["MethodType"] = method_type_modifier_node
         else:
-            method_type = None
+            method_type_modifier = None
 
-        # <type>
-        return_type = ExtractDynamic(cast(Node, nodes[3]))
+        # <type> (The LexerInfo will be extracted as part of a deferred callback)
+        type_node = ExtractDynamic(cast(Node, nodes[3]))
 
         # <name>
         method_name_leaf = cast(Leaf, nodes[4])
@@ -288,19 +272,26 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         token_lookup["Name"] = method_name_leaf
 
         if method_name.startswith("__") and method_name.endswith("__"):
-            try:
-                method_name = cls.OperatorType[method_name[2:-2]]
-            except KeyError:
-                raise InvalidOperatorNameError.FromNode(method_name_leaf, method_name)
+            operator_name = cls.NameOperatorMap.get(method_name, None)
+            if operator_name is None:
+                raise InvalidOperatorNameError.FromNode(
+                    method_name_leaf,
+                    method_name,
+                )
+
+            method_name = operator_name
 
         # <parameters>
-        parameters = ParametersPhraseItem.Extract(cast(Node, nodes[5]))
+        parameters_node = cast(Node, nodes[5])
+
+        parameters = ParametersPhraseItem.Extract(parameters_node)
+        token_lookup["Parameters"] = parameters_node
 
         # <class_modifier>?
-        class_modifier_node = cast(Optional[Node], nodes[6])
+        class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[6])))
 
         if class_modifier_node is not None:
-            class_modifier = ClassModifier.Extract(ExtractOptional(class_modifier_node))
+            class_modifier = ClassModifier.Extract(class_modifier_node)
             token_lookup["ClassModifier"] = class_modifier_node
         else:
             class_modifier = None
@@ -313,19 +304,41 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         else:
             statements = StatementsPhraseItem.Extract(statements_node)
 
-        # Commit the data
-        object.__setattr__(
-            node,
-            "Info",
-            cls.NodeInfo(
-                token_lookup,
-                attributes,
-                visibility,
-                method_type,
-                return_type,
-                method_name,
-                parameters,
-                class_modifier,
-                statements,
-            ),
-        )
+        # TODO: Leverage attributes
+
+        # ----------------------------------------------------------------------
+        def CommitLexerInfo():
+            # Get the type LexerInfo
+            type_info = None
+
+            # TODO: Get the parameters LexerInfo
+
+            object.__setattr__(
+                node,
+                "Info",
+                # pylint: disable=too-many-function-args
+                FuncAndMethodDefinitionStatementLexerInfo(
+                    token_lookup,
+                    ClassStatement.GetContainingClassLexerInfo(
+                        node,
+                        cls.PHRASE_NAME,
+                    ),  # type: ignore
+                    visibility,  # type: ignore
+                    method_type_modifier,  # type: ignore
+                    type_info,
+                    method_name,
+                    parameters,  # type: ignore # TODO
+                    class_modifier,  # type: ignore
+                    statements is not None,  # type: ignore
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ValidateSyntaxResult(CommitLexerInfo)
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    _CreateMethodTypePhraseItem             = staticmethod(ModifierImpl.CreateStandardCreatePhraseItemFunc(MethodType))
+    _ExtractMethodType                      = staticmethod(ModifierImpl.CreateStandardExtractFunc(MethodType))

@@ -172,46 +172,13 @@ Children:
                 IterBegin: "[1, 16] (15)"
                 IterEnd: "[4, 1] (27)"
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
-              MethodType: None
+              MethodType: "MethodType.standard"
               Name: "Func1"
               Parameters: {}
-              ReturnType: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
-                    IterBegin: "[1, 1] (0)"
-                    IterEnd: "[1, 4] (3)"
-                    Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(0, 3), match='Int'>"
-                    Whitespace: None
-                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                    Children:
-                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                        Children:
-                          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                            IsIgnored: False
-                            IterBegin: "[1, 5] (4)"
-                            IterEnd: "[1, 8] (7)"
-                            Type: "'var' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                              Match: "<_sre.SRE_Match object; span=(4, 7), match='var'>"
-                            Whitespace:
-                              - 3
-                              - 4
-                        IterBegin: "[1, 5] (4)"
-                        IterEnd: "[1, 8] (7)"
-                        Type: "Modifier <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
-                    IterBegin: "[1, 5] (4)"
-                    IterEnd: "[1, 8] (7)"
-                    Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                IterBegin: "[1, 1] (0)"
-                IterEnd: "[1, 8] (7)"
-                Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-              Visibility: None
+              Type: None
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[4, 1] (27)"
             Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -393,46 +360,13 @@ Children:
                 IterBegin: "[4, 18] (44)"
                 IterEnd: "[6, 1] (55)"
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.FuncAndMethodDefinitionStatement.FuncAndMethodDefinitionStatement.NodeInfo'>
-              Attributes: []
+            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
-              MethodType: None
+              MethodType: "MethodType.standard"
               Name: "Func2"
               Parameters: {}
-              ReturnType: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                Children:
-                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                    IsIgnored: False
-                    IterBegin: "[4, 1] (27)"
-                    IterEnd: "[4, 5] (31)"
-                    Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(27, 31), match='Char'>"
-                    Whitespace: None
-                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                    Children:
-                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                        Children:
-                          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                            IsIgnored: False
-                            IterBegin: "[4, 6] (32)"
-                            IterEnd: "[4, 10] (36)"
-                            Type: "'view' <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                              Match: "<_sre.SRE_Match object; span=(32, 36), match='view'>"
-                            Whitespace:
-                              - 31
-                              - 32
-                        IterBegin: "[4, 6] (32)"
-                        IterEnd: "[4, 10] (36)"
-                        Type: "Modifier <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
-                    IterBegin: "[4, 6] (32)"
-                    IterEnd: "[4, 10] (36)"
-                    Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                IterBegin: "[4, 1] (27)"
-                IterEnd: "[4, 10] (36)"
-                Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-              Visibility: None
+              Type: None
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[4, 1] (27)"
             IterEnd: "[6, 1] (55)"
             Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
