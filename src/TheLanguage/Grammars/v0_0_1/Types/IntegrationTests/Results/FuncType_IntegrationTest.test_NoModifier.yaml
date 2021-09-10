@@ -89,6 +89,45 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(7, 8), match=')'>"
                             Whitespace: None
+                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.FuncTypeLexerInfo.FuncTypeLexerData'>
+                            Parameters: None
+                            ReturnType: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                Modifier: None
+                                TypeName: "Int"
+                              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                Modifier: None
+                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 2
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 5
+                                    Line: 1
+                                TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 2
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 5
+                                    Line: 1
+                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.FuncTypeLexerInfo.FuncTypeLexerRegions'>
+                            Parameters: None
+                            ReturnType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 2
+                                Line: 1
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 5
+                                Line: 1
+                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 1
+                                Line: 1
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 9
+                                Line: 1
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 9] (8)"
                         Type: "Func Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -227,7 +266,7 @@ Children:
                 MethodType: "MethodType.standard"
                 Name: "Func"
                 Parameters: {}
-                Type: None
+                ReturnType: None
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
                 ClassModifier: None
@@ -252,6 +291,7 @@ Children:
                   End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 16
                     Line: 1
+                ReturnType: None
                 Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1
@@ -259,7 +299,6 @@ Children:
                   End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1
                     Line: 3
-                Type: None
                 Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1

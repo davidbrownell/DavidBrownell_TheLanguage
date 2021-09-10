@@ -26,7 +26,6 @@ from dataclasses import (
 )
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 from CommonEnvironment import YamlRepr
 
 # ----------------------------------------------------------------------

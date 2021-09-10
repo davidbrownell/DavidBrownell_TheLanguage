@@ -354,7 +354,7 @@ Children:
                 MethodType: "MethodType.standard"
                 Name: "Func"
                 Parameters: {}
-                Type: None
+                ReturnType: None
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
                 ClassModifier: None
@@ -379,6 +379,7 @@ Children:
                   End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 24
                     Line: 1
+                ReturnType: None
                 Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1
@@ -386,7 +387,6 @@ Children:
                   End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1
                     Line: 3
-                Type: None
                 Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1

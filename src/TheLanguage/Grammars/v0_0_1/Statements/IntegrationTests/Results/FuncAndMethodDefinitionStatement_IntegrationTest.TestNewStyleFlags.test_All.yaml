@@ -1166,7 +1166,7 @@ Children:
                         IterBegin: "[8, 9] (103)"
                         IterEnd: "[8, 13] (107)"
                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                Type: None
+                ReturnType: None
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
                 ClassModifier: None
@@ -1191,6 +1191,7 @@ Children:
                   End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 2
                     Line: 9
+                ReturnType: None
                 Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1
@@ -1198,7 +1199,6 @@ Children:
                   End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1
                     Line: 11
-                Type: None
                 Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1

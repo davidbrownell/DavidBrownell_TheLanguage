@@ -15,9 +15,13 @@
 # ----------------------------------------------------------------------
 """Contains the FuncType object"""
 
+import itertools
 import os
 
+from typing import cast, List, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,11 +32,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Lexer.ParserInterfaces.Types.FuncTypeLexerInfo import (
+        FuncTypeLexerData,
+        FuncTypeLexerRegions,
+    )
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractOptional,
+        ExtractRepeat,
+        ExtractSequence,
+        Leaf,
+        Node,
         PhraseItem,
     )
 
@@ -51,7 +67,6 @@ class FuncType(GrammarPhrase):
 
     # <TODOS> pylint: disable=W0511
     # TODO: Add exception and coroutine decorations
-    # TODO: Add support for new-style-args
 
     PHRASE_NAME                               = "Func Type"
 
@@ -68,6 +83,8 @@ class FuncType(GrammarPhrase):
 
                     # <type> (return)
                     DynamicPhrasesType.Types,
+
+                    # TODO: This phrase needs some work; make close to other parameters
 
                     # '(' (inner)
                     "(",
@@ -106,3 +123,60 @@ class FuncType(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ValidateSyntax(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 8
+
+            # <type>
+            return_type_node = ExtractDynamic(cast(Node, nodes[2]))
+
+            # <parameters>
+            parameters = []
+            parameters_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
+
+            if parameters_node is not None:
+                parameters_nodes = ExtractSequence(parameters_node)
+                assert len(parameters_nodes) == 3
+
+                for parameter_node in itertools.chain(
+                    [parameters_nodes[0]],
+                    [
+                        ExtractSequence(parameter_node)[1]
+                        for parameter_node in cast(
+                            List[Node],
+                            ExtractRepeat(cast(Node, parameters_nodes[1])),
+                        )
+                    ],
+                ):
+                    parameter_node = ExtractDynamic(cast(Node, parameter_node))
+                    parameters.append(GetLexerInfo(parameter_node))
+
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
+                node,
+                (
+                    FuncTypeLexerData(
+                        GetLexerInfo(return_type_node),
+                        parameters or None,
+                    ),
+                    CreateLexerRegions(
+                        FuncTypeLexerRegions,  # type: ignore
+                        node,
+                        return_type_node,
+                        parameters_node,
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)

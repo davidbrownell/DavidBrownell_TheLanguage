@@ -196,7 +196,7 @@ class InvalidClassModifierOnStaticError(LexerError):
 class FuncAndMethodDefinitionStatementLexerData(LexerData):
     Visibility: VisibilityModifier
     MethodType: MethodType
-    Type: Any # TODO: TypeLexerInfo
+    ReturnType: Any # TODO: TypeLexerInfo
     Name: Union[str, OperatorType]
     Parameters: List[Any] # TODO: ExprLexerInfo
     ClassModifier: Optional[ClassModifierType]
@@ -207,7 +207,7 @@ class FuncAndMethodDefinitionStatementLexerData(LexerData):
 class FuncAndMethodDefinitionStatementLexerRegions(LexerRegions):
     Visibility: Region
     MethodType: Region
-    Type: Optional[Region] # TODO: Region
+    ReturnType: Optional[Region] # TODO: Region
     Name: Region
     Parameters: Region
     ClassModifier: Optional[Region]
