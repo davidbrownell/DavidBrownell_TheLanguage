@@ -443,6 +443,7 @@ class ClassStatementLexerData(StatementLexerData):
     ):
         assert visibility is not None
 
+        # pylint: disable=no-member
         if visibility not in self.TypeInfo.AllowedMemberVisibilities:
             raise InvalidMemberVisibilityError(
                 visibility_region,

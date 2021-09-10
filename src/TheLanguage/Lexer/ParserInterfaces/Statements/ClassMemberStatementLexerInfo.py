@@ -63,16 +63,6 @@ class DataMembersNotSupportedError(LexerError):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class PublicMutableDataMembersNotSupportedError(LexerError):
-    ClassType: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "Public mutable data members are not supported for '{ClassType}' types.",
-    )
-
-
-# ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ClassMemberStatementLexerData(StatementLexerData):
     Visibility: VisibilityModifier
@@ -80,6 +70,11 @@ class ClassMemberStatementLexerData(StatementLexerData):
     Name: str
     ClassModifier: ClassModifier
     DefaultValue: Optional[ExpressionLexerInfo]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Name
+        super(ClassMemberStatementLexerData, self).__post_init__()
 
 
 # ----------------------------------------------------------------------
@@ -121,7 +116,7 @@ class ClassMemberStatementLexerInfo(StatementLexerInfo):
 
         # Set default values and validate as necessary
         if not class_lexer_info.Data.TypeInfo.AllowDataMembers:
-            raise DataMembersNotSupportedError(self.Regions.Self__, class_lexer_info.Classtype.value)
+            raise DataMembersNotSupportedError(self.Regions.Self__, class_lexer_info.Data.ClassType.value)
 
         if visibility is None:
             visibility = class_lexer_info.Data.TypeInfo.DefaultMemberVisibility
@@ -134,13 +129,6 @@ class ClassMemberStatementLexerInfo(StatementLexerInfo):
             object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)
 
         class_lexer_info.Data.ValidateMemberClassModifier(class_modifier, self.Regions.ClassModifier)
-
-        if (
-            visibility == VisibilityModifier.public
-            and class_modifier == ClassModifier.mutable
-            and not class_lexer_info.Data.TypeInfo.AllowMutablePublicDataMembers
-        ):
-            raise PublicMutableDataMembersNotSupportedError(self.Regions.Visibility, class_lexer_info.ClassType.value)
 
         # Set the values
         object.__setattr__(
