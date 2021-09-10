@@ -128,7 +128,7 @@ class InvalidFunctionMethodTypeError(LexerError):
     MethodType: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{MethodType}' is not supported on functions.",
+        "'{MethodType}' is not supported for functions.",
     )
 
 
@@ -136,7 +136,7 @@ class InvalidFunctionMethodTypeError(LexerError):
 @dataclass(frozen=True)
 class InvalidFunctionClassModifierError(LexerError):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "Class modifiers are not supported on functions.",
+        "Class modifiers are not supported for functions.",
     )
 
 
@@ -184,7 +184,7 @@ class InvalidMethodTypeError(LexerError):
 @dataclass(frozen=True)
 class InvalidClassModifierOnStaticError(LexerError):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "Class modifiers are not supported on 'static' methods.",
+        "Class modifiers are not supported for 'static' methods.",
     )
 
 
@@ -197,6 +197,11 @@ class FuncAndMethodDefinitionStatementLexerData(StatementLexerData):
     Name: Union[str, OperatorType]
     Parameters: List[Any]
     ClassModifier: Optional[ClassModifierType]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert isinstance(self.Name, OperatorType) or self.Name
+        super(FuncAndMethodDefinitionStatementLexerData, self).__post_init__()
 
 
 # ----------------------------------------------------------------------
@@ -274,7 +279,7 @@ class FuncAndMethodDefinitionStatementLexerInfo(StatementLexerInfo):
             if method_type not in class_lexer_info.Data.TypeInfo.AllowedMethodTypes:
                 raise InvalidMethodTypeError(
                     self.Regions.MethodType,
-                    class_lexer_info.ClassType.value,
+                    class_lexer_info.Data.ClassType.value,
                     method_type.name,
                     ", ".join(["'{}'".format(m.name) for m in class_lexer_info.Data.TypeInfo.AllowedMethodTypes]),
                 )
