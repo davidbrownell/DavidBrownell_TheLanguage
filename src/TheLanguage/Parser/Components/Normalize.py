@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Error import Error
+    from .ParserError import ParserError
 
 
 # ----------------------------------------------------------------------
@@ -44,14 +44,14 @@ with InitRelativeImports():
 # |
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidTabsAndSpacesNormalizeError(Error):
+class InvalidTabsAndSpacesNormalizeError(ParserError):
     MessageTemplate                         = Interface.DerivedProperty("The spaces and/or tabs used to indent this line differ from the spaces and/or tabs used on previous lines.")  # type: ignore
 
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class NoClosingMultilineTokenError(Error):
+class NoClosingMultilineTokenError(ParserError):
     MessageTemplate                         = Interface.DerivedProperty("A closing token was not found to match this multi-line opening token.")  # type: ignore
 
 

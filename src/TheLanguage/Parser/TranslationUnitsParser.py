@@ -36,9 +36,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Components.AST import Leaf, Node, RootNode    # Note that Leaf isn't used in this file but is here as a convenience
-    from .Components.Error import Error
     from .Components.Normalize import Normalize
     from .Components.NormalizedIterator import NormalizedIterator
+    from .Components.ParserError import ParserError
     from .Components.Phrase import Phrase
 
     from .TranslationUnitParser import (
@@ -50,7 +50,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class UnknownSourceError(Error):
+class UnknownSourceError(ParserError):
     SourceName: str
 
     MessageTemplate                         = Interface.DerivedProperty("'{SourceName}' could not be found")  # type: ignore
