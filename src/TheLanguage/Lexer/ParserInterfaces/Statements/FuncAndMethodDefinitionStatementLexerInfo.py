@@ -34,17 +34,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassStatementLexerInfo import ClassStatementLexerInfo, MethodType
+    from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
 
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
     from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Expressions.ExpressionLexerInfo import ExpressionLexerInfo
+    from ..Types.TypeLexerInfo import TypeLexerInfo
 
-    from ...LexerInfo import (
-        LexerData,
-        LexerRegions,
-        LexerInfo,
-        Region,
-    )
-
+    from ...LexerInfo import LexerRegions, Region
     from ...Components.LexerError import LexerError
 
 
@@ -193,12 +190,12 @@ class InvalidClassModifierOnStaticError(LexerError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncAndMethodDefinitionStatementLexerData(LexerData):
+class FuncAndMethodDefinitionStatementLexerData(StatementLexerData):
     Visibility: VisibilityModifier
     MethodType: MethodType
-    ReturnType: Any # TODO: TypeLexerInfo
+    ReturnType: TypeLexerInfo
     Name: Union[str, OperatorType]
-    Parameters: List[Any] # TODO: ExprLexerInfo
+    Parameters: List[Any]
     ClassModifier: Optional[ClassModifierType]
 
 
@@ -207,7 +204,7 @@ class FuncAndMethodDefinitionStatementLexerData(LexerData):
 class FuncAndMethodDefinitionStatementLexerRegions(LexerRegions):
     Visibility: Region
     MethodType: Region
-    ReturnType: Optional[Region] # TODO: Region
+    ReturnType: Region
     Name: Region
     Parameters: Region
     ClassModifier: Optional[Region]
@@ -215,7 +212,7 @@ class FuncAndMethodDefinitionStatementLexerRegions(LexerRegions):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncAndMethodDefinitionStatementLexerInfo(LexerInfo):
+class FuncAndMethodDefinitionStatementLexerInfo(StatementLexerInfo):
     Data: FuncAndMethodDefinitionStatementLexerData     = field(init=False)
     Regions: FuncAndMethodDefinitionStatementLexerRegions
 
@@ -223,9 +220,9 @@ class FuncAndMethodDefinitionStatementLexerInfo(LexerInfo):
 
     visibility: InitVar[Optional[VisibilityModifier]]
     method_type: InitVar[Optional[MethodType]]
-    return_type: InitVar[Optional[Any]] # TODO: TypeLexerInfo
+    return_type: InitVar[TypeLexerInfo]
     name: InitVar[str]
-    parameters: InitVar[List[Any]] # TODO: ExprLexerInfo
+    parameters: InitVar[ExpressionLexerInfo]
     class_modifier: InitVar[Optional[ClassModifierType]]
     has_statements: InitVar[bool]
 

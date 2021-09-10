@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import Dict, Optional, List, Union
+from typing import Dict, Optional, List
 
 from dataclasses import dataclass, field, InitVar
 
@@ -33,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
+
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
 
@@ -389,15 +391,19 @@ class ClassDependencyLexerInfo(LexerInfo):
             visibility = VisibilityModifier.private
             object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)
 
-        # Set the values
-        object.__setattr__(self, "Data", ClassDependencyLexerData(visibility, name))  # type: ignore
+        # pylint: disable=too-many-function-args
+        object.__setattr__(
+            self,
+            "Data",
+            ClassDependencyLexerData(visibility, name),
+        )
 
         super(ClassDependencyLexerInfo, self).__post_init__()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassStatementLexerData(LexerData):
+class ClassStatementLexerData(StatementLexerData):
     Visibility: VisibilityModifier
     ClassModifier: ClassModifier
     ClassType: ClassType
@@ -472,7 +478,7 @@ class ClassStatementLexerRegions(LexerRegions):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassStatementLexerInfo(LexerInfo):
+class ClassStatementLexerInfo(StatementLexerInfo):
     Data: ClassStatementLexerData           = field(init=False)
     Regions: ClassStatementLexerRegions
 

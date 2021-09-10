@@ -40,7 +40,7 @@ with InitRelativeImports():
 
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import SetLexerInfo
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.ParserInterfaces.Statements.ClassMemberStatementLexerInfo import (
         ClassMemberStatementLexerInfo,
         ClassMemberStatementLexerRegions,
@@ -176,16 +176,12 @@ class ClassMemberStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
         def CommitLexerInfo():
-            nonlocal default_node # TODO
-
-            # Get the return_type TypeLexerInfo
-            type_info = None # TODO
-            type_node = None # TODO
+            nonlocal default_node # TODO: Remove this
 
             # Get the default ExprLexerInfo
             if default_node is not None:
-                default_info = None # TODO
-                default_node = None # TODO
+                default_node = None
+                default_info = None # TODO (expr) GetLexerInfo(default_node)
             else:
                 default_info = None
 
@@ -207,7 +203,7 @@ class ClassMemberStatement(GrammarPhrase):
                         FuncAndMethodDefinitionStatement.PHRASE_NAME,
                     ),
                     visibility,  # type: ignore
-                    type_info,  # type: ignore
+                    GetLexerInfo(type_node),  # type: ignore
                     name,  # type: ignore
                     class_modifier,  # type: ignore
                     default_info,  # type: ignore

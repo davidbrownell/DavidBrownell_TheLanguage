@@ -35,7 +35,7 @@ with InitRelativeImports():
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.ParserInterfaces.Types.VariantTypeLexerInfo import (
-        LexerInfo,
+        TypeLexerInfo,
         VariantTypeLexerData,
         VariantTypeLexerRegions,
     )
@@ -46,7 +46,6 @@ with InitRelativeImports():
         ExtractDynamic,
         ExtractRepeat,
         ExtractSequence,
-        Leaf,
         Node,
         PhraseItem,
     )
@@ -115,20 +114,20 @@ class VariantType(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 8
 
-            types: List[LexerInfo] = []
+            types: List[TypeLexerInfo] = []
 
             # <type>
-            types.append(GetLexerInfo(ExtractDynamic(cast(Node, nodes[2]))))
+            types.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, nodes[2])))))
 
             # (<type> '|') *
             for child in cast(List[Node], ExtractRepeat(cast(Node, nodes[4]))):
                 child_nodes = ExtractSequence(child)
                 assert len(child_nodes) == 2
 
-                types.append(GetLexerInfo(ExtractDynamic(cast(Node, child_nodes[0]))))
+                types.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, child_nodes[0])))))
 
             # <type>
-            types.append(GetLexerInfo(ExtractDynamic(cast(Node, nodes[5]))))
+            types.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, nodes[5])))))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(

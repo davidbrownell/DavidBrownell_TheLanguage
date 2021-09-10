@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNameLexerInfo.py
+# |  StatementLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:42:59
+# |      2021-09-09 23:11:24
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNameLexerInfo object"""
+"""Contains the StatementLexerData and StatementLexerInfo objects"""
 
 import os
-
-from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,19 +30,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NameLexerInfo import NameLexerData, NameLexerInfo
-    from ...LexerInfo import LexerRegions, Region
+    from ...LexerInfo import LexerData, LexerInfo, LexerRegions
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerData(NameLexerData):
-    Names: List[NameLexerInfo]
-
-    # TODO (Validation): Check for unique names
+class StatementLexerData(LexerData, Interface.Interface):
+    """Abstract base class for all statement-related lexer data"""
+    pass
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerRegions(LexerRegions):
-    Names: Region
+class StatementLexerInfo(LexerInfo, Interface.Interface):
+    """Abstract base class for all statement-related lexer info"""
+
+    Data: StatementLexerData
+    Regions: LexerRegions
