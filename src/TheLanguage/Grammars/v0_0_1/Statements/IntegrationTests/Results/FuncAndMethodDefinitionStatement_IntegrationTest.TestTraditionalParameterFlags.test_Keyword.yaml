@@ -20,7 +20,7 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(0, 3), match='Int'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Int"
@@ -93,7 +93,7 @@ Children:
                                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                       Match: "<_sre.SRE_Match object; span=(9, 12), match='Int'>"
                                                     Whitespace: None
-                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                     Modifier: None
                                                     TypeName: "Int"
@@ -231,7 +231,7 @@ Children:
                                                             Whitespace:
                                                               - 18
                                                               - 19
-                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                             Modifier: None
                                                             TypeName: "Int"
@@ -342,7 +342,7 @@ Children:
                                                             Whitespace:
                                                               - 25
                                                               - 26
-                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                             Modifier: None
                                                             TypeName: "Int"
@@ -591,7 +591,7 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(9, 12), match='Int'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Int"
@@ -663,7 +663,7 @@ Children:
                             Whitespace:
                               - 18
                               - 19
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Int"
@@ -734,7 +734,7 @@ Children:
                             Whitespace:
                               - 25
                               - 26
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Int"

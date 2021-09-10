@@ -228,7 +228,7 @@ Children:
                                                                     Whitespace:
                                                                       - 45
                                                                       - 46
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int1"
@@ -376,7 +376,7 @@ Children:
                                                                     Whitespace:
                                                                       - 72
                                                                       - 73
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int2"
@@ -524,7 +524,7 @@ Children:
                                                                     Whitespace:
                                                                       - 99
                                                                       - 100
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int3"

@@ -20,7 +20,7 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(0, 3), match='Int'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Int"
@@ -93,7 +93,7 @@ Children:
                                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                       Match: "<_sre.SRE_Match object; span=(10, 14), match='Bool'>"
                                                     Whitespace: None
-                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                     Modifier: None
                                                     TypeName: "Bool"
@@ -203,7 +203,7 @@ Children:
                                                             Whitespace:
                                                               - 18
                                                               - 19
-                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                             Modifier: None
                                                             TypeName: "Char"
@@ -314,7 +314,7 @@ Children:
                                                             Whitespace:
                                                               - 27
                                                               - 28
-                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                             Modifier: None
                                                             TypeName: "Double"
@@ -563,7 +563,7 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(10, 14), match='Bool'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Bool"
@@ -634,7 +634,7 @@ Children:
                             Whitespace:
                               - 18
                               - 19
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Char"
@@ -705,7 +705,7 @@ Children:
                             Whitespace:
                               - 27
                               - 28
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Double"
@@ -817,7 +817,7 @@ Children:
                             IterBegin: "[4, 5] (54)"
                             IterEnd: "[4, 8] (57)"
                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: TypeModifier.var
                             TypeName: "Int"
@@ -916,7 +916,7 @@ Children:
                                                     IterBegin: "[4, 20] (69)"
                                                     IterEnd: "[4, 23] (72)"
                                                     Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                     Modifier: TypeModifier.var
                                                     TypeName: "Bool"
@@ -1052,7 +1052,7 @@ Children:
                                                             IterBegin: "[4, 33] (82)"
                                                             IterEnd: "[4, 37] (86)"
                                                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                             Modifier: TypeModifier.view
                                                             TypeName: "Char"
@@ -1189,7 +1189,7 @@ Children:
                                                             IterBegin: "[4, 49] (98)"
                                                             IterEnd: "[4, 52] (101)"
                                                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                             Modifier: TypeModifier.val
                                                             TypeName: "Double"
@@ -1464,7 +1464,7 @@ Children:
                             IterBegin: "[4, 20] (69)"
                             IterEnd: "[4, 23] (72)"
                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: TypeModifier.var
                             TypeName: "Bool"
@@ -1561,7 +1561,7 @@ Children:
                             IterBegin: "[4, 33] (82)"
                             IterEnd: "[4, 37] (86)"
                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: TypeModifier.view
                             TypeName: "Char"
@@ -1658,7 +1658,7 @@ Children:
                             IterBegin: "[4, 49] (98)"
                             IterEnd: "[4, 52] (101)"
                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: TypeModifier.val
                             TypeName: "Double"

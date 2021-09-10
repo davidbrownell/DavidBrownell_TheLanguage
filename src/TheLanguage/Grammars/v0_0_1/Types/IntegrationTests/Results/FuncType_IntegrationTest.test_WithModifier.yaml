@@ -54,7 +54,7 @@ Children:
                                         IterBegin: "[1, 6] (5)"
                                         IterEnd: "[1, 9] (8)"
                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                         Modifier: TypeModifier.var
                                         TypeName: "Int"
@@ -118,7 +118,7 @@ Children:
                         Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.FuncTypeLexerInfo.FuncTypeLexerData'>
                             Parameters: None
-                            ReturnType: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                            ReturnType: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                 Modifier: TypeModifier.var
                                 TypeName: "Int"
@@ -401,7 +401,7 @@ Children:
                                         IterBegin: "[4, 7] (38)"
                                         IterEnd: "[4, 11] (42)"
                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                         Modifier: TypeModifier.view
                                         TypeName: "Char"
@@ -464,7 +464,7 @@ Children:
                                                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                   Match: "<_sre.SRE_Match object; span=(44, 47), match='Int'>"
                                                 Whitespace: None
-                                            Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
                                                 TypeName: "Int"
@@ -541,7 +541,7 @@ Children:
                                                         IterBegin: "[4, 23] (54)"
                                                         IterEnd: "[4, 26] (57)"
                                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                         Modifier: TypeModifier.var
                                                         TypeName: "Bool"
@@ -605,7 +605,7 @@ Children:
                                                         Whitespace:
                                                           - 58
                                                           - 59
-                                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                         Modifier: None
                                                         TypeName: "Double"
@@ -665,7 +665,7 @@ Children:
                         Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.FuncTypeLexerInfo.FuncTypeLexerData'>
                             Parameters:
-                              - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                   Modifier: None
                                   TypeName: "Int"
@@ -685,7 +685,7 @@ Children:
                                     End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                       Column: 16
                                       Line: 4
-                              - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                   Modifier: TypeModifier.var
                                   TypeName: "Bool"
@@ -711,7 +711,7 @@ Children:
                                     End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                       Column: 22
                                       Line: 4
-                              - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                   Modifier: None
                                   TypeName: "Double"
@@ -731,7 +731,7 @@ Children:
                                     End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                       Column: 34
                                       Line: 4
-                            ReturnType: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                            ReturnType: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                 Modifier: TypeModifier.view
                                 TypeName: "Char"

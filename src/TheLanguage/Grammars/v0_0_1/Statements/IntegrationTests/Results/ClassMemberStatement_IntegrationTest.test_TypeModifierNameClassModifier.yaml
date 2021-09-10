@@ -120,7 +120,7 @@ Children:
                                                         Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                           Match: "<_sre.SRE_Match object; span=(25, 28), match='Int'>"
                                                         Whitespace: None
-                                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                         Modifier: None
                                                         TypeName: "Int"
@@ -193,7 +193,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             DefaultValue: None
                                             Name: "foo"
-                                            Type: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                            Type: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
                                                 TypeName: "Int"
@@ -300,7 +300,7 @@ Children:
                                                         IterBegin: "[3, 9] (51)"
                                                         IterEnd: "[3, 12] (54)"
                                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                         Modifier: TypeModifier.var
                                                         TypeName: "Int"
@@ -379,7 +379,7 @@ Children:
                                             ClassModifier: "ClassModifier.mutable"
                                             DefaultValue: None
                                             Name: "_bar"
-                                            Type: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                            Type: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: TypeModifier.var
                                                 TypeName: "Int"

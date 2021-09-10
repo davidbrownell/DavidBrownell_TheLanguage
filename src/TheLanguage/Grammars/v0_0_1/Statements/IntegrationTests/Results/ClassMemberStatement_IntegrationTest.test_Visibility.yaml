@@ -120,7 +120,7 @@ Children:
                                                         Whitespace:
                                                           - 24
                                                           - 25
-                                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                         Modifier: None
                                                         TypeName: "Char"
@@ -173,7 +173,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             DefaultValue: None
                                             Name: "value1"
-                                            Type: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                            Type: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
                                                 TypeName: "Char"
@@ -300,7 +300,7 @@ Children:
                                                         IterBegin: "[3, 20] (56)"
                                                         IterEnd: "[3, 23] (59)"
                                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                         Modifier: TypeModifier.var
                                                         TypeName: "Char"
@@ -432,7 +432,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             DefaultValue: None
                                             Name: "value2"
-                                            Type: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                            Type: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: TypeModifier.var
                                                 TypeName: "Char"
@@ -565,7 +565,7 @@ Children:
                                                         IterBegin: "[4, 17] (90)"
                                                         IterEnd: "[4, 20] (93)"
                                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                         Modifier: TypeModifier.var
                                                         TypeName: "Char"
@@ -717,7 +717,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             DefaultValue: None
                                             Name: "value3"
-                                            Type: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                            Type: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: TypeModifier.var
                                                 TypeName: "Char"

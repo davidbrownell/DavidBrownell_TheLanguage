@@ -144,7 +144,7 @@ Children:
                                             Whitespace:
                                               - 15
                                               - 16
-                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                             Modifier: None
                                             TypeName: "Int"
@@ -367,7 +367,7 @@ Children:
                                             IterBegin: "[2, 22] (41)"
                                             IterEnd: "[2, 25] (44)"
                                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
-                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                             Modifier: TypeModifier.val
                                             TypeName: "Char"
