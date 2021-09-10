@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariantTypeLexerInfo.py
+# |  TypeLexerInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 16:52:04
+# |      2021-09-10 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariantTypeLexerInfo object"""
+"""Unit test for TypeLexerInfo.py"""
 
 import os
 
-from typing import List
-
-from dataclasses import dataclass
+from dataclasses import fields
 
 import CommonEnvironment
 
@@ -31,23 +29,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
-    from ...LexerInfo import LexerRegions, Region
+    from ..TypeLexerInfo import *
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariantTypeLexerData(TypeLexerData):
-    Types: List[TypeLexerInfo]
+def test_Fields():
+    info_fields = set(field.name for field in fields(TypeLexerInfo))
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Types
-
-        super(VariantTypeLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariantTypeLexerRegions(LexerRegions):
-    Types: Region
+    assert info_fields == set(["Data", "Regions"])

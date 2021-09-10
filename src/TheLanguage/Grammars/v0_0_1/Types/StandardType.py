@@ -38,6 +38,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import SetLexerInfo
     from ....Lexer.ParserInterfaces.Types.StandardTypeLexerInfo import (
         StandardTypeLexerData,
+        StandardTypeLexerInfo,
         StandardTypeLexerRegions,
     )
 
@@ -111,7 +112,7 @@ class StandardType(GrammarPhrase):
         # pylint: disable=too-many-function-args
         SetLexerInfo(
             node,
-            (
+            StandardTypeLexerInfo(
                 StandardTypeLexerData(
                     type_name,
                     modifier,  # type: ignore
