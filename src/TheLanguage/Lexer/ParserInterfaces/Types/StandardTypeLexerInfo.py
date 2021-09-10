@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import cast, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -42,9 +42,10 @@ with InitRelativeImports():
 @dataclass(frozen=True)
 class InvalidModifierError(LexerError):
     Modifier: str
+    ValidModifiers: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Modifier}' cannot be applied to standard types in this context.",
+        "'{Modifier}' cannot be applied to standard types in this context; supported values are {ValidModifiers}.",
     )
 
 
@@ -70,15 +71,32 @@ class StandardTypeLexerInfo(TypeLexerInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        if self.Data.Modifier in [
+        invalid_modifiers = [
             TypeModifier.mutable,
             TypeModifier.immutable,
             TypeModifier.isolated,
             TypeModifier.shared,
             TypeModifier.ref,
-        ]:
+        ]
+
+        if self.Data.Modifier in invalid_modifiers:
             assert self.Regions.Modifier is not None
 
-            raise InvalidModifierError(self.Regions.Modifier, cast(str, self.Data.Modifier.name))
+            valid_modifiers = [m for m in TypeModifier if m not in invalid_modifiers]
+
+            raise InvalidModifierError(
+                self.Regions.Modifier,
+                cast(str, self.Data.Modifier.name),
+                ", ".join(["'{}'".format(m.name) for m in valid_modifiers]),
+            )
 
         super(StandardTypeLexerInfo, self).__post_init__()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def GetTypeModifier(self) -> Optional[Tuple[TypeModifier, Region]]:
+        if self.Data.Modifier is None:
+            return None
+
+        assert self.Regions.Modifier is not None
+        return self.Data.Modifier, self.Regions.Modifier

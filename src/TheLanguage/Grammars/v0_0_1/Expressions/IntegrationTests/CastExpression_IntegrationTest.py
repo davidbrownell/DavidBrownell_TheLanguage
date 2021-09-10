@@ -43,8 +43,8 @@ def test_Standard():
             textwrap.dedent(
                 """\
                 value1 = one as Int
-                value2 = two as Char val
-                value3 = three as var
+                value2 = two as Char
+                value3 = three as val
                 """,
             ),
         ),
