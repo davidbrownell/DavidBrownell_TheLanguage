@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Dict, List, Optional, Union
+from typing import Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,12 +33,9 @@ with InitRelativeImports():
     from ..Common.Impl.TupleBase import TupleBase
     from ...GrammarPhrase import GrammarPhrase
 
-    from ....Lexer.ParserInterfaces.Names.TupleNameLexerInfo import LexerInfo, TupleNameLexerInfo
+    from ....Lexer.ParserInterfaces.Names.TupleNameLexerInfo import TupleNameLexerInfo
 
-    from ....Parser.Phrases.DSL import (
-        Leaf,
-        Node,
-    )
+    from ....Parser.Phrases.DSL import Node
 
 
 # ----------------------------------------------------------------------
@@ -68,22 +65,13 @@ class TupleName(TupleBase):
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
-            token_lookup: Dict[str, Union[Leaf, Node]] = {
-                "self": node,
-            }
-
-            names: List[LexerInfo] = []
-
-            for child in cls.EnumNodeValues(node):
-                names.append(child.Info)  # type: ignore
-
             object.__setattr__(
                 node,
                 "Info",
                 # pylint: disable=too-many-function-args
                 TupleNameLexerInfo(
-                    token_lookup,
-                    names,
+                    { "self": node, },
+                    [child.Info for child in cls.EnumNodeValues(node)],  # type: ignore
                 ),
             )
 

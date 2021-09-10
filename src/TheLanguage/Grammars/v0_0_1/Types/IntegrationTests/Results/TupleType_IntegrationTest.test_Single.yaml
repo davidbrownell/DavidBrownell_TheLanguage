@@ -56,6 +56,9 @@ Children:
                                             IterBegin: "[1, 6] (5)"
                                             IterEnd: "[1, 9] (8)"
                                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                          Modifier: TypeModifier.var
+                                          TypeName: "Int"
                                         IterBegin: "[1, 2] (1)"
                                         IterEnd: "[1, 9] (8)"
                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -84,6 +87,11 @@ Children:
                             IterBegin: "[1, 1] (0)"
                             IterEnd: "[1, 11] (10)"
                             Type: "Single <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.TupleTypeLexerInfo.TupleTypeLexerInfo'>
+                          Types:
+                            - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                              Modifier: TypeModifier.var
+                              TypeName: "Int"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 11] (10)"
                         Type: "Tuple Type <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"

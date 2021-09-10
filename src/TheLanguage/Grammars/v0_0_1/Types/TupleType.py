@@ -17,7 +17,10 @@
 
 import os
 
+from typing import Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,6 +32,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common.Impl.TupleBase import TupleBase
     from ...GrammarPhrase import GrammarPhrase
+
+    from ....Lexer.ParserInterfaces.Types.TupleTypeLexerInfo import TupleTypeLexerInfo
+
+    from ....Parser.Phrases.DSL import Node
 
 
 # ----------------------------------------------------------------------
@@ -49,3 +56,26 @@ class TupleType(TupleBase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(TupleType, self).__init__(GrammarPhrase.Type.Type, self.PHRASE_NAME)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ValidateSyntax(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            object.__setattr__(
+                node,
+                "Info",
+                # pylint: disable=too-many-function-args
+                TupleTypeLexerInfo(
+                    { "self": node, },
+                    [child.Info for child in cls.EnumNodeValues(node)],  # type: ignore
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)

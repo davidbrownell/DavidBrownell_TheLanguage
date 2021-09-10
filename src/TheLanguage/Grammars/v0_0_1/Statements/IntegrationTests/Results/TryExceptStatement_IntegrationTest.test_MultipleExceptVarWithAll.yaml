@@ -150,6 +150,9 @@ Children:
                                     Whitespace:
                                       - 24
                                       - 25
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                  Modifier: None
+                                  TypeName: "Exception1"
                                 IterBegin: "[3, 8] (25)"
                                 IterEnd: "[3, 18] (35)"
                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -323,6 +326,9 @@ Children:
                                     Whitespace:
                                       - 66
                                       - 67
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                  Modifier: None
+                                  TypeName: "Exception2"
                                 IterBegin: "[5, 8] (67)"
                                 IterEnd: "[5, 18] (77)"
                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

@@ -20,6 +20,9 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(0, 3), match='Int'>"
                             Whitespace: None
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                          Modifier: None
+                          TypeName: "Int"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -73,6 +76,9 @@ Children:
                                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                       Match: "<_sre.SRE_Match object; span=(10, 14), match='Bool'>"
                                                     Whitespace: None
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                  Modifier: None
+                                                  TypeName: "Bool"
                                                 IterBegin: "[1, 11] (10)"
                                                 IterEnd: "[1, 15] (14)"
                                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -147,6 +153,9 @@ Children:
                                                             Whitespace:
                                                               - 18
                                                               - 19
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Modifier: None
+                                                          TypeName: "Char"
                                                         IterBegin: "[1, 20] (19)"
                                                         IterEnd: "[1, 24] (23)"
                                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -222,6 +231,9 @@ Children:
                                                             Whitespace:
                                                               - 27
                                                               - 28
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Modifier: None
+                                                          TypeName: "Double"
                                                         IterBegin: "[1, 29] (28)"
                                                         IterEnd: "[1, 35] (34)"
                                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -418,6 +430,9 @@ Children:
                           Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                             Match: "<_sre.SRE_Match object; span=(10, 14), match='Bool'>"
                           Whitespace: None
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: None
+                        TypeName: "Bool"
                       IterBegin: "[1, 11] (10)"
                       IterEnd: "[1, 15] (14)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -453,6 +468,9 @@ Children:
                           Whitespace:
                             - 18
                             - 19
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: None
+                        TypeName: "Char"
                       IterBegin: "[1, 20] (19)"
                       IterEnd: "[1, 24] (23)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -488,6 +506,9 @@ Children:
                           Whitespace:
                             - 27
                             - 28
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: None
+                        TypeName: "Double"
                       IterBegin: "[1, 29] (28)"
                       IterEnd: "[1, 35] (34)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -542,6 +563,9 @@ Children:
                             IterBegin: "[4, 5] (54)"
                             IterEnd: "[4, 8] (57)"
                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                          Modifier: TypeModifier.var
+                          TypeName: "Int"
                         IterBegin: "[4, 1] (50)"
                         IterEnd: "[4, 8] (57)"
                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -615,6 +639,9 @@ Children:
                                                     IterBegin: "[4, 20] (69)"
                                                     IterEnd: "[4, 23] (72)"
                                                     Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                  Modifier: TypeModifier.var
+                                                  TypeName: "Bool"
                                                 IterBegin: "[4, 15] (64)"
                                                 IterEnd: "[4, 23] (72)"
                                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -709,6 +736,9 @@ Children:
                                                             IterBegin: "[4, 33] (82)"
                                                             IterEnd: "[4, 37] (86)"
                                                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Modifier: TypeModifier.view
+                                                          TypeName: "Char"
                                                         IterBegin: "[4, 28] (77)"
                                                         IterEnd: "[4, 37] (86)"
                                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -804,6 +834,9 @@ Children:
                                                             IterBegin: "[4, 49] (98)"
                                                             IterEnd: "[4, 52] (101)"
                                                             Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Modifier: TypeModifier.val
+                                                          TypeName: "Double"
                                                         IterBegin: "[4, 42] (91)"
                                                         IterEnd: "[4, 52] (101)"
                                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1020,6 +1053,9 @@ Children:
                           IterBegin: "[4, 20] (69)"
                           IterEnd: "[4, 23] (72)"
                           Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: TypeModifier.var
+                        TypeName: "Bool"
                       IterBegin: "[4, 15] (64)"
                       IterEnd: "[4, 23] (72)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1075,6 +1111,9 @@ Children:
                           IterBegin: "[4, 33] (82)"
                           IterEnd: "[4, 37] (86)"
                           Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: TypeModifier.view
+                        TypeName: "Char"
                       IterBegin: "[4, 28] (77)"
                       IterEnd: "[4, 37] (86)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1130,6 +1169,9 @@ Children:
                           IterBegin: "[4, 49] (98)"
                           IterEnd: "[4, 52] (101)"
                           Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: TypeModifier.val
+                        TypeName: "Double"
                       IterBegin: "[4, 42] (91)"
                       IterEnd: "[4, 52] (101)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

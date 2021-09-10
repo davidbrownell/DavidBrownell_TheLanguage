@@ -150,6 +150,9 @@ Children:
                                     Whitespace:
                                       - 24
                                       - 25
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                  Modifier: None
+                                  TypeName: "Exception"
                                 IterBegin: "[3, 8] (25)"
                                 IterEnd: "[3, 17] (34)"
                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -473,6 +476,9 @@ Children:
                                                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                   Match: "<_sre.SRE_Match object; span=(79, 89), match='Exception1'>"
                                                 Whitespace: None
+                                            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                              Modifier: None
+                                              TypeName: "Exception1"
                                             IterBegin: "[8, 9] (79)"
                                             IterEnd: "[8, 19] (89)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -508,6 +514,9 @@ Children:
                                                 Whitespace:
                                                   - 91
                                                   - 92
+                                            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                              Modifier: None
+                                              TypeName: "Exception2"
                                             IterBegin: "[8, 22] (92)"
                                             IterEnd: "[8, 32] (102)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -525,6 +534,14 @@ Children:
                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                       Match: "<_sre.SRE_Match object; span=(102, 103), match=')'>"
                                     Whitespace: None
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.VariantTypeLexerInfo.VariantTypeLexerInfo'>
+                                  Types:
+                                    - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                      Modifier: None
+                                      TypeName: "Exception1"
+                                    - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                      Modifier: None
+                                      TypeName: "Exception2"
                                 IterBegin: "[8, 8] (78)"
                                 IterEnd: "[8, 33] (103)"
                                 Type: "Variant Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

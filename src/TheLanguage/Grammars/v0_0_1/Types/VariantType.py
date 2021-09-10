@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Dict, List, Optional, Union
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,7 +32,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+
+    from ....Lexer.ParserInterfaces.Types.VariantTypeLexerInfo import LexerInfo, VariantTypeLexerInfo
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractRepeat,
+        ExtractSequence,
+        Leaf,
+        Node,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -82,3 +97,49 @@ class VariantType(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ValidateSyntax(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            token_lookup: Dict[str, Union[Leaf, Node]] = {
+                "self": node,
+            }
+
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 8
+
+            types: List[LexerInfo] = []
+
+            # <type>
+            types.append(ExtractDynamic(cast(Node, nodes[2])).Info)  # type: ignore
+
+            # (<type> '|') *
+            for child in cast(List[Node], ExtractRepeat(cast(Node, nodes[4]))):
+                child_nodes = ExtractSequence(child)
+                assert len(child_nodes) == 2
+
+                types.append(ExtractDynamic(cast(Node, child_nodes[0])).Info)  # type: ignore
+
+            # <type>
+            types.append(ExtractDynamic(cast(Node, nodes[5])).Info)  # type: ignore
+
+            # Save the data
+            object.__setattr__(
+                node,
+                "Info",
+                # pylint: disable=too-many-function-args
+                VariantTypeLexerInfo(
+                    token_lookup,
+                    types,
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)

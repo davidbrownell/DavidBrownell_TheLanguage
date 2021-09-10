@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNameLexerInfo.py
+# |  TupleTypeLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:42:59
+# |      2021-09-08 16:39:29
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNameLexerInfo object"""
+"""Contains the TupleTypeLexerInfo object"""
 
 import os
 
@@ -36,7 +36,5 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerInfo(LexerInfo):
-    Names: List[LexerInfo]
-
-    # TODO: Check for unique names
+class TupleTypeLexerInfo(LexerInfo):
+    Types: List[LexerInfo]

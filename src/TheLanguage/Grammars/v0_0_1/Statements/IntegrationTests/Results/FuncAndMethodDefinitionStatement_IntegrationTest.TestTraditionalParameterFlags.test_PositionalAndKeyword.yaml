@@ -20,6 +20,9 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(0, 3), match='Int'>"
                             Whitespace: None
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                          Modifier: None
+                          TypeName: "Int"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -73,6 +76,9 @@ Children:
                                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                       Match: "<_sre.SRE_Match object; span=(9, 12), match='Int'>"
                                                     Whitespace: None
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                  Modifier: None
+                                                  TypeName: "Int"
                                                 IterBegin: "[1, 10] (9)"
                                                 IterEnd: "[1, 13] (12)"
                                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -175,6 +181,9 @@ Children:
                                                             Whitespace:
                                                               - 18
                                                               - 19
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Modifier: None
+                                                          TypeName: "Int"
                                                         IterBegin: "[1, 20] (19)"
                                                         IterEnd: "[1, 23] (22)"
                                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -250,6 +259,9 @@ Children:
                                                             Whitespace:
                                                               - 25
                                                               - 26
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Modifier: None
+                                                          TypeName: "Int"
                                                         IterBegin: "[1, 27] (26)"
                                                         IterEnd: "[1, 30] (29)"
                                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -353,6 +365,9 @@ Children:
                                                             Whitespace:
                                                               - 35
                                                               - 36
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Modifier: None
+                                                          TypeName: "Int"
                                                         IterBegin: "[1, 37] (36)"
                                                         IterEnd: "[1, 40] (39)"
                                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -428,6 +443,9 @@ Children:
                                                             Whitespace:
                                                               - 42
                                                               - 43
+                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Modifier: None
+                                                          TypeName: "Int"
                                                         IterBegin: "[1, 44] (43)"
                                                         IterEnd: "[1, 47] (46)"
                                                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -624,6 +642,9 @@ Children:
                           Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                             Match: "<_sre.SRE_Match object; span=(9, 12), match='Int'>"
                           Whitespace: None
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: None
+                        TypeName: "Int"
                       IterBegin: "[1, 10] (9)"
                       IterEnd: "[1, 13] (12)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -660,6 +681,9 @@ Children:
                           Whitespace:
                             - 18
                             - 19
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: None
+                        TypeName: "Int"
                       IterBegin: "[1, 20] (19)"
                       IterEnd: "[1, 23] (22)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -695,6 +719,9 @@ Children:
                           Whitespace:
                             - 25
                             - 26
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: None
+                        TypeName: "Int"
                       IterBegin: "[1, 27] (26)"
                       IterEnd: "[1, 30] (29)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -731,6 +758,9 @@ Children:
                           Whitespace:
                             - 35
                             - 36
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: None
+                        TypeName: "Int"
                       IterBegin: "[1, 37] (36)"
                       IterEnd: "[1, 40] (39)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -766,6 +796,9 @@ Children:
                           Whitespace:
                             - 42
                             - 43
+                      Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Modifier: None
+                        TypeName: "Int"
                       IterBegin: "[1, 44] (43)"
                       IterEnd: "[1, 47] (46)"
                       Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

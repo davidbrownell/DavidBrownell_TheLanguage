@@ -54,6 +54,9 @@ Children:
                                         IterBegin: "[1, 6] (5)"
                                         IterEnd: "[1, 9] (8)"
                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                      Modifier: TypeModifier.var
+                                      TypeName: "Int"
                                     IterBegin: "[1, 2] (1)"
                                     IterEnd: "[1, 9] (8)"
                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -291,6 +294,9 @@ Children:
                                         IterBegin: "[4, 7] (38)"
                                         IterEnd: "[4, 11] (42)"
                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                      Modifier: TypeModifier.view
+                                      TypeName: "Char"
                                     IterBegin: "[4, 2] (33)"
                                     IterEnd: "[4, 11] (42)"
                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -328,6 +334,9 @@ Children:
                                                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                   Match: "<_sre.SRE_Match object; span=(44, 47), match='Int'>"
                                                 Whitespace: None
+                                            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                              Modifier: None
+                                              TypeName: "Int"
                                             IterBegin: "[4, 13] (44)"
                                             IterEnd: "[4, 16] (47)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -385,6 +394,9 @@ Children:
                                                         IterBegin: "[4, 23] (54)"
                                                         IterEnd: "[4, 26] (57)"
                                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                      Modifier: TypeModifier.var
+                                                      TypeName: "Bool"
                                                     IterBegin: "[4, 18] (49)"
                                                     IterEnd: "[4, 26] (57)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -423,6 +435,9 @@ Children:
                                                         Whitespace:
                                                           - 58
                                                           - 59
+                                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                      Modifier: None
+                                                      TypeName: "Double"
                                                     IterBegin: "[4, 28] (59)"
                                                     IterEnd: "[4, 34] (65)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
