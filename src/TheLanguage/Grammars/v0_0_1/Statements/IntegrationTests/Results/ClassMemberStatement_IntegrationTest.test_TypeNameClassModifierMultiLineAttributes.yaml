@@ -516,7 +516,32 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             DefaultValue: None
                                             Name: "value3"
-                                            Type: None
+                                            Type: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                                Modifier: TypeModifier.var
+                                                TypeName: "Char"
+                                              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                                Modifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 10
+                                                    Line: 6
+                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 13
+                                                    Line: 6
+                                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 5
+                                                    Line: 6
+                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 13
+                                                    Line: 6
+                                                TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 5
+                                                    Line: 6
+                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 9
+                                                    Line: 6
                                             Visibility: "VisibilityModifier.private"
                                           Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
                                             ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
@@ -541,7 +566,13 @@ Children:
                                               End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                                 Column: 1
                                                 Line: 8
-                                            Type: None
+                                            Type: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                Column: 5
+                                                Line: 6
+                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                Column: 13
+                                                Line: 6
                                             Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                                 Column: 5
@@ -994,7 +1025,32 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             DefaultValue: None
                                             Name: "value4"
-                                            Type: None
+                                            Type: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                                Modifier: TypeModifier.var
+                                                TypeName: "Char"
+                                              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                                Modifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 10
+                                                    Line: 12
+                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 13
+                                                    Line: 12
+                                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 5
+                                                    Line: 12
+                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 13
+                                                    Line: 12
+                                                TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 5
+                                                    Line: 12
+                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                    Column: 9
+                                                    Line: 12
                                             Visibility: "VisibilityModifier.private"
                                           Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
                                             ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
@@ -1019,7 +1075,13 @@ Children:
                                               End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                                 Column: 1
                                                 Line: 13
-                                            Type: None
+                                            Type: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                Column: 5
+                                                Line: 12
+                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                Column: 13
+                                                Line: 12
                                             Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                                 Column: 5

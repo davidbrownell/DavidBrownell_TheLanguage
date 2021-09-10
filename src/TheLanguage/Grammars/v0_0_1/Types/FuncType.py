@@ -36,6 +36,7 @@ with InitRelativeImports():
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.ParserInterfaces.Types.FuncTypeLexerInfo import (
+        TypeLexerInfo,
         FuncTypeLexerData,
         FuncTypeLexerRegions,
     )
@@ -165,7 +166,7 @@ class FuncType(GrammarPhrase):
                 node,
                 (
                     FuncTypeLexerData(
-                        GetLexerInfo(return_type_node),
+                        cast(TypeLexerInfo, GetLexerInfo(return_type_node)),
                         parameters or None,
                     ),
                     CreateLexerRegions(

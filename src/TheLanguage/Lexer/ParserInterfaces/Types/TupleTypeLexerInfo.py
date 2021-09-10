@@ -31,13 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...LexerInfo import LexerData, LexerRegions, LexerInfo, Region
+    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
+    from ...LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleTypeLexerData(LexerData):
-    Types: List[LexerInfo]
+class TupleTypeLexerData(TypeLexerData):
+    Types: List[TypeLexerInfo]
 
 
 # ----------------------------------------------------------------------

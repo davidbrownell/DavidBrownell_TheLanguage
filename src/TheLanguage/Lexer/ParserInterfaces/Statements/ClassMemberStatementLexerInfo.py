@@ -33,17 +33,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassStatementLexerInfo import ClassStatementLexerInfo
+    from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
 
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Expressions.ExpressionLexerInfo import ExpressionLexerInfo
+    from ..Types.TypeLexerInfo import TypeLexerInfo
 
-    from ...LexerInfo import (
-        LexerData,
-        LexerRegions,
-        LexerInfo,
-        Region,
-    )
-
+    from ...LexerInfo import LexerRegions, Region
     from ...Components.LexerError import LexerError
 
 
@@ -77,19 +74,19 @@ class PublicMutableDataMembersNotSupportedError(LexerError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassMemberStatementLexerData(LexerData):
+class ClassMemberStatementLexerData(StatementLexerData):
     Visibility: VisibilityModifier
-    Type: Optional[Any] # TODO: TypeLexerInfo
+    Type: TypeLexerInfo
     Name: str
     ClassModifier: ClassModifier
-    DefaultValue: Optional[Any] # TODO: Optional[ExprLexerInfo]
+    DefaultValue: Optional[ExpressionLexerInfo]
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ClassMemberStatementLexerRegions(LexerRegions):
     Visibility: Region
-    Type: Optional[Region] # TODO: Not optional
+    Type: Region
     Name: Region
     ClassModifier: Region
     DefaultValue: Optional[Region]
@@ -97,17 +94,17 @@ class ClassMemberStatementLexerRegions(LexerRegions):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassMemberStatementLexerInfo(LexerInfo):
+class ClassMemberStatementLexerInfo(StatementLexerInfo):
     Data: ClassMemberStatementLexerData                 = field(init=False)
     Regions: ClassMemberStatementLexerRegions
 
     class_lexer_info: InitVar[Optional[ClassStatementLexerInfo]]
 
     visibility: InitVar[Optional[VisibilityModifier]]
-    the_type: InitVar[Optional[Any]] # TODO: TypeLexerInfo
+    the_type: InitVar[TypeLexerInfo]
     name: InitVar[str]
     class_modifier: InitVar[Optional[ClassModifier]]
-    default_value: InitVar[Optional[Any]] # TODO: Optional[ExprLexerInfo]
+    default_value: InitVar[Optional[ExpressionLexerInfo]]
 
     # ----------------------------------------------------------------------
     def __post_init__(
