@@ -99,11 +99,6 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
         valid_data_values = 0
 
         for field in fields(self.Data):
-            # field_type = getattr(field.type, "__origin__", None)
-            #
-            # if field_type == List:
-            #     continue
-
             valid_data_values += 1
 
             try:
@@ -140,4 +135,7 @@ def SetLexerInfo(
 def GetLexerInfo(
     obj: Any,
 ) -> LexerInfo:
-    return obj.Info
+    result = getattr(obj, "Info", None)
+    assert result is not None, obj
+
+    return result

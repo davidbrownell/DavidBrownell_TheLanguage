@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -35,6 +35,7 @@ with InitRelativeImports():
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.ParserInterfaces.Names.TupleNameLexerInfo import (
+        NameLexerInfo,
         TupleNameLexerData,
         TupleNameLexerRegions,
     )
@@ -74,7 +75,7 @@ class TupleName(TupleBase):
                 node,
                 (
                     TupleNameLexerData(
-                        [GetLexerInfo(child) for child in cls.EnumNodeValues(node)],
+                        [cast(NameLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
                     ),
                     CreateLexerRegions(
                         TupleNameLexerRegions,  # type: ignore

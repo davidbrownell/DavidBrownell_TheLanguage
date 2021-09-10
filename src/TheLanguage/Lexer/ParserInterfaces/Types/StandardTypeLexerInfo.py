@@ -32,12 +32,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.TypeModifier import TypeModifier
-    from ...LexerInfo import LexerData, LexerRegions, Region
+
+    from .TypeLexerInfo import TypeLexerData
+    from ...LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class StandardTypeLexerData(LexerData):
+class StandardTypeLexerData(TypeLexerData):
     TypeName: str
     Modifier: Optional[TypeModifier]
 
