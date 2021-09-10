@@ -36,9 +36,14 @@ with InitRelativeImports():
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
 
-    from ...LexerInfo import Error, LexerInfo
+    from ...LexerInfo import (
+        LexerData,
+        LexerRegions,
+        LexerInfo,
+        Region,
+    )
 
-    from ....Parser.Components.AST import Leaf, Node
+    from ...Components.LexerError import LexerError
 
 
 # ----------------------------------------------------------------------
@@ -86,7 +91,7 @@ class MethodType(Enum):  # type: ignore
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidClassVisibilityError(Error):
+class InvalidClassVisibilityError(LexerError):
     ClassType: str
     Visibility: str
     AllowedVisibilities: str
@@ -98,7 +103,7 @@ class InvalidClassVisibilityError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidClassModifierError(Error):
+class InvalidClassModifierError(LexerError):
     ClassType: str
     Modifier: str
     AllowedModifiers: str
@@ -110,7 +115,7 @@ class InvalidClassModifierError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMemberVisibilityError(Error):
+class InvalidMemberVisibilityError(LexerError):
     ClassType: str
     Visibility: str
     AllowedVisibilities: str
@@ -122,7 +127,7 @@ class InvalidMemberVisibilityError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMemberClassModifierError(Error):
+class InvalidMemberClassModifierError(LexerError):
     ClassType: str
     Modifier: str
     AllowedModifiers: str
@@ -134,7 +139,7 @@ class InvalidMemberClassModifierError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMutableClassModifierError(Error):
+class InvalidMutableClassModifierError(LexerError):
     ClassType: str
     Modifier: str
 
@@ -145,7 +150,7 @@ class InvalidMutableClassModifierError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidBaseError(Error):
+class InvalidBaseError(LexerError):
     ClassType: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -155,7 +160,7 @@ class InvalidBaseError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidInterfacesError(Error):
+class InvalidInterfacesError(LexerError):
     ClassType: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -165,7 +170,7 @@ class InvalidInterfacesError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMixinsError(Error):
+class InvalidMixinsError(LexerError):
     ClassType: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -356,104 +361,56 @@ del _all_visibilities
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassDependencyLexerInfo(LexerInfo):
-    visibility: InitVar[Optional[VisibilityModifier]]
-    Visibility: VisibilityModifier          = field(init=False)
-
+class ClassDependencyLexerData(LexerData):
+    Visibility: VisibilityModifier
     Name: str
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self, visibility):
-        self.ValidateTokenLookup(
-            fields_to_skip=set(["Visibility"]),
-        )
 
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class ClassDependencyLexerRegions(LexerRegions):
+    Visibility: Region
+    Name: Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class ClassDependencyLexerInfo(LexerInfo):
+    Data: ClassDependencyLexerData          = field(init=False)
+    Regions: ClassDependencyLexerRegions
+
+    visibility: InitVar[Optional[VisibilityModifier]]
+    name: InitVar[str]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, visibility, name):
         # Set default values and validate as necessary
         if visibility is None:
             visibility = VisibilityModifier.private
-            self.TokenLookup["Visibility"] = self.TokenLookup["self"]
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)
 
         # Set the values
-        object.__setattr__(self, "Visibility", visibility)
+        object.__setattr__(self, "Data", ClassDependencyLexerData(visibility, name))  # type: ignore
 
         super(ClassDependencyLexerInfo, self).__post_init__()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassStatementLexerInfo(LexerInfo):
-    visibility: InitVar[Optional[VisibilityModifier]]
-    Visibility: VisibilityModifier          = field(init=False)
-
-    class_modifier: InitVar[Optional[ClassModifier]]
-    ClassModifier: ClassModifier            = field(init=False)
-
+class ClassStatementLexerData(LexerData):
+    Visibility: VisibilityModifier
+    ClassModifier: ClassModifier
     ClassType: ClassType
     Name: str
     Base: Optional[ClassDependencyLexerInfo]
     Interfaces: List[ClassDependencyLexerInfo]
     Mixins: List[ClassDependencyLexerInfo]
 
-    TypeInfo: TypeInfo                      = field(init=False)
+    TypeInfo: TypeInfo
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, visibility, class_modifier):
-        self.ValidateTokenLookup(
-            fields_to_skip=set(["Visibility", "ClassModifier", "TypeInfo"]),
-        )
-
-        type_info = TYPE_INFOS[self.ClassType]
-
-        # Set default values and validate as necessary
-        if visibility is None:
-            visibility = type_info.DefaultClassVisibility
-            self.TokenLookup["Visibility"] = self.TokenLookup["self"]
-
-        if visibility not in type_info.AllowedClassVisibilities:
-            raise InvalidClassVisibilityError.FromNode(
-                self.TokenLookup["Visibility"],
-                self.ClassType.value,
-                visibility.name,
-                ", ".join(["'{}'".format(v.name) for v in type_info.AllowedClassVisibilities]),
-            )
-
-        if class_modifier is None:
-            class_modifier = type_info.DefaultClassModifier
-            self.TokenLookup["ClassModifier"] = self.TokenLookup["self"]
-
-        if class_modifier not in type_info.AllowedClassModifiers:
-            raise InvalidClassModifierError.FromNode(
-                self.TokenLookup["ClassModifier"],
-                self.ClassType.value,
-                class_modifier.name,
-                ", ".join(["'{}'".format(m.name) for m in type_info.AllowedClassModifiers]),
-            )
-
-        # Validate bases, interfaces, and mixins
-        if self.Base is not None and not type_info.AllowBases:
-            raise InvalidBaseError.FromNode(
-                self.Base.TokenLookup["self"],
-                self.ClassType.value,
-            )
-
-        if self.Interfaces and not type_info.AllowInterfaces:
-            raise InvalidInterfacesError.FromNode(
-                self.Interfaces[0].TokenLookup["self"],
-                self.ClassType.value,
-            )
-
-        if self.Mixins and not type_info.AllowMixins:
-            raise InvalidMixinsError.FromNode(
-                self.Mixins[0].TokenLookup["self"],
-                self.ClassType.value,
-            )
-
-        # Set the values
-        object.__setattr__(self, "TypeInfo", type_info)
-        object.__setattr__(self, "Visibility", visibility)
-        object.__setattr__(self, "ClassModifier", class_modifier)
-
-        super(ClassStatementLexerInfo, self).__post_init__(
+    def __post_init__(self):
+        super(ClassStatementLexerData, self).__post_init__(
             TypeInfo=None,
         )
 
@@ -461,15 +418,13 @@ class ClassStatementLexerInfo(LexerInfo):
     def ValidateMemberVisibility(
         self,
         visibility: VisibilityModifier,
-        token_lookup: Dict[str, Union[Leaf, Node]],
-        token_lookup_key_name="Visibility",
+        visibility_region: Region,
     ):
         assert visibility is not None
 
-        # pylint: disable=no-member
         if visibility not in self.TypeInfo.AllowedMemberVisibilities:
-            raise InvalidMemberVisibilityError.FromNode(
-                token_lookup[token_lookup_key_name],
+            raise InvalidMemberVisibilityError(
+                visibility_region,
                 self.ClassType.value,
                 visibility.name,
                 ", ".join(["'{}'".format(v.name) for v in self.TypeInfo.AllowedMemberVisibilities]),
@@ -479,15 +434,14 @@ class ClassStatementLexerInfo(LexerInfo):
     def ValidateMemberClassModifier(
         self,
         class_modifier, # : ClassModifier,
-        token_lookup: Dict[str, Union[Leaf, Node]],
-        token_lookup_key_name="ClassModifier",
+        class_modifier_region: Region,
     ):
         assert class_modifier is not None
 
         # pylint: disable=no-member
         if class_modifier not in self.TypeInfo.AllowedClassModifiers:
-            raise InvalidMemberClassModifierError.FromNode(
-                token_lookup[token_lookup_key_name],
+            raise InvalidMemberClassModifierError(
+                class_modifier_region,
                 self.ClassType.value,
                 class_modifier.name,
                 ", ".join(["'{}'".format(m.name) for m in self.TypeInfo.AllowedClassModifiers]),
@@ -497,8 +451,100 @@ class ClassStatementLexerInfo(LexerInfo):
             self.ClassModifier == ClassModifier.immutable
             and class_modifier == ClassModifier.mutable
         ):
-            raise InvalidMutableClassModifierError.FromNode(
-                token_lookup[token_lookup_key_name],
+            raise InvalidMutableClassModifierError(
+                class_modifier_region,
                 self.ClassType.value,
                 class_modifier.name,
             )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class ClassStatementLexerRegions(LexerRegions):
+    Visibility: Region
+    ClassModifier: Region
+    ClassType: Region
+    Name: Region
+    Base: Optional[Region]
+    Interfaces: Optional[Region]
+    Mixins: Optional[Region]
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class ClassStatementLexerInfo(LexerInfo):
+    Data: ClassStatementLexerData           = field(init=False)
+    Regions: ClassStatementLexerRegions
+
+    visibility: InitVar[Optional[VisibilityModifier]]
+    class_modifier: InitVar[Optional[ClassModifier]]
+    class_type: InitVar[ClassType]
+    name: InitVar[str]
+    base: InitVar[Optional[ClassDependencyLexerInfo]]
+    interfaces: InitVar[List[ClassDependencyLexerInfo]]
+    mixins: InitVar[List[ClassDependencyLexerInfo]]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(
+        self,
+        visibility,
+        class_modifier,
+        class_type,
+        name,
+        base,
+        interfaces,
+        mixins,
+    ):
+        type_info = TYPE_INFOS[class_type]
+
+        # Set default values and validate as necessary
+        if visibility is None:
+            visibility = type_info.DefaultClassVisibility
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)
+
+        if visibility not in type_info.AllowedClassVisibilities:
+            raise InvalidClassVisibilityError(
+                self.Regions.Visibility,
+                class_type.value,
+                visibility.name,
+                ", ".join(["'{}'".format(v.name) for v in type_info.AllowedClassVisibilities]),
+            )
+
+        if class_modifier is None:
+            class_modifier = type_info.DefaultClassModifier
+            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)
+
+        if class_modifier not in type_info.AllowedClassModifiers:
+            raise InvalidClassModifierError(
+                self.Regions.ClassModifier,
+                class_type.value,
+                class_modifier.name,
+                ", ".join(["'{}'".format(m.name) for m in type_info.AllowedClassModifiers]),
+            )
+
+        # Validate bases, interfaces, and mixins
+        if base is not None and not type_info.AllowBases:
+            raise InvalidBaseError(self.Regions.Self__, class_type.value)
+
+        if interfaces and not type_info.AllowInterfaces:
+            raise InvalidInterfacesError(interfaces[0].Regions.Self__,class_type.value)
+
+        if mixins and not type_info.AllowMixins:
+            raise InvalidMixinsError(mixins[0].Regions.Self__, class_type.value)
+
+        # Set the values
+        object.__setattr__(
+            self,
+            "Data",
+            # pylint: disable=too-many-function-args
+            ClassStatementLexerData(
+                visibility,  # type: ignore
+                class_modifier,  # type: ignore
+                class_type,
+                name,
+                base,
+                interfaces,
+                mixins,
+                type_info,
+            ),
+        )

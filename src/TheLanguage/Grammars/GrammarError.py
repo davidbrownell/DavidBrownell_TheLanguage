@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNameLexerInfo.py
+# |  GrammarError.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:42:59
+# |      2021-09-09 15:10:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNameLexerInfo object"""
+"""Contains the GrammarError object"""
 
 import os
 
-from typing import List
+from typing import Union
 
 from dataclasses import dataclass
 
@@ -31,18 +31,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...LexerInfo import LexerData, LexerRegions, LexerInfo, Region
+    from .GrammarPhrase import CreateLexerRegion
+    from ..Lexer.Components.LexerError import LexerError
+    from ..Parser.Components.AST import Leaf, Node
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleNameLexerData(LexerData):
-    Names: List[LexerInfo]
+@dataclass(frozen=True)
+class GrammarError(LexerError):
+    """Base class for all Grammar-related errors"""
 
-    # TODO (Validation): Check for unique names
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleNameLexerRegions(LexerRegions):
-    Names: Region
+    # ----------------------------------------------------------------------
+    @classmethod
+    def FromNode(
+        cls,
+        node: Union[Leaf, Node],
+        *args,
+    ):
+        return cls(CreateLexerRegion(node), *args)

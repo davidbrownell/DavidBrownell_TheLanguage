@@ -29,10 +29,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...LexerInfo import LexerInfo
+    from ...LexerInfo import LexerData, LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableNameLexerInfo(LexerInfo):
+class VariableNameLexerData(LexerData):
     Name: str
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class VariableNameLexerRegions(LexerRegions):
+    Name: Region

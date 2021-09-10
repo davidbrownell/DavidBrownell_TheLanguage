@@ -37,12 +37,19 @@ with InitRelativeImports():
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
 
-    from ...LexerInfo import Error, LexerInfo
+    from ...LexerInfo import (
+        LexerData,
+        LexerRegions,
+        LexerInfo,
+        Region,
+    )
+
+    from ...Components.LexerError import LexerError
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidClassMemberError(Error):
+class InvalidClassMemberError(LexerError):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Data member statements must be enclosed within a class-like object.",
     )
@@ -50,7 +57,7 @@ class InvalidClassMemberError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class DataMembersNotSupportedError(Error):
+class DataMembersNotSupportedError(LexerError):
     ClassType: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -60,7 +67,7 @@ class DataMembersNotSupportedError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class PublicMutableDataMembersNotSupportedError(Error):
+class PublicMutableDataMembersNotSupportedError(LexerError):
     ClassType: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -70,62 +77,86 @@ class PublicMutableDataMembersNotSupportedError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
+class ClassMemberStatementLexerData(LexerData):
+    Visibility: VisibilityModifier
+    Type: Optional[Any] # TODO: TypeLexerInfo
+    Name: str
+    ClassModifier: ClassModifier
+    DefaultValue: Optional[Any] # TODO: Optional[ExprLexerInfo]
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class ClassMemberStatementLexerRegions(LexerRegions):
+    Visibility: Region
+    Type: Optional[Region] # TODO: Not optional
+    Name: Region
+    ClassModifier: Region
+    DefaultValue: Optional[Region]
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
 class ClassMemberStatementLexerInfo(LexerInfo):
+    Data: ClassMemberStatementLexerData                 = field(init=False)
+    Regions: ClassMemberStatementLexerRegions
+
     class_lexer_info: InitVar[Optional[ClassStatementLexerInfo]]
 
     visibility: InitVar[Optional[VisibilityModifier]]
-    Visibility: VisibilityModifier          = field(init=False)
-
-    Type: Any # TODO: TypeLexerInfo
-    Name: str
-
+    the_type: InitVar[Optional[Any]] # TODO: TypeLexerInfo
+    name: InitVar[str]
     class_modifier: InitVar[Optional[ClassModifier]]
-    ClassModifier: ClassModifier            = field(init=False)
-
-    DefaultValue: Optional[Any] # TODO: ExprLexerInfo
+    default_value: InitVar[Optional[Any]] # TODO: Optional[ExprLexerInfo]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, class_lexer_info, visibility, class_modifier):
-        self.ValidateTokenLookup(
-            fields_to_skip=set(["Visibility", "ClassModifier"]),
-        )
-
+    def __post_init__(
+        self,
+        class_lexer_info,
+        visibility,
+        the_type,
+        name,
+        class_modifier,
+        default_value,
+    ):
         if class_lexer_info is None:
-            raise InvalidClassMemberError.FromNode(
-                self.TokenLookup["self"],
-            )
+            raise InvalidClassMemberError(self.Regions.Self__)
 
         # Set default values and validate as necessary
-        if not class_lexer_info.TypeInfo.AllowDataMembers:
-            raise DataMembersNotSupportedError.FromNode(
-                self.TokenLookup["self"],
-                class_lexer_info.ClassType.value,
-            )
+        if not class_lexer_info.Data.TypeInfo.AllowDataMembers:
+            raise DataMembersNotSupportedError(self.Regions.Self__, class_lexer_info.Classtype.value)
 
         if visibility is None:
-            visibility = class_lexer_info.TypeInfo.DefaultMemberVisibility
-            self.TokenLookup["Visibility"] = self.TokenLookup["self"]
+            visibility = class_lexer_info.Data.TypeInfo.DefaultMemberVisibility
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)
 
-        class_lexer_info.ValidateMemberVisibility(visibility, self.TokenLookup)
+        class_lexer_info.Data.ValidateMemberVisibility(visibility, self.Regions.Visibility)
 
         if class_modifier is None:
-            class_modifier = class_lexer_info.TypeInfo.DefaultClassModifier
-            self.TokenLookup["ClassModifier"] = self.TokenLookup["self"]
+            class_modifier = class_lexer_info.Data.TypeInfo.DefaultClassModifier
+            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)
 
-        class_lexer_info.ValidateMemberClassModifier(class_modifier, self.TokenLookup)
+        class_lexer_info.Data.ValidateMemberClassModifier(class_modifier, self.Regions.ClassModifier)
 
         if (
             visibility == VisibilityModifier.public
             and class_modifier == ClassModifier.mutable
-            and not class_lexer_info.TypeInfo.AllowMutablePublicDataMembers
+            and not class_lexer_info.Data.TypeInfo.AllowMutablePublicDataMembers
         ):
-            raise PublicMutableDataMembersNotSupportedError.FromNode(
-                self.TokenLookup["Visibility"],
-                class_lexer_info.ClassType.value,
-            )
+            raise PublicMutableDataMembersNotSupportedError(self.Regions.Visibility, class_lexer_info.ClassType.value)
 
         # Set the values
-        object.__setattr__(self, "Visibility", visibility)
-        object.__setattr__(self, "ClassModifier", class_modifier)
+        object.__setattr__(
+            self,
+            "Data",
+            # pylint: disable=too-many-function-args
+            ClassMemberStatementLexerData(
+                visibility,
+                the_type,
+                name,
+                class_modifier,
+                default_value,
+            ),
+        )
 
         super(ClassMemberStatementLexerInfo, self).__post_init__()

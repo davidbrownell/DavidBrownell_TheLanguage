@@ -325,10 +325,10 @@ def test_DuplicateInterfacesTypeError():
 
     assert str(ex) == "The base type indicator 'uses' may only appear once."
     assert ex.Type == "uses"
-    assert ex.Line == 1
-    assert ex.Column == 33
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == ex.Column + len(ex.Type)
+    assert ex.Region.Begin.Line == 1
+    assert ex.Region.Begin.Column == 33
+    assert ex.Region.End.Line == 1
+    assert ex.Region.End.Column == ex.Region.Begin.Column + len(ex.Type)
 
 
 # ----------------------------------------------------------------------
@@ -346,7 +346,7 @@ def test_MultipleBasesError():
     ex = ex.value
 
     assert str(ex) == "Classes can have only one base class; consider using mixins and interfaces instead."
-    assert ex.Line == 1
-    assert ex.Column == 16
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == 28
+    assert ex.Region.Begin.Line == 1
+    assert ex.Region.Begin.Column == 16
+    assert ex.Region.End.Line == 1
+    assert ex.Region.End.Column == 28

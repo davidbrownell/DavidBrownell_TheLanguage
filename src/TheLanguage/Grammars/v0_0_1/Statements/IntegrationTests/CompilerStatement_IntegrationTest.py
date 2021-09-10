@@ -212,10 +212,10 @@ def test_InvalidIndentError():
     ex = ex.value
 
     assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<!!!') [Line 2]."
-    assert ex.Line == 2
-    assert ex.Column == 5
-    assert ex.LineEnd == 5
-    assert ex.ColumnEnd == 11
+    assert ex.Region.Begin.Line == 2
+    assert ex.Region.Begin.Column == 5
+    assert ex.Region.End.Line == 5
+    assert ex.Region.End.Column == 11
 
     # More complicated test
     with pytest.raises(InvalidMultilineIndentError) as ex:
@@ -237,10 +237,10 @@ def test_InvalidIndentError():
     ex = ex.value
 
     assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<!!!') [Line 4]."
-    assert ex.Line == 2
-    assert ex.Column == 5
-    assert ex.LineEnd == 8
-    assert ex.ColumnEnd == 11
+    assert ex.Region.Begin.Line == 2
+    assert ex.Region.Begin.Column == 5
+    assert ex.Region.End.Line == 8
+    assert ex.Region.End.Column == 11
 
 # ----------------------------------------------------------------------
 def test_EmptyContentError():
@@ -257,10 +257,10 @@ def test_EmptyContentError():
     ex = ex.value
 
     assert str(ex) == "Multi-line content cannot be empty."
-    assert ex.Line == 1
-    assert ex.Column == 1
-    assert ex.LineEnd == 2
-    assert ex.ColumnEnd == 7
+    assert ex.Region.Begin.Line == 1
+    assert ex.Region.Begin.Column == 1
+    assert ex.Region.End.Line == 2
+    assert ex.Region.End.Column == 7
 
     # With indent
     with pytest.raises(InvalidMultilineContentError) as ex:
@@ -277,7 +277,7 @@ def test_EmptyContentError():
     ex = ex.value
 
     assert str(ex) == "Multi-line content cannot be empty."
-    assert ex.Line == 2
-    assert ex.Column == 5
-    assert ex.LineEnd == 3
-    assert ex.ColumnEnd == 11
+    assert ex.Region.Begin.Line == 2
+    assert ex.Region.Begin.Column == 5
+    assert ex.Region.End.Line == 3
+    assert ex.Region.End.Column == 11

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Dict, Optional, Union
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,9 +33,13 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import TypeModifier
 
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.ParserInterfaces.Types.StandardTypeLexerInfo import StandardTypeLexerInfo
+    from ....Lexer.LexerInfo import SetLexerInfo
+    from ....Lexer.ParserInterfaces.Types.StandardTypeLexerInfo import (
+        StandardTypeLexerData,
+        StandardTypeLexerRegions,
+    )
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -89,35 +93,34 @@ class StandardType(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
-        token_lookup: Dict[str, Union[Leaf, Node]] = {
-            "self": node,
-        }
-
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
         # <type_name>
         type_leaf = cast(Leaf, nodes[0])
         type_name = cast(str, ExtractToken(type_leaf))
-        token_lookup["TypeName"] = type_leaf
 
         # <modifier>?
         modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
 
         if modifier_node is not None:
             modifier = TypeModifier.Extract(modifier_node)
-            token_lookup["Modifier"] = modifier_node
         else:
             modifier = None
 
-        # Set the data
-        object.__setattr__(
+        # pylint: disable=too-many-function-args
+        SetLexerInfo(
             node,
-            "Info",
-            # pylint: disable=too-many-function-args
-            StandardTypeLexerInfo(
-                token_lookup,
-                type_name,
-                modifier,  # type: ignore
+            (
+                StandardTypeLexerData(
+                    type_name,
+                    modifier,  # type: ignore
+                ),
+                CreateLexerRegions(
+                    StandardTypeLexerRegions,  # type: ignore
+                    node,
+                    type_leaf,
+                    modifier_node,
+                ),
             ),
         )

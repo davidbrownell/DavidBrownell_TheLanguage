@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNameLexerInfo.py
+# |  ParserError.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:42:59
+# |      2021-08-07 22:54:50
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,36 +13,40 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNameLexerInfo object"""
+"""Contains the ParserError object"""
 
 import os
-
-from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-
-from CommonEnvironmentEx.Package import InitRelativeImports
+from CommonEnvironment import Interface
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-with InitRelativeImports():
-    from ...LexerInfo import LexerData, LexerRegions, LexerInfo, Region
-
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleNameLexerData(LexerData):
-    Names: List[LexerInfo]
+@dataclass(frozen=True)
+class ParserError(Exception, Interface.Interface):
+    """Base class for all Parse-related errors"""
 
-    # TODO (Validation): Check for unique names
+    Line: int
+    Column: int
 
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Line >= 1, self.Line
+        assert self.Column >= 1, self.Column
 
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleNameLexerRegions(LexerRegions):
-    Names: Region
+    # ----------------------------------------------------------------------
+    def __str__(self):
+        return self.MessageTemplate.format(**self.__dict__)
+
+    # ----------------------------------------------------------------------
+    @Interface.abstractproperty
+    def MessageTemplate(self):
+        """Template used when generating the exception string"""
+        raise Exception("Abstract property")  # pragma: no cover

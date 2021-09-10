@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Dict, Optional, Union
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,9 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.ParserInterfaces.Names.VariableNameLexerInfo import VariableNameLexerInfo
+    from ....Lexer.LexerInfo import SetLexerInfo
+    from ....Lexer.ParserInterfaces.Names.VariableNameLexerInfo import (
+        VariableNameLexerData,
+        VariableNameLexerRegions,
+    )
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -79,24 +83,21 @@ class VariableName(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
-        token_lookup: Dict[str, Union[Leaf, Node]] = {
-            "self": node,
-        }
-
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
         name_leaf = cast(Leaf, nodes[0])
         name = cast(str, ExtractToken(name_leaf))
-        token_lookup["Name"] = name_leaf
 
-        # Commit the data
-        object.__setattr__(
+        # pylint: disable=too-many-function-args
+        SetLexerInfo(
             node,
-            "Info",
-            # pylint: disable=too-many-function-args
-            VariableNameLexerInfo(
-                token_lookup,
-                name,
+            (
+                VariableNameLexerData(name),
+                CreateLexerRegions(
+                    VariableNameLexerRegions,  # type: ignore
+                    node,
+                    name_leaf,
+                ),
             ),
         )
