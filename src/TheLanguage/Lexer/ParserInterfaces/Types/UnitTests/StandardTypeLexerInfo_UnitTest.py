@@ -116,5 +116,5 @@ def test_InfoWithInvalidModifier():
 
         ex = ex.value
 
-        assert str(ex) == "'{}' cannot be applied to standard types in this context.".format(modifier.name)
+        assert str(ex) == "'{}' cannot be applied to standard types in this context; supported values are 'var', 'val', 'view'.".format(modifier.name)
         assert ex.Region == CreateRegion(5, 6, 7, 8)
