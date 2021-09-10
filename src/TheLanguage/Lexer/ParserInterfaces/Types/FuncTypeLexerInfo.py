@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -40,6 +40,12 @@ with InitRelativeImports():
 class FuncTypeLexerData(TypeLexerData):
     ReturnType: TypeLexerInfo
     Parameters: Optional[List[TypeLexerInfo]]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Parameters is None or self.Parameters
+
+        super(FuncTypeLexerData, self).__post_init__()
 
 
 # ----------------------------------------------------------------------

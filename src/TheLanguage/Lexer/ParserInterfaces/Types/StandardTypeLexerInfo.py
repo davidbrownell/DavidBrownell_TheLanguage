@@ -17,11 +17,12 @@
 
 import os
 
-from typing import Optional
+from typing import cast, Optional
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,10 +32,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
     from ..Common.TypeModifier import TypeModifier
-
-    from .TypeLexerInfo import TypeLexerData
+    from ...Components.LexerError import LexerError
     from ...LexerInfo import LexerRegions, Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidModifierError(LexerError):
+    Modifier: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "'{Modifier}' cannot be applied to standard types in this context.",
+    )
 
 
 # ----------------------------------------------------------------------
@@ -49,3 +60,25 @@ class StandardTypeLexerData(TypeLexerData):
 class StandardTypeLexerRegions(LexerRegions):
     TypeName: Region
     Modifier: Optional[Region]
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class StandardTypeLexerInfo(TypeLexerInfo):
+    Data: StandardTypeLexerData
+    Regions: StandardTypeLexerRegions
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        if self.Data.Modifier in [
+            TypeModifier.mutable,
+            TypeModifier.immutable,
+            TypeModifier.isolated,
+            TypeModifier.shared,
+            TypeModifier.ref,
+        ]:
+            assert self.Regions.Modifier is not None
+
+            raise InvalidModifierError(self.Regions.Modifier, cast(str, self.Data.Modifier.name))
+
+        super(StandardTypeLexerInfo, self).__post_init__()

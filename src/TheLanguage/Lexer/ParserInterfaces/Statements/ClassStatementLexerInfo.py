@@ -146,7 +146,7 @@ class InvalidMutableClassModifierError(LexerError):
     Modifier: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Modifier}' is not a valid member modifier for an immutable '{ClassType} type.",
+        "'{Modifier}' is not a valid member modifier for an immutable '{ClassType}' type.",
     )
 
 
@@ -367,6 +367,11 @@ class ClassDependencyLexerData(LexerData):
     Visibility: VisibilityModifier
     Name: str
 
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Name
+        super(ClassDependencyLexerData, self).__post_init__()
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -412,10 +417,20 @@ class ClassStatementLexerData(StatementLexerData):
     Interfaces: List[ClassDependencyLexerInfo]
     Mixins: List[ClassDependencyLexerInfo]
 
-    TypeInfo: TypeInfo
+    TypeInfo: TypeInfo                      = field(init=False)
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
+        type_info = TYPE_INFOS[self.ClassType]
+
+        assert self.Visibility in type_info.AllowedClassVisibilities
+        assert self.ClassModifier in type_info.AllowedClassModifiers
+        assert self.Base is None or type_info.AllowBases
+        assert not self.Interfaces or type_info.AllowInterfaces
+        assert not self.Mixins or type_info.AllowMixins
+
+        object.__setattr__(self, "TypeInfo", type_info)
+
         super(ClassStatementLexerData, self).__post_init__(
             TypeInfo=None,
         )
@@ -530,13 +545,16 @@ class ClassStatementLexerInfo(StatementLexerInfo):
 
         # Validate bases, interfaces, and mixins
         if base is not None and not type_info.AllowBases:
-            raise InvalidBaseError(self.Regions.Self__, class_type.value)
+            assert self.Regions.Base is not None
+            raise InvalidBaseError(self.Regions.Base, class_type.value)
 
         if interfaces and not type_info.AllowInterfaces:
-            raise InvalidInterfacesError(interfaces[0].Regions.Self__,class_type.value)
+            assert self.Regions.Interfaces is not None
+            raise InvalidInterfacesError(self.Regions.Interfaces, class_type.value)
 
         if mixins and not type_info.AllowMixins:
-            raise InvalidMixinsError(mixins[0].Regions.Self__, class_type.value)
+            assert self.Regions.Mixins is not None
+            raise InvalidMixinsError(self.Regions.Mixins, class_type.value)
 
         # Set the values
         object.__setattr__(
@@ -551,6 +569,5 @@ class ClassStatementLexerInfo(StatementLexerInfo):
                 base,
                 interfaces,
                 mixins,
-                type_info,
             ),
         )
