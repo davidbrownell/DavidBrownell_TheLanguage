@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains BinaryExpressionLexerData and BinaryExpressionLexerInfo"""
+"""Contains BinaryExpressionLexerData, BinaryExpressionLexerRegions, and OperatorType objects"""
 
 import os
 
