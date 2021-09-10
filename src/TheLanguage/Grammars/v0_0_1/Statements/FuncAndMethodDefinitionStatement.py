@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Dict, Optional, Union
+from typing import cast, Optional
 
 from dataclasses import dataclass
 
@@ -40,13 +40,15 @@ with InitRelativeImports():
     from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
-
     from ..Common.Impl import ModifierImpl
 
-    from ...GrammarPhrase import GrammarPhrase, ValidationError
+    from ...GrammarError import GrammarError
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
+    from ....Lexer.LexerInfo import SetLexerInfo
     from ....Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo import (
         FuncAndMethodDefinitionStatementLexerInfo,
+        FuncAndMethodDefinitionStatementLexerRegions,
         MethodType,
         OperatorType,
     )
@@ -67,7 +69,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidOperatorNameError(ValidationError):
+class InvalidOperatorNameError(GrammarError):
     Name: str
 
     MessageTemplate                         = Interface.DerivedProperty("'{Name}' is not a valid operator name.")  # type: ignore
@@ -235,10 +237,6 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
-        token_lookup: Dict[str, Union[Leaf, Node]] = {
-            "self": node,
-        }
-
         nodes = ExtractSequence(node)
         assert len(nodes) == 8
 
@@ -250,7 +248,6 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
         if visibility_node is not None:
             visibility = VisibilityModifier.Extract(visibility_node)
-            token_lookup["Visibility"] = visibility_node
         else:
             visibility = None
 
@@ -259,17 +256,15 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
         if method_type_modifier_node is not None:
             method_type_modifier = cls._ExtractMethodType(method_type_modifier_node)
-            token_lookup["MethodType"] = method_type_modifier_node
         else:
             method_type_modifier = None
 
-        # <type> (The LexerInfo will be extracted as part of a deferred callback)
-        type_node = ExtractDynamic(cast(Node, nodes[3]))
+        # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
+        return_type_node = ExtractDynamic(cast(Node, nodes[3]))
 
         # <name>
         method_name_leaf = cast(Leaf, nodes[4])
         method_name = cast(str, ExtractToken(method_name_leaf))
-        token_lookup["Name"] = method_name_leaf
 
         if method_name.startswith("__") and method_name.endswith("__"):
             operator_name = cls.NameOperatorMap.get(method_name, None)
@@ -285,14 +280,12 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         parameters_node = cast(Node, nodes[5])
 
         parameters = ParametersPhraseItem.Extract(parameters_node)
-        token_lookup["Parameters"] = parameters_node
 
         # <class_modifier>?
         class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[6])))
 
         if class_modifier_node is not None:
             class_modifier = ClassModifier.Extract(class_modifier_node)
-            token_lookup["ClassModifier"] = class_modifier_node
         else:
             class_modifier = None
 
@@ -308,26 +301,35 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
         def CommitLexerInfo():
-            # Get the type LexerInfo
-            type_info = None
+            # Get the type TypeLexerInfo
+            return_type = None
+            return_type_node = None
 
-            # TODO: Get the parameters LexerInfo
+            # TODO: Get the parameters ExprLexerInfo
 
-            object.__setattr__(
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
                 node,
-                "Info",
-                # pylint: disable=too-many-function-args
                 FuncAndMethodDefinitionStatementLexerInfo(
-                    token_lookup,
-                    ClassStatement.GetContainingClassLexerInfo(
+                    CreateLexerRegions(
+                        FuncAndMethodDefinitionStatementLexerRegions, # type: ignore
+                        node,
+                        visibility_node,
+                        method_type_modifier_node,
+                        return_type_node,
+                        method_name_leaf,
+                        parameters_node,
+                        class_modifier_node,
+                    ),
+                    ClassStatement.GetContainingClassLexerInfo(  # type: ignore
                         node,
                         cls.PHRASE_NAME,
-                    ),  # type: ignore
+                    ),
                     visibility,  # type: ignore
                     method_type_modifier,  # type: ignore
-                    type_info,
-                    method_name,
-                    parameters,  # type: ignore # TODO
+                    return_type,  # type: ignore
+                    method_name,  # type: ignore
+                    parameters,  # type: ignore
                     class_modifier,  # type: ignore
                     statements is not None,  # type: ignore
                 ),

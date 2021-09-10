@@ -113,7 +113,7 @@ def test_PositionalAfterKeywordError():
     ex = ex.value
 
     assert str(ex) == "Positional arguments may not appear after keyword arguments."
-    assert ex.Line == 1
-    assert ex.Column == 21
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == 24
+    assert ex.Region.Begin.Line == 1
+    assert ex.Region.Begin.Column == 21
+    assert ex.Region.End.Line == 1
+    assert ex.Region.End.Column == 24

@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LexerInfo object"""
+"""Contains types and functions used to persist information used during the Lexer process"""
 
 import os
 
-from typing import Any, Callable, Dict, Optional, Set, Tuple, Union
+from typing import Any, Callable, Optional, Tuple, Union
 
 from dataclasses import (
     dataclass,
@@ -29,140 +29,116 @@ import CommonEnvironment
 from CommonEnvironment import Interface
 from CommonEnvironment import YamlRepr
 
-from CommonEnvironmentEx.Package import InitRelativeImports
-
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-with InitRelativeImports():
-    from ..Parser.Components.AST import Leaf, Node
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class Location(YamlRepr.ObjectReprImplBase):
+    Line: int
+    Column: int
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Line >= 1, self
+        assert self.Column >= 1, self
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class LexerInfo(YamlRepr.ObjectReprImplBase):
-    TokenLookup: Dict[str, Union[Leaf, Node]]
+class Region(YamlRepr.ObjectReprImplBase):
+    Begin: Location
+    End: Location
 
     # ----------------------------------------------------------------------
-    def ValidateTokenLookup(
-        self,
-        fields_to_skip: Optional[Set[str]]=None,
-    ):
-        if fields_to_skip is None:
-            fields_to_skip = set()
+    def __post_init__(self):
+        assert self.End.Line >= self.Begin.Line, self
+        assert self.End.Line > self.Begin.Line or self.End.Column >= self.Begin.Column, self
 
-        assert "self" in self.TokenLookup
 
-        # Ensure that everything that needs to have an entry in TokenLookup has one
-        for field in fields(self):
-            if field.name == "TokenLookup":
-                continue
-
-            if field.type == Any:
-                continue
-
-            if field.name in fields_to_skip:
-                continue
-
-            value = getattr(self, field.name)
-            if value is None:
-                continue
-
-            if isinstance(value, list):
-                if value:
-                    assert isinstance(value[0], (Node, LexerInfo)), (field.name, field.type, value)
-
-                continue
-
-            if isinstance(value, (Node, LexerInfo)):
-                continue
-
-            assert field.name in self.TokenLookup, ("Missing item in TokenLookup", field.name)
-
-        # Ensure that all the lookup values are not None
-        for k, v in self.TokenLookup.items():
-            assert v is not None, k
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class LexerData(YamlRepr.ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
         **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
-        # Ensure that the derived class has been created correctly
-        assert \
-            hasattr(self, DATACLASS_PARAMS) \
-            and not getattr(self, DATACLASS_PARAMS).repr \
-        , "Derived classes should be based on `dataclass` with `repr` set to `False`"
-
-        self.ValidateTokenLookup(
-            fields_to_skip=set(
-                k for k, v in custom_display_funcs.items() if v is None
-            ),
-        )
-
-        YamlRepr.ObjectReprImplBase.__init__(
-            self,
-            TokenLookup=None,
-            **custom_display_funcs,
-        )
+        assert hasattr(self, DATACLASS_PARAMS) and not getattr(self, DATACLASS_PARAMS).repr, "Derived classes should be based on `dataclass` with `repr` set to `False`"
+        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class Error(Exception, Interface.Interface):
-    """Base error for all Lexer-related errors"""
-
-    Line: int
-    Column: int
-    LineEnd: int
-    ColumnEnd: int
+@dataclass(frozen=True, repr=False)
+class LexerRegions(YamlRepr.ObjectReprImplBase):
+    Self__: Region
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def FromNode(
-        cls,
-        node: Union[Leaf, Node],
-        *args,
+    def __post_init__(
+        self,
+        **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
-        # ----------------------------------------------------------------------
-        def GetLineColumn(iterator) -> Tuple[int, int]:
-            if iterator is None:
-                return -1, -1
+        assert hasattr(self, DATACLASS_PARAMS) and not getattr(self, DATACLASS_PARAMS).repr, "Derived classes should be based on `dataclass` with `repr` set to `False`"
+        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
 
-            return iterator.Line, iterator.Column
 
-        # ----------------------------------------------------------------------
-
-        line_before, column_before = GetLineColumn(node.IterBegin)
-        line_after, column_after = GetLineColumn(node.IterEnd)
-
-        if isinstance(node, Leaf) and node.Whitespace is not None:
-            column_before += node.Whitespace[1] - node.Whitespace[0] - 1
-
-        return cls(
-            line_before,
-            column_before,
-            line_after,
-            column_after,
-            *args,
-        )
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class LexerInfo(YamlRepr.ObjectReprImplBase):
+    Data: LexerData
+    Regions: LexerRegions
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Line >= 1
-        assert self.Column >= 1
-        assert self.Line <= self.LineEnd
-        assert self.Line != self.LineEnd or self.Column <= self.ColumnEnd
+    def __post_init__(
+        self,
+        **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
+    ):
+        valid_data_values = 0
 
-    # ----------------------------------------------------------------------
-    def __str__(self):
-        # pylint: disable=no-member
-        return self.MessageTemplate.format(**self.__dict__)
+        for field in fields(self.Data):
+            # field_type = getattr(field.type, "__origin__", None)
+            #
+            # if field_type == List:
+            #     continue
 
-    # ----------------------------------------------------------------------
-    @Interface.abstractmethod
-    def MessageTemplate(self) -> str:
-        """Template used when generating the exception string"""
-        raise Exception("Abstract method")  # pragma: no cover
+            valid_data_values += 1
+
+            try:
+                region_value = getattr(self.Regions, field.name)
+            except AttributeError:
+                assert False, field.name
+
+            if getattr(self.Data, field.name) is None:
+                assert region_value is None, field.name
+            else:
+                assert region_value is not None, field.name
+
+        # The regions should have all of the data and a self field
+        assert len(fields(self.Regions)) == valid_data_values + 1, (len(fields(self.Regions)), valid_data_values)
+
+        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
+
+
+# ----------------------------------------------------------------------
+def SetLexerInfo(
+    obj: Any,
+    arg: Union[LexerInfo, Tuple[LexerData, LexerRegions]],
+):
+    if isinstance(arg, tuple):
+        data, regions = arg
+
+        # pylint: disable=too-many-function-args
+        arg = LexerInfo(data, regions)
+
+    object.__setattr__(obj, "Info", arg)
+
+
+# ----------------------------------------------------------------------
+def GetLexerInfo(
+    obj: Any,
+) -> LexerInfo:
+    return obj.Info

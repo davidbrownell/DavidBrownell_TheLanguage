@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from . import Tokens as CommonTokens
-    from ...GrammarPhrase import ValidationError
+    from ...GrammarError import GrammarError
     from ....Parser.Phrases.DSL import (
         DynamicPhrasesType,
         ExtractDynamic,
@@ -49,7 +49,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class PositionalAfterKeywordError(ValidationError):
+class PositionalAfterKeywordError(GrammarError):
     MessageTemplate                         = Interface.DerivedProperty("Positional arguments may not appear after keyword arguments.")  # type: ignore
 
 

@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import Any, cast, Dict, List, Optional, Union
+from typing import cast, Dict, List, Optional, Tuple, Type
 
 from dataclasses import dataclass
 
@@ -41,11 +41,15 @@ with InitRelativeImports():
     from ..Common import VisibilityModifier
     from ..Common.Impl import ModifierImpl
 
-    from ...GrammarPhrase import GrammarPhrase, ValidationError
+    from ...GrammarError import GrammarError
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
+    from ....Lexer.LexerInfo import SetLexerInfo
     from ....Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo import (
         ClassDependencyLexerInfo,
+        ClassDependencyLexerRegions,
         ClassStatementLexerInfo,
+        ClassStatementLexerRegions,
         ClassType,
     )
 
@@ -64,7 +68,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class DuplicateInterfacesTypeError(ValidationError):
+class DuplicateInterfacesTypeError(GrammarError):
     Type: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -74,7 +78,7 @@ class DuplicateInterfacesTypeError(ValidationError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class MultipleBasesError(ValidationError):
+class MultipleBasesError(GrammarError):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Classes can have only one base class; consider using mixins and interfaces instead.",
     )
@@ -258,10 +262,6 @@ class ClassStatement(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
-        token_lookup: Dict[str, Union[Leaf, Node]] = {
-            "self": node,
-        }
-
         nodes = ExtractSequence(node)
         assert len(nodes) == 14
 
@@ -273,7 +273,6 @@ class ClassStatement(GrammarPhrase):
 
         if visibility_node is not None:
             visibility = VisibilityModifier.Extract(visibility_node)
-            token_lookup["Visibility"] = visibility_node
         else:
             visibility = None
 
@@ -282,19 +281,16 @@ class ClassStatement(GrammarPhrase):
 
         if class_modifier_node is not None:
             class_modifier = ClassModifier.Extract(class_modifier_node)
-            token_lookup["ClassModifier"] = class_modifier_node
         else:
             class_modifier = None
 
         # <class_type>
         class_type_node = cast(Node, nodes[3])
         class_type = cls._ExtractClassType(class_type_node)
-        token_lookup["ClassType"] = class_type_node
 
         # <name>
         class_name_leaf = cast(Leaf, nodes[4])
         class_name = cast(str, ExtractToken(class_name_leaf))
-        token_lookup["Name"] = class_name_leaf
 
         # Base Info
         base_info_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[7])))
@@ -311,7 +307,13 @@ class ClassStatement(GrammarPhrase):
             base_info = base_infos[0]
 
         # Interfaces and Mixins
-        interfaces_and_mixins = {}
+        interfaces_and_mixins: Dict[
+            Type[ClassStatement.BaseTypeIndicator],
+            Tuple[
+                Node,
+                List[ClassDependencyLexerInfo],
+            ]
+        ] = {}
 
         for base_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[11]))):
             base_nodes = ExtractSequence(base_node)
@@ -331,27 +333,38 @@ class ClassStatement(GrammarPhrase):
             if base_node_items.Type.Name == "Grouped":
                 base_node_items = ExtractSequence(base_node_items)[2]
 
-            interfaces_and_mixins[base_type] = cls._ExtractBaseInfo(cast(Node, base_node_items))
+            interfaces_and_mixins[base_type] = (
+                base_node,
+                cls._ExtractBaseInfo(cast(Node, base_node_items)),
+            )
 
         # Statements
         statements = StatementsPhraseItem.Extract(cast(Node, nodes[13]))
 
         # TODO: Leverage attributes and statements
 
-        # Commit the data
-        object.__setattr__(
+        # pylint: disable=too-many-function-args
+        SetLexerInfo(
             node,
-            "Info",
-            # pylint: disable=too-many-function-args
             ClassStatementLexerInfo(
-                token_lookup,
+                CreateLexerRegions(
+                    ClassStatementLexerRegions, # type: ignore
+                    node,
+                    visibility_node,
+                    class_modifier_node,
+                    class_type_node,
+                    class_name_leaf,
+                    base_info_node,
+                    interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None,))[0],  # type: ignore
+                    interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None,))[0],  # type: ignore
+                ),
                 visibility,  # type: ignore
                 class_modifier,  # type: ignore
                 class_type,
-                class_name,
-                base_info,
-                interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, []),
-                interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, []),
+                class_name,  # type: ignore
+                base_info,  # type: ignore
+                interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None, []))[1], # type: ignore
+                interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None, []))[1],  # type: ignore
             ),
         )
 
@@ -364,7 +377,7 @@ class ClassStatement(GrammarPhrase):
         # FuncAndMethodDefinitionStatement.py imports this file.
         func_and_method_statement_name: str,
     ) -> Optional[ClassStatementLexerInfo]:
-        """Returns the LexerInfo for the class that contains the given node"""
+        """Returns the ClassStatementLexerInfo for the class that contains the given node"""
 
         node = child_node.Parent
 
@@ -403,10 +416,6 @@ class ClassStatement(GrammarPhrase):
         ):
             assert base_item is not None
 
-            token_lookup: Dict[str, Union[Leaf, Node]] = {
-                "self": base_item,
-            }
-
             base_items = ExtractSequence(cast(Node, base_item))
             assert len(base_items) == 2
 
@@ -415,22 +424,25 @@ class ClassStatement(GrammarPhrase):
 
             if visibility_node is not None:
                 visibility = VisibilityModifier.Extract(visibility_node)
-                token_lookup["Visibility"] = visibility_node
             else:
                 visibility = None
 
             # <name>
             name_leaf = cast(Leaf, base_items[1])
             name = cast(str, ExtractToken(name_leaf))
-            token_lookup["Name"] = name_leaf
 
             # Commit the results
             results.append(
                 # <Too many positional arguments> pylint: disable=too-many-function-args
                 ClassDependencyLexerInfo(
-                    token_lookup,
+                    CreateLexerRegions(
+                        ClassDependencyLexerRegions,  # type: ignore
+                        node,
+                        visibility_node,
+                        name_leaf,
+                    ),
                     visibility,  # type: ignore
-                    name,
+                    name,  # type: ignore
                 ),
             )
 

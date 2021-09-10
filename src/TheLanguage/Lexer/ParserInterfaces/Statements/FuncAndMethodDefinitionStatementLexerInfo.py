@@ -38,7 +38,14 @@ with InitRelativeImports():
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
     from ..Common.VisibilityModifier import VisibilityModifier
 
-    from ...LexerInfo import Error, LexerInfo
+    from ...LexerInfo import (
+        LexerData,
+        LexerRegions,
+        LexerInfo,
+        Region,
+    )
+
+    from ...Components.LexerError import LexerError
 
 
 # ----------------------------------------------------------------------
@@ -120,7 +127,7 @@ class OperatorType(Enum):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidFunctionMethodTypeError(Error):
+class InvalidFunctionMethodTypeError(LexerError):
     MethodType: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -130,7 +137,7 @@ class InvalidFunctionMethodTypeError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidFunctionClassModifierError(Error):
+class InvalidFunctionClassModifierError(LexerError):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Class modifiers are not supported on functions.",
     )
@@ -138,7 +145,7 @@ class InvalidFunctionClassModifierError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class FunctionStatementsRequiredError(Error):
+class FunctionStatementsRequiredError(LexerError):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Functions must have statements.",
     )
@@ -146,7 +153,7 @@ class FunctionStatementsRequiredError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class MethodStatementsRequiredError(Error):
+class MethodStatementsRequiredError(LexerError):
     MethodType: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -156,7 +163,7 @@ class MethodStatementsRequiredError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class MethodStatementsUnexpectedError(Error):
+class MethodStatementsUnexpectedError(LexerError):
     MethodType: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -166,7 +173,7 @@ class MethodStatementsUnexpectedError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMethodTypeError(Error):
+class InvalidMethodTypeError(LexerError):
     ClassType: str
     MethodType: str
     AllowedMethodTypes: str
@@ -178,7 +185,7 @@ class InvalidMethodTypeError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidClassModifierOnStaticError(Error):
+class InvalidClassModifierOnStaticError(LexerError):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Class modifiers are not supported on 'static' methods.",
     )
@@ -186,23 +193,40 @@ class InvalidClassModifierOnStaticError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
+class FuncAndMethodDefinitionStatementLexerData(LexerData):
+    Visibility: VisibilityModifier
+    MethodType: MethodType
+    Type: Any # TODO: TypeLexerInfo
+    Name: Union[str, OperatorType]
+    Parameters: List[Any] # TODO: ExprLexerInfo
+    ClassModifier: Optional[ClassModifierType]
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class FuncAndMethodDefinitionStatementLexerRegions(LexerRegions):
+    Visibility: Region
+    MethodType: Region
+    Type: Optional[Region] # TODO: Region
+    Name: Region
+    Parameters: Region
+    ClassModifier: Optional[Region]
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
 class FuncAndMethodDefinitionStatementLexerInfo(LexerInfo):
+    Data: FuncAndMethodDefinitionStatementLexerData     = field(init=False)
+    Regions: FuncAndMethodDefinitionStatementLexerRegions
+
     class_lexer_info: InitVar[Optional[ClassStatementLexerInfo]]
 
     visibility: InitVar[Optional[VisibilityModifier]]
-    Visibility: VisibilityModifier          = field(init=False)
-
     method_type: InitVar[Optional[MethodType]]
-    MethodType: MethodType          = field(init=False)
-
-    Type: Any # TODO: TypeLexerInfo
-    Name: Union[str, OperatorType]
-
-    Parameters: List[Any] # TODO: ExprLexerInfo
-
+    return_type: InitVar[Optional[Any]] # TODO: TypeLexerInfo
+    name: InitVar[str]
+    parameters: InitVar[List[Any]] # TODO: ExprLexerInfo
     class_modifier: InitVar[Optional[ClassModifierType]]
-    ClassModifier: Optional[ClassModifierType]          = field(init=False)
-
     has_statements: InitVar[bool]
 
     # ----------------------------------------------------------------------
@@ -211,92 +235,89 @@ class FuncAndMethodDefinitionStatementLexerInfo(LexerInfo):
         class_lexer_info,
         visibility,
         method_type,
+        return_type,
+        name,
+        parameters,
         class_modifier,
         has_statements,
     ):
-        self.ValidateTokenLookup(
-            fields_to_skip=set(["Visibility", "MethodType", "ClassModifier", "IsFunction"]),
-        )
-
         # Set default values and validate as necessary
         if class_lexer_info is None:
             # We are looking at a function
             if visibility is None:
                 visibility = VisibilityModifier.private
-                self.TokenLookup["Visibility"] = self.TokenLookup["self"]
+                object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)
 
             if method_type is None:
                 method_type = MethodType.standard
-                self.TokenLookup["MethodType"] = self.TokenLookup["self"]
+                object.__setattr__(self.Regions, "MethodType", self.Regions.Self__)
+
             elif method_type != MethodType.standard:
-                raise InvalidFunctionMethodTypeError.FromNode(
-                    self.TokenLookup["MethodType"],
-                    method_type.name,
-                )
+                raise InvalidFunctionMethodTypeError(self.Regions.MethodType, method_type.name)
 
             if class_modifier is not None:
-                raise InvalidFunctionClassModifierError.FromNode(
-                    self.TokenLookup["ClassModifier"],
-                )
+                assert self.Regions.ClassModifier is not None
+                raise InvalidFunctionClassModifierError(self.Regions.ClassModifier)
 
             if not has_statements:
-                raise FunctionStatementsRequiredError.FromNode(
-                    self.TokenLookup["self"],
-                )
+                raise FunctionStatementsRequiredError(self.Regions.Self__)
 
         else:
             # We are looking at a method
             if visibility is None:
-                visibility = class_lexer_info.TypeInfo.DefaultMemberVisibility
-                self.TokenLookup["Visibility"] = self.TokenLookup["self"]
+                visibility = class_lexer_info.Data.TypeInfo.DefaultMemberVisibility
+                object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)
 
-            class_lexer_info.ValidateMemberVisibility(visibility, self.TokenLookup)
+            class_lexer_info.Data.ValidateMemberVisibility(visibility, self.Regions.Visibility)
 
             if method_type is None:
-                method_type = class_lexer_info.TypeInfo.DefaultMethodType
-                self.TokenLookup["MethodType"] = self.TokenLookup["self"]
+                method_type = class_lexer_info.Data.TypeInfo.DefaultMethodType
+                object.__setattr__(self.Regions, "MethodType", self.Regions.Self__)
 
-            if method_type not in class_lexer_info.TypeInfo.AllowedMethodTypes:
-                raise InvalidMethodTypeError.FromNode(
-                    self.TokenLookup["MethodType"],
+            if method_type not in class_lexer_info.Data.TypeInfo.AllowedMethodTypes:
+                raise InvalidMethodTypeError(
+                    self.Regions.MethodType,
                     class_lexer_info.ClassType.value,
                     method_type.name,
-                    ", ".join(["'{}'".format(m.name) for m in class_lexer_info.TypeInfo.AllowedMethodTypes]),
+                    ", ".join(["'{}'".format(m.name) for m in class_lexer_info.Data.TypeInfo.AllowedMethodTypes]),
                 )
 
             if method_type == MethodType.static:
                 if class_modifier is not None:
-                    raise InvalidClassModifierOnStaticError.FromNode(
-                        self.TokenLookup["ClassModifier"],
-                    )
+                    assert self.Regions.ClassModifier is not None
+                    raise InvalidClassModifierOnStaticError(self.Regions.ClassModifier)
             else:
                 if class_modifier is None:
-                    class_modifier = class_lexer_info.TypeInfo.DefaultClassModifier
-                    self.TokenLookup["ClassModifier"] = self.TokenLookup["self"]
+                    class_modifier = class_lexer_info.Data.TypeInfo.DefaultClassModifier
+                    object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)
 
-                class_lexer_info.ValidateMemberClassModifier(class_modifier, self.TokenLookup)
+                class_lexer_info.Data.ValidateMemberClassModifier(class_modifier, self.Regions.ClassModifier)
 
             if (
                 has_statements
                 and method_type in [MethodType.deferred, MethodType.abstract]
             ):
-                raise MethodStatementsUnexpectedError.FromNode(
-                    self.TokenLookup["self"],
-                    method_type.name,
-                )
+                raise MethodStatementsUnexpectedError(self.Regions.Self__, method_type.name)
 
             if (
                 not has_statements
                 and method_type not in [MethodType.deferred, MethodType.abstract]
             ):
-                raise MethodStatementsRequiredError.FromNode(
-                    self.TokenLookup["self"],
-                    method_type.name,
-                )
+                raise MethodStatementsRequiredError(self.Regions.Self__, method_type.name)
 
         # Set the values
-        object.__setattr__(self, "Visibility", visibility)
-        object.__setattr__(self, "MethodType", method_type)
-        object.__setattr__(self, "ClassModifier", class_modifier)
+        object.__setattr__(
+            self,
+            "Data",
+            # pylint: disable=too-many-function-args
+            FuncAndMethodDefinitionStatementLexerData(
+                visibility,
+                method_type,
+                return_type,
+                name,
+                parameters,
+                class_modifier,
+            ),
+        )
 
         super(FuncAndMethodDefinitionStatementLexerInfo, self).__post_init__()

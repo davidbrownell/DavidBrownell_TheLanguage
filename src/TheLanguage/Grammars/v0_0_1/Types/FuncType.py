@@ -29,7 +29,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------

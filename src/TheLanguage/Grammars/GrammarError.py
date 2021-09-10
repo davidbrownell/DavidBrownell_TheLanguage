@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Error.py
+# |  GrammarError.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-07 22:54:50
+# |      2021-09-09 15:10:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,40 +13,39 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Error object"""
+"""Contains the GrammarError object"""
 
 import os
+
+from typing import Union
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from .GrammarPhrase import CreateLexerRegion
+    from ..Lexer.Components.LexerError import LexerError
+    from ..Parser.Components.AST import Leaf, Node
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class Error(Exception, Interface.Interface):
-    """Error for all Parse-related errors"""
-
-    Line: int
-    Column: int
+class GrammarError(LexerError):
+    """Base class for all Grammar-related errors"""
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Line >= 1, self.Line
-        assert self.Column >= 1, self.Column
-
-    # ----------------------------------------------------------------------
-    def __str__(self):
-        return self.MessageTemplate.format(**self.__dict__)
-
-    # ----------------------------------------------------------------------
-    @Interface.abstractproperty
-    def MessageTemplate(self):
-        """Template used when generating the exception string"""
-        raise Exception("Abstract property")  # pragma: no cover
+    @classmethod
+    def FromNode(
+        cls,
+        node: Union[Leaf, Node],
+        *args,
+    ):
+        return cls(CreateLexerRegion(node), *args)

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Dict, Optional, Union
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -38,10 +38,12 @@ with InitRelativeImports():
     from ..Common import ClassModifier
     from ..Common import VisibilityModifier
 
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
+    from ....Lexer.LexerInfo import SetLexerInfo
     from ....Lexer.ParserInterfaces.Statements.ClassMemberStatementLexerInfo import (
         ClassMemberStatementLexerInfo,
+        ClassMemberStatementLexerRegions,
     )
 
     from ....Parser.Phrases.DSL import (
@@ -132,10 +134,6 @@ class ClassMemberStatement(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
-        token_lookup: Dict[str, Union[Leaf, Node]] = {
-            "self": node,
-        }
-
         nodes = ExtractSequence(node)
         assert len(nodes) == 7
 
@@ -147,28 +145,25 @@ class ClassMemberStatement(GrammarPhrase):
 
         if visibility_node is not None:
             visibility = VisibilityModifier.Extract(visibility_node)
-            token_lookup["Visibility"] = visibility_node
         else:
             visibility = None
 
-        # <type> (The LexerInfo will be extracted as part of a deferred callback)
+        # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
         type_node = ExtractDynamic(cast(Node, nodes[2]))
 
         # <name>
         name_leaf = cast(Leaf, nodes[3])
         name = cast(str, ExtractToken(name_leaf))
-        token_lookup["Name"] = name_leaf
 
         # <class_modifier>?
         class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
 
         if class_modifier_node is not None:
             class_modifier = ClassModifier.Extract(class_modifier_node)
-            token_lookup["ClassModifier"] = class_modifier_node
         else:
             class_modifier = None
 
-        # ('=' <expr>)? (The LexerInfo will be extracted as part of a deferred callback)
+        # ('=' <expr>)? (The ExprLexerInfo will be extracted as part of a deferred callback)
         default_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[5])))
 
         if default_node is not None:
@@ -181,30 +176,41 @@ class ClassMemberStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
         def CommitLexerInfo():
-            # Get the type LexerInfo
-            type_info = None # TODO
+            nonlocal default_node # TODO
 
-            # Get the default LexerInfo
+            # Get the return_type TypeLexerInfo
+            type_info = None # TODO
+            type_node = None # TODO
+
+            # Get the default ExprLexerInfo
             if default_node is not None:
                 default_info = None # TODO
+                default_node = None # TODO
             else:
                 default_info = None
 
-            object.__setattr__(
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
                 node,
-                "Info",
-                # pylint: disable=too-many-function-args
                 ClassMemberStatementLexerInfo(
-                    token_lookup,
-                    ClassStatement.GetContainingClassLexerInfo(
+                    CreateLexerRegions(
+                        ClassMemberStatementLexerRegions,  # type: ignore
+                        node,
+                        visibility_node,
+                        type_node,
+                        name_leaf,
+                        class_modifier_node,
+                        default_node,
+                    ),
+                    ClassStatement.GetContainingClassLexerInfo(  # type: ignore
                         node,
                         FuncAndMethodDefinitionStatement.PHRASE_NAME,
-                    ),  # type: ignore
+                    ),
                     visibility,  # type: ignore
-                    type_info,
-                    name,
+                    type_info,  # type: ignore
+                    name,  # type: ignore
                     class_modifier,  # type: ignore
-                    default_info,
+                    default_info,  # type: ignore
                 ),
             )
 

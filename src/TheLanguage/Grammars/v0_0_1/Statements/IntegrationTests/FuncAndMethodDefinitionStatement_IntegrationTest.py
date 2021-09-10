@@ -552,10 +552,10 @@ class TestNewStyleFlags(object):
         ex = ex.value
 
         assert str(ex) == "The parameter group 'pos' has already been specified."
-        assert ex.Line == 4
-        assert ex.Column == 5
-        assert ex.LineEnd == 4
-        assert ex.ColumnEnd == 8
+        assert ex.Region.Begin.Line == 4
+        assert ex.Region.Begin.Column == 5
+        assert ex.Region.End.Line == 4
+        assert ex.Region.End.Column == 8
 
 
 # ----------------------------------------------------------------------
@@ -614,10 +614,10 @@ class TestTraditionalParameterFlags(object):
         ex = ex.value
 
         assert str(ex) == "The positional delimiter ('/') must appear before the keyword delimiter ('*')."
-        assert ex.Line == 1
-        assert ex.Column == 27
-        assert ex.LineEnd == 1
-        assert ex.ColumnEnd == 28
+        assert ex.Region.Begin.Line == 1
+        assert ex.Region.Begin.Column == 27
+        assert ex.Region.End.Line == 1
+        assert ex.Region.End.Column == 28
 
     # ----------------------------------------------------------------------
     def test_TraditionalDelimiterDuplicatePositionalError(self):
@@ -634,10 +634,10 @@ class TestTraditionalParameterFlags(object):
         ex = ex.value
 
         assert str(ex) == "The positional delimiter ('/') may only appear once in a list of parameters."
-        assert ex.Line == 1
-        assert ex.Column == 27
-        assert ex.LineEnd == 1
-        assert ex.ColumnEnd == 28
+        assert ex.Region.Begin.Line == 1
+        assert ex.Region.Begin.Column == 27
+        assert ex.Region.End.Line == 1
+        assert ex.Region.End.Column == 28
 
     # ----------------------------------------------------------------------
     def test_TraditionalDelimiterDuplicateKeywordError(self):
@@ -654,10 +654,10 @@ class TestTraditionalParameterFlags(object):
         ex = ex.value
 
         assert str(ex) == "The keyword delimiter ('*') may only appear once in a list of parameters."
-        assert ex.Line == 1
-        assert ex.Column == 27
-        assert ex.LineEnd == 1
-        assert ex.ColumnEnd == 28
+        assert ex.Region.Begin.Line == 1
+        assert ex.Region.Begin.Column == 27
+        assert ex.Region.End.Line == 1
+        assert ex.Region.End.Column == 28
 
     # ----------------------------------------------------------------------
     def test_TraditionalDelimiterPositionalError(self):
@@ -674,10 +674,10 @@ class TestTraditionalParameterFlags(object):
         ex = ex.value
 
         assert str(ex) == "The positional delimiter ('/') must appear after at least 1 parameter."
-        assert ex.Line == 1
-        assert ex.Column == 10
-        assert ex.LineEnd == 1
-        assert ex.ColumnEnd == 11
+        assert ex.Region.Begin.Line == 1
+        assert ex.Region.Begin.Column == 10
+        assert ex.Region.End.Line == 1
+        assert ex.Region.End.Column == 11
 
     # ----------------------------------------------------------------------
     def test_TraditionalDelimiterKeywordError(self):
@@ -694,10 +694,10 @@ class TestTraditionalParameterFlags(object):
         ex = ex.value
 
         assert str(ex) == "The keyword delimiter ('*') must appear before at least 1 parameter."
-        assert ex.Line == 1
-        assert ex.Column == 31
-        assert ex.LineEnd == 1
-        assert ex.ColumnEnd == 32
+        assert ex.Region.Begin.Line == 1
+        assert ex.Region.Begin.Column == 31
+        assert ex.Region.End.Line == 1
+        assert ex.Region.End.Column == 32
 
 
 # ----------------------------------------------------------------------
@@ -717,10 +717,10 @@ def test_InvalidOperatorNameError():
 
     assert str(ex) == "'__InvalidOperatorName__' is not a valid operator name."
     assert ex.Name == "__InvalidOperatorName__"
-    assert ex.Line == 2
-    assert ex.Column == 9
-    assert ex.LineEnd == 2
-    assert ex.ColumnEnd == ex.Column + len(ex.Name)
+    assert ex.Region.Begin.Line == 2
+    assert ex.Region.Begin.Column == 9
+    assert ex.Region.End.Line == 2
+    assert ex.Region.End.Column == ex.Region.Begin.Column + len(ex.Name)
 
 
 # ----------------------------------------------------------------------
@@ -738,7 +738,7 @@ def test_RequiredParameterAfterDefaultError():
     ex = ex.value
 
     assert str(ex) == "A required parameter may not appear after a parameter with a default value."
-    assert ex.Line == 1
-    assert ex.Column == 19
-    assert ex.LineEnd == 1
-    assert ex.ColumnEnd == 27
+    assert ex.Region.Begin.Line == 1
+    assert ex.Region.Begin.Column == 19
+    assert ex.Region.End.Line == 1
+    assert ex.Region.End.Column == 27

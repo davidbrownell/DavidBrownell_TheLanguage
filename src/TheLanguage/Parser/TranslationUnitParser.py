@@ -38,7 +38,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Components import AST
-    from .Components.Error import Error
+    from .Components.ParserError import ParserError
     from .Components.Phrase import Phrase
 
     from .Phrases.DSL import DynamicPhrasesType, Leaf
@@ -49,7 +49,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidDynamicTraversalError(Error):
+class InvalidDynamicTraversalError(ParserError):
     """Exception raised when dynamic phrases that prohibit parent traversal are applied over other dynamic phrases"""
 
     ExistingDynamicPhrases: Phrase.NormalizedIterator
@@ -61,7 +61,7 @@ class InvalidDynamicTraversalError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class SyntaxInvalidError(Error):
+class SyntaxInvalidError(ParserError):
     """Exception raised when no matching phrases were found"""
 
     iter_begin: InitVar[Phrase.NormalizedIterator]

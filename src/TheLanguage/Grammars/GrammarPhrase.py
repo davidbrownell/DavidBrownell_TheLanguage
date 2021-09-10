@@ -18,14 +18,9 @@
 import os
 
 from enum import auto, Enum
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 
-from dataclasses import (
-    dataclass,
-    field,
-    fields,
-    _PARAMS as DATACLASS_PARAMS,  # type: ignore
-)
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -39,63 +34,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Lexer.LexerInfo import (
+        Location as LexerLocation,
+        Region as LexerRegion,
+    )
+
+    from ..Lexer.Components.LexerError import LexerError                    # This is here as a convenience
+
     from ..Parser.Components.AST import Leaf, Node
-    from ..Parser.Components.Error import Error
 
     from ..Parser.TranslationUnitsParser import (
         DynamicPhrasesInfo,                             # This is here as a convenience
         Observer as TranslationUnitsParserObserver,
         Phrase,
     )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ValidationError(Error):
-    """Extend the Error base class to include ending line and column attributes"""
-
-    LineEnd: int
-    ColumnEnd: int
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def FromNode(
-        cls,
-        node: Union[Leaf, Node],
-        *args,
-    ):
-        line_before = node.IterBegin.Line if node.IterBegin is not None else -1
-        column_before = node.IterBegin.Column if node.IterBegin is not None else -1
-
-        line_after = node.IterEnd.Line if node.IterEnd is not None else -1
-        column_after = node.IterEnd.Column if node.IterEnd is not None else -1
-
-        if isinstance(node, Leaf):
-            return cls(
-                line_before,
-                column_before + (
-                    node.Whitespace[1] - node.Whitespace[0] - 1
-                    if node.Whitespace else 0
-                ),
-                line_after,
-                column_after,
-                *args,
-            )
-
-        return cls(
-            line_before,
-            column_before,
-            line_after,
-            column_after,
-            *args,
-        )
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(ValidationError, self).__post_init__()
-
-        assert self.Line <= self.LineEnd, self
-        assert self.Line != self.LineEnd or self.Column <= self.ColumnEnd, self
 
 
 # ----------------------------------------------------------------------
@@ -160,6 +112,7 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         self.Phrase                         = phrase
 
     # ----------------------------------------------------------------------
+    # TODO: Change this name to ExtractLexerInfo, do not call from Parse
     @staticmethod
     @Interface.extensionmethod
     def ValidateSyntax(
@@ -207,3 +160,51 @@ class ImportGrammarStatement(GrammarPhrase):
         pruned yet.
         """
         raise Exception("Abstract method")  # pragma: no cover
+
+
+# ----------------------------------------------------------------------
+def CreateLexerRegion(
+    node: Union[Leaf, Node],
+) -> LexerRegion:
+    # ----------------------------------------------------------------------
+    def CreateLocation(
+        iter: Optional[Phrase.NormalizedIterator],
+        adjust_for_whitespace=False,
+    ) -> LexerLocation:
+        if iter is None:
+            line = -1
+            column = -1
+        else:
+            line = iter.Line
+            column = iter.Column
+
+            if (
+                isinstance(node, Leaf)
+                and adjust_for_whitespace
+                and node.Whitespace is not None
+            ):
+                column += node.Whitespace[1] - node.Whitespace[0] - 1
+
+        # pylint: disable=too-many-function-args
+        return LexerLocation(line, column)
+
+    # ----------------------------------------------------------------------
+
+    # pylint: disable=too-many-function-args
+    return LexerRegion(
+        CreateLocation(
+            node.IterBegin,
+            adjust_for_whitespace=True,
+        ),
+        CreateLocation(node.IterEnd),
+    )
+
+
+# ----------------------------------------------------------------------
+LexerRegionsType                            = TypeVar("LexerRegionsType")
+
+def CreateLexerRegions(
+    regions_type: LexerRegionsType,
+    *nodes: Optional[Union[Leaf, Node]],
+) -> LexerRegionsType:
+    return regions_type(*[None if node is None else CreateLexerRegion(node) for node in nodes])  # type: ignore

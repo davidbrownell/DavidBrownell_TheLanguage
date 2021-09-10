@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Components.Error import Error
+    from .Components.ParserError import ParserError
     from .Components.Token import (
         DedentToken,
         IndentToken,
@@ -56,7 +56,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class SyntaxInvalidVersionFormatError(Error):
+class SyntaxInvalidVersionFormatError(ParserError):
     # Note that this is a str rather than a SemVer, as the invalid version may not even be in the
     # correct format
     InvalidVersion: str
@@ -66,7 +66,7 @@ class SyntaxInvalidVersionFormatError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class SyntaxInvalidVersionError(Error):
+class SyntaxInvalidVersionError(ParserError):
     InvalidVersion: SemVer
 
     MessageTemplate                         = Interface.DerivedProperty("The syntax version '{InvalidVersion}' is not recognized")  # type: ignore
