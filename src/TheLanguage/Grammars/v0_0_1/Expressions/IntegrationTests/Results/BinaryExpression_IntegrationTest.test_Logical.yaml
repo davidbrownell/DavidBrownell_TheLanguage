@@ -184,6 +184,60 @@ Children:
                             IterBegin: "[1, 16] (15)"
                             IterEnd: "[1, 19] (18)"
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
+                            Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                            Operator: "OperatorType.LogicalAnd"
+                            Right: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerRegions'>
+                            Left: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 8
+                                Line: 1
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 11
+                                Line: 1
+                            Operator: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 12
+                                Line: 1
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 15
+                                Line: 1
+                            Right: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 16
+                                Line: 1
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 19
+                                Line: 1
+                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 8
+                                Line: 1
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 19
+                                Line: 1
                         IterBegin: "[1, 8] (7)"
                         IterEnd: "[1, 19] (18)"
                         Type: "Binary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -395,6 +449,60 @@ Children:
                             IterBegin: "[2, 17] (35)"
                             IterEnd: "[2, 21] (39)"
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
+                            Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                            Operator: "OperatorType.LogicalOr"
+                            Right: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerRegions'>
+                            Left: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 8
+                                Line: 2
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 13
+                                Line: 2
+                            Operator: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 14
+                                Line: 2
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 16
+                                Line: 2
+                            Right: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 17
+                                Line: 2
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 21
+                                Line: 2
+                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 8
+                                Line: 2
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 21
+                                Line: 2
                         IterBegin: "[2, 8] (26)"
                         IterEnd: "[2, 21] (39)"
                         Type: "Binary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -606,6 +714,60 @@ Children:
                             IterBegin: "[3, 16] (55)"
                             IterEnd: "[3, 19] (58)"
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
+                            Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                            Operator: "OperatorType.LogicalIn"
+                            Right: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerRegions'>
+                            Left: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 8
+                                Line: 3
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 12
+                                Line: 3
+                            Operator: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 13
+                                Line: 3
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 15
+                                Line: 3
+                            Right: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 16
+                                Line: 3
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 19
+                                Line: 3
+                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 8
+                                Line: 3
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 19
+                                Line: 3
                         IterBegin: "[3, 8] (47)"
                         IterEnd: "[3, 19] (58)"
                         Type: "Binary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -817,6 +979,60 @@ Children:
                             IterBegin: "[4, 17] (75)"
                             IterEnd: "[4, 22] (80)"
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
+                            Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                            Operator: "OperatorType.LogicalIs"
+                            Right: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                    Column: 1
+                                    Line: 1
+                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerRegions'>
+                            Left: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 8
+                                Line: 4
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 13
+                                Line: 4
+                            Operator: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 14
+                                Line: 4
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 16
+                                Line: 4
+                            Right: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 17
+                                Line: 4
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 22
+                                Line: 4
+                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 8
+                                Line: 4
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 22
+                                Line: 4
                         IterBegin: "[4, 8] (66)"
                         IterEnd: "[4, 22] (80)"
                         Type: "Binary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
