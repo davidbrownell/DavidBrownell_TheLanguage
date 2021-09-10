@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Error.py
+# |  FuncTypeLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-07 22:54:50
+# |      2021-09-08 17:05:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,40 +13,40 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Error object"""
+"""Contains the FuncTypeLexerInfo object"""
 
 import os
+
+from typing import Any, List, Optional
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from ...LexerInfo import (
+        LexerData,
+        LexerRegions,
+        Region,
+    )
+
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class Error(Exception, Interface.Interface):
-    """Error for all Parse-related errors"""
+@dataclass(frozen=True, repr=False)
+class FuncTypeLexerData(LexerData):
+    ReturnType: Any # TODO: TypeLexerInfo
+    Parameters: Optional[List[Any]] # TODO: ExprLexerInfo
 
-    Line: int
-    Column: int
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Line >= 1, self.Line
-        assert self.Column >= 1, self.Column
-
-    # ----------------------------------------------------------------------
-    def __str__(self):
-        return self.MessageTemplate.format(**self.__dict__)
-
-    # ----------------------------------------------------------------------
-    @Interface.abstractproperty
-    def MessageTemplate(self):
-        """Template used when generating the exception string"""
-        raise Exception("Abstract property")  # pragma: no cover
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class FuncTypeLexerRegions(LexerRegions):
+    ReturnType: Region
+    Parameters: Optional[Region]

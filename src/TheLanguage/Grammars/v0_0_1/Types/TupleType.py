@@ -31,9 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.Impl.TupleBase import TupleBase
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.ParserInterfaces.Types.TupleTypeLexerInfo import TupleTypeLexerInfo
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Lexer.ParserInterfaces.Types.TupleTypeLexerInfo import (
+        TupleTypeLexerData,
+        TupleTypeLexerRegions,
+    )
 
     from ....Parser.Phrases.DSL import Node
 
@@ -66,13 +70,18 @@ class TupleType(TupleBase):
     ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
-            object.__setattr__(
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
                 node,
-                "Info",
-                # pylint: disable=too-many-function-args
-                TupleTypeLexerInfo(
-                    { "self": node, },
-                    [child.Info for child in cls.EnumNodeValues(node)],  # type: ignore
+                (
+                    TupleTypeLexerData(
+                        [GetLexerInfo(child) for child in cls.EnumNodeValues(node)],
+                    ),
+                    CreateLexerRegions(
+                        TupleTypeLexerRegions,  # type: ignore
+                        node,
+                        node,
+                    ),
                 ),
             )
 

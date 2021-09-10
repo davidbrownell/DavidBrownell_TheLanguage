@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Error_UnitTest.py
+# |  ParserError_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-08-07 22:57:44
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for Error.py"""
+"""Unit test for ParserError.py"""
 
 import os
 
@@ -30,10 +30,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import *
+    from ..ParserError import *
 
 # ----------------------------------------------------------------------
-class StandardError(Error):
+class StandardError(ParserError):
     MessageTemplate                         = Interface.DerivedProperty("This is the message")
 
 
@@ -49,7 +49,7 @@ def test_StandardError():
 def test_CustomException():
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
-    class ErrorClass(Error):
+    class ErrorClass(ParserError):
         one: str
         two: str
 
@@ -72,7 +72,7 @@ def test_CustomException():
 def test_AdditionalArgs():
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
-    class ErrorClass(Error):
+    class ErrorClass(ParserError):
         one: str
 
         MessageTemplate                     = Interface.DerivedProperty("Values: one={one}")

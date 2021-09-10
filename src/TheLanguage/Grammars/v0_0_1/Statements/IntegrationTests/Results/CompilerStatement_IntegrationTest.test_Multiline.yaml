@@ -70,8 +70,24 @@ Children:
                                     Whitespace:
                                       - 30
                                       - 31
-                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Name: "cond"
+                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                    Name: "cond"
+                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                        Column: 4
+                                        Line: 7
+                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                        Column: 8
+                                        Line: 7
+                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                        Column: 4
+                                        Line: 7
+                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                        Column: 8
+                                        Line: 7
                                 IterBegin: "[7, 4] (31)"
                                 IterEnd: "[7, 8] (35)"
                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

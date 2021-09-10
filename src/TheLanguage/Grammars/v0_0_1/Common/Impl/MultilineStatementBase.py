@@ -34,7 +34,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ...Common import Tokens as CommonTokens
-    from ....GrammarPhrase import GrammarPhrase, ValidationError
+
+    from ....GrammarError import GrammarError
+    from ....GrammarPhrase import GrammarPhrase
+
+    from .....Lexer.LexerInfo import (
+        Location as LexerLocation,
+        Region as LexerRegion,
+    )
 
     from .....Parser.Components.Normalize import TripletContentRegexTemplate
     from .....Parser.Components.Token import RegexToken
@@ -49,7 +56,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMultilineHeaderError(ValidationError):
+class InvalidMultilineHeaderError(GrammarError):
     Header: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -63,18 +70,19 @@ class InvalidMultilineHeaderError(ValidationError):
         node: Leaf,
         header: str,
     ):
+        # pylint: disable=too-many-function-args
         return cls(
-            node.IterBegin.Line,
-            node.IterBegin.Column,
-            node.IterBegin.Line,
-            node.IterBegin.Column + len(header),
+            LexerRegion(
+                LexerLocation(node.IterBegin.Line, node.IterBegin.Column),
+                LexerLocation(node.IterBegin.Line, node.IterBegin.Column + len(header)),
+            ),
             header,
         )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMultilineFooterError(ValidationError):
+class InvalidMultilineFooterError(GrammarError):
     Header: str
     Footer: str
     LineOffset: int
@@ -92,11 +100,12 @@ class InvalidMultilineFooterError(ValidationError):
         footer: str,
         line_offset: int,
     ):
+        # pylint: disable=too-many-function-args
         return cls(
-            node.IterEnd.Line,
-            node.IterEnd.Column - len(footer),
-            node.IterEnd.Line,
-            node.IterEnd.Column,
+            LexerRegion(
+                LexerLocation(node.IterEnd.Line, node.IterEnd.Column - len(footer)),
+                LexerLocation(node.IterEnd.Line, node.IterEnd.Column),
+            ),
             header,
             footer,
             line_offset,
@@ -105,7 +114,7 @@ class InvalidMultilineFooterError(ValidationError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMultilineIndentError(ValidationError):
+class InvalidMultilineIndentError(GrammarError):
     Header: str
     LineOffset: int
 
@@ -116,7 +125,7 @@ class InvalidMultilineIndentError(ValidationError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMultilineContentError(ValidationError):
+class InvalidMultilineContentError(GrammarError):
     MessageTemplate                         = Interface.DerivedProperty("Multi-line content cannot be empty.")  # type: ignore
 
 
