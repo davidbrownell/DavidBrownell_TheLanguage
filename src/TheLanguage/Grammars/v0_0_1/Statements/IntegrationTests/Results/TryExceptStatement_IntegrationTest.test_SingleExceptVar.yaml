@@ -150,7 +150,7 @@ Children:
                                     Whitespace:
                                       - 24
                                       - 25
-                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                     Modifier: None
                                     TypeName: "Exception"
@@ -509,7 +509,7 @@ Children:
                                                 Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                   Match: "<_sre.SRE_Match object; span=(79, 89), match='Exception1'>"
                                                 Whitespace: None
-                                            Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
                                                 TypeName: "Exception1"
@@ -564,7 +564,7 @@ Children:
                                                 Whitespace:
                                                   - 91
                                                   - 92
-                                            Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
                                                 TypeName: "Exception2"
@@ -604,7 +604,7 @@ Children:
                                 Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.VariantTypeLexerInfo.VariantTypeLexerData'>
                                     Types:
-                                      - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                      - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                         Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                           Modifier: None
                                           TypeName: "Exception1"
@@ -624,7 +624,7 @@ Children:
                                             End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                               Column: 19
                                               Line: 8
-                                      - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                      - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                         Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                           Modifier: None
                                           TypeName: "Exception2"

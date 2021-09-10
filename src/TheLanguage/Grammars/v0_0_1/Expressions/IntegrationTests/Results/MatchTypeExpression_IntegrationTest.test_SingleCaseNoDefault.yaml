@@ -363,7 +363,7 @@ Children:
                                                                     Whitespace:
                                                                       - 54
                                                                       - 55
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int1"
@@ -888,7 +888,7 @@ Children:
                                                                     Whitespace:
                                                                       - 119
                                                                       - 120
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int2"

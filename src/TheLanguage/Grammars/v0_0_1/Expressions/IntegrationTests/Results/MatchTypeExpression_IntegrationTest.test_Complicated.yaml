@@ -228,7 +228,7 @@ Children:
                                                                     Whitespace:
                                                                       - 44
                                                                       - 45
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int1"
@@ -376,7 +376,7 @@ Children:
                                                                     Whitespace:
                                                                       - 70
                                                                       - 71
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int2"
@@ -826,7 +826,7 @@ Children:
                                                                                                             Whitespace:
                                                                                                               - 236
                                                                                                               - 237
-                                                                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                                                             Modifier: None
                                                                                                             TypeName: "Char1"
@@ -999,7 +999,7 @@ Children:
                                                                                                             Whitespace:
                                                                                                               - 300
                                                                                                               - 301
-                                                                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                                                             Modifier: None
                                                                                                             TypeName: "Char2"
@@ -1534,7 +1534,7 @@ Children:
                                                                     Whitespace:
                                                                       - 556
                                                                       - 557
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int3"
