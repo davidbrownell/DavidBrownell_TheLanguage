@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableNameLexerInfo.py
+# |  VariableNameLexerInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:30:06
+# |      2021-09-10 09:35:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableNameLexerInfo object"""
+"""Unit tests for VariableName.py"""
 
 import os
-
-from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -29,22 +27,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NameLexerInfo import NameLexerData
-    from ...LexerInfo import LexerRegions, Region
+    from ..VariableNameLexerInfo import *
+    from ...Common.AutomatedTests import CreateRegion
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableNameLexerData(NameLexerData):
-    Name: str
+def test_Data():
+    data = VariableNameLexerData("TheName")
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Name
-        super(VariableNameLexerData, self).__post_init__()
+    assert data.Name == "TheName"
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableNameLexerRegions(LexerRegions):
-    Name: Region
+def test_Regions():
+    regions = VariableNameLexerRegions(
+        CreateRegion(100, 200, 300, 400),
+        CreateRegion(1, 2, 3, 4),
+    )
+
+    assert regions.Self__ == CreateRegion(100, 200, 300, 400)
+    assert regions.Name == CreateRegion(1, 2, 3, 4)

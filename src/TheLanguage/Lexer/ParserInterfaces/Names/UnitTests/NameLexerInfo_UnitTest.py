@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableNameLexerInfo.py
+# |  NameLexerInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:30:06
+# |      2021-09-10 09:34:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableNameLexerInfo object"""
+"""Unit test for NameLexerInfo.py"""
 
 import os
 
-from dataclasses import dataclass
+from dataclasses import fields
 
 import CommonEnvironment
 
@@ -29,22 +29,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NameLexerInfo import NameLexerData
-    from ...LexerInfo import LexerRegions, Region
+    from ..NameLexerInfo import *
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableNameLexerData(NameLexerData):
-    Name: str
+def test_Fields():
+    info_fields = set(field.name for field in fields(NameLexerInfo))
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Name
-        super(VariableNameLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableNameLexerRegions(LexerRegions):
-    Name: Region
+    assert info_fields == set(["Data", "Regions"])
