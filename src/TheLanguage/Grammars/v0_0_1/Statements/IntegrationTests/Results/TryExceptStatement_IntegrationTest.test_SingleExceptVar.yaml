@@ -195,7 +195,7 @@ Children:
                                     Whitespace:
                                       - 34
                                       - 35
-                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
                                     Name: "ex"
                                   Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
@@ -601,7 +601,7 @@ Children:
                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                       Match: "<_sre.SRE_Match object; span=(102, 103), match=')'>"
                                     Whitespace: None
-                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.VariantTypeLexerInfo.VariantTypeLexerInfo'>
                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.VariantTypeLexerInfo.VariantTypeLexerData'>
                                     Types:
                                       - # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
@@ -684,7 +684,7 @@ Children:
                                     Whitespace:
                                       - 103
                                       - 104
-                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
                                     Name: "ex"
                                   Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>

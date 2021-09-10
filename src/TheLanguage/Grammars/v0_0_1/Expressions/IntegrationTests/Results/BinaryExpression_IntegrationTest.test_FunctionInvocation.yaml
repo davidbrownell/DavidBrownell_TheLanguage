@@ -20,7 +20,7 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(0, 4), match='var1'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
                             Name: "var1"
                           Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
@@ -229,7 +229,7 @@ Children:
                                         IterBegin: "[1, 24] (23)"
                                         IterEnd: "[1, 31] (30)"
                                         Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
                                         Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                                           Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
@@ -292,7 +292,7 @@ Children:
                             IterBegin: "[1, 16] (15)"
                             IterEnd: "[1, 31] (30)"
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
                             Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                               Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
@@ -306,7 +306,7 @@ Children:
                                     Column: 1
                                     Line: 1
                             Operator: "OperatorType.ChainedFunc"
-                            Right: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                            Right: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
                                 Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                                   Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
@@ -436,7 +436,7 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(31, 35), match='var2'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
                             Name: "var2"
                           Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
@@ -645,7 +645,7 @@ Children:
                                         IterBegin: "[2, 26] (56)"
                                         IterEnd: "[2, 33] (63)"
                                         Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
                                         Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                                           Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
@@ -708,7 +708,7 @@ Children:
                             IterBegin: "[2, 17] (47)"
                             IterEnd: "[2, 33] (63)"
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
                             Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                               Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
@@ -722,7 +722,7 @@ Children:
                                     Column: 1
                                     Line: 1
                             Operator: "OperatorType.ChainedFuncReturnSelf"
-                            Right: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                            Right: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
                               Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
                                 Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                                   Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
@@ -852,7 +852,7 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(65, 69), match='var3'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
                             Name: "var3"
                           Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
@@ -1075,7 +1075,7 @@ Children:
                                                     IterBegin: "[7, 10] (112)"
                                                     IterEnd: "[7, 17] (119)"
                                                     Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
                                                     Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                                                       Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
@@ -1138,7 +1138,7 @@ Children:
                                         IterBegin: "[6, 10] (95)"
                                         IterEnd: "[7, 17] (119)"
                                         Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                    Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
                                       Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
                                         Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                                           Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
@@ -1152,7 +1152,7 @@ Children:
                                                 Column: 1
                                                 Line: 1
                                         Operator: "OperatorType.ChainedFunc"
-                                        Right: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                        Right: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
                                             Left: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>

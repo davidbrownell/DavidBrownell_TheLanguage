@@ -37,6 +37,7 @@ with InitRelativeImports():
     from ....Lexer.ParserInterfaces.Types.VariantTypeLexerInfo import (
         TypeLexerInfo,
         VariantTypeLexerData,
+        VariantTypeLexerInfo,
         VariantTypeLexerRegions,
     )
 
@@ -132,7 +133,7 @@ class VariantType(GrammarPhrase):
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
-                (
+                VariantTypeLexerInfo(
                     VariantTypeLexerData(types),
                     CreateLexerRegions(
                         VariantTypeLexerRegions,  # type: ignore

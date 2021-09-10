@@ -37,6 +37,7 @@ with InitRelativeImports():
     from ....Lexer.ParserInterfaces.Names.TupleNameLexerInfo import (
         NameLexerInfo,
         TupleNameLexerData,
+        TupleNameLexerInfo,
         TupleNameLexerRegions,
     )
 
@@ -73,7 +74,7 @@ class TupleName(TupleBase):
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
-                (
+                TupleNameLexerInfo(
                     TupleNameLexerData(
                         [cast(NameLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
                     ),

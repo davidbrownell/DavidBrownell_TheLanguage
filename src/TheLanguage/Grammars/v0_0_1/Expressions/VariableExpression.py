@@ -36,6 +36,7 @@ with InitRelativeImports():
     from ....Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo import (
         NameLexerInfo,
         VariableExpressionLexerData,
+        VariableExpressionLexerInfo,
         VariableExpressionLexerRegions,
     )
 
@@ -97,7 +98,7 @@ class VariableExpression(GrammarPhrase):
 
             SetLexerInfo(
                 node,
-                (
+                VariableExpressionLexerInfo(
                     VariableExpressionLexerData(
                         cast(NameLexerInfo, GetLexerInfo(name_node)),
                     ),

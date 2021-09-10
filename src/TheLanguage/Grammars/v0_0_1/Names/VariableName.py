@@ -36,6 +36,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import SetLexerInfo
     from ....Lexer.ParserInterfaces.Names.VariableNameLexerInfo import (
         VariableNameLexerData,
+        VariableNameLexerInfo,
         VariableNameLexerRegions,
     )
 
@@ -92,7 +93,7 @@ class VariableName(GrammarPhrase):
         # pylint: disable=too-many-function-args
         SetLexerInfo(
             node,
-            (
+            VariableNameLexerInfo(
                 VariableNameLexerData(name),
                 CreateLexerRegions(
                     VariableNameLexerRegions,  # type: ignore

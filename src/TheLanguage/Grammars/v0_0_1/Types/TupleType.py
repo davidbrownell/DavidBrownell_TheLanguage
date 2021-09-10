@@ -36,6 +36,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.ParserInterfaces.Types.TupleTypeLexerInfo import (
         TupleTypeLexerData,
+        TupleTypeLexerInfo,
         TupleTypeLexerRegions,
         TypeLexerInfo,
     )
@@ -74,7 +75,7 @@ class TupleType(TupleBase):
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
-                (
+                TupleTypeLexerInfo(
                     TupleTypeLexerData(
                         [cast(TypeLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
                     ),

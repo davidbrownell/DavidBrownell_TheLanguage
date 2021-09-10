@@ -38,6 +38,7 @@ with InitRelativeImports():
     from ....Lexer.ParserInterfaces.Types.FuncTypeLexerInfo import (
         TypeLexerInfo,
         FuncTypeLexerData,
+        FuncTypeLexerInfo,
         FuncTypeLexerRegions,
     )
 
@@ -164,7 +165,7 @@ class FuncType(GrammarPhrase):
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
-                (
+                FuncTypeLexerInfo(
                     FuncTypeLexerData(
                         cast(TypeLexerInfo, GetLexerInfo(return_type_node)),
                         parameters or None,

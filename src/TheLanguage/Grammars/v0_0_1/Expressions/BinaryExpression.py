@@ -35,6 +35,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo import (
         BinaryExpressionLexerData,
+        BinaryExpressionLexerInfo,
         BinaryExpressionLexerRegions,
         ExpressionLexerInfo,
         OperatorType,
@@ -204,7 +205,7 @@ class BinaryExpression(GrammarPhrase):
 
             SetLexerInfo(
                 node,
-                (
+                BinaryExpressionLexerInfo(
                     BinaryExpressionLexerData(
                         cast(ExpressionLexerInfo, GetLexerInfo(left_node)),
                         operator_type,
