@@ -40,7 +40,10 @@ with InitRelativeImports():
 class TupleNameLexerData(NameLexerData):
     Names: List[NameLexerInfo]
 
-    # TODO (Validation): Check for unique names
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Names
+        super(TupleNameLexerData, self).__post_init__()
 
 
 # ----------------------------------------------------------------------

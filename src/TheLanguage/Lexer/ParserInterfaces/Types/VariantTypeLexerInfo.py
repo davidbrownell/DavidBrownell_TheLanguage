@@ -40,6 +40,12 @@ with InitRelativeImports():
 class VariantTypeLexerData(TypeLexerData):
     Types: List[TypeLexerInfo]
 
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Types
+
+        super(VariantTypeLexerData, self).__post_init__()
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)

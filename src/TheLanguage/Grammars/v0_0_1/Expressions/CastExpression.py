@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,8 +31,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import TypeModifier
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Lexer.ParserInterfaces.Expressions.CastExpressionLexerInfo import (
+        CastExpressionLexerData,
+        CastExpressionLexerInfo,
+        CastExpressionLexerRegions,
+        ExpressionLexerInfo,
+        TypeLexerInfo,
+    )
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractOr,
+        ExtractSequence,
+        Node,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -77,3 +98,48 @@ class CastExpression(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ValidateSyntax(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 3
+
+            # <expr>
+            expr_node = ExtractDynamic(cast(Node, nodes[0]))
+
+            # <modifier> | <type>
+            type_node = cast(Node, ExtractOr(cast(Node, nodes[2])))
+
+            assert type_node.Type is not None
+            if type_node.Type.Name == "Modifier":
+                the_type = TypeModifier.Extract(type_node)
+            else:
+                the_type = cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(type_node)))
+
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
+                node,
+                CastExpressionLexerInfo(
+                    CastExpressionLexerData(
+                        cast(ExpressionLexerInfo, GetLexerInfo(expr_node)),
+                        the_type,  # type: ignore
+                    ),
+                    CreateLexerRegions(
+                        CastExpressionLexerRegions,  # type: ignore
+                        node,
+                        expr_node,
+                        type_node,
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)

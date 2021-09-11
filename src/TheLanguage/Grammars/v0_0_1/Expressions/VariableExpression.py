@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,8 +30,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo import (
+        NameLexerInfo,
+        VariableExpressionLexerData,
+        VariableExpressionLexerRegions,
+    )
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
+        Node,
+        PhraseItem,
+    )
 
     from ..Names.TupleName import TupleName
 
@@ -66,3 +83,32 @@ class VariableExpression(GrammarPhrase):
                 ),
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ValidateSyntax(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            name_node = ExtractDynamic(node)
+
+            SetLexerInfo(
+                node,
+                (
+                    VariableExpressionLexerData(
+                        cast(NameLexerInfo, GetLexerInfo(name_node)),
+                    ),
+                    CreateLexerRegions(
+                        VariableExpressionLexerRegions,  # type: ignore
+                        node,
+                        name_node,
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)

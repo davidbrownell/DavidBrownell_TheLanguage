@@ -17,6 +17,8 @@
 
 import os
 
+from typing import Optional, Tuple
+
 from dataclasses import dataclass
 
 import CommonEnvironment
@@ -30,7 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...LexerInfo import LexerData, LexerInfo, LexerRegions
+    from ..Common.TypeModifier import TypeModifier
+    from ...LexerInfo import LexerData, LexerInfo, LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
@@ -47,3 +50,10 @@ class TypeLexerInfo(LexerInfo, Interface.Interface):
 
     Data: TypeLexerData
     Regions: LexerRegions
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def GetTypeModifier() -> Optional[Tuple[TypeModifier, Region]]:
+        """Returns information about a TypeModifier associated with the type (if any)"""
+        return None

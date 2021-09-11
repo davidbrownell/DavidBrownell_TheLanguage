@@ -160,6 +160,41 @@ Children:
                                                     IterBegin: "[2, 16] (25)"
                                                     IterEnd: "[2, 21] (30)"
                                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                      Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                        Name: "expr1"
+                                                      Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                        Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                            Column: 16
+                                                            Line: 2
+                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                            Column: 21
+                                                            Line: 2
+                                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                            Column: 16
+                                                            Line: 2
+                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                            Column: 21
+                                                            Line: 2
+                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                        Column: 16
+                                                        Line: 2
+                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                        Column: 21
+                                                        Line: 2
+                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                        Column: 16
+                                                        Line: 2
+                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                        Column: 21
+                                                        Line: 2
                                                 IterBegin: "[2, 16] (25)"
                                                 IterEnd: "[2, 21] (30)"
                                                 Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -228,7 +263,7 @@ Children:
                                                                     Whitespace:
                                                                       - 44
                                                                       - 45
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int1"
@@ -319,6 +354,41 @@ Children:
                                                                     IterBegin: "[3, 20] (51)"
                                                                     IterEnd: "[3, 26] (57)"
                                                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                      Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                        Name: "value1"
+                                                                      Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                        Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 20
+                                                                            Line: 3
+                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 26
+                                                                            Line: 3
+                                                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 20
+                                                                            Line: 3
+                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 26
+                                                                            Line: 3
+                                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 20
+                                                                        Line: 3
+                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 26
+                                                                        Line: 3
+                                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 20
+                                                                        Line: 3
+                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 26
+                                                                        Line: 3
                                                                 IterBegin: "[3, 20] (51)"
                                                                 IterEnd: "[3, 26] (57)"
                                                                 Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -376,7 +446,7 @@ Children:
                                                                     Whitespace:
                                                                       - 70
                                                                       - 71
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int2"
@@ -573,6 +643,41 @@ Children:
                                                                                                                         IterBegin: "[7, 21] (144)"
                                                                                                                         IterEnd: "[7, 22] (145)"
                                                                                                                         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                                                                    Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                      Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                                                                        Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                                                                            Name: "a"
+                                                                                                                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                                            Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                Column: 21
+                                                                                                                                Line: 7
+                                                                                                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                Column: 22
+                                                                                                                                Line: 7
+                                                                                                                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                Column: 21
+                                                                                                                                Line: 7
+                                                                                                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                Column: 22
+                                                                                                                                Line: 7
+                                                                                                                      Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                                        Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                            Column: 21
+                                                                                                                            Line: 7
+                                                                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                            Column: 22
+                                                                                                                            Line: 7
+                                                                                                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                            Column: 21
+                                                                                                                            Line: 7
+                                                                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                            Column: 22
+                                                                                                                            Line: 7
                                                                                                                     IterBegin: "[7, 21] (144)"
                                                                                                                     IterEnd: "[7, 22] (145)"
                                                                                                                     Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -641,6 +746,41 @@ Children:
                                                                                                                                 IterBegin: "[8, 21] (167)"
                                                                                                                                 IterEnd: "[8, 22] (168)"
                                                                                                                                 Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                                                                            Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                                                                                Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                                                                                    Name: "b"
+                                                                                                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 21
+                                                                                                                                        Line: 8
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 22
+                                                                                                                                        Line: 8
+                                                                                                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 21
+                                                                                                                                        Line: 8
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 22
+                                                                                                                                        Line: 8
+                                                                                                                              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                                                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                    Column: 21
+                                                                                                                                    Line: 8
+                                                                                                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                    Column: 22
+                                                                                                                                    Line: 8
+                                                                                                                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                    Column: 21
+                                                                                                                                    Line: 8
+                                                                                                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                    Column: 22
+                                                                                                                                    Line: 8
                                                                                                                             IterBegin: "[8, 21] (167)"
                                                                                                                             IterEnd: "[8, 22] (168)"
                                                                                                                             Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -710,6 +850,41 @@ Children:
                                                                                                                                 IterBegin: "[9, 21] (190)"
                                                                                                                                 IterEnd: "[9, 22] (191)"
                                                                                                                                 Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                                                                            Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                                                                                Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                                                                                    Name: "c"
+                                                                                                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 21
+                                                                                                                                        Line: 9
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 22
+                                                                                                                                        Line: 9
+                                                                                                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 21
+                                                                                                                                        Line: 9
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 22
+                                                                                                                                        Line: 9
+                                                                                                                              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                                                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                    Column: 21
+                                                                                                                                    Line: 9
+                                                                                                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                    Column: 22
+                                                                                                                                    Line: 9
+                                                                                                                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                    Column: 21
+                                                                                                                                    Line: 9
+                                                                                                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                    Column: 22
+                                                                                                                                    Line: 9
                                                                                                                             IterBegin: "[9, 21] (190)"
                                                                                                                             IterEnd: "[9, 22] (191)"
                                                                                                                             Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -826,7 +1001,7 @@ Children:
                                                                                                             Whitespace:
                                                                                                               - 236
                                                                                                               - 237
-                                                                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                                                             Modifier: None
                                                                                                             TypeName: "Char1"
@@ -934,6 +1109,41 @@ Children:
                                                                                                             IterBegin: "[12, 25] (268)"
                                                                                                             IterEnd: "[12, 31] (274)"
                                                                                                             Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                                                            Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                                                                Name: "value2"
+                                                                                                              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                    Column: 25
+                                                                                                                    Line: 12
+                                                                                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                    Column: 31
+                                                                                                                    Line: 12
+                                                                                                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                    Column: 25
+                                                                                                                    Line: 12
+                                                                                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                    Column: 31
+                                                                                                                    Line: 12
+                                                                                                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                            Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                Column: 25
+                                                                                                                Line: 12
+                                                                                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                Column: 31
+                                                                                                                Line: 12
+                                                                                                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                Column: 25
+                                                                                                                Line: 12
+                                                                                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                Column: 31
+                                                                                                                Line: 12
                                                                                                         IterBegin: "[12, 25] (268)"
                                                                                                         IterEnd: "[12, 31] (274)"
                                                                                                         Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -999,7 +1209,7 @@ Children:
                                                                                                             Whitespace:
                                                                                                               - 300
                                                                                                               - 301
-                                                                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                                                           Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                                                             Modifier: None
                                                                                                             TypeName: "Char2"
@@ -1107,6 +1317,41 @@ Children:
                                                                                                             IterBegin: "[15, 25] (332)"
                                                                                                             IterEnd: "[15, 31] (338)"
                                                                                                             Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                                                        Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                                                            Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                                                                Name: "value3"
+                                                                                                              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                    Column: 25
+                                                                                                                    Line: 15
+                                                                                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                    Column: 31
+                                                                                                                    Line: 15
+                                                                                                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                    Column: 25
+                                                                                                                    Line: 15
+                                                                                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                    Column: 31
+                                                                                                                    Line: 15
+                                                                                                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                            Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                Column: 25
+                                                                                                                Line: 15
+                                                                                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                Column: 31
+                                                                                                                Line: 15
+                                                                                                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                Column: 25
+                                                                                                                Line: 15
+                                                                                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                Column: 31
+                                                                                                                Line: 15
                                                                                                         IterBegin: "[15, 25] (332)"
                                                                                                         IterEnd: "[15, 31] (338)"
                                                                                                         Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -1250,6 +1495,41 @@ Children:
                                                                                                                                     IterBegin: "[19, 29] (423)"
                                                                                                                                     IterEnd: "[19, 33] (427)"
                                                                                                                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                                      Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                                                                                        Name: "true"
+                                                                                                                                      Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                                                        Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 29
+                                                                                                                                            Line: 19
+                                                                                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 33
+                                                                                                                                            Line: 19
+                                                                                                                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 29
+                                                                                                                                            Line: 19
+                                                                                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 33
+                                                                                                                                            Line: 19
+                                                                                                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 29
+                                                                                                                                        Line: 19
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 33
+                                                                                                                                        Line: 19
+                                                                                                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 29
+                                                                                                                                        Line: 19
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 33
+                                                                                                                                        Line: 19
                                                                                                                                 IterBegin: "[19, 29] (423)"
                                                                                                                                 IterEnd: "[19, 33] (427)"
                                                                                                                                 Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -1311,6 +1591,41 @@ Children:
                                                                                                                                     IterBegin: "[20, 32] (459)"
                                                                                                                                     IterEnd: "[20, 37] (464)"
                                                                                                                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                                      Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                                                                                        Name: "cond1"
+                                                                                                                                      Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                                                        Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 32
+                                                                                                                                            Line: 20
+                                                                                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 37
+                                                                                                                                            Line: 20
+                                                                                                                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 32
+                                                                                                                                            Line: 20
+                                                                                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 37
+                                                                                                                                            Line: 20
+                                                                                                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 32
+                                                                                                                                        Line: 20
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 37
+                                                                                                                                        Line: 20
+                                                                                                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 32
+                                                                                                                                        Line: 20
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 37
+                                                                                                                                        Line: 20
                                                                                                                                 IterBegin: "[20, 32] (459)"
                                                                                                                                 IterEnd: "[20, 37] (464)"
                                                                                                                                 Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -1372,6 +1687,41 @@ Children:
                                                                                                                                     IterBegin: "[21, 29] (498)"
                                                                                                                                     IterEnd: "[21, 34] (503)"
                                                                                                                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                                                      Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                                                                                        Name: "false"
+                                                                                                                                      Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                                                        Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 29
+                                                                                                                                            Line: 21
+                                                                                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 34
+                                                                                                                                            Line: 21
+                                                                                                                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 29
+                                                                                                                                            Line: 21
+                                                                                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                            Column: 34
+                                                                                                                                            Line: 21
+                                                                                                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 29
+                                                                                                                                        Line: 21
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 34
+                                                                                                                                        Line: 21
+                                                                                                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 29
+                                                                                                                                        Line: 21
+                                                                                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                                                                                        Column: 34
+                                                                                                                                        Line: 21
                                                                                                                                 IterBegin: "[21, 29] (498)"
                                                                                                                                 IterEnd: "[21, 34] (503)"
                                                                                                                                 Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -1534,7 +1884,7 @@ Children:
                                                                     Whitespace:
                                                                       - 556
                                                                       - 557
-                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                   Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                     Modifier: None
                                                                     TypeName: "Int3"
@@ -1642,6 +1992,41 @@ Children:
                                                                     IterBegin: "[25, 13] (575)"
                                                                     IterEnd: "[25, 19] (581)"
                                                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                      Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                        Name: "value4"
+                                                                      Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                        Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 13
+                                                                            Line: 25
+                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 19
+                                                                            Line: 25
+                                                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 13
+                                                                            Line: 25
+                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 19
+                                                                            Line: 25
+                                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 13
+                                                                        Line: 25
+                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 19
+                                                                        Line: 25
+                                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 13
+                                                                        Line: 25
+                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 19
+                                                                        Line: 25
                                                                 IterBegin: "[25, 13] (575)"
                                                                 IterEnd: "[25, 19] (581)"
                                                                 Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -1748,6 +2133,41 @@ Children:
                                                                     IterBegin: "[27, 18] (600)"
                                                                     IterEnd: "[27, 24] (606)"
                                                                     Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                Info: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                      Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                        Name: "value5"
+                                                                      Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                        Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 18
+                                                                            Line: 27
+                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 24
+                                                                            Line: 27
+                                                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 18
+                                                                            Line: 27
+                                                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                            Column: 24
+                                                                            Line: 27
+                                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 18
+                                                                        Line: 27
+                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 24
+                                                                        Line: 27
+                                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 18
+                                                                        Line: 27
+                                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                                                        Column: 24
+                                                                        Line: 27
                                                                 IterBegin: "[27, 18] (600)"
                                                                 IterEnd: "[27, 24] (606)"
                                                                 Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
