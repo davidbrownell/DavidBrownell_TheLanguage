@@ -41,8 +41,8 @@ with InitRelativeImports():
     from ..Expressions.ExpressionLexerInfo import ExpressionLexerInfo
     from ..Types.TypeLexerInfo import TypeLexerInfo
 
-    from ...LexerError import LexerError
-    from ...LexerInfo import LexerRegions, Region
+    from ..LexerError import LexerError
+    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------

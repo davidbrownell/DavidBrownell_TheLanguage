@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeLexerInfo.py
+# |  TupleNameLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-09 22:57:03
+# |      2021-09-08 14:42:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TypeLexerData and TypeLexerInfo objects"""
+"""Contains the TupleNameLexerInfo object"""
 
 import os
 
-from typing import Optional, Tuple
+from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,28 +31,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.TypeModifier import TypeModifier
-    from ...LexerInfo import LexerData, LexerInfo, LexerRegions, Region
+    from .NameLexerInfo import NameLexerData, NameLexerInfo
+    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TypeLexerData(LexerData, Interface.Interface):
-    """Abstract base class for all type-related lexer data"""
-    pass
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TypeLexerInfo(LexerInfo, Interface.Interface):
-    """Abstract base class for all type-related lexer info"""
-
-    Data: TypeLexerData
-    Regions: LexerRegions
+class TupleNameLexerData(NameLexerData):
+    Names: List[NameLexerInfo]
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.extensionmethod
-    def GetTypeModifier() -> Optional[Tuple[TypeModifier, Region]]:
-        """Returns information about a TypeModifier associated with the type (if any)"""
-        return None
+    def __post_init__(self):
+        assert self.Names
+        super(TupleNameLexerData, self).__post_init__()
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class TupleNameLexerRegions(LexerRegions):
+    Names: Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class TupleNameLexerInfo(NameLexerInfo):
+    Data: TupleNameLexerData
+    Regions: TupleNameLexerRegions

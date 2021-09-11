@@ -34,7 +34,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.ParserInterfaces.Types.TupleTypeLexerInfo import (
+    from ....Lexer.Types.TupleTypeLexerInfo import (
         TupleTypeLexerData,
         TupleTypeLexerInfo,
         TupleTypeLexerRegions,

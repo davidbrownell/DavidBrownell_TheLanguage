@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariantTypeLexerInfo.py
+# |  VariableNameLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 16:52:04
+# |      2021-09-08 14:30:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariantTypeLexerInfo object"""
+"""Contains the VariableNameLexerInfo object"""
 
 import os
-
-from typing import List
 
 from dataclasses import dataclass
 
@@ -31,30 +29,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
-    from ...LexerInfo import LexerRegions, Region
+    from .NameLexerInfo import NameLexerData, NameLexerInfo
+    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariantTypeLexerData(TypeLexerData):
-    Types: List[TypeLexerInfo]
+class VariableNameLexerData(NameLexerData):
+    Name: str
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        assert self.Types
-
-        super(VariantTypeLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariantTypeLexerRegions(LexerRegions):
-    Types: Region
+        assert self.Name
+        super(VariableNameLexerData, self).__post_init__()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariantTypeLexerInfo(TypeLexerInfo):
-    Data: VariantTypeLexerData
-    Regions: VariantTypeLexerRegions
+class VariableNameLexerRegions(LexerRegions):
+    Name: Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class VariableNameLexerInfo(NameLexerInfo):
+    Data: VariableNameLexerData
+    Regions: VariableNameLexerRegions

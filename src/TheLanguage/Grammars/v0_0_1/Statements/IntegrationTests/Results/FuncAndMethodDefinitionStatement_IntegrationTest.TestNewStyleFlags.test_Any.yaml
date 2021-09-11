@@ -20,11 +20,11 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(0, 3), match='Int'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                        Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Int"
-                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                          Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
                             Modifier: None
                             Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -114,11 +114,11 @@ Children:
                                                     Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                       Match: "<_sre.SRE_Match object; span=(27, 30), match='Int'>"
                                                     Whitespace: None
-                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                                Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                  Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                     Modifier: None
                                                     TypeName: "Int"
-                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                                  Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
                                                     Modifier: None
                                                     Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                                                       Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -159,10 +159,10 @@ Children:
                                                     Whitespace:
                                                       - 30
                                                       - 31
-                                                Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                                                     Name: "a"
-                                                  Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
                                                     Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                                                       Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                                         Column: 13
@@ -217,11 +217,11 @@ Children:
                                                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                               Match: "<_sre.SRE_Match object; span=(42, 45), match='Int'>"
                                                             Whitespace: None
-                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                                        Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                             Modifier: None
                                                             TypeName: "Int"
-                                                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                                          Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
                                                             Modifier: None
                                                             Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                                                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -262,10 +262,10 @@ Children:
                                                             Whitespace:
                                                               - 45
                                                               - 46
-                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                        Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                                                             Name: "b"
-                                                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
                                                             Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                                                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                                                 Column: 13
@@ -321,11 +321,11 @@ Children:
                                                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                               Match: "<_sre.SRE_Match object; span=(57, 60), match='Int'>"
                                                             Whitespace: None
-                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                                        Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                          Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                             Modifier: None
                                                             TypeName: "Int"
-                                                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                                          Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
                                                             Modifier: None
                                                             Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                                                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -366,10 +366,10 @@ Children:
                                                             Whitespace:
                                                               - 60
                                                               - 61
-                                                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                        Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                                                             Name: "c"
-                                                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
                                                             Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                                                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                                                 Column: 13
@@ -530,8 +530,8 @@ Children:
                 IterBegin: "[6, 2] (65)"
                 IterEnd: "[8, 1] (76)"
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
                 ClassModifier: None
                 MethodType: "MethodType.standard"
                 Name: "Func"
@@ -552,10 +552,10 @@ Children:
                             Whitespace:
                               - 30
                               - 31
-                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                        Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                             Name: "a"
-                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
                             Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                 Column: 13
@@ -583,11 +583,11 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(27, 30), match='Int'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                        Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Int"
-                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                          Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
                             Modifier: None
                             Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -621,10 +621,10 @@ Children:
                             Whitespace:
                               - 45
                               - 46
-                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                        Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                             Name: "b"
-                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
                             Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                 Column: 13
@@ -652,11 +652,11 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(42, 45), match='Int'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                        Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Int"
-                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                          Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
                             Modifier: None
                             Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -690,10 +690,10 @@ Children:
                             Whitespace:
                               - 60
                               - 61
-                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                        Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                             Name: "c"
-                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
                             Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                                 Column: 13
@@ -721,11 +721,11 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(57, 60), match='Int'>"
                             Whitespace: None
-                        Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                        Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                             Modifier: None
                             TypeName: "Int"
-                          Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                          Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
                             Modifier: None
                             Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                               Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -746,7 +746,7 @@ Children:
                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                 ReturnType: None
                 Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
                 ClassModifier: None
                 MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>

@@ -131,9 +131,10 @@ def GetLexerInfo(
 ) -> LexerInfo:
     result = getattr(obj, "Info", None)
 
-    # Eventually, everything will have Info. However, that isn't the case right now.
+    # TODO: Eventually, everything will have Info. However, that isn't the case right now.
     # TODO: Remove this code ASAP
     if result is None:
+        # pylint: disable=too-many-function-args
         return LexerInfo(LexerData(), LexerRegions(Region(Location(1, 1), Location(1, 1))))
     # TODO: End
 

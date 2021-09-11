@@ -33,14 +33,15 @@ with InitRelativeImports():
     from ..Common import TypeModifier
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.ParserInterfaces.Expressions.CastExpressionLexerInfo import (
+    from ....Lexer.Expressions.CastExpressionLexerInfo import (
         CastExpressionLexerData,
         CastExpressionLexerInfo,
         CastExpressionLexerRegions,
         ExpressionLexerInfo,
         TypeLexerInfo,
     )
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,

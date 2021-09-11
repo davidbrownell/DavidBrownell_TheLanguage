@@ -110,7 +110,8 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         self.Phrase                         = phrase
 
     # ----------------------------------------------------------------------
-    # TODO: Change this name to ExtractLexerInfo, do not call from Parse
+    # TODO: Create a file called Lex.py that invokes this functionality
+    # TODO: Method should be abstract
     @staticmethod
     @Interface.extensionmethod
     def ExtractLexerInfo(

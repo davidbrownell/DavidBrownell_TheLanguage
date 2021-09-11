@@ -152,8 +152,8 @@ Children:
                 IterBegin: "[2, 27] (99)"
                 IterEnd: "[5, 1] (111)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Class"
@@ -161,7 +161,7 @@ Children:
                 Mixins: []
                 Name: "PublicClass"
                 Visibility: "VisibilityModifier.public"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
                 ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -361,8 +361,8 @@ Children:
                 IterBegin: "[5, 33] (143)"
                 IterEnd: "[8, 1] (155)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Class"
@@ -370,7 +370,7 @@ Children:
                 Mixins: []
                 Name: "ProtectedClass"
                 Visibility: "VisibilityModifier.protected"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
                 ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -570,8 +570,8 @@ Children:
                 IterBegin: "[8, 29] (183)"
                 IterEnd: "[11, 1] (195)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Class"
@@ -579,7 +579,7 @@ Children:
                 Mixins: []
                 Name: "PrivateClass"
                 Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
                 ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -759,8 +759,8 @@ Children:
                 IterBegin: "[11, 21] (215)"
                 IterEnd: "[14, 1] (227)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Class"
@@ -768,7 +768,7 @@ Children:
                 Mixins: []
                 Name: "DefaultClass"
                 Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
                 ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -968,8 +968,8 @@ Children:
                 IterBegin: "[15, 35] (334)"
                 IterEnd: "[18, 1] (346)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Exception"
@@ -977,7 +977,7 @@ Children:
                 Mixins: []
                 Name: "PublicException"
                 Visibility: "VisibilityModifier.public"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
                 ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -1157,8 +1157,8 @@ Children:
                 IterBegin: "[18, 29] (374)"
                 IterEnd: "[21, 1] (386)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Exception"
@@ -1166,7 +1166,7 @@ Children:
                 Mixins: []
                 Name: "DefaultException"
                 Visibility: "VisibilityModifier.public"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
                 ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -1366,8 +1366,8 @@ Children:
                 IterBegin: "[22, 25] (483)"
                 IterEnd: "[25, 1] (495)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Enum"
@@ -1375,7 +1375,7 @@ Children:
                 Mixins: []
                 Name: "PublicEnum"
                 Visibility: "VisibilityModifier.public"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
                 ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -1575,8 +1575,8 @@ Children:
                 IterBegin: "[25, 41] (535)"
                 IterEnd: "[28, 1] (547)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Interface"
@@ -1584,7 +1584,7 @@ Children:
                 Mixins: []
                 Name: "ProtectedInterface"
                 Visibility: "VisibilityModifier.protected"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
                 ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
@@ -1784,8 +1784,8 @@ Children:
                 IterBegin: "[28, 29] (575)"
                 IterEnd: "[30, 1] (586)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-            Info: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
+            Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Mixin"
@@ -1793,7 +1793,7 @@ Children:
                 Mixins: []
                 Name: "PrivateMixin"
                 Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
+              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
                 ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>

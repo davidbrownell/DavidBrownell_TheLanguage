@@ -34,7 +34,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
     from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Lexer.ParserInterfaces.Names.VariableNameLexerInfo import (
+    from ....Lexer.Names.VariableNameLexerInfo import (
         VariableNameLexerData,
         VariableNameLexerInfo,
         VariableNameLexerRegions,

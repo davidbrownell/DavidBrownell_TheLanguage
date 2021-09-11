@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableNameLexerInfo.py
+# |  StatementLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:30:06
+# |      2021-09-09 23:11:24
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableNameLexerInfo object"""
+"""Contains the StatementLexerData and StatementLexerInfo objects"""
 
 import os
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,29 +30,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NameLexerInfo import NameLexerData, NameLexerInfo
-    from ...LexerInfo import LexerRegions, Region
+    from ..LexerInfo import LexerData, LexerInfo, LexerRegions
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableNameLexerData(NameLexerData):
-    Name: str
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Name
-        super(VariableNameLexerData, self).__post_init__()
+class StatementLexerData(LexerData, Interface.Interface):
+    """Abstract base class for all statement-related lexer data"""
+    pass
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableNameLexerRegions(LexerRegions):
-    Name: Region
+class StatementLexerInfo(LexerInfo, Interface.Interface):
+    """Abstract base class for all statement-related lexer info"""
 
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableNameLexerInfo(NameLexerInfo):
-    Data: VariableNameLexerData
-    Regions: VariableNameLexerRegions
+    Data: StatementLexerData
+    Regions: LexerRegions

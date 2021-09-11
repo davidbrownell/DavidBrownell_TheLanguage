@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  AutomatedTests.py
+# |  NameLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 08:53:55
+# |      2021-09-09 22:54:01
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Types and functions that help when writing automated tests"""
+"""Contains the NameLexerData and NameLexerInfo objects"""
 
 import os
 
+from dataclasses import dataclass
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,15 +30,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...LexerInfo import Location, Region
+    from ..LexerInfo import LexerData, LexerInfo, LexerRegions
 
 
 # ----------------------------------------------------------------------
-def CreateRegion(
-    start_line: int,
-    start_column: int,
-    end_line: int,
-    end_column: int,
-) -> Region:
-    # pylint: disable=too-many-function-args
-    return Region(Location(start_line, start_column), Location(end_line, end_column))
+@dataclass(frozen=True, repr=False)
+class NameLexerData(LexerData, Interface.Interface):
+    """Abstract base class for all name-related lexer data"""
+    pass
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class NameLexerInfo(LexerInfo, Interface.Interface):
+    """Abstract base class for all name-related lexer info"""
+
+    Data: NameLexerData
+    Regions: LexerRegions
