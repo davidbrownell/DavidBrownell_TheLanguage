@@ -51,3 +51,10 @@ class VariantTypeLexerData(TypeLexerData):
 @dataclass(frozen=True, repr=False)
 class VariantTypeLexerRegions(LexerRegions):
     Types: Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class VariantTypeLexerInfo(TypeLexerInfo):
+    Data: VariantTypeLexerData
+    Regions: VariantTypeLexerRegions

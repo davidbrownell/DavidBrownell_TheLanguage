@@ -51,3 +51,10 @@ class TupleTypeLexerData(TypeLexerData):
 @dataclass(frozen=True, repr=False)
 class TupleTypeLexerRegions(LexerRegions):
     Types: Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class TupleTypeLexerInfo(TypeLexerInfo):
+    Data: TupleTypeLexerData
+    Regions: TupleTypeLexerRegions

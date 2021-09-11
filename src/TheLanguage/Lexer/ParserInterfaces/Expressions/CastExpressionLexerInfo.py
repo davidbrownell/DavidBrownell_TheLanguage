@@ -37,7 +37,7 @@ with InitRelativeImports():
     from ..Common.TypeModifier import TypeModifier
     from ..Types.TypeLexerInfo import TypeLexerInfo
 
-    from ...Components.LexerError import LexerError
+    from ...LexerError import LexerError
     from ...LexerInfo import LexerRegions, Region
 
 

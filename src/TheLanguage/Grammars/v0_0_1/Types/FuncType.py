@@ -38,6 +38,7 @@ with InitRelativeImports():
     from ....Lexer.ParserInterfaces.Types.FuncTypeLexerInfo import (
         TypeLexerInfo,
         FuncTypeLexerData,
+        FuncTypeLexerInfo,
         FuncTypeLexerRegions,
     )
 
@@ -128,10 +129,10 @@ class FuncType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
             nodes = ExtractSequence(node)
@@ -164,7 +165,7 @@ class FuncType(GrammarPhrase):
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
-                (
+                FuncTypeLexerInfo(
                     FuncTypeLexerData(
                         cast(TypeLexerInfo, GetLexerInfo(return_type_node)),
                         parameters or None,
@@ -180,4 +181,4 @@ class FuncType(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

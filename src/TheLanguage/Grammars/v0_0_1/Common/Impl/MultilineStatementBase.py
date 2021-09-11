@@ -179,10 +179,10 @@ class MultilineStatementBase(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         self,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # TODO: Revisit this
 
         nodes = ExtractSequence(node)
@@ -229,5 +229,5 @@ class MultilineStatementBase(GrammarPhrase):
         node: Node,
         leaf: Leaf,
         value: str,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         raise Exception("Abstract method")  # pragma: no cover

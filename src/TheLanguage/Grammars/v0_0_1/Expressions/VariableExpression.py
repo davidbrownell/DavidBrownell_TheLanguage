@@ -36,6 +36,7 @@ with InitRelativeImports():
     from ....Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo import (
         NameLexerInfo,
         VariableExpressionLexerData,
+        VariableExpressionLexerInfo,
         VariableExpressionLexerRegions,
     )
 
@@ -87,17 +88,17 @@ class VariableExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
             name_node = ExtractDynamic(node)
 
             SetLexerInfo(
                 node,
-                (
+                VariableExpressionLexerInfo(
                     VariableExpressionLexerData(
                         cast(NameLexerInfo, GetLexerInfo(name_node)),
                     ),
@@ -111,4 +112,4 @@ class VariableExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

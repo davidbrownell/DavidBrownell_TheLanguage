@@ -36,6 +36,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import SetLexerInfo
     from ....Lexer.ParserInterfaces.Names.VariableNameLexerInfo import (
         VariableNameLexerData,
+        VariableNameLexerInfo,
         VariableNameLexerRegions,
     )
 
@@ -79,10 +80,10 @@ class VariableName(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
@@ -92,7 +93,7 @@ class VariableName(GrammarPhrase):
         # pylint: disable=too-many-function-args
         SetLexerInfo(
             node,
-            (
+            VariableNameLexerInfo(
                 VariableNameLexerData(name),
                 CreateLexerRegions(
                     VariableNameLexerRegions,  # type: ignore

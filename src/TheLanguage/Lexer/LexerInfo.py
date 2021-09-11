@@ -120,14 +120,8 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
 # ----------------------------------------------------------------------
 def SetLexerInfo(
     obj: Any,
-    arg: Union[LexerInfo, Tuple[LexerData, LexerRegions]],
+    arg: LexerInfo,
 ):
-    if isinstance(arg, tuple):
-        data, regions = arg
-
-        # pylint: disable=too-many-function-args
-        arg = LexerInfo(data, regions)
-
     object.__setattr__(obj, "Info", arg)
 
 

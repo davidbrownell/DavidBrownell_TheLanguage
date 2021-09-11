@@ -53,3 +53,10 @@ class FuncTypeLexerData(TypeLexerData):
 class FuncTypeLexerRegions(LexerRegions):
     ReturnType: Region
     Parameters: Optional[Region]
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class FuncTypeLexerInfo(TypeLexerInfo):
+    Data: FuncTypeLexerData
+    Regions: FuncTypeLexerRegions
