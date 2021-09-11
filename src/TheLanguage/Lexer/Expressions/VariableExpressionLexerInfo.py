@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncTypeLexerInfo.py
+# |  VariableExpressionLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 17:05:37
+# |      2021-09-10 13:18:53
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncTypeLexerInfo object"""
+"""Contains the VariableExpressionLexerData and VariableExpressionLexerRegions objects"""
 
 import os
-
-from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -31,32 +29,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
-    from ...LexerInfo import LexerRegions, Region
+    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
+    from ..Names.NameLexerInfo import NameLexerInfo
+    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncTypeLexerData(TypeLexerData):
-    ReturnType: TypeLexerInfo
-    Parameters: Optional[List[TypeLexerInfo]]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Parameters is None or self.Parameters
-
-        super(FuncTypeLexerData, self).__post_init__()
+class VariableExpressionLexerData(ExpressionLexerData):
+    Name: NameLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncTypeLexerRegions(LexerRegions):
-    ReturnType: Region
-    Parameters: Optional[Region]
+class VariableExpressionLexerRegions(LexerRegions):
+    Name: Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncTypeLexerInfo(TypeLexerInfo):
-    Data: FuncTypeLexerData
-    Regions: FuncTypeLexerRegions
+class VariableExpressionLexerInfo(ExpressionLexerInfo):
+    Data: VariableExpressionLexerData
+    Regions: VariableExpressionLexerRegions

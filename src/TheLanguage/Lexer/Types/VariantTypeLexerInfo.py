@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ExpressionLexerInfo.py
+# |  VariantTypeLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-09 23:11:24
+# |      2021-09-08 16:52:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ExpressionLexerData and ExpressionLexerInfo objects"""
+"""Contains the VariantTypeLexerInfo object"""
 
 import os
+
+from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,20 +31,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...LexerInfo import LexerData, LexerInfo, LexerRegions
+    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
+    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ExpressionLexerData(LexerData, Interface.Interface):
-    """Abstract base class for all expression-related lexer data"""
-    pass
+class VariantTypeLexerData(TypeLexerData):
+    Types: List[TypeLexerInfo]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Types
+
+        super(VariantTypeLexerData, self).__post_init__()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ExpressionLexerInfo(LexerInfo, Interface.Interface):
-    """Abstract base class for all expression-related lexer info"""
+class VariantTypeLexerRegions(LexerRegions):
+    Types: Region
 
-    Data: ExpressionLexerData
-    Regions: LexerRegions
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class VariantTypeLexerInfo(TypeLexerInfo):
+    Data: VariantTypeLexerData
+    Regions: VariantTypeLexerRegions

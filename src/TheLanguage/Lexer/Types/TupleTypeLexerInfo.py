@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NameLexerInfo.py
+# |  TupleTypeLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-09 22:54:01
+# |      2021-09-08 16:39:29
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NameLexerData and NameLexerInfo objects"""
+"""Contains the TupleTypeLexerInfo object"""
 
 import os
+
+from typing import List
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,20 +31,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...LexerInfo import LexerData, LexerInfo, LexerRegions
+    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
+    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class NameLexerData(LexerData, Interface.Interface):
-    """Abstract base class for all name-related lexer data"""
-    pass
+class TupleTypeLexerData(TypeLexerData):
+    Types: List[TypeLexerInfo]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Types
+
+        super(TupleTypeLexerData, self).__post_init__()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class NameLexerInfo(LexerInfo, Interface.Interface):
-    """Abstract base class for all name-related lexer info"""
+class TupleTypeLexerRegions(LexerRegions):
+    Types: Region
 
-    Data: NameLexerData
-    Regions: LexerRegions
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class TupleTypeLexerInfo(TypeLexerInfo):
+    Data: TupleTypeLexerData
+    Regions: TupleTypeLexerRegions
