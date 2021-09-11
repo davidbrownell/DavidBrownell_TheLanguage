@@ -29,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NameLexerInfo import NameLexerData
+    from .NameLexerInfo import NameLexerData, NameLexerInfo
     from ...LexerInfo import LexerRegions, Region
 
 
@@ -48,3 +48,10 @@ class VariableNameLexerData(NameLexerData):
 @dataclass(frozen=True, repr=False)
 class VariableNameLexerRegions(LexerRegions):
     Name: Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class VariableNameLexerInfo(NameLexerInfo):
+    Data: VariableNameLexerData
+    Regions: VariableNameLexerRegions

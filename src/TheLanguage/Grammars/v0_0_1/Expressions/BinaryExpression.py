@@ -35,6 +35,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo import (
         BinaryExpressionLexerData,
+        BinaryExpressionLexerInfo,
         BinaryExpressionLexerRegions,
         ExpressionLexerInfo,
         OperatorType,
@@ -126,10 +127,10 @@ class BinaryExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
             nodes = ExtractSequence(node)
@@ -204,7 +205,7 @@ class BinaryExpression(GrammarPhrase):
 
             SetLexerInfo(
                 node,
-                (
+                BinaryExpressionLexerInfo(
                     BinaryExpressionLexerData(
                         cast(ExpressionLexerInfo, GetLexerInfo(left_node)),
                         operator_type,
@@ -222,4 +223,4 @@ class BinaryExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

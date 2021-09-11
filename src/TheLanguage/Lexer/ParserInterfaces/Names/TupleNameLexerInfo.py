@@ -50,3 +50,10 @@ class TupleNameLexerData(NameLexerData):
 @dataclass(frozen=True, repr=False)
 class TupleNameLexerRegions(LexerRegions):
     Names: Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class TupleNameLexerInfo(NameLexerInfo):
+    Data: TupleNameLexerData
+    Regions: TupleNameLexerRegions

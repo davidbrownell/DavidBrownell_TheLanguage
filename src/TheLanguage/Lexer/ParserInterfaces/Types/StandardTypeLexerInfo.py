@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
     from ..Common.TypeModifier import TypeModifier
-    from ...Components.LexerError import LexerError
+    from ...LexerError import LexerError
     from ...LexerInfo import LexerRegions, Region
 
 
@@ -80,6 +80,7 @@ class StandardTypeLexerInfo(TypeLexerInfo):
         ]
 
         if self.Data.Modifier in invalid_modifiers:
+            assert self.Data.Modifier is not None
             assert self.Regions.Modifier is not None
 
             valid_modifiers = [m for m in TypeModifier if m not in invalid_modifiers]

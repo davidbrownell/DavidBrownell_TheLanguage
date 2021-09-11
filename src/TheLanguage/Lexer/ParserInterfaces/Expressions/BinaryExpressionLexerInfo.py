@@ -86,3 +86,10 @@ class BinaryExpressionLexerRegions(LexerRegions):
     Left: Region
     Operator: Region
     Right: Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class BinaryExpressionLexerInfo(ExpressionLexerInfo):
+    Data: BinaryExpressionLexerData
+    Regions: BinaryExpressionLexerRegions

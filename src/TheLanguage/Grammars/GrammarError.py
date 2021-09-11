@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .GrammarPhrase import CreateLexerRegion
-    from ..Lexer.Components.LexerError import LexerError
+    from ..Lexer.LexerError import LexerError
     from ..Parser.Components.AST import Leaf, Node
 
 

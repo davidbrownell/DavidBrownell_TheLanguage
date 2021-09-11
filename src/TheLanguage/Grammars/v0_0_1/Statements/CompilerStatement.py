@@ -64,6 +64,6 @@ class CompilerStatement(MultilineStatementBase):
         node: Node,
         leaf: Leaf,
         value: str,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # Persist the info
         object.__setattr__(node, "Info", value)

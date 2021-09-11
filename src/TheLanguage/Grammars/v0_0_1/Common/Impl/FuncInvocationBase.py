@@ -85,9 +85,9 @@ class FuncInvocationBase(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # TODO: Revisit this
 
         nodes = ExtractSequence(node)

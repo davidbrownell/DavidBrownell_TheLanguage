@@ -36,6 +36,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.ParserInterfaces.Types.TupleTypeLexerInfo import (
         TupleTypeLexerData,
+        TupleTypeLexerInfo,
         TupleTypeLexerRegions,
         TypeLexerInfo,
     )
@@ -65,16 +66,16 @@ class TupleType(TupleBase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
-                (
+                TupleTypeLexerInfo(
                     TupleTypeLexerData(
                         [cast(TypeLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
                     ),
@@ -88,4 +89,4 @@ class TupleType(TupleBase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
