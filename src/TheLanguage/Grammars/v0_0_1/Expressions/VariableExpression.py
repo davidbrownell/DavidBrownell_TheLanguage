@@ -32,13 +32,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo import (
+    from ....Lexer.Expressions.VariableExpressionLexerInfo import (
         NameLexerInfo,
         VariableExpressionLexerData,
         VariableExpressionLexerInfo,
         VariableExpressionLexerRegions,
     )
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,

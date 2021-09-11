@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleTypeLexerInfo.py
+# |  AutomatedTests.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 16:39:29
+# |      2021-09-10 08:53:55
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleTypeLexerInfo object"""
+"""Types and functions that help when writing automated tests"""
 
 import os
-
-from typing import List
-
-from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -31,30 +27,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
-    from ...LexerInfo import LexerRegions, Region
+    from ..LexerInfo import Location, Region
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleTypeLexerData(TypeLexerData):
-    Types: List[TypeLexerInfo]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Types
-
-        super(TupleTypeLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleTypeLexerRegions(LexerRegions):
-    Types: Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleTypeLexerInfo(TypeLexerInfo):
-    Data: TupleTypeLexerData
-    Regions: TupleTypeLexerRegions
+def CreateRegion(
+    start_line: int,
+    start_column: int,
+    end_line: int,
+    end_column: int,
+) -> Region:
+    # pylint: disable=too-many-function-args
+    return Region(Location(start_line, start_column), Location(end_line, end_column))

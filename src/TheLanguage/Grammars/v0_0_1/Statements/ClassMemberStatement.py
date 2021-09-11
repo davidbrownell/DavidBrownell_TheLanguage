@@ -41,7 +41,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.ParserInterfaces.Statements.ClassMemberStatementLexerInfo import (
+    from ....Lexer.Statements.ClassMemberStatementLexerInfo import (
         ClassMemberStatementLexerInfo,
         ClassMemberStatementLexerRegions,
     )
@@ -80,7 +80,6 @@ class ClassMemberStatement(GrammarPhrase):
     PHRASE_NAME                             = "Class Member Statement"
 
     # TODO (Lexer Impl): Potential Attributes: Init, ToStr, Serialize, Equality # <TODO> pylint: disable=W0511
-    # TODO (Lexer Impl): Check validity against class type info
 
     # ----------------------------------------------------------------------
     def __init__(self):
@@ -172,7 +171,7 @@ class ClassMemberStatement(GrammarPhrase):
 
             default_node = ExtractDynamic(cast(Node, default_nodes[1]))
 
-        # TODO: Leverage attributes
+        # TODO: Leverage attributes (init, serialize, etc.)
 
         # ----------------------------------------------------------------------
         def CommitLexerInfo():

@@ -72,6 +72,8 @@ class SyntaxInvalidError(ParserError):
     MessageTemplate                         = Interface.DerivedProperty("The syntax is not recognized")  # type: ignore
 
     # TODO: Add functionality that discusses naming conventions if the wrong type of name is used
+    # TODO: Added info about next expected token if one statement is obviously intended
+    # TODO: Outline potential statements (and their error) if there is no obvious statement
 
     # ----------------------------------------------------------------------
     def __post_init__(self, iter_begin):

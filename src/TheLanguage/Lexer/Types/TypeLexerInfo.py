@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpressionLexerInfo.py
+# |  TypeLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 13:18:53
+# |      2021-09-09 22:57:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpressionLexerData and VariableExpressionLexerRegions objects"""
+"""Contains the TypeLexerData and TypeLexerInfo objects"""
 
 import os
+
+from typing import Optional, Tuple
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,25 +32,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
-    from ..Names.NameLexerInfo import NameLexerInfo
-    from ...LexerInfo import LexerRegions, Region
+    from ..Common.TypeModifier import TypeModifier
+    from ..LexerInfo import LexerData, LexerInfo, LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableExpressionLexerData(ExpressionLexerData):
-    Name: NameLexerInfo
+class TypeLexerData(LexerData, Interface.Interface):
+    """Abstract base class for all type-related lexer data"""
+    pass
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableExpressionLexerRegions(LexerRegions):
-    Name: Region
+class TypeLexerInfo(LexerInfo, Interface.Interface):
+    """Abstract base class for all type-related lexer info"""
 
+    Data: TypeLexerData
+    Regions: LexerRegions
 
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableExpressionLexerInfo(ExpressionLexerInfo):
-    Data: VariableExpressionLexerData
-    Regions: VariableExpressionLexerRegions
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def GetTypeModifier() -> Optional[Tuple[TypeModifier, Region]]:
+        """Returns information about a TypeModifier associated with the type (if any)"""
+        return None

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  StatementLexerInfo.py
+# |  FuncTypeLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-09 23:11:24
+# |      2021-09-08 17:05:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the StatementLexerData and StatementLexerInfo objects"""
+"""Contains the FuncTypeLexerInfo object"""
 
 import os
+
+from typing import List, Optional
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,20 +31,32 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...LexerInfo import LexerData, LexerInfo, LexerRegions
+    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
+    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class StatementLexerData(LexerData, Interface.Interface):
-    """Abstract base class for all statement-related lexer data"""
-    pass
+class FuncTypeLexerData(TypeLexerData):
+    ReturnType: TypeLexerInfo
+    Parameters: Optional[List[TypeLexerInfo]]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Parameters is None or self.Parameters
+
+        super(FuncTypeLexerData, self).__post_init__()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class StatementLexerInfo(LexerInfo, Interface.Interface):
-    """Abstract base class for all statement-related lexer info"""
+class FuncTypeLexerRegions(LexerRegions):
+    ReturnType: Region
+    Parameters: Optional[Region]
 
-    Data: StatementLexerData
-    Regions: LexerRegions
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class FuncTypeLexerInfo(TypeLexerInfo):
+    Data: FuncTypeLexerData
+    Regions: FuncTypeLexerRegions
