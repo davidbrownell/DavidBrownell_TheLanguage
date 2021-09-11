@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..LexerInfo import Region
+    from .LexerInfo import Region
 
 
 # ----------------------------------------------------------------------

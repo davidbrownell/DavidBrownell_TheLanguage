@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
     from ..Common.TypeModifier import TypeModifier
-    from ...Components.LexerError import LexerError
+    from ...LexerError import LexerError
     from ...LexerInfo import LexerRegions, Region
 
 

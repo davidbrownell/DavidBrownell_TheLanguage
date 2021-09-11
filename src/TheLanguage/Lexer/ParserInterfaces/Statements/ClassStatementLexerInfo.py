@@ -38,14 +38,14 @@ with InitRelativeImports():
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
 
+    from ...LexerError import LexerError
+
     from ...LexerInfo import (
         LexerData,
         LexerRegions,
         LexerInfo,
         Region,
     )
-
-    from ...Components.LexerError import LexerError
 
 
 # ----------------------------------------------------------------------

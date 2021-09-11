@@ -39,8 +39,6 @@ with InitRelativeImports():
         Region as LexerRegion,
     )
 
-    from ..Lexer.Components.LexerError import LexerError                    # This is here as a convenience
-
     from ..Parser.Components.AST import Leaf, Node
 
     from ..Parser.TranslationUnitsParser import (
