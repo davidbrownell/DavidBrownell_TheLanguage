@@ -84,12 +84,12 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
-    class ValidateSyntaxResult(object):
+    class ExtractLexerInfoResult(object):
         # Function that should be called once all the nodes have been validated individually. This
         # can be used by phrases who need context information from their parents to complete
         # validation but can only do so after the parent itself has been validated.
-        PostValidationFunc: Optional[Callable[[], None]]                    = field(default=None)
-        AllowChildTraversal: bool                                           = field(default=True)
+        PostExtractFunc: Optional[Callable[[], None]]   = field(default=None)
+        AllowChildTraversal: bool                       = field(default=True)
 
     # ----------------------------------------------------------------------
     # |
@@ -115,9 +115,9 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # TODO: Change this name to ExtractLexerInfo, do not call from Parse
     @staticmethod
     @Interface.extensionmethod
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         node: Node,
-    ) -> Optional["GrammarPhrase.ValidateSyntaxResult"]:
+    ) -> Optional["GrammarPhrase.ExtractLexerInfoResult"]:
         """\
         Opportunity to validate the syntax of a node.
 

@@ -233,10 +233,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 8
 
@@ -337,7 +337,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CommitLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CommitLexerInfo)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

@@ -66,10 +66,10 @@ class TupleType(TupleBase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
             # pylint: disable=too-many-function-args
@@ -89,4 +89,4 @@ class TupleType(TupleBase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

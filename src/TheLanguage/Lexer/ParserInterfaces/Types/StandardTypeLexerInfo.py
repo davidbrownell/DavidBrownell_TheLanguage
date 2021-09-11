@@ -80,6 +80,7 @@ class StandardTypeLexerInfo(TypeLexerInfo):
         ]
 
         if self.Data.Modifier in invalid_modifiers:
+            assert self.Data.Modifier is not None
             assert self.Regions.Modifier is not None
 
             valid_modifiers = [m for m in TypeModifier if m not in invalid_modifiers]

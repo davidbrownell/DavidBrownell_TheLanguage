@@ -130,10 +130,10 @@ class ClassMemberStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 7
 
@@ -212,4 +212,4 @@ class ClassMemberStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CommitLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CommitLexerInfo)
