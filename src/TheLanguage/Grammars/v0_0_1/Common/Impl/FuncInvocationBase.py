@@ -17,10 +17,9 @@
 
 import os
 
-from typing import cast, Optional
+from typing import cast, Optional, Type
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,7 +32,14 @@ with InitRelativeImports():
     from .. import ArgumentsPhraseItem
     from .. import Tokens as CommonTokens
 
-    from ....GrammarPhrase import GrammarPhrase
+    from ....GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from .....Lexer.LexerInfo import (
+        LexerData,
+        LexerInfo,
+        LexerRegions,
+        SetLexerInfo,
+    )
 
     from .....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -83,19 +89,44 @@ class FuncInvocationBase(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.override
-    def ExtractLexerInfo(
+    def _ExtractLexerInfoImpl(
+        lexer_data_type: Type[LexerData],
+        lexer_info_type: Type[LexerInfo],
+        lexer_regions_type: Type[LexerRegions],
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
-        # TODO: Revisit this
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) in [2, 3], nodes
 
-        nodes = ExtractSequence(node)
-        assert len(nodes) in [2, 3], nodes
+            # Func Name
+            leaf = cast(Leaf, nodes[0])
+            name = cast(str, ExtractToken(leaf))
 
-        # Func Name
-        leaf = cast(Leaf, nodes[0])
-        name = cast(str, ExtractToken(leaf))
+            # Arguments
+            arguments_node, arguments_info = ArgumentsPhraseItem.Extract(cast(Node, nodes[1]))
 
-        # Arguments
-        arguments = ArgumentsPhraseItem.Extract(cast(Node, nodes[1]))
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
+                node,
+                lexer_info_type(
+                    lexer_data_type(
+                        name,  # type: ignore
+                        arguments_info,
+                    ),
+                    CreateLexerRegions(
+                        lexer_regions_type,  # type: ignore
+                        node,
+                        leaf,
+                        arguments_node,
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
