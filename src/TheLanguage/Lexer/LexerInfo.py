@@ -35,8 +35,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class Location(YamlRepr.ObjectReprImplBase):
+@dataclass(frozen=True)
+class Location(object):
     Line: int
     Column: int
 
@@ -45,10 +45,14 @@ class Location(YamlRepr.ObjectReprImplBase):
         assert self.Line >= 1, self
         assert self.Column >= 1, self
 
+    # ----------------------------------------------------------------------
+    def ToString(self) -> str:
+        return "[Ln {}, Col {}]".format(self.Line, self.Column)
+
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class Region(YamlRepr.ObjectReprImplBase):
+@dataclass(frozen=True)
+class Region(object):
     Begin: Location
     End: Location
 
@@ -56,6 +60,10 @@ class Region(YamlRepr.ObjectReprImplBase):
     def __post_init__(self):
         assert self.End.Line >= self.Begin.Line, self
         assert self.End.Line > self.Begin.Line or self.End.Column >= self.Begin.Column, self
+
+    # ----------------------------------------------------------------------
+    def ToString(self) -> str:
+        return "{} -> {}".format(self.Begin.ToString(), self.End.ToString())
 
 
 # ----------------------------------------------------------------------

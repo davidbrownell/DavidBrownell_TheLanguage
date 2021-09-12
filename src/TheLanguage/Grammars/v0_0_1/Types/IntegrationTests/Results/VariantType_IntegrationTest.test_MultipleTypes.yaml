@@ -59,27 +59,9 @@ Children:
                                         Modifier: TypeModifier.var
                                         TypeName: "Int"
                                       Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                        Modifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 9
-                                            Line: 2
-                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 12
-                                            Line: 2
-                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 5
-                                            Line: 2
-                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 12
-                                            Line: 2
-                                        TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 5
-                                            Line: 2
-                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 8
-                                            Line: 2
+                                        Modifier: "[Ln 2, Col 9] -> [Ln 2, Col 12]"
+                                        Self__: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
+                                        TypeName: "[Ln 2, Col 5] -> [Ln 2, Col 8]"
                                     IterBegin: "[2, 5] (6)"
                                     IterEnd: "[2, 12] (13)"
                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -142,27 +124,9 @@ Children:
                                                 Modifier: TypeModifier.view
                                                 TypeName: "Char"
                                               Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                Modifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 12
-                                                    Line: 3
-                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 16
-                                                    Line: 3
-                                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 7
-                                                    Line: 3
-                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 16
-                                                    Line: 3
-                                                TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 7
-                                                    Line: 3
-                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 11
-                                                    Line: 3
+                                                Modifier: "[Ln 3, Col 12] -> [Ln 3, Col 16]"
+                                                Self__: "[Ln 3, Col 7] -> [Ln 3, Col 16]"
+                                                TypeName: "[Ln 3, Col 7] -> [Ln 3, Col 11]"
                                             IterBegin: "[3, 7] (20)"
                                             IterEnd: "[3, 16] (29)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -207,20 +171,8 @@ Children:
                                                 TypeName: "Double"
                                               Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
                                                 Modifier: None
-                                                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 7
-                                                    Line: 4
-                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 13
-                                                    Line: 4
-                                                TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 7
-                                                    Line: 4
-                                                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                    Column: 13
-                                                    Line: 4
+                                                Self__: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
+                                                TypeName: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
                                             IterBegin: "[4, 7] (36)"
                                             IterEnd: "[4, 13] (42)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -285,27 +237,9 @@ Children:
                                         Modifier: TypeModifier.var
                                         TypeName: "Foo"
                                       Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                        Modifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 11
-                                            Line: 5
-                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 14
-                                            Line: 5
-                                        Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 7
-                                            Line: 5
-                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 14
-                                            Line: 5
-                                        TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                          Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 7
-                                            Line: 5
-                                          End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                            Column: 10
-                                            Line: 5
+                                        Modifier: "[Ln 5, Col 11] -> [Ln 5, Col 14]"
+                                        Self__: "[Ln 5, Col 7] -> [Ln 5, Col 14]"
+                                        TypeName: "[Ln 5, Col 7] -> [Ln 5, Col 10]"
                                     IterBegin: "[5, 7] (49)"
                                     IterEnd: "[5, 14] (56)"
                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -331,114 +265,36 @@ Children:
                                   Modifier: TypeModifier.var
                                   TypeName: "Int"
                                 Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                  Modifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 9
-                                      Line: 2
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 12
-                                      Line: 2
-                                  Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 5
-                                      Line: 2
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 12
-                                      Line: 2
-                                  TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 5
-                                      Line: 2
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 8
-                                      Line: 2
+                                  Modifier: "[Ln 2, Col 9] -> [Ln 2, Col 12]"
+                                  Self__: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
+                                  TypeName: "[Ln 2, Col 5] -> [Ln 2, Col 8]"
                               - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                   Modifier: TypeModifier.view
                                   TypeName: "Char"
                                 Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                  Modifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 12
-                                      Line: 3
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 16
-                                      Line: 3
-                                  Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 7
-                                      Line: 3
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 16
-                                      Line: 3
-                                  TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 7
-                                      Line: 3
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 11
-                                      Line: 3
+                                  Modifier: "[Ln 3, Col 12] -> [Ln 3, Col 16]"
+                                  Self__: "[Ln 3, Col 7] -> [Ln 3, Col 16]"
+                                  TypeName: "[Ln 3, Col 7] -> [Ln 3, Col 11]"
                               - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                   Modifier: None
                                   TypeName: "Double"
                                 Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
                                   Modifier: None
-                                  Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 7
-                                      Line: 4
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 13
-                                      Line: 4
-                                  TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 7
-                                      Line: 4
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 13
-                                      Line: 4
+                                  Self__: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
+                                  TypeName: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
                               - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                   Modifier: TypeModifier.var
                                   TypeName: "Foo"
                                 Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                  Modifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 11
-                                      Line: 5
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 14
-                                      Line: 5
-                                  Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 7
-                                      Line: 5
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 14
-                                      Line: 5
-                                  TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 7
-                                      Line: 5
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 10
-                                      Line: 5
+                                  Modifier: "[Ln 5, Col 11] -> [Ln 5, Col 14]"
+                                  Self__: "[Ln 5, Col 7] -> [Ln 5, Col 14]"
+                                  TypeName: "[Ln 5, Col 7] -> [Ln 5, Col 10]"
                           Regions: # <class 'TheLanguage.Lexer.Types.VariantTypeLexerInfo.VariantTypeLexerRegions'>
-                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 1
-                                Line: 1
-                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 2
-                                Line: 6
-                            Types: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 1
-                                Line: 1
-                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 2
-                                Line: 6
+                            Self__: "[Ln 1, Col 1] -> [Ln 6, Col 2]"
+                            Types: "[Ln 1, Col 1] -> [Ln 6, Col 2]"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[6, 2] (58)"
                         Type: "Variant Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -581,42 +437,12 @@ Children:
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
                 ClassModifier: None
-                MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 8
-                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 3
-                    Line: 6
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 7
-                    Line: 6
-                Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 7
-                    Line: 6
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 9
-                    Line: 6
+                MethodType: "[Ln 1, Col 1] -> [Ln 8, Col 1]"
+                Name: "[Ln 6, Col 3] -> [Ln 6, Col 7]"
+                Parameters: "[Ln 6, Col 7] -> [Ln 6, Col 9]"
                 ReturnType: None
-                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 8
-                Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 8
+                Self__: "[Ln 1, Col 1] -> [Ln 8, Col 1]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 8, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[8, 1] (76)"
             Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
