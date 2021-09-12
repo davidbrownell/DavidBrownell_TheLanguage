@@ -77,7 +77,7 @@ class ClassType(Enum):
 
 
 # ----------------------------------------------------------------------
-class MethodType(Enum):  # type: ignore
+class MethodType(Enum):
     """\
     Modifies how a method should be consumed
     """
@@ -409,15 +409,32 @@ class ClassDependencyLexerInfo(LexerInfo):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ClassStatementLexerData(StatementLexerData):
+    # Note that this data is constructed in 2 phases:
+    #
+    #     1) Everything expect Statements
+    #     2) Statements
+    #
+    # This 2 phase construction is necessary because child functionality
+    # relies on information provided by these data to determine defaults
+    # for their values (for example, the default visibility for a method
+    # depends on the class type, which is specified by this data).
+    #
+    # Construct this object, then update the statements after they have been
+    # constructed.
+
+    # Constructed during Phase 1
     Visibility: VisibilityModifier
     ClassModifier: ClassModifier
     ClassType: ClassType
     Name: str
     Base: Optional[ClassDependencyLexerInfo]
-    Interfaces: List[ClassDependencyLexerInfo]
-    Mixins: List[ClassDependencyLexerInfo]
+    Interfaces: Optional[List[ClassDependencyLexerInfo]]
+    Mixins: Optional[List[ClassDependencyLexerInfo]]
 
-    TypeInfo: TypeInfo                      = field(init=False)
+    TypeInfo: TypeInfo                      = field(init=False) # State data, never persisted
+
+    # Constructed during Phase 2
+    Statements: List[StatementLexerInfo]    = field(init=False, default_factory=list)
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -479,6 +496,17 @@ class ClassStatementLexerData(StatementLexerData):
                 class_modifier.name,
             )
 
+    # ----------------------------------------------------------------------
+    def SetStatements(
+        self,
+        statements: List[StatementLexerInfo],
+    ):
+        # Note that this method should only be called by ClassStatementLexerInfo
+        assert statements
+        assert not self.Statements
+
+        object.__setattr__(self, "Statements", statements)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -490,6 +518,7 @@ class ClassStatementLexerRegions(LexerRegions):
     Base: Optional[Region]
     Interfaces: Optional[Region]
     Mixins: Optional[Region]
+    Statements: Region
 
 
 # ----------------------------------------------------------------------
@@ -568,7 +597,22 @@ class ClassStatementLexerInfo(StatementLexerInfo):
                 class_type,
                 name,
                 base,
-                interfaces,
-                mixins,
+                interfaces or None,
+                mixins or None,
             ),
+        )
+
+        super(ClassStatementLexerInfo, self).__post_init__(
+            should_validate=False,
+        )
+
+    # ----------------------------------------------------------------------
+    def SetStatements(
+        self,
+        statements: List[StatementLexerInfo],
+    ):
+        self.Data.SetStatements(statements)
+
+        super(ClassStatementLexerInfo, self).Validate(
+            attributes_to_skip=set(["TypeInfo"]),
         )
