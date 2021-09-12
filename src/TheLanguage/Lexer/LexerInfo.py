@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Callable, Optional, Tuple, Union
+from typing import Any, Callable, List, Optional, Set, Union
 
 from dataclasses import (
     dataclass,
@@ -68,7 +68,31 @@ class LexerData(YamlRepr.ObjectReprImplBase):
         **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
         assert hasattr(self, DATACLASS_PARAMS) and not getattr(self, DATACLASS_PARAMS).repr, "Derived classes should be based on `dataclass` with `repr` set to `False`"
+
+        for field in fields(self):
+            if field.init:
+                self._ValidateImpl(field)
+
         YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
+
+    # ----------------------------------------------------------------------
+    def Validate(self):
+        """Validates all fields that are to be populated after the object is constructed"""
+
+        for field in fields(self):
+            if not field.init:
+                self._ValidateImpl(field)
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _ValidateImpl(self, field):
+        field_type = getattr(field.type, "__origin__", None)
+
+        # Lists should never be empty
+        if field_type == List:
+            data_value = getattr(self, field.name)
+            assert data_value, (field.name, "Lists should never be empty; wrap it in 'Optional' if an empty list is a valid value")
 
 
 # ----------------------------------------------------------------------
@@ -94,17 +118,59 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
+        should_validate=True,
         **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
+        if should_validate:
+            self.Validate(
+                # No need to validate data, as it will have already been validated
+                # during construction.
+                validate_data=False,
+            )
+
+        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
+
+    # ----------------------------------------------------------------------
+    def Validate(
+        self,
+        attributes_to_skip: Optional[Set[str]]=None,
+        validate_data=True,
+    ):
+        if attributes_to_skip is None:
+            attributes_to_skip = set()
+
+        # ----------------------------------------------------------------------
+        def IsOptional(field):
+            if getattr(field.type, "__origin__", None) != Union:
+                return False
+
+            for arg in getattr(field.type, "__args__", []):
+                if arg == type(None):
+                    return True
+
+            return False
+
+        # ----------------------------------------------------------------------
+
+        region_fields = {field.name : field for field in fields(self.Regions)}
+
         valid_data_values = 0
 
         for field in fields(self.Data):
+            if field.name in attributes_to_skip:
+                continue
+
             valid_data_values += 1
 
-            try:
-                region_value = getattr(self.Regions, field.name)
-            except AttributeError:
-                assert False, field.name
+            region_field = region_fields.get(field.name, None)
+            assert region_field is not None, (field.name, "This value is not defined in Regions")
+
+            # The data field should be optional if the region field is optional
+            assert IsOptional(region_field) == IsOptional(field), (field.name, "Data fields should be Optional if region fields are Optional")
+
+            # The data and region values should match in that they are either both None or both
+            # not None
+            region_value = getattr(self.Regions, field.name)
 
             if getattr(self.Data, field.name) is None:
                 assert region_value is None, field.name
@@ -114,7 +180,8 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
         # The regions should have all of the data and a self field
         assert len(fields(self.Regions)) == valid_data_values + 1, (len(fields(self.Regions)), valid_data_values)
 
-        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
+        if validate_data:
+            self.Data.Validate()
 
 
 # ----------------------------------------------------------------------

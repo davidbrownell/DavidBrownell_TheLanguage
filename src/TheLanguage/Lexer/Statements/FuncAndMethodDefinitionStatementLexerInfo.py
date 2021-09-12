@@ -195,7 +195,7 @@ class FuncAndMethodDefinitionStatementLexerData(StatementLexerData):
     MethodType: MethodType
     ReturnType: TypeLexerInfo
     Name: Union[str, OperatorType]
-    Parameters: List[Any]
+    Parameters: Optional[List[Any]] # TODO: This is optional right now, but should eventually not be
     ClassModifier: Optional[ClassModifierType]
 
     # ----------------------------------------------------------------------
@@ -211,7 +211,7 @@ class FuncAndMethodDefinitionStatementLexerRegions(LexerRegions):
     MethodType: Region
     ReturnType: Region
     Name: Region
-    Parameters: Region
+    Parameters: Optional[Region] # TODO: This is Optional now, but eventually should not be
     ClassModifier: Optional[Region]
 
 
