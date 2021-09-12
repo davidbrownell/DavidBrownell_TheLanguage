@@ -44,6 +44,26 @@ Children:
                   End: 7
                   Start: 6
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+              Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
+                Arguments: None
+                Name: "Func"
+              Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
+                Arguments: None
+                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                    Column: 1
+                    Line: 1
+                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                    Column: 5
+                    Line: 1
+                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                    Column: 1
+                    Line: 1
+                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                    Column: 1
+                    Line: 2
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (7)"
             Type: "Func Invocation Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

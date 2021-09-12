@@ -94,6 +94,26 @@ Children:
                             IterBegin: "[1, 13] (12)"
                             IterEnd: "[1, 15] (14)"
                             Type: "Arguments <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
+                            Arguments: None
+                            Name: "Func"
+                          Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                            Arguments: None
+                            Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 9
+                                Line: 1
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 13
+                                Line: 1
+                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 9
+                                Line: 1
+                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                                Column: 15
+                                Line: 1
                         IterBegin: "[1, 9] (8)"
                         IterEnd: "[1, 15] (14)"
                         Type: "Func Invocation Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
