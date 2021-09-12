@@ -1090,9 +1090,142 @@ Children:
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Class"
-                Interfaces: []
-                Mixins: []
+                Interfaces: None
+                Mixins: None
                 Name: "Foo"
+                Statements:
+                  - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      DefaultValue: None
+                      Name: "value1"
+                      Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                          Modifier: None
+                          TypeName: "Int"
+                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                          Modifier: None
+                          Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                            Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 5
+                              Line: 3
+                            End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 8
+                              Line: 3
+                          TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                            Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 5
+                              Line: 3
+                            End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 8
+                              Line: 3
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 2
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 5
+                      DefaultValue: None
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 9
+                          Line: 3
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 15
+                          Line: 3
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 2
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 5
+                      Type: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 3
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 8
+                          Line: 3
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 2
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 5
+                  - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      DefaultValue: None
+                      Name: "value2"
+                      Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                          Modifier: TypeModifier.var
+                          TypeName: "Char"
+                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                          Modifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                            Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 10
+                              Line: 7
+                            End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 13
+                              Line: 7
+                          Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                            Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 5
+                              Line: 7
+                            End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 13
+                              Line: 7
+                          TypeName: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                            Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 5
+                              Line: 7
+                            End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                              Column: 9
+                              Line: 7
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 5
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 8
+                      DefaultValue: None
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 14
+                          Line: 7
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 20
+                          Line: 7
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 5
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 8
+                      Type: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 7
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 7
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 5
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 8
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
@@ -1122,6 +1255,13 @@ Children:
                 Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1
+                    Line: 1
+                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                    Column: 1
+                    Line: 8
+                Statements: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                    Column: 12
                     Line: 1
                   End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1

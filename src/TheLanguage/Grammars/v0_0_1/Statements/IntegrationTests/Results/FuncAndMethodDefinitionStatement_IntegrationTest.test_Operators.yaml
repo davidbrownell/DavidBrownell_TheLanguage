@@ -9205,9 +9205,2714 @@ Children:
                 Base: None
                 ClassModifier: "ClassModifier.immutable"
                 ClassType: "ClassType.Class"
-                Interfaces: []
-                Mixins: []
+                Interfaces: None
+                Mixins: None
                 Name: "Foo"
+                Statements:
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.ToBool"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 2
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 3
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 2
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 2
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 2
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 2
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 2
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 2
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 2
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 3
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 2
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 3
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.ToString"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 3
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 4
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 3
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 3
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 3
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 3
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 3
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 3
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 3
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 4
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 3
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 4
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Repr"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 4
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 5
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 4
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 4
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 4
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 4
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 4
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 4
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 4
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 5
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 4
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 5
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Clone"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 5
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 6
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 5
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 5
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 5
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 5
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 5
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 5
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 5
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 6
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 5
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 6
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Serialize"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 6
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 8
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 6
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 6
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 6
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 31
+                          Line: 6
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 31
+                          Line: 6
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 33
+                          Line: 6
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 6
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 8
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 6
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 8
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Init"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 8
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 9
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 8
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 8
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 8
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 8
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 8
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 8
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 8
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 9
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 8
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 9
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.PostInit"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 9
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 11
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 9
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 9
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 9
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 9
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 9
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 9
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 9
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 11
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 9
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 11
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.GetAttribute"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 11
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 12
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 11
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 11
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 11
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 11
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 11
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 36
+                          Line: 11
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 11
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 12
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 11
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 12
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Call"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 12
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 13
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 12
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 12
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 12
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 12
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 12
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 12
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 12
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 13
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 12
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 13
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Cast"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 13
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 14
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 13
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 13
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 13
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 13
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 13
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 13
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 13
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 14
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 13
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 14
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Index"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 14
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 16
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 14
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 14
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 14
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 14
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 14
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 14
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 14
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 16
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 14
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 16
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Contains"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 16
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 17
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 16
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 16
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 16
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 16
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 16
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 16
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 16
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 17
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 16
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 17
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Length"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 17
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 18
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 17
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 17
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 17
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 17
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 17
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 17
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 17
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 18
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 17
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 18
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Iter"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 18
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 19
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 18
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 18
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 18
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 18
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 18
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 18
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 18
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 19
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 18
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 19
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.AtEnd"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 19
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 21
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 19
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 19
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 19
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 19
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 19
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 19
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 19
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 21
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 19
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 21
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Compare"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 21
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 22
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 21
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 21
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 21
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 21
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 21
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 31
+                          Line: 21
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 21
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 22
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 21
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 22
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Equal"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 22
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 23
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 22
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 22
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 22
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 22
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 22
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 22
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 22
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 23
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 22
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 23
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.NotEqual"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 23
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 24
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 23
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 23
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 23
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 23
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 23
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 23
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 23
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 24
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 23
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 24
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Less"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 24
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 25
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 24
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 24
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 24
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 24
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 24
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 24
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 24
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 25
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 24
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 25
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.LessEqual"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 25
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 26
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 25
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 25
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 25
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 31
+                          Line: 25
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 31
+                          Line: 25
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 33
+                          Line: 25
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 25
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 26
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 25
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 26
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Greater"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 26
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 27
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 26
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 26
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 26
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 26
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 26
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 31
+                          Line: 26
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 26
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 27
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 26
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 27
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.GreaterEqual"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 27
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 29
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 27
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 27
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 27
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 27
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 27
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 36
+                          Line: 27
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 27
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 29
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 27
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 29
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.And"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 29
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 30
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 29
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 29
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 29
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 25
+                          Line: 29
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 25
+                          Line: 29
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 29
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 29
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 30
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 29
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 30
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Or"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 30
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 31
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 30
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 30
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 30
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 24
+                          Line: 30
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 24
+                          Line: 30
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 26
+                          Line: 30
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 30
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 31
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 30
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 31
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Not"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 31
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 33
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 31
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 31
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 31
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 25
+                          Line: 31
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 25
+                          Line: 31
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 31
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 31
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 33
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 31
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 33
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Add"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 33
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 34
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 33
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 33
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 33
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 25
+                          Line: 33
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 25
+                          Line: 33
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 33
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 33
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 34
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 33
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 34
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Subtract"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 34
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 35
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 34
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 34
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 34
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 34
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 34
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 34
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 34
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 35
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 34
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 35
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Multiply"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 35
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 36
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 35
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 35
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 35
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 35
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 35
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 35
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 35
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 36
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 35
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 36
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Divide"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 36
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 37
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 36
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 36
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 36
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 36
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 36
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 36
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 36
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 37
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 36
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 37
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.DivideFloor"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 37
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 38
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 37
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 37
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 37
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 33
+                          Line: 37
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 33
+                          Line: 37
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 35
+                          Line: 37
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 37
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 38
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 37
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 38
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Power"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 38
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 39
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 38
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 38
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 38
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 38
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 38
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 38
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 38
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 39
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 38
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 39
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Mod"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 39
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 40
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 39
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 39
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 39
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 25
+                          Line: 39
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 25
+                          Line: 39
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 39
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 39
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 40
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 39
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 40
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Positive"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 40
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 41
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 40
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 40
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 40
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 40
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 40
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 40
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 40
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 41
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 40
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 41
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.Negative"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 41
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 43
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 41
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 41
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 41
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 41
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 41
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 41
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 41
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 43
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 41
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 43
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.AddInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 43
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 44
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 43
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 43
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 43
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 43
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 43
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 43
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 43
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 44
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 43
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 44
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.SubtractInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 44
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 45
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 44
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 44
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 44
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 37
+                          Line: 44
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 37
+                          Line: 44
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 39
+                          Line: 44
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 44
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 45
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 44
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 45
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.MultiplyInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 45
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 46
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 45
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 45
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 45
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 37
+                          Line: 45
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 37
+                          Line: 45
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 39
+                          Line: 45
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 45
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 46
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 45
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 46
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.DivideInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 46
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 47
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 46
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 46
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 46
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 35
+                          Line: 46
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 35
+                          Line: 46
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 37
+                          Line: 46
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 46
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 47
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 46
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 47
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.DivideFloorInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 47
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 48
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 47
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 47
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 47
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 40
+                          Line: 47
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 40
+                          Line: 47
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 42
+                          Line: 47
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 47
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 48
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 47
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 48
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.PowerInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 48
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 49
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 48
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 48
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 48
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 48
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 48
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 36
+                          Line: 48
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 48
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 49
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 48
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 49
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.ModInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 49
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 51
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 49
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 49
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 49
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 49
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 49
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 49
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 49
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 51
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 49
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 51
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.ShiftLeft"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 51
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 52
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 51
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 51
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 51
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 31
+                          Line: 51
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 31
+                          Line: 51
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 33
+                          Line: 51
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 51
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 52
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 51
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 52
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.ShiftRight"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 52
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 53
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 52
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 52
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 52
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 52
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 32
+                          Line: 52
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 52
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 52
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 53
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 52
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 53
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.BitAnd"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 53
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 54
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 53
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 53
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 53
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 53
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 53
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 53
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 53
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 54
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 53
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 54
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.BitOr"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 54
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 55
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 54
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 54
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 54
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 54
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 27
+                          Line: 54
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 54
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 54
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 55
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 54
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 55
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.BitXor"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 55
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 56
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 55
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 55
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 55
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 55
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 28
+                          Line: 55
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 30
+                          Line: 55
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 55
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 56
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 55
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 56
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.BitFlip"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 56
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 58
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 56
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 56
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 56
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 56
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 29
+                          Line: 56
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 31
+                          Line: 56
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 56
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 58
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 56
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 58
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.ShiftLeftInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 58
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 59
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 58
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 58
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 58
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 38
+                          Line: 58
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 38
+                          Line: 58
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 40
+                          Line: 58
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 58
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 59
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 58
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 59
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.ShiftRightInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 59
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 60
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 59
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 59
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 59
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 39
+                          Line: 59
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 39
+                          Line: 59
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 41
+                          Line: 59
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 59
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 60
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 59
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 60
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.BitAndInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 60
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 61
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 60
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 60
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 60
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 35
+                          Line: 60
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 35
+                          Line: 60
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 37
+                          Line: 60
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 60
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 61
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 60
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 61
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.BitOrInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 61
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 62
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 61
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 61
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 61
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 61
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 34
+                          Line: 61
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 36
+                          Line: 61
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 61
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 62
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 61
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 62
+                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
+                      ClassModifier: "ClassModifier.immutable"
+                      MethodType: "MethodType.abstract"
+                      Name: "OperatorType.BitXorInplace"
+                      Parameters: {}
+                      ReturnType: None
+                      Visibility: "VisibilityModifier.private"
+                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+                      ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 62
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 63
+                      MethodType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 62
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 13
+                          Line: 62
+                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 18
+                          Line: 62
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 35
+                          Line: 62
+                      Parameters: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 35
+                          Line: 62
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 37
+                          Line: 62
+                      ReturnType: None
+                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 62
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 63
+                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 5
+                          Line: 62
+                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                          Column: 1
+                          Line: 63
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
@@ -9237,6 +11942,13 @@ Children:
                 Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
                   Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1
+                    Line: 1
+                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                    Column: 1
+                    Line: 63
+                Statements: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
+                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
+                    Column: 12
                     Line: 1
                   End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
                     Column: 1

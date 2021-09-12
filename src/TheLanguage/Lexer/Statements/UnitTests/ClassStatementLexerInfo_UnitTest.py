@@ -187,6 +187,7 @@ def test_ClassStatementLexerRegions():
         CreateRegion(17, 18, 19, 20),
         CreateRegion(21, 22, 23, 24),
         CreateRegion(25, 26, 27, 28),
+        CreateRegion(29, 30, 31, 32),
     )
 
     assert regions.Self__ == CreateRegion(100, 200, 300, 400)
@@ -210,6 +211,7 @@ class TestClassStatementLexerInfo(object):
         CreateRegion(17, 18, 19, 20),
         CreateRegion(21, 22, 23, 24),
         CreateRegion(25, 26, 27, 28),
+        CreateRegion(29, 30, 31, 32),
     )
 
     _dependency                             = ClassDependencyLexerInfo(
