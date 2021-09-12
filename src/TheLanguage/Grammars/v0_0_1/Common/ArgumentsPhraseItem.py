@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import cast, List, Optional, Union
+from typing import cast, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -34,13 +34,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from . import Tokens as CommonTokens
+
     from ...GrammarError import GrammarError
+    from ...GrammarPhrase import CreateLexerRegions
+
+    from ....Lexer.Common.ArgumentLexerInfo import (
+        ArgumentLexerData,
+        ArgumentLexerInfo,
+        ArgumentLexerRegions,
+        ExpressionLexerInfo,
+    )
+
+    from ....Lexer.LexerInfo import GetLexerInfo
+
     from ....Parser.Phrases.DSL import (
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
         ExtractRepeat,
         ExtractSequence,
+        ExtractToken,
         Leaf,
         Node,
         PhraseItem,
@@ -51,13 +64,6 @@ with InitRelativeImports():
 @dataclass(frozen=True)
 class PositionalAfterKeywordError(GrammarError):
     MessageTemplate                         = Interface.DerivedProperty("Positional arguments may not appear after keyword arguments.")  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class Argument(object):
-    Expression: Union[Leaf, Node]
-    Keyword: Optional[Union[Leaf, Node]]
 
 
 # ----------------------------------------------------------------------
@@ -73,7 +79,7 @@ def Create() -> PhraseItem:
             PhraseItem(
                 name="With Keyword",
                 item=[
-                    DynamicPhrasesType.Names,
+                    CommonTokens.GenericName,
                     "=",
                 ],
                 arity="?",
@@ -128,59 +134,73 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: Node,
-) -> List[Argument]:
+) -> Tuple[Optional[Node], Optional[List[ArgumentLexerInfo]]]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
 
-    # Extract the arguments
-    arguments: List[Argument] = []
+    arguments_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
 
-    if nodes[2] is not None:
-        arguments_nodes = ExtractSequence(
-            cast(
-                Node,
-                ExtractOptional(cast(Node, nodes[2])),
+    if arguments_node is None:
+        return None, None
+
+    # Extract the arguments
+    arguments: List[ArgumentLexerInfo] = []
+
+    arguments_nodes = ExtractSequence(arguments_node)
+    assert len(arguments_nodes) == 3
+
+    encountered_keyword = False
+
+    for argument_node in itertools.chain(
+        [arguments_nodes[0]],
+        [
+            ExtractSequence(node)[1] for node in cast(
+                List[Node],
+                ExtractRepeat(cast(Node, arguments_nodes[1])),
+            )
+        ],
+    ):
+        argument_node = cast(Node, argument_node)
+
+        argument_nodes = ExtractSequence(argument_node)
+        assert len(argument_nodes) == 2
+
+        # Keyword
+        keyword_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], argument_nodes[0])))
+
+        if keyword_node is not None:
+            encountered_keyword = True
+
+            keyword_nodes = ExtractSequence(keyword_node)
+            assert len(keyword_nodes) == 2
+
+            keyword_leaf = cast(Leaf, keyword_nodes[0])
+            keyword = cast(str, ExtractToken(keyword_leaf))
+
+        else:
+            if encountered_keyword:
+                raise PositionalAfterKeywordError.FromNode(argument_node)
+
+            keyword = None
+
+        # Expression
+        expression_node = ExtractDynamic(cast(Node, argument_nodes[1]))
+
+        # pylint: disable=too-many-function-args
+        arguments.append(
+            ArgumentLexerInfo(
+                ArgumentLexerData(
+                    cast(ExpressionLexerInfo, GetLexerInfo(expression_node)),
+                    keyword,
+                ),
+                CreateLexerRegions(
+                    ArgumentLexerRegions,  # type: ignore
+                    argument_node,
+                    expression_node,
+                    keyword_node,
+                ),
             ),
         )
-        assert len(arguments_nodes) == 3
 
-        encountered_keyword = False
-
-        for argument_node in itertools.chain(
-            [arguments_nodes[0]],
-            [
-                ExtractSequence(node)[1] for node in cast(
-                    List[Node],
-                    ExtractRepeat(cast(Node, arguments_nodes[1])),
-                )
-            ],
-        ):
-            argument_node = cast(Node, argument_node)
-
-            argument_nodes = ExtractSequence(argument_node)
-            assert len(argument_nodes) == 2
-
-            # Keyword
-            if argument_nodes[0] is not None:
-                encountered_keyword = True
-
-                keyword_nodes = ExtractSequence(
-                    cast(Node, ExtractOptional(cast(Node, argument_nodes[0]))),
-                )
-                assert len(keyword_nodes) == 2
-
-                keyword_node = ExtractDynamic(cast(Node, keyword_nodes[0]))
-
-            else:
-                if encountered_keyword:
-                    raise PositionalAfterKeywordError.FromNode(argument_node)
-
-                keyword_node = None
-
-            # Expression
-            expression_node = ExtractDynamic(cast(Node, argument_nodes[1]))
-
-            # Commit the value
-            arguments.append(Argument(expression_node, keyword_node))
-
-    return arguments
+    assert arguments
+    return arguments_node, arguments
