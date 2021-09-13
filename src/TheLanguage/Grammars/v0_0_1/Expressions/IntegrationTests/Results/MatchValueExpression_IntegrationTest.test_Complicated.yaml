@@ -1466,6 +1466,16 @@ Children:
                                                                                                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                                                                                                               Match: "<_sre.SRE_Match object; span=(532, 533), match=')'>"
                                                                                                             Whitespace: None
+                                                                                                        Info: # <class 'TheLanguage.Lexer.Expressions.GroupExpressionLexerInfo.GroupExpressionLexerInfo'>
+                                                                                                          Data: # <class 'TheLanguage.Lexer.Expressions.GroupExpressionLexerInfo.GroupExpressionLexerData'>
+                                                                                                            Expression: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                                                                                                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                                                                                                {}
+                                                                                                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                                                                                                Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+                                                                                                          Regions: # <class 'TheLanguage.Lexer.Expressions.GroupExpressionLexerInfo.GroupExpressionLexerRegions'>
+                                                                                                            Expression: "[Ln 19, Col 29] -> [Ln 21, Col 34]"
+                                                                                                            Self__: "[Ln 18, Col 25] -> [Ln 22, Col 26]"
                                                                                                         IterBegin: "[18, 25] (397)"
                                                                                                         IterEnd: "[22, 26] (533)"
                                                                                                         Type: "Group Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

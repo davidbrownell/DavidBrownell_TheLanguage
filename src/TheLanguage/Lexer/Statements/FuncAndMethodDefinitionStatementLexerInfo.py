@@ -52,6 +52,8 @@ class OperatorType(Enum):
     '__Compare__", and "__Add__".
     """
 
+    # TODO: I don't think that these are complete
+
     # Foundational
     ToBool                                  = auto()
     ToString                                = auto()
