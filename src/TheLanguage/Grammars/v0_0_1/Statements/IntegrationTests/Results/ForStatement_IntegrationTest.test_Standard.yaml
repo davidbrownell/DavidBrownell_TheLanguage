@@ -448,6 +448,23 @@ Children:
                             IterBegin: "[4, 15] (38)"
                             IterEnd: "[4, 19] (42)"
                             Type: "Single <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerData'>
+                            Expressions:
+                              - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                    Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                      Name: "z"
+                                    Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                      Name: "[Ln 4, Col 16] -> [Ln 4, Col 17]"
+                                      Self__: "[Ln 4, Col 16] -> [Ln 4, Col 17]"
+                                Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                  Name: "[Ln 4, Col 16] -> [Ln 4, Col 17]"
+                                  Self__: "[Ln 4, Col 16] -> [Ln 4, Col 17]"
+                          Regions: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerRegions'>
+                            Expressions: "[Ln 4, Col 15] -> [Ln 4, Col 19]"
+                            Self__: "[Ln 4, Col 15] -> [Ln 4, Col 19]"
                         IterBegin: "[4, 15] (38)"
                         IterEnd: "[4, 19] (42)"
                         Type: "Tuple Expression <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
