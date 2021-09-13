@@ -350,7 +350,7 @@ Children:
                                                                             ClassModifier: None
                                                                             MethodType: "MethodType.standard"
                                                                             Name: "Inner"
-                                                                            Parameters: {}
+                                                                            Parameters: None
                                                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                                                 Modifier: None
@@ -364,7 +364,7 @@ Children:
                                                                             ClassModifier: None
                                                                             MethodType: "[Ln 3, Col 9] -> [Ln 5, Col 1]"
                                                                             Name: "[Ln 3, Col 13] -> [Ln 3, Col 18]"
-                                                                            Parameters: "[Ln 3, Col 18] -> [Ln 3, Col 20]"
+                                                                            Parameters: None
                                                                             ReturnType: "[Ln 3, Col 9] -> [Ln 3, Col 12]"
                                                                             Self__: "[Ln 3, Col 9] -> [Ln 5, Col 1]"
                                                                             Visibility: "[Ln 3, Col 9] -> [Ln 5, Col 1]"
@@ -405,7 +405,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.standard"
                                             Name: "Outer"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -419,7 +419,7 @@ Children:
                                             ClassModifier: "[Ln 2, Col 5] -> [Ln 5, Col 1]"
                                             MethodType: "[Ln 2, Col 5] -> [Ln 5, Col 1]"
                                             Name: "[Ln 2, Col 9] -> [Ln 2, Col 14]"
-                                            Parameters: "[Ln 2, Col 14] -> [Ln 2, Col 16]"
+                                            Parameters: None
                                             ReturnType: "[Ln 2, Col 5] -> [Ln 2, Col 8]"
                                             Self__: "[Ln 2, Col 5] -> [Ln 5, Col 1]"
                                             Visibility: "[Ln 2, Col 5] -> [Ln 5, Col 1]"
@@ -466,7 +466,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.standard"
                       Name: "Outer"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -480,7 +480,7 @@ Children:
                       ClassModifier: "[Ln 2, Col 5] -> [Ln 5, Col 1]"
                       MethodType: "[Ln 2, Col 5] -> [Ln 5, Col 1]"
                       Name: "[Ln 2, Col 9] -> [Ln 2, Col 14]"
-                      Parameters: "[Ln 2, Col 14] -> [Ln 2, Col 16]"
+                      Parameters: None
                       ReturnType: "[Ln 2, Col 5] -> [Ln 2, Col 8]"
                       Self__: "[Ln 2, Col 5] -> [Ln 5, Col 1]"
                       Visibility: "[Ln 2, Col 5] -> [Ln 5, Col 1]"
