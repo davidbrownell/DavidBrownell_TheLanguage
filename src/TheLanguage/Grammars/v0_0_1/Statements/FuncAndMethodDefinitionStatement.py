@@ -281,10 +281,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                 method_name_data = operator_name
 
             # <parameters>
-            parameters_node = cast(Node, nodes[5])
-            parameters = ParametersPhraseItem.Extract(parameters_node) # TODO: Rename to 'parameters_data'
-
-            # TODO: Get the parameters ExprLexerInfo
+            parameters_node, parameters_data = ParametersPhraseItem.ExtractLexerInfo(cast(Node, nodes[5]))
 
             # <class_modifier>?
             class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[6])))
@@ -328,7 +325,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                     method_type_modifier_data,  # type: ignore
                     return_type_data,  # type: ignore
                     method_name_data,  # type: ignore
-                    parameters,  # type: ignore
+                    parameters_data,  # type: ignore
                     class_modifier_data,  # type: ignore
                     statements_data is not None,  # type: ignore
                 ),

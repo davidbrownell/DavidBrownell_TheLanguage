@@ -187,7 +187,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.ToBool"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -201,7 +201,7 @@ Children:
                                             ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
                                             MethodType: "[Ln 2, Col 5] -> [Ln 2, Col 13]"
                                             Name: "[Ln 2, Col 18] -> [Ln 2, Col 28]"
-                                            Parameters: "[Ln 2, Col 28] -> [Ln 2, Col 30]"
+                                            Parameters: None
                                             ReturnType: "[Ln 2, Col 14] -> [Ln 2, Col 17]"
                                             Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
                                             Visibility: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
@@ -321,7 +321,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.ToString"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -335,7 +335,7 @@ Children:
                                             ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
                                             MethodType: "[Ln 3, Col 5] -> [Ln 3, Col 13]"
                                             Name: "[Ln 3, Col 18] -> [Ln 3, Col 30]"
-                                            Parameters: "[Ln 3, Col 30] -> [Ln 3, Col 32]"
+                                            Parameters: None
                                             ReturnType: "[Ln 3, Col 14] -> [Ln 3, Col 17]"
                                             Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
                                             Visibility: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
@@ -455,7 +455,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Repr"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -469,7 +469,7 @@ Children:
                                             ClassModifier: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
                                             MethodType: "[Ln 4, Col 5] -> [Ln 4, Col 13]"
                                             Name: "[Ln 4, Col 18] -> [Ln 4, Col 26]"
-                                            Parameters: "[Ln 4, Col 26] -> [Ln 4, Col 28]"
+                                            Parameters: None
                                             ReturnType: "[Ln 4, Col 14] -> [Ln 4, Col 17]"
                                             Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
                                             Visibility: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
@@ -589,7 +589,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Clone"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -603,7 +603,7 @@ Children:
                                             ClassModifier: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
                                             MethodType: "[Ln 5, Col 5] -> [Ln 5, Col 13]"
                                             Name: "[Ln 5, Col 18] -> [Ln 5, Col 27]"
-                                            Parameters: "[Ln 5, Col 27] -> [Ln 5, Col 29]"
+                                            Parameters: None
                                             ReturnType: "[Ln 5, Col 14] -> [Ln 5, Col 17]"
                                             Self__: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
                                             Visibility: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
@@ -723,7 +723,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Serialize"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -737,7 +737,7 @@ Children:
                                             ClassModifier: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
                                             MethodType: "[Ln 6, Col 5] -> [Ln 6, Col 13]"
                                             Name: "[Ln 6, Col 18] -> [Ln 6, Col 31]"
-                                            Parameters: "[Ln 6, Col 31] -> [Ln 6, Col 33]"
+                                            Parameters: None
                                             ReturnType: "[Ln 6, Col 14] -> [Ln 6, Col 17]"
                                             Self__: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
                                             Visibility: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
@@ -857,7 +857,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Init"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -871,7 +871,7 @@ Children:
                                             ClassModifier: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
                                             MethodType: "[Ln 8, Col 5] -> [Ln 8, Col 13]"
                                             Name: "[Ln 8, Col 18] -> [Ln 8, Col 26]"
-                                            Parameters: "[Ln 8, Col 26] -> [Ln 8, Col 28]"
+                                            Parameters: None
                                             ReturnType: "[Ln 8, Col 14] -> [Ln 8, Col 17]"
                                             Self__: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
                                             Visibility: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
@@ -991,7 +991,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.PostInit"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -1005,7 +1005,7 @@ Children:
                                             ClassModifier: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
                                             MethodType: "[Ln 9, Col 5] -> [Ln 9, Col 13]"
                                             Name: "[Ln 9, Col 18] -> [Ln 9, Col 30]"
-                                            Parameters: "[Ln 9, Col 30] -> [Ln 9, Col 32]"
+                                            Parameters: None
                                             ReturnType: "[Ln 9, Col 14] -> [Ln 9, Col 17]"
                                             Self__: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
                                             Visibility: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
@@ -1125,7 +1125,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.GetAttribute"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -1139,7 +1139,7 @@ Children:
                                             ClassModifier: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
                                             MethodType: "[Ln 11, Col 5] -> [Ln 11, Col 13]"
                                             Name: "[Ln 11, Col 18] -> [Ln 11, Col 34]"
-                                            Parameters: "[Ln 11, Col 34] -> [Ln 11, Col 36]"
+                                            Parameters: None
                                             ReturnType: "[Ln 11, Col 14] -> [Ln 11, Col 17]"
                                             Self__: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
                                             Visibility: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
@@ -1259,7 +1259,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Call"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -1273,7 +1273,7 @@ Children:
                                             ClassModifier: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
                                             MethodType: "[Ln 12, Col 5] -> [Ln 12, Col 13]"
                                             Name: "[Ln 12, Col 18] -> [Ln 12, Col 26]"
-                                            Parameters: "[Ln 12, Col 26] -> [Ln 12, Col 28]"
+                                            Parameters: None
                                             ReturnType: "[Ln 12, Col 14] -> [Ln 12, Col 17]"
                                             Self__: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
                                             Visibility: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
@@ -1393,7 +1393,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Cast"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -1407,7 +1407,7 @@ Children:
                                             ClassModifier: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
                                             MethodType: "[Ln 13, Col 5] -> [Ln 13, Col 13]"
                                             Name: "[Ln 13, Col 18] -> [Ln 13, Col 26]"
-                                            Parameters: "[Ln 13, Col 26] -> [Ln 13, Col 28]"
+                                            Parameters: None
                                             ReturnType: "[Ln 13, Col 14] -> [Ln 13, Col 17]"
                                             Self__: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
                                             Visibility: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
@@ -1527,7 +1527,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Index"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -1541,7 +1541,7 @@ Children:
                                             ClassModifier: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
                                             MethodType: "[Ln 14, Col 5] -> [Ln 14, Col 13]"
                                             Name: "[Ln 14, Col 18] -> [Ln 14, Col 27]"
-                                            Parameters: "[Ln 14, Col 27] -> [Ln 14, Col 29]"
+                                            Parameters: None
                                             ReturnType: "[Ln 14, Col 14] -> [Ln 14, Col 17]"
                                             Self__: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
                                             Visibility: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
@@ -1661,7 +1661,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Contains"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -1675,7 +1675,7 @@ Children:
                                             ClassModifier: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
                                             MethodType: "[Ln 16, Col 5] -> [Ln 16, Col 13]"
                                             Name: "[Ln 16, Col 18] -> [Ln 16, Col 30]"
-                                            Parameters: "[Ln 16, Col 30] -> [Ln 16, Col 32]"
+                                            Parameters: None
                                             ReturnType: "[Ln 16, Col 14] -> [Ln 16, Col 17]"
                                             Self__: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
                                             Visibility: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
@@ -1795,7 +1795,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Length"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -1809,7 +1809,7 @@ Children:
                                             ClassModifier: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
                                             MethodType: "[Ln 17, Col 5] -> [Ln 17, Col 13]"
                                             Name: "[Ln 17, Col 18] -> [Ln 17, Col 28]"
-                                            Parameters: "[Ln 17, Col 28] -> [Ln 17, Col 30]"
+                                            Parameters: None
                                             ReturnType: "[Ln 17, Col 14] -> [Ln 17, Col 17]"
                                             Self__: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
                                             Visibility: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
@@ -1929,7 +1929,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Iter"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -1943,7 +1943,7 @@ Children:
                                             ClassModifier: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
                                             MethodType: "[Ln 18, Col 5] -> [Ln 18, Col 13]"
                                             Name: "[Ln 18, Col 18] -> [Ln 18, Col 26]"
-                                            Parameters: "[Ln 18, Col 26] -> [Ln 18, Col 28]"
+                                            Parameters: None
                                             ReturnType: "[Ln 18, Col 14] -> [Ln 18, Col 17]"
                                             Self__: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
                                             Visibility: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
@@ -2063,7 +2063,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.AtEnd"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -2077,7 +2077,7 @@ Children:
                                             ClassModifier: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
                                             MethodType: "[Ln 19, Col 5] -> [Ln 19, Col 13]"
                                             Name: "[Ln 19, Col 18] -> [Ln 19, Col 27]"
-                                            Parameters: "[Ln 19, Col 27] -> [Ln 19, Col 29]"
+                                            Parameters: None
                                             ReturnType: "[Ln 19, Col 14] -> [Ln 19, Col 17]"
                                             Self__: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
                                             Visibility: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
@@ -2197,7 +2197,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Compare"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -2211,7 +2211,7 @@ Children:
                                             ClassModifier: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
                                             MethodType: "[Ln 21, Col 5] -> [Ln 21, Col 13]"
                                             Name: "[Ln 21, Col 18] -> [Ln 21, Col 29]"
-                                            Parameters: "[Ln 21, Col 29] -> [Ln 21, Col 31]"
+                                            Parameters: None
                                             ReturnType: "[Ln 21, Col 14] -> [Ln 21, Col 17]"
                                             Self__: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
                                             Visibility: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
@@ -2331,7 +2331,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Equal"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -2345,7 +2345,7 @@ Children:
                                             ClassModifier: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
                                             MethodType: "[Ln 22, Col 5] -> [Ln 22, Col 13]"
                                             Name: "[Ln 22, Col 18] -> [Ln 22, Col 27]"
-                                            Parameters: "[Ln 22, Col 27] -> [Ln 22, Col 29]"
+                                            Parameters: None
                                             ReturnType: "[Ln 22, Col 14] -> [Ln 22, Col 17]"
                                             Self__: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
                                             Visibility: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
@@ -2465,7 +2465,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.NotEqual"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -2479,7 +2479,7 @@ Children:
                                             ClassModifier: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
                                             MethodType: "[Ln 23, Col 5] -> [Ln 23, Col 13]"
                                             Name: "[Ln 23, Col 18] -> [Ln 23, Col 30]"
-                                            Parameters: "[Ln 23, Col 30] -> [Ln 23, Col 32]"
+                                            Parameters: None
                                             ReturnType: "[Ln 23, Col 14] -> [Ln 23, Col 17]"
                                             Self__: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
                                             Visibility: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
@@ -2599,7 +2599,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Less"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -2613,7 +2613,7 @@ Children:
                                             ClassModifier: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
                                             MethodType: "[Ln 24, Col 5] -> [Ln 24, Col 13]"
                                             Name: "[Ln 24, Col 18] -> [Ln 24, Col 26]"
-                                            Parameters: "[Ln 24, Col 26] -> [Ln 24, Col 28]"
+                                            Parameters: None
                                             ReturnType: "[Ln 24, Col 14] -> [Ln 24, Col 17]"
                                             Self__: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
                                             Visibility: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
@@ -2733,7 +2733,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.LessEqual"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -2747,7 +2747,7 @@ Children:
                                             ClassModifier: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
                                             MethodType: "[Ln 25, Col 5] -> [Ln 25, Col 13]"
                                             Name: "[Ln 25, Col 18] -> [Ln 25, Col 31]"
-                                            Parameters: "[Ln 25, Col 31] -> [Ln 25, Col 33]"
+                                            Parameters: None
                                             ReturnType: "[Ln 25, Col 14] -> [Ln 25, Col 17]"
                                             Self__: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
                                             Visibility: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
@@ -2867,7 +2867,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Greater"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -2881,7 +2881,7 @@ Children:
                                             ClassModifier: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
                                             MethodType: "[Ln 26, Col 5] -> [Ln 26, Col 13]"
                                             Name: "[Ln 26, Col 18] -> [Ln 26, Col 29]"
-                                            Parameters: "[Ln 26, Col 29] -> [Ln 26, Col 31]"
+                                            Parameters: None
                                             ReturnType: "[Ln 26, Col 14] -> [Ln 26, Col 17]"
                                             Self__: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
                                             Visibility: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
@@ -3001,7 +3001,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.GreaterEqual"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -3015,7 +3015,7 @@ Children:
                                             ClassModifier: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
                                             MethodType: "[Ln 27, Col 5] -> [Ln 27, Col 13]"
                                             Name: "[Ln 27, Col 18] -> [Ln 27, Col 34]"
-                                            Parameters: "[Ln 27, Col 34] -> [Ln 27, Col 36]"
+                                            Parameters: None
                                             ReturnType: "[Ln 27, Col 14] -> [Ln 27, Col 17]"
                                             Self__: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
                                             Visibility: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
@@ -3135,7 +3135,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.And"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -3149,7 +3149,7 @@ Children:
                                             ClassModifier: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
                                             MethodType: "[Ln 29, Col 5] -> [Ln 29, Col 13]"
                                             Name: "[Ln 29, Col 18] -> [Ln 29, Col 25]"
-                                            Parameters: "[Ln 29, Col 25] -> [Ln 29, Col 27]"
+                                            Parameters: None
                                             ReturnType: "[Ln 29, Col 14] -> [Ln 29, Col 17]"
                                             Self__: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
                                             Visibility: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
@@ -3269,7 +3269,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Or"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -3283,7 +3283,7 @@ Children:
                                             ClassModifier: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
                                             MethodType: "[Ln 30, Col 5] -> [Ln 30, Col 13]"
                                             Name: "[Ln 30, Col 18] -> [Ln 30, Col 24]"
-                                            Parameters: "[Ln 30, Col 24] -> [Ln 30, Col 26]"
+                                            Parameters: None
                                             ReturnType: "[Ln 30, Col 14] -> [Ln 30, Col 17]"
                                             Self__: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
                                             Visibility: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
@@ -3403,7 +3403,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Not"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -3417,7 +3417,7 @@ Children:
                                             ClassModifier: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
                                             MethodType: "[Ln 31, Col 5] -> [Ln 31, Col 13]"
                                             Name: "[Ln 31, Col 18] -> [Ln 31, Col 25]"
-                                            Parameters: "[Ln 31, Col 25] -> [Ln 31, Col 27]"
+                                            Parameters: None
                                             ReturnType: "[Ln 31, Col 14] -> [Ln 31, Col 17]"
                                             Self__: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
                                             Visibility: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
@@ -3537,7 +3537,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Add"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -3551,7 +3551,7 @@ Children:
                                             ClassModifier: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
                                             MethodType: "[Ln 33, Col 5] -> [Ln 33, Col 13]"
                                             Name: "[Ln 33, Col 18] -> [Ln 33, Col 25]"
-                                            Parameters: "[Ln 33, Col 25] -> [Ln 33, Col 27]"
+                                            Parameters: None
                                             ReturnType: "[Ln 33, Col 14] -> [Ln 33, Col 17]"
                                             Self__: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
                                             Visibility: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
@@ -3671,7 +3671,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Subtract"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -3685,7 +3685,7 @@ Children:
                                             ClassModifier: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
                                             MethodType: "[Ln 34, Col 5] -> [Ln 34, Col 13]"
                                             Name: "[Ln 34, Col 18] -> [Ln 34, Col 30]"
-                                            Parameters: "[Ln 34, Col 30] -> [Ln 34, Col 32]"
+                                            Parameters: None
                                             ReturnType: "[Ln 34, Col 14] -> [Ln 34, Col 17]"
                                             Self__: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
                                             Visibility: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
@@ -3805,7 +3805,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Multiply"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -3819,7 +3819,7 @@ Children:
                                             ClassModifier: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
                                             MethodType: "[Ln 35, Col 5] -> [Ln 35, Col 13]"
                                             Name: "[Ln 35, Col 18] -> [Ln 35, Col 30]"
-                                            Parameters: "[Ln 35, Col 30] -> [Ln 35, Col 32]"
+                                            Parameters: None
                                             ReturnType: "[Ln 35, Col 14] -> [Ln 35, Col 17]"
                                             Self__: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
                                             Visibility: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
@@ -3939,7 +3939,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Divide"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -3953,7 +3953,7 @@ Children:
                                             ClassModifier: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
                                             MethodType: "[Ln 36, Col 5] -> [Ln 36, Col 13]"
                                             Name: "[Ln 36, Col 18] -> [Ln 36, Col 28]"
-                                            Parameters: "[Ln 36, Col 28] -> [Ln 36, Col 30]"
+                                            Parameters: None
                                             ReturnType: "[Ln 36, Col 14] -> [Ln 36, Col 17]"
                                             Self__: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
                                             Visibility: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
@@ -4073,7 +4073,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.DivideFloor"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -4087,7 +4087,7 @@ Children:
                                             ClassModifier: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
                                             MethodType: "[Ln 37, Col 5] -> [Ln 37, Col 13]"
                                             Name: "[Ln 37, Col 18] -> [Ln 37, Col 33]"
-                                            Parameters: "[Ln 37, Col 33] -> [Ln 37, Col 35]"
+                                            Parameters: None
                                             ReturnType: "[Ln 37, Col 14] -> [Ln 37, Col 17]"
                                             Self__: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
                                             Visibility: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
@@ -4207,7 +4207,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Power"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -4221,7 +4221,7 @@ Children:
                                             ClassModifier: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
                                             MethodType: "[Ln 38, Col 5] -> [Ln 38, Col 13]"
                                             Name: "[Ln 38, Col 18] -> [Ln 38, Col 27]"
-                                            Parameters: "[Ln 38, Col 27] -> [Ln 38, Col 29]"
+                                            Parameters: None
                                             ReturnType: "[Ln 38, Col 14] -> [Ln 38, Col 17]"
                                             Self__: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
                                             Visibility: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
@@ -4341,7 +4341,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Mod"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -4355,7 +4355,7 @@ Children:
                                             ClassModifier: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
                                             MethodType: "[Ln 39, Col 5] -> [Ln 39, Col 13]"
                                             Name: "[Ln 39, Col 18] -> [Ln 39, Col 25]"
-                                            Parameters: "[Ln 39, Col 25] -> [Ln 39, Col 27]"
+                                            Parameters: None
                                             ReturnType: "[Ln 39, Col 14] -> [Ln 39, Col 17]"
                                             Self__: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
                                             Visibility: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
@@ -4475,7 +4475,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Positive"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -4489,7 +4489,7 @@ Children:
                                             ClassModifier: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
                                             MethodType: "[Ln 40, Col 5] -> [Ln 40, Col 13]"
                                             Name: "[Ln 40, Col 18] -> [Ln 40, Col 30]"
-                                            Parameters: "[Ln 40, Col 30] -> [Ln 40, Col 32]"
+                                            Parameters: None
                                             ReturnType: "[Ln 40, Col 14] -> [Ln 40, Col 17]"
                                             Self__: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
                                             Visibility: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
@@ -4609,7 +4609,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.Negative"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -4623,7 +4623,7 @@ Children:
                                             ClassModifier: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
                                             MethodType: "[Ln 41, Col 5] -> [Ln 41, Col 13]"
                                             Name: "[Ln 41, Col 18] -> [Ln 41, Col 30]"
-                                            Parameters: "[Ln 41, Col 30] -> [Ln 41, Col 32]"
+                                            Parameters: None
                                             ReturnType: "[Ln 41, Col 14] -> [Ln 41, Col 17]"
                                             Self__: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
                                             Visibility: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
@@ -4743,7 +4743,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.AddInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -4757,7 +4757,7 @@ Children:
                                             ClassModifier: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
                                             MethodType: "[Ln 43, Col 5] -> [Ln 43, Col 13]"
                                             Name: "[Ln 43, Col 18] -> [Ln 43, Col 32]"
-                                            Parameters: "[Ln 43, Col 32] -> [Ln 43, Col 34]"
+                                            Parameters: None
                                             ReturnType: "[Ln 43, Col 14] -> [Ln 43, Col 17]"
                                             Self__: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
                                             Visibility: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
@@ -4877,7 +4877,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.SubtractInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -4891,7 +4891,7 @@ Children:
                                             ClassModifier: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
                                             MethodType: "[Ln 44, Col 5] -> [Ln 44, Col 13]"
                                             Name: "[Ln 44, Col 18] -> [Ln 44, Col 37]"
-                                            Parameters: "[Ln 44, Col 37] -> [Ln 44, Col 39]"
+                                            Parameters: None
                                             ReturnType: "[Ln 44, Col 14] -> [Ln 44, Col 17]"
                                             Self__: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
                                             Visibility: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
@@ -5011,7 +5011,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.MultiplyInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -5025,7 +5025,7 @@ Children:
                                             ClassModifier: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
                                             MethodType: "[Ln 45, Col 5] -> [Ln 45, Col 13]"
                                             Name: "[Ln 45, Col 18] -> [Ln 45, Col 37]"
-                                            Parameters: "[Ln 45, Col 37] -> [Ln 45, Col 39]"
+                                            Parameters: None
                                             ReturnType: "[Ln 45, Col 14] -> [Ln 45, Col 17]"
                                             Self__: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
                                             Visibility: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
@@ -5145,7 +5145,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.DivideInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -5159,7 +5159,7 @@ Children:
                                             ClassModifier: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
                                             MethodType: "[Ln 46, Col 5] -> [Ln 46, Col 13]"
                                             Name: "[Ln 46, Col 18] -> [Ln 46, Col 35]"
-                                            Parameters: "[Ln 46, Col 35] -> [Ln 46, Col 37]"
+                                            Parameters: None
                                             ReturnType: "[Ln 46, Col 14] -> [Ln 46, Col 17]"
                                             Self__: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
                                             Visibility: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
@@ -5279,7 +5279,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.DivideFloorInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -5293,7 +5293,7 @@ Children:
                                             ClassModifier: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
                                             MethodType: "[Ln 47, Col 5] -> [Ln 47, Col 13]"
                                             Name: "[Ln 47, Col 18] -> [Ln 47, Col 40]"
-                                            Parameters: "[Ln 47, Col 40] -> [Ln 47, Col 42]"
+                                            Parameters: None
                                             ReturnType: "[Ln 47, Col 14] -> [Ln 47, Col 17]"
                                             Self__: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
                                             Visibility: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
@@ -5413,7 +5413,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.PowerInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -5427,7 +5427,7 @@ Children:
                                             ClassModifier: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
                                             MethodType: "[Ln 48, Col 5] -> [Ln 48, Col 13]"
                                             Name: "[Ln 48, Col 18] -> [Ln 48, Col 34]"
-                                            Parameters: "[Ln 48, Col 34] -> [Ln 48, Col 36]"
+                                            Parameters: None
                                             ReturnType: "[Ln 48, Col 14] -> [Ln 48, Col 17]"
                                             Self__: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
                                             Visibility: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
@@ -5547,7 +5547,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.ModInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -5561,7 +5561,7 @@ Children:
                                             ClassModifier: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
                                             MethodType: "[Ln 49, Col 5] -> [Ln 49, Col 13]"
                                             Name: "[Ln 49, Col 18] -> [Ln 49, Col 32]"
-                                            Parameters: "[Ln 49, Col 32] -> [Ln 49, Col 34]"
+                                            Parameters: None
                                             ReturnType: "[Ln 49, Col 14] -> [Ln 49, Col 17]"
                                             Self__: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
                                             Visibility: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
@@ -5681,7 +5681,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.ShiftLeft"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -5695,7 +5695,7 @@ Children:
                                             ClassModifier: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
                                             MethodType: "[Ln 51, Col 5] -> [Ln 51, Col 13]"
                                             Name: "[Ln 51, Col 18] -> [Ln 51, Col 31]"
-                                            Parameters: "[Ln 51, Col 31] -> [Ln 51, Col 33]"
+                                            Parameters: None
                                             ReturnType: "[Ln 51, Col 14] -> [Ln 51, Col 17]"
                                             Self__: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
                                             Visibility: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
@@ -5815,7 +5815,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.ShiftRight"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -5829,7 +5829,7 @@ Children:
                                             ClassModifier: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
                                             MethodType: "[Ln 52, Col 5] -> [Ln 52, Col 13]"
                                             Name: "[Ln 52, Col 18] -> [Ln 52, Col 32]"
-                                            Parameters: "[Ln 52, Col 32] -> [Ln 52, Col 34]"
+                                            Parameters: None
                                             ReturnType: "[Ln 52, Col 14] -> [Ln 52, Col 17]"
                                             Self__: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
                                             Visibility: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
@@ -5949,7 +5949,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.BitAnd"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -5963,7 +5963,7 @@ Children:
                                             ClassModifier: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
                                             MethodType: "[Ln 53, Col 5] -> [Ln 53, Col 13]"
                                             Name: "[Ln 53, Col 18] -> [Ln 53, Col 28]"
-                                            Parameters: "[Ln 53, Col 28] -> [Ln 53, Col 30]"
+                                            Parameters: None
                                             ReturnType: "[Ln 53, Col 14] -> [Ln 53, Col 17]"
                                             Self__: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
                                             Visibility: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
@@ -6083,7 +6083,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.BitOr"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -6097,7 +6097,7 @@ Children:
                                             ClassModifier: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
                                             MethodType: "[Ln 54, Col 5] -> [Ln 54, Col 13]"
                                             Name: "[Ln 54, Col 18] -> [Ln 54, Col 27]"
-                                            Parameters: "[Ln 54, Col 27] -> [Ln 54, Col 29]"
+                                            Parameters: None
                                             ReturnType: "[Ln 54, Col 14] -> [Ln 54, Col 17]"
                                             Self__: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
                                             Visibility: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
@@ -6217,7 +6217,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.BitXor"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -6231,7 +6231,7 @@ Children:
                                             ClassModifier: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
                                             MethodType: "[Ln 55, Col 5] -> [Ln 55, Col 13]"
                                             Name: "[Ln 55, Col 18] -> [Ln 55, Col 28]"
-                                            Parameters: "[Ln 55, Col 28] -> [Ln 55, Col 30]"
+                                            Parameters: None
                                             ReturnType: "[Ln 55, Col 14] -> [Ln 55, Col 17]"
                                             Self__: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
                                             Visibility: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
@@ -6351,7 +6351,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.BitFlip"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -6365,7 +6365,7 @@ Children:
                                             ClassModifier: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
                                             MethodType: "[Ln 56, Col 5] -> [Ln 56, Col 13]"
                                             Name: "[Ln 56, Col 18] -> [Ln 56, Col 29]"
-                                            Parameters: "[Ln 56, Col 29] -> [Ln 56, Col 31]"
+                                            Parameters: None
                                             ReturnType: "[Ln 56, Col 14] -> [Ln 56, Col 17]"
                                             Self__: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
                                             Visibility: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
@@ -6485,7 +6485,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.ShiftLeftInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -6499,7 +6499,7 @@ Children:
                                             ClassModifier: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
                                             MethodType: "[Ln 58, Col 5] -> [Ln 58, Col 13]"
                                             Name: "[Ln 58, Col 18] -> [Ln 58, Col 38]"
-                                            Parameters: "[Ln 58, Col 38] -> [Ln 58, Col 40]"
+                                            Parameters: None
                                             ReturnType: "[Ln 58, Col 14] -> [Ln 58, Col 17]"
                                             Self__: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
                                             Visibility: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
@@ -6619,7 +6619,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.ShiftRightInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -6633,7 +6633,7 @@ Children:
                                             ClassModifier: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
                                             MethodType: "[Ln 59, Col 5] -> [Ln 59, Col 13]"
                                             Name: "[Ln 59, Col 18] -> [Ln 59, Col 39]"
-                                            Parameters: "[Ln 59, Col 39] -> [Ln 59, Col 41]"
+                                            Parameters: None
                                             ReturnType: "[Ln 59, Col 14] -> [Ln 59, Col 17]"
                                             Self__: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
                                             Visibility: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
@@ -6753,7 +6753,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.BitAndInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -6767,7 +6767,7 @@ Children:
                                             ClassModifier: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
                                             MethodType: "[Ln 60, Col 5] -> [Ln 60, Col 13]"
                                             Name: "[Ln 60, Col 18] -> [Ln 60, Col 35]"
-                                            Parameters: "[Ln 60, Col 35] -> [Ln 60, Col 37]"
+                                            Parameters: None
                                             ReturnType: "[Ln 60, Col 14] -> [Ln 60, Col 17]"
                                             Self__: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
                                             Visibility: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
@@ -6887,7 +6887,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.BitOrInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -6901,7 +6901,7 @@ Children:
                                             ClassModifier: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
                                             MethodType: "[Ln 61, Col 5] -> [Ln 61, Col 13]"
                                             Name: "[Ln 61, Col 18] -> [Ln 61, Col 34]"
-                                            Parameters: "[Ln 61, Col 34] -> [Ln 61, Col 36]"
+                                            Parameters: None
                                             ReturnType: "[Ln 61, Col 14] -> [Ln 61, Col 17]"
                                             Self__: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
                                             Visibility: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
@@ -7021,7 +7021,7 @@ Children:
                                             ClassModifier: "ClassModifier.immutable"
                                             MethodType: "MethodType.abstract"
                                             Name: "OperatorType.BitXorInplace"
-                                            Parameters: {}
+                                            Parameters: None
                                             ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                                                 Modifier: None
@@ -7035,7 +7035,7 @@ Children:
                                             ClassModifier: "[Ln 62, Col 5] -> [Ln 63, Col 1]"
                                             MethodType: "[Ln 62, Col 5] -> [Ln 62, Col 13]"
                                             Name: "[Ln 62, Col 18] -> [Ln 62, Col 35]"
-                                            Parameters: "[Ln 62, Col 35] -> [Ln 62, Col 37]"
+                                            Parameters: None
                                             ReturnType: "[Ln 62, Col 14] -> [Ln 62, Col 17]"
                                             Self__: "[Ln 62, Col 5] -> [Ln 63, Col 1]"
                                             Visibility: "[Ln 62, Col 5] -> [Ln 63, Col 1]"
@@ -7082,7 +7082,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.ToBool"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7096,7 +7096,7 @@ Children:
                       ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
                       MethodType: "[Ln 2, Col 5] -> [Ln 2, Col 13]"
                       Name: "[Ln 2, Col 18] -> [Ln 2, Col 28]"
-                      Parameters: "[Ln 2, Col 28] -> [Ln 2, Col 30]"
+                      Parameters: None
                       ReturnType: "[Ln 2, Col 14] -> [Ln 2, Col 17]"
                       Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
                       Visibility: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
@@ -7105,7 +7105,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.ToString"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7119,7 +7119,7 @@ Children:
                       ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
                       MethodType: "[Ln 3, Col 5] -> [Ln 3, Col 13]"
                       Name: "[Ln 3, Col 18] -> [Ln 3, Col 30]"
-                      Parameters: "[Ln 3, Col 30] -> [Ln 3, Col 32]"
+                      Parameters: None
                       ReturnType: "[Ln 3, Col 14] -> [Ln 3, Col 17]"
                       Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
                       Visibility: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
@@ -7128,7 +7128,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Repr"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7142,7 +7142,7 @@ Children:
                       ClassModifier: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
                       MethodType: "[Ln 4, Col 5] -> [Ln 4, Col 13]"
                       Name: "[Ln 4, Col 18] -> [Ln 4, Col 26]"
-                      Parameters: "[Ln 4, Col 26] -> [Ln 4, Col 28]"
+                      Parameters: None
                       ReturnType: "[Ln 4, Col 14] -> [Ln 4, Col 17]"
                       Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
                       Visibility: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
@@ -7151,7 +7151,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Clone"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7165,7 +7165,7 @@ Children:
                       ClassModifier: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
                       MethodType: "[Ln 5, Col 5] -> [Ln 5, Col 13]"
                       Name: "[Ln 5, Col 18] -> [Ln 5, Col 27]"
-                      Parameters: "[Ln 5, Col 27] -> [Ln 5, Col 29]"
+                      Parameters: None
                       ReturnType: "[Ln 5, Col 14] -> [Ln 5, Col 17]"
                       Self__: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
                       Visibility: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
@@ -7174,7 +7174,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Serialize"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7188,7 +7188,7 @@ Children:
                       ClassModifier: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
                       MethodType: "[Ln 6, Col 5] -> [Ln 6, Col 13]"
                       Name: "[Ln 6, Col 18] -> [Ln 6, Col 31]"
-                      Parameters: "[Ln 6, Col 31] -> [Ln 6, Col 33]"
+                      Parameters: None
                       ReturnType: "[Ln 6, Col 14] -> [Ln 6, Col 17]"
                       Self__: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
                       Visibility: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
@@ -7197,7 +7197,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Init"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7211,7 +7211,7 @@ Children:
                       ClassModifier: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
                       MethodType: "[Ln 8, Col 5] -> [Ln 8, Col 13]"
                       Name: "[Ln 8, Col 18] -> [Ln 8, Col 26]"
-                      Parameters: "[Ln 8, Col 26] -> [Ln 8, Col 28]"
+                      Parameters: None
                       ReturnType: "[Ln 8, Col 14] -> [Ln 8, Col 17]"
                       Self__: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
                       Visibility: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
@@ -7220,7 +7220,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.PostInit"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7234,7 +7234,7 @@ Children:
                       ClassModifier: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
                       MethodType: "[Ln 9, Col 5] -> [Ln 9, Col 13]"
                       Name: "[Ln 9, Col 18] -> [Ln 9, Col 30]"
-                      Parameters: "[Ln 9, Col 30] -> [Ln 9, Col 32]"
+                      Parameters: None
                       ReturnType: "[Ln 9, Col 14] -> [Ln 9, Col 17]"
                       Self__: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
                       Visibility: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
@@ -7243,7 +7243,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.GetAttribute"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7257,7 +7257,7 @@ Children:
                       ClassModifier: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
                       MethodType: "[Ln 11, Col 5] -> [Ln 11, Col 13]"
                       Name: "[Ln 11, Col 18] -> [Ln 11, Col 34]"
-                      Parameters: "[Ln 11, Col 34] -> [Ln 11, Col 36]"
+                      Parameters: None
                       ReturnType: "[Ln 11, Col 14] -> [Ln 11, Col 17]"
                       Self__: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
                       Visibility: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
@@ -7266,7 +7266,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Call"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7280,7 +7280,7 @@ Children:
                       ClassModifier: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
                       MethodType: "[Ln 12, Col 5] -> [Ln 12, Col 13]"
                       Name: "[Ln 12, Col 18] -> [Ln 12, Col 26]"
-                      Parameters: "[Ln 12, Col 26] -> [Ln 12, Col 28]"
+                      Parameters: None
                       ReturnType: "[Ln 12, Col 14] -> [Ln 12, Col 17]"
                       Self__: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
                       Visibility: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
@@ -7289,7 +7289,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Cast"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7303,7 +7303,7 @@ Children:
                       ClassModifier: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
                       MethodType: "[Ln 13, Col 5] -> [Ln 13, Col 13]"
                       Name: "[Ln 13, Col 18] -> [Ln 13, Col 26]"
-                      Parameters: "[Ln 13, Col 26] -> [Ln 13, Col 28]"
+                      Parameters: None
                       ReturnType: "[Ln 13, Col 14] -> [Ln 13, Col 17]"
                       Self__: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
                       Visibility: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
@@ -7312,7 +7312,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Index"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7326,7 +7326,7 @@ Children:
                       ClassModifier: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
                       MethodType: "[Ln 14, Col 5] -> [Ln 14, Col 13]"
                       Name: "[Ln 14, Col 18] -> [Ln 14, Col 27]"
-                      Parameters: "[Ln 14, Col 27] -> [Ln 14, Col 29]"
+                      Parameters: None
                       ReturnType: "[Ln 14, Col 14] -> [Ln 14, Col 17]"
                       Self__: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
                       Visibility: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
@@ -7335,7 +7335,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Contains"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7349,7 +7349,7 @@ Children:
                       ClassModifier: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
                       MethodType: "[Ln 16, Col 5] -> [Ln 16, Col 13]"
                       Name: "[Ln 16, Col 18] -> [Ln 16, Col 30]"
-                      Parameters: "[Ln 16, Col 30] -> [Ln 16, Col 32]"
+                      Parameters: None
                       ReturnType: "[Ln 16, Col 14] -> [Ln 16, Col 17]"
                       Self__: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
                       Visibility: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
@@ -7358,7 +7358,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Length"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7372,7 +7372,7 @@ Children:
                       ClassModifier: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
                       MethodType: "[Ln 17, Col 5] -> [Ln 17, Col 13]"
                       Name: "[Ln 17, Col 18] -> [Ln 17, Col 28]"
-                      Parameters: "[Ln 17, Col 28] -> [Ln 17, Col 30]"
+                      Parameters: None
                       ReturnType: "[Ln 17, Col 14] -> [Ln 17, Col 17]"
                       Self__: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
                       Visibility: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
@@ -7381,7 +7381,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Iter"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7395,7 +7395,7 @@ Children:
                       ClassModifier: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
                       MethodType: "[Ln 18, Col 5] -> [Ln 18, Col 13]"
                       Name: "[Ln 18, Col 18] -> [Ln 18, Col 26]"
-                      Parameters: "[Ln 18, Col 26] -> [Ln 18, Col 28]"
+                      Parameters: None
                       ReturnType: "[Ln 18, Col 14] -> [Ln 18, Col 17]"
                       Self__: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
                       Visibility: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
@@ -7404,7 +7404,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.AtEnd"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7418,7 +7418,7 @@ Children:
                       ClassModifier: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
                       MethodType: "[Ln 19, Col 5] -> [Ln 19, Col 13]"
                       Name: "[Ln 19, Col 18] -> [Ln 19, Col 27]"
-                      Parameters: "[Ln 19, Col 27] -> [Ln 19, Col 29]"
+                      Parameters: None
                       ReturnType: "[Ln 19, Col 14] -> [Ln 19, Col 17]"
                       Self__: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
                       Visibility: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
@@ -7427,7 +7427,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Compare"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7441,7 +7441,7 @@ Children:
                       ClassModifier: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
                       MethodType: "[Ln 21, Col 5] -> [Ln 21, Col 13]"
                       Name: "[Ln 21, Col 18] -> [Ln 21, Col 29]"
-                      Parameters: "[Ln 21, Col 29] -> [Ln 21, Col 31]"
+                      Parameters: None
                       ReturnType: "[Ln 21, Col 14] -> [Ln 21, Col 17]"
                       Self__: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
                       Visibility: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
@@ -7450,7 +7450,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Equal"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7464,7 +7464,7 @@ Children:
                       ClassModifier: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
                       MethodType: "[Ln 22, Col 5] -> [Ln 22, Col 13]"
                       Name: "[Ln 22, Col 18] -> [Ln 22, Col 27]"
-                      Parameters: "[Ln 22, Col 27] -> [Ln 22, Col 29]"
+                      Parameters: None
                       ReturnType: "[Ln 22, Col 14] -> [Ln 22, Col 17]"
                       Self__: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
                       Visibility: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
@@ -7473,7 +7473,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.NotEqual"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7487,7 +7487,7 @@ Children:
                       ClassModifier: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
                       MethodType: "[Ln 23, Col 5] -> [Ln 23, Col 13]"
                       Name: "[Ln 23, Col 18] -> [Ln 23, Col 30]"
-                      Parameters: "[Ln 23, Col 30] -> [Ln 23, Col 32]"
+                      Parameters: None
                       ReturnType: "[Ln 23, Col 14] -> [Ln 23, Col 17]"
                       Self__: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
                       Visibility: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
@@ -7496,7 +7496,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Less"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7510,7 +7510,7 @@ Children:
                       ClassModifier: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
                       MethodType: "[Ln 24, Col 5] -> [Ln 24, Col 13]"
                       Name: "[Ln 24, Col 18] -> [Ln 24, Col 26]"
-                      Parameters: "[Ln 24, Col 26] -> [Ln 24, Col 28]"
+                      Parameters: None
                       ReturnType: "[Ln 24, Col 14] -> [Ln 24, Col 17]"
                       Self__: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
                       Visibility: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
@@ -7519,7 +7519,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.LessEqual"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7533,7 +7533,7 @@ Children:
                       ClassModifier: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
                       MethodType: "[Ln 25, Col 5] -> [Ln 25, Col 13]"
                       Name: "[Ln 25, Col 18] -> [Ln 25, Col 31]"
-                      Parameters: "[Ln 25, Col 31] -> [Ln 25, Col 33]"
+                      Parameters: None
                       ReturnType: "[Ln 25, Col 14] -> [Ln 25, Col 17]"
                       Self__: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
                       Visibility: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
@@ -7542,7 +7542,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Greater"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7556,7 +7556,7 @@ Children:
                       ClassModifier: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
                       MethodType: "[Ln 26, Col 5] -> [Ln 26, Col 13]"
                       Name: "[Ln 26, Col 18] -> [Ln 26, Col 29]"
-                      Parameters: "[Ln 26, Col 29] -> [Ln 26, Col 31]"
+                      Parameters: None
                       ReturnType: "[Ln 26, Col 14] -> [Ln 26, Col 17]"
                       Self__: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
                       Visibility: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
@@ -7565,7 +7565,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.GreaterEqual"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7579,7 +7579,7 @@ Children:
                       ClassModifier: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
                       MethodType: "[Ln 27, Col 5] -> [Ln 27, Col 13]"
                       Name: "[Ln 27, Col 18] -> [Ln 27, Col 34]"
-                      Parameters: "[Ln 27, Col 34] -> [Ln 27, Col 36]"
+                      Parameters: None
                       ReturnType: "[Ln 27, Col 14] -> [Ln 27, Col 17]"
                       Self__: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
                       Visibility: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
@@ -7588,7 +7588,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.And"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7602,7 +7602,7 @@ Children:
                       ClassModifier: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
                       MethodType: "[Ln 29, Col 5] -> [Ln 29, Col 13]"
                       Name: "[Ln 29, Col 18] -> [Ln 29, Col 25]"
-                      Parameters: "[Ln 29, Col 25] -> [Ln 29, Col 27]"
+                      Parameters: None
                       ReturnType: "[Ln 29, Col 14] -> [Ln 29, Col 17]"
                       Self__: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
                       Visibility: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
@@ -7611,7 +7611,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Or"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7625,7 +7625,7 @@ Children:
                       ClassModifier: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
                       MethodType: "[Ln 30, Col 5] -> [Ln 30, Col 13]"
                       Name: "[Ln 30, Col 18] -> [Ln 30, Col 24]"
-                      Parameters: "[Ln 30, Col 24] -> [Ln 30, Col 26]"
+                      Parameters: None
                       ReturnType: "[Ln 30, Col 14] -> [Ln 30, Col 17]"
                       Self__: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
                       Visibility: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
@@ -7634,7 +7634,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Not"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7648,7 +7648,7 @@ Children:
                       ClassModifier: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
                       MethodType: "[Ln 31, Col 5] -> [Ln 31, Col 13]"
                       Name: "[Ln 31, Col 18] -> [Ln 31, Col 25]"
-                      Parameters: "[Ln 31, Col 25] -> [Ln 31, Col 27]"
+                      Parameters: None
                       ReturnType: "[Ln 31, Col 14] -> [Ln 31, Col 17]"
                       Self__: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
                       Visibility: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
@@ -7657,7 +7657,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Add"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7671,7 +7671,7 @@ Children:
                       ClassModifier: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
                       MethodType: "[Ln 33, Col 5] -> [Ln 33, Col 13]"
                       Name: "[Ln 33, Col 18] -> [Ln 33, Col 25]"
-                      Parameters: "[Ln 33, Col 25] -> [Ln 33, Col 27]"
+                      Parameters: None
                       ReturnType: "[Ln 33, Col 14] -> [Ln 33, Col 17]"
                       Self__: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
                       Visibility: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
@@ -7680,7 +7680,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Subtract"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7694,7 +7694,7 @@ Children:
                       ClassModifier: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
                       MethodType: "[Ln 34, Col 5] -> [Ln 34, Col 13]"
                       Name: "[Ln 34, Col 18] -> [Ln 34, Col 30]"
-                      Parameters: "[Ln 34, Col 30] -> [Ln 34, Col 32]"
+                      Parameters: None
                       ReturnType: "[Ln 34, Col 14] -> [Ln 34, Col 17]"
                       Self__: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
                       Visibility: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
@@ -7703,7 +7703,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Multiply"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7717,7 +7717,7 @@ Children:
                       ClassModifier: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
                       MethodType: "[Ln 35, Col 5] -> [Ln 35, Col 13]"
                       Name: "[Ln 35, Col 18] -> [Ln 35, Col 30]"
-                      Parameters: "[Ln 35, Col 30] -> [Ln 35, Col 32]"
+                      Parameters: None
                       ReturnType: "[Ln 35, Col 14] -> [Ln 35, Col 17]"
                       Self__: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
                       Visibility: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
@@ -7726,7 +7726,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Divide"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7740,7 +7740,7 @@ Children:
                       ClassModifier: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
                       MethodType: "[Ln 36, Col 5] -> [Ln 36, Col 13]"
                       Name: "[Ln 36, Col 18] -> [Ln 36, Col 28]"
-                      Parameters: "[Ln 36, Col 28] -> [Ln 36, Col 30]"
+                      Parameters: None
                       ReturnType: "[Ln 36, Col 14] -> [Ln 36, Col 17]"
                       Self__: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
                       Visibility: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
@@ -7749,7 +7749,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.DivideFloor"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7763,7 +7763,7 @@ Children:
                       ClassModifier: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
                       MethodType: "[Ln 37, Col 5] -> [Ln 37, Col 13]"
                       Name: "[Ln 37, Col 18] -> [Ln 37, Col 33]"
-                      Parameters: "[Ln 37, Col 33] -> [Ln 37, Col 35]"
+                      Parameters: None
                       ReturnType: "[Ln 37, Col 14] -> [Ln 37, Col 17]"
                       Self__: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
                       Visibility: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
@@ -7772,7 +7772,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Power"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7786,7 +7786,7 @@ Children:
                       ClassModifier: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
                       MethodType: "[Ln 38, Col 5] -> [Ln 38, Col 13]"
                       Name: "[Ln 38, Col 18] -> [Ln 38, Col 27]"
-                      Parameters: "[Ln 38, Col 27] -> [Ln 38, Col 29]"
+                      Parameters: None
                       ReturnType: "[Ln 38, Col 14] -> [Ln 38, Col 17]"
                       Self__: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
                       Visibility: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
@@ -7795,7 +7795,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Mod"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7809,7 +7809,7 @@ Children:
                       ClassModifier: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
                       MethodType: "[Ln 39, Col 5] -> [Ln 39, Col 13]"
                       Name: "[Ln 39, Col 18] -> [Ln 39, Col 25]"
-                      Parameters: "[Ln 39, Col 25] -> [Ln 39, Col 27]"
+                      Parameters: None
                       ReturnType: "[Ln 39, Col 14] -> [Ln 39, Col 17]"
                       Self__: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
                       Visibility: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
@@ -7818,7 +7818,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Positive"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7832,7 +7832,7 @@ Children:
                       ClassModifier: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
                       MethodType: "[Ln 40, Col 5] -> [Ln 40, Col 13]"
                       Name: "[Ln 40, Col 18] -> [Ln 40, Col 30]"
-                      Parameters: "[Ln 40, Col 30] -> [Ln 40, Col 32]"
+                      Parameters: None
                       ReturnType: "[Ln 40, Col 14] -> [Ln 40, Col 17]"
                       Self__: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
                       Visibility: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
@@ -7841,7 +7841,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.Negative"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7855,7 +7855,7 @@ Children:
                       ClassModifier: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
                       MethodType: "[Ln 41, Col 5] -> [Ln 41, Col 13]"
                       Name: "[Ln 41, Col 18] -> [Ln 41, Col 30]"
-                      Parameters: "[Ln 41, Col 30] -> [Ln 41, Col 32]"
+                      Parameters: None
                       ReturnType: "[Ln 41, Col 14] -> [Ln 41, Col 17]"
                       Self__: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
                       Visibility: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
@@ -7864,7 +7864,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.AddInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7878,7 +7878,7 @@ Children:
                       ClassModifier: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
                       MethodType: "[Ln 43, Col 5] -> [Ln 43, Col 13]"
                       Name: "[Ln 43, Col 18] -> [Ln 43, Col 32]"
-                      Parameters: "[Ln 43, Col 32] -> [Ln 43, Col 34]"
+                      Parameters: None
                       ReturnType: "[Ln 43, Col 14] -> [Ln 43, Col 17]"
                       Self__: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
                       Visibility: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
@@ -7887,7 +7887,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.SubtractInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7901,7 +7901,7 @@ Children:
                       ClassModifier: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
                       MethodType: "[Ln 44, Col 5] -> [Ln 44, Col 13]"
                       Name: "[Ln 44, Col 18] -> [Ln 44, Col 37]"
-                      Parameters: "[Ln 44, Col 37] -> [Ln 44, Col 39]"
+                      Parameters: None
                       ReturnType: "[Ln 44, Col 14] -> [Ln 44, Col 17]"
                       Self__: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
                       Visibility: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
@@ -7910,7 +7910,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.MultiplyInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7924,7 +7924,7 @@ Children:
                       ClassModifier: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
                       MethodType: "[Ln 45, Col 5] -> [Ln 45, Col 13]"
                       Name: "[Ln 45, Col 18] -> [Ln 45, Col 37]"
-                      Parameters: "[Ln 45, Col 37] -> [Ln 45, Col 39]"
+                      Parameters: None
                       ReturnType: "[Ln 45, Col 14] -> [Ln 45, Col 17]"
                       Self__: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
                       Visibility: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
@@ -7933,7 +7933,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.DivideInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7947,7 +7947,7 @@ Children:
                       ClassModifier: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
                       MethodType: "[Ln 46, Col 5] -> [Ln 46, Col 13]"
                       Name: "[Ln 46, Col 18] -> [Ln 46, Col 35]"
-                      Parameters: "[Ln 46, Col 35] -> [Ln 46, Col 37]"
+                      Parameters: None
                       ReturnType: "[Ln 46, Col 14] -> [Ln 46, Col 17]"
                       Self__: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
                       Visibility: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
@@ -7956,7 +7956,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.DivideFloorInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7970,7 +7970,7 @@ Children:
                       ClassModifier: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
                       MethodType: "[Ln 47, Col 5] -> [Ln 47, Col 13]"
                       Name: "[Ln 47, Col 18] -> [Ln 47, Col 40]"
-                      Parameters: "[Ln 47, Col 40] -> [Ln 47, Col 42]"
+                      Parameters: None
                       ReturnType: "[Ln 47, Col 14] -> [Ln 47, Col 17]"
                       Self__: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
                       Visibility: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
@@ -7979,7 +7979,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.PowerInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -7993,7 +7993,7 @@ Children:
                       ClassModifier: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
                       MethodType: "[Ln 48, Col 5] -> [Ln 48, Col 13]"
                       Name: "[Ln 48, Col 18] -> [Ln 48, Col 34]"
-                      Parameters: "[Ln 48, Col 34] -> [Ln 48, Col 36]"
+                      Parameters: None
                       ReturnType: "[Ln 48, Col 14] -> [Ln 48, Col 17]"
                       Self__: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
                       Visibility: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
@@ -8002,7 +8002,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.ModInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8016,7 +8016,7 @@ Children:
                       ClassModifier: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
                       MethodType: "[Ln 49, Col 5] -> [Ln 49, Col 13]"
                       Name: "[Ln 49, Col 18] -> [Ln 49, Col 32]"
-                      Parameters: "[Ln 49, Col 32] -> [Ln 49, Col 34]"
+                      Parameters: None
                       ReturnType: "[Ln 49, Col 14] -> [Ln 49, Col 17]"
                       Self__: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
                       Visibility: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
@@ -8025,7 +8025,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.ShiftLeft"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8039,7 +8039,7 @@ Children:
                       ClassModifier: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
                       MethodType: "[Ln 51, Col 5] -> [Ln 51, Col 13]"
                       Name: "[Ln 51, Col 18] -> [Ln 51, Col 31]"
-                      Parameters: "[Ln 51, Col 31] -> [Ln 51, Col 33]"
+                      Parameters: None
                       ReturnType: "[Ln 51, Col 14] -> [Ln 51, Col 17]"
                       Self__: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
                       Visibility: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
@@ -8048,7 +8048,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.ShiftRight"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8062,7 +8062,7 @@ Children:
                       ClassModifier: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
                       MethodType: "[Ln 52, Col 5] -> [Ln 52, Col 13]"
                       Name: "[Ln 52, Col 18] -> [Ln 52, Col 32]"
-                      Parameters: "[Ln 52, Col 32] -> [Ln 52, Col 34]"
+                      Parameters: None
                       ReturnType: "[Ln 52, Col 14] -> [Ln 52, Col 17]"
                       Self__: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
                       Visibility: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
@@ -8071,7 +8071,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.BitAnd"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8085,7 +8085,7 @@ Children:
                       ClassModifier: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
                       MethodType: "[Ln 53, Col 5] -> [Ln 53, Col 13]"
                       Name: "[Ln 53, Col 18] -> [Ln 53, Col 28]"
-                      Parameters: "[Ln 53, Col 28] -> [Ln 53, Col 30]"
+                      Parameters: None
                       ReturnType: "[Ln 53, Col 14] -> [Ln 53, Col 17]"
                       Self__: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
                       Visibility: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
@@ -8094,7 +8094,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.BitOr"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8108,7 +8108,7 @@ Children:
                       ClassModifier: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
                       MethodType: "[Ln 54, Col 5] -> [Ln 54, Col 13]"
                       Name: "[Ln 54, Col 18] -> [Ln 54, Col 27]"
-                      Parameters: "[Ln 54, Col 27] -> [Ln 54, Col 29]"
+                      Parameters: None
                       ReturnType: "[Ln 54, Col 14] -> [Ln 54, Col 17]"
                       Self__: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
                       Visibility: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
@@ -8117,7 +8117,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.BitXor"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8131,7 +8131,7 @@ Children:
                       ClassModifier: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
                       MethodType: "[Ln 55, Col 5] -> [Ln 55, Col 13]"
                       Name: "[Ln 55, Col 18] -> [Ln 55, Col 28]"
-                      Parameters: "[Ln 55, Col 28] -> [Ln 55, Col 30]"
+                      Parameters: None
                       ReturnType: "[Ln 55, Col 14] -> [Ln 55, Col 17]"
                       Self__: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
                       Visibility: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
@@ -8140,7 +8140,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.BitFlip"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8154,7 +8154,7 @@ Children:
                       ClassModifier: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
                       MethodType: "[Ln 56, Col 5] -> [Ln 56, Col 13]"
                       Name: "[Ln 56, Col 18] -> [Ln 56, Col 29]"
-                      Parameters: "[Ln 56, Col 29] -> [Ln 56, Col 31]"
+                      Parameters: None
                       ReturnType: "[Ln 56, Col 14] -> [Ln 56, Col 17]"
                       Self__: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
                       Visibility: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
@@ -8163,7 +8163,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.ShiftLeftInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8177,7 +8177,7 @@ Children:
                       ClassModifier: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
                       MethodType: "[Ln 58, Col 5] -> [Ln 58, Col 13]"
                       Name: "[Ln 58, Col 18] -> [Ln 58, Col 38]"
-                      Parameters: "[Ln 58, Col 38] -> [Ln 58, Col 40]"
+                      Parameters: None
                       ReturnType: "[Ln 58, Col 14] -> [Ln 58, Col 17]"
                       Self__: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
                       Visibility: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
@@ -8186,7 +8186,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.ShiftRightInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8200,7 +8200,7 @@ Children:
                       ClassModifier: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
                       MethodType: "[Ln 59, Col 5] -> [Ln 59, Col 13]"
                       Name: "[Ln 59, Col 18] -> [Ln 59, Col 39]"
-                      Parameters: "[Ln 59, Col 39] -> [Ln 59, Col 41]"
+                      Parameters: None
                       ReturnType: "[Ln 59, Col 14] -> [Ln 59, Col 17]"
                       Self__: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
                       Visibility: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
@@ -8209,7 +8209,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.BitAndInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8223,7 +8223,7 @@ Children:
                       ClassModifier: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
                       MethodType: "[Ln 60, Col 5] -> [Ln 60, Col 13]"
                       Name: "[Ln 60, Col 18] -> [Ln 60, Col 35]"
-                      Parameters: "[Ln 60, Col 35] -> [Ln 60, Col 37]"
+                      Parameters: None
                       ReturnType: "[Ln 60, Col 14] -> [Ln 60, Col 17]"
                       Self__: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
                       Visibility: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
@@ -8232,7 +8232,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.BitOrInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8246,7 +8246,7 @@ Children:
                       ClassModifier: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
                       MethodType: "[Ln 61, Col 5] -> [Ln 61, Col 13]"
                       Name: "[Ln 61, Col 18] -> [Ln 61, Col 34]"
-                      Parameters: "[Ln 61, Col 34] -> [Ln 61, Col 36]"
+                      Parameters: None
                       ReturnType: "[Ln 61, Col 14] -> [Ln 61, Col 17]"
                       Self__: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
                       Visibility: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
@@ -8255,7 +8255,7 @@ Children:
                       ClassModifier: "ClassModifier.immutable"
                       MethodType: "MethodType.abstract"
                       Name: "OperatorType.BitXorInplace"
-                      Parameters: {}
+                      Parameters: None
                       ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                           Modifier: None
@@ -8269,7 +8269,7 @@ Children:
                       ClassModifier: "[Ln 62, Col 5] -> [Ln 63, Col 1]"
                       MethodType: "[Ln 62, Col 5] -> [Ln 62, Col 13]"
                       Name: "[Ln 62, Col 18] -> [Ln 62, Col 35]"
-                      Parameters: "[Ln 62, Col 35] -> [Ln 62, Col 37]"
+                      Parameters: None
                       ReturnType: "[Ln 62, Col 14] -> [Ln 62, Col 17]"
                       Self__: "[Ln 62, Col 5] -> [Ln 63, Col 1]"
                       Visibility: "[Ln 62, Col 5] -> [Ln 63, Col 1]"

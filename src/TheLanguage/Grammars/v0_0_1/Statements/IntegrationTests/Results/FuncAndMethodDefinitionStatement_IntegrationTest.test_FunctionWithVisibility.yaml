@@ -185,7 +185,7 @@ Children:
                 ClassModifier: None
                 MethodType: "MethodType.standard"
                 Name: "PublicFunc"
-                Parameters: {}
+                Parameters: None
                 ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                   Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                     Modifier: None
@@ -199,7 +199,7 @@ Children:
                 ClassModifier: None
                 MethodType: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 Name: "[Ln 1, Col 12] -> [Ln 1, Col 22]"
-                Parameters: "[Ln 1, Col 22] -> [Ln 1, Col 24]"
+                Parameters: None
                 ReturnType: "[Ln 1, Col 8] -> [Ln 1, Col 11]"
                 Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 Visibility: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
@@ -397,7 +397,7 @@ Children:
                 ClassModifier: None
                 MethodType: "MethodType.standard"
                 Name: "ProtectedFunc"
-                Parameters: {}
+                Parameters: None
                 ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                   Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                     Modifier: None
@@ -411,7 +411,7 @@ Children:
                 ClassModifier: None
                 MethodType: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 Name: "[Ln 4, Col 16] -> [Ln 4, Col 29]"
-                Parameters: "[Ln 4, Col 29] -> [Ln 4, Col 31]"
+                Parameters: None
                 ReturnType: "[Ln 4, Col 11] -> [Ln 4, Col 15]"
                 Self__: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 Visibility: "[Ln 4, Col 1] -> [Ln 4, Col 10]"
@@ -609,7 +609,7 @@ Children:
                 ClassModifier: None
                 MethodType: "MethodType.standard"
                 Name: "PrivateFunc"
-                Parameters: {}
+                Parameters: None
                 ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                   Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                     Modifier: None
@@ -623,7 +623,7 @@ Children:
                 ClassModifier: None
                 MethodType: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
                 Name: "[Ln 7, Col 14] -> [Ln 7, Col 25]"
-                Parameters: "[Ln 7, Col 25] -> [Ln 7, Col 27]"
+                Parameters: None
                 ReturnType: "[Ln 7, Col 9] -> [Ln 7, Col 13]"
                 Self__: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
                 Visibility: "[Ln 7, Col 1] -> [Ln 7, Col 8]"
@@ -801,7 +801,7 @@ Children:
                 ClassModifier: None
                 MethodType: "MethodType.standard"
                 Name: "DefaultFunc"
-                Parameters: {}
+                Parameters: None
                 ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                   Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
                     Modifier: None
@@ -815,7 +815,7 @@ Children:
                 ClassModifier: None
                 MethodType: "[Ln 10, Col 1] -> [Ln 12, Col 1]"
                 Name: "[Ln 10, Col 8] -> [Ln 10, Col 19]"
-                Parameters: "[Ln 10, Col 19] -> [Ln 10, Col 21]"
+                Parameters: None
                 ReturnType: "[Ln 10, Col 1] -> [Ln 10, Col 7]"
                 Self__: "[Ln 10, Col 1] -> [Ln 12, Col 1]"
                 Visibility: "[Ln 10, Col 1] -> [Ln 12, Col 1]"

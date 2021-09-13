@@ -17,9 +17,7 @@
 
 import os
 
-from typing import cast, Any, Optional, Union
-
-from dataclasses import dataclass
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,13 +31,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import ParametersPhraseItem
-    from ...GrammarPhrase import GrammarPhrase
+
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.Expressions.LambdaExpressionLexerInfo import (
+        ExpressionLexerInfo,
+        LambdaExpressionLexerData,
+        LambdaExpressionLexerInfo,
+        LambdaExpressionLexerRegions,
+    )
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractSequence,
-        Leaf,
         Node,
     )
 
@@ -62,22 +70,6 @@ class LambdaExpression(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True, repr=False)
-    class NodeInfo(GrammarPhrase.NodeInfo):
-        Parameters: Any                     # Defined in ParametersPhraseItem.py
-        Expression: Union[Leaf, Node]
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            super(LambdaExpression.NodeInfo, self).__post_init__(
-                Expression=lambda expr: expr.Type.Name,
-            )
-
-    # ----------------------------------------------------------------------
-    # |
     # |  Public Methods
     # |
     # ----------------------------------------------------------------------
@@ -90,7 +82,7 @@ class LambdaExpression(GrammarPhrase):
                     # 'lambda'
                     "lambda",
 
-                    # <parameters_phrase_item>
+                    # <parameters>
                     ParametersPhraseItem.Create(),
 
                     # ':'
@@ -109,22 +101,32 @@ class LambdaExpression(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
-        nodes = ExtractSequence(node)
-        assert len(nodes) == 4
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 4
 
-        # Parameters
-        parameters = ParametersPhraseItem.Extract(cast(Node, nodes[1]))
+            # <parameters>
+            parameters_node, parameters_data = ParametersPhraseItem.ExtractLexerInfo(cast(Node, nodes[1]))
 
-        # Expression
-        expression = ExtractDynamic(cast(Node, nodes[3]))
+            # <expr>
+            expression_node = ExtractDynamic(cast(Node, nodes[3]))
+            expression_data = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
 
-        # Commit the info
-        object.__setattr__(
-            node,
-            "Info",
-            cls.NodeInfo(
-                {},
-                parameters,
-                expression,
-            ),
-        )
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
+                node,
+                LambdaExpressionLexerInfo(
+                    LambdaExpressionLexerData(parameters_data, expression_data),
+                    CreateLexerRegions(
+                        LambdaExpressionLexerRegions,  # type: ignore
+                        node,
+                        parameters_node,
+                        expression_node,
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
