@@ -32,13 +32,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.ParserInterfaces.Expressions.BinaryExpressionLexerInfo import (
+    from ....Lexer.Expressions.BinaryExpressionLexerInfo import (
         BinaryExpressionLexerData,
+        BinaryExpressionLexerInfo,
         BinaryExpressionLexerRegions,
         ExpressionLexerInfo,
         OperatorType,
     )
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -126,10 +128,10 @@ class BinaryExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
             nodes = ExtractSequence(node)
@@ -204,7 +206,7 @@ class BinaryExpression(GrammarPhrase):
 
             SetLexerInfo(
                 node,
-                (
+                BinaryExpressionLexerInfo(
                     BinaryExpressionLexerData(
                         cast(ExpressionLexerInfo, GetLexerInfo(left_node)),
                         operator_type,
@@ -222,4 +224,4 @@ class BinaryExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

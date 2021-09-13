@@ -32,12 +32,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.ParserInterfaces.Expressions.VariableExpressionLexerInfo import (
+    from ....Lexer.Expressions.VariableExpressionLexerInfo import (
         NameLexerInfo,
         VariableExpressionLexerData,
+        VariableExpressionLexerInfo,
         VariableExpressionLexerRegions,
     )
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -87,17 +89,17 @@ class VariableExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
             name_node = ExtractDynamic(node)
 
             SetLexerInfo(
                 node,
-                (
+                VariableExpressionLexerInfo(
                     VariableExpressionLexerData(
                         cast(NameLexerInfo, GetLexerInfo(name_node)),
                     ),
@@ -111,4 +113,4 @@ class VariableExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

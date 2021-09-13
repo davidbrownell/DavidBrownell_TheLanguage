@@ -34,9 +34,10 @@ with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.ParserInterfaces.Types.VariantTypeLexerInfo import (
+    from ....Lexer.Types.VariantTypeLexerInfo import (
         TypeLexerInfo,
         VariantTypeLexerData,
+        VariantTypeLexerInfo,
         VariantTypeLexerRegions,
     )
 
@@ -105,10 +106,10 @@ class VariantType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
             nodes = ExtractSequence(node)
@@ -132,7 +133,7 @@ class VariantType(GrammarPhrase):
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
-                (
+                VariantTypeLexerInfo(
                     VariantTypeLexerData(types),
                     CreateLexerRegions(
                         VariantTypeLexerRegions,  # type: ignore
@@ -144,4 +145,4 @@ class VariantType(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ValidateSyntaxResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

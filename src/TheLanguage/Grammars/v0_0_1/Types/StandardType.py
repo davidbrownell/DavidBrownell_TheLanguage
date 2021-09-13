@@ -36,7 +36,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
     from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Lexer.ParserInterfaces.Types.StandardTypeLexerInfo import (
+    from ....Lexer.Types.StandardTypeLexerInfo import (
         StandardTypeLexerData,
         StandardTypeLexerInfo,
         StandardTypeLexerRegions,
@@ -90,10 +90,10 @@ class StandardType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 

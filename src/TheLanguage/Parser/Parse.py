@@ -388,12 +388,12 @@ def _ValidateNode(
     if isinstance(node.Type, Phrase):
         grammar_phrase = GrammarPhraseLookup.get(node.Type, None)
         if grammar_phrase is not None:
-            result = grammar_phrase.ValidateSyntax(cast(Node, node))
+            result = grammar_phrase.ExtractLexerInfo(cast(Node, node))
             if result is not None:
-                assert isinstance(result, GrammarPhrase.ValidateSyntaxResult), result
+                assert isinstance(result, GrammarPhrase.ExtractLexerInfoResult), result
 
-                if result.PostValidationFunc is not None:
-                    funcs.append(result.PostValidationFunc)
+                if result.PostExtractFunc is not None:
+                    funcs.append(result.PostExtractFunc)
 
                 if not result.AllowChildTraversal:
                     return funcs

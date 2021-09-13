@@ -44,13 +44,14 @@ with InitRelativeImports():
     from ...GrammarError import GrammarError
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Lexer.ParserInterfaces.Statements.ClassStatementLexerInfo import (
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Lexer.Statements.ClassStatementLexerInfo import (
         ClassDependencyLexerInfo,
         ClassDependencyLexerRegions,
         ClassStatementLexerInfo,
         ClassStatementLexerRegions,
         ClassType,
+        StatementLexerInfo,
     )
 
     from ....Parser.Phrases.DSL import (
@@ -258,10 +259,10 @@ class ClassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ValidateSyntax(
+    def ExtractLexerInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ValidateSyntaxResult]:
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 14
 
@@ -339,9 +340,9 @@ class ClassStatement(GrammarPhrase):
             )
 
         # Statements
-        statements = StatementsPhraseItem.Extract(cast(Node, nodes[13]))
+        statements_node = cast(Node, nodes[13])
 
-        # TODO: Leverage attributes and statements
+        # TODO: Leverage attributes
 
         # pylint: disable=too-many-function-args
         SetLexerInfo(
@@ -357,6 +358,7 @@ class ClassStatement(GrammarPhrase):
                     base_info_node,
                     interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None,))[0],  # type: ignore
                     interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None,))[0],  # type: ignore
+                    statements_node,
                 ),
                 visibility,  # type: ignore
                 class_modifier,  # type: ignore
@@ -367,6 +369,21 @@ class ClassStatement(GrammarPhrase):
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None, []))[1],  # type: ignore
             ),
         )
+
+        # ----------------------------------------------------------------------
+        def ApplyStatements():
+            lexer_info = cast(ClassStatementLexerInfo, GetLexerInfo(node))
+
+            lexer_info.SetStatements(
+                [
+                    cast(StatementLexerInfo, GetLexerInfo(statement))
+                    for statement in StatementsPhraseItem.Extract(statements_node)
+                ],
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(ApplyStatements)
 
     # ----------------------------------------------------------------------
     @classmethod
