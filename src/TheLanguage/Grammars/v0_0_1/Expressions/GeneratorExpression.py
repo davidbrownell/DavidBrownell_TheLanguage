@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,10 +30,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
-
     from .TernaryExpression import TernaryExpression
+
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.Expressions.GeneratorExpressionLexerInfo import (
+        ExpressionLexerInfo,
+        GeneratorExpressionLexerData,
+        GeneratorExpressionLexerInfo,
+        GeneratorExpressionLexerRegions,
+        NameLexerInfo,
+    )
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractOptional,
+        ExtractSequence,
+        Leaf,
+        Node,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -91,3 +114,64 @@ class GeneratorExpression(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 6
+
+            # <expr>
+            display_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
+            display_info = cast(ExpressionLexerInfo, GetLexerInfo(display_node))
+
+            # <name>
+            name_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
+            name_info = cast(NameLexerInfo, GetLexerInfo(name_node))
+
+            # <expr>
+            source_node = cast(Node, ExtractDynamic(cast(Node, nodes[4])))
+            source_info = cast(ExpressionLexerInfo, GetLexerInfo(source_node))
+
+            # ('if' <expr>)?
+            conditional_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[5])))
+
+            if conditional_node is not None:
+                conditional_nodes = ExtractSequence(conditional_node)
+                assert len(conditional_nodes) == 2
+
+                expr_node = cast(Node, ExtractDynamic(cast(Node, conditional_nodes[1])))
+                conditional_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            else:
+                conditional_info = None
+
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
+                node,
+                GeneratorExpressionLexerInfo(
+                    GeneratorExpressionLexerData(
+                        display_info,
+                        name_info,
+                        source_info,
+                        conditional_info,
+                    ),
+                    CreateLexerRegions(
+                        GeneratorExpressionLexerRegions,  # type: ignore
+                        node,
+                        display_node,
+                        name_node,
+                        source_node,
+                        conditional_node,
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
