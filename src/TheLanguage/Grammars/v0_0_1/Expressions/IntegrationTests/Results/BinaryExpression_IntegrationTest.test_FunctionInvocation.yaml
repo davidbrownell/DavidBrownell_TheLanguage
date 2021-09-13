@@ -1027,6 +1027,51 @@ Children:
                             Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
                               Match: "<_sre.SRE_Match object; span=(120, 121), match=')'>"
                             Whitespace: None
+                        Info: # <class 'TheLanguage.Lexer.Expressions.GroupExpressionLexerInfo.GroupExpressionLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Expressions.GroupExpressionLexerInfo.GroupExpressionLexerData'>
+                            Expression: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
+                                Left: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
+                                  Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
+                                    Arguments: None
+                                    Name: "funcA"
+                                  Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                                    Arguments: None
+                                    Name: "[Ln 5, Col 5] -> [Ln 5, Col 10]"
+                                    Self__: "[Ln 5, Col 5] -> [Ln 5, Col 12]"
+                                Operator: "OperatorType.ChainedFunc"
+                                Right: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
+                                  Data: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerData'>
+                                    Left: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
+                                      Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
+                                        Arguments: None
+                                        Name: "funcB"
+                                      Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                                        Arguments: None
+                                        Name: "[Ln 6, Col 10] -> [Ln 6, Col 15]"
+                                        Self__: "[Ln 6, Col 10] -> [Ln 6, Col 17]"
+                                    Operator: "OperatorType.ChainedFunc"
+                                    Right: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
+                                      Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
+                                        Arguments: None
+                                        Name: "funcC"
+                                      Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                                        Arguments: None
+                                        Name: "[Ln 7, Col 10] -> [Ln 7, Col 15]"
+                                        Self__: "[Ln 7, Col 10] -> [Ln 7, Col 17]"
+                                  Regions: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerRegions'>
+                                    Left: "[Ln 6, Col 10] -> [Ln 6, Col 17]"
+                                    Operator: "[Ln 7, Col 9] -> [Ln 7, Col 10]"
+                                    Right: "[Ln 7, Col 10] -> [Ln 7, Col 17]"
+                                    Self__: "[Ln 6, Col 10] -> [Ln 7, Col 17]"
+                              Regions: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerRegions'>
+                                Left: "[Ln 5, Col 5] -> [Ln 5, Col 12]"
+                                Operator: "[Ln 6, Col 9] -> [Ln 6, Col 10]"
+                                Right: "[Ln 6, Col 10] -> [Ln 7, Col 17]"
+                                Self__: "[Ln 5, Col 5] -> [Ln 7, Col 17]"
+                          Regions: # <class 'TheLanguage.Lexer.Expressions.GroupExpressionLexerInfo.GroupExpressionLexerRegions'>
+                            Expression: "[Ln 5, Col 5] -> [Ln 7, Col 17]"
+                            Self__: "[Ln 4, Col 8] -> [Ln 8, Col 2]"
                         IterBegin: "[4, 8] (72)"
                         IterEnd: "[8, 2] (121)"
                         Type: "Group Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

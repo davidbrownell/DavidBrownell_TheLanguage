@@ -205,6 +205,33 @@ class LeftRecursiveSequencePhraseWrapper(Phrase):
         # When we return the results, we want it to appear as if the result came from the
         # original sequence (rather than a split between the prefix and suffix). Perform
         # some hackery on the results to achieve this illusion.
+
+        unique_id_len = len(unique_id)
+
+        # ----------------------------------------------------------------------
+        def UpdateUniqueIds(
+            data_item: Phrase.StandardParseResultData,
+        ):
+            assert data_item.UniqueId is not None
+            assert len(data_item.UniqueId) > unique_id_len
+
+            new_unique_id = (
+                data_item.UniqueId[:unique_id_len]
+                + ("**{}**".format(data_item.UniqueId[unique_id_len]),)
+                + data_item.UniqueId[unique_id_len + 1:]
+            )
+
+            object.__setattr__(data_item, "UniqueId", new_unique_id)
+
+            if data_item.Data is not None:
+                for child in data_item.Data.Enum():
+                    if isinstance(child, Phrase.TokenParseResultData):
+                        continue
+
+                    UpdateUniqueIds(child)
+
+        # ----------------------------------------------------------------------
+
         assert len(data_items) >= 2
 
         for data_item_index, data_item in enumerate(data_items):
@@ -229,7 +256,7 @@ class LeftRecursiveSequencePhraseWrapper(Phrase):
                             ).Phrase,
                         ).Phrases[0],
                         data_item,
-                        unique_id,
+                        unique_id + ("Prefix", ),
                     )
 
                 else:
@@ -245,6 +272,9 @@ class LeftRecursiveSequencePhraseWrapper(Phrase):
 
         root = cast(Phrase.StandardParseResultData, data_items[-1]).Data
         assert root
+
+        # Update the unique ids to prevent caching since we have changed relationships
+        UpdateUniqueIds(root)
 
         object.__setattr__(root, "UniqueId", unique_id)
 
