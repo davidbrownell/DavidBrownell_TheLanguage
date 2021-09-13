@@ -233,6 +233,37 @@ Children:
                             IterBegin: "[1, 42] (41)"
                             IterEnd: "[1, 53] (52)"
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.Expressions.TernaryExpressionLexerInfo.TernaryExpressionLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Expressions.TernaryExpressionLexerInfo.TernaryExpressionLexerData'>
+                            ConditionExpression: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
+                                Arguments: None
+                                Name: "Condition1"
+                              Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                                Arguments: None
+                                Name: "[Ln 1, Col 24] -> [Ln 1, Col 34]"
+                                Self__: "[Ln 1, Col 24] -> [Ln 1, Col 36]"
+                            FalseExpression: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
+                                Arguments: None
+                                Name: "FalseFunc"
+                              Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                                Arguments: None
+                                Name: "[Ln 1, Col 42] -> [Ln 1, Col 51]"
+                                Self__: "[Ln 1, Col 42] -> [Ln 1, Col 53]"
+                            TrueExpression: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
+                                Arguments: None
+                                Name: "TrueFunc"
+                              Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                                Arguments: None
+                                Name: "[Ln 1, Col 10] -> [Ln 1, Col 18]"
+                                Self__: "[Ln 1, Col 10] -> [Ln 1, Col 20]"
+                          Regions: # <class 'TheLanguage.Lexer.Expressions.TernaryExpressionLexerInfo.TernaryExpressionLexerRegions'>
+                            ConditionExpression: "[Ln 1, Col 24] -> [Ln 1, Col 36]"
+                            FalseExpression: "[Ln 1, Col 42] -> [Ln 1, Col 53]"
+                            Self__: "[Ln 1, Col 10] -> [Ln 1, Col 53]"
+                            TrueExpression: "[Ln 1, Col 10] -> [Ln 1, Col 20]"
                         IterBegin: "[1, 10] (9)"
                         IterEnd: "[1, 53] (52)"
                         Type: "Ternary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -704,6 +735,31 @@ Children:
                             IterBegin: "[2, 41] (93)"
                             IterEnd: "[2, 45] (97)"
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.Expressions.TernaryExpressionLexerInfo.TernaryExpressionLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Expressions.TernaryExpressionLexerInfo.TernaryExpressionLexerData'>
+                            ConditionExpression: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
+                                Arguments: None
+                                Name: "Condition2"
+                              Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                                Arguments: None
+                                Name: "[Ln 2, Col 23] -> [Ln 2, Col 33]"
+                                Self__: "[Ln 2, Col 23] -> [Ln 2, Col 35]"
+                            FalseExpression: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+                            TrueExpression: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+                          Regions: # <class 'TheLanguage.Lexer.Expressions.TernaryExpressionLexerInfo.TernaryExpressionLexerRegions'>
+                            ConditionExpression: "[Ln 2, Col 23] -> [Ln 2, Col 35]"
+                            FalseExpression: "[Ln 2, Col 41] -> [Ln 2, Col 45]"
+                            Self__: "[Ln 2, Col 10] -> [Ln 2, Col 45]"
+                            TrueExpression: "[Ln 2, Col 10] -> [Ln 2, Col 19]"
                         IterBegin: "[2, 10] (62)"
                         IterEnd: "[2, 45] (97)"
                         Type: "Ternary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
