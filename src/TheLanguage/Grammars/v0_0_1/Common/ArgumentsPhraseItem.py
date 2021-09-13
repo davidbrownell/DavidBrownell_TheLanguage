@@ -139,7 +139,6 @@ def Extract(
     assert len(nodes) == 5
 
     arguments_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
-
     if arguments_node is None:
         return None, None
 

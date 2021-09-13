@@ -135,37 +135,16 @@ Children:
                                                     IterBegin: "[3, 9] (33)"
                                                     IterEnd: "[3, 12] (36)"
                                                     Type: "DynamicPhrasesType.Types <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                    Children:
-                                                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                        Children:
-                                                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                            Children:
-                                                              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                                IsIgnored: False
-                                                                IterBegin: "[3, 13] (37)"
-                                                                IterEnd: "[3, 14] (38)"
-                                                                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                                                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                  Match: "<_sre.SRE_Match object; span=(37, 38), match='a'>"
-                                                                Whitespace:
-                                                                  - 36
-                                                                  - 37
-                                                            Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                Name: "a"
-                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                Name: "[Ln 3, Col 13] -> [Ln 3, Col 14]"
-                                                                Self__: "[Ln 3, Col 13] -> [Ln 3, Col 14]"
-                                                            IterBegin: "[3, 13] (37)"
-                                                            IterEnd: "[3, 14] (38)"
-                                                            Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                                        IterBegin: "[3, 13] (37)"
-                                                        IterEnd: "[3, 14] (38)"
-                                                        Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                    IsIgnored: False
                                                     IterBegin: "[3, 13] (37)"
                                                     IterEnd: "[3, 14] (38)"
-                                                    Type: "DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                                                    Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                      Match: "<_sre.SRE_Match object; span=(37, 38), match='a'>"
+                                                    Whitespace:
+                                                      - 36
+                                                      - 37
                                                 IterBegin: "[3, 9] (33)"
                                                 IterEnd: "[3, 14] (38)"
                                                 Type: "Parameter <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -214,37 +193,16 @@ Children:
                                                             IterBegin: "[4, 9] (48)"
                                                             IterEnd: "[4, 13] (52)"
                                                             Type: "DynamicPhrasesType.Types <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                                                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                            Children:
-                                                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                                Children:
-                                                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                                    Children:
-                                                                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                                        IsIgnored: False
-                                                                        IterBegin: "[4, 14] (53)"
-                                                                        IterEnd: "[4, 15] (54)"
-                                                                        Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                                                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                          Match: "<_sre.SRE_Match object; span=(53, 54), match='b'>"
-                                                                        Whitespace:
-                                                                          - 52
-                                                                          - 53
-                                                                    Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                        Name: "b"
-                                                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                        Name: "[Ln 4, Col 14] -> [Ln 4, Col 15]"
-                                                                        Self__: "[Ln 4, Col 14] -> [Ln 4, Col 15]"
-                                                                    IterBegin: "[4, 14] (53)"
-                                                                    IterEnd: "[4, 15] (54)"
-                                                                    Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                                                IterBegin: "[4, 14] (53)"
-                                                                IterEnd: "[4, 15] (54)"
-                                                                Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                            IsIgnored: False
                                                             IterBegin: "[4, 14] (53)"
                                                             IterEnd: "[4, 15] (54)"
-                                                            Type: "DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                                                            Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                                            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                              Match: "<_sre.SRE_Match object; span=(53, 54), match='b'>"
+                                                            Whitespace:
+                                                              - 52
+                                                              - 53
                                                         IterBegin: "[4, 9] (48)"
                                                         IterEnd: "[4, 15] (54)"
                                                         Type: "Parameter <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -326,37 +284,16 @@ Children:
                                                     IterBegin: "[6, 9] (73)"
                                                     IterEnd: "[6, 13] (77)"
                                                     Type: "DynamicPhrasesType.Types <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                    Children:
-                                                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                        Children:
-                                                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                            Children:
-                                                              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                                IsIgnored: False
-                                                                IterBegin: "[6, 14] (78)"
-                                                                IterEnd: "[6, 15] (79)"
-                                                                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                                                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                  Match: "<_sre.SRE_Match object; span=(78, 79), match='c'>"
-                                                                Whitespace:
-                                                                  - 77
-                                                                  - 78
-                                                            Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                Name: "c"
-                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                Name: "[Ln 6, Col 14] -> [Ln 6, Col 15]"
-                                                                Self__: "[Ln 6, Col 14] -> [Ln 6, Col 15]"
-                                                            IterBegin: "[6, 14] (78)"
-                                                            IterEnd: "[6, 15] (79)"
-                                                            Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                                        IterBegin: "[6, 14] (78)"
-                                                        IterEnd: "[6, 15] (79)"
-                                                        Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                    IsIgnored: False
                                                     IterBegin: "[6, 14] (78)"
                                                     IterEnd: "[6, 15] (79)"
-                                                    Type: "DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                                                    Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                      Match: "<_sre.SRE_Match object; span=(78, 79), match='c'>"
+                                                    Whitespace:
+                                                      - 77
+                                                      - 78
                                                 IterBegin: "[6, 9] (73)"
                                                 IterEnd: "[6, 15] (79)"
                                                 Type: "Parameter <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -627,146 +564,84 @@ Children:
                             IterBegin: "[7, 4] (84)"
                             IterEnd: "[7, 13] (93)"
                             Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                        Info: # <class 'TheLanguage.Grammars.v0_0_1.Expressions.LambdaExpression.LambdaExpression.NodeInfo'>
-                          Expression: "Tuple Expression"
-                          Parameters:
-                            ParametersType.pos:
-                              - # <class 'TheLanguage.Grammars.v0_0_1.Common.ParametersPhraseItem.Parameter'>
-                                Default: None
-                                IsVarArgs: False
-                                Name: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                  Children:
-                                    - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                      IsIgnored: False
-                                      IterBegin: "[3, 13] (37)"
-                                      IterEnd: "[3, 14] (38)"
-                                      Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                      Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                        Match: "<_sre.SRE_Match object; span=(37, 38), match='a'>"
-                                      Whitespace:
-                                        - 36
-                                        - 37
-                                  Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                    Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                      Name: "a"
-                                    Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                      Name: "[Ln 3, Col 13] -> [Ln 3, Col 14]"
-                                      Self__: "[Ln 3, Col 13] -> [Ln 3, Col 14]"
-                                  IterBegin: "[3, 13] (37)"
-                                  IterEnd: "[3, 14] (38)"
-                                  Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                Type: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                  Children:
-                                    - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                      IsIgnored: False
-                                      IterBegin: "[3, 9] (33)"
-                                      IterEnd: "[3, 12] (36)"
-                                      Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                      Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                        Match: "<_sre.SRE_Match object; span=(33, 36), match='Int'>"
-                                      Whitespace: None
-                                  Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                    Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                      Modifier: None
-                                      TypeName: "Int"
-                                    Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                      Modifier: None
-                                      Self__: "[Ln 3, Col 9] -> [Ln 3, Col 12]"
-                                      TypeName: "[Ln 3, Col 9] -> [Ln 3, Col 12]"
-                                  IterBegin: "[3, 9] (33)"
-                                  IterEnd: "[3, 12] (36)"
-                                  Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                              - # <class 'TheLanguage.Grammars.v0_0_1.Common.ParametersPhraseItem.Parameter'>
-                                Default: None
-                                IsVarArgs: False
-                                Name: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                  Children:
-                                    - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                      IsIgnored: False
-                                      IterBegin: "[4, 14] (53)"
-                                      IterEnd: "[4, 15] (54)"
-                                      Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                      Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                        Match: "<_sre.SRE_Match object; span=(53, 54), match='b'>"
-                                      Whitespace:
-                                        - 52
-                                        - 53
-                                  Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                    Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                      Name: "b"
-                                    Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                      Name: "[Ln 4, Col 14] -> [Ln 4, Col 15]"
-                                      Self__: "[Ln 4, Col 14] -> [Ln 4, Col 15]"
-                                  IterBegin: "[4, 14] (53)"
-                                  IterEnd: "[4, 15] (54)"
-                                  Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                Type: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                  Children:
-                                    - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                      IsIgnored: False
-                                      IterBegin: "[4, 9] (48)"
-                                      IterEnd: "[4, 13] (52)"
-                                      Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                      Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                        Match: "<_sre.SRE_Match object; span=(48, 52), match='Bool'>"
-                                      Whitespace: None
-                                  Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                    Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                      Modifier: None
-                                      TypeName: "Bool"
-                                    Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                      Modifier: None
-                                      Self__: "[Ln 4, Col 9] -> [Ln 4, Col 13]"
-                                      TypeName: "[Ln 4, Col 9] -> [Ln 4, Col 13]"
-                                  IterBegin: "[4, 9] (48)"
-                                  IterEnd: "[4, 13] (52)"
-                                  Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                            ParametersType.key:
-                              - # <class 'TheLanguage.Grammars.v0_0_1.Common.ParametersPhraseItem.Parameter'>
-                                Default: None
-                                IsVarArgs: False
-                                Name: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                  Children:
-                                    - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                      IsIgnored: False
-                                      IterBegin: "[6, 14] (78)"
-                                      IterEnd: "[6, 15] (79)"
-                                      Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                      Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                        Match: "<_sre.SRE_Match object; span=(78, 79), match='c'>"
-                                      Whitespace:
-                                        - 77
-                                        - 78
-                                  Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                    Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                        Info: # <class 'TheLanguage.Lexer.Expressions.LambdaExpressionLexerInfo.LambdaExpressionLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Expressions.LambdaExpressionLexerInfo.LambdaExpressionLexerData'>
+                            Expression: # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
+                                {}
+                              Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
+                                Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+                            Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
+                              Data: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerData'>
+                                Any: None
+                                Keyword:
+                                  - # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerInfo'>
+                                    Data: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerData'>
+                                      Default: None
+                                      IsVarArgs: None
                                       Name: "c"
-                                    Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                      Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                          Modifier: None
+                                          TypeName: "Char"
+                                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                          Modifier: None
+                                          Self__: "[Ln 6, Col 9] -> [Ln 6, Col 13]"
+                                          TypeName: "[Ln 6, Col 9] -> [Ln 6, Col 13]"
+                                    Regions: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerRegions'>
+                                      Default: None
+                                      IsVarArgs: None
                                       Name: "[Ln 6, Col 14] -> [Ln 6, Col 15]"
-                                      Self__: "[Ln 6, Col 14] -> [Ln 6, Col 15]"
-                                  IterBegin: "[6, 14] (78)"
-                                  IterEnd: "[6, 15] (79)"
-                                  Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                Type: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                  Children:
-                                    - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                      IsIgnored: False
-                                      IterBegin: "[6, 9] (73)"
-                                      IterEnd: "[6, 13] (77)"
-                                      Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                      Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                        Match: "<_sre.SRE_Match object; span=(73, 77), match='Char'>"
-                                      Whitespace: None
-                                  Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                    Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                      Modifier: None
-                                      TypeName: "Char"
-                                    Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                      Modifier: None
-                                      Self__: "[Ln 6, Col 9] -> [Ln 6, Col 13]"
-                                      TypeName: "[Ln 6, Col 9] -> [Ln 6, Col 13]"
-                                  IterBegin: "[6, 9] (73)"
-                                  IterEnd: "[6, 13] (77)"
-                                  Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                      Self__: "[Ln 6, Col 9] -> [Ln 6, Col 15]"
+                                      Type: "[Ln 6, Col 9] -> [Ln 6, Col 13]"
+                                Positional:
+                                  - # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerInfo'>
+                                    Data: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerData'>
+                                      Default: None
+                                      IsVarArgs: None
+                                      Name: "a"
+                                      Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                          Modifier: None
+                                          TypeName: "Int"
+                                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                          Modifier: None
+                                          Self__: "[Ln 3, Col 9] -> [Ln 3, Col 12]"
+                                          TypeName: "[Ln 3, Col 9] -> [Ln 3, Col 12]"
+                                    Regions: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerRegions'>
+                                      Default: None
+                                      IsVarArgs: None
+                                      Name: "[Ln 3, Col 13] -> [Ln 3, Col 14]"
+                                      Self__: "[Ln 3, Col 9] -> [Ln 3, Col 14]"
+                                      Type: "[Ln 3, Col 9] -> [Ln 3, Col 12]"
+                                  - # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerInfo'>
+                                    Data: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerData'>
+                                      Default: None
+                                      IsVarArgs: None
+                                      Name: "b"
+                                      Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                          Modifier: None
+                                          TypeName: "Bool"
+                                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                          Modifier: None
+                                          Self__: "[Ln 4, Col 9] -> [Ln 4, Col 13]"
+                                          TypeName: "[Ln 4, Col 9] -> [Ln 4, Col 13]"
+                                    Regions: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerRegions'>
+                                      Default: None
+                                      IsVarArgs: None
+                                      Name: "[Ln 4, Col 14] -> [Ln 4, Col 15]"
+                                      Self__: "[Ln 4, Col 9] -> [Ln 4, Col 15]"
+                                      Type: "[Ln 4, Col 9] -> [Ln 4, Col 13]"
+                              Regions: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerRegions'>
+                                Any: None
+                                Keyword: "[Ln 5, Col 5] -> [Ln 6, Col 16]"
+                                Positional: "[Ln 2, Col 5] -> [Ln 4, Col 16]"
+                                Self__: "[Ln 2, Col 5] -> [Ln 6, Col 16]"
+                          Regions: # <class 'TheLanguage.Lexer.Expressions.LambdaExpressionLexerInfo.LambdaExpressionLexerRegions'>
+                            Expression: "[Ln 7, Col 4] -> [Ln 7, Col 13]"
+                            Parameters: "[Ln 1, Col 15] -> [Ln 7, Col 2]"
+                            Self__: "[Ln 1, Col 8] -> [Ln 7, Col 13]"
                         IterBegin: "[1, 8] (7)"
                         IterEnd: "[7, 13] (93)"
                         Type: "Lambda Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -959,37 +834,16 @@ Children:
                                                                                 IterBegin: "[12, 13] (146)"
                                                                                 IterEnd: "[12, 19] (152)"
                                                                                 Type: "DynamicPhrasesType.Types <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                                                                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                                                Children:
-                                                                                  - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                                                    Children:
-                                                                                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                                                        Children:
-                                                                                          - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                                                            IsIgnored: False
-                                                                                            IterBegin: "[12, 20] (153)"
-                                                                                            IterEnd: "[12, 21] (154)"
-                                                                                            Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                                                                            Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                                              Match: "<_sre.SRE_Match object; span=(153, 154), match='d'>"
-                                                                                            Whitespace:
-                                                                                              - 152
-                                                                                              - 153
-                                                                                        Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                            Name: "d"
-                                                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                                            Name: "[Ln 12, Col 20] -> [Ln 12, Col 21]"
-                                                                                            Self__: "[Ln 12, Col 20] -> [Ln 12, Col 21]"
-                                                                                        IterBegin: "[12, 20] (153)"
-                                                                                        IterEnd: "[12, 21] (154)"
-                                                                                        Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                                                                    IterBegin: "[12, 20] (153)"
-                                                                                    IterEnd: "[12, 21] (154)"
-                                                                                    Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                                                                              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                                                                                IsIgnored: False
                                                                                 IterBegin: "[12, 20] (153)"
                                                                                 IterEnd: "[12, 21] (154)"
-                                                                                Type: "DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                                                                                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                                                                                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                                                                                  Match: "<_sre.SRE_Match object; span=(153, 154), match='d'>"
+                                                                                Whitespace:
+                                                                                  - 152
+                                                                                  - 153
                                                                             IterBegin: "[12, 13] (146)"
                                                                             IterEnd: "[12, 21] (154)"
                                                                             Type: "Parameter <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1089,55 +943,52 @@ Children:
                                                         IterBegin: "[13, 8] (163)"
                                                         IterEnd: "[13, 14] (169)"
                                                         Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                                                    Info: # <class 'TheLanguage.Grammars.v0_0_1.Expressions.LambdaExpression.LambdaExpression.NodeInfo'>
-                                                      Expression: "Variable Expression"
-                                                      Parameters:
-                                                        ParametersType.key:
-                                                          - # <class 'TheLanguage.Grammars.v0_0_1.Common.ParametersPhraseItem.Parameter'>
-                                                            Default: None
-                                                            IsVarArgs: False
-                                                            Name: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                              Children:
-                                                                - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                                  IsIgnored: False
-                                                                  IterBegin: "[12, 20] (153)"
-                                                                  IterEnd: "[12, 21] (154)"
-                                                                  Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                                                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                    Match: "<_sre.SRE_Match object; span=(153, 154), match='d'>"
-                                                                  Whitespace:
-                                                                    - 152
-                                                                    - 153
-                                                              Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                    Info: # <class 'TheLanguage.Lexer.Expressions.LambdaExpressionLexerInfo.LambdaExpressionLexerInfo'>
+                                                      Data: # <class 'TheLanguage.Lexer.Expressions.LambdaExpressionLexerInfo.LambdaExpressionLexerData'>
+                                                        Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                                          Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                            Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                                Name: "value2"
+                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                Name: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                                                Self__: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                                          Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                            Name: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                                            Self__: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                                        Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
+                                                          Data: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerData'>
+                                                            Any: None
+                                                            Keyword:
+                                                              - # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerInfo'>
+                                                                Data: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerData'>
+                                                                  Default: None
+                                                                  IsVarArgs: None
                                                                   Name: "d"
-                                                                Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                  Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                                    Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                                                      Modifier: None
+                                                                      TypeName: "Double"
+                                                                    Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                                                      Modifier: None
+                                                                      Self__: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
+                                                                      TypeName: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
+                                                                Regions: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerRegions'>
+                                                                  Default: None
+                                                                  IsVarArgs: None
                                                                   Name: "[Ln 12, Col 20] -> [Ln 12, Col 21]"
-                                                                  Self__: "[Ln 12, Col 20] -> [Ln 12, Col 21]"
-                                                              IterBegin: "[12, 20] (153)"
-                                                              IterEnd: "[12, 21] (154)"
-                                                              Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                                            Type: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                                              Children:
-                                                                - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                                  IsIgnored: False
-                                                                  IterBegin: "[12, 13] (146)"
-                                                                  IterEnd: "[12, 19] (152)"
-                                                                  Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                                                  Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                                    Match: "<_sre.SRE_Match object; span=(146, 152), match='Double'>"
-                                                                  Whitespace: None
-                                                              Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                                                Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                                  Modifier: None
-                                                                  TypeName: "Double"
-                                                                Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                                  Modifier: None
-                                                                  Self__: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
-                                                                  TypeName: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
-                                                              IterBegin: "[12, 13] (146)"
-                                                              IterEnd: "[12, 19] (152)"
-                                                              Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                                  Self__: "[Ln 12, Col 13] -> [Ln 12, Col 21]"
+                                                                  Type: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
+                                                            Positional: None
+                                                          Regions: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerRegions'>
+                                                            Any: None
+                                                            Keyword: "[Ln 11, Col 9] -> [Ln 12, Col 22]"
+                                                            Positional: None
+                                                            Self__: "[Ln 11, Col 9] -> [Ln 12, Col 22]"
+                                                      Regions: # <class 'TheLanguage.Lexer.Expressions.LambdaExpressionLexerInfo.LambdaExpressionLexerRegions'>
+                                                        Expression: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                                        Parameters: "[Ln 10, Col 12] -> [Ln 13, Col 6]"
+                                                        Self__: "[Ln 10, Col 5] -> [Ln 13, Col 14]"
                                                     IterBegin: "[10, 5] (112)"
                                                     IterEnd: "[13, 14] (169)"
                                                     Type: "Lambda Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1326,55 +1177,52 @@ Children:
                             Arguments:
                               - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerData'>
-                                  Expression: # <class 'TheLanguage.Grammars.v0_0_1.Expressions.LambdaExpression.LambdaExpression.NodeInfo'>
-                                    Expression: "Variable Expression"
-                                    Parameters:
-                                      ParametersType.key:
-                                        - # <class 'TheLanguage.Grammars.v0_0_1.Common.ParametersPhraseItem.Parameter'>
-                                          Default: None
-                                          IsVarArgs: False
-                                          Name: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                            Children:
-                                              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                IsIgnored: False
-                                                IterBegin: "[12, 20] (153)"
-                                                IterEnd: "[12, 21] (154)"
-                                                Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                  Match: "<_sre.SRE_Match object; span=(153, 154), match='d'>"
-                                                Whitespace:
-                                                  - 152
-                                                  - 153
-                                            Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                  Expression: # <class 'TheLanguage.Lexer.Expressions.LambdaExpressionLexerInfo.LambdaExpressionLexerInfo'>
+                                    Data: # <class 'TheLanguage.Lexer.Expressions.LambdaExpressionLexerInfo.LambdaExpressionLexerData'>
+                                      Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                        Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                            Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                              Name: "value2"
+                                            Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                              Name: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                              Self__: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                        Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                          Name: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                          Self__: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                      Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
+                                        Data: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerData'>
+                                          Any: None
+                                          Keyword:
+                                            - # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerInfo'>
+                                              Data: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerData'>
+                                                Default: None
+                                                IsVarArgs: None
                                                 Name: "d"
-                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                                  Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                                                    Modifier: None
+                                                    TypeName: "Double"
+                                                  Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                                    Modifier: None
+                                                    Self__: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
+                                                    TypeName: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
+                                              Regions: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerRegions'>
+                                                Default: None
+                                                IsVarArgs: None
                                                 Name: "[Ln 12, Col 20] -> [Ln 12, Col 21]"
-                                                Self__: "[Ln 12, Col 20] -> [Ln 12, Col 21]"
-                                            IterBegin: "[12, 20] (153)"
-                                            IterEnd: "[12, 21] (154)"
-                                            Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                                          Type: # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                            Children:
-                                              - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                                IsIgnored: False
-                                                IterBegin: "[12, 13] (146)"
-                                                IterEnd: "[12, 19] (152)"
-                                                Type: "<type_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                                Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                                  Match: "<_sre.SRE_Match object; span=(146, 152), match='Double'>"
-                                                Whitespace: None
-                                            Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                Modifier: None
-                                                TypeName: "Double"
-                                              Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                Modifier: None
-                                                Self__: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
-                                                TypeName: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
-                                            IterBegin: "[12, 13] (146)"
-                                            IterEnd: "[12, 19] (152)"
-                                            Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                                                Self__: "[Ln 12, Col 13] -> [Ln 12, Col 21]"
+                                                Type: "[Ln 12, Col 13] -> [Ln 12, Col 19]"
+                                          Positional: None
+                                        Regions: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerRegions'>
+                                          Any: None
+                                          Keyword: "[Ln 11, Col 9] -> [Ln 12, Col 22]"
+                                          Positional: None
+                                          Self__: "[Ln 11, Col 9] -> [Ln 12, Col 22]"
+                                    Regions: # <class 'TheLanguage.Lexer.Expressions.LambdaExpressionLexerInfo.LambdaExpressionLexerRegions'>
+                                      Expression: "[Ln 13, Col 8] -> [Ln 13, Col 14]"
+                                      Parameters: "[Ln 10, Col 12] -> [Ln 13, Col 6]"
+                                      Self__: "[Ln 10, Col 5] -> [Ln 13, Col 14]"
                                   Keyword: None
                                 Regions: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerRegions'>
                                   Expression: "[Ln 10, Col 5] -> [Ln 13, Col 14]"

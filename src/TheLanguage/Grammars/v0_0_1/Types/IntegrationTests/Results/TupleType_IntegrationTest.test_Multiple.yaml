@@ -312,7 +312,7 @@ Children:
                 ClassModifier: None
                 MethodType: "MethodType.standard"
                 Name: "Func"
-                Parameters: {}
+                Parameters: None
                 ReturnType: # <class 'TheLanguage.Lexer.Types.TupleTypeLexerInfo.TupleTypeLexerInfo'>
                   Data: # <class 'TheLanguage.Lexer.Types.TupleTypeLexerInfo.TupleTypeLexerData'>
                     Types:
@@ -340,7 +340,7 @@ Children:
                 ClassModifier: None
                 MethodType: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
                 Name: "[Ln 4, Col 3] -> [Ln 4, Col 7]"
-                Parameters: "[Ln 4, Col 7] -> [Ln 4, Col 9]"
+                Parameters: None
                 ReturnType: "[Ln 1, Col 1] -> [Ln 4, Col 2]"
                 Self__: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
                 Visibility: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
