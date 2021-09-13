@@ -40,7 +40,7 @@ class TestStandard(object):
     _standard_type                          = StandardTypeLexerInfo(
         StandardTypeLexerData("TheType", None),
         StandardTypeLexerRegions(
-            CreateRegion(100, 200, 300, 400),
+            CreateRegion(1, 2, 300, 400),
             CreateRegion(1, 2, 3, 4),
             None,
         ),

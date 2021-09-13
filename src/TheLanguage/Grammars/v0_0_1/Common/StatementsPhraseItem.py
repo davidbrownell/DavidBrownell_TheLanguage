@@ -82,6 +82,7 @@ def Create() -> PhraseItem:
 def Extract(
     node: Node,
 ) -> List[Union[Leaf, Node]]:
+    # TODO: Revisit this
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
 

@@ -144,11 +144,10 @@ def Extract(
         return None, None
 
     # Extract the arguments
-    arguments: List[ArgumentLexerInfo] = []
-
     arguments_nodes = ExtractSequence(arguments_node)
     assert len(arguments_nodes) == 3
 
+    argument_infos: List[ArgumentLexerInfo] = []
     encountered_keyword = False
 
     for argument_node in itertools.chain(
@@ -174,24 +173,25 @@ def Extract(
             keyword_nodes = ExtractSequence(keyword_node)
             assert len(keyword_nodes) == 2
 
-            keyword_leaf = cast(Leaf, keyword_nodes[0])
-            keyword = cast(str, ExtractToken(keyword_leaf))
+            keyword_node = cast(Leaf, keyword_nodes[0])
+            keyword_data = cast(str, ExtractToken(keyword_node))
 
         else:
             if encountered_keyword:
                 raise PositionalAfterKeywordError.FromNode(argument_node)
 
-            keyword = None
+            keyword_data = None
 
         # Expression
         expression_node = ExtractDynamic(cast(Node, argument_nodes[1]))
+        expression_data = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
 
         # pylint: disable=too-many-function-args
-        arguments.append(
+        argument_infos.append(
             ArgumentLexerInfo(
                 ArgumentLexerData(
-                    cast(ExpressionLexerInfo, GetLexerInfo(expression_node)),
-                    keyword,
+                    expression_data,
+                    keyword_data,
                 ),
                 CreateLexerRegions(
                     ArgumentLexerRegions,  # type: ignore
@@ -202,5 +202,5 @@ def Extract(
             ),
         )
 
-    assert arguments
-    return arguments_node, arguments
+    assert argument_infos
+    return arguments_node, argument_infos

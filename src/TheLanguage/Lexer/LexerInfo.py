@@ -35,8 +35,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class Location(YamlRepr.ObjectReprImplBase):
+@dataclass(frozen=True)
+class Location(object):
     Line: int
     Column: int
 
@@ -45,10 +45,54 @@ class Location(YamlRepr.ObjectReprImplBase):
         assert self.Line >= 1, self
         assert self.Column >= 1, self
 
+    # ----------------------------------------------------------------------
+    def __lt__(self, other):
+        return self.Compare(self, other) < 0
+
+    # ----------------------------------------------------------------------
+    def __le__(self, other):
+        return self.Compare(self, other) <= 0
+
+    # ----------------------------------------------------------------------
+    def __eq__(self, other):
+        return self.Compare(self, other) == 0
+
+    # ----------------------------------------------------------------------
+    def __ne__(self, other):
+        return self.Compare(self, other) != 0
+
+    # ----------------------------------------------------------------------
+    def __gt__(self, other):
+        return self.Compare(self, other) > 0
+
+    # ----------------------------------------------------------------------
+    def __ge__(self, other):
+        return self.Compare(self, other) >= 0
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def Compare(
+        left: "Location",
+        right: "Location",
+    ) -> int:
+        delta = left.Line - right.Line
+        if delta != 0:
+            return delta
+
+        delta = left.Column - right.Column
+        if delta != 0:
+            return delta
+
+        return 0
+
+    # ----------------------------------------------------------------------
+    def ToString(self) -> str:
+        return "[Ln {}, Col {}]".format(self.Line, self.Column)
+
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class Region(YamlRepr.ObjectReprImplBase):
+@dataclass(frozen=True)
+class Region(object):
     Begin: Location
     End: Location
 
@@ -56,6 +100,14 @@ class Region(YamlRepr.ObjectReprImplBase):
     def __post_init__(self):
         assert self.End.Line >= self.Begin.Line, self
         assert self.End.Line > self.Begin.Line or self.End.Column >= self.Begin.Column, self
+
+    # ----------------------------------------------------------------------
+    def __contains__(self, other):
+        return other.Begin >= self.Begin and other.End <= self.End
+
+    # ----------------------------------------------------------------------
+    def ToString(self) -> str:
+        return "{} -> {}".format(self.Begin.ToString(), self.End.ToString())
 
 
 # ----------------------------------------------------------------------
@@ -173,15 +225,23 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
             region_value = getattr(self.Regions, field.name)
 
             if getattr(self.Data, field.name) is None:
-                assert region_value is None, field.name
+                assert region_value is None, (field.name, "The region should be None when the corresponding data field is None")
             else:
-                assert region_value is not None, field.name
+                assert region_value is not None, (field.name, "The region should not be None when the corresponding data field is not None")
 
         # The regions should have all of the data and a self field
         assert len(fields(self.Regions)) == valid_data_values + 1, (len(fields(self.Regions)), valid_data_values)
 
         if validate_data:
             self.Data.Validate()
+
+        # Ensure that all regions fall within Self__
+        for field in fields(self.Regions):
+            region_value = getattr(self.Regions, field.name)
+            if region_value is None:
+                continue
+
+            assert region_value in self.Regions.Self__, (field.name, region_value, self.Regions.Self__)
 
 
 # ----------------------------------------------------------------------

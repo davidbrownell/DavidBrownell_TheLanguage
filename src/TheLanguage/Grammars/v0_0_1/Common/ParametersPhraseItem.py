@@ -306,6 +306,8 @@ def Extract(
     node: Node,
 ) -> Dict[ParametersType, List[Parameter]]:
 
+    # TODO: Revisit this
+
     # Drill into the parameters node
     nodes = ExtractSequence(node)
     assert len(nodes) == 5

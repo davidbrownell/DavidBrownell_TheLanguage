@@ -193,27 +193,9 @@ Children:
                       Name: "Interface1"
                       Visibility: "VisibilityModifier.private"
                     Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 27
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 37
-                          Line: 1
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 27
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 37
-                          Line: 1
-                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 27
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 37
-                          Line: 1
+                      Name: "[Ln 1, Col 27] -> [Ln 1, Col 37]"
+                      Self__: "[Ln 1, Col 27] -> [Ln 1, Col 37]"
+                      Visibility: "[Ln 1, Col 27] -> [Ln 1, Col 37]"
                 Mixins: None
                 Name: "Class1"
                 Statements:
@@ -221,66 +203,18 @@ Children:
                     Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
                       {}
                     Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
+                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
-                ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 4
-                ClassType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 6
-                    Line: 1
-                Interfaces: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 16
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 37
-                    Line: 1
+                ClassModifier: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+                ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Interfaces: "[Ln 1, Col 16] -> [Ln 1, Col 37]"
                 Mixins: None
-                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 7
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 13
-                    Line: 1
-                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 4
-                Statements: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 37
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 4
-                Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 1
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 4
+                Name: "[Ln 1, Col 7] -> [Ln 1, Col 13]"
+                Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+                Statements: "[Ln 1, Col 37] -> [Ln 4, Col 1]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[4, 1] (48)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -496,27 +430,9 @@ Children:
                       Name: "Interface2"
                       Visibility: "VisibilityModifier.private"
                     Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 27
-                          Line: 4
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 37
-                          Line: 4
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 27
-                          Line: 4
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 38
-                          Line: 4
-                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 27
-                          Line: 4
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 38
-                          Line: 4
+                      Name: "[Ln 4, Col 27] -> [Ln 4, Col 37]"
+                      Self__: "[Ln 4, Col 27] -> [Ln 4, Col 38]"
+                      Visibility: "[Ln 4, Col 27] -> [Ln 4, Col 38]"
                 Mixins: None
                 Name: "Class2"
                 Statements:
@@ -524,66 +440,18 @@ Children:
                     Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
                       {}
                     Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
+                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
-                ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 4
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 7
-                ClassType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 4
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 6
-                    Line: 4
-                Interfaces: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 16
-                    Line: 4
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 38
-                    Line: 4
+                ClassModifier: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
+                ClassType: "[Ln 4, Col 1] -> [Ln 4, Col 6]"
+                Interfaces: "[Ln 4, Col 16] -> [Ln 4, Col 38]"
                 Mixins: None
-                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 7
-                    Line: 4
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 13
-                    Line: 4
-                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 4
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 7
-                Statements: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 38
-                    Line: 4
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 7
-                Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 4
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 7
+                Name: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
+                Self__: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
+                Statements: "[Ln 4, Col 38] -> [Ln 7, Col 1]"
+                Visibility: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
             IterBegin: "[4, 1] (48)"
             IterEnd: "[7, 1] (97)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -784,27 +652,9 @@ Children:
                       Name: "Interface3"
                       Visibility: "VisibilityModifier.private"
                     Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 16
-                          Line: 8
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 26
-                          Line: 8
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 16
-                          Line: 8
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 26
-                          Line: 8
-                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 16
-                          Line: 8
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 26
-                          Line: 8
+                      Name: "[Ln 8, Col 16] -> [Ln 8, Col 26]"
+                      Self__: "[Ln 8, Col 16] -> [Ln 8, Col 26]"
+                      Visibility: "[Ln 8, Col 16] -> [Ln 8, Col 26]"
                 Mixins: None
                 Name: "Class3"
                 Statements:
@@ -812,66 +662,18 @@ Children:
                     Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
                       {}
                     Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
+                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
-                ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 7
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 12
-                ClassType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 7
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 6
-                    Line: 7
-                Interfaces: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 5
-                    Line: 8
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 26
-                    Line: 8
+                ClassModifier: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
+                ClassType: "[Ln 7, Col 1] -> [Ln 7, Col 6]"
+                Interfaces: "[Ln 8, Col 5] -> [Ln 8, Col 26]"
                 Mixins: None
-                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 7
-                    Line: 7
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 13
-                    Line: 7
-                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 7
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 12
-                Statements: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 9
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 12
-                Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 7
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 12
+                Name: "[Ln 7, Col 7] -> [Ln 7, Col 13]"
+                Self__: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
+                Statements: "[Ln 9, Col 1] -> [Ln 12, Col 1]"
+                Visibility: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
             IterBegin: "[7, 1] (97)"
             IterEnd: "[12, 1] (150)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1085,27 +887,9 @@ Children:
                       Name: "Interface4"
                       Visibility: "VisibilityModifier.private"
                     Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 16
-                          Line: 13
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 26
-                          Line: 13
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 16
-                          Line: 13
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 27
-                          Line: 13
-                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 16
-                          Line: 13
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 27
-                          Line: 13
+                      Name: "[Ln 13, Col 16] -> [Ln 13, Col 26]"
+                      Self__: "[Ln 13, Col 16] -> [Ln 13, Col 27]"
+                      Visibility: "[Ln 13, Col 16] -> [Ln 13, Col 27]"
                 Mixins: None
                 Name: "Class4"
                 Statements:
@@ -1113,66 +897,18 @@ Children:
                     Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
                       {}
                     Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
+                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
-                ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 12
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 17
-                ClassType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 12
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 6
-                    Line: 12
-                Interfaces: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 5
-                    Line: 13
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 27
-                    Line: 13
+                ClassModifier: "[Ln 12, Col 1] -> [Ln 17, Col 1]"
+                ClassType: "[Ln 12, Col 1] -> [Ln 12, Col 6]"
+                Interfaces: "[Ln 13, Col 5] -> [Ln 13, Col 27]"
                 Mixins: None
-                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 7
-                    Line: 12
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 13
-                    Line: 12
-                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 12
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 17
-                Statements: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 14
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 17
-                Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 12
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 17
+                Name: "[Ln 12, Col 7] -> [Ln 12, Col 13]"
+                Self__: "[Ln 12, Col 1] -> [Ln 17, Col 1]"
+                Statements: "[Ln 14, Col 1] -> [Ln 17, Col 1]"
+                Visibility: "[Ln 12, Col 1] -> [Ln 17, Col 1]"
             IterBegin: "[12, 1] (150)"
             IterEnd: "[17, 1] (204)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1393,27 +1129,9 @@ Children:
                       Name: "Interface5"
                       Visibility: "VisibilityModifier.public"
                     Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 23
-                          Line: 18
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 33
-                          Line: 18
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 16
-                          Line: 18
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 33
-                          Line: 18
-                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 16
-                          Line: 18
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 22
-                          Line: 18
+                      Name: "[Ln 18, Col 23] -> [Ln 18, Col 33]"
+                      Self__: "[Ln 18, Col 16] -> [Ln 18, Col 33]"
+                      Visibility: "[Ln 18, Col 16] -> [Ln 18, Col 22]"
                 Mixins: None
                 Name: "Class5"
                 Statements:
@@ -1421,66 +1139,18 @@ Children:
                     Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
                       {}
                     Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
+                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
-                ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 17
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 22
-                ClassType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 17
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 6
-                    Line: 17
-                Interfaces: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 5
-                    Line: 18
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 33
-                    Line: 18
+                ClassModifier: "[Ln 17, Col 1] -> [Ln 22, Col 1]"
+                ClassType: "[Ln 17, Col 1] -> [Ln 17, Col 6]"
+                Interfaces: "[Ln 18, Col 5] -> [Ln 18, Col 33]"
                 Mixins: None
-                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 7
-                    Line: 17
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 13
-                    Line: 17
-                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 17
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 22
-                Statements: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 19
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 22
-                Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 17
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 22
+                Name: "[Ln 17, Col 7] -> [Ln 17, Col 13]"
+                Self__: "[Ln 17, Col 1] -> [Ln 22, Col 1]"
+                Statements: "[Ln 19, Col 1] -> [Ln 22, Col 1]"
+                Visibility: "[Ln 17, Col 1] -> [Ln 22, Col 1]"
             IterBegin: "[17, 1] (204)"
             IterEnd: "[22, 1] (264)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1704,27 +1374,9 @@ Children:
                       Name: "Interface6"
                       Visibility: "VisibilityModifier.private"
                     Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 28
-                          Line: 22
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 38
-                          Line: 22
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 28
-                          Line: 22
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 38
-                          Line: 22
-                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 28
-                          Line: 22
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 38
-                          Line: 22
+                      Name: "[Ln 22, Col 28] -> [Ln 22, Col 38]"
+                      Self__: "[Ln 22, Col 28] -> [Ln 22, Col 38]"
+                      Visibility: "[Ln 22, Col 28] -> [Ln 22, Col 38]"
                 Mixins: None
                 Name: "Class6"
                 Statements:
@@ -1732,66 +1384,18 @@ Children:
                     Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
                       {}
                     Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
+                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
-                ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 22
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 25
-                ClassType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 22
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 6
-                    Line: 22
-                Interfaces: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 16
-                    Line: 22
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 39
-                    Line: 22
+                ClassModifier: "[Ln 22, Col 1] -> [Ln 25, Col 1]"
+                ClassType: "[Ln 22, Col 1] -> [Ln 22, Col 6]"
+                Interfaces: "[Ln 22, Col 16] -> [Ln 22, Col 39]"
                 Mixins: None
-                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 7
-                    Line: 22
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 13
-                    Line: 22
-                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 22
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 25
-                Statements: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 39
-                    Line: 22
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 25
-                Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 22
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 25
+                Name: "[Ln 22, Col 7] -> [Ln 22, Col 13]"
+                Self__: "[Ln 22, Col 1] -> [Ln 25, Col 1]"
+                Statements: "[Ln 22, Col 39] -> [Ln 25, Col 1]"
+                Visibility: "[Ln 22, Col 1] -> [Ln 25, Col 1]"
             IterBegin: "[22, 1] (264)"
             IterEnd: "[25, 1] (314)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -2026,27 +1630,9 @@ Children:
                       Name: "Interface7"
                       Visibility: "VisibilityModifier.private"
                     Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 9
-                          Line: 27
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 19
-                          Line: 27
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 9
-                          Line: 27
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 20
-                          Line: 27
-                      Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 9
-                          Line: 27
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 20
-                          Line: 27
+                      Name: "[Ln 27, Col 9] -> [Ln 27, Col 19]"
+                      Self__: "[Ln 27, Col 9] -> [Ln 27, Col 20]"
+                      Visibility: "[Ln 27, Col 9] -> [Ln 27, Col 20]"
                 Mixins: None
                 Name: "Class7"
                 Statements:
@@ -2054,66 +1640,18 @@ Children:
                     Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
                       {}
                     Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                        Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
-                        End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                          Column: 1
-                          Line: 1
+                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
                 Base: None
-                ClassModifier: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 25
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 31
-                ClassType: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 25
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 6
-                    Line: 25
-                Interfaces: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 5
-                    Line: 26
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 6
-                    Line: 28
+                ClassModifier: "[Ln 25, Col 1] -> [Ln 31, Col 1]"
+                ClassType: "[Ln 25, Col 1] -> [Ln 25, Col 6]"
+                Interfaces: "[Ln 26, Col 5] -> [Ln 28, Col 6]"
                 Mixins: None
-                Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 7
-                    Line: 25
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 13
-                    Line: 25
-                Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 25
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 31
-                Statements: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 29
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 31
-                Visibility: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                  Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 25
-                  End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                    Column: 1
-                    Line: 31
+                Name: "[Ln 25, Col 7] -> [Ln 25, Col 13]"
+                Self__: "[Ln 25, Col 1] -> [Ln 31, Col 1]"
+                Statements: "[Ln 29, Col 1] -> [Ln 31, Col 1]"
+                Visibility: "[Ln 25, Col 1] -> [Ln 31, Col 1]"
             IterBegin: "[25, 1] (314)"
             IterEnd: "[31, 1] (383)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

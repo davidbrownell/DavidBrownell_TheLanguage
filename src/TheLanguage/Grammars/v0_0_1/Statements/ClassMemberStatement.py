@@ -44,6 +44,8 @@ with InitRelativeImports():
     from ....Lexer.Statements.ClassMemberStatementLexerInfo import (
         ClassMemberStatementLexerInfo,
         ClassMemberStatementLexerRegions,
+        ExpressionLexerInfo,
+        TypeLexerInfo,
     )
 
     from ....Parser.Phrases.DSL import (
@@ -133,56 +135,54 @@ class ClassMemberStatement(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
-        nodes = ExtractSequence(node)
-        assert len(nodes) == 7
-
-        # <attributes>?
-        attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
-
-        # <visibility>?
-        visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
-
-        if visibility_node is not None:
-            visibility = VisibilityModifier.Extract(visibility_node)
-        else:
-            visibility = None
-
-        # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
-        type_node = ExtractDynamic(cast(Node, nodes[2]))
-
-        # <name>
-        name_leaf = cast(Leaf, nodes[3])
-        name = cast(str, ExtractToken(name_leaf))
-
-        # <class_modifier>?
-        class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
-
-        if class_modifier_node is not None:
-            class_modifier = ClassModifier.Extract(class_modifier_node)
-        else:
-            class_modifier = None
-
-        # ('=' <expr>)? (The ExprLexerInfo will be extracted as part of a deferred callback)
-        default_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[5])))
-
-        if default_node is not None:
-            default_nodes = ExtractSequence(default_node)
-            assert len(default_nodes) == 2
-
-            default_node = ExtractDynamic(cast(Node, default_nodes[1]))
-
-        # TODO: Leverage attributes (init, serialize, etc.)
-
         # ----------------------------------------------------------------------
-        def CommitLexerInfo():
-            nonlocal default_node # TODO: Remove this
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 7
+
+            # <attributes>?
+            attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
+
+            # <visibility>?
+            visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
+
+            if visibility_node is not None:
+                visibility_data = VisibilityModifier.Extract(visibility_node)
+            else:
+                visibility_data = None
+
+            # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
+            type_node = ExtractDynamic(cast(Node, nodes[2]))
+            type_data = cast(TypeLexerInfo, GetLexerInfo(type_node))
+
+            # <name>
+            name_leaf = cast(Leaf, nodes[3])
+            name_data = cast(str, ExtractToken(name_leaf))
+
+            # <class_modifier>?
+            class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
+
+            if class_modifier_node is not None:
+                class_modifier_data = ClassModifier.Extract(class_modifier_node)
+            else:
+                class_modifier_data = None
+
+            # ('=' <expr>)? (The ExprLexerInfo will be extracted as part of a deferred callback)
+            default_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[5])))
+
+            if default_node is not None:
+                default_nodes = ExtractSequence(default_node)
+                assert len(default_nodes) == 2
+
+                default_node = ExtractDynamic(cast(Node, default_nodes[1]))
+
+            # TODO: Leverage attributes (init, serialize, etc.)
 
             # Get the default ExprLexerInfo
             if default_node is not None:
-                default_node = None
-                default_info = None # TODO (expr) GetLexerInfo(default_node)
+                default_data = cast(ExpressionLexerInfo, GetLexerInfo(default_node))
             else:
-                default_info = None
+                default_data = None
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
@@ -201,14 +201,14 @@ class ClassMemberStatement(GrammarPhrase):
                         node,
                         FuncAndMethodDefinitionStatement.PHRASE_NAME,
                     ),
-                    visibility,  # type: ignore
-                    GetLexerInfo(type_node),  # type: ignore
-                    name,  # type: ignore
-                    class_modifier,  # type: ignore
-                    default_info,  # type: ignore
+                    visibility_data,  # type: ignore
+                    type_data,  # type: ignore
+                    name_data,  # type: ignore
+                    class_modifier_data,  # type: ignore
+                    default_data,  # type: ignore
                 ),
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CommitLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
