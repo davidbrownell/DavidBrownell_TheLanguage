@@ -39,7 +39,7 @@ class TestStandard(object):
     _standard_type1                         = StandardTypeLexerInfo(
         StandardTypeLexerData("Type1", None),
         StandardTypeLexerRegions(
-            CreateRegion(100, 200, 300, 400),
+            CreateRegion(1, 2, 300, 400),
             CreateRegion(1, 2, 3, 4),
             None,
         ),
@@ -48,7 +48,7 @@ class TestStandard(object):
     _standard_type2                         = StandardTypeLexerInfo(
         StandardTypeLexerData("Type2", TypeModifier.val),
         StandardTypeLexerRegions(
-            CreateRegion(500, 600, 700, 800),
+            CreateRegion(5, 6, 700, 800),
             CreateRegion(5, 6, 7, 8),
             CreateRegion(9, 10, 11, 12),
         ),

@@ -39,7 +39,7 @@ class TestStandard(object):
     _name1                                  = NameLexerInfo(
         VariableNameLexerData("Name1"),
         VariableNameLexerRegions(
-            CreateRegion(100, 200, 300, 400),
+            CreateRegion(1, 2, 300, 400),
             CreateRegion(1, 2, 3, 4),
         ),
     )
@@ -47,7 +47,7 @@ class TestStandard(object):
     _name2                                  = NameLexerInfo(
         VariableNameLexerData("Name2"),
         VariableNameLexerRegions(
-            CreateRegion(500, 600, 700, 800),
+            CreateRegion(5, 6, 700, 800),
             CreateRegion(5, 6, 7, 8),
         ),
     )

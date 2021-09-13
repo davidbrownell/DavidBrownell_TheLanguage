@@ -34,20 +34,8 @@ Children:
                           Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                             Name: "foo"
                           Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                            Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 5
-                                Line: 1
-                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 8
-                                Line: 1
-                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 5
-                                Line: 1
-                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 8
-                                Line: 1
+                            Name: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
+                            Self__: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
                         IterBegin: "[1, 5] (4)"
                         IterEnd: "[1, 8] (7)"
                         Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -125,20 +113,8 @@ Children:
                                           Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                                             Name: "a"
                                           Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                            Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                Column: 6
-                                                Line: 5
-                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                Column: 7
-                                                Line: 5
-                                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                Column: 6
-                                                Line: 5
-                                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                Column: 7
-                                                Line: 5
+                                            Name: "[Ln 5, Col 6] -> [Ln 5, Col 7]"
+                                            Self__: "[Ln 5, Col 6] -> [Ln 5, Col 7]"
                                         IterBegin: "[5, 6] (105)"
                                         IterEnd: "[5, 7] (106)"
                                         Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -180,20 +156,8 @@ Children:
                                                   Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                                                     Name: "b"
                                                   Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                    Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                        Column: 9
-                                                        Line: 5
-                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                        Column: 10
-                                                        Line: 5
-                                                    Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                                      Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                        Column: 9
-                                                        Line: 5
-                                                      End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                                        Column: 10
-                                                        Line: 5
+                                                    Name: "[Ln 5, Col 9] -> [Ln 5, Col 10]"
+                                                    Self__: "[Ln 5, Col 9] -> [Ln 5, Col 10]"
                                                 IterBegin: "[5, 9] (108)"
                                                 IterEnd: "[5, 10] (109)"
                                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -240,53 +204,17 @@ Children:
                                 Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                                   Name: "a"
                                 Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                  Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 6
-                                      Line: 5
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 7
-                                      Line: 5
-                                  Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 6
-                                      Line: 5
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 7
-                                      Line: 5
+                                  Name: "[Ln 5, Col 6] -> [Ln 5, Col 7]"
+                                  Self__: "[Ln 5, Col 6] -> [Ln 5, Col 7]"
                               - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
                                   Name: "b"
                                 Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                  Name: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 9
-                                      Line: 5
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 10
-                                      Line: 5
-                                  Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                                    Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 9
-                                      Line: 5
-                                    End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                      Column: 10
-                                      Line: 5
+                                  Name: "[Ln 5, Col 9] -> [Ln 5, Col 10]"
+                                  Self__: "[Ln 5, Col 9] -> [Ln 5, Col 10]"
                           Regions: # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerRegions'>
-                            Names: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 5
-                                Line: 5
-                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 12
-                                Line: 5
-                            Self__: # <class 'TheLanguage.Lexer.LexerInfo.Region'>
-                              Begin: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 5
-                                Line: 5
-                              End: # <class 'TheLanguage.Lexer.LexerInfo.Location'>
-                                Column: 12
-                                Line: 5
+                            Names: "[Ln 5, Col 5] -> [Ln 5, Col 12]"
+                            Self__: "[Ln 5, Col 5] -> [Ln 5, Col 12]"
                         IterBegin: "[5, 5] (104)"
                         IterEnd: "[5, 12] (111)"
                         Type: "Tuple Name <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"

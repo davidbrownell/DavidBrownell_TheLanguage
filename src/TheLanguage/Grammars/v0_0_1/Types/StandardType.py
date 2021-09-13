@@ -99,23 +99,23 @@ class StandardType(GrammarPhrase):
 
         # <type_name>
         type_leaf = cast(Leaf, nodes[0])
-        type_name = cast(str, ExtractToken(type_leaf))
+        type_data = cast(str, ExtractToken(type_leaf))
 
         # <modifier>?
         modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
 
         if modifier_node is not None:
-            modifier = TypeModifier.Extract(modifier_node)
+            modifier_data = TypeModifier.Extract(modifier_node)
         else:
-            modifier = None
+            modifier_data = None
 
         # pylint: disable=too-many-function-args
         SetLexerInfo(
             node,
             StandardTypeLexerInfo(
                 StandardTypeLexerData(
-                    type_name,
-                    modifier,  # type: ignore
+                    type_data,
+                    modifier_data,  # type: ignore
                 ),
                 CreateLexerRegions(
                     StandardTypeLexerRegions,  # type: ignore

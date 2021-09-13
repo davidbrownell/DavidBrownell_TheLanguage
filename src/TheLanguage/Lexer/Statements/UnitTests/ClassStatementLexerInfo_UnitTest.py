@@ -55,7 +55,7 @@ def test_ClassDepdendencyLexerRegions():
 def test_ClassDependencyLexerInfoExplicitVisibility():
     info = ClassDependencyLexerInfo(
         ClassDependencyLexerRegions(
-            CreateRegion(100, 200, 300, 400),
+            CreateRegion(1, 2, 3000, 4000),
             CreateRegion(1, 2, 3, 4),
             CreateRegion(5, 6, 7, 8),
         ),
@@ -65,7 +65,7 @@ def test_ClassDependencyLexerInfoExplicitVisibility():
 
     assert info.Data.Visibility == VisibilityModifier.public
     assert info.Data.Name == "DependencyName"
-    assert info.Regions.Self__ == CreateRegion(100, 200, 300, 400)
+    assert info.Regions.Self__ == CreateRegion(1, 2, 3000, 4000)
     assert info.Regions.Visibility == CreateRegion(1, 2, 3, 4)
     assert info.Regions.Name == CreateRegion(5, 6, 7, 8)
 
@@ -74,7 +74,7 @@ def test_ClassDependencyLexerInfoExplicitVisibility():
 def test_ClassDependencyLexerInfoDefaultVisibility():
     info = ClassDependencyLexerInfo(
         ClassDependencyLexerRegions(
-            CreateRegion(100, 200, 300, 400),
+            CreateRegion(1, 2, 3000, 4000),
             None,
             CreateRegion(5, 6, 7, 8),
         ),
@@ -84,8 +84,8 @@ def test_ClassDependencyLexerInfoDefaultVisibility():
 
     assert info.Data.Visibility == VisibilityModifier.private
     assert info.Data.Name == "DependencyWithDefaultVisibility"
-    assert info.Regions.Self__ == CreateRegion(100, 200, 300, 400)
-    assert info.Regions.Visibility == CreateRegion(100, 200, 300, 400)
+    assert info.Regions.Self__ == CreateRegion(1, 2, 3000, 4000)
+    assert info.Regions.Visibility == CreateRegion(1, 2, 3000, 4000)
     assert info.Regions.Name == CreateRegion(5, 6, 7, 8)
 
 
@@ -179,7 +179,7 @@ def test_MutableOnImmutableClass():
 # ----------------------------------------------------------------------
 def test_ClassStatementLexerRegions():
     regions = ClassStatementLexerRegions(
-        CreateRegion(100, 200, 300, 400),
+        CreateRegion(1, 2, 3000, 4000),
         CreateRegion(1, 2, 3, 4),
         CreateRegion(5, 6, 7, 8),
         CreateRegion(9, 10, 11, 12),
@@ -190,7 +190,7 @@ def test_ClassStatementLexerRegions():
         CreateRegion(29, 30, 31, 32),
     )
 
-    assert regions.Self__ == CreateRegion(100, 200, 300, 400)
+    assert regions.Self__ == CreateRegion(1, 2, 3000, 4000)
     assert regions.Visibility == CreateRegion(1, 2, 3, 4)
     assert regions.ClassModifier == CreateRegion(5, 6, 7, 8)
     assert regions.ClassType == CreateRegion(9, 10, 11, 12)
@@ -203,7 +203,7 @@ def test_ClassStatementLexerRegions():
 # ----------------------------------------------------------------------
 class TestClassStatementLexerInfo(object):
     _default_regions                        = ClassStatementLexerRegions(
-        CreateRegion(100, 200, 300, 400),
+        CreateRegion(1, 2, 3000, 4000),
         CreateRegion(1, 2, 3, 4),
         CreateRegion(5, 6, 7, 8),
         CreateRegion(9, 10, 11, 12),
@@ -216,7 +216,7 @@ class TestClassStatementLexerInfo(object):
 
     _dependency                             = ClassDependencyLexerInfo(
         ClassDependencyLexerRegions(
-            CreateRegion(500, 600, 700, 800),
+            CreateRegion(5, 7, 70000, 80000),
             CreateRegion(1000, 2000, 3000, 4000),
             CreateRegion(5000, 6000, 7000, 8000),
         ),
