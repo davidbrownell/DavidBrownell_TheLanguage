@@ -45,12 +45,13 @@ with InitRelativeImports():
     from ...GrammarError import GrammarError
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import SetLexerInfo
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo import (
         FuncAndMethodDefinitionStatementLexerInfo,
         FuncAndMethodDefinitionStatementLexerRegions,
         MethodType,
         OperatorType,
+        TypeLexerInfo,
     )
 
     from ....Parser.Phrases.DSL import (
@@ -237,75 +238,73 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
-        nodes = ExtractSequence(node)
-        assert len(nodes) == 8
-
-        # <attributes>*
-        attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
-
-        # <visibility>?
-        visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
-
-        if visibility_node is not None:
-            visibility = VisibilityModifier.Extract(visibility_node)
-        else:
-            visibility = None
-
-        # <method_type_modifier>?
-        method_type_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
-
-        if method_type_modifier_node is not None:
-            method_type_modifier = cls._ExtractMethodType(method_type_modifier_node)
-        else:
-            method_type_modifier = None
-
-        # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
-        return_type_node = ExtractDynamic(cast(Node, nodes[3]))
-
-        # <name>
-        method_name_leaf = cast(Leaf, nodes[4])
-        method_name = cast(str, ExtractToken(method_name_leaf))
-
-        if method_name.startswith("__") and method_name.endswith("__"):
-            operator_name = cls.NameOperatorMap.get(method_name, None)
-            if operator_name is None:
-                raise InvalidOperatorNameError.FromNode(
-                    method_name_leaf,
-                    method_name,
-                )
-
-            method_name = operator_name
-
-        # <parameters>
-        parameters_node = cast(Node, nodes[5])
-
-        parameters = ParametersPhraseItem.Extract(parameters_node)
-
-        # <class_modifier>?
-        class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[6])))
-
-        if class_modifier_node is not None:
-            class_modifier = ClassModifier.Extract(class_modifier_node)
-        else:
-            class_modifier = None
-
-        # <statements> or Newline
-        statements_node = cast(Node, ExtractOr(cast(Node, nodes[7])))
-
-        if isinstance(statements_node, Leaf):
-            statements = None
-        else:
-            statements = StatementsPhraseItem.Extract(statements_node)
-
-        # TODO: Leverage attributes
-
         # ----------------------------------------------------------------------
-        def CommitLexerInfo():
-            # Get the type TypeLexerInfo
-            return_type = None
-            return_type_node = None
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 8
+
+            # <attributes>*
+            attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
+
+            # <visibility>?
+            visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
+
+            if visibility_node is not None:
+                visibility_data = VisibilityModifier.Extract(visibility_node)
+            else:
+                visibility_data = None
+
+            # <method_type_modifier>?
+            method_type_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
+
+            if method_type_modifier_node is not None:
+                method_type_modifier_data = cls._ExtractMethodType(method_type_modifier_node)
+            else:
+                method_type_modifier_data = None
+
+            # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
+            return_type_node = ExtractDynamic(cast(Node, nodes[3]))
+            return_type_data = cast(TypeLexerInfo, GetLexerInfo(return_type_node))
+
+            # <name>
+            method_name_leaf = cast(Leaf, nodes[4])
+            method_name_data = cast(str, ExtractToken(method_name_leaf))
+
+            if method_name_data.startswith("__") and method_name_data.endswith("__"):
+                operator_name = cls.NameOperatorMap.get(method_name_data, None)
+                if operator_name is None:
+                    raise InvalidOperatorNameError.FromNode(
+                        method_name_leaf,
+                        method_name_data,
+                    )
+
+                method_name_data = operator_name
+
+            # <parameters>
+            parameters_node = cast(Node, nodes[5])
+            parameters = ParametersPhraseItem.Extract(parameters_node) # TODO: Rename to 'parameters_data'
 
             # TODO: Get the parameters ExprLexerInfo
+
+            # <class_modifier>?
+            class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[6])))
+
+            if class_modifier_node is not None:
+                class_modifier_data = ClassModifier.Extract(class_modifier_node)
+            else:
+                class_modifier_data = None
+
+            # <statements> or Newline
+            statements_node = cast(Node, ExtractOr(cast(Node, nodes[7])))
+
+            if isinstance(statements_node, Leaf):
+                statements_data = None
+            else:
+                statements_data = StatementsPhraseItem.Extract(statements_node)
+
+            # TODO: Use the statements
+
+            # TODO: Leverage attributes
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
@@ -325,19 +324,19 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                         node,
                         cls.PHRASE_NAME,
                     ),
-                    visibility,  # type: ignore
-                    method_type_modifier,  # type: ignore
-                    return_type,  # type: ignore
-                    method_name,  # type: ignore
+                    visibility_data,  # type: ignore
+                    method_type_modifier_data,  # type: ignore
+                    return_type_data,  # type: ignore
+                    method_name_data,  # type: ignore
                     parameters,  # type: ignore
-                    class_modifier,  # type: ignore
-                    statements is not None,  # type: ignore
+                    class_modifier_data,  # type: ignore
+                    statements_data is not None,  # type: ignore
                 ),
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CommitLexerInfo)
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

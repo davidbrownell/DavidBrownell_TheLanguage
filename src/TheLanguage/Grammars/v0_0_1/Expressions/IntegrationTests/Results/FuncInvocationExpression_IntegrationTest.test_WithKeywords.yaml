@@ -389,7 +389,7 @@ Children:
                                   Keyword: "a"
                                 Regions: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerRegions'>
                                   Expression: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
-                                  Keyword: "[Ln 1, Col 16] -> [Ln 1, Col 18]"
+                                  Keyword: "[Ln 1, Col 16] -> [Ln 1, Col 17]"
                                   Self__: "[Ln 1, Col 16] -> [Ln 1, Col 21]"
                               - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerData'>
@@ -407,7 +407,7 @@ Children:
                                   Keyword: "b"
                                 Regions: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerRegions'>
                                   Expression: "[Ln 1, Col 25] -> [Ln 1, Col 28]"
-                                  Keyword: "[Ln 1, Col 23] -> [Ln 1, Col 25]"
+                                  Keyword: "[Ln 1, Col 23] -> [Ln 1, Col 24]"
                                   Self__: "[Ln 1, Col 23] -> [Ln 1, Col 28]"
                               - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerData'>
@@ -425,7 +425,7 @@ Children:
                                   Keyword: "c"
                                 Regions: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerRegions'>
                                   Expression: "[Ln 1, Col 32] -> [Ln 1, Col 37]"
-                                  Keyword: "[Ln 1, Col 30] -> [Ln 1, Col 32]"
+                                  Keyword: "[Ln 1, Col 30] -> [Ln 1, Col 31]"
                                   Self__: "[Ln 1, Col 30] -> [Ln 1, Col 37]"
                             Name: "Func1"
                           Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
@@ -935,7 +935,7 @@ Children:
                                   Keyword: "c"
                                 Regions: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerRegions'>
                                   Expression: "[Ln 6, Col 7] -> [Ln 6, Col 12]"
-                                  Keyword: "[Ln 6, Col 5] -> [Ln 6, Col 7]"
+                                  Keyword: "[Ln 6, Col 5] -> [Ln 6, Col 6]"
                                   Self__: "[Ln 6, Col 5] -> [Ln 6, Col 12]"
                               - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
                                 Data: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerData'>
@@ -953,7 +953,7 @@ Children:
                                   Keyword: "d"
                                 Regions: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerRegions'>
                                   Expression: "[Ln 7, Col 7] -> [Ln 7, Col 11]"
-                                  Keyword: "[Ln 7, Col 5] -> [Ln 7, Col 7]"
+                                  Keyword: "[Ln 7, Col 5] -> [Ln 7, Col 6]"
                                   Self__: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
                             Name: "Func2"
                           Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>

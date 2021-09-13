@@ -902,14 +902,21 @@ Children:
                         IterBegin: "[8, 9] (103)"
                         IterEnd: "[8, 13] (107)"
                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                ReturnType: None
+                ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                  Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                    Modifier: None
+                    TypeName: "Int"
+                  Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                    Modifier: None
+                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+                    TypeName: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
                 ClassModifier: None
                 MethodType: "[Ln 1, Col 1] -> [Ln 11, Col 1]"
                 Name: "[Ln 1, Col 5] -> [Ln 1, Col 9]"
                 Parameters: "[Ln 1, Col 9] -> [Ln 9, Col 2]"
-                ReturnType: None
+                ReturnType: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
                 Self__: "[Ln 1, Col 1] -> [Ln 11, Col 1]"
                 Visibility: "[Ln 1, Col 1] -> [Ln 11, Col 1]"
             IterBegin: "[1, 1] (0)"

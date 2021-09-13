@@ -57,12 +57,12 @@ def test_DataWithModifier():
 # ----------------------------------------------------------------------
 def test_RegionsNoModifier():
     regions = StandardTypeLexerRegions(
-        CreateRegion(100, 200, 300, 400),
+        CreateRegion(1, 2, 300, 400),
         CreateRegion(1, 2, 3, 4),
         None,
     )
 
-    assert regions.Self__ == CreateRegion(100, 200, 300, 400)
+    assert regions.Self__ == CreateRegion(1, 2, 300, 400)
     assert regions.TypeName == CreateRegion(1, 2, 3, 4)
     assert regions.Modifier is None
 
@@ -70,12 +70,12 @@ def test_RegionsNoModifier():
 # ----------------------------------------------------------------------
 def test_RegionsWithModifier():
     regions = StandardTypeLexerRegions(
-        CreateRegion(100, 200, 300, 400),
+        CreateRegion(1, 2, 300, 400),
         CreateRegion(1, 2, 3, 4),
         CreateRegion(5, 6, 7, 8),
     )
 
-    assert regions.Self__ == CreateRegion(100, 200, 300, 400)
+    assert regions.Self__ == CreateRegion(1, 2, 300, 400)
     assert regions.TypeName == CreateRegion(1, 2, 3, 4)
     assert regions.Modifier == CreateRegion(5, 6, 7, 8)
 
@@ -84,7 +84,7 @@ def test_RegionsWithModifier():
 def test_Info():
     data = StandardTypeLexerData("TheName", None)
     regions = StandardTypeLexerRegions(
-        CreateRegion(100, 200, 300, 400),
+        CreateRegion(1, 2, 300, 400),
         CreateRegion(1, 2, 3, 4),
         None,
     )
@@ -108,7 +108,7 @@ def test_InfoWithInvalidModifier():
             StandardTypeLexerInfo(
                 StandardTypeLexerData("TheName", modifier),
                 StandardTypeLexerRegions(
-                    CreateRegion(100, 200, 300, 400),
+                    CreateRegion(1, 2, 300, 400),
                     CreateRegion(1, 2, 3, 4),
                     CreateRegion(5, 6, 7, 8),
                 ),

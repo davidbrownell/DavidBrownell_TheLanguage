@@ -129,15 +129,15 @@ class GeneratorExpression(GrammarPhrase):
 
             # <expr>
             display_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
-            display_info = cast(ExpressionLexerInfo, GetLexerInfo(display_node))
+            display_data = cast(ExpressionLexerInfo, GetLexerInfo(display_node))
 
             # <name>
             name_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
-            name_info = cast(NameLexerInfo, GetLexerInfo(name_node))
+            name_data = cast(NameLexerInfo, GetLexerInfo(name_node))
 
             # <expr>
             source_node = cast(Node, ExtractDynamic(cast(Node, nodes[4])))
-            source_info = cast(ExpressionLexerInfo, GetLexerInfo(source_node))
+            source_data = cast(ExpressionLexerInfo, GetLexerInfo(source_node))
 
             # ('if' <expr>)?
             conditional_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[5])))
@@ -147,19 +147,19 @@ class GeneratorExpression(GrammarPhrase):
                 assert len(conditional_nodes) == 2
 
                 expr_node = cast(Node, ExtractDynamic(cast(Node, conditional_nodes[1])))
-                conditional_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+                conditional_data = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
             else:
-                conditional_info = None
+                conditional_data = None
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 GeneratorExpressionLexerInfo(
                     GeneratorExpressionLexerData(
-                        display_info,
-                        name_info,
-                        source_info,
-                        conditional_info,
+                        display_data,
+                        name_data,
+                        source_data,
+                        conditional_data,
                     ),
                     CreateLexerRegions(
                         GeneratorExpressionLexerRegions,  # type: ignore

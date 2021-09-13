@@ -104,8 +104,8 @@ class FuncInvocationBase(GrammarPhrase):
             assert len(nodes) in [2, 3], nodes
 
             # Func Name
-            leaf = cast(Leaf, nodes[0])
-            name = cast(str, ExtractToken(leaf))
+            name_leaf = cast(Leaf, nodes[0])
+            name_data = cast(str, ExtractToken(name_leaf))
 
             # Arguments
             arguments_node, arguments_info = ArgumentsPhraseItem.Extract(cast(Node, nodes[1]))
@@ -115,13 +115,13 @@ class FuncInvocationBase(GrammarPhrase):
                 node,
                 lexer_info_type(
                     lexer_data_type(
-                        name,  # type: ignore
+                        name_data,  # type: ignore
                         arguments_info,
                     ),
                     CreateLexerRegions(
                         lexer_regions_type,  # type: ignore
                         node,
-                        leaf,
+                        name_leaf,
                         arguments_node,
                     ),
                 ),

@@ -244,14 +244,27 @@ Children:
                 MethodType: "MethodType.standard"
                 Name: "Func"
                 Parameters: {}
-                ReturnType: None
+                ReturnType: # <class 'TheLanguage.Lexer.Types.TupleTypeLexerInfo.TupleTypeLexerInfo'>
+                  Data: # <class 'TheLanguage.Lexer.Types.TupleTypeLexerInfo.TupleTypeLexerData'>
+                    Types:
+                      - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                          Modifier: TypeModifier.var
+                          TypeName: "Int"
+                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                          Modifier: "[Ln 1, Col 6] -> [Ln 1, Col 9]"
+                          Self__: "[Ln 1, Col 2] -> [Ln 1, Col 9]"
+                          TypeName: "[Ln 1, Col 2] -> [Ln 1, Col 5]"
+                  Regions: # <class 'TheLanguage.Lexer.Types.TupleTypeLexerInfo.TupleTypeLexerRegions'>
+                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 11]"
+                    Types: "[Ln 1, Col 1] -> [Ln 1, Col 11]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
                 ClassModifier: None
                 MethodType: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
                 Name: "[Ln 1, Col 12] -> [Ln 1, Col 16]"
                 Parameters: "[Ln 1, Col 16] -> [Ln 1, Col 18]"
-                ReturnType: None
+                ReturnType: "[Ln 1, Col 1] -> [Ln 1, Col 11]"
                 Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
                 Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
             IterBegin: "[1, 1] (0)"

@@ -211,7 +211,17 @@ Children:
                                         Info: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
                                           Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
                                             ClassModifier: "ClassModifier.immutable"
-                                            DefaultValue: None
+                                            DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                              Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                    Name: "value1"
+                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                    Name: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
+                                                    Self__: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
+                                              Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                Name: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
+                                                Self__: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
                                             Name: "foo"
                                             Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
@@ -224,7 +234,7 @@ Children:
                                             Visibility: "VisibilityModifier.private"
                                           Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
                                             ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
-                                            DefaultValue: None
+                                            DefaultValue: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
                                             Name: "[Ln 2, Col 9] -> [Ln 2, Col 12]"
                                             Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
                                             Type: "[Ln 2, Col 5] -> [Ln 2, Col 8]"
@@ -369,7 +379,17 @@ Children:
                                         Info: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
                                           Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
                                             ClassModifier: "ClassModifier.immutable"
-                                            DefaultValue: None
+                                            DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                              Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                                    Name: "value2"
+                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                    Name: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
+                                                    Self__: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
+                                              Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                Name: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
+                                                Self__: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
                                             Name: "_bar"
                                             Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                               Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
@@ -382,7 +402,7 @@ Children:
                                             Visibility: "VisibilityModifier.private"
                                           Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
                                             ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
-                                            DefaultValue: None
+                                            DefaultValue: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
                                             Name: "[Ln 3, Col 10] -> [Ln 3, Col 14]"
                                             Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
                                             Type: "[Ln 3, Col 5] -> [Ln 3, Col 9]"
@@ -428,7 +448,17 @@ Children:
                   - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
                     Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
                       ClassModifier: "ClassModifier.immutable"
-                      DefaultValue: None
+                      DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                        Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                            Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                              Name: "value1"
+                            Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                              Name: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
+                              Self__: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
+                        Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                          Name: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
+                          Self__: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
                       Name: "foo"
                       Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
@@ -441,7 +471,7 @@ Children:
                       Visibility: "VisibilityModifier.private"
                     Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
                       ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
-                      DefaultValue: None
+                      DefaultValue: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
                       Name: "[Ln 2, Col 9] -> [Ln 2, Col 12]"
                       Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
                       Type: "[Ln 2, Col 5] -> [Ln 2, Col 8]"
@@ -449,7 +479,17 @@ Children:
                   - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
                     Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
                       ClassModifier: "ClassModifier.immutable"
-                      DefaultValue: None
+                      DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                        Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                            Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                              Name: "value2"
+                            Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                              Name: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
+                              Self__: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
+                        Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                          Name: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
+                          Self__: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
                       Name: "_bar"
                       Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                         Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
@@ -462,7 +502,7 @@ Children:
                       Visibility: "VisibilityModifier.private"
                     Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
                       ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
-                      DefaultValue: None
+                      DefaultValue: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
                       Name: "[Ln 3, Col 10] -> [Ln 3, Col 14]"
                       Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
                       Type: "[Ln 3, Col 5] -> [Ln 3, Col 9]"

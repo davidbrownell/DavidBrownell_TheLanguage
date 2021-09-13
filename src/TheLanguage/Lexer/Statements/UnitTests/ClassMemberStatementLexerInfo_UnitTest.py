@@ -41,14 +41,14 @@ class TestStandard(object):
     _type                                   = StandardTypeLexerInfo(
         StandardTypeLexerData("TheType", None),
         StandardTypeLexerRegions(
-            CreateRegion(1000, 2000, 3000, 4000),
-            CreateRegion(5000, 6000, 7000, 8000),
+            CreateRegion(1000, 2000, 30000, 40000),
+            CreateRegion(1000, 2000, 7000, 8000),
             None,
         ),
     )
 
     _regions                                = ClassMemberStatementLexerRegions(
-        CreateRegion(100, 200, 300, 400),
+        CreateRegion(1, 2, 3000, 4000),
         CreateRegion(1, 2, 3, 4),
         CreateRegion(5, 6, 7, 8),
         CreateRegion(9, 10, 11, 12),
@@ -61,7 +61,7 @@ class TestStandard(object):
 
     _class_lexer_info                       = ClassStatementLexerInfo(
         ClassStatementLexerRegions(
-            CreateRegion(500, 600, 700, 800),
+            CreateRegion(5, 6, 7000, 8000),
             CreateRegion(900, 1000, 1100, 1200),
             CreateRegion(1300, 1400, 1500, 1600),
             CreateRegion(1700, 1800, 1900, 2000),
@@ -82,7 +82,7 @@ class TestStandard(object):
 
     _interface_lexer_info                   = ClassStatementLexerInfo(
         ClassStatementLexerRegions(
-            CreateRegion(4100, 4200, 4300, 4400),
+            CreateRegion(41, 42, 43000, 44000),
             CreateRegion(4500, 4600, 4700, 4800),
             CreateRegion(4900, 5000, 5100, 5200),
             CreateRegion(5300, 5400, 5500, 5600),
@@ -103,7 +103,7 @@ class TestStandard(object):
 
     _struct_lexer_info                      = ClassStatementLexerInfo(
         ClassStatementLexerRegions(
-            CreateRegion(7700, 7800, 7900, 8000),
+            CreateRegion(77, 78, 79000, 80000),
             CreateRegion(8100, 8200, 8300, 8400),
             CreateRegion(8500, 8600, 8700, 8800),
             CreateRegion(8900, 9000, 9100, 9200),
@@ -140,7 +140,7 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_Regions(self):
-        assert self._regions.Self__ == CreateRegion(100, 200, 300, 400)
+        assert self._regions.Self__ == CreateRegion(1, 2, 3000, 4000)
         assert self._regions.Visibility == CreateRegion(1, 2, 3, 4)
         assert self._regions.Type == CreateRegion(5, 6, 7, 8)
         assert self._regions.Name == CreateRegion(9, 10, 11, 12)

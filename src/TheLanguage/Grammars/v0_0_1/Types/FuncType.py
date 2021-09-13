@@ -140,10 +140,11 @@ class FuncType(GrammarPhrase):
 
             # <type>
             return_type_node = ExtractDynamic(cast(Node, nodes[2]))
+            return_type_data = cast(TypeLexerInfo, GetLexerInfo(return_type_node))
 
             # <parameters>
-            parameters = []
             parameters_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
+            parameters_data = []
 
             if parameters_node is not None:
                 parameters_nodes = ExtractSequence(parameters_node)
@@ -160,15 +161,15 @@ class FuncType(GrammarPhrase):
                     ],
                 ):
                     parameter_node = ExtractDynamic(cast(Node, parameter_node))
-                    parameters.append(GetLexerInfo(parameter_node))
+                    parameters_data.append(GetLexerInfo(parameter_node))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 FuncTypeLexerInfo(
                     FuncTypeLexerData(
-                        cast(TypeLexerInfo, GetLexerInfo(return_type_node)),
-                        parameters or None,
+                        return_type_data,
+                        parameters_data or None,
                     ),
                     CreateLexerRegions(
                         FuncTypeLexerRegions,  # type: ignore

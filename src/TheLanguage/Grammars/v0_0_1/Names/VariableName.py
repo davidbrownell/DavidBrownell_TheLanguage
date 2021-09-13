@@ -88,13 +88,13 @@ class VariableName(GrammarPhrase):
         assert len(nodes) == 1
 
         name_leaf = cast(Leaf, nodes[0])
-        name = cast(str, ExtractToken(name_leaf))
+        name_data = cast(str, ExtractToken(name_leaf))
 
         # pylint: disable=too-many-function-args
         SetLexerInfo(
             node,
             VariableNameLexerInfo(
-                VariableNameLexerData(name),
+                VariableNameLexerData(name_data),
                 CreateLexerRegions(
                     VariableNameLexerRegions,  # type: ignore
                     node,

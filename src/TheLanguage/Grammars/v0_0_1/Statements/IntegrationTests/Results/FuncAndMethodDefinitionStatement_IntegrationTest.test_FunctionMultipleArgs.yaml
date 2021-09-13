@@ -572,14 +572,21 @@ Children:
                         IterBegin: "[1, 29] (28)"
                         IterEnd: "[1, 35] (34)"
                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                ReturnType: None
+                ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                  Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                    Modifier: None
+                    TypeName: "Int"
+                  Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                    Modifier: None
+                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+                    TypeName: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
                 ClassModifier: None
                 MethodType: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 Name: "[Ln 1, Col 5] -> [Ln 1, Col 10]"
                 Parameters: "[Ln 1, Col 10] -> [Ln 1, Col 39]"
-                ReturnType: None
+                ReturnType: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
                 Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 Visibility: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
             IterBegin: "[1, 1] (0)"
@@ -1303,14 +1310,21 @@ Children:
                         IterBegin: "[4, 42] (91)"
                         IterEnd: "[4, 52] (101)"
                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                ReturnType: None
+                ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                  Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
+                    Modifier: TypeModifier.var
+                    TypeName: "Int"
+                  Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                    Modifier: "[Ln 4, Col 5] -> [Ln 4, Col 8]"
+                    Self__: "[Ln 4, Col 1] -> [Ln 4, Col 8]"
+                    TypeName: "[Ln 4, Col 1] -> [Ln 4, Col 4]"
                 Visibility: "VisibilityModifier.private"
               Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
                 ClassModifier: None
                 MethodType: "[Ln 4, Col 1] -> [Ln 6, Col 1]"
                 Name: "[Ln 4, Col 9] -> [Ln 4, Col 14]"
                 Parameters: "[Ln 4, Col 14] -> [Ln 4, Col 56]"
-                ReturnType: None
+                ReturnType: "[Ln 4, Col 1] -> [Ln 4, Col 8]"
                 Self__: "[Ln 4, Col 1] -> [Ln 6, Col 1]"
                 Visibility: "[Ln 4, Col 1] -> [Ln 6, Col 1]"
             IterBegin: "[4, 1] (50)"

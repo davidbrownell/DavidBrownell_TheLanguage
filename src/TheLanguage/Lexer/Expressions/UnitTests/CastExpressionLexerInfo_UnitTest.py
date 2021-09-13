@@ -73,7 +73,7 @@ class TestStandard(object):
         info = CastExpressionLexerInfo(
             CastExpressionLexerData(self._expression_info, self._type_info),
             CastExpressionLexerRegions(
-                CreateRegion(1, 2, 3, 4),
+                CreateRegion(1, 2, 300, 4),
                 CreateRegion(5, 6, 7, 8),
                 CreateRegion(9, 10, 11, 12),
             ),
@@ -82,7 +82,7 @@ class TestStandard(object):
         assert info.Data.Expression == self._expression_info
         assert info.Data.Type == self._type_info
 
-        assert info.Regions.Self__ == CreateRegion(1, 2, 3, 4)
+        assert info.Regions.Self__ == CreateRegion(1, 2, 300, 4)
         assert info.Regions.Expression == CreateRegion(5, 6, 7, 8)
         assert info.Regions.Type == CreateRegion(9, 10, 11, 12)
 
@@ -91,7 +91,7 @@ class TestStandard(object):
         info = CastExpressionLexerInfo(
             CastExpressionLexerData(self._expression_info, TypeModifier.val),
             CastExpressionLexerRegions(
-                CreateRegion(1, 2, 3, 4),
+                CreateRegion(1, 2, 300, 4),
                 CreateRegion(5, 6, 7, 8),
                 CreateRegion(9, 10, 11, 12),
             ),
@@ -100,7 +100,7 @@ class TestStandard(object):
         assert info.Data.Expression == self._expression_info
         assert info.Data.Type == TypeModifier.val
 
-        assert info.Regions.Self__ == CreateRegion(1, 2, 3, 4)
+        assert info.Regions.Self__ == CreateRegion(1, 2, 300, 4)
         assert info.Regions.Expression == CreateRegion(5, 6, 7, 8)
         assert info.Regions.Type == CreateRegion(9, 10, 11, 12)
 
@@ -113,7 +113,7 @@ class TestStandard(object):
                     StandardTypeLexerInfo(
                         StandardTypeLexerData("TheType", TypeModifier.val),
                         StandardTypeLexerRegions(
-                            CreateRegion(1, 2, 3, 4),
+                            CreateRegion(1, 2, 300, 4),
                             CreateRegion(5, 6, 7, 8),
                             CreateRegion(9, 10, 11, 12),
                         ),

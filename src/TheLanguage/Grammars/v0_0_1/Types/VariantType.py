@@ -115,26 +115,26 @@ class VariantType(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 8
 
-            types: List[TypeLexerInfo] = []
+            type_infos: List[TypeLexerInfo] = []
 
             # <type>
-            types.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, nodes[2])))))
+            type_infos.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, nodes[2])))))
 
             # (<type> '|') *
             for child in cast(List[Node], ExtractRepeat(cast(Node, nodes[4]))):
                 child_nodes = ExtractSequence(child)
                 assert len(child_nodes) == 2
 
-                types.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, child_nodes[0])))))
+                type_infos.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, child_nodes[0])))))
 
             # <type>
-            types.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, nodes[5])))))
+            type_infos.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, nodes[5])))))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 VariantTypeLexerInfo(
-                    VariantTypeLexerData(types),
+                    VariantTypeLexerData(type_infos),
                     CreateLexerRegions(
                         VariantTypeLexerRegions,  # type: ignore
                         node,
