@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DeleteStatement_IntegrationTest.py
+# |  DeleteStatementLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 16:47:13
+# |      2021-09-14 15:04:02
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for DeleteStatement.py"""
+"""Contains the DeleteStatementLexerData, DeleteStatementLexerInfo, and DeleteStatementLexerRegion objects"""
 
 import os
-import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,18 +29,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..DeleteStatement import *
-    from ...Common.AutomatedTests import Execute
+    from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
+    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                del foo
-                """,
-            ),
-        ),
-    )
+@dataclass(frozen=True, repr=False)
+class DeleteStatementLexerData(StatementLexerData):
+    Name: str
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class DeleteStatementLexerRegions(LexerRegions):
+    Name: Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class DeleteStatementLexerInfo(StatementLexerInfo):
+    Data: DeleteStatementLexerData
+    Regions: DeleteStatementLexerRegions
