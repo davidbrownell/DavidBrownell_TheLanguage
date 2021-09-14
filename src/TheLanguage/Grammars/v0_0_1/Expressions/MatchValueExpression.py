@@ -17,7 +17,10 @@
 
 import os
 
+from typing import Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,7 +31,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.Impl.MatchExpressionBase import MatchExpressionBase
-    from ....Parser.Phrases.DSL import DynamicPhrasesType
+
+    from ...GrammarPhrase import GrammarPhrase
+
+    from ....Lexer.Expressions.MatchValueExpressionLexerInfo import (
+        MatchValueCasePhraseLexerData,
+        MatchValueCasePhraseLexerInfo,
+        MatchValueCasePhraseLexerRegions,
+        MatchValueExpressionLexerData,
+        MatchValueExpressionLexerInfo,
+        MatchValueExpressionLexerRegions,
+    )
+
+    from ....Parser.Phrases.DSL import DynamicPhrasesType, Node
 
 
 # ----------------------------------------------------------------------
@@ -48,3 +63,20 @@ class MatchValueExpression(MatchExpressionBase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(MatchValueExpression, self).__init__(DynamicPhrasesType.Expressions, self.PHRASE_NAME)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        return cls._ExtractLexerInfoImpl(
+            MatchValueExpressionLexerData,
+            MatchValueExpressionLexerRegions,
+            MatchValueExpressionLexerInfo,
+            MatchValueCasePhraseLexerData,
+            MatchValueCasePhraseLexerRegions,
+            MatchValueCasePhraseLexerInfo,
+            node,
+        )

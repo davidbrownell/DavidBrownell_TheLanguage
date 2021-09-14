@@ -319,7 +319,7 @@ def ExtractLexerInfo(
     if all_parameters_node is None:
         return None, None
 
-    all_parameters_node = ExtractOr(all_parameters_node)
+    all_parameters_node = cast(Node, ExtractOr(all_parameters_node))
     assert all_parameters_node.Type is not None
 
     if all_parameters_node.Type.Name == "Traditional":
