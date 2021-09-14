@@ -273,39 +273,39 @@ class ClassStatement(GrammarPhrase):
         visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
 
         if visibility_node is not None:
-            visibility = VisibilityModifier.Extract(visibility_node)
+            visibility_data = VisibilityModifier.Extract(visibility_node)
         else:
-            visibility = None
+            visibility_data = None
 
         # <class_modifier>?
         class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
 
         if class_modifier_node is not None:
-            class_modifier = ClassModifier.Extract(class_modifier_node)
+            class_modifier_data = ClassModifier.Extract(class_modifier_node)
         else:
-            class_modifier = None
+            class_modifier_data = None
 
         # <class_type>
         class_type_node = cast(Node, nodes[3])
-        class_type = cls._ExtractClassType(class_type_node)
+        class_type_data = cls._ExtractClassType(class_type_node)
 
         # <name>
         class_name_leaf = cast(Leaf, nodes[4])
-        class_name = cast(str, ExtractToken(class_name_leaf))
+        class_name_data = cast(str, ExtractToken(class_name_leaf))
 
         # Base Info
-        base_info_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[7])))
+        base_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[7])))
 
-        if base_info_node is None:
-            base_info = None
+        if base_node is None:
+            base_data = None
         else:
-            base_infos = cls._ExtractBaseInfo(base_info_node)
+            base_infos = cls._ExtractBaseInfo(base_node)
             assert base_infos
 
             if len(base_infos) > 1:
-                raise MultipleBasesError.FromNode(base_info_node)
+                raise MultipleBasesError.FromNode(base_node)
 
-            base_info = base_infos[0]
+            base_data = base_infos[0]
 
         # Interfaces and Mixins
         interfaces_and_mixins: Dict[
@@ -316,8 +316,8 @@ class ClassStatement(GrammarPhrase):
             ]
         ] = {}
 
-        for base_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[11]))):
-            base_nodes = ExtractSequence(base_node)
+        for this_base_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[11]))):
+            base_nodes = ExtractSequence(this_base_node)
             assert len(base_nodes) == 2
 
             # 'implements'|'uses'
@@ -335,7 +335,7 @@ class ClassStatement(GrammarPhrase):
                 base_node_items = ExtractSequence(base_node_items)[2]
 
             interfaces_and_mixins[base_type] = (
-                base_node,
+                this_base_node,
                 cls._ExtractBaseInfo(cast(Node, base_node_items)),
             )
 
@@ -355,16 +355,16 @@ class ClassStatement(GrammarPhrase):
                     class_modifier_node,
                     class_type_node,
                     class_name_leaf,
-                    base_info_node,
+                    base_node,
                     interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None,))[0],  # type: ignore
                     interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None,))[0],  # type: ignore
                     statements_node,
                 ),
-                visibility,  # type: ignore
-                class_modifier,  # type: ignore
-                class_type,
-                class_name,  # type: ignore
-                base_info,  # type: ignore
+                visibility_data,  # type: ignore
+                class_modifier_data,  # type: ignore
+                class_type_data,
+                class_name_data,  # type: ignore
+                base_data,  # type: ignore
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None, []))[1], # type: ignore
                 interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None, []))[1],  # type: ignore
             ),

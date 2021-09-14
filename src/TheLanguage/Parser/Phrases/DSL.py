@@ -156,11 +156,22 @@ def ExtractDynamic(
     node: Node,
 ) -> Union[Leaf, Node]:
     # Drill into the dynamic node
-    assert isinstance(node.Type, DynamicPhrase), node.Type
-    assert len(node.Children) == 1
-    node = cast(Node, node.Children[0])
+    if isinstance(node.Type, DynamicPhrase):
+        assert len(node.Children) == 1
+        node = cast(Node, node.Children[0])
 
-    return ExtractOr(node)
+        return ExtractOr(node)
+
+    # Handle the left-recursive scenario
+    if (
+        node.Parent is not None
+        and node == getattr(node.Parent, "Children", [None])[0]
+        and isinstance(node.Type, SequencePhrase)
+        and isinstance(node.Type.Phrases[0], DynamicPhrase)
+    ):
+        return node
+
+    assert False, node
 
 
 # ----------------------------------------------------------------------

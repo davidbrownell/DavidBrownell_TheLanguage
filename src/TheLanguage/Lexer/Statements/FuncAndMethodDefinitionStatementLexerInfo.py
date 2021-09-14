@@ -37,8 +37,8 @@ with InitRelativeImports():
     from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
 
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
+    from ..Common.ParametersLexerInfo import ParameterLexerInfo
     from ..Common.VisibilityModifier import VisibilityModifier
-    from ..Expressions.ExpressionLexerInfo import ExpressionLexerInfo
     from ..Types.TypeLexerInfo import TypeLexerInfo
 
     from ..LexerError import LexerError
@@ -51,6 +51,8 @@ class OperatorType(Enum):
     Note that operators are defined as '__<enum_name>__' such as '__ToBool__',
     '__Compare__", and "__Add__".
     """
+
+    # TODO: I don't think that these are complete
 
     # Foundational
     ToBool                                  = auto()
@@ -195,7 +197,7 @@ class FuncAndMethodDefinitionStatementLexerData(StatementLexerData):
     MethodType: MethodType
     ReturnType: TypeLexerInfo
     Name: Union[str, OperatorType]
-    Parameters: Optional[List[Any]] # TODO: This is optional right now, but should eventually not be
+    Parameters: Optional[ParameterLexerInfo]
     ClassModifier: Optional[ClassModifierType]
 
     # ----------------------------------------------------------------------
@@ -211,7 +213,7 @@ class FuncAndMethodDefinitionStatementLexerRegions(LexerRegions):
     MethodType: Region
     ReturnType: Region
     Name: Region
-    Parameters: Optional[Region] # TODO: This is Optional now, but eventually should not be
+    Parameters: Optional[Region]
     ClassModifier: Optional[Region]
 
 
@@ -227,7 +229,7 @@ class FuncAndMethodDefinitionStatementLexerInfo(StatementLexerInfo):
     method_type: InitVar[Optional[MethodType]]
     return_type: InitVar[TypeLexerInfo]
     name: InitVar[str]
-    parameters: InitVar[ExpressionLexerInfo]
+    parameters: InitVar[Optional[ParameterLexerInfo]]
     class_modifier: InitVar[Optional[ClassModifierType]]
     has_statements: InitVar[bool]
 

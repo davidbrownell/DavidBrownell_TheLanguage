@@ -40,11 +40,6 @@ with InitRelativeImports():
 class TupleNameLexerData(NameLexerData):
     Names: List[NameLexerInfo]
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Names
-        super(TupleNameLexerData, self).__post_init__()
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)

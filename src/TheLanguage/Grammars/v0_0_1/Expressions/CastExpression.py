@@ -114,23 +114,24 @@ class CastExpression(GrammarPhrase):
 
             # <expr>
             expr_node = ExtractDynamic(cast(Node, nodes[0]))
+            expr_data = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
 
             # <modifier> | <type>
             type_node = cast(Node, ExtractOr(cast(Node, nodes[2])))
 
             assert type_node.Type is not None
             if type_node.Type.Name == "Modifier":
-                the_type = TypeModifier.Extract(type_node)
+                type_data = TypeModifier.Extract(type_node)
             else:
-                the_type = cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(type_node)))
+                type_data = cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(type_node)))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 CastExpressionLexerInfo(
                     CastExpressionLexerData(
-                        cast(ExpressionLexerInfo, GetLexerInfo(expr_node)),
-                        the_type,  # type: ignore
+                        expr_data,
+                        type_data,  # type: ignore
                     ),
                     CreateLexerRegions(
                         CastExpressionLexerRegions,  # type: ignore

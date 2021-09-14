@@ -79,7 +79,7 @@ def Extract(
     Tuple[
         str,                                # Name of function
         Leaf,                               # Leaf associated with name
-        Any,                                # Arguments to function
+        Any,                                # Arguments to function (defined In ArgumentsPhraseItem.py)
     ]
 ]:
     if node is None:
@@ -107,8 +107,8 @@ def _ExtractAttribute(
     name = cast(str, ExtractToken(leaf))
 
     # <<Arguments>>?
-    arguments = ExtractOptional(cast(Node, nodes[2]))
-    if arguments is not None:
-        arguments = ArgumentsPhraseItem.Extract(cast(Node, arguments))
+    arguments_node = ExtractOptional(cast(Node, nodes[2]))
+    if arguments_node is not None:
+        arguments_node = ArgumentsPhraseItem.Extract(cast(Node, arguments_node))
 
-    return name, leaf, arguments
+    return name, leaf, arguments_node

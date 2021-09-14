@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,9 +30,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.Expressions.IndexExpressionLexerInfo import (
+        ExpressionLexerInfo,
+        IndexExpressionLexerData,
+        IndexExpressionLexerInfo,
+        IndexExpressionLexerRegions,
+    )
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractSequence,
+        Node,
+    )
+
 
 
 # ----------------------------------------------------------------------
@@ -67,3 +86,41 @@ class IndexExpression(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 4
+
+            # <expr>
+            prefix_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
+            prefix_data = cast(ExpressionLexerInfo, GetLexerInfo(prefix_node))
+
+            # <expr>
+            index_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
+            index_data = cast(ExpressionLexerInfo, GetLexerInfo(index_node))
+
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
+                node,
+                IndexExpressionLexerInfo(
+                    IndexExpressionLexerData(prefix_data, index_data),
+                    CreateLexerRegions(
+                        IndexExpressionLexerRegions,  # type: ignore
+                        node,
+                        prefix_node,
+                        index_node,
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
