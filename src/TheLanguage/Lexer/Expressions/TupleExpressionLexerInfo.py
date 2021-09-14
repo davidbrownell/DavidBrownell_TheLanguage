@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNameLexerInfo.py
+# |  TupleExpressionLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:42:59
+# |      2021-09-13 16:44:47
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNameLexerInfo object"""
+"""Contains the TupleExpressionLexerData, TupleExpressionLexerInfo, and TupleExpressionLexerRegions objects"""
 
 import os
 
@@ -31,24 +31,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NameLexerInfo import NameLexerData, NameLexerInfo
+    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
     from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerData(NameLexerData):
-    Names: List[NameLexerInfo]
+class TupleExpressionLexerData(ExpressionLexerData):
+    Expressions: List[ExpressionLexerInfo]
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerRegions(LexerRegions):
-    Names: Region
+class TupleExpressionLexerRegions(LexerRegions):
+    Expressions: Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerInfo(NameLexerInfo):
-    Data: TupleNameLexerData
-    Regions: TupleNameLexerRegions
+class TupleExpressionLexerInfo(ExpressionLexerInfo):
+    Data: TupleExpressionLexerData
+    Regions: TupleExpressionLexerRegions

@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,7 +31,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.Impl.TupleBase import TupleBase
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.Expressions.TupleExpressionLexerInfo import (
+        ExpressionLexerInfo,
+        TupleExpressionLexerData,
+        TupleExpressionLexerInfo,
+        TupleExpressionLexerRegions,
+    )
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+
+    from ....Parser.Phrases.DSL import Node
 
 
 # ----------------------------------------------------------------------
@@ -49,3 +63,31 @@ class TupleExpression(TupleBase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(TupleExpression, self).__init__(GrammarPhrase.Type.Expression, self.PHRASE_NAME)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            # pylint: disable=too-many-function-args
+            SetLexerInfo(
+                node,
+                TupleExpressionLexerInfo(
+                    TupleExpressionLexerData(
+                        [cast(ExpressionLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
+                    ),
+                    CreateLexerRegions(
+                        TupleExpressionLexerRegions,  # type: ignore
+                        node,
+                        node,
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

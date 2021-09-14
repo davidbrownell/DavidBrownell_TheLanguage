@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNameLexerInfo.py
+# |  TernaryExpressionLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:42:59
+# |      2021-09-13 16:26:50
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNameLexerInfo object"""
+"""Contains the TernaryExpressionLexerData, TernaryExpressionLexerInfo, and TernaryExpressionLexerRegions objects"""
 
 import os
-
-from typing import List
 
 from dataclasses import dataclass
 
@@ -31,24 +29,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NameLexerInfo import NameLexerData, NameLexerInfo
+    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
     from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerData(NameLexerData):
-    Names: List[NameLexerInfo]
+class TernaryExpressionLexerData(ExpressionLexerData):
+    TrueExpression: ExpressionLexerInfo
+    ConditionExpression: ExpressionLexerInfo
+    FalseExpression: ExpressionLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerRegions(LexerRegions):
-    Names: Region
+class TernaryExpressionLexerRegions(LexerRegions):
+    TrueExpression: Region
+    ConditionExpression: Region
+    FalseExpression: Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleNameLexerInfo(NameLexerInfo):
-    Data: TupleNameLexerData
-    Regions: TupleNameLexerRegions
+class TernaryExpressionLexerInfo(ExpressionLexerInfo):
+    Data: TernaryExpressionLexerData
+    Regions: TernaryExpressionLexerRegions
