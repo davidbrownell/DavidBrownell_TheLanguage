@@ -15,15 +15,12 @@
 # ----------------------------------------------------------------------
 """Contains the MatchExpressionBase object"""
 
+import itertools
 import os
 
-from typing import cast
-
-from dataclasses import dataclass
+from typing import cast, List, Optional, Type
 
 import CommonEnvironment
-from CommonEnvironment import Interface
-from CommonEnvironment import YamlRepr
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -34,11 +31,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .. import Tokens as CommonTokens
-    from ....GrammarPhrase import GrammarPhrase
+
+    from ....GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from .....Lexer.LexerInfo import (
+        GetLexerInfo,
+        LexerData,
+        LexerInfo,
+        LexerRegions,
+        SetLexerInfo,
+    )
+
+    from .....Lexer.Expressions.ExpressionLexerInfo import ExpressionLexerInfo
+    from .....Lexer.Types.TypeLexerInfo import TypeLexerInfo
 
     from .....Parser.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractOptional,
+        ExtractOr,
+        ExtractRepeat,
+        ExtractSequence,
+        Node,
         PhraseItem,
     )
 
@@ -93,10 +108,8 @@ class MatchExpressionBase(GrammarPhrase):
     ):
         if match_type == DynamicPhrasesType.Types:
             type_token = "type"
-
         elif match_type == DynamicPhrasesType.Expressions:
             type_token = "value"
-
         else:
             assert False, match_type
 
@@ -164,7 +177,7 @@ class MatchExpressionBase(GrammarPhrase):
 
                 # ('case' <<Case Items>> ':' <case_expression_item>)+
                 PhraseItem(
-                    name="Case",
+                    name="Case Phrase",
                     item=[
                         "case",
 
@@ -259,3 +272,157 @@ class MatchExpressionBase(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _ExtractLexerInfoImpl(
+        cls,
+        match_lexer_data_type: Type[LexerData],
+        match_lexer_regions_type: Type[LexerRegions],
+        match_lexer_info_type: Type[LexerInfo],
+        case_phrase_lexer_data_type: Type[LexerData],
+        case_phrase_lexer_regions_type: Type[LexerRegions],
+        case_phrase_lexer_info_type: Type[LexerInfo],
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 3
+
+            # Drill into the specific match style.
+            match_node = cast(Node, ExtractOr(cast(Node, nodes[1])))
+            assert match_node.Type is not None
+
+            if match_node.Type.Name == "K&R-like":
+                num_match_nodes = 3
+                match_nodes_index = 1
+            elif match_node.Type.Name == "Allman-like":
+                num_match_nodes = 6
+                match_nodes_index = 3
+            else:
+                assert False, match_node.Type.Name
+
+            match_nodes = ExtractSequence(match_node)
+            assert len(match_nodes) == num_match_nodes
+
+            match_node = cast(Node, match_nodes[match_nodes_index])
+
+            # Resume normal extraction
+            nodes = ExtractSequence(match_node)
+            assert len(nodes) == 9
+
+            # <expr>
+            expr_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
+            expr_data = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+
+            # Cases
+            cases_node = cast(Node, nodes[6])
+            cases_data: List[case_phrase_lexer_info_type] = []
+
+            for case_phrase_node in cast(List[Node], ExtractRepeat(cases_node)):
+                case_phrase_nodes = ExtractSequence(case_phrase_node)
+                assert len(case_phrase_nodes) == 4
+
+                # Case Items
+                case_items_node = cast(Node, ExtractOr(cast(Node, case_phrase_nodes[1])))
+
+                assert case_items_node.Type is not None
+                if case_items_node.Type.Name == "Grouped":
+                    case_items_node = cast(Node, ExtractSequence(case_items_node)[2])
+
+                case_items_nodes = ExtractSequence(case_items_node)
+                assert len(case_items_nodes) == 3
+
+                case_items_data = []
+
+                for case_item_node in itertools.chain(
+                    [case_items_nodes[0]],
+                    [
+                        ExtractSequence(this_node)[1]
+                        for this_node in cast(
+                            List[Node],
+                            ExtractRepeat(cast(Node, case_items_nodes[1])),
+                        )
+                    ],
+                ):
+                    case_items_data.append(GetLexerInfo(ExtractDynamic(cast(Node, case_item_node))))
+
+                assert case_items_data
+
+                # <expr>
+                case_phrase_expr_node = cast(Node, case_phrase_nodes[3])
+                case_phrase_expr_data = cls._ExtractCaseExpression(case_phrase_expr_node)
+
+                cases_data.append(
+                    case_phrase_lexer_info_type(
+                        case_phrase_lexer_data_type(case_items_data, case_phrase_expr_data),  # type: ignore
+                        CreateLexerRegions(
+                            case_phrase_lexer_regions_type,  # type: ignore
+                            case_phrase_node,
+                            case_items_node,
+                            case_phrase_expr_node,
+                        ),
+                    ),
+                )
+
+            assert cases_data
+
+            # Default
+            default_node = cast(Node, ExtractOptional(cast(Node, nodes[7])))
+
+            if default_node is not None:
+                default_node = cast(Node, ExtractSequence(default_node)[2])
+                default_data = cls._ExtractCaseExpression(default_node)
+
+            else:
+                default_data = None
+
+            SetLexerInfo(
+                node,
+                match_lexer_info_type(
+                    match_lexer_data_type(
+                        expr_data,  # type: ignore
+                        cases_data,
+                        default_data,
+                    ),
+                    CreateLexerRegions(
+                        match_lexer_regions_type,  # type: ignore
+                        node,
+                        expr_node,
+                        cases_node,
+                        default_node,
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _ExtractCaseExpression(
+        node: Node,
+    ) -> ExpressionLexerInfo:
+        node = cast(Node, ExtractOr(node))
+        assert node.Type is not None
+
+        if node.Type.Name == "Multiple Lines":
+            num_nodes = 5
+            node_index = 2
+
+        elif node.Type.Name == "Single Line":
+            num_nodes = 2
+            node_index = 0
+
+        else:
+            assert False, node.Type
+
+        nodes = ExtractSequence(node)
+        assert len(nodes) == num_nodes
+
+        data_node = ExtractDynamic(cast(Node, nodes[node_index]))
+        return cast(ExpressionLexerInfo, GetLexerInfo(data_node))

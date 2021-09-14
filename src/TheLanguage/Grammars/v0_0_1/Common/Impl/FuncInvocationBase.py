@@ -94,8 +94,8 @@ class FuncInvocationBase(GrammarPhrase):
     @staticmethod
     def _ExtractLexerInfoImpl(
         lexer_data_type: Type[LexerData],
-        lexer_info_type: Type[LexerInfo],
         lexer_regions_type: Type[LexerRegions],
+        lexer_info_type: Type[LexerInfo],
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
