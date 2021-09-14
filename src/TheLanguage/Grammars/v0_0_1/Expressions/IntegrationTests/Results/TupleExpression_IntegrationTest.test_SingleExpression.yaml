@@ -132,6 +132,23 @@ Children:
                             IterBegin: "[1, 8] (7)"
                             IterEnd: "[1, 12] (11)"
                             Type: "Single <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerData'>
+                            Expressions:
+                              - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                    Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                      Name: "a"
+                                    Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                      Name: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
+                                      Self__: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
+                                Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                  Name: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
+                                  Self__: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
+                          Regions: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerRegions'>
+                            Expressions: "[Ln 1, Col 8] -> [Ln 1, Col 12]"
+                            Self__: "[Ln 1, Col 8] -> [Ln 1, Col 12]"
                         IterBegin: "[1, 8] (7)"
                         IterEnd: "[1, 12] (11)"
                         Type: "Tuple Expression <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
@@ -291,6 +308,23 @@ Children:
                             IterBegin: "[3, 8] (20)"
                             IterEnd: "[8, 2] (103)"
                             Type: "Single <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+                        Info: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerInfo'>
+                          Data: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerData'>
+                            Expressions:
+                              - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                    Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
+                                      Name: "a"
+                                    Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                      Name: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+                                      Self__: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+                                Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                  Name: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+                                  Self__: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+                          Regions: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerRegions'>
+                            Expressions: "[Ln 3, Col 8] -> [Ln 8, Col 2]"
+                            Self__: "[Ln 3, Col 8] -> [Ln 8, Col 2]"
                         IterBegin: "[3, 8] (20)"
                         IterEnd: "[8, 2] (103)"
                         Type: "Tuple Expression <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleNameLexerInfo.py
+# |  TernaryExpressionLexerInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:42:59
+# |      2021-09-13 16:29:15
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleNameLexerInfo object"""
+"""Unit test for TernaryExpressionLexerInfo.py"""
 
 import os
 
-from typing import List
-
-from dataclasses import dataclass
+from dataclasses import fields
 
 import CommonEnvironment
 
@@ -31,24 +29,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NameLexerInfo import NameLexerData, NameLexerInfo
-    from ..LexerInfo import LexerRegions, Region
+    from ..TernaryExpressionLexerInfo import *
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleNameLexerData(NameLexerData):
-    Names: List[NameLexerInfo]
+def test_Regions():
+    regions_fields = set(field.name for field in fields(TernaryExpressionLexerRegions))
 
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleNameLexerRegions(LexerRegions):
-    Names: Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleNameLexerInfo(NameLexerInfo):
-    Data: TupleNameLexerData
-    Regions: TupleNameLexerRegions
+    assert regions_fields == set(["Self__", "TrueExpression", "ConditionExpression", "FalseExpression"])
