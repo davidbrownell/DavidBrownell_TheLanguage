@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DeleteStatement_IntegrationTest.py
+# |  DeleteStatementLexerInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 16:47:13
+# |      2021-09-14 15:06:51
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for DeleteStatement.py"""
+"""Unit test for DeleteStatementLexerInfo.py"""
 
 import os
-import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
+from dataclasses import fields
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,18 +29,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..DeleteStatement import *
-    from ...Common.AutomatedTests import Execute
+    from ..DeleteStatementLexerInfo import *
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                del foo
-                """,
-            ),
-        ),
-    )
+def test_Fields():
+    regions_fields = set(field.name for field in fields(DeleteStatementLexerRegions))
+
+    assert regions_fields == set(["Self__", "Name"])
