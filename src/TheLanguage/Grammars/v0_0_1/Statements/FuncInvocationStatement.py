@@ -60,7 +60,7 @@ class FuncInvocationStatement(FuncInvocationBase):
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         return cls._ExtractLexerInfoImpl(
             FuncInvocationStatementLexerData,
-            FuncInvocationStatementLexerInfo,
             FuncInvocationStatementLexerRegions,
+            FuncInvocationStatementLexerInfo,
             node,
         )
