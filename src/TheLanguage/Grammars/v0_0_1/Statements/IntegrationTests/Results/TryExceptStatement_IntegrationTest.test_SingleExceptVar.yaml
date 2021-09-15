@@ -94,13 +94,12 @@ Children:
                                               Start: 17
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                            Arguments: None
-                                            Name: "Func1a"
-                                          Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
-                                            Arguments: None
-                                            Name: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
+                                          Arguments: None
+                                          Name: "Func1a"
+                                          Regions:
                                             Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                                            Name: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
+                                            Arguments: None
                                         IterBegin: "[2, 5] (9)"
                                         IterEnd: "[3, 1] (18)"
                                         Type: "Func Invocation Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -159,13 +158,12 @@ Children:
                                       - 24
                                       - 25
                                 Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                    Modifier: None
-                                    TypeName: "Exception"
-                                  Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                    Modifier: None
+                                  Modifier: None
+                                  Regions:
                                     Self__: "[Ln 3, Col 8] -> [Ln 3, Col 17]"
                                     TypeName: "[Ln 3, Col 8] -> [Ln 3, Col 17]"
+                                    Modifier: None
+                                  TypeName: "Exception"
                                 IterBegin: "[3, 8] (25)"
                                 IterEnd: "[3, 17] (34)"
                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -192,11 +190,10 @@ Children:
                                       - 34
                                       - 35
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "ex"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                    Name: "[Ln 3, Col 18] -> [Ln 3, Col 20]"
+                                  Name: "ex"
+                                  Regions:
                                     Self__: "[Ln 3, Col 18] -> [Ln 3, Col 20]"
+                                    Name: "[Ln 3, Col 18] -> [Ln 3, Col 20]"
                                 IterBegin: "[3, 18] (35)"
                                 IterEnd: "[3, 20] (37)"
                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -286,13 +283,12 @@ Children:
                                                       Start: 51
                                                     Whitespace: None
                                                 Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                                    Arguments: None
-                                                    Name: "Func1b"
-                                                  Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
-                                                    Arguments: None
-                                                    Name: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
+                                                  Arguments: None
+                                                  Name: "Func1b"
+                                                  Regions:
                                                     Self__: "[Ln 4, Col 5] -> [Ln 6, Col 1]"
+                                                    Name: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
+                                                    Arguments: None
                                                 IterBegin: "[4, 5] (43)"
                                                 IterEnd: "[6, 1] (53)"
                                                 Type: "Func Invocation Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -431,13 +427,12 @@ Children:
                                               Start: 70
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                            Arguments: None
-                                            Name: "Func2a"
-                                          Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
-                                            Arguments: None
-                                            Name: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
+                                          Arguments: None
+                                          Name: "Func2a"
+                                          Regions:
                                             Self__: "[Ln 7, Col 5] -> [Ln 8, Col 1]"
+                                            Name: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
+                                            Arguments: None
                                         IterBegin: "[7, 5] (62)"
                                         IterEnd: "[8, 1] (71)"
                                         Type: "Func Invocation Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -510,13 +505,12 @@ Children:
                                                   Match: "<_sre.SRE_Match object; span=(79, 89), match='Exception1'>"
                                                 Whitespace: None
                                             Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                Modifier: None
-                                                TypeName: "Exception1"
-                                              Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                Modifier: None
+                                              Modifier: None
+                                              Regions:
                                                 Self__: "[Ln 8, Col 9] -> [Ln 8, Col 19]"
                                                 TypeName: "[Ln 8, Col 9] -> [Ln 8, Col 19]"
+                                                Modifier: None
+                                              TypeName: "Exception1"
                                             IterBegin: "[8, 9] (79)"
                                             IterEnd: "[8, 19] (89)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -553,13 +547,12 @@ Children:
                                                   - 91
                                                   - 92
                                             Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                Modifier: None
-                                                TypeName: "Exception2"
-                                              Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                Modifier: None
+                                              Modifier: None
+                                              Regions:
                                                 Self__: "[Ln 8, Col 22] -> [Ln 8, Col 32]"
                                                 TypeName: "[Ln 8, Col 22] -> [Ln 8, Col 32]"
+                                                Modifier: None
+                                              TypeName: "Exception2"
                                             IterBegin: "[8, 22] (92)"
                                             IterEnd: "[8, 32] (102)"
                                             Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -578,27 +571,24 @@ Children:
                                       Match: "<_sre.SRE_Match object; span=(102, 103), match=')'>"
                                     Whitespace: None
                                 Info: # <class 'TheLanguage.Lexer.Types.VariantTypeLexerInfo.VariantTypeLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Types.VariantTypeLexerInfo.VariantTypeLexerData'>
-                                    Types:
-                                      - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                          Modifier: None
-                                          TypeName: "Exception1"
-                                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                          Modifier: None
-                                          Self__: "[Ln 8, Col 9] -> [Ln 8, Col 19]"
-                                          TypeName: "[Ln 8, Col 9] -> [Ln 8, Col 19]"
-                                      - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                          Modifier: None
-                                          TypeName: "Exception2"
-                                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                          Modifier: None
-                                          Self__: "[Ln 8, Col 22] -> [Ln 8, Col 32]"
-                                          TypeName: "[Ln 8, Col 22] -> [Ln 8, Col 32]"
-                                  Regions: # <class 'TheLanguage.Lexer.Types.VariantTypeLexerInfo.VariantTypeLexerRegions'>
+                                  Regions:
                                     Self__: "[Ln 8, Col 8] -> [Ln 8, Col 33]"
                                     Types: "[Ln 8, Col 8] -> [Ln 8, Col 33]"
+                                  Types:
+                                    - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                      Modifier: None
+                                      Regions:
+                                        Self__: "[Ln 8, Col 9] -> [Ln 8, Col 19]"
+                                        TypeName: "[Ln 8, Col 9] -> [Ln 8, Col 19]"
+                                        Modifier: None
+                                      TypeName: "Exception1"
+                                    - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                      Modifier: None
+                                      Regions:
+                                        Self__: "[Ln 8, Col 22] -> [Ln 8, Col 32]"
+                                        TypeName: "[Ln 8, Col 22] -> [Ln 8, Col 32]"
+                                        Modifier: None
+                                      TypeName: "Exception2"
                                 IterBegin: "[8, 8] (78)"
                                 IterEnd: "[8, 33] (103)"
                                 Type: "Variant Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -625,11 +615,10 @@ Children:
                                       - 103
                                       - 104
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "ex"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                    Name: "[Ln 8, Col 34] -> [Ln 8, Col 36]"
+                                  Name: "ex"
+                                  Regions:
                                     Self__: "[Ln 8, Col 34] -> [Ln 8, Col 36]"
+                                    Name: "[Ln 8, Col 34] -> [Ln 8, Col 36]"
                                 IterBegin: "[8, 34] (104)"
                                 IterEnd: "[8, 36] (106)"
                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -719,13 +708,12 @@ Children:
                                                       Start: 120
                                                     Whitespace: None
                                                 Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                                    Arguments: None
-                                                    Name: "Func2b"
-                                                  Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
-                                                    Arguments: None
-                                                    Name: "[Ln 9, Col 5] -> [Ln 9, Col 11]"
+                                                  Arguments: None
+                                                  Name: "Func2b"
+                                                  Regions:
                                                     Self__: "[Ln 9, Col 5] -> [Ln 10, Col 1]"
+                                                    Name: "[Ln 9, Col 5] -> [Ln 9, Col 11]"
+                                                    Arguments: None
                                                 IterBegin: "[9, 5] (112)"
                                                 IterEnd: "[10, 1] (121)"
                                                 Type: "Func Invocation Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -780,13 +768,12 @@ Children:
                                                       Start: 133
                                                     Whitespace: None
                                                 Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                                    Arguments: None
-                                                    Name: "Func2c"
-                                                  Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
-                                                    Arguments: None
-                                                    Name: "[Ln 10, Col 5] -> [Ln 10, Col 11]"
+                                                  Arguments: None
+                                                  Name: "Func2c"
+                                                  Regions:
                                                     Self__: "[Ln 10, Col 5] -> [Ln 11, Col 1]"
+                                                    Name: "[Ln 10, Col 5] -> [Ln 10, Col 11]"
+                                                    Arguments: None
                                                 IterBegin: "[10, 5] (125)"
                                                 IterEnd: "[11, 1] (134)"
                                                 Type: "Func Invocation Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

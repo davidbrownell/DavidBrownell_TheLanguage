@@ -29,24 +29,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
-    from ..LexerInfo import LexerRegions, Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class GroupExpressionLexerData(ExpressionLexerData):
-    Expression: ExpressionLexerInfo
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class GroupExpressionLexerRegions(LexerRegions):
-    Expression: Region
+    from .ExpressionLexerInfo import ExpressionLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class GroupExpressionLexerInfo(ExpressionLexerInfo):
-    Data: GroupExpressionLexerData
-    Regions: GroupExpressionLexerRegions
+    Expression: ExpressionLexerInfo

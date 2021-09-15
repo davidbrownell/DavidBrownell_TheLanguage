@@ -34,9 +34,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import GrammarPhrase
 
     from ....Lexer.Statements.FuncInvocationStatementLexerInfo import (
-        FuncInvocationStatementLexerData,
         FuncInvocationStatementLexerInfo,
-        FuncInvocationStatementLexerRegions,
     )
 
 
@@ -58,9 +56,4 @@ class FuncInvocationStatement(FuncInvocationBase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
-        return cls._ExtractLexerInfoImpl(
-            FuncInvocationStatementLexerData,
-            FuncInvocationStatementLexerRegions,
-            FuncInvocationStatementLexerInfo,
-            node,
-        )
+        return cls._ExtractLexerInfoImpl(FuncInvocationStatementLexerInfo, node)

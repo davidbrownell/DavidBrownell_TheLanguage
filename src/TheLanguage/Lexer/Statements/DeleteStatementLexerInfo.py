@@ -29,24 +29,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
-    from ..LexerInfo import LexerRegions, Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class DeleteStatementLexerData(StatementLexerData):
-    Name: str
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class DeleteStatementLexerRegions(LexerRegions):
-    Name: Region
+    from .StatementLexerInfo import StatementLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class DeleteStatementLexerInfo(StatementLexerInfo):
-    Data: DeleteStatementLexerData
-    Regions: DeleteStatementLexerRegions
+    Name: str

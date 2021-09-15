@@ -35,11 +35,10 @@ Children:
                                       - 5
                                       - 6
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "value"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                    Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                                  Name: "value"
+                                  Regions:
                                     Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                                    Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
                                 IterBegin: "[1, 7] (6)"
                                 IterEnd: "[1, 12] (11)"
                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -47,16 +46,14 @@ Children:
                             IterEnd: "[1, 12] (11)"
                             Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                         Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                            Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                Name: "value"
-                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
-                                Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
-                          Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                            Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                            Name: "value"
+                            Regions:
+                              Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                              Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                          Regions:
                             Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                            Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
                         IterBegin: "[1, 7] (6)"
                         IterEnd: "[1, 12] (11)"
                         Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -146,13 +143,12 @@ Children:
                                               Start: 24
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                            Arguments: None
-                                            Name: "Func1"
-                                          Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
-                                            Arguments: None
-                                            Name: "[Ln 2, Col 5] -> [Ln 2, Col 10]"
+                                          Arguments: None
+                                          Name: "Func1"
+                                          Regions:
                                             Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                                            Name: "[Ln 2, Col 5] -> [Ln 2, Col 10]"
+                                            Arguments: None
                                         IterBegin: "[2, 5] (17)"
                                         IterEnd: "[3, 1] (25)"
                                         Type: "Func Invocation Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -207,13 +203,12 @@ Children:
                                               Start: 36
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                            Arguments: None
-                                            Name: "Func2"
-                                          Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
-                                            Arguments: None
-                                            Name: "[Ln 3, Col 5] -> [Ln 3, Col 10]"
+                                          Arguments: None
+                                          Name: "Func2"
+                                          Regions:
                                             Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
+                                            Name: "[Ln 3, Col 5] -> [Ln 3, Col 10]"
+                                            Arguments: None
                                         IterBegin: "[3, 5] (29)"
                                         IterEnd: "[4, 1] (37)"
                                         Type: "Func Invocation Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

@@ -121,13 +121,12 @@ Children:
                                                           - 24
                                                           - 25
                                                     Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                                      Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                        Modifier: None
-                                                        TypeName: "Char"
-                                                      Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                        Modifier: None
+                                                      Modifier: None
+                                                      Regions:
                                                         Self__: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
                                                         TypeName: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
+                                                        Modifier: None
+                                                      TypeName: "Char"
                                                     IterBegin: "[2, 13] (25)"
                                                     IterEnd: "[2, 17] (29)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -157,26 +156,24 @@ Children:
                                               Start: 36
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
-                                            ClassModifier: "ClassModifier.immutable"
-                                            DefaultValue: None
-                                            Name: "value1"
-                                            Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                Modifier: None
-                                                TypeName: "Char"
-                                              Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                Modifier: None
-                                                Self__: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
-                                                TypeName: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
-                                            Visibility: "VisibilityModifier.private"
-                                          Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
+                                          ClassModifier: "ClassModifier.immutable"
+                                          DefaultValue: None
+                                          Name: "value1"
+                                          Regions:
+                                            Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                                            Visibility: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
+                                            Type: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
+                                            Name: "[Ln 2, Col 18] -> [Ln 2, Col 24]"
                                             ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
                                             DefaultValue: None
-                                            Name: "[Ln 2, Col 18] -> [Ln 2, Col 24]"
-                                            Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
-                                            Type: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
-                                            Visibility: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
+                                          Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                            Modifier: None
+                                            Regions:
+                                              Self__: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
+                                              TypeName: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
+                                              Modifier: None
+                                            TypeName: "Char"
+                                          Visibility: "VisibilityModifier.private"
                                         IterBegin: "[2, 5] (17)"
                                         IterEnd: "[3, 1] (37)"
                                         Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -247,13 +244,12 @@ Children:
                                                         IterEnd: "[3, 23] (59)"
                                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                                     Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                                      Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                        Modifier: TypeModifier.var
-                                                        TypeName: "Char"
-                                                      Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                        Modifier: "[Ln 3, Col 20] -> [Ln 3, Col 23]"
+                                                      Modifier: TypeModifier.var
+                                                      Regions:
                                                         Self__: "[Ln 3, Col 15] -> [Ln 3, Col 23]"
                                                         TypeName: "[Ln 3, Col 15] -> [Ln 3, Col 19]"
+                                                        Modifier: "[Ln 3, Col 20] -> [Ln 3, Col 23]"
+                                                      TypeName: "Char"
                                                     IterBegin: "[3, 15] (51)"
                                                     IterEnd: "[3, 23] (59)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -308,11 +304,10 @@ Children:
                                                                           - 68
                                                                           - 69
                                                                     Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                        Name: "rhs1"
-                                                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                        Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                                                      Name: "rhs1"
+                                                                      Regions:
                                                                         Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                                                        Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
                                                                     IterBegin: "[3, 33] (69)"
                                                                     IterEnd: "[3, 37] (73)"
                                                                     Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -320,16 +315,14 @@ Children:
                                                                 IterEnd: "[3, 37] (73)"
                                                                 Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                             Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                              Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                    Name: "rhs1"
-                                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                    Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                                                                    Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                                                              Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                                Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                                              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                Name: "rhs1"
+                                                                Regions:
+                                                                  Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                                                  Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                                              Regions:
                                                                 Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                                                Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
                                                             IterBegin: "[3, 33] (69)"
                                                             IterEnd: "[3, 37] (73)"
                                                             Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -355,36 +348,32 @@ Children:
                                               Start: 73
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
-                                            ClassModifier: "ClassModifier.immutable"
-                                            DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                    Name: "rhs1"
-                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                    Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                                                    Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                                              Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                          ClassModifier: "ClassModifier.immutable"
+                                          DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                            Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                              Name: "rhs1"
+                                              Regions:
                                                 Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                                            Name: "value2"
-                                            Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                Modifier: TypeModifier.var
-                                                TypeName: "Char"
-                                              Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                Modifier: "[Ln 3, Col 20] -> [Ln 3, Col 23]"
-                                                Self__: "[Ln 3, Col 15] -> [Ln 3, Col 23]"
-                                                TypeName: "[Ln 3, Col 15] -> [Ln 3, Col 19]"
-                                            Visibility: "VisibilityModifier.protected"
-                                          Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
+                                                Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                            Regions:
+                                              Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                              Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                                          Name: "value2"
+                                          Regions:
+                                            Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
+                                            Visibility: "[Ln 3, Col 5] -> [Ln 3, Col 14]"
+                                            Type: "[Ln 3, Col 15] -> [Ln 3, Col 23]"
+                                            Name: "[Ln 3, Col 24] -> [Ln 3, Col 30]"
                                             ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
                                             DefaultValue: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                                            Name: "[Ln 3, Col 24] -> [Ln 3, Col 30]"
-                                            Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
-                                            Type: "[Ln 3, Col 15] -> [Ln 3, Col 23]"
-                                            Visibility: "[Ln 3, Col 5] -> [Ln 3, Col 14]"
+                                          Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                            Modifier: TypeModifier.var
+                                            Regions:
+                                              Self__: "[Ln 3, Col 15] -> [Ln 3, Col 23]"
+                                              TypeName: "[Ln 3, Col 15] -> [Ln 3, Col 19]"
+                                              Modifier: "[Ln 3, Col 20] -> [Ln 3, Col 23]"
+                                            TypeName: "Char"
+                                          Visibility: "VisibilityModifier.protected"
                                         IterBegin: "[3, 5] (41)"
                                         IterEnd: "[4, 1] (74)"
                                         Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -455,13 +444,12 @@ Children:
                                                         IterEnd: "[4, 20] (93)"
                                                         Type: "Repeat: {Modifier, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
                                                     Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                                      Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                        Modifier: TypeModifier.var
-                                                        TypeName: "Char"
-                                                      Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                        Modifier: "[Ln 4, Col 17] -> [Ln 4, Col 20]"
+                                                      Modifier: TypeModifier.var
+                                                      Regions:
                                                         Self__: "[Ln 4, Col 12] -> [Ln 4, Col 20]"
                                                         TypeName: "[Ln 4, Col 12] -> [Ln 4, Col 16]"
+                                                        Modifier: "[Ln 4, Col 17] -> [Ln 4, Col 20]"
+                                                      TypeName: "Char"
                                                     IterBegin: "[4, 12] (85)"
                                                     IterEnd: "[4, 20] (93)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -536,11 +524,10 @@ Children:
                                                                           - 112
                                                                           - 113
                                                                     Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                        Name: "rhs2"
-                                                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                        Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                                                      Name: "rhs2"
+                                                                      Regions:
                                                                         Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                                                        Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
                                                                     IterBegin: "[4, 40] (113)"
                                                                     IterEnd: "[4, 44] (117)"
                                                                     Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -548,16 +535,14 @@ Children:
                                                                 IterEnd: "[4, 44] (117)"
                                                                 Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                             Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                              Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                    Name: "rhs2"
-                                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                    Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                                                                    Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                                                              Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                                Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                                              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                Name: "rhs2"
+                                                                Regions:
+                                                                  Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                                                  Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                                              Regions:
                                                                 Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                                                Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
                                                             IterBegin: "[4, 40] (113)"
                                                             IterEnd: "[4, 44] (117)"
                                                             Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -583,36 +568,32 @@ Children:
                                               Start: 117
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
-                                            ClassModifier: "ClassModifier.immutable"
-                                            DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                    Name: "rhs2"
-                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                    Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                                                    Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                                              Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                          ClassModifier: "ClassModifier.immutable"
+                                          DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                            Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                              Name: "rhs2"
+                                              Regions:
                                                 Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                                            Name: "value3"
-                                            Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                Modifier: TypeModifier.var
-                                                TypeName: "Char"
-                                              Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                Modifier: "[Ln 4, Col 17] -> [Ln 4, Col 20]"
-                                                Self__: "[Ln 4, Col 12] -> [Ln 4, Col 20]"
-                                                TypeName: "[Ln 4, Col 12] -> [Ln 4, Col 16]"
-                                            Visibility: "VisibilityModifier.public"
-                                          Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
+                                                Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                            Regions:
+                                              Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                              Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                                          Name: "value3"
+                                          Regions:
+                                            Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+                                            Visibility: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
+                                            Type: "[Ln 4, Col 12] -> [Ln 4, Col 20]"
+                                            Name: "[Ln 4, Col 21] -> [Ln 4, Col 27]"
                                             ClassModifier: "[Ln 4, Col 28] -> [Ln 4, Col 37]"
                                             DefaultValue: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                                            Name: "[Ln 4, Col 21] -> [Ln 4, Col 27]"
-                                            Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
-                                            Type: "[Ln 4, Col 12] -> [Ln 4, Col 20]"
-                                            Visibility: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
+                                          Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                            Modifier: TypeModifier.var
+                                            Regions:
+                                              Self__: "[Ln 4, Col 12] -> [Ln 4, Col 20]"
+                                              TypeName: "[Ln 4, Col 12] -> [Ln 4, Col 16]"
+                                              Modifier: "[Ln 4, Col 17] -> [Ln 4, Col 20]"
+                                            TypeName: "Char"
+                                          Visibility: "VisibilityModifier.public"
                                         IterBegin: "[4, 5] (78)"
                                         IterEnd: "[5, 1] (118)"
                                         Type: "Class Member Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -643,108 +624,97 @@ Children:
                 IterEnd: "[5, 1] (118)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
-                Base: None
-                ClassModifier: "ClassModifier.immutable"
-                ClassType: "ClassType.Class"
-                Interfaces: None
-                Mixins: None
-                Name: "Foo"
-                Statements:
-                  - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
-                      ClassModifier: "ClassModifier.immutable"
-                      DefaultValue: None
-                      Name: "value1"
-                      Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                          Modifier: None
-                          TypeName: "Char"
-                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                          Modifier: None
-                          Self__: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
-                          TypeName: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
-                      Visibility: "VisibilityModifier.private"
-                    Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
-                      ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
-                      DefaultValue: None
-                      Name: "[Ln 2, Col 18] -> [Ln 2, Col 24]"
-                      Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
-                      Type: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
-                      Visibility: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
-                  - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
-                      ClassModifier: "ClassModifier.immutable"
-                      DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                        Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                            Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                              Name: "rhs1"
-                            Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                              Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                              Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                        Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                          Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                          Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                      Name: "value2"
-                      Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                          Modifier: TypeModifier.var
-                          TypeName: "Char"
-                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                          Modifier: "[Ln 3, Col 20] -> [Ln 3, Col 23]"
-                          Self__: "[Ln 3, Col 15] -> [Ln 3, Col 23]"
-                          TypeName: "[Ln 3, Col 15] -> [Ln 3, Col 19]"
-                      Visibility: "VisibilityModifier.protected"
-                    Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
-                      ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
-                      DefaultValue: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-                      Name: "[Ln 3, Col 24] -> [Ln 3, Col 30]"
-                      Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
-                      Type: "[Ln 3, Col 15] -> [Ln 3, Col 23]"
-                      Visibility: "[Ln 3, Col 5] -> [Ln 3, Col 14]"
-                  - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerData'>
-                      ClassModifier: "ClassModifier.immutable"
-                      DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                        Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                            Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                              Name: "rhs2"
-                            Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                              Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                              Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                        Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                          Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                          Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                      Name: "value3"
-                      Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                          Modifier: TypeModifier.var
-                          TypeName: "Char"
-                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                          Modifier: "[Ln 4, Col 17] -> [Ln 4, Col 20]"
-                          Self__: "[Ln 4, Col 12] -> [Ln 4, Col 20]"
-                          TypeName: "[Ln 4, Col 12] -> [Ln 4, Col 16]"
-                      Visibility: "VisibilityModifier.public"
-                    Regions: # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerRegions'>
-                      ClassModifier: "[Ln 4, Col 28] -> [Ln 4, Col 37]"
-                      DefaultValue: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-                      Name: "[Ln 4, Col 21] -> [Ln 4, Col 27]"
-                      Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
-                      Type: "[Ln 4, Col 12] -> [Ln 4, Col 20]"
-                      Visibility: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
-                Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
-                Base: None
+              Base: None
+              ClassModifier: "ClassModifier.immutable"
+              ClassType: "ClassType.Class"
+              Interfaces: None
+              Mixins: None
+              Name: "Foo"
+              Regions:
+                Self__: "[Ln 1, Col 1] -> [Ln 5, Col 1]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 5, Col 1]"
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 5, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
+                Base: None
                 Interfaces: None
                 Mixins: None
-                Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
-                Self__: "[Ln 1, Col 1] -> [Ln 5, Col 1]"
                 Statements: "[Ln 1, Col 12] -> [Ln 5, Col 1]"
-                Visibility: "[Ln 1, Col 1] -> [Ln 5, Col 1]"
+              Statements:
+                - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
+                  ClassModifier: "ClassModifier.immutable"
+                  DefaultValue: None
+                  Name: "value1"
+                  Regions:
+                    Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                    Visibility: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
+                    Type: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
+                    Name: "[Ln 2, Col 18] -> [Ln 2, Col 24]"
+                    ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                    DefaultValue: None
+                  Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                    Modifier: None
+                    Regions:
+                      Self__: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
+                      TypeName: "[Ln 2, Col 13] -> [Ln 2, Col 17]"
+                      Modifier: None
+                    TypeName: "Char"
+                  Visibility: "VisibilityModifier.private"
+                - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
+                  ClassModifier: "ClassModifier.immutable"
+                  DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "rhs1"
+                      Regions:
+                        Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                        Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                    Regions:
+                      Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                      Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                  Name: "value2"
+                  Regions:
+                    Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
+                    Visibility: "[Ln 3, Col 5] -> [Ln 3, Col 14]"
+                    Type: "[Ln 3, Col 15] -> [Ln 3, Col 23]"
+                    Name: "[Ln 3, Col 24] -> [Ln 3, Col 30]"
+                    ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
+                    DefaultValue: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
+                  Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                    Modifier: TypeModifier.var
+                    Regions:
+                      Self__: "[Ln 3, Col 15] -> [Ln 3, Col 23]"
+                      TypeName: "[Ln 3, Col 15] -> [Ln 3, Col 19]"
+                      Modifier: "[Ln 3, Col 20] -> [Ln 3, Col 23]"
+                    TypeName: "Char"
+                  Visibility: "VisibilityModifier.protected"
+                - # <class 'TheLanguage.Lexer.Statements.ClassMemberStatementLexerInfo.ClassMemberStatementLexerInfo'>
+                  ClassModifier: "ClassModifier.immutable"
+                  DefaultValue: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "rhs2"
+                      Regions:
+                        Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                        Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                    Regions:
+                      Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                      Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                  Name: "value3"
+                  Regions:
+                    Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+                    Visibility: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
+                    Type: "[Ln 4, Col 12] -> [Ln 4, Col 20]"
+                    Name: "[Ln 4, Col 21] -> [Ln 4, Col 27]"
+                    ClassModifier: "[Ln 4, Col 28] -> [Ln 4, Col 37]"
+                    DefaultValue: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
+                  Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                    Modifier: TypeModifier.var
+                    Regions:
+                      Self__: "[Ln 4, Col 12] -> [Ln 4, Col 20]"
+                      TypeName: "[Ln 4, Col 12] -> [Ln 4, Col 16]"
+                      Modifier: "[Ln 4, Col 17] -> [Ln 4, Col 20]"
+                    TypeName: "Char"
+                  Visibility: "VisibilityModifier.public"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[5, 1] (118)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

@@ -48,7 +48,6 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo import (
         FuncAndMethodDefinitionStatementLexerInfo,
-        FuncAndMethodDefinitionStatementLexerRegions,
         MethodType,
         OperatorType,
         TypeLexerInfo,
@@ -250,54 +249,55 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
 
             if visibility_node is not None:
-                visibility_data = VisibilityModifier.Extract(visibility_node)
+                visibility_info = VisibilityModifier.Extract(visibility_node)
             else:
-                visibility_data = None
+                visibility_info = None
 
             # <method_type_modifier>?
             method_type_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
 
             if method_type_modifier_node is not None:
-                method_type_modifier_data = cls._ExtractMethodType(method_type_modifier_node)
+                method_type_modifier_info = cls._ExtractMethodType(method_type_modifier_node)
             else:
-                method_type_modifier_data = None
+                method_type_modifier_info = None
 
             # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
             return_type_node = ExtractDynamic(cast(Node, nodes[3]))
-            return_type_data = cast(TypeLexerInfo, GetLexerInfo(return_type_node))
+            return_type_info = cast(TypeLexerInfo, GetLexerInfo(return_type_node))
 
             # <name>
             method_name_leaf = cast(Leaf, nodes[4])
-            method_name_data = cast(str, ExtractToken(method_name_leaf))
+            method_name_info = cast(str, ExtractToken(method_name_leaf))
 
-            if method_name_data.startswith("__") and method_name_data.endswith("__"):
-                operator_name = cls.NameOperatorMap.get(method_name_data, None)
+            if method_name_info.startswith("__") and method_name_info.endswith("__"):
+                operator_name = cls.NameOperatorMap.get(method_name_info, None)
                 if operator_name is None:
                     raise InvalidOperatorNameError.FromNode(
                         method_name_leaf,
-                        method_name_data,
+                        method_name_info,
                     )
 
-                method_name_data = operator_name
+                method_name_info = operator_name
 
             # <parameters>
-            parameters_node, parameters_data = ParametersPhraseItem.ExtractLexerInfo(cast(Node, nodes[5]))
+            parameters_node, parameters_info = ParametersPhraseItem.ExtractLexerInfo(cast(Node, nodes[5]))
 
             # <class_modifier>?
             class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[6])))
 
             if class_modifier_node is not None:
-                class_modifier_data = ClassModifier.Extract(class_modifier_node)
+                class_modifier_info = ClassModifier.Extract(class_modifier_node)
             else:
-                class_modifier_data = None
+                class_modifier_info = None
 
             # <statements> or Newline
             statements_node = cast(Node, ExtractOr(cast(Node, nodes[7])))
 
             if isinstance(statements_node, Leaf):
-                statements_data = None
+                statements_node = None
+                statements_info = None
             else:
-                statements_data = StatementsPhraseItem.Extract(statements_node)
+                statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
 
             # TODO: Use the statements
 
@@ -308,7 +308,6 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                 node,
                 FuncAndMethodDefinitionStatementLexerInfo(
                     CreateLexerRegions(
-                        FuncAndMethodDefinitionStatementLexerRegions, # type: ignore
                         node,
                         visibility_node,
                         method_type_modifier_node,
@@ -316,18 +315,19 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                         method_name_leaf,
                         parameters_node,
                         class_modifier_node,
-                    ),
+                        statements_node,
+                    ),  # type: ignore
                     ClassStatement.GetContainingClassLexerInfo(  # type: ignore
                         node,
                         cls.PHRASE_NAME,
                     ),
-                    visibility_data,  # type: ignore
-                    method_type_modifier_data,  # type: ignore
-                    return_type_data,  # type: ignore
-                    method_name_data,  # type: ignore
-                    parameters_data,  # type: ignore
-                    class_modifier_data,  # type: ignore
-                    statements_data is not None,  # type: ignore
+                    visibility_info,  # type: ignore
+                    method_type_modifier_info,  # type: ignore
+                    return_type_info,  # type: ignore
+                    method_name_info,  # type: ignore
+                    parameters_info,  # type: ignore
+                    class_modifier_info,  # type: ignore
+                    statements_info,
                 ),
             )
 

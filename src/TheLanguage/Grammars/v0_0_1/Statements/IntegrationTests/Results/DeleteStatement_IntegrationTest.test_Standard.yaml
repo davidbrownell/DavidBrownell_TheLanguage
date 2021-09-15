@@ -34,11 +34,10 @@ Children:
                   Start: 7
                 Whitespace: None
             Info: # <class 'TheLanguage.Lexer.Statements.DeleteStatementLexerInfo.DeleteStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.DeleteStatementLexerInfo.DeleteStatementLexerData'>
-                Name: "foo"
-              Regions: # <class 'TheLanguage.Lexer.Statements.DeleteStatementLexerInfo.DeleteStatementLexerRegions'>
-                Name: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
+              Name: "foo"
+              Regions:
                 Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+                Name: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (8)"
             Type: "Delete Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

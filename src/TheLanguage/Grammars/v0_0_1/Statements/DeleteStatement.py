@@ -35,11 +35,7 @@ with InitRelativeImports():
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
 
-    from ....Lexer.Statements.DeleteStatementLexerInfo import (
-        DeleteStatementLexerData,
-        DeleteStatementLexerInfo,
-        DeleteStatementLexerRegions,
-    )
+    from ....Lexer.Statements.DeleteStatementLexerInfo import DeleteStatementLexerInfo
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -92,17 +88,13 @@ class DeleteStatement(GrammarPhrase):
 
             # <name>
             name_leaf = cast(Leaf, nodes[1])
-            name_data = cast(str, ExtractToken(name_leaf))
+            name_info = cast(str, ExtractToken(name_leaf))
 
             SetLexerInfo(
                 node,
                 DeleteStatementLexerInfo(
-                    DeleteStatementLexerData(name_data),
-                    CreateLexerRegions(
-                        DeleteStatementLexerRegions,  # type: ignore
-                        node,
-                        name_leaf,
-                    ),
+                    CreateLexerRegions(node, name_leaf),  # type: ignore
+                    name_info,
                 ),
             )
 

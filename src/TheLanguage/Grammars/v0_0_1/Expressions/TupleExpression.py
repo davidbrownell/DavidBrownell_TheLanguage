@@ -35,9 +35,7 @@ with InitRelativeImports():
 
     from ....Lexer.Expressions.TupleExpressionLexerInfo import (
         ExpressionLexerInfo,
-        TupleExpressionLexerData,
         TupleExpressionLexerInfo,
-        TupleExpressionLexerRegions,
     )
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
@@ -77,14 +75,8 @@ class TupleExpression(TupleBase):
             SetLexerInfo(
                 node,
                 TupleExpressionLexerInfo(
-                    TupleExpressionLexerData(
-                        [cast(ExpressionLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
-                    ),
-                    CreateLexerRegions(
-                        TupleExpressionLexerRegions,  # type: ignore
-                        node,
-                        node,
-                    ),
+                    CreateLexerRegions(node, node),  # type: ignore
+                    [cast(ExpressionLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
                 ),
             )
 

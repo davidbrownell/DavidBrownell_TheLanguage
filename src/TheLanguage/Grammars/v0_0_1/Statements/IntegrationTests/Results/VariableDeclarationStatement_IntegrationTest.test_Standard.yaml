@@ -21,11 +21,10 @@ Children:
                               Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                             Whitespace: None
                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                            Name: "one"
-                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                            Name: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+                          Name: "one"
+                          Regions:
                             Self__: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+                            Name: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -66,11 +65,10 @@ Children:
                                       - 5
                                       - 6
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "value"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                    Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                                  Name: "value"
+                                  Regions:
                                     Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                                    Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
                                 IterBegin: "[1, 7] (6)"
                                 IterEnd: "[1, 12] (11)"
                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -78,16 +76,14 @@ Children:
                             IterEnd: "[1, 12] (11)"
                             Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                         Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                            Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                Name: "value"
-                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
-                                Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
-                          Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                            Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                            Name: "value"
+                            Regions:
+                              Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                              Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                          Regions:
                             Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                            Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
                         IterBegin: "[1, 7] (6)"
                         IterEnd: "[1, 12] (11)"
                         Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"

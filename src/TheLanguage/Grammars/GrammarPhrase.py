@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from dataclasses import dataclass, field
 
@@ -200,10 +200,12 @@ def CreateLexerRegion(
 
 
 # ----------------------------------------------------------------------
-LexerRegionsType                            = TypeVar("LexerRegionsType")
-
 def CreateLexerRegions(
-    regions_type: LexerRegionsType,
-    *nodes: Optional[Union[Leaf, Node]],
-) -> LexerRegionsType:
-    return regions_type(*[None if node is None else CreateLexerRegion(node) for node in nodes])  # type: ignore
+    *nodes: Union[Leaf, LexerRegion, Node, None],
+) -> List[Optional[LexerRegion]]:
+    return [
+        None if node is None else
+            node if isinstance(node, LexerRegion) else
+                CreateLexerRegion(node)
+        for node in nodes
+    ]

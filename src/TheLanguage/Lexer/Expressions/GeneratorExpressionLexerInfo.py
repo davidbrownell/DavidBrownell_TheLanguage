@@ -31,14 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
-    from ..LexerInfo import LexerRegions, Region
+    from .ExpressionLexerInfo import ExpressionLexerInfo
     from ..Names.NameLexerInfo import NameLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class GeneratorExpressionLexerData(ExpressionLexerData):
+class GeneratorExpressionLexerInfo(ExpressionLexerInfo):
     """\
     Example syntax:
 
@@ -55,19 +54,3 @@ class GeneratorExpressionLexerData(ExpressionLexerData):
     Name: NameLexerInfo
     SourceExpression: ExpressionLexerInfo
     ConditionExpression: Optional[ExpressionLexerInfo]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class GeneratorExpressionLexerRegions(LexerRegions):
-    DisplayExpression: Region
-    Name: Region
-    SourceExpression: Region
-    ConditionExpression: Optional[Region]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class GeneratorExpressionLexerInfo(ExpressionLexerInfo):
-    Data: GeneratorExpressionLexerData
-    Regions: GeneratorExpressionLexerRegions

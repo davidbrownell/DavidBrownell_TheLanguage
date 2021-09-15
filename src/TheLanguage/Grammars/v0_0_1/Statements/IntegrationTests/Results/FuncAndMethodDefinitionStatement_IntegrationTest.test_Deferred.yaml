@@ -141,13 +141,12 @@ Children:
                                                           - 36
                                                           - 37
                                                     Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                                      Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                        Modifier: None
-                                                        TypeName: "Int"
-                                                      Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                        Modifier: None
+                                                      Modifier: None
+                                                      Regions:
                                                         Self__: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
                                                         TypeName: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
+                                                        Modifier: None
+                                                      TypeName: "Int"
                                                     IterBegin: "[2, 21] (37)"
                                                     IterEnd: "[2, 24] (40)"
                                                     Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -203,28 +202,28 @@ Children:
                                             IterEnd: "[3, 1] (64)"
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
-                                            ClassModifier: "ClassModifier.immutable"
-                                            MethodType: "MethodType.deferred"
-                                            Name: "PublicDeferredMethod"
-                                            Parameters: None
-                                            ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                                Modifier: None
-                                                TypeName: "Int"
-                                              Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                                                Modifier: None
-                                                Self__: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
-                                                TypeName: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
-                                            Visibility: "VisibilityModifier.public"
-                                          Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
-                                            ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
-                                            MethodType: "[Ln 2, Col 12] -> [Ln 2, Col 20]"
-                                            Name: "[Ln 2, Col 25] -> [Ln 2, Col 45]"
-                                            Parameters: None
-                                            ReturnType: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
+                                          ClassModifier: "ClassModifier.immutable"
+                                          MethodType: "MethodType.deferred"
+                                          Name: "PublicDeferredMethod"
+                                          Paraemters: None
+                                          Regions:
                                             Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
                                             Visibility: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
+                                            MethodType: "[Ln 2, Col 12] -> [Ln 2, Col 20]"
+                                            ReturnType: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
+                                            Name: "[Ln 2, Col 25] -> [Ln 2, Col 45]"
+                                            Paraemters: None
+                                            ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                                            Statements: None
+                                          ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                                            Modifier: None
+                                            Regions:
+                                              Self__: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
+                                              TypeName: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
+                                              Modifier: None
+                                            TypeName: "Int"
+                                          Statements: None
+                                          Visibility: "VisibilityModifier.public"
                                         IterBegin: "[2, 5] (21)"
                                         IterEnd: "[3, 1] (64)"
                                         Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -255,48 +254,47 @@ Children:
                 IterEnd: "[3, 1] (64)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
-                Base: None
-                ClassModifier: "ClassModifier.immutable"
-                ClassType: "ClassType.Primitive"
-                Interfaces: None
-                Mixins: None
-                Name: "Foo"
-                Statements:
-                  - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
-                      ClassModifier: "ClassModifier.immutable"
-                      MethodType: "MethodType.deferred"
-                      Name: "PublicDeferredMethod"
-                      Parameters: None
-                      ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                        Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                          Modifier: None
-                          TypeName: "Int"
-                        Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                          Modifier: None
-                          Self__: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
-                          TypeName: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
-                      Visibility: "VisibilityModifier.public"
-                    Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
-                      ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
-                      MethodType: "[Ln 2, Col 12] -> [Ln 2, Col 20]"
-                      Name: "[Ln 2, Col 25] -> [Ln 2, Col 45]"
-                      Parameters: None
-                      ReturnType: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
-                      Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
-                      Visibility: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
-                Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
-                Base: None
+              Base: None
+              ClassModifier: "ClassModifier.immutable"
+              ClassType: "ClassType.Primitive"
+              Interfaces: None
+              Mixins: None
+              Name: "Foo"
+              Regions:
+                Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 10]"
+                Name: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                Base: None
                 Interfaces: None
                 Mixins: None
-                Name: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
-                Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
                 Statements: "[Ln 1, Col 16] -> [Ln 3, Col 1]"
-                Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+              Statements:
+                - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
+                  ClassModifier: "ClassModifier.immutable"
+                  MethodType: "MethodType.deferred"
+                  Name: "PublicDeferredMethod"
+                  Paraemters: None
+                  Regions:
+                    Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                    Visibility: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
+                    MethodType: "[Ln 2, Col 12] -> [Ln 2, Col 20]"
+                    ReturnType: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
+                    Name: "[Ln 2, Col 25] -> [Ln 2, Col 45]"
+                    Paraemters: None
+                    ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                    Statements: None
+                  ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                    Modifier: None
+                    Regions:
+                      Self__: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
+                      TypeName: "[Ln 2, Col 21] -> [Ln 2, Col 24]"
+                      Modifier: None
+                    TypeName: "Int"
+                  Statements: None
+                  Visibility: "VisibilityModifier.public"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (64)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

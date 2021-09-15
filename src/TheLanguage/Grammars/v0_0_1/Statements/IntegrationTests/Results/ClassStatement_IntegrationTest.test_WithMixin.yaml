@@ -183,38 +183,34 @@ Children:
                 IterEnd: "[4, 1] (38)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
-                Base: None
-                ClassModifier: "ClassModifier.immutable"
-                ClassType: "ClassType.Class"
-                Interfaces: None
-                Mixins:
-                  - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerData'>
-                      Name: "Mixin1"
-                      Visibility: "VisibilityModifier.private"
-                    Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: "[Ln 1, Col 21] -> [Ln 1, Col 27]"
-                      Self__: "[Ln 1, Col 21] -> [Ln 1, Col 27]"
-                      Visibility: "[Ln 1, Col 21] -> [Ln 1, Col 27]"
-                Name: "Class1"
-                Statements:
-                  - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
-                      {}
-                    Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
-                Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
-                Base: None
+              Base: None
+              ClassModifier: "ClassModifier.immutable"
+              ClassType: "ClassType.Class"
+              Interfaces: None
+              Mixins:
+                - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
+                  Name: "Mixin1"
+                  Regions:
+                    Self__: "[Ln 1, Col 21] -> [Ln 1, Col 27]"
+                    Visibility: "[Ln 1, Col 21] -> [Ln 1, Col 27]"
+                    Name: "[Ln 1, Col 21] -> [Ln 1, Col 27]"
+                  Visibility: "VisibilityModifier.private"
+              Name: "Class1"
+              Regions:
+                Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Name: "[Ln 1, Col 7] -> [Ln 1, Col 13]"
+                Base: None
                 Interfaces: None
                 Mixins: "[Ln 1, Col 16] -> [Ln 1, Col 27]"
-                Name: "[Ln 1, Col 7] -> [Ln 1, Col 13]"
-                Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 Statements: "[Ln 1, Col 27] -> [Ln 4, Col 1]"
-                Visibility: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+              Statements:
+                - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                  Regions:
+                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[4, 1] (38)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -420,38 +416,34 @@ Children:
                 IterEnd: "[7, 1] (77)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
-                Base: None
-                ClassModifier: "ClassModifier.immutable"
-                ClassType: "ClassType.Class"
-                Interfaces: None
-                Mixins:
-                  - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerData'>
-                      Name: "Mixin2"
-                      Visibility: "VisibilityModifier.private"
-                    Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: "[Ln 4, Col 21] -> [Ln 4, Col 27]"
-                      Self__: "[Ln 4, Col 21] -> [Ln 4, Col 28]"
-                      Visibility: "[Ln 4, Col 21] -> [Ln 4, Col 28]"
-                Name: "Class2"
-                Statements:
-                  - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
-                      {}
-                    Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
-                Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
-                Base: None
+              Base: None
+              ClassModifier: "ClassModifier.immutable"
+              ClassType: "ClassType.Class"
+              Interfaces: None
+              Mixins:
+                - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
+                  Name: "Mixin2"
+                  Regions:
+                    Self__: "[Ln 4, Col 21] -> [Ln 4, Col 28]"
+                    Visibility: "[Ln 4, Col 21] -> [Ln 4, Col 28]"
+                    Name: "[Ln 4, Col 21] -> [Ln 4, Col 27]"
+                  Visibility: "VisibilityModifier.private"
+              Name: "Class2"
+              Regions:
+                Self__: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
+                Visibility: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 ClassModifier: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 ClassType: "[Ln 4, Col 1] -> [Ln 4, Col 6]"
+                Name: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
+                Base: None
                 Interfaces: None
                 Mixins: "[Ln 4, Col 16] -> [Ln 4, Col 28]"
-                Name: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
-                Self__: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 Statements: "[Ln 4, Col 28] -> [Ln 7, Col 1]"
-                Visibility: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
+              Statements:
+                - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                  Regions:
+                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[4, 1] (38)"
             IterEnd: "[7, 1] (77)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -678,38 +670,34 @@ Children:
                 IterEnd: "[12, 1] (124)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
-                Base: None
-                ClassModifier: "ClassModifier.immutable"
-                ClassType: "ClassType.Class"
-                Interfaces: None
-                Mixins:
-                  - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerData'>
-                      Name: "Mixin3"
-                      Visibility: "VisibilityModifier.private"
-                    Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: "[Ln 8, Col 5] -> [Ln 8, Col 11]"
-                      Self__: "[Ln 8, Col 5] -> [Ln 8, Col 12]"
-                      Visibility: "[Ln 8, Col 5] -> [Ln 8, Col 12]"
-                Name: "Class3"
-                Statements:
-                  - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
-                      {}
-                    Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
-                Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
-                Base: None
+              Base: None
+              ClassModifier: "ClassModifier.immutable"
+              ClassType: "ClassType.Class"
+              Interfaces: None
+              Mixins:
+                - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
+                  Name: "Mixin3"
+                  Regions:
+                    Self__: "[Ln 8, Col 5] -> [Ln 8, Col 12]"
+                    Visibility: "[Ln 8, Col 5] -> [Ln 8, Col 12]"
+                    Name: "[Ln 8, Col 5] -> [Ln 8, Col 11]"
+                  Visibility: "VisibilityModifier.private"
+              Name: "Class3"
+              Regions:
+                Self__: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
+                Visibility: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
                 ClassModifier: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
                 ClassType: "[Ln 7, Col 1] -> [Ln 7, Col 6]"
+                Name: "[Ln 7, Col 7] -> [Ln 7, Col 13]"
+                Base: None
                 Interfaces: None
                 Mixins: "[Ln 7, Col 16] -> [Ln 9, Col 2]"
-                Name: "[Ln 7, Col 7] -> [Ln 7, Col 13]"
-                Self__: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
                 Statements: "[Ln 9, Col 2] -> [Ln 12, Col 1]"
-                Visibility: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
+              Statements:
+                - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                  Regions:
+                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[7, 1] (77)"
             IterEnd: "[12, 1] (124)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -956,38 +944,34 @@ Children:
                 IterEnd: "[16, 1] (177)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerData'>
-                Base: None
-                ClassModifier: "ClassModifier.immutable"
-                ClassType: "ClassType.Class"
-                Interfaces: None
-                Mixins:
-                  - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerData'>
-                      Name: "Mixin4"
-                      Visibility: "VisibilityModifier.public"
-                    Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerRegions'>
-                      Name: "[Ln 13, Col 12] -> [Ln 13, Col 18]"
-                      Self__: "[Ln 13, Col 5] -> [Ln 13, Col 19]"
-                      Visibility: "[Ln 13, Col 5] -> [Ln 13, Col 11]"
-                Name: "Class4"
-                Statements:
-                  - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                    Data: # <class 'TheLanguage.Lexer.LexerInfo.LexerData'>
-                      {}
-                    Regions: # <class 'TheLanguage.Lexer.LexerInfo.LexerRegions'>
-                      Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
-                Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassStatementLexerRegions'>
-                Base: None
+              Base: None
+              ClassModifier: "ClassModifier.immutable"
+              ClassType: "ClassType.Class"
+              Interfaces: None
+              Mixins:
+                - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
+                  Name: "Mixin4"
+                  Regions:
+                    Self__: "[Ln 13, Col 5] -> [Ln 13, Col 19]"
+                    Visibility: "[Ln 13, Col 5] -> [Ln 13, Col 11]"
+                    Name: "[Ln 13, Col 12] -> [Ln 13, Col 18]"
+                  Visibility: "VisibilityModifier.public"
+              Name: "Class4"
+              Regions:
+                Self__: "[Ln 12, Col 1] -> [Ln 16, Col 1]"
+                Visibility: "[Ln 12, Col 1] -> [Ln 16, Col 1]"
                 ClassModifier: "[Ln 12, Col 1] -> [Ln 16, Col 1]"
                 ClassType: "[Ln 12, Col 1] -> [Ln 12, Col 6]"
+                Name: "[Ln 12, Col 7] -> [Ln 12, Col 13]"
+                Base: None
                 Interfaces: None
                 Mixins: "[Ln 12, Col 16] -> [Ln 14, Col 2]"
-                Name: "[Ln 12, Col 7] -> [Ln 12, Col 13]"
-                Self__: "[Ln 12, Col 1] -> [Ln 16, Col 1]"
                 Statements: "[Ln 14, Col 2] -> [Ln 16, Col 1]"
-                Visibility: "[Ln 12, Col 1] -> [Ln 16, Col 1]"
+              Statements:
+                - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                  Regions:
+                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[12, 1] (124)"
             IterEnd: "[16, 1] (177)"
             Type: "Class Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

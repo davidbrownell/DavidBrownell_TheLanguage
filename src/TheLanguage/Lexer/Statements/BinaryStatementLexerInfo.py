@@ -31,8 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
-    from ..LexerInfo import LexerRegions, Region
+    from .StatementLexerInfo import StatementLexerInfo
     from ..Expressions.ExpressionLexerInfo import ExpressionLexerInfo
     from ..Names.NameLexerInfo import NameLexerInfo
 
@@ -58,22 +57,7 @@ class OperatorType(Enum):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class BinaryStatementLexerData(StatementLexerData):
+class BinaryStatementLexerInfo(StatementLexerInfo):
     Name: NameLexerInfo
     Operator: OperatorType
     Expression: ExpressionLexerInfo
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class BinaryStatementLexerRegions(LexerRegions):
-    Name: Region
-    Operator: Region
-    Expression: Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class BinaryStatementLexerInfo(StatementLexerInfo):
-    Data: BinaryStatementLexerData
-    Regions: BinaryStatementLexerRegions

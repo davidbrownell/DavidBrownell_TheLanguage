@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Union
+from typing import cast, List, Optional, Tuple
 
 import CommonEnvironment
 
@@ -30,13 +30,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
+
+    from ....Lexer.LexerInfo import GetLexerInfo
+    from ....Lexer.Statements.StatementLexerInfo import StatementLexerInfo
+
     from ....Parser.Phrases.DSL import (
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOr,
         ExtractRepeat,
         ExtractSequence,
-        Leaf,
         Node,
         PhraseItem,
     )
@@ -79,10 +82,9 @@ def Create() -> PhraseItem:
 
 
 # ----------------------------------------------------------------------
-def Extract(
+def ExtractLexerInfo(
     node: Node,
-) -> List[Union[Leaf, Node]]:
-    # TODO: Revisit this
+) -> List[StatementLexerInfo]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
 
@@ -102,4 +104,4 @@ def Extract(
         statements = [ExtractDynamic(statements_node)]
 
     assert statements
-    return statements
+    return [cast(StatementLexerInfo, GetLexerInfo(statement)) for statement in statements]
