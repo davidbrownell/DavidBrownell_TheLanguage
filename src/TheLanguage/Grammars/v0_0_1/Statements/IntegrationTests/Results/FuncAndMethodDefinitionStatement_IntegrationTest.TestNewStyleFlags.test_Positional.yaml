@@ -22,10 +22,10 @@ Children:
                             Whitespace: None
                         Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Modifier: None
-                          Regions:
+                          Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                            Modifier: None
                             Self__: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
                             TypeName: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
-                            Modifier: None
                           TypeName: "Int"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
@@ -105,10 +105,10 @@ Children:
                                                       - 14
                                                 Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                   Modifier: None
-                                                  Regions:
+                                                  Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                                                    Modifier: None
                                                     Self__: "[Ln 1, Col 15] -> [Ln 1, Col 18]"
                                                     TypeName: "[Ln 1, Col 15] -> [Ln 1, Col 18]"
-                                                    Modifier: None
                                                   TypeName: "Int"
                                                 IterBegin: "[1, 15] (14)"
                                                 IterEnd: "[1, 18] (17)"
@@ -164,10 +164,10 @@ Children:
                                                               - 21
                                                         Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                           Modifier: None
-                                                          Regions:
+                                                          Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                                                            Modifier: None
                                                             Self__: "[Ln 1, Col 22] -> [Ln 1, Col 25]"
                                                             TypeName: "[Ln 1, Col 22] -> [Ln 1, Col 25]"
-                                                            Modifier: None
                                                           TypeName: "Int"
                                                         IterBegin: "[1, 22] (21)"
                                                         IterEnd: "[1, 25] (24)"
@@ -224,10 +224,10 @@ Children:
                                                               - 28
                                                         Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                           Modifier: None
-                                                          Regions:
+                                                          Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                                                            Modifier: None
                                                             Self__: "[Ln 1, Col 29] -> [Ln 1, Col 32]"
                                                             TypeName: "[Ln 1, Col 29] -> [Ln 1, Col 32]"
-                                                            Modifier: None
                                                           TypeName: "Int"
                                                         IterBegin: "[1, 29] (28)"
                                                         IterEnd: "[1, 32] (31)"
@@ -376,7 +376,7 @@ Children:
               ClassModifier: None
               MethodType: "MethodType.standard"
               Name: "Func"
-              Paraemters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
+              Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
                 Any: None
                 Keyword: None
                 Positional:
@@ -384,77 +384,77 @@ Children:
                     Default: None
                     IsVarArgs: None
                     Name: "a"
-                    Regions:
-                      Self__: "[Ln 1, Col 15] -> [Ln 1, Col 20]"
-                      Type: "[Ln 1, Col 15] -> [Ln 1, Col 18]"
-                      Name: "[Ln 1, Col 19] -> [Ln 1, Col 20]"
+                    Regions: # <class 'types.ParameterLexerInfoRegions'>
                       Default: None
                       IsVarArgs: None
+                      Name: "[Ln 1, Col 19] -> [Ln 1, Col 20]"
+                      Self__: "[Ln 1, Col 15] -> [Ln 1, Col 20]"
+                      Type: "[Ln 1, Col 15] -> [Ln 1, Col 18]"
                     Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                       Modifier: None
-                      Regions:
+                      Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                        Modifier: None
                         Self__: "[Ln 1, Col 15] -> [Ln 1, Col 18]"
                         TypeName: "[Ln 1, Col 15] -> [Ln 1, Col 18]"
-                        Modifier: None
                       TypeName: "Int"
                   - # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerInfo'>
                     Default: None
                     IsVarArgs: None
                     Name: "b"
-                    Regions:
-                      Self__: "[Ln 1, Col 22] -> [Ln 1, Col 27]"
-                      Type: "[Ln 1, Col 22] -> [Ln 1, Col 25]"
-                      Name: "[Ln 1, Col 26] -> [Ln 1, Col 27]"
+                    Regions: # <class 'types.ParameterLexerInfoRegions'>
                       Default: None
                       IsVarArgs: None
+                      Name: "[Ln 1, Col 26] -> [Ln 1, Col 27]"
+                      Self__: "[Ln 1, Col 22] -> [Ln 1, Col 27]"
+                      Type: "[Ln 1, Col 22] -> [Ln 1, Col 25]"
                     Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                       Modifier: None
-                      Regions:
+                      Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                        Modifier: None
                         Self__: "[Ln 1, Col 22] -> [Ln 1, Col 25]"
                         TypeName: "[Ln 1, Col 22] -> [Ln 1, Col 25]"
-                        Modifier: None
                       TypeName: "Int"
                   - # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParameterLexerInfo'>
                     Default: None
                     IsVarArgs: None
                     Name: "c"
-                    Regions:
-                      Self__: "[Ln 1, Col 29] -> [Ln 1, Col 34]"
-                      Type: "[Ln 1, Col 29] -> [Ln 1, Col 32]"
-                      Name: "[Ln 1, Col 33] -> [Ln 1, Col 34]"
+                    Regions: # <class 'types.ParameterLexerInfoRegions'>
                       Default: None
                       IsVarArgs: None
+                      Name: "[Ln 1, Col 33] -> [Ln 1, Col 34]"
+                      Self__: "[Ln 1, Col 29] -> [Ln 1, Col 34]"
+                      Type: "[Ln 1, Col 29] -> [Ln 1, Col 32]"
                     Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                       Modifier: None
-                      Regions:
+                      Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                        Modifier: None
                         Self__: "[Ln 1, Col 29] -> [Ln 1, Col 32]"
                         TypeName: "[Ln 1, Col 29] -> [Ln 1, Col 32]"
-                        Modifier: None
                       TypeName: "Int"
-                Regions:
-                  Self__: "[Ln 1, Col 10] -> [Ln 1, Col 34]"
-                  Positional: "[Ln 1, Col 10] -> [Ln 1, Col 34]"
-                  Keyword: None
+                Regions: # <class 'types.ParametersLexerInfoRegions'>
                   Any: None
-              Regions:
-                Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
-                Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
-                MethodType: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
-                ReturnType: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
-                Name: "[Ln 1, Col 5] -> [Ln 1, Col 9]"
-                Paraemters: "[Ln 1, Col 9] -> [Ln 1, Col 35]"
+                  Keyword: None
+                  Positional: "[Ln 1, Col 10] -> [Ln 1, Col 34]"
+                  Self__: "[Ln 1, Col 10] -> [Ln 1, Col 34]"
+              Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                 ClassModifier: None
+                MethodType: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+                Name: "[Ln 1, Col 5] -> [Ln 1, Col 9]"
+                Parameters: "[Ln 1, Col 9] -> [Ln 1, Col 35]"
+                ReturnType: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+                Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
                 Statements: "[Ln 1, Col 35] -> [Ln 3, Col 1]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
               ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                 Modifier: None
-                Regions:
+                Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                  Modifier: None
                   Self__: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
                   TypeName: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
-                  Modifier: None
                 TypeName: "Int"
               Statements:
                 - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions:
+                  Regions: # <class 'types.LexerInfoRegions'>
                     Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"

@@ -22,9 +22,9 @@ Children:
                             Whitespace: None
                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                           Name: "value"
-                          Regions:
-                            Self__: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
                             Name: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                            Self__: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 6] (5)"
                         Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -84,10 +84,10 @@ Children:
                         Info: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
                           Arguments: None
                           Name: "Func"
-                          Regions:
-                            Self__: "[Ln 1, Col 9] -> [Ln 1, Col 15]"
-                            Name: "[Ln 1, Col 9] -> [Ln 1, Col 13]"
+                          Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
                             Arguments: None
+                            Name: "[Ln 1, Col 9] -> [Ln 1, Col 13]"
+                            Self__: "[Ln 1, Col 9] -> [Ln 1, Col 15]"
                         IterBegin: "[1, 9] (8)"
                         IterEnd: "[1, 15] (14)"
                         Type: "Func Invocation Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

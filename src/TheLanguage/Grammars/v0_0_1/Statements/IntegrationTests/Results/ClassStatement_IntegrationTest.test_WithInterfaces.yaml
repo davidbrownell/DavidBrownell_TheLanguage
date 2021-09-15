@@ -222,33 +222,33 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface1A"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 1, Col 27] -> [Ln 1, Col 38]"
                     Self__: "[Ln 1, Col 27] -> [Ln 1, Col 51]"
                     Visibility: "[Ln 1, Col 27] -> [Ln 1, Col 51]"
-                    Name: "[Ln 1, Col 27] -> [Ln 1, Col 38]"
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface1B"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 1, Col 40] -> [Ln 1, Col 51]"
                     Self__: "[Ln 1, Col 27] -> [Ln 1, Col 51]"
                     Visibility: "[Ln 1, Col 27] -> [Ln 1, Col 51]"
-                    Name: "[Ln 1, Col 40] -> [Ln 1, Col 51]"
                   Visibility: "VisibilityModifier.private"
               Mixins: None
               Name: "Class1"
-              Regions:
-                Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
-                Visibility: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+              Regions: # <class 'types.ClassStatementLexerInfoRegions'>
+                Base: None
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
-                Name: "[Ln 1, Col 7] -> [Ln 1, Col 13]"
-                Base: None
                 Interfaces: "[Ln 1, Col 16] -> [Ln 1, Col 51]"
                 Mixins: None
+                Name: "[Ln 1, Col 7] -> [Ln 1, Col 13]"
+                Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 Statements: "[Ln 1, Col 51] -> [Ln 4, Col 1]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
               Statements:
                 - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions:
+                  Regions: # <class 'types.LexerInfoRegions'>
                     Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
@@ -495,33 +495,33 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface2A"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 4, Col 27] -> [Ln 4, Col 38]"
                     Self__: "[Ln 4, Col 27] -> [Ln 4, Col 52]"
                     Visibility: "[Ln 4, Col 27] -> [Ln 4, Col 52]"
-                    Name: "[Ln 4, Col 27] -> [Ln 4, Col 38]"
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface2B"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 4, Col 40] -> [Ln 4, Col 51]"
                     Self__: "[Ln 4, Col 27] -> [Ln 4, Col 52]"
                     Visibility: "[Ln 4, Col 27] -> [Ln 4, Col 52]"
-                    Name: "[Ln 4, Col 40] -> [Ln 4, Col 51]"
                   Visibility: "VisibilityModifier.private"
               Mixins: None
               Name: "Class2"
-              Regions:
-                Self__: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
-                Visibility: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
+              Regions: # <class 'types.ClassStatementLexerInfoRegions'>
+                Base: None
                 ClassModifier: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 ClassType: "[Ln 4, Col 1] -> [Ln 4, Col 6]"
-                Name: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
-                Base: None
                 Interfaces: "[Ln 4, Col 16] -> [Ln 4, Col 52]"
                 Mixins: None
+                Name: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
+                Self__: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 Statements: "[Ln 4, Col 52] -> [Ln 7, Col 1]"
+                Visibility: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
               Statements:
                 - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions:
+                  Regions: # <class 'types.LexerInfoRegions'>
                     Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               Visibility: "VisibilityModifier.private"
             IterBegin: "[4, 1] (62)"
@@ -776,33 +776,33 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface3A"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 7, Col 28] -> [Ln 7, Col 39]"
                     Self__: "[Ln 7, Col 28] -> [Ln 7, Col 52]"
                     Visibility: "[Ln 7, Col 28] -> [Ln 7, Col 52]"
-                    Name: "[Ln 7, Col 28] -> [Ln 7, Col 39]"
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface3B"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 7, Col 41] -> [Ln 7, Col 52]"
                     Self__: "[Ln 7, Col 28] -> [Ln 7, Col 52]"
                     Visibility: "[Ln 7, Col 28] -> [Ln 7, Col 52]"
-                    Name: "[Ln 7, Col 41] -> [Ln 7, Col 52]"
                   Visibility: "VisibilityModifier.private"
               Mixins: None
               Name: "Class3"
-              Regions:
-                Self__: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
-                Visibility: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
+              Regions: # <class 'types.ClassStatementLexerInfoRegions'>
+                Base: None
                 ClassModifier: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
                 ClassType: "[Ln 7, Col 1] -> [Ln 7, Col 6]"
-                Name: "[Ln 7, Col 7] -> [Ln 7, Col 13]"
-                Base: None
                 Interfaces: "[Ln 7, Col 16] -> [Ln 7, Col 53]"
                 Mixins: None
+                Name: "[Ln 7, Col 7] -> [Ln 7, Col 13]"
+                Self__: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
                 Statements: "[Ln 7, Col 53] -> [Ln 10, Col 1]"
+                Visibility: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
               Statements:
                 - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions:
+                  Regions: # <class 'types.LexerInfoRegions'>
                     Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               Visibility: "VisibilityModifier.private"
             IterBegin: "[7, 1] (125)"
@@ -1070,33 +1070,33 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface4A"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 10, Col 28] -> [Ln 10, Col 39]"
                     Self__: "[Ln 10, Col 28] -> [Ln 10, Col 53]"
                     Visibility: "[Ln 10, Col 28] -> [Ln 10, Col 53]"
-                    Name: "[Ln 10, Col 28] -> [Ln 10, Col 39]"
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface4B"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 10, Col 41] -> [Ln 10, Col 52]"
                     Self__: "[Ln 10, Col 28] -> [Ln 10, Col 53]"
                     Visibility: "[Ln 10, Col 28] -> [Ln 10, Col 53]"
-                    Name: "[Ln 10, Col 41] -> [Ln 10, Col 52]"
                   Visibility: "VisibilityModifier.private"
               Mixins: None
               Name: "Class4"
-              Regions:
-                Self__: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
-                Visibility: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
+              Regions: # <class 'types.ClassStatementLexerInfoRegions'>
+                Base: None
                 ClassModifier: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
                 ClassType: "[Ln 10, Col 1] -> [Ln 10, Col 6]"
-                Name: "[Ln 10, Col 7] -> [Ln 10, Col 13]"
-                Base: None
                 Interfaces: "[Ln 10, Col 16] -> [Ln 10, Col 54]"
                 Mixins: None
+                Name: "[Ln 10, Col 7] -> [Ln 10, Col 13]"
+                Self__: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
                 Statements: "[Ln 10, Col 54] -> [Ln 13, Col 1]"
+                Visibility: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
               Statements:
                 - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions:
+                  Regions: # <class 'types.LexerInfoRegions'>
                     Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               Visibility: "VisibilityModifier.private"
             IterBegin: "[10, 1] (189)"
@@ -1349,33 +1349,33 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface5A"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 14, Col 5] -> [Ln 14, Col 16]"
                     Self__: "[Ln 14, Col 5] -> [Ln 15, Col 16]"
                     Visibility: "[Ln 14, Col 5] -> [Ln 15, Col 16]"
-                    Name: "[Ln 14, Col 5] -> [Ln 14, Col 16]"
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface5B"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 15, Col 5] -> [Ln 15, Col 16]"
                     Self__: "[Ln 14, Col 5] -> [Ln 15, Col 16]"
                     Visibility: "[Ln 14, Col 5] -> [Ln 15, Col 16]"
-                    Name: "[Ln 15, Col 5] -> [Ln 15, Col 16]"
                   Visibility: "VisibilityModifier.private"
               Mixins: None
               Name: "Class5"
-              Regions:
-                Self__: "[Ln 13, Col 1] -> [Ln 19, Col 1]"
-                Visibility: "[Ln 13, Col 1] -> [Ln 19, Col 1]"
+              Regions: # <class 'types.ClassStatementLexerInfoRegions'>
+                Base: None
                 ClassModifier: "[Ln 13, Col 1] -> [Ln 19, Col 1]"
                 ClassType: "[Ln 13, Col 1] -> [Ln 13, Col 6]"
-                Name: "[Ln 13, Col 7] -> [Ln 13, Col 13]"
-                Base: None
                 Interfaces: "[Ln 13, Col 16] -> [Ln 16, Col 2]"
                 Mixins: None
+                Name: "[Ln 13, Col 7] -> [Ln 13, Col 13]"
+                Self__: "[Ln 13, Col 1] -> [Ln 19, Col 1]"
                 Statements: "[Ln 16, Col 2] -> [Ln 19, Col 1]"
+                Visibility: "[Ln 13, Col 1] -> [Ln 19, Col 1]"
               Statements:
                 - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions:
+                  Regions: # <class 'types.LexerInfoRegions'>
                     Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               Visibility: "VisibilityModifier.private"
             IterBegin: "[13, 1] (254)"
@@ -1681,33 +1681,33 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface6A"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 20, Col 15] -> [Ln 20, Col 26]"
                     Self__: "[Ln 20, Col 5] -> [Ln 21, Col 24]"
                     Visibility: "[Ln 20, Col 5] -> [Ln 20, Col 14]"
-                    Name: "[Ln 20, Col 15] -> [Ln 20, Col 26]"
                   Visibility: "VisibilityModifier.protected"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface6B"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 21, Col 12] -> [Ln 21, Col 23]"
                     Self__: "[Ln 20, Col 5] -> [Ln 21, Col 24]"
                     Visibility: "[Ln 21, Col 5] -> [Ln 21, Col 11]"
-                    Name: "[Ln 21, Col 12] -> [Ln 21, Col 23]"
                   Visibility: "VisibilityModifier.public"
               Mixins: None
               Name: "Class6"
-              Regions:
-                Self__: "[Ln 19, Col 1] -> [Ln 25, Col 1]"
-                Visibility: "[Ln 19, Col 1] -> [Ln 25, Col 1]"
+              Regions: # <class 'types.ClassStatementLexerInfoRegions'>
+                Base: None
                 ClassModifier: "[Ln 19, Col 1] -> [Ln 25, Col 1]"
                 ClassType: "[Ln 19, Col 1] -> [Ln 19, Col 6]"
-                Name: "[Ln 19, Col 7] -> [Ln 19, Col 13]"
-                Base: None
                 Interfaces: "[Ln 19, Col 16] -> [Ln 22, Col 2]"
                 Mixins: None
+                Name: "[Ln 19, Col 7] -> [Ln 19, Col 13]"
+                Self__: "[Ln 19, Col 1] -> [Ln 25, Col 1]"
                 Statements: "[Ln 22, Col 2] -> [Ln 25, Col 1]"
+                Visibility: "[Ln 19, Col 1] -> [Ln 25, Col 1]"
               Statements:
                 - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions:
+                  Regions: # <class 'types.LexerInfoRegions'>
                     Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               Visibility: "VisibilityModifier.private"
             IterBegin: "[19, 1] (328)"
@@ -2051,54 +2051,54 @@ Children:
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface7A"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 26, Col 5] -> [Ln 26, Col 16]"
                     Self__: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
                     Visibility: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
-                    Name: "[Ln 26, Col 5] -> [Ln 26, Col 16]"
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface7B"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 26, Col 18] -> [Ln 26, Col 29]"
                     Self__: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
                     Visibility: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
-                    Name: "[Ln 26, Col 18] -> [Ln 26, Col 29]"
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface7C"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 27, Col 9] -> [Ln 27, Col 20]"
                     Self__: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
                     Visibility: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
-                    Name: "[Ln 27, Col 9] -> [Ln 27, Col 20]"
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface7D"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 28, Col 13] -> [Ln 28, Col 24]"
                     Self__: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
                     Visibility: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
-                    Name: "[Ln 28, Col 13] -> [Ln 28, Col 24]"
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface7E"
-                  Regions:
+                  Regions: # <class 'types.ClassDependencyLexerInfoRegions'>
+                    Name: "[Ln 29, Col 5] -> [Ln 29, Col 16]"
                     Self__: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
                     Visibility: "[Ln 26, Col 5] -> [Ln 29, Col 17]"
-                    Name: "[Ln 29, Col 5] -> [Ln 29, Col 16]"
                   Visibility: "VisibilityModifier.private"
               Mixins: None
               Name: "Class7"
-              Regions:
-                Self__: "[Ln 25, Col 1] -> [Ln 32, Col 1]"
-                Visibility: "[Ln 25, Col 1] -> [Ln 32, Col 1]"
+              Regions: # <class 'types.ClassStatementLexerInfoRegions'>
+                Base: None
                 ClassModifier: "[Ln 25, Col 1] -> [Ln 32, Col 1]"
                 ClassType: "[Ln 25, Col 1] -> [Ln 25, Col 6]"
-                Name: "[Ln 25, Col 7] -> [Ln 25, Col 13]"
-                Base: None
                 Interfaces: "[Ln 25, Col 16] -> [Ln 30, Col 2]"
                 Mixins: None
+                Name: "[Ln 25, Col 7] -> [Ln 25, Col 13]"
+                Self__: "[Ln 25, Col 1] -> [Ln 32, Col 1]"
                 Statements: "[Ln 30, Col 2] -> [Ln 32, Col 1]"
+                Visibility: "[Ln 25, Col 1] -> [Ln 32, Col 1]"
               Statements:
                 - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions:
+                  Regions: # <class 'types.LexerInfoRegions'>
                     Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               Visibility: "VisibilityModifier.private"
             IterBegin: "[25, 1] (420)"

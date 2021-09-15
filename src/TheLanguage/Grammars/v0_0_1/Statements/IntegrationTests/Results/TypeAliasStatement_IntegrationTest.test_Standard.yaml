@@ -52,10 +52,10 @@ Children:
                               - 17
                         Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                           Modifier: None
-                          Regions:
+                          Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                            Modifier: None
                             Self__: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
                             TypeName: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
-                            Modifier: None
                           TypeName: "Int"
                         IterBegin: "[1, 18] (17)"
                         IterEnd: "[1, 21] (20)"
@@ -152,10 +152,10 @@ Children:
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                           Modifier: None
-                                          Regions:
+                                          Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                                            Modifier: None
                                             Self__: "[Ln 2, Col 18] -> [Ln 2, Col 21]"
                                             TypeName: "[Ln 2, Col 18] -> [Ln 2, Col 21]"
-                                            Modifier: None
                                           TypeName: "Int"
                                         IterBegin: "[2, 18] (38)"
                                         IterEnd: "[2, 21] (41)"
@@ -196,10 +196,10 @@ Children:
                                                       - 43
                                                 Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                   Modifier: None
-                                                  Regions:
+                                                  Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                                                    Modifier: None
                                                     Self__: "[Ln 2, Col 23] -> [Ln 2, Col 27]"
                                                     TypeName: "[Ln 2, Col 23] -> [Ln 2, Col 27]"
-                                                    Modifier: None
                                                   TypeName: "Bool"
                                                 IterBegin: "[2, 23] (43)"
                                                 IterEnd: "[2, 27] (47)"
@@ -241,10 +241,10 @@ Children:
                                                       - 49
                                                 Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                                                   Modifier: None
-                                                  Regions:
+                                                  Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                                                    Modifier: None
                                                     Self__: "[Ln 2, Col 29] -> [Ln 2, Col 33]"
                                                     TypeName: "[Ln 2, Col 29] -> [Ln 2, Col 33]"
-                                                    Modifier: None
                                                   TypeName: "Char"
                                                 IterBegin: "[2, 29] (49)"
                                                 IterEnd: "[2, 33] (53)"
@@ -273,30 +273,30 @@ Children:
                             IterEnd: "[2, 34] (54)"
                             Type: "Multiple <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                         Info: # <class 'TheLanguage.Lexer.Types.TupleTypeLexerInfo.TupleTypeLexerInfo'>
-                          Regions:
+                          Regions: # <class 'types.TupleTypeLexerInfoRegions'>
                             Self__: "[Ln 2, Col 17] -> [Ln 2, Col 34]"
                             Types: "[Ln 2, Col 17] -> [Ln 2, Col 34]"
                           Types:
                             - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                               Modifier: None
-                              Regions:
+                              Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                                Modifier: None
                                 Self__: "[Ln 2, Col 18] -> [Ln 2, Col 21]"
                                 TypeName: "[Ln 2, Col 18] -> [Ln 2, Col 21]"
-                                Modifier: None
                               TypeName: "Int"
                             - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                               Modifier: None
-                              Regions:
+                              Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                                Modifier: None
                                 Self__: "[Ln 2, Col 23] -> [Ln 2, Col 27]"
                                 TypeName: "[Ln 2, Col 23] -> [Ln 2, Col 27]"
-                                Modifier: None
                               TypeName: "Bool"
                             - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
                               Modifier: None
-                              Regions:
+                              Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                                Modifier: None
                                 Self__: "[Ln 2, Col 29] -> [Ln 2, Col 33]"
                                 TypeName: "[Ln 2, Col 29] -> [Ln 2, Col 33]"
-                                Modifier: None
                               TypeName: "Char"
                         IterBegin: "[2, 17] (37)"
                         IterEnd: "[2, 34] (54)"

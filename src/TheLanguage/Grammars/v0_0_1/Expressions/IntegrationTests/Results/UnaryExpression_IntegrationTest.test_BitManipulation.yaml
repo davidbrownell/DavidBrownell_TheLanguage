@@ -22,9 +22,9 @@ Children:
                             Whitespace: None
                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                           Name: "value1"
-                          Regions:
-                            Self__: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
+                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
                             Name: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
+                            Self__: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 7] (6)"
                         Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -85,9 +85,9 @@ Children:
                                                 Whitespace: None
                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                               Name: "foo"
-                                              Regions:
-                                                Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                 Name: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                                                Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
                                             IterBegin: "[1, 11] (10)"
                                             IterEnd: "[1, 14] (13)"
                                             Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -97,12 +97,12 @@ Children:
                                     Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                       Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                         Name: "foo"
-                                        Regions:
-                                          Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                           Name: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
-                                      Regions:
-                                        Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                                          Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                         Name: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                                        Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
                                     IterBegin: "[1, 11] (10)"
                                     IterEnd: "[1, 14] (13)"
                                     Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -116,17 +116,17 @@ Children:
                           Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                             Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                               Name: "foo"
-                              Regions:
-                                Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                 Name: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
-                            Regions:
-                              Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                                Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                            Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                               Name: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                              Self__: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
                           Operator: "OperatorType.BitCompliment"
-                          Regions:
-                            Self__: "[Ln 1, Col 10] -> [Ln 1, Col 14]"
-                            Operator: "[Ln 1, Col 10] -> [Ln 1, Col 11]"
+                          Regions: # <class 'types.UnaryExpressionLexerInfoRegions'>
                             Expression: "[Ln 1, Col 11] -> [Ln 1, Col 14]"
+                            Operator: "[Ln 1, Col 10] -> [Ln 1, Col 11]"
+                            Self__: "[Ln 1, Col 10] -> [Ln 1, Col 14]"
                         IterBegin: "[1, 10] (9)"
                         IterEnd: "[1, 14] (13)"
                         Type: "Unary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -176,9 +176,9 @@ Children:
                             Whitespace: None
                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                           Name: "value2"
-                          Regions:
-                            Self__: "[Ln 2, Col 1] -> [Ln 2, Col 7]"
+                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
                             Name: "[Ln 2, Col 1] -> [Ln 2, Col 7]"
+                            Self__: "[Ln 2, Col 1] -> [Ln 2, Col 7]"
                         IterBegin: "[2, 1] (14)"
                         IterEnd: "[2, 7] (20)"
                         Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -255,9 +255,9 @@ Children:
                                                                 Whitespace: None
                                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                                               Name: "a"
-                                                              Regions:
-                                                                Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                 Name: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                                                Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
                                                             IterBegin: "[2, 12] (25)"
                                                             IterEnd: "[2, 13] (26)"
                                                             Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -267,12 +267,12 @@ Children:
                                                     Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                                       Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                                         Name: "a"
-                                                        Regions:
-                                                          Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                           Name: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
-                                                      Regions:
-                                                        Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                                          Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                         Name: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                                        Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
                                                     IterBegin: "[2, 12] (25)"
                                                     IterEnd: "[2, 13] (26)"
                                                     Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -316,9 +316,9 @@ Children:
                                                                           - 28
                                                                     Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                                                       Name: "b"
-                                                                      Regions:
-                                                                        Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                         Name: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                                                        Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
                                                                     IterBegin: "[2, 15] (28)"
                                                                     IterEnd: "[2, 16] (29)"
                                                                     Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -328,12 +328,12 @@ Children:
                                                             Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                                               Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                                                 Name: "b"
-                                                                Regions:
-                                                                  Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                                                Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                   Name: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
-                                                              Regions:
-                                                                Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                                                  Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                                              Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                                 Name: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                                                Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
                                                             IterBegin: "[2, 15] (28)"
                                                             IterEnd: "[2, 16] (29)"
                                                             Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -378,9 +378,9 @@ Children:
                                                                           - 31
                                                                     Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                                                       Name: "c"
-                                                                      Regions:
-                                                                        Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                         Name: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                                                        Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
                                                                     IterBegin: "[2, 18] (31)"
                                                                     IterEnd: "[2, 19] (32)"
                                                                     Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -390,12 +390,12 @@ Children:
                                                             Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                                               Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                                                 Name: "c"
-                                                                Regions:
-                                                                  Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                                                Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                   Name: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
-                                                              Regions:
-                                                                Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                                                  Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                                              Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                                 Name: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                                                Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
                                                             IterBegin: "[2, 18] (31)"
                                                             IterEnd: "[2, 19] (32)"
                                                             Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -427,33 +427,33 @@ Children:
                                         - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                           Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                             Name: "a"
-                                            Regions:
-                                              Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                            Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                               Name: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
-                                          Regions:
-                                            Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                              Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                          Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                             Name: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                            Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
                                         - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                           Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                             Name: "b"
-                                            Regions:
-                                              Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                            Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                               Name: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
-                                          Regions:
-                                            Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                              Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                          Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                             Name: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                            Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
                                         - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                           Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                             Name: "c"
-                                            Regions:
-                                              Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                            Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                               Name: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
-                                          Regions:
-                                            Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                              Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                          Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                             Name: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
-                                      Regions:
-                                        Self__: "[Ln 2, Col 11] -> [Ln 2, Col 20]"
+                                            Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                      Regions: # <class 'types.TupleExpressionLexerInfoRegions'>
                                         Expressions: "[Ln 2, Col 11] -> [Ln 2, Col 20]"
+                                        Self__: "[Ln 2, Col 11] -> [Ln 2, Col 20]"
                                     IterBegin: "[2, 11] (24)"
                                     IterEnd: "[2, 20] (33)"
                                     Type: "Tuple Expression <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
@@ -469,38 +469,38 @@ Children:
                               - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                 Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                   Name: "a"
-                                  Regions:
-                                    Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
-                                Regions:
-                                  Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                    Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                   Name: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
+                                  Self__: "[Ln 2, Col 12] -> [Ln 2, Col 13]"
                               - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                 Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                   Name: "b"
-                                  Regions:
-                                    Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
-                                Regions:
-                                  Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                    Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                   Name: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                                  Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
                               - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                 Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                   Name: "c"
-                                  Regions:
-                                    Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
-                                Regions:
-                                  Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                    Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                   Name: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
-                            Regions:
-                              Self__: "[Ln 2, Col 11] -> [Ln 2, Col 20]"
+                                  Self__: "[Ln 2, Col 18] -> [Ln 2, Col 19]"
+                            Regions: # <class 'types.TupleExpressionLexerInfoRegions'>
                               Expressions: "[Ln 2, Col 11] -> [Ln 2, Col 20]"
+                              Self__: "[Ln 2, Col 11] -> [Ln 2, Col 20]"
                           Operator: "OperatorType.BitCompliment"
-                          Regions:
-                            Self__: "[Ln 2, Col 10] -> [Ln 2, Col 20]"
-                            Operator: "[Ln 2, Col 10] -> [Ln 2, Col 11]"
+                          Regions: # <class 'types.UnaryExpressionLexerInfoRegions'>
                             Expression: "[Ln 2, Col 11] -> [Ln 2, Col 20]"
+                            Operator: "[Ln 2, Col 10] -> [Ln 2, Col 11]"
+                            Self__: "[Ln 2, Col 10] -> [Ln 2, Col 20]"
                         IterBegin: "[2, 10] (23)"
                         IterEnd: "[2, 20] (33)"
                         Type: "Unary Expression <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

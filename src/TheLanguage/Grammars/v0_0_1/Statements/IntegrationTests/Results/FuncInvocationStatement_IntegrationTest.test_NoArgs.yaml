@@ -47,10 +47,10 @@ Children:
             Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
               Arguments: None
               Name: "Func"
-              Regions:
-                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
-                Name: "[Ln 1, Col 1] -> [Ln 1, Col 5]"
+              Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
                 Arguments: None
+                Name: "[Ln 1, Col 1] -> [Ln 1, Col 5]"
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (7)"
             Type: "Func Invocation Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

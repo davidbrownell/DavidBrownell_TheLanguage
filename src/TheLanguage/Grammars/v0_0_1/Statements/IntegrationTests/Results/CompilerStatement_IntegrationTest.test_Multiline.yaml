@@ -72,9 +72,9 @@ Children:
                                       - 31
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                                   Name: "cond"
-                                  Regions:
-                                    Self__: "[Ln 7, Col 4] -> [Ln 7, Col 8]"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 7, Col 4] -> [Ln 7, Col 8]"
+                                    Self__: "[Ln 7, Col 4] -> [Ln 7, Col 8]"
                                 IterBegin: "[7, 4] (31)"
                                 IterEnd: "[7, 8] (35)"
                                 Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -84,12 +84,12 @@ Children:
                         Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                           Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
                             Name: "cond"
-                            Regions:
-                              Self__: "[Ln 7, Col 4] -> [Ln 7, Col 8]"
+                            Regions: # <class 'types.VariableNameLexerInfoRegions'>
                               Name: "[Ln 7, Col 4] -> [Ln 7, Col 8]"
-                          Regions:
-                            Self__: "[Ln 7, Col 4] -> [Ln 7, Col 8]"
+                              Self__: "[Ln 7, Col 4] -> [Ln 7, Col 8]"
+                          Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                             Name: "[Ln 7, Col 4] -> [Ln 7, Col 8]"
+                            Self__: "[Ln 7, Col 4] -> [Ln 7, Col 8]"
                         IterBegin: "[7, 4] (31)"
                         IterEnd: "[7, 8] (35)"
                         Type: "Variable Expression <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
