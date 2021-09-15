@@ -35,11 +35,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import GrammarPhrase
 
     from ....Lexer.Expressions.MatchTypeExpressionLexerInfo import (
-        MatchTypeExpressionLexerData,
-        MatchTypeExpressionLexerRegions,
         MatchTypeExpressionLexerInfo,
-        MatchTypeCasePhraseLexerData,
-        MatchTypeCasePhraseLexerRegions,
         MatchTypeCasePhraseLexerInfo,
     )
 
@@ -72,11 +68,7 @@ class MatchTypeExpression(MatchExpressionBase):
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         return cls._ExtractLexerInfoImpl(
-            MatchTypeExpressionLexerData,
-            MatchTypeExpressionLexerRegions,
             MatchTypeExpressionLexerInfo,
-            MatchTypeCasePhraseLexerData,
-            MatchTypeCasePhraseLexerRegions,
             MatchTypeCasePhraseLexerInfo,
             node,
         )

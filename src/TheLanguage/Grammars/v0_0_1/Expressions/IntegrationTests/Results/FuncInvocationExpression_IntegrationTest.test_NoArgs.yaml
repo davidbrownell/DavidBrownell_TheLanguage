@@ -21,9 +21,8 @@ Children:
                               Match: "<_sre.SRE_Match object; span=(0, 5), match='value'>"
                             Whitespace: None
                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                            Name: "value"
-                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                          Name: "value"
+                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
                             Name: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
                             Self__: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
                         IterBegin: "[1, 1] (0)"
@@ -83,10 +82,9 @@ Children:
                             IterEnd: "[1, 15] (14)"
                             Type: "Arguments <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                         Info: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
-                            Arguments: None
-                            Name: "Func"
-                          Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                          Arguments: None
+                          Name: "Func"
+                          Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
                             Arguments: None
                             Name: "[Ln 1, Col 9] -> [Ln 1, Col 13]"
                             Self__: "[Ln 1, Col 9] -> [Ln 1, Col 15]"

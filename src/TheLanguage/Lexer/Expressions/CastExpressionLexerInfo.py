@@ -19,7 +19,7 @@ import os
 
 from typing import cast, Union
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,13 +32,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
+    from .ExpressionLexerInfo import ExpressionLexerInfo
 
     from ..Common.TypeModifier import TypeModifier
     from ..Types.TypeLexerInfo import TypeLexerInfo
 
     from ..LexerError import LexerError
-    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
@@ -62,41 +61,27 @@ class InvalidModifierError(LexerError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CastExpressionLexerData(ExpressionLexerData):
+class CastExpressionLexerInfo(ExpressionLexerInfo):
     Expression: ExpressionLexerInfo
     Type: Union[TypeLexerInfo, TypeModifier]
 
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class CastExpressionLexerRegions(LexerRegions):
-    Expression: Region
-    Type: Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class CastExpressionLexerInfo(ExpressionLexerInfo):
-    Data: CastExpressionLexerData
-    Regions: CastExpressionLexerRegions
-
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        if isinstance(self.Data.Type, TypeLexerInfo):
-            type_modifier_info = self.Data.Type.GetTypeModifier()
+    def __post_init__(self, regions):
+        super(CastExpressionLexerInfo, self).__post_init__(regions)
+
+        if isinstance(self.Type, TypeLexerInfo):
+            type_modifier_info = self.Type.GetTypeModifier()
             if type_modifier_info is not None:
                 raise TypeWithModifierError(type_modifier_info[1])
 
-        elif isinstance(self.Data.Type, TypeModifier):
+        elif isinstance(self.Type, TypeModifier):
             valid_modifiers = [TypeModifier.ref, TypeModifier.val, TypeModifier.view]
 
-            if self.Data.Type not in valid_modifiers:
+            if self.Type not in valid_modifiers:
                 raise InvalidModifierError(
-                    self.Regions.Type,
-                    cast(str, self.Data.Type.name),
+                    self.Regions.Type,  # pylint: disable=no-member
+                    cast(str, self.Type.name),
                     ", ".join(["'{}'".format(m.name) for m in valid_modifiers]),
                 )
         else:
-            assert False, self.Data.Type  # pragma: no cover
-
-        super(CastExpressionLexerInfo, self).__post_init__()
+            assert False, self.Type  # pragma: no cover

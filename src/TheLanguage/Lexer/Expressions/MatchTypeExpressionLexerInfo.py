@@ -31,50 +31,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
-    from ..LexerInfo import LexerData, LexerInfo, LexerRegions, Region
+    from .ExpressionLexerInfo import ExpressionLexerInfo, LexerInfo
     from ..Types.TypeLexerInfo import TypeLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class MatchTypeCasePhraseLexerData(LexerData):
+class MatchTypeCasePhraseLexerInfo(LexerInfo):
     Cases: List[TypeLexerInfo]
     Expression: ExpressionLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class MatchTypeCasePhraseLexerRegions(LexerRegions):
-    Cases: Region
-    Expression: Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class MatchTypeCasePhraseLexerInfo(LexerInfo):
-    Data: MatchTypeCasePhraseLexerData
-    Regions: MatchTypeCasePhraseLexerRegions
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class MatchTypeExpressionLexerData(ExpressionLexerData):
+class MatchTypeExpressionLexerInfo(ExpressionLexerInfo):
     Expression: ExpressionLexerInfo
     CasePhrases: List[MatchTypeCasePhraseLexerInfo]
     Default: Optional[ExpressionLexerInfo]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class MatchTypeExpressionLexerRegions(LexerRegions):
-    Expression: Region
-    CasePhrases: Region
-    Default: Optional[Region]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class MatchTypeExpressionLexerInfo(ExpressionLexerInfo):
-    Data: MatchTypeExpressionLexerData
-    Regions: MatchTypeExpressionLexerRegions

@@ -36,9 +36,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.Types.VariantTypeLexerInfo import (
         TypeLexerInfo,
-        VariantTypeLexerData,
         VariantTypeLexerInfo,
-        VariantTypeLexerRegions,
     )
 
     from ....Parser.Phrases.DSL import (
@@ -134,12 +132,8 @@ class VariantType(GrammarPhrase):
             SetLexerInfo(
                 node,
                 VariantTypeLexerInfo(
-                    VariantTypeLexerData(type_infos),
-                    CreateLexerRegions(
-                        VariantTypeLexerRegions,  # type: ignore
-                        node,
-                        node,
-                    ),
+                    CreateLexerRegions(node, node),  # type: ignore
+                    type_infos,
                 ),
             )
 

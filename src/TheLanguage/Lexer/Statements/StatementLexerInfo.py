@@ -1,14 +1,6 @@
-# ----------------------------------------------------------------------
-# |
+#
 # |  StatementLexerInfo.py
 # |
-# |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-09 23:11:24
-# |
-# ----------------------------------------------------------------------
-# |
-# |  Copyright David Brownell 2021
-# |  Distributed under the Boost Software License, Version 1.0. See
 # |  accompanying file LICENSE_1_0.txt or copy at
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
@@ -30,14 +22,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..LexerInfo import LexerData, LexerInfo, LexerRegions
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class StatementLexerData(LexerData, Interface.Interface):
-    """Abstract base class for all statement-related lexer data"""
-    pass
+    from ..LexerInfo import LexerInfo
 
 
 # ----------------------------------------------------------------------
@@ -45,5 +30,4 @@ class StatementLexerData(LexerData, Interface.Interface):
 class StatementLexerInfo(LexerInfo, Interface.Interface):
     """Abstract base class for all statement-related lexer info"""
 
-    Data: StatementLexerData
-    Regions: LexerRegions
+    pass

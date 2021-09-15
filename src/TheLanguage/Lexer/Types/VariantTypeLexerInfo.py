@@ -31,30 +31,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
-    from ..LexerInfo import LexerRegions, Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariantTypeLexerData(TypeLexerData):
-    Types: List[TypeLexerInfo]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Types
-
-        super(VariantTypeLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariantTypeLexerRegions(LexerRegions):
-    Types: Region
+    from .TypeLexerInfo import TypeLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class VariantTypeLexerInfo(TypeLexerInfo):
-    Data: VariantTypeLexerData
-    Regions: VariantTypeLexerRegions
+    Types: List[TypeLexerInfo]

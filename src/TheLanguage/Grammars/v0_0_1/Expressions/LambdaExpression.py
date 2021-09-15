@@ -36,9 +36,7 @@ with InitRelativeImports():
 
     from ....Lexer.Expressions.LambdaExpressionLexerInfo import (
         ExpressionLexerInfo,
-        LambdaExpressionLexerData,
         LambdaExpressionLexerInfo,
-        LambdaExpressionLexerRegions,
     )
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
@@ -107,23 +105,19 @@ class LambdaExpression(GrammarPhrase):
             assert len(nodes) == 4
 
             # <parameters>
-            parameters_node, parameters_data = ParametersPhraseItem.ExtractLexerInfo(cast(Node, nodes[1]))
+            parameters_node, parameters_info = ParametersPhraseItem.ExtractLexerInfo(cast(Node, nodes[1]))
 
             # <expr>
             expression_node = ExtractDynamic(cast(Node, nodes[3]))
-            expression_data = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
+            expression_info = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 LambdaExpressionLexerInfo(
-                    LambdaExpressionLexerData(parameters_data, expression_data),
-                    CreateLexerRegions(
-                        LambdaExpressionLexerRegions,  # type: ignore
-                        node,
-                        parameters_node,
-                        expression_node,
-                    ),
+                    CreateLexerRegions(node, parameters_node, expression_node),  # type: ignore
+                    parameters_info,
+                    expression_info,
                 ),
             )
 

@@ -31,32 +31,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
-    from ..LexerInfo import LexerRegions, Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class FuncTypeLexerData(TypeLexerData):
-    ReturnType: TypeLexerInfo
-    Parameters: Optional[List[TypeLexerInfo]]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Parameters is None or self.Parameters
-
-        super(FuncTypeLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class FuncTypeLexerRegions(LexerRegions):
-    ReturnType: Region
-    Parameters: Optional[Region]
+    from .TypeLexerInfo import TypeLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncTypeLexerInfo(TypeLexerInfo):
-    Data: FuncTypeLexerData
-    Regions: FuncTypeLexerRegions
+    ReturnType: TypeLexerInfo
+    Parameters: Optional[List[TypeLexerInfo]] # TODO: This isn't right, should be based on parameters type

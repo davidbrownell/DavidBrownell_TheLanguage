@@ -36,11 +36,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
     from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Lexer.Types.StandardTypeLexerInfo import (
-        StandardTypeLexerData,
-        StandardTypeLexerInfo,
-        StandardTypeLexerRegions,
-    )
+    from ....Lexer.Types.StandardTypeLexerInfo import StandardTypeLexerInfo
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -99,29 +95,22 @@ class StandardType(GrammarPhrase):
 
         # <type_name>
         type_leaf = cast(Leaf, nodes[0])
-        type_data = cast(str, ExtractToken(type_leaf))
+        type_info = cast(str, ExtractToken(type_leaf))
 
         # <modifier>?
         modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
 
         if modifier_node is not None:
-            modifier_data = TypeModifier.Extract(modifier_node)
+            modifier_info = TypeModifier.Extract(modifier_node)
         else:
-            modifier_data = None
+            modifier_info = None
 
         # pylint: disable=too-many-function-args
         SetLexerInfo(
             node,
             StandardTypeLexerInfo(
-                StandardTypeLexerData(
-                    type_data,
-                    modifier_data,  # type: ignore
-                ),
-                CreateLexerRegions(
-                    StandardTypeLexerRegions,  # type: ignore
-                    node,
-                    type_leaf,
-                    modifier_node,
-                ),
+                CreateLexerRegions(node, type_leaf, modifier_node),  # type: ignore
+                type_info,
+                modifier_info,  # type: ignore
             ),
         )

@@ -33,19 +33,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
+    from .StatementLexerInfo import StatementLexerInfo
 
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..LexerError import LexerError
-
-    from ..LexerInfo import (
-        LexerData,
-        LexerRegions,
-        LexerInfo,
-        Region,
-    )
+    from ..LexerInfo import LexerInfo, Region
 
 
 # ----------------------------------------------------------------------
@@ -363,94 +357,115 @@ del _all_visibilities
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassDependencyLexerData(LexerData):
-    Visibility: VisibilityModifier
+class ClassDependencyLexerInfo(LexerInfo):
+    visibility: InitVar[Optional[VisibilityModifier]]
+    Visibility: VisibilityModifier          = field(init=False)
+
     Name: str
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Name
-        super(ClassDependencyLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ClassDependencyLexerRegions(LexerRegions):
-    Visibility: Region
-    Name: Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ClassDependencyLexerInfo(LexerInfo):
-    Data: ClassDependencyLexerData          = field(init=False)
-    Regions: ClassDependencyLexerRegions
-
-    visibility: InitVar[Optional[VisibilityModifier]]
-    name: InitVar[str]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, visibility, name):
-        # Set default values and validate as necessary
-        if visibility is None:
-            visibility = VisibilityModifier.private
-            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)
-
-        # pylint: disable=too-many-function-args
-        object.__setattr__(
-            self,
-            "Data",
-            ClassDependencyLexerData(visibility, name),
+    def __post_init__(self, regions, visibility):
+        super(ClassDependencyLexerInfo, self).__post_init__(
+            regions,
+            should_validate=False,
         )
 
-        super(ClassDependencyLexerInfo, self).__post_init__()
+        # Visibility
+        if visibility is None:
+            visibility = VisibilityModifier.private
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # pylint: disable=no-member
+
+        object.__setattr__(self, "Visibility", visibility)
+
+        self.Validate()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassStatementLexerData(StatementLexerData):
-    # Note that this data is constructed in 2 phases:
-    #
-    #     1) Everything expect Statements
-    #     2) Statements
-    #
-    # This 2 phase construction is necessary because child functionality
-    # relies on information provided by these data to determine defaults
-    # for their values (for example, the default visibility for a method
-    # depends on the class type, which is specified by this data).
-    #
-    # Construct this object, then update the statements after they have been
-    # constructed.
-
+class ClassStatementLexerInfo(StatementLexerInfo):
     # Constructed during Phase 1
-    Visibility: VisibilityModifier
-    ClassModifier: ClassModifier
+    visibility: InitVar[Optional[VisibilityModifier]]
+    Visibility: VisibilityModifier          = field(init=False)
+
+    class_modifier: InitVar[Optional[ClassModifier]]
+    ClassModifier: ClassModifier            = field(init=False)
+
     ClassType: ClassType
     Name: str
     Base: Optional[ClassDependencyLexerInfo]
     Interfaces: Optional[List[ClassDependencyLexerInfo]]
     Mixins: Optional[List[ClassDependencyLexerInfo]]
 
-    TypeInfo: TypeInfo                      = field(init=False) # State data, never persisted
+    TypeInfo: TypeInfo                      = field(init=False)
 
     # Constructed during Phase 2
     Statements: List[StatementLexerInfo]    = field(init=False, default_factory=list)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        type_info = TYPE_INFOS[self.ClassType]
-
-        assert self.Visibility in type_info.AllowedClassVisibilities
-        assert self.ClassModifier in type_info.AllowedClassModifiers
-        assert self.Base is None or type_info.AllowBases
-        assert not self.Interfaces or type_info.AllowInterfaces
-        assert not self.Mixins or type_info.AllowMixins
-
-        object.__setattr__(self, "TypeInfo", type_info)
-
-        super(ClassStatementLexerData, self).__post_init__(
+    def __post_init__(self, regions, visibility, class_modifier):
+        super(ClassStatementLexerInfo, self).__post_init__(
+            regions,
+            regionless_attributes=["TypeInfo"],
+            should_validate=False,
             TypeInfo=None,
         )
+
+        type_info = TYPE_INFOS[self.ClassType]
+
+        # Visibility
+        if visibility is None:
+            visibility = type_info.DefaultClassVisibility
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # pylint: disable=no-member
+
+        if visibility not in type_info.AllowedClassVisibilities:
+            raise InvalidClassVisibilityError(
+                self.Regions.Visibility,  # pylint: disable=no-member
+                self.ClassType.value,
+                visibility.name,
+                ", ".join(["'{}'".format(v.name) for v in type_info.AllowedClassVisibilities]),
+            )
+
+        object.__setattr__(self, "Visibility", visibility)
+
+        # ClassModifier
+        if class_modifier is None:
+            class_modifier = type_info.DefaultClassModifier
+            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)  # pylint: disable=no-member
+
+        if class_modifier not in type_info.AllowedClassModifiers:
+            raise InvalidClassModifierError(
+                self.Regions.ClassModifier,  # pylint: disable=no-member
+                self.ClassType.value,
+                class_modifier.name,
+                ", ".join(["'{}'".format(m.name) for m in type_info.AllowedClassModifiers]),
+            )
+
+        object.__setattr__(self, "ClassModifier", class_modifier)
+
+        # Validate bases, interfaces, and mixins
+        if self.Base is not None and not type_info.AllowBases:
+            raise InvalidBaseError(self.Regions.Base, self.ClassType.value)  # pylint: disable=no-member
+
+        if self.Interfaces and not type_info.AllowInterfaces:
+            raise InvalidInterfacesError(self.Regions.Interfaces, self.ClassType.value)  # pylint: disable=no-member
+
+        if self.Mixins and not type_info.AllowMixins:
+            raise InvalidMixinsError(self.Regions.Mixins, self.ClassType.value)  # pylint: disable=no-member
+
+        # Set TypeInfo
+        object.__setattr__(self, "TypeInfo", type_info)
+
+    # ----------------------------------------------------------------------
+    def FinalConstruct(
+        self,
+        statements: List[StatementLexerInfo],
+    ):
+        assert statements
+        assert not self.Statements
+
+        object.__setattr__(self, "Statements", statements)
+
+        self.Validate()
 
     # ----------------------------------------------------------------------
     def ValidateMemberVisibility(
@@ -460,13 +475,12 @@ class ClassStatementLexerData(StatementLexerData):
     ):
         assert visibility is not None
 
-        # pylint: disable=no-member
-        if visibility not in self.TypeInfo.AllowedMemberVisibilities:
+        if visibility not in self.TypeInfo.AllowedMemberVisibilities:  # pylint: disable=no-member
             raise InvalidMemberVisibilityError(
                 visibility_region,
                 self.ClassType.value,
                 visibility.name,
-                ", ".join(["'{}'".format(v.name) for v in self.TypeInfo.AllowedMemberVisibilities]),
+                ", ".join(["'{}'".format(v.name) for v in self.TypeInfo.AllowedMemberVisibilities]),  # pylint: disable=no-member
             )
 
     # ----------------------------------------------------------------------
@@ -477,13 +491,12 @@ class ClassStatementLexerData(StatementLexerData):
     ):
         assert class_modifier is not None
 
-        # pylint: disable=no-member
-        if class_modifier not in self.TypeInfo.AllowedClassModifiers:
+        if class_modifier not in self.TypeInfo.AllowedClassModifiers:  # pylint: disable=no-member
             raise InvalidMemberClassModifierError(
                 class_modifier_region,
                 self.ClassType.value,
                 class_modifier.name,
-                ", ".join(["'{}'".format(m.name) for m in self.TypeInfo.AllowedClassModifiers]),
+                ", ".join(["'{}'".format(m.name) for m in self.TypeInfo.AllowedClassModifiers]),  # pylint: disable=no-member
             )
 
         if (
@@ -495,124 +508,3 @@ class ClassStatementLexerData(StatementLexerData):
                 self.ClassType.value,
                 class_modifier.name,
             )
-
-    # ----------------------------------------------------------------------
-    def SetStatements(
-        self,
-        statements: List[StatementLexerInfo],
-    ):
-        # Note that this method should only be called by ClassStatementLexerInfo
-        assert statements
-        assert not self.Statements
-
-        object.__setattr__(self, "Statements", statements)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ClassStatementLexerRegions(LexerRegions):
-    Visibility: Region
-    ClassModifier: Region
-    ClassType: Region
-    Name: Region
-    Base: Optional[Region]
-    Interfaces: Optional[Region]
-    Mixins: Optional[Region]
-    Statements: Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ClassStatementLexerInfo(StatementLexerInfo):
-    Data: ClassStatementLexerData           = field(init=False)
-    Regions: ClassStatementLexerRegions
-
-    visibility: InitVar[Optional[VisibilityModifier]]
-    class_modifier: InitVar[Optional[ClassModifier]]
-    class_type: InitVar[ClassType]
-    name: InitVar[str]
-    base: InitVar[Optional[ClassDependencyLexerInfo]]
-    interfaces: InitVar[List[ClassDependencyLexerInfo]]
-    mixins: InitVar[List[ClassDependencyLexerInfo]]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(
-        self,
-        visibility,
-        class_modifier,
-        class_type,
-        name,
-        base,
-        interfaces,
-        mixins,
-    ):
-        type_info = TYPE_INFOS[class_type]
-
-        # Set default values and validate as necessary
-        if visibility is None:
-            visibility = type_info.DefaultClassVisibility
-            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)
-
-        if visibility not in type_info.AllowedClassVisibilities:
-            raise InvalidClassVisibilityError(
-                self.Regions.Visibility,
-                class_type.value,
-                visibility.name,
-                ", ".join(["'{}'".format(v.name) for v in type_info.AllowedClassVisibilities]),
-            )
-
-        if class_modifier is None:
-            class_modifier = type_info.DefaultClassModifier
-            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)
-
-        if class_modifier not in type_info.AllowedClassModifiers:
-            raise InvalidClassModifierError(
-                self.Regions.ClassModifier,
-                class_type.value,
-                class_modifier.name,
-                ", ".join(["'{}'".format(m.name) for m in type_info.AllowedClassModifiers]),
-            )
-
-        # Validate bases, interfaces, and mixins
-        if base is not None and not type_info.AllowBases:
-            assert self.Regions.Base is not None
-            raise InvalidBaseError(self.Regions.Base, class_type.value)
-
-        if interfaces and not type_info.AllowInterfaces:
-            assert self.Regions.Interfaces is not None
-            raise InvalidInterfacesError(self.Regions.Interfaces, class_type.value)
-
-        if mixins and not type_info.AllowMixins:
-            assert self.Regions.Mixins is not None
-            raise InvalidMixinsError(self.Regions.Mixins, class_type.value)
-
-        # Set the values
-        object.__setattr__(
-            self,
-            "Data",
-            # pylint: disable=too-many-function-args
-            ClassStatementLexerData(
-                visibility,  # type: ignore
-                class_modifier,  # type: ignore
-                class_type,
-                name,
-                base,
-                interfaces or None,
-                mixins or None,
-            ),
-        )
-
-        super(ClassStatementLexerInfo, self).__post_init__(
-            should_validate=False,
-        )
-
-    # ----------------------------------------------------------------------
-    def SetStatements(
-        self,
-        statements: List[StatementLexerInfo],
-    ):
-        self.Data.SetStatements(statements)
-
-        super(ClassStatementLexerInfo, self).Validate(
-            attributes_to_skip=set(["TypeInfo"]),
-        )

@@ -31,59 +31,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..LexerInfo import LexerData, LexerInfo, LexerRegions, Region
+    from ..LexerInfo import LexerInfo, Region
     from ..Expressions.ExpressionLexerInfo import ExpressionLexerInfo
     from ..Types.TypeLexerInfo import TypeLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ParameterLexerData(LexerData):
+class ParameterLexerInfo(LexerInfo):
     Type: TypeLexerInfo
     Name: str
     Default: Optional[ExpressionLexerInfo]
     IsVarArgs: Optional[bool]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
+    def __post_init__(self, regions):
+        super(ParameterLexerInfo, self).__post_init__(regions)
         assert self.IsVarArgs is None or self.IsVarArgs, self
-        super(ParameterLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ParameterLexerRegions(LexerRegions):
-    Type: Region
-    Name: Region
-    Default: Optional[Region]
-    IsVarArgs: Optional[Region]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ParameterLexerInfo(LexerInfo):
-    Data: ParameterLexerData
-    Regions: ParameterLexerRegions
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ParametersLexerData(LexerData):
-    Positional: Optional[List[ParameterLexerInfo]]
-    Keyword: Optional[List[ParameterLexerInfo]]
-    Any: Optional[List[ParameterLexerInfo]]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ParametersLexerRegions(LexerRegions):
-    Positional: Optional[Region]
-    Keyword: Optional[Region]
-    Any: Optional[Region]
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ParametersLexerInfo(LexerInfo):
-    Data: ParametersLexerData
-    Regions: ParametersLexerRegions
+    Positional: Optional[List[ParameterLexerInfo]]
+    Keyword: Optional[List[ParameterLexerInfo]]
+    Any: Optional[List[ParameterLexerInfo]]

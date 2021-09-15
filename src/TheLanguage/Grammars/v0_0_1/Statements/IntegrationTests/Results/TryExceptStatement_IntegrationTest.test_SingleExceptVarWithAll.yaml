@@ -94,10 +94,9 @@ Children:
                                               Start: 17
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                            Arguments: None
-                                            Name: "Func1a"
-                                          Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
+                                          Arguments: None
+                                          Name: "Func1a"
+                                          Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
                                             Arguments: None
                                             Name: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
                                             Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
@@ -159,13 +158,12 @@ Children:
                                       - 24
                                       - 25
                                 Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                                    Modifier: None
-                                    TypeName: "Exception"
-                                  Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                                  Modifier: None
+                                  Regions: # <class 'types.StandardTypeLexerInfoRegions'>
                                     Modifier: None
                                     Self__: "[Ln 3, Col 8] -> [Ln 3, Col 17]"
                                     TypeName: "[Ln 3, Col 8] -> [Ln 3, Col 17]"
+                                  TypeName: "Exception"
                                 IterBegin: "[3, 8] (25)"
                                 IterEnd: "[3, 17] (34)"
                                 Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -192,9 +190,8 @@ Children:
                                       - 34
                                       - 35
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "ex"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                  Name: "ex"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 3, Col 18] -> [Ln 3, Col 20]"
                                     Self__: "[Ln 3, Col 18] -> [Ln 3, Col 20]"
                                 IterBegin: "[3, 18] (35)"
@@ -286,10 +283,9 @@ Children:
                                                       Start: 51
                                                     Whitespace: None
                                                 Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                                    Arguments: None
-                                                    Name: "Func2a"
-                                                  Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
+                                                  Arguments: None
+                                                  Name: "Func2a"
+                                                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
                                                     Arguments: None
                                                     Name: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
                                                     Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
@@ -420,10 +416,9 @@ Children:
                                                       Start: 72
                                                     Whitespace: None
                                                 Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                                                    Arguments: None
-                                                    Name: "Func3a"
-                                                  Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
+                                                  Arguments: None
+                                                  Name: "Func3a"
+                                                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
                                                     Arguments: None
                                                     Name: "[Ln 6, Col 5] -> [Ln 6, Col 11]"
                                                     Self__: "[Ln 6, Col 5] -> [Ln 7, Col 1]"

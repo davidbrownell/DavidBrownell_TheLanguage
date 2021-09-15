@@ -35,9 +35,8 @@ Children:
                                       - 4
                                       - 5
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "var1"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                  Name: "var1"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 1, Col 6] -> [Ln 1, Col 10]"
                                     Self__: "[Ln 1, Col 6] -> [Ln 1, Col 10]"
                                 IterBegin: "[1, 6] (5)"
@@ -206,9 +205,8 @@ Children:
                                       - 32
                                       - 33
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "var2"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                  Name: "var2"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 4, Col 6] -> [Ln 4, Col 10]"
                                     Self__: "[Ln 4, Col 6] -> [Ln 4, Col 10]"
                                 IterBegin: "[4, 6] (33)"
@@ -390,9 +388,8 @@ Children:
                                       - 61
                                       - 62
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "var3"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                  Name: "var3"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 7, Col 6] -> [Ln 7, Col 10]"
                                     Self__: "[Ln 7, Col 6] -> [Ln 7, Col 10]"
                                 IterBegin: "[7, 6] (62)"
@@ -433,9 +430,8 @@ Children:
                                               - 67
                                               - 68
                                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                            Name: "var4"
-                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                          Name: "var4"
+                                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                             Name: "[Ln 7, Col 12] -> [Ln 7, Col 16]"
                                             Self__: "[Ln 7, Col 12] -> [Ln 7, Col 16]"
                                         IterBegin: "[7, 12] (68)"
@@ -610,9 +606,8 @@ Children:
                                       - 95
                                       - 96
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "var5"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                  Name: "var5"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 10, Col 6] -> [Ln 10, Col 10]"
                                     Self__: "[Ln 10, Col 6] -> [Ln 10, Col 10]"
                                 IterBegin: "[10, 6] (96)"
@@ -653,9 +648,8 @@ Children:
                                               - 101
                                               - 102
                                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                            Name: "var6"
-                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                          Name: "var6"
+                                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                             Name: "[Ln 10, Col 12] -> [Ln 10, Col 16]"
                                             Self__: "[Ln 10, Col 12] -> [Ln 10, Col 16]"
                                         IterBegin: "[10, 12] (102)"
@@ -853,9 +847,8 @@ Children:
                                           Match: "<_sre.SRE_Match object; span=(132, 136), match='var7'>"
                                         Whitespace: None
                                     Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                        Name: "var7"
-                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                      Name: "var7"
+                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                         Name: "[Ln 13, Col 7] -> [Ln 13, Col 11]"
                                         Self__: "[Ln 13, Col 7] -> [Ln 13, Col 11]"
                                     IterBegin: "[13, 7] (132)"
@@ -1045,9 +1038,8 @@ Children:
                                           Match: "<_sre.SRE_Match object; span=(162, 166), match='var8'>"
                                         Whitespace: None
                                     Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                        Name: "var8"
-                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                      Name: "var8"
+                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                         Name: "[Ln 16, Col 7] -> [Ln 16, Col 11]"
                                         Self__: "[Ln 16, Col 7] -> [Ln 16, Col 11]"
                                     IterBegin: "[16, 7] (162)"
@@ -1088,9 +1080,8 @@ Children:
                                                   - 167
                                                   - 168
                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                Name: "var9"
-                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                              Name: "var9"
+                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                 Name: "[Ln 16, Col 13] -> [Ln 16, Col 17]"
                                                 Self__: "[Ln 16, Col 13] -> [Ln 16, Col 17]"
                                             IterBegin: "[16, 13] (168)"
@@ -1132,9 +1123,8 @@ Children:
                                                   - 173
                                                   - 174
                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                Name: "var10"
-                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                              Name: "var10"
+                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                 Name: "[Ln 16, Col 19] -> [Ln 16, Col 24]"
                                                 Self__: "[Ln 16, Col 19] -> [Ln 16, Col 24]"
                                             IterBegin: "[16, 19] (174)"
@@ -1330,9 +1320,8 @@ Children:
                                           Match: "<_sre.SRE_Match object; span=(205, 210), match='var11'>"
                                         Whitespace: None
                                     Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                        Name: "var11"
-                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                      Name: "var11"
+                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                         Name: "[Ln 19, Col 7] -> [Ln 19, Col 12]"
                                         Self__: "[Ln 19, Col 7] -> [Ln 19, Col 12]"
                                     IterBegin: "[19, 7] (205)"
@@ -1373,9 +1362,8 @@ Children:
                                                   - 211
                                                   - 212
                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                Name: "var12"
-                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                              Name: "var12"
+                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                 Name: "[Ln 19, Col 14] -> [Ln 19, Col 19]"
                                                 Self__: "[Ln 19, Col 14] -> [Ln 19, Col 19]"
                                             IterBegin: "[19, 14] (212)"
@@ -1417,9 +1405,8 @@ Children:
                                                   - 218
                                                   - 219
                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                Name: "var13"
-                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                              Name: "var13"
+                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                 Name: "[Ln 19, Col 21] -> [Ln 19, Col 26]"
                                                 Self__: "[Ln 19, Col 21] -> [Ln 19, Col 26]"
                                             IterBegin: "[19, 21] (219)"
@@ -1628,9 +1615,8 @@ Children:
                                           Match: "<_sre.SRE_Match object; span=(256, 261), match='var14'>"
                                         Whitespace: None
                                     Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                        Name: "var14"
-                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                      Name: "var14"
+                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                         Name: "[Ln 23, Col 5] -> [Ln 23, Col 10]"
                                         Self__: "[Ln 23, Col 5] -> [Ln 23, Col 10]"
                                     IterBegin: "[23, 5] (256)"
@@ -1669,9 +1655,8 @@ Children:
                                                   Match: "<_sre.SRE_Match object; span=(267, 272), match='var15'>"
                                                 Whitespace: None
                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                Name: "var15"
-                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                              Name: "var15"
+                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                 Name: "[Ln 24, Col 5] -> [Ln 24, Col 10]"
                                                 Self__: "[Ln 24, Col 5] -> [Ln 24, Col 10]"
                                             IterBegin: "[24, 5] (267)"
@@ -1711,9 +1696,8 @@ Children:
                                                   Match: "<_sre.SRE_Match object; span=(282, 287), match='var16'>"
                                                 Whitespace: None
                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                Name: "var16"
-                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                              Name: "var16"
+                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                 Name: "[Ln 25, Col 9] -> [Ln 25, Col 14]"
                                                 Self__: "[Ln 25, Col 9] -> [Ln 25, Col 14]"
                                             IterBegin: "[25, 9] (282)"
