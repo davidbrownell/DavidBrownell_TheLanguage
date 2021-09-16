@@ -79,7 +79,7 @@ class CastExpressionLexerInfo(ExpressionLexerInfo):
 
             if self.Type not in valid_modifiers:
                 raise InvalidModifierError(
-                    self.Regions.Type,  # pylint: disable=no-member
+                    self.Regions.Type,  # type: ignore && pylint: disable=no-member
                     cast(str, self.Type.name),
                     ", ".join(["'{}'".format(m.name) for m in valid_modifiers]),
                 )

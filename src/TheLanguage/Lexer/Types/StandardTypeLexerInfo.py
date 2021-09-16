@@ -68,12 +68,12 @@ class StandardTypeLexerInfo(TypeLexerInfo):
 
         if self.Modifier in invalid_modifiers:
             assert self.Modifier is not None
-            assert self.Regions.Modifier is not None  # pylint: disable=no-member
+            assert self.Regions.Modifier is not None  # type: ignore && pylint: disable=no-member
 
             valid_modifiers = [m for m in TypeModifier if m not in invalid_modifiers]
 
             raise InvalidModifierError(
-                self.Regions.Modifier,  # pylint: disable=no-member
+                self.Regions.Modifier,  # type: ignore && pylint: disable=no-member
                 cast(str, self.Modifier.name),
                 ", ".join(["'{}'".format(m.name) for m in valid_modifiers]),
             )
@@ -84,5 +84,5 @@ class StandardTypeLexerInfo(TypeLexerInfo):
         if self.Modifier is None:
             return None
 
-        assert self.Regions.Modifier is not None  # pylint: disable=no-member
-        return self.Modifier, self.Regions.Modifier  # pylint: disable=no-member
+        assert self.Regions.Modifier is not None  # type: ignore && pylint: disable=no-member
+        return self.Modifier, self.Regions.Modifier  # type: ignore && pylint: disable=no-member
