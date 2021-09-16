@@ -35,4 +35,4 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class DeleteStatementLexerInfo(StatementLexerInfo):
-    Name: str
+    Variable: str

@@ -75,6 +75,19 @@ Children:
                   End: 21
                   Start: 20
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.TypeAliasStatementLexerInfo.TypeAliasStatementLexerInfo'>
+              Name: "SmallInt"
+              Regions: # <class 'types.TypeAliasStatementLexerInfoRegions'>
+                Name: "[Ln 1, Col 7] -> [Ln 1, Col 15]"
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+                Type: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+              Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                Modifier: None
+                Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                  Modifier: None
+                  Self__: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+                  TypeName: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+                TypeName: "Int"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (21)"
             Type: "Type Alias Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -316,6 +329,38 @@ Children:
                   End: 55
                   Start: 54
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.TypeAliasStatementLexerInfo.TypeAliasStatementLexerInfo'>
+              Name: "MyTuple"
+              Regions: # <class 'types.TypeAliasStatementLexerInfoRegions'>
+                Name: "[Ln 2, Col 7] -> [Ln 2, Col 14]"
+                Self__: "[Ln 2, Col 1] -> [Ln 3, Col 1]"
+                Type: "[Ln 2, Col 17] -> [Ln 2, Col 34]"
+              Type: # <class 'TheLanguage.Lexer.Types.TupleTypeLexerInfo.TupleTypeLexerInfo'>
+                Regions: # <class 'types.TupleTypeLexerInfoRegions'>
+                  Self__: "[Ln 2, Col 17] -> [Ln 2, Col 34]"
+                  Types: "[Ln 2, Col 17] -> [Ln 2, Col 34]"
+                Types:
+                  - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                    Modifier: None
+                    Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                      Modifier: None
+                      Self__: "[Ln 2, Col 18] -> [Ln 2, Col 21]"
+                      TypeName: "[Ln 2, Col 18] -> [Ln 2, Col 21]"
+                    TypeName: "Int"
+                  - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                    Modifier: None
+                    Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                      Modifier: None
+                      Self__: "[Ln 2, Col 23] -> [Ln 2, Col 27]"
+                      TypeName: "[Ln 2, Col 23] -> [Ln 2, Col 27]"
+                    TypeName: "Bool"
+                  - # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                    Modifier: None
+                    Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                      Modifier: None
+                      Self__: "[Ln 2, Col 29] -> [Ln 2, Col 33]"
+                      TypeName: "[Ln 2, Col 29] -> [Ln 2, Col 33]"
+                    TypeName: "Char"
             IterBegin: "[2, 1] (21)"
             IterEnd: "[3, 1] (55)"
             Type: "Type Alias Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

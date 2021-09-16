@@ -122,6 +122,27 @@ Children:
                   End: 16
                   Start: 15
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.VariableDeclarationStatementLexerInfo.VariableDeclarationStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                  Name: "value"
+                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                    Name: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+                    Self__: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                  Name: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+                  Self__: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+              Modifier: TypeModifier.var
+              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                Name: "one"
+                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                  Name: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
+                  Self__: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
+              Regions: # <class 'types.VariableDeclarationStatementLexerInfoRegions'>
+                Expression: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+                Modifier: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+                Name: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (16)"
             Type: "Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

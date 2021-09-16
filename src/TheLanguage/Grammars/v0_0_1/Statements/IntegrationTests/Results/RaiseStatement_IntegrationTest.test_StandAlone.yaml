@@ -23,6 +23,11 @@ Children:
                   End: 6
                   Start: 5
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.RaiseStatementLexerInfo.RaiseStatementLexerInfo'>
+              Expression: None
+              Regions: # <class 'types.RaiseStatementLexerInfoRegions'>
+                Expression: None
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (6)"
             Type: "Raise Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

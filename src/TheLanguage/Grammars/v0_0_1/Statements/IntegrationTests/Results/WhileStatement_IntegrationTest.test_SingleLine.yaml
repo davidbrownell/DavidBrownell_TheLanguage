@@ -143,6 +143,28 @@ Children:
                 IterBegin: "[1, 12] (11)"
                 IterEnd: "[2, 1] (21)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+            Info: # <class 'TheLanguage.Lexer.Statements.WhileStatementLexerInfo.WhileStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                  Name: "value"
+                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                    Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                    Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                  Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                  Self__: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+              Regions: # <class 'types.WhileStatementLexerInfoRegions'>
+                Expression: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+                Statements: "[Ln 1, Col 12] -> [Ln 2, Col 1]"
+              Statements:
+                - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                  Arguments: None
+                  Name: "Func1"
+                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                    Arguments: None
+                    Name: "[Ln 1, Col 14] -> [Ln 1, Col 19]"
+                    Self__: "[Ln 1, Col 14] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (21)"
             Type: "While Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
