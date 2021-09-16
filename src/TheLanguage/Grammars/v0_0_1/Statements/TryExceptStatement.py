@@ -17,11 +17,12 @@
 
 import os
 
-from typing import List, Tuple, Union
+from typing import cast, List, Optional
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,11 +33,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import StatementsPhraseItem
-    from ...GrammarPhrase import GrammarPhrase
+    from ..Common import Tokens as CommonTokens
+
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Lexer.Statements.TryExceptStatementLexerInfo import (
+        StatementLexerInfo,
+        TryExceptStatementClauseLexerInfo,
+        TryExceptStatementLexerInfo,
+        TypeLexerInfo,
+    )
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractOptional,
+        ExtractRepeat,
+        ExtractSequence,
+        ExtractToken,
         Leaf,
         Node,
         PhraseItem,
@@ -73,35 +89,6 @@ class TryExceptStatement(GrammarPhrase):
     PHRASE_NAME                             = "Try Except Statement"
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True, repr=False)
-    class NodeInfo(GrammarPhrase.NodeInfo):
-        TryStatements: List[Union[Leaf, Node]]
-        ExceptVarStatements: List[
-            Tuple[
-                Tuple[Node, Leaf],          # Exception Type, name
-                List[Union[Leaf, Node]],    # Statements
-            ]
-        ]
-        ExceptStatements: List[Union[Leaf, Node]]
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            # <Parameters differ> pylint: disable=W0221
-            super(TryExceptStatement.NodeInfo, self).__post_init__(
-                TryStatements=lambda statements: [statement.Type.Name for statement in statements],
-                ExceptVarStatements=lambda items: ["{}, {}, {}".format(ex_type, ex_name, ", ".join([statement.Type.Name for statement in statements])) for (ex_type, ex_name), statements in items],
-                ExceptStatements=lambda statements: [statement.Type.Name for statement in statements],
-            )
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
-    # ----------------------------------------------------------------------
     def __init__(self):
         statements_item = StatementsPhraseItem.Create()
 
@@ -124,7 +111,7 @@ class TryExceptStatement(GrammarPhrase):
                         item=[
                             "except",
                             DynamicPhrasesType.Types,
-                            DynamicPhrasesType.Names,
+                            CommonTokens.GenericName,
                             statements_item,
                         ],
                         arity="*",
@@ -145,3 +132,78 @@ class TryExceptStatement(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 4
+
+            # 'try'...
+            try_statements_node = cast(Node, nodes[1])
+            try_statements_info = StatementsPhraseItem.ExtractLexerInfo(try_statements_node)
+
+            # 'except' <type>...
+            except_type_nodes = cast(Node, nodes[2])
+            except_infos: List[TryExceptStatementClauseLexerInfo] = []
+
+            for except_type_node in cast(List[Node], ExtractRepeat(except_type_nodes)):
+                these_type_expect_nodes = ExtractSequence(except_type_node)
+                assert len(these_type_expect_nodes) == 4
+
+                # <type>
+                type_node = cast(Node, ExtractDynamic(cast(Node, these_type_expect_nodes[1])))
+                type_info = cast(TypeLexerInfo, GetLexerInfo(type_node))
+
+                # <name>
+                name_leaf = cast(Leaf, these_type_expect_nodes[2])
+                name_info = cast(str, ExtractToken(name_leaf))
+
+                # <statements>
+                statements_node = cast(Node, these_type_expect_nodes[3])
+                statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
+
+                except_infos.append(
+                    # pylint: disable=too-many-function-args
+                    TryExceptStatementClauseLexerInfo(
+                        CreateLexerRegions(except_type_node, type_node, name_leaf, statements_node),  # type: ignore
+                        type_info,
+                        name_info,
+                        statements_info,
+                    ),
+                )
+
+            # 'except'...
+            except_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[3])))
+            if except_node is not None:
+                except_nodes = ExtractSequence(except_node)
+                assert len(except_nodes) == 2
+
+                except_info = StatementsPhraseItem.ExtractLexerInfo(cast(Node, except_nodes[1]))
+            else:
+                except_info = None
+
+            SetLexerInfo(
+                node,
+                TryExceptStatementLexerInfo(
+                    CreateLexerRegions(
+                        node,
+                        try_statements_node,
+                        except_type_nodes if except_infos else None,
+                        except_node,
+                    ),  # type: ignore
+                    try_statements_info,
+                    except_infos or None,
+                    except_info,
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
