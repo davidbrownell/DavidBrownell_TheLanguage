@@ -17,7 +17,10 @@
 
 import os
 
+from typing import Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,8 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import SetLexerInfo
+    from ....Lexer.Statements.PassStatementLexerInfo import PassStatementLexerInfo
+
+    from ....Parser.Phrases.DSL import CreatePhrase, Node
 
 
 # ----------------------------------------------------------------------
@@ -56,5 +63,19 @@ class PassStatement(GrammarPhrase):
                     "pass",
                     CommonTokens.Newline,
                 ],
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        SetLexerInfo(
+            node,
+            PassStatementLexerInfo(
+                CreateLexerRegions(node),  # type: ignore
             ),
         )

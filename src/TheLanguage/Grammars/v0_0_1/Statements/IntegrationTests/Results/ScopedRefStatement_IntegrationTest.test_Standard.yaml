@@ -132,6 +132,9 @@ Children:
                                               End: 28
                                               Start: 26
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                          Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                            Self__: "[Ln 2, Col 5] -> [Ln 4, Col 1]"
                                         IterBegin: "[2, 5] (22)"
                                         IterEnd: "[4, 1] (28)"
                                         Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -315,6 +318,9 @@ Children:
                                               End: 57
                                               Start: 55
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                          Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                            Self__: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
                                         IterBegin: "[5, 5] (51)"
                                         IterEnd: "[7, 1] (57)"
                                         Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -533,6 +539,9 @@ Children:
                                               End: 91
                                               Start: 89
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                          Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                            Self__: "[Ln 8, Col 5] -> [Ln 10, Col 1]"
                                         IterBegin: "[8, 5] (85)"
                                         IterEnd: "[10, 1] (91)"
                                         Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -764,6 +773,9 @@ Children:
                                               End: 126
                                               Start: 124
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                          Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                            Self__: "[Ln 11, Col 5] -> [Ln 13, Col 1]"
                                         IterBegin: "[11, 5] (120)"
                                         IterEnd: "[13, 1] (126)"
                                         Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -955,6 +967,9 @@ Children:
                                               End: 156
                                               Start: 154
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                          Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                            Self__: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
                                         IterBegin: "[14, 5] (150)"
                                         IterEnd: "[16, 1] (156)"
                                         Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1237,6 +1252,9 @@ Children:
                                               End: 199
                                               Start: 197
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                          Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                            Self__: "[Ln 17, Col 5] -> [Ln 19, Col 1]"
                                         IterBegin: "[17, 5] (193)"
                                         IterEnd: "[19, 1] (199)"
                                         Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1532,6 +1550,9 @@ Children:
                                               End: 245
                                               Start: 243
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                          Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                            Self__: "[Ln 20, Col 5] -> [Ln 22, Col 1]"
                                         IterBegin: "[20, 5] (239)"
                                         IterEnd: "[22, 1] (245)"
                                         Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1823,6 +1844,9 @@ Children:
                                               End: 308
                                               Start: 307
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                          Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                            Self__: "[Ln 27, Col 5] -> [Ln 28, Col 1]"
                                         IterBegin: "[27, 5] (303)"
                                         IterEnd: "[28, 1] (308)"
                                         Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
