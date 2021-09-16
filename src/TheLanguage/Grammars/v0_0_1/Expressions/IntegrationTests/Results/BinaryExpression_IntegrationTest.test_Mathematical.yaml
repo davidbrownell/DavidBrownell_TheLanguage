@@ -206,6 +206,43 @@ Children:
                   End: 17
                   Start: 16
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.VariableDeclarationStatementLexerInfo.VariableDeclarationStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
+                Left: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "one"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 1, Col 8] -> [Ln 1, Col 11]"
+                      Self__: "[Ln 1, Col 8] -> [Ln 1, Col 11]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 1, Col 8] -> [Ln 1, Col 11]"
+                    Self__: "[Ln 1, Col 8] -> [Ln 1, Col 11]"
+                Operator: "OperatorType.Add"
+                Regions: # <class 'types.BinaryExpressionLexerInfoRegions'>
+                  Left: "[Ln 1, Col 8] -> [Ln 1, Col 11]"
+                  Operator: "[Ln 1, Col 12] -> [Ln 1, Col 13]"
+                  Right: "[Ln 1, Col 14] -> [Ln 1, Col 17]"
+                  Self__: "[Ln 1, Col 8] -> [Ln 1, Col 17]"
+                Right: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "two"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 1, Col 14] -> [Ln 1, Col 17]"
+                      Self__: "[Ln 1, Col 14] -> [Ln 1, Col 17]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 1, Col 14] -> [Ln 1, Col 17]"
+                    Self__: "[Ln 1, Col 14] -> [Ln 1, Col 17]"
+              Modifier: None
+              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                Name: "var1"
+                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                  Name: "[Ln 1, Col 1] -> [Ln 1, Col 5]"
+                  Self__: "[Ln 1, Col 1] -> [Ln 1, Col 5]"
+              Regions: # <class 'types.VariableDeclarationStatementLexerInfoRegions'>
+                Expression: "[Ln 1, Col 8] -> [Ln 1, Col 17]"
+                Modifier: None
+                Name: "[Ln 1, Col 1] -> [Ln 1, Col 5]"
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (17)"
             Type: "Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -421,6 +458,43 @@ Children:
                   End: 37
                   Start: 36
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.VariableDeclarationStatementLexerInfo.VariableDeclarationStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
+                Left: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "three"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 2, Col 8] -> [Ln 2, Col 13]"
+                      Self__: "[Ln 2, Col 8] -> [Ln 2, Col 13]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 2, Col 8] -> [Ln 2, Col 13]"
+                    Self__: "[Ln 2, Col 8] -> [Ln 2, Col 13]"
+                Operator: "OperatorType.Subtract"
+                Regions: # <class 'types.BinaryExpressionLexerInfoRegions'>
+                  Left: "[Ln 2, Col 8] -> [Ln 2, Col 13]"
+                  Operator: "[Ln 2, Col 14] -> [Ln 2, Col 15]"
+                  Right: "[Ln 2, Col 16] -> [Ln 2, Col 20]"
+                  Self__: "[Ln 2, Col 8] -> [Ln 2, Col 20]"
+                Right: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "four"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 2, Col 16] -> [Ln 2, Col 20]"
+                      Self__: "[Ln 2, Col 16] -> [Ln 2, Col 20]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 2, Col 16] -> [Ln 2, Col 20]"
+                    Self__: "[Ln 2, Col 16] -> [Ln 2, Col 20]"
+              Modifier: None
+              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                Name: "var2"
+                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                  Name: "[Ln 2, Col 1] -> [Ln 2, Col 5]"
+                  Self__: "[Ln 2, Col 1] -> [Ln 2, Col 5]"
+              Regions: # <class 'types.VariableDeclarationStatementLexerInfoRegions'>
+                Expression: "[Ln 2, Col 8] -> [Ln 2, Col 20]"
+                Modifier: None
+                Name: "[Ln 2, Col 1] -> [Ln 2, Col 5]"
+                Self__: "[Ln 2, Col 1] -> [Ln 3, Col 1]"
             IterBegin: "[2, 1] (17)"
             IterEnd: "[3, 1] (37)"
             Type: "Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -636,6 +710,43 @@ Children:
                   End: 55
                   Start: 54
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.VariableDeclarationStatementLexerInfo.VariableDeclarationStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
+                Left: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "five"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 3, Col 8] -> [Ln 3, Col 12]"
+                      Self__: "[Ln 3, Col 8] -> [Ln 3, Col 12]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 3, Col 8] -> [Ln 3, Col 12]"
+                    Self__: "[Ln 3, Col 8] -> [Ln 3, Col 12]"
+                Operator: "OperatorType.Multiply"
+                Regions: # <class 'types.BinaryExpressionLexerInfoRegions'>
+                  Left: "[Ln 3, Col 8] -> [Ln 3, Col 12]"
+                  Operator: "[Ln 3, Col 13] -> [Ln 3, Col 14]"
+                  Right: "[Ln 3, Col 15] -> [Ln 3, Col 18]"
+                  Self__: "[Ln 3, Col 8] -> [Ln 3, Col 18]"
+                Right: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "six"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 3, Col 15] -> [Ln 3, Col 18]"
+                      Self__: "[Ln 3, Col 15] -> [Ln 3, Col 18]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 3, Col 15] -> [Ln 3, Col 18]"
+                    Self__: "[Ln 3, Col 15] -> [Ln 3, Col 18]"
+              Modifier: None
+              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                Name: "var3"
+                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                  Name: "[Ln 3, Col 1] -> [Ln 3, Col 5]"
+                  Self__: "[Ln 3, Col 1] -> [Ln 3, Col 5]"
+              Regions: # <class 'types.VariableDeclarationStatementLexerInfoRegions'>
+                Expression: "[Ln 3, Col 8] -> [Ln 3, Col 18]"
+                Modifier: None
+                Name: "[Ln 3, Col 1] -> [Ln 3, Col 5]"
+                Self__: "[Ln 3, Col 1] -> [Ln 4, Col 1]"
             IterBegin: "[3, 1] (37)"
             IterEnd: "[4, 1] (55)"
             Type: "Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -851,6 +962,43 @@ Children:
                   End: 77
                   Start: 76
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.VariableDeclarationStatementLexerInfo.VariableDeclarationStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
+                Left: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "seven"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 4, Col 8] -> [Ln 4, Col 13]"
+                      Self__: "[Ln 4, Col 8] -> [Ln 4, Col 13]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 4, Col 8] -> [Ln 4, Col 13]"
+                    Self__: "[Ln 4, Col 8] -> [Ln 4, Col 13]"
+                Operator: "OperatorType.Power"
+                Regions: # <class 'types.BinaryExpressionLexerInfoRegions'>
+                  Left: "[Ln 4, Col 8] -> [Ln 4, Col 13]"
+                  Operator: "[Ln 4, Col 14] -> [Ln 4, Col 16]"
+                  Right: "[Ln 4, Col 17] -> [Ln 4, Col 22]"
+                  Self__: "[Ln 4, Col 8] -> [Ln 4, Col 22]"
+                Right: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "eight"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 4, Col 17] -> [Ln 4, Col 22]"
+                      Self__: "[Ln 4, Col 17] -> [Ln 4, Col 22]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 4, Col 17] -> [Ln 4, Col 22]"
+                    Self__: "[Ln 4, Col 17] -> [Ln 4, Col 22]"
+              Modifier: None
+              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                Name: "var4"
+                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                  Name: "[Ln 4, Col 1] -> [Ln 4, Col 5]"
+                  Self__: "[Ln 4, Col 1] -> [Ln 4, Col 5]"
+              Regions: # <class 'types.VariableDeclarationStatementLexerInfoRegions'>
+                Expression: "[Ln 4, Col 8] -> [Ln 4, Col 22]"
+                Modifier: None
+                Name: "[Ln 4, Col 1] -> [Ln 4, Col 5]"
+                Self__: "[Ln 4, Col 1] -> [Ln 5, Col 1]"
             IterBegin: "[4, 1] (55)"
             IterEnd: "[5, 1] (77)"
             Type: "Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1066,6 +1214,43 @@ Children:
                   End: 95
                   Start: 94
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.VariableDeclarationStatementLexerInfo.VariableDeclarationStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
+                Left: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "nine"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 5, Col 8] -> [Ln 5, Col 12]"
+                      Self__: "[Ln 5, Col 8] -> [Ln 5, Col 12]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 5, Col 8] -> [Ln 5, Col 12]"
+                    Self__: "[Ln 5, Col 8] -> [Ln 5, Col 12]"
+                Operator: "OperatorType.Divide"
+                Regions: # <class 'types.BinaryExpressionLexerInfoRegions'>
+                  Left: "[Ln 5, Col 8] -> [Ln 5, Col 12]"
+                  Operator: "[Ln 5, Col 13] -> [Ln 5, Col 14]"
+                  Right: "[Ln 5, Col 15] -> [Ln 5, Col 18]"
+                  Self__: "[Ln 5, Col 8] -> [Ln 5, Col 18]"
+                Right: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "ten"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 5, Col 15] -> [Ln 5, Col 18]"
+                      Self__: "[Ln 5, Col 15] -> [Ln 5, Col 18]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 5, Col 15] -> [Ln 5, Col 18]"
+                    Self__: "[Ln 5, Col 15] -> [Ln 5, Col 18]"
+              Modifier: None
+              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                Name: "var5"
+                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                  Name: "[Ln 5, Col 1] -> [Ln 5, Col 5]"
+                  Self__: "[Ln 5, Col 1] -> [Ln 5, Col 5]"
+              Regions: # <class 'types.VariableDeclarationStatementLexerInfoRegions'>
+                Expression: "[Ln 5, Col 8] -> [Ln 5, Col 18]"
+                Modifier: None
+                Name: "[Ln 5, Col 1] -> [Ln 5, Col 5]"
+                Self__: "[Ln 5, Col 1] -> [Ln 6, Col 1]"
             IterBegin: "[5, 1] (77)"
             IterEnd: "[6, 1] (95)"
             Type: "Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1281,6 +1466,43 @@ Children:
                   End: 119
                   Start: 118
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.VariableDeclarationStatementLexerInfo.VariableDeclarationStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
+                Left: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "eleven"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 6, Col 8] -> [Ln 6, Col 14]"
+                      Self__: "[Ln 6, Col 8] -> [Ln 6, Col 14]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 6, Col 8] -> [Ln 6, Col 14]"
+                    Self__: "[Ln 6, Col 8] -> [Ln 6, Col 14]"
+                Operator: "OperatorType.DivideFloor"
+                Regions: # <class 'types.BinaryExpressionLexerInfoRegions'>
+                  Left: "[Ln 6, Col 8] -> [Ln 6, Col 14]"
+                  Operator: "[Ln 6, Col 15] -> [Ln 6, Col 17]"
+                  Right: "[Ln 6, Col 18] -> [Ln 6, Col 24]"
+                  Self__: "[Ln 6, Col 8] -> [Ln 6, Col 24]"
+                Right: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "twelve"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 6, Col 18] -> [Ln 6, Col 24]"
+                      Self__: "[Ln 6, Col 18] -> [Ln 6, Col 24]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 6, Col 18] -> [Ln 6, Col 24]"
+                    Self__: "[Ln 6, Col 18] -> [Ln 6, Col 24]"
+              Modifier: None
+              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                Name: "var6"
+                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                  Name: "[Ln 6, Col 1] -> [Ln 6, Col 5]"
+                  Self__: "[Ln 6, Col 1] -> [Ln 6, Col 5]"
+              Regions: # <class 'types.VariableDeclarationStatementLexerInfoRegions'>
+                Expression: "[Ln 6, Col 8] -> [Ln 6, Col 24]"
+                Modifier: None
+                Name: "[Ln 6, Col 1] -> [Ln 6, Col 5]"
+                Self__: "[Ln 6, Col 1] -> [Ln 7, Col 1]"
             IterBegin: "[6, 1] (95)"
             IterEnd: "[7, 1] (119)"
             Type: "Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1496,6 +1718,43 @@ Children:
                   End: 146
                   Start: 145
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.VariableDeclarationStatementLexerInfo.VariableDeclarationStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.BinaryExpressionLexerInfo.BinaryExpressionLexerInfo'>
+                Left: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "thirteen"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 7, Col 8] -> [Ln 7, Col 16]"
+                      Self__: "[Ln 7, Col 8] -> [Ln 7, Col 16]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 7, Col 8] -> [Ln 7, Col 16]"
+                    Self__: "[Ln 7, Col 8] -> [Ln 7, Col 16]"
+                Operator: "OperatorType.Modulo"
+                Regions: # <class 'types.BinaryExpressionLexerInfoRegions'>
+                  Left: "[Ln 7, Col 8] -> [Ln 7, Col 16]"
+                  Operator: "[Ln 7, Col 17] -> [Ln 7, Col 18]"
+                  Right: "[Ln 7, Col 19] -> [Ln 7, Col 27]"
+                  Self__: "[Ln 7, Col 8] -> [Ln 7, Col 27]"
+                Right: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                    Name: "fourteen"
+                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                      Name: "[Ln 7, Col 19] -> [Ln 7, Col 27]"
+                      Self__: "[Ln 7, Col 19] -> [Ln 7, Col 27]"
+                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                    Name: "[Ln 7, Col 19] -> [Ln 7, Col 27]"
+                    Self__: "[Ln 7, Col 19] -> [Ln 7, Col 27]"
+              Modifier: None
+              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                Name: "var7"
+                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                  Name: "[Ln 7, Col 1] -> [Ln 7, Col 5]"
+                  Self__: "[Ln 7, Col 1] -> [Ln 7, Col 5]"
+              Regions: # <class 'types.VariableDeclarationStatementLexerInfoRegions'>
+                Expression: "[Ln 7, Col 8] -> [Ln 7, Col 27]"
+                Modifier: None
+                Name: "[Ln 7, Col 1] -> [Ln 7, Col 5]"
+                Self__: "[Ln 7, Col 1] -> [Ln 8, Col 1]"
             IterBegin: "[7, 1] (119)"
             IterEnd: "[8, 1] (146)"
             Type: "Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
