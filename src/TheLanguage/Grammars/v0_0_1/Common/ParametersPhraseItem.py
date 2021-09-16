@@ -41,12 +41,8 @@ with InitRelativeImports():
 
     from ....Lexer.Common.ParametersLexerInfo import (
         ExpressionLexerInfo,
-        ParameterLexerData,
         ParameterLexerInfo,
-        ParameterLexerRegions,
-        ParametersLexerData,
         ParametersLexerInfo,
-        ParametersLexerRegions,
         TypeLexerInfo,
     )
 
@@ -330,13 +326,13 @@ def ExtractLexerInfo(
     encountered_default = False
 
     positional_parameters_node = None
-    positional_parameters_data = None
+    positional_parameters_info = None
 
     keyword_parameters_node = None
-    keyword_parameters_data = None
+    keyword_parameters_info = None
 
     any_parameters_node = None
-    any_parameters_data = None
+    any_parameters_info = None
 
     for parameters_type, parameters_node, parameter_nodes in enum_method(all_parameters_node):
         parameters = []
@@ -347,19 +343,19 @@ def ExtractLexerInfo(
 
             # <type>
             parameter_type_node = cast(Node, ExtractDynamic(cast(Node, these_parameter_nodes[0])))
-            parameter_type_data = cast(TypeLexerInfo, GetLexerInfo(parameter_type_node))
+            parameter_type_info = cast(TypeLexerInfo, GetLexerInfo(parameter_type_node))
 
             # '*'?
             is_var_args_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], these_parameter_nodes[1])))
 
             if is_var_args_node is not None:
-                is_var_args_data = True
+                is_var_args_info = True
             else:
-                is_var_args_data = None
+                is_var_args_info = None
 
             # <name>
             name_leaf = cast(Leaf, these_parameter_nodes[2])
-            name_data = cast(str, ExtractToken(name_leaf))
+            name_info = cast(str, ExtractToken(name_leaf))
 
             # ('=' <expr>)?
             default_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], these_parameter_nodes[3])))
@@ -370,53 +366,50 @@ def ExtractLexerInfo(
                 default_nodes = ExtractSequence(default_node)
                 assert len(default_nodes) == 2
 
-                default_data = cast(ExpressionLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, default_nodes[1]))))
+                default_info = cast(ExpressionLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, default_nodes[1]))))
             else:
                 if encountered_default:
                     raise RequiredParameterAfterDefaultError.FromNode(parameter_node)
 
-                default_data = None
+                default_info = None
 
             parameters.append(
                 # pylint: disable=too-many-function-args
                 ParameterLexerInfo(
-                    ParameterLexerData(
-                        parameter_type_data,
-                        name_data,
-                        default_data,
-                        is_var_args_data,
-                    ),
                     CreateLexerRegions(
-                        ParameterLexerRegions,  # type: ignore
                         parameter_node,
                         parameter_type_node,
                         name_leaf,
                         default_node,
                         is_var_args_node,
-                    ),
+                    ),  # type: ignore
+                    parameter_type_info,
+                    name_info,
+                    default_info,
+                    is_var_args_info,
                 ),
             )
 
         if parameters_type == ParametersType.pos:
             assert positional_parameters_node is None
-            assert positional_parameters_data is None
+            assert positional_parameters_info is None
 
             positional_parameters_node = parameters_node
-            positional_parameters_data = parameters
+            positional_parameters_info = parameters
 
         elif parameters_type == ParametersType.key:
             assert keyword_parameters_node is None
-            assert keyword_parameters_data is None
+            assert keyword_parameters_info is None
 
             keyword_parameters_node = parameters_node
-            keyword_parameters_data = parameters
+            keyword_parameters_info = parameters
 
         elif parameters_type == ParametersType.any:
             assert any_parameters_node is None
-            assert any_parameters_data is None
+            assert any_parameters_info is None
 
             any_parameters_node = parameters_node
-            any_parameters_data = parameters
+            any_parameters_info = parameters
 
         else:
             assert False, parameters_type
@@ -425,18 +418,15 @@ def ExtractLexerInfo(
         node,
         # pylint: disable=too-many-function-args
         ParametersLexerInfo(
-            ParametersLexerData(
-                positional_parameters_data,
-                keyword_parameters_data,
-                any_parameters_data,
-            ),
             CreateLexerRegions(
-                ParametersLexerRegions,  # type: ignore
                 all_parameters_node,
                 positional_parameters_node,
                 keyword_parameters_node,
                 any_parameters_node,
-            ),
+            ),  # type: ignore
+            positional_parameters_info,
+            keyword_parameters_info,
+            any_parameters_info,
         ),
     )
 

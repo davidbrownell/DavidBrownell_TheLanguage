@@ -33,23 +33,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.TypeModifier import TypeModifier
-    from ..LexerInfo import LexerData, LexerInfo, LexerRegions, Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TypeLexerData(LexerData, Interface.Interface):
-    """Abstract base class for all type-related lexer data"""
-    pass
+    from ..LexerInfo import LexerInfo, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TypeLexerInfo(LexerInfo, Interface.Interface):
     """Abstract base class for all type-related lexer info"""
-
-    Data: TypeLexerData
-    Regions: LexerRegions
 
     # ----------------------------------------------------------------------
     @staticmethod

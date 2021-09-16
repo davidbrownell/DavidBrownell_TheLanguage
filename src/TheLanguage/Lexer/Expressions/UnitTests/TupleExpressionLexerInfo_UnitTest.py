@@ -17,8 +17,6 @@
 
 import os
 
-from dataclasses import fields
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -30,12 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..TupleExpressionLexerInfo import *
-    from ..VariableExpressionLexerInfo import *
-    from ...Common.AutomatedTests import CreateRegion
 
 
 # ----------------------------------------------------------------------
-def test_Regions():
-    region_fields = set(field.name for field in fields(TupleExpressionLexerRegions))
-
-    assert region_fields == set(["Self__", "Expressions"])
+# TODO: Remove this in favor of a real test once the LexerInfo object does something more interesting
+def test_Placeholder():
+    assert True

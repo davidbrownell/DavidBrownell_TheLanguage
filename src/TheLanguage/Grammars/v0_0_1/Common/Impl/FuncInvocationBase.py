@@ -34,12 +34,7 @@ with InitRelativeImports():
 
     from ....GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from .....Lexer.LexerInfo import (
-        LexerData,
-        LexerInfo,
-        LexerRegions,
-        SetLexerInfo,
-    )
+    from .....Lexer.LexerInfo import LexerInfo, SetLexerInfo
 
     from .....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -93,8 +88,6 @@ class FuncInvocationBase(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     def _ExtractLexerInfoImpl(
-        lexer_data_type: Type[LexerData],
-        lexer_regions_type: Type[LexerRegions],
         lexer_info_type: Type[LexerInfo],
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
@@ -105,25 +98,18 @@ class FuncInvocationBase(GrammarPhrase):
 
             # Func Name
             name_leaf = cast(Leaf, nodes[0])
-            name_data = cast(str, ExtractToken(name_leaf))
+            name_info = cast(str, ExtractToken(name_leaf))
 
             # Arguments
-            arguments_node, arguments_info = ArgumentsPhraseItem.Extract(cast(Node, nodes[1]))
+            arguments_node, arguments_info = ArgumentsPhraseItem.ExtractLexerInfo(cast(Node, nodes[1]))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 lexer_info_type(
-                    lexer_data_type(
-                        name_data,  # type: ignore
-                        arguments_info,
-                    ),
-                    CreateLexerRegions(
-                        lexer_regions_type,  # type: ignore
-                        node,
-                        name_leaf,
-                        arguments_node,
-                    ),
+                    CreateLexerRegions(node, name_leaf, arguments_node),
+                    name_info,  # type: ignore
+                    arguments_info,
                 ),
             )
 

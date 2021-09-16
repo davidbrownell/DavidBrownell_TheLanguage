@@ -35,8 +35,6 @@ with InitRelativeImports():
     from ....Lexer.Expressions.UnaryExpressionLexerInfo import (
         ExpressionLexerInfo,
         OperatorType,
-        UnaryEpressionLexerData,
-        UnaryExpressionLexerRegions,
         UnaryExpressionLexerInfo,
     )
 
@@ -132,36 +130,32 @@ class UnaryExpression(GrammarPhrase):
             )
 
             if op_value == "await":
-                operator_data = OperatorType.Await
+                operator_info = OperatorType.Await
             elif op_value == "copy":
-                operator_data = OperatorType.Copy
+                operator_info = OperatorType.Copy
             elif op_value == "move":
-                operator_data = OperatorType.Move
+                operator_info = OperatorType.Move
             elif op_value == "not":
-                operator_data = OperatorType.Not
+                operator_info = OperatorType.Not
             elif op_value == "+":
-                operator_data = OperatorType.Positive
+                operator_info = OperatorType.Positive
             elif op_value == "-":
-                operator_data = OperatorType.Negative
+                operator_info = OperatorType.Negative
             elif op_value == "~":
-                operator_data = OperatorType.BitCompliment
+                operator_info = OperatorType.BitCompliment
             else:
                 assert False, op_value
 
             # <expr>
             expr_node = ExtractDynamic(cast(Node, nodes[1]))
-            expr_data = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
 
             SetLexerInfo(
                 node,
                 UnaryExpressionLexerInfo(
-                    UnaryEpressionLexerData(operator_data, expr_data),
-                    CreateLexerRegions(
-                        UnaryExpressionLexerRegions,  # type: ignore
-                        node,
-                        operator_leaf,
-                        expr_node,
-                    ),
+                    CreateLexerRegions(node, operator_leaf, expr_node),  # type: ignore
+                    operator_info,
+                    expr_info,
                 ),
             )
 

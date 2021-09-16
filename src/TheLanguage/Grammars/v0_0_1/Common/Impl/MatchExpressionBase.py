@@ -34,16 +34,9 @@ with InitRelativeImports():
 
     from ....GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
-    from .....Lexer.LexerInfo import (
-        GetLexerInfo,
-        LexerData,
-        LexerInfo,
-        LexerRegions,
-        SetLexerInfo,
-    )
+    from .....Lexer.LexerInfo import GetLexerInfo, LexerInfo, SetLexerInfo
 
     from .....Lexer.Expressions.ExpressionLexerInfo import ExpressionLexerInfo
-    from .....Lexer.Types.TypeLexerInfo import TypeLexerInfo
 
     from .....Parser.Phrases.DSL import (
         CreatePhrase,
@@ -279,11 +272,7 @@ class MatchExpressionBase(GrammarPhrase):
     @classmethod
     def _ExtractLexerInfoImpl(
         cls,
-        match_lexer_data_type: Type[LexerData],
-        match_lexer_regions_type: Type[LexerRegions],
         match_lexer_info_type: Type[LexerInfo],
-        case_phrase_lexer_data_type: Type[LexerData],
-        case_phrase_lexer_regions_type: Type[LexerRegions],
         case_phrase_lexer_info_type: Type[LexerInfo],
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
@@ -316,11 +305,11 @@ class MatchExpressionBase(GrammarPhrase):
 
             # <expr>
             expr_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
-            expr_data = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
 
             # Cases
             cases_node = cast(Node, nodes[6])
-            cases_data: List[case_phrase_lexer_info_type] = []
+            cases_info: List[case_phrase_lexer_info_type] = []
 
             for case_phrase_node in cast(List[Node], ExtractRepeat(cases_node)):
                 case_phrase_nodes = ExtractSequence(case_phrase_node)
@@ -336,7 +325,7 @@ class MatchExpressionBase(GrammarPhrase):
                 case_items_nodes = ExtractSequence(case_items_node)
                 assert len(case_items_nodes) == 3
 
-                case_items_data = []
+                case_items_info = []
 
                 for case_item_node in itertools.chain(
                     [case_items_nodes[0]],
@@ -348,53 +337,41 @@ class MatchExpressionBase(GrammarPhrase):
                         )
                     ],
                 ):
-                    case_items_data.append(GetLexerInfo(ExtractDynamic(cast(Node, case_item_node))))
+                    case_items_info.append(GetLexerInfo(ExtractDynamic(cast(Node, case_item_node))))
 
-                assert case_items_data
+                assert case_items_info
 
                 # <expr>
                 case_phrase_expr_node = cast(Node, case_phrase_nodes[3])
-                case_phrase_expr_data = cls._ExtractCaseExpression(case_phrase_expr_node)
+                case_phrase_expr_info = cls._ExtractCaseExpression(case_phrase_expr_node)
 
-                cases_data.append(
+                cases_info.append(
                     case_phrase_lexer_info_type(
-                        case_phrase_lexer_data_type(case_items_data, case_phrase_expr_data),  # type: ignore
-                        CreateLexerRegions(
-                            case_phrase_lexer_regions_type,  # type: ignore
-                            case_phrase_node,
-                            case_items_node,
-                            case_phrase_expr_node,
-                        ),
+                        CreateLexerRegions(case_phrase_node, case_items_node, case_phrase_expr_node),  # type: ignore
+                        case_items_info,  # type: ignore
+                        case_phrase_expr_info,
                     ),
                 )
 
-            assert cases_data
+            assert cases_info
 
             # Default
             default_node = cast(Node, ExtractOptional(cast(Node, nodes[7])))
 
             if default_node is not None:
                 default_node = cast(Node, ExtractSequence(default_node)[2])
-                default_data = cls._ExtractCaseExpression(default_node)
+                default_info = cls._ExtractCaseExpression(default_node)
 
             else:
-                default_data = None
+                default_info = None
 
             SetLexerInfo(
                 node,
                 match_lexer_info_type(
-                    match_lexer_data_type(
-                        expr_data,  # type: ignore
-                        cases_data,
-                        default_data,
-                    ),
-                    CreateLexerRegions(
-                        match_lexer_regions_type,  # type: ignore
-                        node,
-                        expr_node,
-                        cases_node,
-                        default_node,
-                    ),
+                    CreateLexerRegions(node, expr_node, cases_node, default_node),  # type: ignore
+                    expr_info,  # type: ignore
+                    cases_info,
+                    default_info,
                 ),
             )
 

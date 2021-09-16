@@ -34,9 +34,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
     from ....Lexer.Expressions.CastExpressionLexerInfo import (
-        CastExpressionLexerData,
         CastExpressionLexerInfo,
-        CastExpressionLexerRegions,
         ExpressionLexerInfo,
         TypeLexerInfo,
     )
@@ -114,31 +112,24 @@ class CastExpression(GrammarPhrase):
 
             # <expr>
             expr_node = ExtractDynamic(cast(Node, nodes[0]))
-            expr_data = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
 
             # <modifier> | <type>
             type_node = cast(Node, ExtractOr(cast(Node, nodes[2])))
 
             assert type_node.Type is not None
             if type_node.Type.Name == "Modifier":
-                type_data = TypeModifier.Extract(type_node)
+                type_info = TypeModifier.Extract(type_node)
             else:
-                type_data = cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(type_node)))
+                type_info = cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(type_node)))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 CastExpressionLexerInfo(
-                    CastExpressionLexerData(
-                        expr_data,
-                        type_data,  # type: ignore
-                    ),
-                    CreateLexerRegions(
-                        CastExpressionLexerRegions,  # type: ignore
-                        node,
-                        expr_node,
-                        type_node,
-                    ),
+                    CreateLexerRegions(node, expr_node, type_node),  # type: ignore
+                    expr_info,
+                    type_info,  # type: ignore
                 ),
             )
 

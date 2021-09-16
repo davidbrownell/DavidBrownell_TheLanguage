@@ -37,9 +37,8 @@ Children:
                                               Match: "<_sre.SRE_Match object; span=(1, 2), match='a'>"
                                             Whitespace: None
                                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                            Name: "a"
-                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                          Name: "a"
+                                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                             Name: "[Ln 1, Col 2] -> [Ln 1, Col 3]"
                                             Self__: "[Ln 1, Col 2] -> [Ln 1, Col 3]"
                                         IterBegin: "[1, 2] (1)"
@@ -96,9 +95,8 @@ Children:
                                                                       Match: "<_sre.SRE_Match object; span=(5, 6), match='b'>"
                                                                     Whitespace: None
                                                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                    Name: "b"
-                                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                  Name: "b"
+                                                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                     Name: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
                                                                     Self__: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
                                                                 IterBegin: "[1, 6] (5)"
@@ -139,9 +137,8 @@ Children:
                                                                               - 7
                                                                               - 8
                                                                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                            Name: "c"
-                                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                          Name: "c"
+                                                                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                             Name: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
                                                                             Self__: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
                                                                         IterBegin: "[1, 9] (8)"
@@ -171,21 +168,18 @@ Children:
                                                     IterEnd: "[1, 11] (10)"
                                                     Type: "Multiple <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                                                 Info: # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerData'>
-                                                    Names:
-                                                      - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                        Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                          Name: "b"
-                                                        Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                          Name: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
-                                                          Self__: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
-                                                      - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                        Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                          Name: "c"
-                                                        Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                          Name: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
-                                                          Self__: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
-                                                  Regions: # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerRegions'>
+                                                  Names:
+                                                    - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                      Name: "b"
+                                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                        Name: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
+                                                        Self__: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
+                                                    - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                      Name: "c"
+                                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                        Name: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
+                                                        Self__: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
+                                                  Regions: # <class 'types.TupleNameLexerInfoRegions'>
                                                     Names: "[Ln 1, Col 5] -> [Ln 1, Col 11]"
                                                     Self__: "[Ln 1, Col 5] -> [Ln 1, Col 11]"
                                                 IterBegin: "[1, 5] (4)"
@@ -227,9 +221,8 @@ Children:
                                                       - 11
                                                       - 12
                                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                    Name: "d"
-                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                  Name: "d"
+                                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                     Name: "[Ln 1, Col 13] -> [Ln 1, Col 14]"
                                                     Self__: "[Ln 1, Col 13] -> [Ln 1, Col 14]"
                                                 IterBegin: "[1, 13] (12)"
@@ -272,39 +265,33 @@ Children:
                             IterEnd: "[1, 16] (15)"
                             Type: "Multiple <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                         Info: # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerData'>
-                            Names:
-                              - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                  Name: "a"
-                                Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                  Name: "[Ln 1, Col 2] -> [Ln 1, Col 3]"
-                                  Self__: "[Ln 1, Col 2] -> [Ln 1, Col 3]"
-                              - # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerInfo'>
-                                Data: # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerData'>
-                                  Names:
-                                    - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                        Name: "b"
-                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                        Name: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
-                                        Self__: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
-                                    - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                        Name: "c"
-                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                        Name: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
-                                        Self__: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
-                                Regions: # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerRegions'>
-                                  Names: "[Ln 1, Col 5] -> [Ln 1, Col 11]"
-                                  Self__: "[Ln 1, Col 5] -> [Ln 1, Col 11]"
-                              - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                  Name: "d"
-                                Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                  Name: "[Ln 1, Col 13] -> [Ln 1, Col 14]"
-                                  Self__: "[Ln 1, Col 13] -> [Ln 1, Col 14]"
-                          Regions: # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerRegions'>
+                          Names:
+                            - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                              Name: "a"
+                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                Name: "[Ln 1, Col 2] -> [Ln 1, Col 3]"
+                                Self__: "[Ln 1, Col 2] -> [Ln 1, Col 3]"
+                            - # <class 'TheLanguage.Lexer.Names.TupleNameLexerInfo.TupleNameLexerInfo'>
+                              Names:
+                                - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                  Name: "b"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                    Name: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
+                                    Self__: "[Ln 1, Col 6] -> [Ln 1, Col 7]"
+                                - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                  Name: "c"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                    Name: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
+                                    Self__: "[Ln 1, Col 9] -> [Ln 1, Col 10]"
+                              Regions: # <class 'types.TupleNameLexerInfoRegions'>
+                                Names: "[Ln 1, Col 5] -> [Ln 1, Col 11]"
+                                Self__: "[Ln 1, Col 5] -> [Ln 1, Col 11]"
+                            - # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                              Name: "d"
+                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                Name: "[Ln 1, Col 13] -> [Ln 1, Col 14]"
+                                Self__: "[Ln 1, Col 13] -> [Ln 1, Col 14]"
+                          Regions: # <class 'types.TupleNameLexerInfoRegions'>
                             Names: "[Ln 1, Col 1] -> [Ln 1, Col 16]"
                             Self__: "[Ln 1, Col 1] -> [Ln 1, Col 16]"
                         IterBegin: "[1, 1] (0)"
@@ -347,9 +334,8 @@ Children:
                                       - 17
                                       - 18
                                 Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                    Name: "value"
-                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                  Name: "value"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                     Name: "[Ln 1, Col 19] -> [Ln 1, Col 24]"
                                     Self__: "[Ln 1, Col 19] -> [Ln 1, Col 24]"
                                 IterBegin: "[1, 19] (18)"
@@ -359,14 +345,12 @@ Children:
                             IterEnd: "[1, 24] (23)"
                             Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                         Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                            Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                Name: "value"
-                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                Name: "[Ln 1, Col 19] -> [Ln 1, Col 24]"
-                                Self__: "[Ln 1, Col 19] -> [Ln 1, Col 24]"
-                          Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                            Name: "value"
+                            Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                              Name: "[Ln 1, Col 19] -> [Ln 1, Col 24]"
+                              Self__: "[Ln 1, Col 19] -> [Ln 1, Col 24]"
+                          Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                             Name: "[Ln 1, Col 19] -> [Ln 1, Col 24]"
                             Self__: "[Ln 1, Col 19] -> [Ln 1, Col 24]"
                         IterBegin: "[1, 19] (18)"

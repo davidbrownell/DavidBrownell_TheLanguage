@@ -29,29 +29,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NameLexerInfo import NameLexerData, NameLexerInfo
-    from ..LexerInfo import LexerRegions, Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableNameLexerData(NameLexerData):
-    Name: str
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Name
-        super(VariableNameLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableNameLexerRegions(LexerRegions):
-    Name: Region
+    from .NameLexerInfo import NameLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class VariableNameLexerInfo(NameLexerInfo):
-    Data: VariableNameLexerData
-    Regions: VariableNameLexerRegions
+    Name: str
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        assert self.Name
+        super(VariableNameLexerInfo, self).__post_init__(regions)

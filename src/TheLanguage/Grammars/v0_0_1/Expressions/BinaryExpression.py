@@ -33,9 +33,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
 
     from ....Lexer.Expressions.BinaryExpressionLexerInfo import (
-        BinaryExpressionLexerData,
         BinaryExpressionLexerInfo,
-        BinaryExpressionLexerRegions,
         ExpressionLexerInfo,
         OperatorType,
     )
@@ -139,7 +137,7 @@ class BinaryExpression(GrammarPhrase):
 
             # <expr>
             left_node = ExtractDynamic(cast(Node, nodes[0]))
-            left_data = cast(ExpressionLexerInfo, GetLexerInfo(left_node))
+            left_info = cast(ExpressionLexerInfo, GetLexerInfo(left_node))
 
             # <op>
             operator_leaf = cast(Leaf, ExtractOr(cast(Node, nodes[1])))
@@ -152,75 +150,67 @@ class BinaryExpression(GrammarPhrase):
             )
 
             if op_value == "and":
-                operator_data = OperatorType.LogicalAnd
+                operator_info = OperatorType.LogicalAnd
             elif op_value == "or":
-                operator_data = OperatorType.LogicalOr
+                operator_info = OperatorType.LogicalOr
             elif op_value == "in":
-                operator_data = OperatorType.LogicalIn
+                operator_info = OperatorType.LogicalIn
             elif op_value == "is":
-                operator_data = OperatorType.LogicalIs
+                operator_info = OperatorType.LogicalIs
             elif op_value == ".":
-                operator_data = OperatorType.ChainedFunc
+                operator_info = OperatorType.ChainedFunc
             elif op_value == "->":
-                operator_data = OperatorType.ChainedFuncReturnSelf
+                operator_info = OperatorType.ChainedFuncReturnSelf
             elif op_value == "<":
-                operator_data = OperatorType.Less
+                operator_info = OperatorType.Less
             elif op_value == "<=":
-                operator_data = OperatorType.LessEqual
+                operator_info = OperatorType.LessEqual
             elif op_value == ">":
-                operator_data = OperatorType.Greater
+                operator_info = OperatorType.Greater
             elif op_value == ">=":
-                operator_data = OperatorType.GreaterEqual
+                operator_info = OperatorType.GreaterEqual
             elif op_value == "==":
-                operator_data = OperatorType.Equal
+                operator_info = OperatorType.Equal
             elif op_value == "!=":
-                operator_data = OperatorType.NotEqual
+                operator_info = OperatorType.NotEqual
             elif op_value == "+":
-                operator_data = OperatorType.Add
+                operator_info = OperatorType.Add
             elif op_value == "-":
-                operator_data = OperatorType.Subtract
+                operator_info = OperatorType.Subtract
             elif op_value == "*":
-                operator_data = OperatorType.Multiply
+                operator_info = OperatorType.Multiply
             elif op_value == "**":
-                operator_data = OperatorType.Power
+                operator_info = OperatorType.Power
             elif op_value == "/":
-                operator_data = OperatorType.Divide
+                operator_info = OperatorType.Divide
             elif op_value == "//":
-                operator_data = OperatorType.DivideFloor
+                operator_info = OperatorType.DivideFloor
             elif op_value == "%":
-                operator_data = OperatorType.Modulo
+                operator_info = OperatorType.Modulo
             elif op_value == "<<":
-                operator_data = OperatorType.BitShiftLeft
+                operator_info = OperatorType.BitShiftLeft
             elif op_value == ">>":
-                operator_data = OperatorType.BitShiftRight
+                operator_info = OperatorType.BitShiftRight
             elif op_value == "^":
-                operator_data = OperatorType.BitXor
+                operator_info = OperatorType.BitXor
             elif op_value == "&":
-                operator_data = OperatorType.BitAnd
+                operator_info = OperatorType.BitAnd
             elif op_value == "|":
-                operator_data = OperatorType.BitOr
+                operator_info = OperatorType.BitOr
             else:
                 assert False, op_value
 
             # <expr>
             right_node = ExtractDynamic(cast(Node, nodes[2]))
-            right_data = cast(ExpressionLexerInfo, GetLexerInfo(right_node))
+            right_info = cast(ExpressionLexerInfo, GetLexerInfo(right_node))
 
             SetLexerInfo(
                 node,
                 BinaryExpressionLexerInfo(
-                    BinaryExpressionLexerData(
-                        left_data,
-                        operator_data,
-                        right_data,
-                    ),
-                    CreateLexerRegions(
-                        BinaryExpressionLexerRegions,  # type: ignore
-                        node,
-                        left_node,
-                        operator_leaf,
-                        right_node,
-                    ),
+                    CreateLexerRegions(node, left_node, operator_leaf, right_node),  # type: ignore
+                    left_info,
+                    operator_info,
+                    right_info,
                 ),
             )
 

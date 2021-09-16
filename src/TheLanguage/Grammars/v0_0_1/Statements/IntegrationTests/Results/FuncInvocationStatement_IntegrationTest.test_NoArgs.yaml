@@ -45,10 +45,9 @@ Children:
                   Start: 6
                 Whitespace: None
             Info: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerData'>
-                Arguments: None
-                Name: "Func"
-              Regions: # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerRegions'>
+              Arguments: None
+              Name: "Func"
+              Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
                 Arguments: None
                 Name: "[Ln 1, Col 1] -> [Ln 1, Col 5]"
                 Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"

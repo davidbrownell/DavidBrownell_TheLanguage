@@ -34,9 +34,8 @@ Children:
                   Start: 7
                 Whitespace: None
             Info: # <class 'TheLanguage.Lexer.Statements.DeleteStatementLexerInfo.DeleteStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.DeleteStatementLexerInfo.DeleteStatementLexerData'>
-                Name: "foo"
-              Regions: # <class 'TheLanguage.Lexer.Statements.DeleteStatementLexerInfo.DeleteStatementLexerRegions'>
+              Name: "foo"
+              Regions: # <class 'types.DeleteStatementLexerInfoRegions'>
                 Name: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
                 Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"

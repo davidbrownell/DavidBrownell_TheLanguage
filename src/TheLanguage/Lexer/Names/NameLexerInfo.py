@@ -30,14 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..LexerInfo import LexerData, LexerInfo, LexerRegions
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class NameLexerData(LexerData, Interface.Interface):
-    """Abstract base class for all name-related lexer data"""
-    pass
+    from ..LexerInfo import LexerInfo
 
 
 # ----------------------------------------------------------------------
@@ -45,5 +38,4 @@ class NameLexerData(LexerData, Interface.Interface):
 class NameLexerInfo(LexerInfo, Interface.Interface):
     """Abstract base class for all name-related lexer info"""
 
-    Data: NameLexerData
-    Regions: LexerRegions
+    pass

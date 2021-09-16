@@ -109,6 +109,8 @@ def _ExtractAttribute(
     # <<Arguments>>?
     arguments_node = ExtractOptional(cast(Node, nodes[2]))
     if arguments_node is not None:
-        arguments_node = ArgumentsPhraseItem.Extract(cast(Node, arguments_node))
+        arguments_info = ArgumentsPhraseItem.ExtractLexerInfo(cast(Node, arguments_node))
+    else:
+        arguments_info = None
 
-    return name, leaf, arguments_node
+    return name, leaf, arguments_info

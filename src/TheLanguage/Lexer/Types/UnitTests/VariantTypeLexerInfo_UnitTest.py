@@ -37,38 +37,51 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class TestStandard(object):
     _standard_type1                         = StandardTypeLexerInfo(
-        StandardTypeLexerData("Type1", None),
-        StandardTypeLexerRegions(
+        [
             CreateRegion(1, 2, 300, 400),
             CreateRegion(1, 2, 3, 4),
             None,
-        ),
+        ],
+        "Type1",
+        None,
     )
 
     _standard_type2                         = StandardTypeLexerInfo(
-        StandardTypeLexerData("Type2", TypeModifier.val),
-        StandardTypeLexerRegions(
+        [
             CreateRegion(5, 6, 700, 800),
             CreateRegion(5, 6, 7, 8),
             CreateRegion(9, 10, 11, 12),
-        ),
+        ],
+        "Type2",
+        TypeModifier.val,
     )
 
     # ----------------------------------------------------------------------
     def test_Single(self):
-        data = VariantTypeLexerData([self._standard_type1])
+        regions = {
+            "Self__": CreateRegion(1, 2, 300, 400),
+            "Types": CreateRegion(5, 6, 7, 8),
+        }
 
-        assert data.Types == [self._standard_type1]
+        info = VariantTypeLexerInfo(
+            list(regions.values()),
+            [self._standard_type1],
+        )
+
+        assert info.Types == [self._standard_type1]
+        assert info.Regions == info.RegionsType(**regions)
 
     # ----------------------------------------------------------------------
     def test_Multiple(self):
-        data = VariantTypeLexerData([self._standard_type1, self._standard_type2])
+        regions = {
+            "Self__": CreateRegion(1, 2, 300, 400),
+            "Types": CreateRegion(5, 6, 7, 8),
+        }
 
-        assert data.Types == [self._standard_type1, self._standard_type2]
+        info = VariantTypeLexerInfo(
+            list(regions.values()),
+            [self._standard_type1, self._standard_type2],
+        )
 
-
-# ----------------------------------------------------------------------
-def test_Regions():
-    region_fields = set(field.name for field in fields(VariantTypeLexerRegions))
-
-    assert region_fields == set(["Self__", "Types"])
+        assert info.Types == [self._standard_type1, self._standard_type2]
+        assert info.Regions == info.RegionsType(**regions)

@@ -34,9 +34,7 @@ with InitRelativeImports():
 
     from ....Lexer.Expressions.IndexExpressionLexerInfo import (
         ExpressionLexerInfo,
-        IndexExpressionLexerData,
         IndexExpressionLexerInfo,
-        IndexExpressionLexerRegions,
     )
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
@@ -101,23 +99,19 @@ class IndexExpression(GrammarPhrase):
 
             # <expr>
             prefix_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
-            prefix_data = cast(ExpressionLexerInfo, GetLexerInfo(prefix_node))
+            prefix_info = cast(ExpressionLexerInfo, GetLexerInfo(prefix_node))
 
             # <expr>
             index_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
-            index_data = cast(ExpressionLexerInfo, GetLexerInfo(index_node))
+            index_info = cast(ExpressionLexerInfo, GetLexerInfo(index_node))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 IndexExpressionLexerInfo(
-                    IndexExpressionLexerData(prefix_data, index_data),
-                    CreateLexerRegions(
-                        IndexExpressionLexerRegions,  # type: ignore
-                        node,
-                        prefix_node,
-                        index_node,
-                    ),
+                    CreateLexerRegions(node, prefix_node, index_node),  # type: ignore
+                    prefix_info,
+                    index_info,
                 ),
             )
 

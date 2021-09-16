@@ -35,9 +35,7 @@ with InitRelativeImports():
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.Types.TupleTypeLexerInfo import (
-        TupleTypeLexerData,
         TupleTypeLexerInfo,
-        TupleTypeLexerRegions,
         TypeLexerInfo,
     )
 
@@ -76,14 +74,8 @@ class TupleType(TupleBase):
             SetLexerInfo(
                 node,
                 TupleTypeLexerInfo(
-                    TupleTypeLexerData(
-                        [cast(TypeLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
-                    ),
-                    CreateLexerRegions(
-                        TupleTypeLexerRegions,  # type: ignore
-                        node,
-                        node,
-                    ),
+                    CreateLexerRegions(node, node),  # type: ignore
+                    [cast(TypeLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
                 ),
             )
 

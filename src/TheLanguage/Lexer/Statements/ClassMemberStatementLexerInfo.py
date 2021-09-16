@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Optional
+from typing import Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassStatementLexerInfo import ClassStatementLexerInfo
-    from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
+    from .StatementLexerInfo import StatementLexerInfo
 
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
@@ -41,7 +41,6 @@ with InitRelativeImports():
     from ..Types.TypeLexerInfo import TypeLexerInfo
 
     from ..LexerError import LexerError
-    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
@@ -64,84 +63,55 @@ class DataMembersNotSupportedError(LexerError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassMemberStatementLexerData(StatementLexerData):
-    Visibility: VisibilityModifier
-    Type: TypeLexerInfo
-    Name: str
-    ClassModifier: ClassModifier
-    DefaultValue: Optional[ExpressionLexerInfo]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.Name
-        super(ClassMemberStatementLexerData, self).__post_init__()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ClassMemberStatementLexerRegions(LexerRegions):
-    Visibility: Region
-    Type: Region
-    Name: Region
-    ClassModifier: Region
-    DefaultValue: Optional[Region]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
 class ClassMemberStatementLexerInfo(StatementLexerInfo):
-    Data: ClassMemberStatementLexerData                 = field(init=False)
-    Regions: ClassMemberStatementLexerRegions
-
     class_lexer_info: InitVar[Optional[ClassStatementLexerInfo]]
 
     visibility: InitVar[Optional[VisibilityModifier]]
-    the_type: InitVar[TypeLexerInfo]
-    name: InitVar[str]
+    Visibility: VisibilityModifier          = field(init=False)
+
+    Type: TypeLexerInfo
+    Name: str
+
     class_modifier: InitVar[Optional[ClassModifier]]
-    default_value: InitVar[Optional[ExpressionLexerInfo]]
+    ClassModifier: ClassModifier            = field(init=False)
+
+    DefaultValue: Optional[ExpressionLexerInfo]
 
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
-        class_lexer_info,
-        visibility,
-        the_type,
-        name,
-        class_modifier,
-        default_value,
+        regions,
+        class_lexer_info: ClassStatementLexerInfo,
+        visibility: Optional[VisibilityModifier],
+        class_modifier, # : Optional[ClassModifier],
     ):
-        if class_lexer_info is None:
-            raise InvalidClassMemberError(self.Regions.Self__)
-
-        # Set default values and validate as necessary
-        if not class_lexer_info.Data.TypeInfo.AllowDataMembers:
-            raise DataMembersNotSupportedError(self.Regions.Self__, class_lexer_info.Data.ClassType.value)
-
-        if visibility is None:
-            visibility = class_lexer_info.Data.TypeInfo.DefaultMemberVisibility
-            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)
-
-        class_lexer_info.Data.ValidateMemberVisibility(visibility, self.Regions.Visibility)
-
-        if class_modifier is None:
-            class_modifier = class_lexer_info.Data.TypeInfo.DefaultClassModifier
-            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)
-
-        class_lexer_info.Data.ValidateMemberClassModifier(class_modifier, self.Regions.ClassModifier)
-
-        # Set the values
-        object.__setattr__(
-            self,
-            "Data",
-            # pylint: disable=too-many-function-args
-            ClassMemberStatementLexerData(
-                visibility,
-                the_type,
-                name,
-                class_modifier,
-                default_value,
-            ),
+        super(ClassMemberStatementLexerInfo, self).__post_init__(
+            regions,
+            should_validate=False,
         )
 
-        super(ClassMemberStatementLexerInfo, self).__post_init__()
+        if class_lexer_info is None:
+            raise InvalidClassMemberError(self.Regions.Self__)  # pylint: disable=no-member
+
+        # Set the default values as necessary
+        if not class_lexer_info.TypeInfo.AllowDataMembers:
+            raise DataMembersNotSupportedError(self.Regions.Self__, class_lexer_info.ClassType.value)  # pylint: disable=no-member
+
+        # Visibility
+        if visibility is None:
+            visibility = class_lexer_info.TypeInfo.DefaultMemberVisibility
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # pylint: disable=no-member
+
+        class_lexer_info.ValidateMemberVisibility(visibility, self.Regions.Visibility)  # pylint: disable=no-member
+        object.__setattr__(self, "Visibility", visibility)
+
+        # ClassModifier
+        if class_modifier is None:
+            class_modifier = class_lexer_info.TypeInfo.DefaultClassModifier
+            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)  # pylint: disable=no-member
+
+        class_lexer_info.ValidateMemberClassModifier(class_modifier, self.Regions.ClassModifier)  # pylint: disable=no-member
+        object.__setattr__(self, "ClassModifier", class_modifier)
+
+        # Final validation
+        self.Validate()

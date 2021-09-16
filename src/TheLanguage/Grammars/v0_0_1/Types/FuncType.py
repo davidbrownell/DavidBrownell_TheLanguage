@@ -37,9 +37,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.Types.FuncTypeLexerInfo import (
         TypeLexerInfo,
-        FuncTypeLexerData,
         FuncTypeLexerInfo,
-        FuncTypeLexerRegions,
     )
 
     from ....Parser.Phrases.DSL import (
@@ -140,11 +138,11 @@ class FuncType(GrammarPhrase):
 
             # <type>
             return_type_node = ExtractDynamic(cast(Node, nodes[2]))
-            return_type_data = cast(TypeLexerInfo, GetLexerInfo(return_type_node))
+            return_type_info = cast(TypeLexerInfo, GetLexerInfo(return_type_node))
 
             # <parameters>
             parameters_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
-            parameters_data = []
+            parameters_info = []
 
             if parameters_node is not None:
                 parameters_nodes = ExtractSequence(parameters_node)
@@ -161,22 +159,15 @@ class FuncType(GrammarPhrase):
                     ],
                 ):
                     parameter_node = ExtractDynamic(cast(Node, parameter_node))
-                    parameters_data.append(GetLexerInfo(parameter_node))
+                    parameters_info.append(GetLexerInfo(parameter_node))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 FuncTypeLexerInfo(
-                    FuncTypeLexerData(
-                        return_type_data,
-                        parameters_data or None,
-                    ),
-                    CreateLexerRegions(
-                        FuncTypeLexerRegions,  # type: ignore
-                        node,
-                        return_type_node,
-                        parameters_node,
-                    ),
+                    CreateLexerRegions(node, return_type_node, parameters_node),  # type: ignore
+                    return_type_info,
+                    parameters_info or None,
                 ),
             )
 

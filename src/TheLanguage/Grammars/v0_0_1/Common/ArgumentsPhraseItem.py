@@ -39,9 +39,7 @@ with InitRelativeImports():
     from ...GrammarPhrase import CreateLexerRegions
 
     from ....Lexer.Common.ArgumentLexerInfo import (
-        ArgumentLexerData,
         ArgumentLexerInfo,
-        ArgumentLexerRegions,
         ExpressionLexerInfo,
     )
 
@@ -132,7 +130,7 @@ def Create() -> PhraseItem:
 
 
 # ----------------------------------------------------------------------
-def Extract(
+def ExtractLexerInfo(
     node: Node,
 ) -> Tuple[Optional[Node], Optional[List[ArgumentLexerInfo]]]:
     nodes = ExtractSequence(node)
@@ -173,31 +171,28 @@ def Extract(
             assert len(keyword_nodes) == 2
 
             keyword_node = cast(Leaf, keyword_nodes[0])
-            keyword_data = cast(str, ExtractToken(keyword_node))
+            keyword_info = cast(str, ExtractToken(keyword_node))
 
         else:
             if encountered_keyword:
                 raise PositionalAfterKeywordError.FromNode(argument_node)
 
-            keyword_data = None
+            keyword_info = None
 
         # Expression
         expression_node = ExtractDynamic(cast(Node, argument_nodes[1]))
-        expression_data = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
+        expression_info = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
 
         # pylint: disable=too-many-function-args
         argument_infos.append(
             ArgumentLexerInfo(
-                ArgumentLexerData(
-                    expression_data,
-                    keyword_data,
-                ),
                 CreateLexerRegions(
-                    ArgumentLexerRegions,  # type: ignore
                     argument_node,
                     expression_node,
                     keyword_node,
-                ),
+                ),  # type: ignore
+                expression_info,
+                keyword_info,
             ),
         )
 

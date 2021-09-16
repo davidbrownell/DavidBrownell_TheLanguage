@@ -21,9 +21,8 @@ Children:
                               Match: "<_sre.SRE_Match object; span=(0, 5), match='value'>"
                             Whitespace: None
                         Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                            Name: "value"
-                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                          Name: "value"
+                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
                             Name: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
                             Self__: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
                         IterBegin: "[1, 1] (0)"
@@ -96,9 +95,8 @@ Children:
                                                                   Match: "<_sre.SRE_Match object; span=(18, 19), match='a'>"
                                                                 Whitespace: None
                                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                Name: "a"
-                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                              Name: "a"
+                                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                 Name: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
                                                                 Self__: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
                                                             IterBegin: "[2, 5] (18)"
@@ -108,14 +106,12 @@ Children:
                                                         IterEnd: "[2, 6] (19)"
                                                         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                     Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                      Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                        Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                            Name: "a"
-                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                            Name: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
-                                                            Self__: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
-                                                      Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                        Name: "a"
+                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                          Name: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
+                                                          Self__: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
+                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                         Name: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
                                                         Self__: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
                                                     IterBegin: "[2, 5] (18)"
@@ -222,9 +218,8 @@ Children:
                                                                                                   - 46
                                                                                                   - 47
                                                                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                Name: "expr"
-                                                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                              Name: "expr"
+                                                                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                                                 Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
                                                                                                 Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
                                                                                             IterBegin: "[4, 21] (47)"
@@ -234,14 +229,12 @@ Children:
                                                                                         IterEnd: "[4, 25] (51)"
                                                                                         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                                                     Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                                      Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                                        Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                            Name: "expr"
-                                                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                                            Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                                                                            Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                                                                      Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                                        Name: "expr"
+                                                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                                          Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
+                                                                                          Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
+                                                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                                                         Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
                                                                                         Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
                                                                                     IterBegin: "[4, 21] (47)"
@@ -317,9 +310,8 @@ Children:
                                                                                                                   - 69
                                                                                                                   - 70
                                                                                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                                Name: "case1"
-                                                                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                              Name: "case1"
+                                                                                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                                                                 Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
                                                                                                                 Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
                                                                                                             IterBegin: "[5, 18] (70)"
@@ -329,14 +321,12 @@ Children:
                                                                                                         IterEnd: "[5, 23] (75)"
                                                                                                         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                                                                     Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                                                      Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                                                        Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                            Name: "case1"
-                                                                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                                                            Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                                                                            Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                                                                      Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                                                        Name: "case1"
+                                                                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                                                          Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                                                                                          Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                                                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                                                                         Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
                                                                                                         Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
                                                                                                     IterBegin: "[5, 18] (70)"
@@ -387,9 +377,8 @@ Children:
                                                                                                                   - 76
                                                                                                                   - 77
                                                                                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                                Name: "value1"
-                                                                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                              Name: "value1"
+                                                                                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                                                                 Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
                                                                                                                 Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
                                                                                                             IterBegin: "[5, 25] (77)"
@@ -399,14 +388,12 @@ Children:
                                                                                                         IterEnd: "[5, 31] (83)"
                                                                                                         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                                                                     Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                                                      Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                                                        Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                            Name: "value1"
-                                                                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                                                            Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                                                                                            Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                                                                                      Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                                                        Name: "value1"
+                                                                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                                                          Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                                                                                          Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                                                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                                                                         Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
                                                                                                         Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
                                                                                                     IterBegin: "[5, 25] (77)"
@@ -471,9 +458,8 @@ Children:
                                                                                                                   - 100
                                                                                                                   - 101
                                                                                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                                Name: "case2"
-                                                                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                              Name: "case2"
+                                                                                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                                                                 Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
                                                                                                                 Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
                                                                                                             IterBegin: "[6, 18] (101)"
@@ -483,14 +469,12 @@ Children:
                                                                                                         IterEnd: "[6, 23] (106)"
                                                                                                         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                                                                     Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                                                      Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                                                        Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                            Name: "case2"
-                                                                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                                                            Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                                                                            Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                                                                      Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                                                        Name: "case2"
+                                                                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                                                          Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                                                                                          Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                                                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                                                                         Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
                                                                                                         Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
                                                                                                     IterBegin: "[6, 18] (101)"
@@ -541,9 +525,8 @@ Children:
                                                                                                                   - 107
                                                                                                                   - 108
                                                                                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                                Name: "value2"
-                                                                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                              Name: "value2"
+                                                                                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                                                                 Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
                                                                                                                 Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
                                                                                                             IterBegin: "[6, 25] (108)"
@@ -553,14 +536,12 @@ Children:
                                                                                                         IterEnd: "[6, 31] (114)"
                                                                                                         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                                                                     Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                                                      Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                                                        Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                            Name: "value2"
-                                                                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                                                            Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                                                                                            Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                                                                                      Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                                                        Name: "value2"
+                                                                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                                                          Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                                                                                          Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                                                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                                                                         Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
                                                                                                         Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
                                                                                                     IterBegin: "[6, 25] (108)"
@@ -638,9 +619,8 @@ Children:
                                                                                                                   - 135
                                                                                                                   - 136
                                                                                                             Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                                Name: "value3"
-                                                                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                                                              Name: "value3"
+                                                                                                              Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                                                                 Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
                                                                                                                 Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
                                                                                                             IterBegin: "[7, 22] (136)"
@@ -650,14 +630,12 @@ Children:
                                                                                                         IterEnd: "[7, 28] (142)"
                                                                                                         Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                                                                     Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                                                      Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                                                        Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                                                          Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                                            Name: "value3"
-                                                                                                          Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                                                            Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
-                                                                                                            Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
-                                                                                                      Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                                                        Name: "value3"
+                                                                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                                                          Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
+                                                                                                          Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
+                                                                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                                                                         Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
                                                                                                         Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
                                                                                                     IterBegin: "[7, 22] (136)"
@@ -724,89 +702,74 @@ Children:
                                                                 IterEnd: "[8, 6] (148)"
                                                                 Type: "Style <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                             Info: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueExpressionLexerInfo'>
-                                                              Data: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueExpressionLexerData'>
-                                                                CasePhrases:
-                                                                  - # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerInfo'>
-                                                                    Data: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerData'>
-                                                                      Cases:
-                                                                        - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                          Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                            Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                Name: "case1"
-                                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                                Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                                                Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                                          Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                                            Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                                            Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                                      Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                        Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                            Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                              Name: "value1"
-                                                                            Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                              Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                                                              Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                                                        Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                                          Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                                                          Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                                                    Regions: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerRegions'>
-                                                                      Cases: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                                      Expression: "[Ln 5, Col 25] -> [Ln 6, Col 1]"
-                                                                      Self__: "[Ln 5, Col 13] -> [Ln 6, Col 1]"
-                                                                  - # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerInfo'>
-                                                                    Data: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerData'>
-                                                                      Cases:
-                                                                        - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                          Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                            Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                              Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                                Name: "case2"
-                                                                              Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                                Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                                                Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                                          Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                                            Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                                            Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                                      Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                        Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                            Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                              Name: "value2"
-                                                                            Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                              Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                                                              Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                                                        Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                                          Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                                                          Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                                                    Regions: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerRegions'>
-                                                                      Cases: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                                      Expression: "[Ln 6, Col 25] -> [Ln 7, Col 1]"
-                                                                      Self__: "[Ln 6, Col 13] -> [Ln 7, Col 1]"
-                                                                Default: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                  Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                                                              CasePhrases:
+                                                                - # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerInfo'>
+                                                                  Cases:
+                                                                    - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                        Name: "case1"
+                                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                          Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                                                          Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                                                        Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                                                        Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                                                  Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                                                     Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                        Name: "value3"
-                                                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                        Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
-                                                                        Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
-                                                                  Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                      Name: "value1"
+                                                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                        Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                                                        Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                                                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                                                      Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                                                      Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                                                  Regions: # <class 'types.MatchValueCasePhraseLexerInfoRegions'>
+                                                                    Cases: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                                                    Expression: "[Ln 5, Col 25] -> [Ln 6, Col 1]"
+                                                                    Self__: "[Ln 5, Col 13] -> [Ln 6, Col 1]"
+                                                                - # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerInfo'>
+                                                                  Cases:
+                                                                    - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                        Name: "case2"
+                                                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                          Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                                                          Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                                                        Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                                                        Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                                                  Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                                                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                      Name: "value2"
+                                                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                        Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                                                        Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                                                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                                                      Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                                                      Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                                                  Regions: # <class 'types.MatchValueCasePhraseLexerInfoRegions'>
+                                                                    Cases: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                                                    Expression: "[Ln 6, Col 25] -> [Ln 7, Col 1]"
+                                                                    Self__: "[Ln 6, Col 13] -> [Ln 7, Col 1]"
+                                                              Default: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                  Name: "value3"
+                                                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                     Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
                                                                     Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
-                                                                Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                                  Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                        Name: "expr"
-                                                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                        Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                                                        Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                                                  Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                                                  Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
+                                                                  Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
+                                                              Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                  Name: "expr"
+                                                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                     Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
                                                                     Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                                              Regions: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueExpressionLexerRegions'>
+                                                                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                                                  Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
+                                                                  Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
+                                                              Regions: # <class 'types.MatchValueExpressionLexerInfoRegions'>
                                                                 CasePhrases: "[Ln 5, Col 13] -> [Ln 7, Col 1]"
                                                                 Default: "[Ln 7, Col 22] -> [Ln 8, Col 1]"
                                                                 Expression: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
@@ -857,9 +820,8 @@ Children:
                                                                           Match: "<_sre.SRE_Match object; span=(154, 155), match='b'>"
                                                                         Whitespace: None
                                                                     Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                      Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                        Name: "b"
-                                                                      Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
+                                                                      Name: "b"
+                                                                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
                                                                         Name: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
                                                                         Self__: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
                                                                     IterBegin: "[9, 5] (154)"
@@ -869,14 +831,12 @@ Children:
                                                                 IterEnd: "[9, 6] (155)"
                                                                 Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                                             Info: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                              Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                                    Name: "b"
-                                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                                    Name: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
-                                                                    Self__: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
-                                                              Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
+                                                              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                                                Name: "b"
+                                                                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                                                  Name: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
+                                                                  Self__: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
+                                                              Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
                                                                 Name: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
                                                                 Self__: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
                                                             IterBegin: "[9, 5] (154)"
@@ -928,141 +888,118 @@ Children:
                             IterEnd: "[10, 2] (158)"
                             Type: "Arguments <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
                         Info: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerData'>
-                            Arguments:
-                              - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
-                                Data: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerData'>
-                                  Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                    Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                        Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                          Name: "a"
-                                        Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                          Name: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
-                                          Self__: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
-                                    Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                      Name: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
-                                      Self__: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
-                                  Keyword: None
-                                Regions: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerRegions'>
-                                  Expression: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
-                                  Keyword: None
+                          Arguments:
+                            - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
+                              Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                  Name: "a"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                    Name: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
+                                    Self__: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
+                                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                  Name: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
                                   Self__: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
-                              - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
-                                Data: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerData'>
-                                  Expression: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueExpressionLexerInfo'>
-                                    Data: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueExpressionLexerData'>
-                                      CasePhrases:
-                                        - # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerData'>
-                                            Cases:
-                                              - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                    Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                      Name: "case1"
-                                                    Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                      Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                      Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                  Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                                  Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                            Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                    Name: "value1"
-                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                    Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                                    Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                              Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                                Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
-                                          Regions: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerRegions'>
-                                            Cases: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
-                                            Expression: "[Ln 5, Col 25] -> [Ln 6, Col 1]"
-                                            Self__: "[Ln 5, Col 13] -> [Ln 6, Col 1]"
-                                        - # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerInfo'>
-                                          Data: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerData'>
-                                            Cases:
-                                              - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                                Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                    Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                      Name: "case2"
-                                                    Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                      Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                      Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                  Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                                  Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                            Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                              Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                                  Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                                    Name: "value2"
-                                                  Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                                    Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                                    Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                              Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                                Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                                Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
-                                          Regions: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerRegions'>
-                                            Cases: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
-                                            Expression: "[Ln 6, Col 25] -> [Ln 7, Col 1]"
-                                            Self__: "[Ln 6, Col 13] -> [Ln 7, Col 1]"
-                                      Default: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                        Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                            Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                              Name: "value3"
-                                            Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                              Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
-                                              Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
-                                        Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                          Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
-                                          Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
-                                      Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                        Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
-                                          Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                            Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                              Name: "expr"
-                                            Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                              Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                              Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                        Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                          Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                          Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                    Regions: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueExpressionLexerRegions'>
-                                      CasePhrases: "[Ln 5, Col 13] -> [Ln 7, Col 1]"
-                                      Default: "[Ln 7, Col 22] -> [Ln 8, Col 1]"
-                                      Expression: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
-                                      Self__: "[Ln 3, Col 5] -> [Ln 8, Col 6]"
-                                  Keyword: None
-                                Regions: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerRegions'>
-                                  Expression: "[Ln 3, Col 5] -> [Ln 8, Col 6]"
-                                  Keyword: None
-                                  Self__: "[Ln 3, Col 5] -> [Ln 8, Col 6]"
-                              - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
-                                Data: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerData'>
-                                  Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
-                                    Data: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerData'>
+                              Keyword: None
+                              Regions: # <class 'types.ArgumentLexerInfoRegions'>
+                                Expression: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
+                                Keyword: None
+                                Self__: "[Ln 2, Col 5] -> [Ln 2, Col 6]"
+                            - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
+                              Expression: # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueExpressionLexerInfo'>
+                                CasePhrases:
+                                  - # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerInfo'>
+                                    Cases:
+                                      - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                        Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                          Name: "case1"
+                                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                            Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                            Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                        Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                          Name: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                          Self__: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                    Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                                       Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                        Data: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerData'>
-                                          Name: "b"
-                                        Regions: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerRegions'>
-                                          Name: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
-                                          Self__: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
-                                    Regions: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerRegions'>
-                                      Name: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
-                                      Self__: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
-                                  Keyword: None
-                                Regions: # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerRegions'>
-                                  Expression: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
-                                  Keyword: None
+                                        Name: "value1"
+                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                          Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                          Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                        Name: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                        Self__: "[Ln 5, Col 25] -> [Ln 5, Col 31]"
+                                    Regions: # <class 'types.MatchValueCasePhraseLexerInfoRegions'>
+                                      Cases: "[Ln 5, Col 18] -> [Ln 5, Col 23]"
+                                      Expression: "[Ln 5, Col 25] -> [Ln 6, Col 1]"
+                                      Self__: "[Ln 5, Col 13] -> [Ln 6, Col 1]"
+                                  - # <class 'TheLanguage.Lexer.Expressions.MatchValueExpressionLexerInfo.MatchValueCasePhraseLexerInfo'>
+                                    Cases:
+                                      - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                        Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                          Name: "case2"
+                                          Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                            Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                            Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                        Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                          Name: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                          Self__: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                    Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                      Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                        Name: "value2"
+                                        Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                          Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                          Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                      Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                        Name: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                        Self__: "[Ln 6, Col 25] -> [Ln 6, Col 31]"
+                                    Regions: # <class 'types.MatchValueCasePhraseLexerInfoRegions'>
+                                      Cases: "[Ln 6, Col 18] -> [Ln 6, Col 23]"
+                                      Expression: "[Ln 6, Col 25] -> [Ln 7, Col 1]"
+                                      Self__: "[Ln 6, Col 13] -> [Ln 7, Col 1]"
+                                Default: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                    Name: "value3"
+                                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                      Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
+                                      Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
+                                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                    Name: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
+                                    Self__: "[Ln 7, Col 22] -> [Ln 7, Col 28]"
+                                Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                  Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                    Name: "expr"
+                                    Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                      Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
+                                      Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
+                                  Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                    Name: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
+                                    Self__: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
+                                Regions: # <class 'types.MatchValueExpressionLexerInfoRegions'>
+                                  CasePhrases: "[Ln 5, Col 13] -> [Ln 7, Col 1]"
+                                  Default: "[Ln 7, Col 22] -> [Ln 8, Col 1]"
+                                  Expression: "[Ln 4, Col 21] -> [Ln 4, Col 25]"
+                                  Self__: "[Ln 3, Col 5] -> [Ln 8, Col 6]"
+                              Keyword: None
+                              Regions: # <class 'types.ArgumentLexerInfoRegions'>
+                                Expression: "[Ln 3, Col 5] -> [Ln 8, Col 6]"
+                                Keyword: None
+                                Self__: "[Ln 3, Col 5] -> [Ln 8, Col 6]"
+                            - # <class 'TheLanguage.Lexer.Common.ArgumentLexerInfo.ArgumentLexerInfo'>
+                              Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                                  Name: "b"
+                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                                    Name: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
+                                    Self__: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
+                                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                                  Name: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
                                   Self__: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
-                            Name: "Func"
-                          Regions: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerRegions'>
+                              Keyword: None
+                              Regions: # <class 'types.ArgumentLexerInfoRegions'>
+                                Expression: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
+                                Keyword: None
+                                Self__: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
+                          Name: "Func"
+                          Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
                             Arguments: "[Ln 2, Col 5] -> [Ln 9, Col 7]"
                             Name: "[Ln 1, Col 9] -> [Ln 1, Col 13]"
                             Self__: "[Ln 1, Col 9] -> [Ln 10, Col 2]"

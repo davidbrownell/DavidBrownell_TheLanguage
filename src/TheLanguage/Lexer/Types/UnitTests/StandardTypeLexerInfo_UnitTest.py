@@ -35,68 +35,55 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_DataNoModifier():
-    data = StandardTypeLexerData("TheName", None)
+    regions = {
+        "Self__": CreateRegion(1, 2, 300, 400),
+        "TypeName": CreateRegion(5, 6, 7, 8),
+        "Modifier": None,
+    }
 
-    assert data.TypeName == "TheName"
-    assert data.Modifier is None
+    info = StandardTypeLexerInfo(
+        list(regions.values()),
+        "TheName",
+        None,
+    )
+
+    assert info.TypeName == "TheName"
+    assert info.Modifier is None
+    assert info.Regions == info.RegionsType(**regions)
 
 
 # ----------------------------------------------------------------------
 def test_DataWithModifier():
+    regions = {
+        "Self__": CreateRegion(1, 2, 300, 400),
+        "TypeName": CreateRegion(5, 6, 7, 8),
+        "Modifier": CreateRegion(9, 10, 11, 12),
+    }
+
     for modifier in [
         TypeModifier.var,
         TypeModifier.val,
         TypeModifier.view,
     ]:
-        data = StandardTypeLexerData("TheName", modifier)
+        info = StandardTypeLexerInfo(
+            list(regions.values()),
+            "TheName",
+            modifier,
+        )
 
-        assert data.TypeName == "TheName"
-        assert data.Modifier == modifier
-
-
-# ----------------------------------------------------------------------
-def test_RegionsNoModifier():
-    regions = StandardTypeLexerRegions(
-        CreateRegion(1, 2, 300, 400),
-        CreateRegion(1, 2, 3, 4),
-        None,
-    )
-
-    assert regions.Self__ == CreateRegion(1, 2, 300, 400)
-    assert regions.TypeName == CreateRegion(1, 2, 3, 4)
-    assert regions.Modifier is None
-
-
-# ----------------------------------------------------------------------
-def test_RegionsWithModifier():
-    regions = StandardTypeLexerRegions(
-        CreateRegion(1, 2, 300, 400),
-        CreateRegion(1, 2, 3, 4),
-        CreateRegion(5, 6, 7, 8),
-    )
-
-    assert regions.Self__ == CreateRegion(1, 2, 300, 400)
-    assert regions.TypeName == CreateRegion(1, 2, 3, 4)
-    assert regions.Modifier == CreateRegion(5, 6, 7, 8)
-
-
-# ----------------------------------------------------------------------
-def test_Info():
-    data = StandardTypeLexerData("TheName", None)
-    regions = StandardTypeLexerRegions(
-        CreateRegion(1, 2, 300, 400),
-        CreateRegion(1, 2, 3, 4),
-        None,
-    )
-
-    info = StandardTypeLexerInfo(data, regions)
-
-    assert info.Data == data
-    assert info.Regions == regions
+        assert info.TypeName == "TheName"
+        assert info.Modifier == modifier
+        assert info.Regions == info.RegionsType(**regions)
 
 
 # ----------------------------------------------------------------------
 def test_InfoWithInvalidModifier():
+    regions = {
+        "Self__": CreateRegion(1, 2, 300, 400),
+        "TypeName": CreateRegion(5, 6, 7, 8),
+        "Modifier": CreateRegion(9, 10, 11, 12),
+    }
+
     for modifier in [
         TypeModifier.mutable,
         TypeModifier.immutable,
@@ -106,15 +93,12 @@ def test_InfoWithInvalidModifier():
     ]:
         with pytest.raises(InvalidModifierError) as ex:
             StandardTypeLexerInfo(
-                StandardTypeLexerData("TheName", modifier),
-                StandardTypeLexerRegions(
-                    CreateRegion(1, 2, 300, 400),
-                    CreateRegion(1, 2, 3, 4),
-                    CreateRegion(5, 6, 7, 8),
-                ),
+                list(regions.values()),
+                "TheName",
+                modifier,
             )
 
         ex = ex.value
 
         assert str(ex) == "'{}' cannot be applied to standard types in this context; supported values are 'var', 'val', 'view'.".format(modifier.name)
-        assert ex.Region == CreateRegion(5, 6, 7, 8)
+        assert ex.Region == regions["Modifier"]

@@ -35,9 +35,7 @@ with InitRelativeImports():
 
     from ....Lexer.Expressions.GroupExpressionLexerInfo import (
         ExpressionLexerInfo,
-        GroupExpressionLexerData,
         GroupExpressionLexerInfo,
-        GroupExpressionLexerRegions,
     )
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
@@ -98,19 +96,16 @@ class GroupExpression(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
+            # <expr>
             expression_node = ExtractDynamic(cast(Node, nodes[2]))
-            expression_data = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
+            expression_info = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 GroupExpressionLexerInfo(
-                    GroupExpressionLexerData(expression_data),
-                    CreateLexerRegions(
-                        GroupExpressionLexerRegions,  # type: ignore
-                        node,
-                        expression_node,
-                    ),
+                    CreateLexerRegions(node, expression_node),  # type: ignore
+                    expression_info,
                 ),
             )
 

@@ -34,9 +34,7 @@ with InitRelativeImports():
 
     from ....Lexer.Expressions.VariableExpressionLexerInfo import (
         NameLexerInfo,
-        VariableExpressionLexerData,
         VariableExpressionLexerInfo,
-        VariableExpressionLexerRegions,
     )
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
@@ -96,18 +94,13 @@ class VariableExpression(GrammarPhrase):
         # ----------------------------------------------------------------------
         def CreateLexerInfo():
             name_node = ExtractDynamic(node)
+            name_info = cast(NameLexerInfo, GetLexerInfo(name_node))
 
             SetLexerInfo(
                 node,
                 VariableExpressionLexerInfo(
-                    VariableExpressionLexerData(
-                        cast(NameLexerInfo, GetLexerInfo(name_node)),
-                    ),
-                    CreateLexerRegions(
-                        VariableExpressionLexerRegions,  # type: ignore
-                        node,
-                        name_node,
-                    ),
+                    CreateLexerRegions(node, name_node),  # type: ignore
+                    name_info,
                 ),
             )
 

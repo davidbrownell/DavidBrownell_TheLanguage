@@ -18,6 +18,7 @@
 import copy
 import os
 
+import dataclasses
 import pytest
 
 import CommonEnvironment
@@ -39,28 +40,30 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class TestStandard(object):
     _type                                   = StandardTypeLexerInfo(
-        StandardTypeLexerData("TheType", None),
-        StandardTypeLexerRegions(
+        [
             CreateRegion(1000, 2000, 30000, 40000),
             CreateRegion(1000, 2000, 7000, 8000),
             None,
-        ),
+        ],
+        "TheType",
+        None,
+
     )
 
-    _regions                                = ClassMemberStatementLexerRegions(
-        CreateRegion(1, 2, 3000, 4000),
-        CreateRegion(1, 2, 3, 4),
-        CreateRegion(5, 6, 7, 8),
-        CreateRegion(9, 10, 11, 12),
-        CreateRegion(13, 14, 15, 16),
-        CreateRegion(17, 18, 19, 20),
-    )
+    _regions                                = {
+        "Self__": CreateRegion(1, 2, 3000, 4000),
+        "Visibility": CreateRegion(1, 2, 3, 4),
+        "Type": CreateRegion(5, 6, 7, 8),
+        "Name": CreateRegion(9, 10, 11, 12),
+        "ClassModifier": CreateRegion(13, 14, 15, 16),
+        "DefaultValue": CreateRegion(17, 18, 19, 20),
+    }
 
     _regions_no_default                     = copy.deepcopy(_regions)
-    object.__setattr__(_regions_no_default, "DefaultValue", None)
+    _regions_no_default["DefaultValue"] = None
 
     _class_lexer_info                       = ClassStatementLexerInfo(
-        ClassStatementLexerRegions(
+        [
             CreateRegion(5, 6, 7000, 8000),
             CreateRegion(900, 1000, 1100, 1200),
             CreateRegion(1300, 1400, 1500, 1600),
@@ -70,7 +73,7 @@ class TestStandard(object):
             CreateRegion(2900, 3000, 3100, 3200),
             CreateRegion(3300, 3400, 3500, 3600),
             CreateRegion(3700, 3800, 3900, 4000),
-        ),
+        ],
         VisibilityModifier.public,
         ClassModifier.immutable,
         ClassType.Class,
@@ -81,7 +84,7 @@ class TestStandard(object):
     )
 
     _interface_lexer_info                   = ClassStatementLexerInfo(
-        ClassStatementLexerRegions(
+        [
             CreateRegion(41, 42, 43000, 44000),
             CreateRegion(4500, 4600, 4700, 4800),
             CreateRegion(4900, 5000, 5100, 5200),
@@ -91,7 +94,7 @@ class TestStandard(object):
             CreateRegion(6500, 6600, 6700, 6800),
             CreateRegion(6900, 7000, 7100, 7200),
             CreateRegion(7300, 7400, 7500, 7600),
-        ),
+        ],
         VisibilityModifier.public,
         ClassModifier.immutable,
         ClassType.Interface,
@@ -102,7 +105,7 @@ class TestStandard(object):
     )
 
     _struct_lexer_info                      = ClassStatementLexerInfo(
-        ClassStatementLexerRegions(
+        [
             CreateRegion(77, 78, 79000, 80000),
             CreateRegion(8100, 8200, 8300, 8400),
             CreateRegion(8500, 8600, 8700, 8800),
@@ -112,7 +115,7 @@ class TestStandard(object):
             CreateRegion(10100, 10200, 10300, 10400),
             CreateRegion(10500, 10600, 10700, 10800),
             CreateRegion(10900, 11000, 11100, 11200),
-        ),
+        ],
         VisibilityModifier.private,
         ClassModifier.mutable,
         ClassType.Struct,
@@ -124,7 +127,9 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_Data(self):
-        data = ClassMemberStatementLexerData(
+        info = ClassMemberStatementLexerInfo(
+            list(self._regions_no_default.values()),
+            self._class_lexer_info,
             VisibilityModifier.private,
             self._type,
             "MemberName",
@@ -132,45 +137,18 @@ class TestStandard(object):
             None,
         )
 
-        assert data.Visibility == VisibilityModifier.private
-        assert data.Type == self._type
-        assert data.Name == "MemberName"
-        assert data.ClassModifier == ClassModifier.immutable
-        assert data.DefaultValue is None
+        assert info.Visibility == VisibilityModifier.private
+        assert info.Type == self._type
+        assert info.Name == "MemberName"
+        assert info.ClassModifier == ClassModifier.immutable
+        assert info.DefaultValue is None
 
-    # ----------------------------------------------------------------------
-    def test_Regions(self):
-        assert self._regions.Self__ == CreateRegion(1, 2, 3000, 4000)
-        assert self._regions.Visibility == CreateRegion(1, 2, 3, 4)
-        assert self._regions.Type == CreateRegion(5, 6, 7, 8)
-        assert self._regions.Name == CreateRegion(9, 10, 11, 12)
-        assert self._regions.ClassModifier == CreateRegion(13, 14, 15, 16)
-        assert self._regions.DefaultValue == CreateRegion(17, 18, 19, 20)
-
-    # ----------------------------------------------------------------------
-    def test_Info(self):
-        info = ClassMemberStatementLexerInfo(
-            self._regions_no_default,
-            self._class_lexer_info,
-            VisibilityModifier.public,
-            self._type,
-            "MemberName",
-            ClassModifier.immutable,
-            None,
-        )
-
-        assert info.Data.Visibility == VisibilityModifier.public
-        assert info.Data.Type == self._type
-        assert info.Data.Name == "MemberName"
-        assert info.Data.ClassModifier == ClassModifier.immutable
-        assert info.Data.DefaultValue is None
-
-        assert info.Regions == self._regions_no_default
+        assert info.Regions == info.RegionsType(**self._regions_no_default)
 
     # ----------------------------------------------------------------------
     def test_InfoWithDefault(self):
         info = ClassMemberStatementLexerInfo(
-            self._regions,
+            list(self._regions.values()),
             self._class_lexer_info,
             VisibilityModifier.public,
             self._type,
@@ -179,19 +157,19 @@ class TestStandard(object):
             self._type,
         )
 
-        assert info.Data.Visibility == VisibilityModifier.public
-        assert info.Data.Type == self._type
-        assert info.Data.Name == "MemberName"
-        assert info.Data.ClassModifier == ClassModifier.immutable
-        assert info.Data.DefaultValue == self._type
+        assert info.Visibility == VisibilityModifier.public
+        assert info.Type == self._type
+        assert info.Name == "MemberName"
+        assert info.ClassModifier == ClassModifier.immutable
+        assert info.DefaultValue == self._type
 
-        assert info.Regions == self._regions
+        assert info.Regions == info.RegionsType(**self._regions)
 
     # ----------------------------------------------------------------------
     def test_InvalidClassStatement(self):
         with pytest.raises(InvalidClassMemberError) as ex:
             ClassMemberStatementLexerInfo(
-                self._regions,
+                list(self._regions.values()),
                 None,
                 VisibilityModifier.public,
                 self._type,
@@ -203,13 +181,13 @@ class TestStandard(object):
         ex = ex.value
 
         assert str(ex) == "Data member statements must be enclosed within a class-like object."
-        assert ex.Region == self._regions.Self__
+        assert ex.Region == self._regions["Self__"]
 
     # ----------------------------------------------------------------------
     def test_NotSupported(self):
         with pytest.raises(DataMembersNotSupportedError) as ex:
             ClassMemberStatementLexerInfo(
-                self._regions_no_default,
+                list(self._regions_no_default.values()),
                 self._interface_lexer_info,
                 VisibilityModifier.public,
                 self._type,
@@ -221,7 +199,7 @@ class TestStandard(object):
         ex = ex.value
 
         assert str(ex) == "Data members are not supported for 'interface' types."
-        assert ex.Region == self._regions.Self__
+        assert ex.Region == self._regions["Self__"]
 
     # ----------------------------------------------------------------------
     def test_DefaultVisibility(self):
@@ -230,7 +208,7 @@ class TestStandard(object):
             (self._struct_lexer_info, ClassModifier.mutable, VisibilityModifier.public),
         ]:
             info = ClassMemberStatementLexerInfo(
-                self._regions_no_default,
+                list(self._regions_no_default.values()),
                 class_statement_info,
                 None,
                 self._type,
@@ -239,16 +217,16 @@ class TestStandard(object):
                 None,
             )
 
-            assert info.Data.ClassModifier == class_modifier
+            assert info.ClassModifier == class_modifier
 
-            assert info.Data.Visibility == expected_visibility
-            assert info.Regions.Visibility == self._regions_no_default.Self__
+            assert info.Visibility == expected_visibility
+            assert info.Regions.Visibility == self._regions_no_default["Self__"]
 
     # ----------------------------------------------------------------------
     def test_InvalidVisibility(self):
         with pytest.raises(InvalidMemberVisibilityError) as ex:
             ClassMemberStatementLexerInfo(
-                self._regions_no_default,
+                list(self._regions_no_default.values()),
                 self._struct_lexer_info,
                 VisibilityModifier.private,
                 self._type,
@@ -260,7 +238,7 @@ class TestStandard(object):
         ex = ex.value
 
         assert str(ex) == "'private' is not a supported visibility for members of 'struct' types; supported values are 'public'."
-        assert ex.Region == self._regions_no_default.Visibility
+        assert ex.Region == self._regions_no_default["Visibility"]
         assert ex.ClassType == "struct"
         assert ex.Visibility == "private"
         assert ex.AllowedVisibilities == "'public'"
@@ -272,7 +250,7 @@ class TestStandard(object):
             (self._struct_lexer_info, ClassModifier.mutable),
         ]:
             info = ClassMemberStatementLexerInfo(
-                self._regions_no_default,
+                list(self._regions_no_default.values()),
                 class_statement_info,
                 VisibilityModifier.public,
                 self._type,
@@ -281,14 +259,14 @@ class TestStandard(object):
                 None,
             )
 
-            assert info.Data.ClassModifier == expected_modifier
-            assert info.Regions.ClassModifier == self._regions_no_default.Self__
+            assert info.ClassModifier == expected_modifier
+            assert info.Regions.ClassModifier == self._regions_no_default["Self__"]
 
     # ----------------------------------------------------------------------
     def test_InvalidModifier(self):
         with pytest.raises(InvalidMemberClassModifierError) as ex:
             ClassMemberStatementLexerInfo(
-                self._regions_no_default,
+                list(self._regions_no_default.values()),
                 self._struct_lexer_info,
                 VisibilityModifier.public,
                 self._type,
@@ -300,7 +278,7 @@ class TestStandard(object):
         ex = ex.value
 
         assert str(ex) == "'immutable' is not a supported modifier for members of 'struct' types; supported values are 'mutable'."
-        assert ex.Region == self._regions_no_default.ClassModifier
+        assert ex.Region == self._regions_no_default["ClassModifier"]
         assert ex.ClassType == "struct"
         assert ex.Modifier == "immutable"
         assert ex.AllowedModifiers == "'mutable'"
