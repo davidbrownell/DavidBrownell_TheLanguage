@@ -101,7 +101,10 @@ class FuncInvocationBase(GrammarPhrase):
             name_info = cast(str, ExtractToken(name_leaf))
 
             # Arguments
-            arguments_node, arguments_info = ArgumentsPhraseItem.ExtractLexerInfo(cast(Node, nodes[1]))
+            arguments_node = cast(Node, nodes[1])
+            arguments_info = ArgumentsPhraseItem.ExtractLexerInfo(arguments_node)
+            if arguments_info is None:
+                arguments_node = None
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(

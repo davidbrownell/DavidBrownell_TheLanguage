@@ -125,7 +125,7 @@ Children:
                     Self__: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
               Name: "Func1"
               Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
-                Arguments: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
+                Arguments: "[Ln 1, Col 6] -> [Ln 1, Col 11]"
                 Name: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
                 Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
@@ -325,7 +325,7 @@ Children:
                     Self__: "[Ln 2, Col 7] -> [Ln 2, Col 11]"
               Name: "Func2"
               Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
-                Arguments: "[Ln 2, Col 7] -> [Ln 2, Col 11]"
+                Arguments: "[Ln 2, Col 6] -> [Ln 2, Col 12]"
                 Name: "[Ln 2, Col 1] -> [Ln 2, Col 6]"
                 Self__: "[Ln 2, Col 1] -> [Ln 3, Col 1]"
             IterBegin: "[2, 1] (11)"

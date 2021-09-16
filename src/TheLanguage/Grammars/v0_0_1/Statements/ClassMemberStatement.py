@@ -139,8 +139,8 @@ class ClassMemberStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 7
 
-            # <attributes>?
-            attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
+            # <attributes>*
+            attributes_data = AttributesPhraseItem.ExtractData(cast(Optional[Node], nodes[0]))
 
             # <visibility>?
             visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
@@ -182,8 +182,6 @@ class ClassMemberStatement(GrammarPhrase):
                 default_info = cast(ExpressionLexerInfo, GetLexerInfo(default_node))
             else:
                 default_info = None
-
-            # TODO: Statements
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
