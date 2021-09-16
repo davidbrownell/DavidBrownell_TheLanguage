@@ -49,7 +49,6 @@ with InitRelativeImports():
         ClassDependencyLexerInfo,
         ClassStatementLexerInfo,
         ClassType,
-        StatementLexerInfo,
     )
 
     from ....Parser.Phrases.DSL import (
