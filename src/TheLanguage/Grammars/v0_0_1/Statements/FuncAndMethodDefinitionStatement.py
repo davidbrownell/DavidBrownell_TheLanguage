@@ -299,8 +299,6 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             else:
                 statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
 
-            # TODO: Use the statements
-
             # TODO: Leverage attributes
 
             # pylint: disable=too-many-function-args

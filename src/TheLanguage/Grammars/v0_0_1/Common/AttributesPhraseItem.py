@@ -19,6 +19,8 @@ import os
 
 from typing import Any, cast, List, Optional, Tuple
 
+from dataclasses import dataclass
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -41,6 +43,22 @@ with InitRelativeImports():
         Node,
         PhraseItem,
     )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class AttributeData(object):
+    Name: str
+    NameLeaf: Leaf
+    Arguments: Optional[List[ArgumentsPhraseItem.ArgumentLexerInfo]]
+    ArgumentsNode: Optional[Node]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert (
+            (self.Arguments is None and self.ArgumentsNode is None)
+            or (self.Arguments is not None and self.ArgumentsNode is not None)
+        )
 
 
 # ----------------------------------------------------------------------
@@ -75,13 +93,7 @@ def Create(
 # ----------------------------------------------------------------------
 def Extract(
     node: Optional[Node],
-) -> List[
-    Tuple[
-        str,                                # Name of function
-        Leaf,                               # Leaf associated with name
-        Any,                                # Arguments to function (defined In ArgumentsPhraseItem.py)
-    ]
-]:
+) -> List[AttributeData]:
     if node is None:
         return []
 
@@ -98,7 +110,7 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractAttribute(
     node: Node,
-) -> Tuple[str, Leaf, Any]:
+) -> AttributeData:
     nodes = ExtractSequence(node)
     assert len(nodes) == 4
 
@@ -107,10 +119,10 @@ def _ExtractAttribute(
     name = cast(str, ExtractToken(leaf))
 
     # <<Arguments>>?
-    arguments_node = ExtractOptional(cast(Node, nodes[2]))
+    arguments_node = cast(Optional[Node], ExtractOptional(cast(Node, nodes[2])))
     if arguments_node is not None:
-        arguments_info = ArgumentsPhraseItem.ExtractLexerInfo(cast(Node, arguments_node))
+        arguments_data = ArgumentsPhraseItem.ExtractLexerData(cast(Node, arguments_node))
     else:
-        arguments_info = None
+        arguments_data = None
 
-    return name, leaf, arguments_info
+    return AttributeData(name, leaf, arguments_data, arguments_node)

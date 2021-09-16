@@ -1273,7 +1273,7 @@ Children:
                                 Self__: "[Ln 15, Col 5] -> [Ln 15, Col 6]"
                           Name: "Func"
                           Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
-                            Arguments: "[Ln 10, Col 5] -> [Ln 15, Col 7]"
+                            Arguments: "[Ln 9, Col 12] -> [Ln 16, Col 2]"
                             Name: "[Ln 9, Col 8] -> [Ln 9, Col 12]"
                             Self__: "[Ln 9, Col 8] -> [Ln 16, Col 2]"
                         IterBegin: "[9, 8] (102)"

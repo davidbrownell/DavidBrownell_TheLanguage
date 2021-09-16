@@ -426,7 +426,7 @@ Children:
                                             Self__: "[Ln 3, Col 12] -> [Ln 3, Col 18]"
                                       Name: "AddOne"
                                       Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
-                                        Arguments: "[Ln 3, Col 12] -> [Ln 3, Col 18]"
+                                        Arguments: "[Ln 3, Col 11] -> [Ln 3, Col 19]"
                                         Name: "[Ln 3, Col 5] -> [Ln 3, Col 11]"
                                         Self__: "[Ln 3, Col 5] -> [Ln 3, Col 19]"
                                     IterBegin: "[3, 5] (41)"
@@ -562,7 +562,7 @@ Children:
                                   Self__: "[Ln 3, Col 12] -> [Ln 3, Col 18]"
                             Name: "AddOne"
                             Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
-                              Arguments: "[Ln 3, Col 12] -> [Ln 3, Col 18]"
+                              Arguments: "[Ln 3, Col 11] -> [Ln 3, Col 19]"
                               Name: "[Ln 3, Col 5] -> [Ln 3, Col 11]"
                               Self__: "[Ln 3, Col 5] -> [Ln 3, Col 19]"
                           Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
@@ -778,7 +778,7 @@ Children:
                                             Self__: "[Ln 5, Col 12] -> [Ln 5, Col 18]"
                                       Name: "AddOne"
                                       Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
-                                        Arguments: "[Ln 5, Col 12] -> [Ln 5, Col 18]"
+                                        Arguments: "[Ln 5, Col 11] -> [Ln 5, Col 19]"
                                         Name: "[Ln 5, Col 5] -> [Ln 5, Col 11]"
                                         Self__: "[Ln 5, Col 5] -> [Ln 5, Col 19]"
                                     IterBegin: "[5, 5] (86)"
@@ -1111,7 +1111,7 @@ Children:
                                   Self__: "[Ln 5, Col 12] -> [Ln 5, Col 18]"
                             Name: "AddOne"
                             Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
-                              Arguments: "[Ln 5, Col 12] -> [Ln 5, Col 18]"
+                              Arguments: "[Ln 5, Col 11] -> [Ln 5, Col 19]"
                               Name: "[Ln 5, Col 5] -> [Ln 5, Col 11]"
                               Self__: "[Ln 5, Col 5] -> [Ln 5, Col 19]"
                           Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>

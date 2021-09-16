@@ -183,8 +183,6 @@ class ClassMemberStatement(GrammarPhrase):
             else:
                 default_info = None
 
-            # TODO: Statements
-
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
