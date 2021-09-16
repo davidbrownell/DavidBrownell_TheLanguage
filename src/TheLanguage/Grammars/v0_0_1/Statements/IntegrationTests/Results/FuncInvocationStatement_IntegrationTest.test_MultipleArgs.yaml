@@ -294,7 +294,7 @@ Children:
                     Self__: "[Ln 1, Col 13] -> [Ln 1, Col 14]"
               Name: "Func1"
               Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
-                Arguments: "[Ln 1, Col 7] -> [Ln 1, Col 14]"
+                Arguments: "[Ln 1, Col 6] -> [Ln 1, Col 15]"
                 Name: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
                 Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
@@ -745,7 +745,7 @@ Children:
                                                         Self__: "[Ln 2, Col 23] -> [Ln 2, Col 29]"
                                                   Name: "InnerFunc"
                                                   Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
-                                                    Arguments: "[Ln 2, Col 20] -> [Ln 2, Col 29]"
+                                                    Arguments: "[Ln 2, Col 19] -> [Ln 2, Col 30]"
                                                     Name: "[Ln 2, Col 10] -> [Ln 2, Col 19]"
                                                     Self__: "[Ln 2, Col 10] -> [Ln 2, Col 30]"
                                                 IterBegin: "[2, 10] (24)"
@@ -925,7 +925,7 @@ Children:
                           Self__: "[Ln 2, Col 23] -> [Ln 2, Col 29]"
                     Name: "InnerFunc"
                     Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
-                      Arguments: "[Ln 2, Col 20] -> [Ln 2, Col 29]"
+                      Arguments: "[Ln 2, Col 19] -> [Ln 2, Col 30]"
                       Name: "[Ln 2, Col 10] -> [Ln 2, Col 19]"
                       Self__: "[Ln 2, Col 10] -> [Ln 2, Col 30]"
                   Keyword: None
@@ -950,7 +950,7 @@ Children:
                     Self__: "[Ln 2, Col 32] -> [Ln 2, Col 33]"
               Name: "Func2"
               Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
-                Arguments: "[Ln 2, Col 7] -> [Ln 2, Col 33]"
+                Arguments: "[Ln 2, Col 6] -> [Ln 2, Col 34]"
                 Name: "[Ln 2, Col 1] -> [Ln 2, Col 6]"
                 Self__: "[Ln 2, Col 1] -> [Ln 3, Col 1]"
             IterBegin: "[2, 1] (15)"

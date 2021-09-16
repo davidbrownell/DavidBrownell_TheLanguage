@@ -243,7 +243,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             assert len(nodes) == 8
 
             # <attributes>*
-            attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
+            attributes_data = AttributesPhraseItem.ExtractData(cast(Optional[Node], nodes[0]))
 
             # <visibility>?
             visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
@@ -280,7 +280,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                 method_name_info = operator_name
 
             # <parameters>
-            parameters_node, parameters_info = ParametersPhraseItem.ExtractLexerInfo(cast(Node, nodes[5]))
+            parameters_node = cast(Node, nodes[5])
+            parameters_info = ParametersPhraseItem.ExtractLexerInfo(parameters_node)
+            if parameters_info is None:
+                parameters_node = None
 
             # <class_modifier>?
             class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[6])))
@@ -298,8 +301,6 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                 statements_info = None
             else:
                 statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
-
-            # TODO: Use the statements
 
             # TODO: Leverage attributes
 
