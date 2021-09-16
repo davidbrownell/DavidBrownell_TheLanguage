@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,11 +31,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Lexer.Statements.TypeAliasStatementLexerInfo import (
+        TypeAliasStatementLexerInfo,
+        TypeLexerInfo,
+    )
 
     from ....Parser.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractSequence,
+        ExtractToken,
+        Leaf,
+        Node,
     )
 
 
@@ -59,7 +73,7 @@ class TypeAliasStatement(GrammarPhrase):
                     # 'using'
                     "using",
 
-                    # <type>
+                    # <name>
                     CommonTokens.TypeName,
 
                     # '='
@@ -72,3 +86,36 @@ class TypeAliasStatement(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 5
+
+            # <name>
+            name_leaf = cast(Leaf, nodes[1])
+            name_info = cast(str, ExtractToken(name_leaf))
+
+            # <type>
+            type_node = cast(Node, ExtractDynamic(cast(Node, nodes[3])))
+            type_info = cast(TypeLexerInfo, GetLexerInfo(type_node))
+
+            SetLexerInfo(
+                node,
+                TypeAliasStatementLexerInfo(
+                    CreateLexerRegions(node, name_leaf, type_node),  # type: ignore
+                    name_info,
+                    type_info,
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
