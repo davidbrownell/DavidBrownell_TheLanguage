@@ -43,7 +43,6 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.Statements.ClassMemberStatementLexerInfo import (
         ClassMemberStatementLexerInfo,
-        ClassMemberStatementLexerRegions,
         ExpressionLexerInfo,
         TypeLexerInfo,
     )
@@ -147,25 +146,25 @@ class ClassMemberStatement(GrammarPhrase):
             visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
 
             if visibility_node is not None:
-                visibility_data = VisibilityModifier.Extract(visibility_node)
+                visibility_info = VisibilityModifier.Extract(visibility_node)
             else:
-                visibility_data = None
+                visibility_info = None
 
             # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
             type_node = ExtractDynamic(cast(Node, nodes[2]))
-            type_data = cast(TypeLexerInfo, GetLexerInfo(type_node))
+            type_info = cast(TypeLexerInfo, GetLexerInfo(type_node))
 
             # <name>
             name_leaf = cast(Leaf, nodes[3])
-            name_data = cast(str, ExtractToken(name_leaf))
+            name_info = cast(str, ExtractToken(name_leaf))
 
             # <class_modifier>?
             class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
 
             if class_modifier_node is not None:
-                class_modifier_data = ClassModifier.Extract(class_modifier_node)
+                class_modifier_info = ClassModifier.Extract(class_modifier_node)
             else:
-                class_modifier_data = None
+                class_modifier_info = None
 
             # ('=' <expr>)? (The ExprLexerInfo will be extracted as part of a deferred callback)
             default_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[5])))
@@ -180,32 +179,33 @@ class ClassMemberStatement(GrammarPhrase):
 
             # Get the default ExprLexerInfo
             if default_node is not None:
-                default_data = cast(ExpressionLexerInfo, GetLexerInfo(default_node))
+                default_info = cast(ExpressionLexerInfo, GetLexerInfo(default_node))
             else:
-                default_data = None
+                default_info = None
+
+            # TODO: Statements
 
             # pylint: disable=too-many-function-args
             SetLexerInfo(
                 node,
                 ClassMemberStatementLexerInfo(
                     CreateLexerRegions(
-                        ClassMemberStatementLexerRegions,  # type: ignore
                         node,
                         visibility_node,
                         type_node,
                         name_leaf,
                         class_modifier_node,
                         default_node,
-                    ),
+                    ),  # type: ignore
                     ClassStatement.GetContainingClassLexerInfo(  # type: ignore
                         node,
                         FuncAndMethodDefinitionStatement.PHRASE_NAME,
                     ),
-                    visibility_data,  # type: ignore
-                    type_data,  # type: ignore
-                    name_data,  # type: ignore
-                    class_modifier_data,  # type: ignore
-                    default_data,  # type: ignore
+                    visibility_info,  # type: ignore
+                    type_info,  # type: ignore
+                    name_info,  # type: ignore
+                    class_modifier_info,  # type: ignore
+                    default_info,  # type: ignore
                 ),
             )
 

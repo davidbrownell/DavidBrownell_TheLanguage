@@ -31,26 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..LexerInfo import LexerData, LexerInfo, LexerRegions, Region
+    from ..LexerInfo import LexerInfo
     from ..Expressions.ExpressionLexerInfo import ExpressionLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ArgumentLexerData(LexerData):
+class ArgumentLexerInfo(LexerInfo):
     Expression: ExpressionLexerInfo
     Keyword: Optional[str]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ArgumentLexerRegions(LexerRegions):
-    Expression: Region
-    Keyword: Optional[Region]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ArgumentLexerInfo(LexerInfo):
-    Data: ArgumentLexerData
-    Regions: ArgumentLexerRegions

@@ -38,31 +38,41 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class TestStandard(object):
     _standard_type                          = StandardTypeLexerInfo(
-        StandardTypeLexerData("TheType", None),
-        StandardTypeLexerRegions(
+        [
             CreateRegion(1, 2, 300, 400),
             CreateRegion(1, 2, 3, 4),
             None,
-        ),
+        ],
+        "TheType",
+        None,
     )
 
     # ----------------------------------------------------------------------
     def test_NoParameters(self):
-        data = FuncTypeLexerData(self._standard_type, None)
+        info = FuncTypeLexerInfo(
+            [
+                CreateRegion(1, 2, 3000, 4000),
+                CreateRegion(5, 6, 7, 8),
+                None,
+            ],
+            self._standard_type,
+            None,
+        )
 
-        assert data.ReturnType == self._standard_type
-        assert data.Parameters is None
+        assert info.ReturnType == self._standard_type
+        assert info.Parameters is None
 
     # ----------------------------------------------------------------------
     def test_WithParameters(self):
-        data = FuncTypeLexerData(self._standard_type, [self._standard_type, self._standard_type])
+        info = FuncTypeLexerInfo(
+            [
+                CreateRegion(1, 2, 3000, 4000),
+                CreateRegion(5, 6, 7, 8),
+                CreateRegion(9, 10, 11, 12),
+            ],
+            self._standard_type,
+            [self._standard_type, self._standard_type],
+        )
 
-        assert data.ReturnType == self._standard_type
-        assert data.Parameters == [self._standard_type, self._standard_type]
-
-
-# ----------------------------------------------------------------------
-def test_Regions():
-    regions_fields = set(field.name for field in fields(FuncTypeLexerRegions))
-
-    assert regions_fields == set(["Self__", "ReturnType", "Parameters"])
+        assert info.ReturnType == self._standard_type
+        assert info.Parameters == [self._standard_type, self._standard_type]

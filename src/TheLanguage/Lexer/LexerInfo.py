@@ -3,25 +3,29 @@
 # |  LexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-07 14:48:33
+# |      2021-09-15 08:02:03
 # |
 # ----------------------------------------------------------------------
-# | = """/*
+# |
 # |  Copyright David Brownell 2021
 # |  Distributed under the Boost Software License, Version 1.0. See
 # |  accompanying file LICENSE_1_0.txt or copy at
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains types and functions used to persist information used during the Lexer process"""
+"""Contains types and functions used to persist information used during the Lexing process"""
 
 import os
 
-from typing import Any, Callable, List, Optional, Set, Union
+from collections import namedtuple
+from typing import cast, Any, Callable, Dict, List, Optional, Set, Union
 
 from dataclasses import (
     dataclass,
+    field,
     fields,
+    InitVar,
+    make_dataclass,
     _PARAMS as DATACLASS_PARAMS,  # type: ignore
 )
 
@@ -112,91 +116,85 @@ class Region(object):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class LexerData(YamlRepr.ObjectReprImplBase):
+class LexerInfo(YamlRepr.ObjectReprImplBase):
+    regions: InitVar[List[Optional[Region]]]
+
+    RegionsType: Any                        = field(init=False, default_factory=lambda: None)
+    Regions: Dict[str, Optional[Region]]    = field(init=False, default_factory=dict)
+
+    _regionless_attributes: Set[str]        = field(init=False, default_factory=set)
 
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
+        regions,
+        *,
+        regionless_attributes: Optional[List[str]]=None,
+        should_validate: Optional[bool]=True,
         **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
         assert hasattr(self, DATACLASS_PARAMS) and not getattr(self, DATACLASS_PARAMS).repr, "Derived classes should be based on `dataclass` with `repr` set to `False`"
 
-        for field in fields(self):
-            if field.init:
-                self._ValidateImpl(field)
+        regionless_attributes_set = set(regionless_attributes or [])
 
-        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
+        regionless_attributes_set.add("RegionsType")
+        regionless_attributes_set.add("Regions")
+        regionless_attributes_set.add("_regionless_attributes")
+
+        object.__setattr__(self, "_regionless_attributes", regionless_attributes_set)
+
+        cls_fields = fields(self)
+
+        num_expected_fields = len(cls_fields) - len(self._regionless_attributes)
+        assert len(regions) == num_expected_fields + 1, (len(regions), num_expected_fields, "The number of regions must match the number of attributes")
+
+        # Populate the region values
+        new_regions = {
+            "Self__": regions[0],
+        }
+
+        next_regions_index = 1
+
+        for field in cls_fields:
+            # pylint: disable=unsupported-membership-test
+            if field.name in self._regionless_attributes:
+                continue
+
+            new_regions[field.name] = regions[next_regions_index]
+            next_regions_index += 1
+
+        # Dynamically create the Regions class and create an instance
+        new_regions_class = make_dataclass(
+            "{}Regions".format(self.__class__.__name__),
+            [(k, Optional[Region]) for k in new_regions.keys()],
+            bases=(YamlRepr.ObjectReprImplBase, ),
+            frozen=True,
+            repr=False,
+        )
+
+        new_regions_instance = new_regions_class(**new_regions)
+
+        object.__setattr__(self, "RegionsType", new_regions_class)
+        object.__setattr__(self, "Regions", new_regions_instance)
+
+        if should_validate:
+            self.Validate()
+
+        YamlRepr.ObjectReprImplBase.__init__(
+            self,
+            RegionsType=None,
+            _regionless_attributes=None,
+            **custom_display_funcs,
+        )
 
     # ----------------------------------------------------------------------
     def Validate(self):
-        """Validates all fields that are to be populated after the object is constructed"""
-
-        for field in fields(self):
-            if not field.init:
-                self._ValidateImpl(field)
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    def _ValidateImpl(self, field):
-        field_type = getattr(field.type, "__origin__", None)
-
-        # Lists should never be empty
-        if field_type == List:
-            data_value = getattr(self, field.name)
-            assert data_value, (field.name, "Lists should never be empty; wrap it in 'Optional' if an empty list is a valid value")
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class LexerRegions(YamlRepr.ObjectReprImplBase):
-    Self__: Region
-
-    # ----------------------------------------------------------------------
-    def __post_init__(
-        self,
-        **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
-    ):
-        assert hasattr(self, DATACLASS_PARAMS) and not getattr(self, DATACLASS_PARAMS).repr, "Derived classes should be based on `dataclass` with `repr` set to `False`"
-        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class LexerInfo(YamlRepr.ObjectReprImplBase):
-    Data: LexerData
-    Regions: LexerRegions
-
-    # ----------------------------------------------------------------------
-    def __post_init__(
-        self,
-        should_validate=True,
-        **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
-    ):
-        if should_validate:
-            self.Validate(
-                # No need to validate data, as it will have already been validated
-                # during construction.
-                validate_data=False,
-            )
-
-        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
-
-    # ----------------------------------------------------------------------
-    def Validate(
-        self,
-        attributes_to_skip: Optional[Set[str]]=None,
-        validate_data=True,
-    ):
-        if attributes_to_skip is None:
-            attributes_to_skip = set()
-
         # ----------------------------------------------------------------------
-        def IsOptional(field):
-            if getattr(field.type, "__origin__", None) != Union:
+        def IsOptional(the_field):
+            if getattr(the_field.type, "__origin__", None) != Union:
                 return False
 
-            for arg in getattr(field.type, "__args__", []):
+            for arg in getattr(the_field.type, "__args__", []):
                 if arg == type(None):
                     return True
 
@@ -204,36 +202,24 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
 
         # ----------------------------------------------------------------------
 
-        region_fields = {field.name : field for field in fields(self.Regions)}
-
-        valid_data_values = 0
-
-        for field in fields(self.Data):
-            if field.name in attributes_to_skip:
+        for the_field in fields(self):
+            if the_field.name in self._regionless_attributes:
                 continue
 
-            valid_data_values += 1
+            data_value = getattr(self, the_field.name)
 
-            region_field = region_fields.get(field.name, None)
-            assert region_field is not None, (field.name, "This value is not defined in Regions")
+            field_type = getattr(the_field.type, "__origin__", None)
+            if field_type == List:
+                assert data_value, (the_field.name, "Lists should never be empty; wrap it in 'Optional' if an empty list is a valid value")
 
-            # The data field should be optional if the region field is optional
-            assert IsOptional(region_field) == IsOptional(field), (field.name, "Data fields should be Optional if region fields are Optional")
+            # The data and region values should both be None or both be not None
+            region_value = getattr(self.Regions, the_field.name)
 
-            # The data and region values should match in that they are either both None or both
-            # not None
-            region_value = getattr(self.Regions, field.name)
-
-            if getattr(self.Data, field.name) is None:
-                assert region_value is None, (field.name, "The region should be None when the corresponding data field is None")
+            if data_value is None:
+                assert IsOptional(the_field), (the_field.name, "The field definition should be 'Optional' when the value is None")
+                assert region_value is None, (the_field.name, "The region value should be None when the data value is None")
             else:
-                assert region_value is not None, (field.name, "The region should not be None when the corresponding data field is not None")
-
-        # The regions should have all of the data and a self field
-        assert len(fields(self.Regions)) == valid_data_values + 1, (len(fields(self.Regions)), valid_data_values)
-
-        if validate_data:
-            self.Data.Validate()
+                assert region_value is not None, (the_field.name, "The region value should not be None when the data value is not None")
 
         # Ensure that all regions fall within Self__
         for field in fields(self.Regions):
@@ -262,9 +248,8 @@ def GetLexerInfo(
     # TODO: Remove this code ASAP
     if result is None:
         # pylint: disable=too-many-function-args
-        return LexerInfo(LexerData(), LexerRegions(Region(Location(1, 1), Location(1, 1))))
+        return LexerInfo([Region(Location(1, 1), Location(1, 1))])  # type: ignore
     # TODO: End
 
     assert result is not None, obj
-
     return result

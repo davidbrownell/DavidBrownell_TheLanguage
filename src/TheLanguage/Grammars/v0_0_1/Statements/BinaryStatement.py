@@ -36,9 +36,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
 
     from ....Lexer.Statements.BinaryStatementLexerInfo import (
-        BinaryStatementLexerData,
         BinaryStatementLexerInfo,
-        BinaryStatementLexerRegions,
         ExpressionLexerInfo,
         NameLexerInfo,
         OperatorType,
@@ -125,7 +123,7 @@ class BinaryStatement(GrammarPhrase):
 
             # <name>
             name_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
-            name_data = cast(NameLexerInfo, GetLexerInfo(name_node))
+            name_info = cast(NameLexerInfo, GetLexerInfo(name_node))
 
             # <op>
             operator_leaf = cast(Leaf, ExtractOr(cast(Node, nodes[1])))
@@ -138,47 +136,43 @@ class BinaryStatement(GrammarPhrase):
             )
 
             if operator_value == "+=":
-                operator_data = OperatorType.AddInplace
+                operator_info = OperatorType.AddInplace
             elif operator_value == "-=":
-                operator_data = OperatorType.SubtractInplace
+                operator_info = OperatorType.SubtractInplace
             elif operator_value == "*=":
-                operator_data = OperatorType.MultiplyInplace
+                operator_info = OperatorType.MultiplyInplace
             elif operator_value == "**=":
-                operator_data = OperatorType.PowerInplace
+                operator_info = OperatorType.PowerInplace
             elif operator_value == "/=":
-                operator_data = OperatorType.DivideInplace
+                operator_info = OperatorType.DivideInplace
             elif operator_value == "//=":
-                operator_data = OperatorType.DivideFloorInplace
+                operator_info = OperatorType.DivideFloorInplace
             elif operator_value == "%=":
-                operator_data = OperatorType.ModuloInplace
+                operator_info = OperatorType.ModuloInplace
             elif operator_value == "<<=":
-                operator_data = OperatorType.BitShiftLeftInplace
+                operator_info = OperatorType.BitShiftLeftInplace
             elif operator_value == ">>=":
-                operator_data = OperatorType.BitShiftRightInplace
+                operator_info = OperatorType.BitShiftRightInplace
             elif operator_value == "^=":
-                operator_data = OperatorType.BitXorInplace
+                operator_info = OperatorType.BitXorInplace
             elif operator_value == "&=":
-                operator_data = OperatorType.BitAndInplace
+                operator_info = OperatorType.BitAndInplace
             elif operator_value == "|=":
-                operator_data = OperatorType.BitOrInplace
+                operator_info = OperatorType.BitOrInplace
             else:
                 assert False, operator_value
 
             # <expr>
             expr_node = ExtractDynamic(cast(Node, nodes[2]))
-            expr_data = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
 
             SetLexerInfo(
                 node,
                 BinaryStatementLexerInfo(
-                    BinaryStatementLexerData(name_data, operator_data, expr_data),
-                    CreateLexerRegions(
-                        BinaryStatementLexerRegions,  # type: ignore
-                        node,
-                        name_node,
-                        operator_leaf,
-                        expr_node,
-                    ),
+                    CreateLexerRegions(node, name_node, operator_leaf, expr_node),  # type: ignore
+                    name_info,
+                    operator_info,
+                    expr_info,
                 ),
             )
 

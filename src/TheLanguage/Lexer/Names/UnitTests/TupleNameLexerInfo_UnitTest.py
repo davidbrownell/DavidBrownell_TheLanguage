@@ -17,8 +17,6 @@
 
 import os
 
-from dataclasses import fields
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -36,37 +34,42 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class TestStandard(object):
-    _name1                                  = NameLexerInfo(
-        VariableNameLexerData("Name1"),
-        VariableNameLexerRegions(
+    _name1                                  = VariableNameLexerInfo(
+        [
             CreateRegion(1, 2, 300, 400),
             CreateRegion(1, 2, 3, 4),
-        ),
+        ],
+        "Name1",
     )
 
-    _name2                                  = NameLexerInfo(
-        VariableNameLexerData("Name2"),
-        VariableNameLexerRegions(
+    _name2                                  = VariableNameLexerInfo(
+        [
             CreateRegion(5, 6, 700, 800),
             CreateRegion(5, 6, 7, 8),
-        ),
+        ],
+        "Name2",
     )
 
     # ----------------------------------------------------------------------
     def test_Single(self):
-        data = TupleNameLexerData([self._name1])
+        info = TupleNameLexerInfo(
+            [
+                CreateRegion(1, 2, 3000, 4000),
+                CreateRegion(1, 2, 3000, 4000),
+            ],
+            [self._name1],
+        )
 
-        assert data.Names == [self._name1]
+        assert info.Names == [self._name1]
 
     # ----------------------------------------------------------------------
     def test_Multiple(self):
-        data = TupleNameLexerData([self._name1, self._name2])
+        info = TupleNameLexerInfo(
+            [
+                CreateRegion(1, 2, 3000, 4000),
+                CreateRegion(1, 2, 3000, 4000),
+            ],
+            [self._name1, self._name2],
+        )
 
-        assert data.Names == [self._name1, self._name2]
-
-
-# ----------------------------------------------------------------------
-def test_Regions():
-    regions_fields = set(field.name for field in fields(TupleNameLexerRegions))
-
-    assert regions_fields == set(["Self__", "Names"])
+        assert info.Names == [self._name1, self._name2]

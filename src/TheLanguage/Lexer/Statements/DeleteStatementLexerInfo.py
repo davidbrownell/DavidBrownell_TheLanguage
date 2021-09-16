@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  BinaryStatementLexerInfo_UnitTest.py
+# |  DeleteStatementLexerInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-14 09:01:25
+# |      2021-09-14 15:04:02
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for BinaryStatementLexerInfo.py"""
+"""Contains the DeleteStatementLexerData, DeleteStatementLexerInfo, and DeleteStatementLexerRegion objects"""
 
 import os
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -27,10 +29,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..BinaryStatementLexerInfo import *
+    from .StatementLexerInfo import StatementLexerInfo
 
 
 # ----------------------------------------------------------------------
-# TODO: Remove this in favor of a real test once the LexerInfo object does something more interesting
-def test_Placeholder():
-    assert True
+@dataclass(frozen=True, repr=False)
+class DeleteStatementLexerInfo(StatementLexerInfo):
+    Name: str

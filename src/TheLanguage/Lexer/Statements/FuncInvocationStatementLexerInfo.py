@@ -31,27 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementLexerInfo import StatementLexerData, StatementLexerInfo
+    from .StatementLexerInfo import StatementLexerInfo
     from ..Common.ArgumentLexerInfo import ArgumentLexerInfo
-    from ..LexerInfo import LexerRegions, Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class FuncInvocationStatementLexerData(StatementLexerData):
-    Name: str
-    Arguments: Optional[List[ArgumentLexerInfo]]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class FuncInvocationStatementLexerRegions(LexerRegions):
-    Name: Region
-    Arguments: Optional[Region]
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncInvocationStatementLexerInfo(StatementLexerInfo):
-    Data: FuncInvocationStatementLexerData
-    Regions: FuncInvocationStatementLexerRegions
+    Name: str
+    Arguments: Optional[List[ArgumentLexerInfo]]

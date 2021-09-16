@@ -17,8 +17,6 @@
 
 import os
 
-from dataclasses import fields
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -33,7 +31,6 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-def test_Fields():
-    regions_fields = set(field.name for field in fields(FuncInvocationExpressionLexerRegions))
-
-    assert regions_fields == set(["Self__", "Name", "Arguments"])
+# TODO: Remove this in favor of a real test once the LexerInfo object does something more interesting
+def test_Placeholder():
+    assert True

@@ -33,17 +33,14 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Data():
-    data = VariableNameLexerData("TheName")
-
-    assert data.Name == "TheName"
-
-
-# ----------------------------------------------------------------------
-def test_Regions():
-    regions = VariableNameLexerRegions(
-        CreateRegion(100, 200, 300, 400),
-        CreateRegion(1, 2, 3, 4),
+    info = VariableNameLexerInfo(
+        [
+            CreateRegion(1, 2, 300, 400),
+            CreateRegion(1, 2, 3, 4),
+        ],
+        "TheName"
     )
 
-    assert regions.Self__ == CreateRegion(100, 200, 300, 400)
-    assert regions.Name == CreateRegion(1, 2, 3, 4)
+    assert info.Name == "TheName"
+    assert info.Regions.Self__ == CreateRegion(1, 2, 300, 400)
+    assert info.Regions.Name == CreateRegion(1, 2, 3, 4)

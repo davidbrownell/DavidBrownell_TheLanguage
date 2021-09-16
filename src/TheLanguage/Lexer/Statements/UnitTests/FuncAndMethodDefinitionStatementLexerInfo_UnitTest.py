@@ -39,29 +39,31 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class TestStandard(object):
     _return_type                            = StandardTypeLexerInfo(
-        StandardTypeLexerData("TheType", None),
-        StandardTypeLexerRegions(
+        [
             CreateRegion(1, 2, 30000, 40000),
             CreateRegion(5000, 6000, 7000, 8000),
             None,
-        ),
+        ],
+        "TheType",
+        None,
     )
 
-    _regions                                = FuncAndMethodDefinitionStatementLexerRegions(
-        CreateRegion(1, 2, 3000, 4000),
-        CreateRegion(1, 2, 3, 4),
-        CreateRegion(5, 6, 7, 8),
-        CreateRegion(9, 10, 11, 12),
-        CreateRegion(13, 14, 15, 16),
-        CreateRegion(17, 18, 19, 20),
-        CreateRegion(21, 22, 23, 24),
-    )
+    _regions                                = {
+        "Self__": CreateRegion(1, 2, 3000, 4000),
+        "Visibility": CreateRegion(1, 2, 3, 4),
+        "MethodType": CreateRegion(5, 6, 7, 8),
+        "ReturnType": CreateRegion(9, 10, 11, 12),
+        "Name": CreateRegion(13, 14, 15, 16),
+        "Parameters": CreateRegion(17, 18, 19, 20),
+        "ClassModifier": CreateRegion(21, 22, 23, 24),
+        "Statements": CreateRegion(25, 26, 27, 28),
+    }
 
     _regions_no_modifier                    = copy.deepcopy(_regions)
-    object.__setattr__(_regions_no_modifier, "ClassModifier", None)
+    _regions_no_modifier["ClassModifier"] = None
 
     _class_lexer_info                       = ClassStatementLexerInfo(
-        ClassStatementLexerRegions(
+        [
             CreateRegion(5, 6, 70000, 80000),
             CreateRegion(900, 1000, 1100, 1200),
             CreateRegion(1300, 1400, 1500, 1600),
@@ -71,7 +73,7 @@ class TestStandard(object):
             CreateRegion(2900, 3000, 3100, 3200),
             CreateRegion(3300, 3400, 3500, 3600),
             CreateRegion(3700, 3800, 3900, 4000),
-        ),
+        ],
         VisibilityModifier.public,
         ClassModifier.mutable,
         ClassType.Class,
@@ -82,7 +84,7 @@ class TestStandard(object):
     )
 
     _interface_lexer_info                   = ClassStatementLexerInfo(
-        ClassStatementLexerRegions(
+        [
             CreateRegion(41, 42, 430000, 440000),
             CreateRegion(4500, 4600, 4700, 4800),
             CreateRegion(4900, 5000, 5100, 5200),
@@ -92,7 +94,7 @@ class TestStandard(object):
             CreateRegion(6500, 6600, 6700, 6800),
             CreateRegion(6900, 7000, 7100, 7200),
             CreateRegion(7300, 7400, 7500, 7600),
-        ),
+        ],
         VisibilityModifier.public,
         ClassModifier.immutable,
         ClassType.Interface,
@@ -103,7 +105,7 @@ class TestStandard(object):
     )
 
     _struct_lexer_info                      = ClassStatementLexerInfo(
-        ClassStatementLexerRegions(
+        [
             CreateRegion(77, 78, 790000, 800000),
             CreateRegion(8100, 8200, 8300, 8400),
             CreateRegion(8500, 8600, 8700, 8800),
@@ -113,7 +115,7 @@ class TestStandard(object):
             CreateRegion(10100, 10200, 10300, 10400),
             CreateRegion(10500, 10600, 10700, 10800),
             CreateRegion(10900, 11000, 11100, 11200),
-        ),
+        ],
         VisibilityModifier.private,
         ClassModifier.mutable,
         ClassType.Struct,
@@ -124,7 +126,7 @@ class TestStandard(object):
     )
 
     _deferred_lexer_info                    = ClassStatementLexerInfo(
-        ClassStatementLexerRegions(
+        [
             CreateRegion(113, 114, 1150000, 1160000),
             CreateRegion(11700, 11800, 11900, 12000),
             CreateRegion(12100, 12200, 12300, 12400),
@@ -134,7 +136,7 @@ class TestStandard(object):
             CreateRegion(13700, 13800, 13900, 14000),
             CreateRegion(14100, 14200, 14300, 14400),
             CreateRegion(14500, 14600, 14700, 14800),
-        ),
+        ],
         VisibilityModifier.public,
         ClassModifier.mutable,
         ClassType.Primitive,
@@ -146,54 +148,52 @@ class TestStandard(object):
 
     # ----------------------------------------------------------------------
     def test_DataStringFunc(self):
-        data = FuncAndMethodDefinitionStatementLexerData(
+        info = FuncAndMethodDefinitionStatementLexerInfo(
+            list(self._regions_no_modifier.values()),
+            None,
             VisibilityModifier.public,
             MethodType.standard,
             self._return_type,
             "TheFunc",
             [self._return_type],
             None,
+            [None],
         )
 
-        assert data.Visibility == VisibilityModifier.public
-        assert data.MethodType == MethodType.standard
-        assert data.ReturnType == self._return_type
-        assert data.Name == "TheFunc"
-        assert data.Parameters == [self._return_type]
-        assert data.ClassModifier is None
+        assert info.Visibility == VisibilityModifier.public
+        assert info.MethodType == MethodType.standard
+        assert info.ReturnType == self._return_type
+        assert info.Name == "TheFunc"
+        assert info.Parameters == [self._return_type]
+        assert info.ClassModifier is None
+        assert info.Regions == info.RegionsType(**self._regions_no_modifier)
 
     # ----------------------------------------------------------------------
     def test_DataOperatorFunc(self):
-        data = FuncAndMethodDefinitionStatementLexerData(
+        info = FuncAndMethodDefinitionStatementLexerInfo(
+            list(self._regions_no_modifier.values()),
+            None,
             VisibilityModifier.public,
             MethodType.standard,
             self._return_type,
             OperatorType.Add,
             [self._return_type],
             None,
+            [None],
         )
 
-        assert data.Visibility == VisibilityModifier.public
-        assert data.MethodType == MethodType.standard
-        assert data.ReturnType == self._return_type
-        assert data.Name == OperatorType.Add
-        assert data.Parameters == [self._return_type]
-        assert data.ClassModifier is None
-
-    # ----------------------------------------------------------------------
-    def test_Regions(self):
-        assert self._regions.Self__ == CreateRegion(1, 2, 3000, 4000)
-        assert self._regions.Visibility == CreateRegion(1, 2, 3, 4)
-        assert self._regions.MethodType == CreateRegion(5, 6, 7, 8)
-        assert self._regions.ReturnType == CreateRegion(9, 10, 11, 12)
-        assert self._regions.Name == CreateRegion(13, 14, 15, 16)
-        assert self._regions.Parameters == CreateRegion(17, 18, 19, 20)
-        assert self._regions.ClassModifier == CreateRegion(21, 22, 23, 24)
+        assert info.Visibility == VisibilityModifier.public
+        assert info.MethodType == MethodType.standard
+        assert info.ReturnType == self._return_type
+        assert info.Name == OperatorType.Add
+        assert info.Parameters == [self._return_type]
+        assert info.ClassModifier is None
+        assert info.Regions == info.RegionsType(**self._regions_no_modifier)
 
     # ----------------------------------------------------------------------
     def test_Info(self):
         info = FuncAndMethodDefinitionStatementLexerInfo(
-            self._regions,
+            list(self._regions.values()),
             self._class_lexer_info,
             VisibilityModifier.public,
             MethodType.standard,
@@ -201,22 +201,21 @@ class TestStandard(object):
             "Method",
             [self._return_type],
             ClassModifier.immutable,
-            True,
+            [None],
         )
 
-        assert info.Data.Visibility == VisibilityModifier.public
-        assert info.Data.MethodType == MethodType.standard
-        assert info.Data.ReturnType == self._return_type
-        assert info.Data.Name == "Method"
-        assert info.Data.Parameters == [self._return_type]
-        assert info.Data.ClassModifier == ClassModifier.immutable
-
-        assert info.Regions == self._regions
+        assert info.Visibility == VisibilityModifier.public
+        assert info.MethodType == MethodType.standard
+        assert info.ReturnType == self._return_type
+        assert info.Name == "Method"
+        assert info.Parameters == [self._return_type]
+        assert info.ClassModifier == ClassModifier.immutable
+        assert info.Regions == info.RegionsType(**self._regions)
 
     # ----------------------------------------------------------------------
     def test_FunctionDefaultVisibility(self):
         info = FuncAndMethodDefinitionStatementLexerInfo(
-            self._regions_no_modifier,
+            list(self._regions_no_modifier.values()),
             None,
             None,
             MethodType.standard,
@@ -224,16 +223,16 @@ class TestStandard(object):
             "Function",
             [],
             None,
-            True,
+            [None],
         )
 
-        assert info.Data.Visibility == VisibilityModifier.private
+        assert info.Visibility == VisibilityModifier.private
         assert info.Regions.Visibility == info.Regions.Self__
 
     # ----------------------------------------------------------------------
     def test_FunctionDefaultMethodType(self):
         info = FuncAndMethodDefinitionStatementLexerInfo(
-            self._regions_no_modifier,
+            list(self._regions_no_modifier.values()),
             None,
             VisibilityModifier.public,
             None,
@@ -241,17 +240,17 @@ class TestStandard(object):
             "Function",
             [],
             None,
-            True,
+            [None],
         )
 
-        assert info.Data.MethodType == MethodType.standard
+        assert info.MethodType == MethodType.standard
         assert info.Regions.MethodType == info.Regions.Self__
 
     # ----------------------------------------------------------------------
     def test_FunctionInvalidMethodType(self):
         with pytest.raises(InvalidFunctionMethodTypeError) as ex:
             FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions_no_modifier,
+                list(self._regions_no_modifier.values()),
                 None,
                 VisibilityModifier.public,
                 MethodType.abstract,
@@ -259,20 +258,20 @@ class TestStandard(object):
                 "Function",
                 [],
                 None,
-                True,
+                [None],
             )
 
         ex = ex.value
 
         assert str(ex) == "'abstract' is not supported for functions."
         assert ex.MethodType == "abstract"
-        assert ex.Region == self._regions_no_modifier.MethodType
+        assert ex.Region == self._regions_no_modifier["MethodType"]
 
     # ----------------------------------------------------------------------
     def test_FunctionInvalidClassModifier(self):
         with pytest.raises(InvalidFunctionClassModifierError) as ex:
             FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions,
+                list(self._regions.values()),
                 None,
                 VisibilityModifier.public,
                 MethodType.standard,
@@ -286,13 +285,13 @@ class TestStandard(object):
         ex = ex.value
 
         assert str(ex) == "Class modifiers are not supported for functions."
-        assert ex.Region == self._regions.ClassModifier
+        assert ex.Region == self._regions["ClassModifier"]
 
     # ----------------------------------------------------------------------
     def test_FunctionMissingStatements(self):
         with pytest.raises(FunctionStatementsRequiredError) as ex:
             FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions_no_modifier,
+                list(self._regions_no_modifier.values()),
                 None,
                 VisibilityModifier.public,
                 MethodType.standard,
@@ -300,13 +299,13 @@ class TestStandard(object):
                 "Function",
                 [],
                 None,
-                False,
+                None,
             )
 
         ex = ex.value
 
         assert str(ex) == "Functions must have statements."
-        assert ex.Region == self._regions_no_modifier.Self__
+        assert ex.Region == self._regions_no_modifier["Self__"]
 
     # ----------------------------------------------------------------------
     def test_MethodDefaultVisibility(self):
@@ -315,7 +314,7 @@ class TestStandard(object):
             (self._struct_lexer_info, VisibilityModifier.public),
         ]:
             info = FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions,
+                list(self._regions.values()),
                 class_info,
                 None,
                 MethodType.standard,
@@ -323,17 +322,17 @@ class TestStandard(object):
                 "Method",
                 [],
                 ClassModifier.mutable,
-                True,
+                [None],
             )
 
-            assert info.Data.Visibility == expected_visibility
+            assert info.Visibility == expected_visibility
             assert info.Regions.Visibility == info.Regions.Self__
 
     # ----------------------------------------------------------------------
     def test_MethodInvalidVisibility(self):
         with pytest.raises(InvalidMemberVisibilityError) as ex:
             FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions,
+                list(self._regions.values()),
                 self._struct_lexer_info,
                 VisibilityModifier.private,
                 MethodType.standard,
@@ -341,13 +340,13 @@ class TestStandard(object):
                 "Method",
                 [],
                 ClassModifier.mutable,
-                True,
+                [None],
             )
 
         ex = ex.value
 
         assert str(ex) == "'private' is not a supported visibility for members of 'struct' types; supported values are 'public'."
-        assert ex.Region == self._regions.Visibility
+        assert ex.Region == self._regions["Visibility"]
 
     # ----------------------------------------------------------------------
     def test_MethodDefaultMethodType(self):
@@ -356,8 +355,13 @@ class TestStandard(object):
             (self._struct_lexer_info, MethodType.standard, True),
             (self._interface_lexer_info, MethodType.abstract, False),
         ]:
+            regions = copy.deepcopy(self._regions)
+
+            if not statements_expected:
+                regions["Statements"] = None
+
             info = FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions_no_modifier,
+                list(regions.values()),
                 class_info,
                 VisibilityModifier.public,
                 None,
@@ -365,17 +369,17 @@ class TestStandard(object):
                 "Method",
                 [],
                 None,
-                statements_expected,
+                [None] if statements_expected else None,
             )
 
-            assert info.Data.MethodType == expected_method_type
+            assert info.MethodType == expected_method_type
             assert info.Regions.MethodType == info.Regions.Self__
 
     # ----------------------------------------------------------------------
     def test_MethodInvalidMethodType(self):
         with pytest.raises(InvalidMethodTypeError) as ex:
             FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions,
+                list(self._regions.values()),
                 self._interface_lexer_info,
                 VisibilityModifier.public,
                 MethodType.static,
@@ -383,13 +387,13 @@ class TestStandard(object):
                 "Method",
                 [],
                 None,
-                False,
+                None,
             )
 
         ex = ex.value
 
         assert str(ex) == "'static' is not a supported method type modifier for members of 'interface' types; supported values are 'standard', 'abstract', 'virtual', 'override', 'final'."
-        assert ex.Region == self._regions.MethodType
+        assert ex.Region == self._regions["MethodType"]
 
     # ----------------------------------------------------------------------
     def test_MethodDefaultClassModifier(self):
@@ -398,7 +402,7 @@ class TestStandard(object):
             (self._struct_lexer_info, ClassModifier.mutable),
         ]:
             info = FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions_no_modifier,
+                list(self._regions_no_modifier.values()),
                 class_info,
                 VisibilityModifier.public,
                 MethodType.standard,
@@ -406,17 +410,17 @@ class TestStandard(object):
                 "Method",
                 [],
                 None,
-                True,
+                [None],
             )
 
-            assert info.Data.ClassModifier == expected_class_modifier
+            assert info.ClassModifier == expected_class_modifier
             assert info.Regions.ClassModifier == info.Regions.Self__
 
     # ----------------------------------------------------------------------
     def test_MethodClassModifierOnStatic(self):
         with pytest.raises(InvalidClassModifierOnStaticError) as ex:
             FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions,
+                list(self._regions.values()),
                 self._class_lexer_info,
                 VisibilityModifier.public,
                 MethodType.static,
@@ -430,13 +434,13 @@ class TestStandard(object):
         ex = ex.value
 
         assert str(ex) == "Class modifiers are not supported for 'static' methods."
-        assert ex.Region == self._regions.ClassModifier
+        assert ex.Region == self._regions["ClassModifier"]
 
     # ----------------------------------------------------------------------
     def test_MethodInvalidClassModifier(self):
         with pytest.raises(InvalidMemberClassModifierError) as ex:
             FuncAndMethodDefinitionStatementLexerInfo(
-                self._regions,
+                list(self._regions.values()),
                 self._struct_lexer_info,
                 VisibilityModifier.public,
                 MethodType.standard,
@@ -444,13 +448,13 @@ class TestStandard(object):
                 "Method",
                 [],
                 ClassModifier.immutable,
-                True,
+                [None],
             )
 
         ex = ex.value
 
         assert str(ex) == "'immutable' is not a supported modifier for members of 'struct' types; supported values are 'mutable'."
-        assert ex.Region == self._regions.ClassModifier
+        assert ex.Region == self._regions["ClassModifier"]
 
     # ----------------------------------------------------------------------
     def test_MethodStatementsUnexpected(self):
@@ -460,7 +464,7 @@ class TestStandard(object):
         ]:
             with pytest.raises(MethodStatementsUnexpectedError) as ex:
                 FuncAndMethodDefinitionStatementLexerInfo(
-                    self._regions_no_modifier,
+                    list(self._regions_no_modifier.values()),
                     class_info,
                     VisibilityModifier.public,
                     method_type,
@@ -468,13 +472,13 @@ class TestStandard(object):
                     "Method",
                     [],
                     None,
-                    True,
+                    [None],
                 )
 
             ex = ex.value
 
             assert str(ex) == "Statements are not expected for '{}' methods.".format(method_type.name)
-            assert ex.Region == self._regions_no_modifier.Self__
+            assert ex.Region == self._regions_no_modifier["Self__"]
 
     # ----------------------------------------------------------------------
     def test_MethodStatementsExpected(self):
@@ -484,7 +488,7 @@ class TestStandard(object):
 
             with pytest.raises(MethodStatementsRequiredError) as ex:
                 FuncAndMethodDefinitionStatementLexerInfo(
-                    self._regions_no_modifier,
+                    list(self._regions_no_modifier.values()),
                     self._class_lexer_info,
                     VisibilityModifier.public,
                     method_type,
@@ -492,10 +496,10 @@ class TestStandard(object):
                     "Method",
                     [],
                     None,
-                    False,
+                    None,
                 )
 
             ex = ex.value
 
             assert str(ex) == "Statements are required for '{}' methods.".format(method_type.name)
-            assert ex.Region == self._regions_no_modifier.Self__
+            assert ex.Region == self._regions_no_modifier["Self__"]

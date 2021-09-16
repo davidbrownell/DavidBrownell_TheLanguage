@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,8 +31,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+
+    from ....Lexer.Statements.DeleteStatementLexerInfo import DeleteStatementLexerInfo
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        ExtractSequence,
+        ExtractToken,
+        Leaf,
+        Node,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -54,8 +68,36 @@ class DeleteStatement(GrammarPhrase):
                 name=self.PHRASE_NAME,
                 item=[
                     "del",
-                    DynamicPhrasesType.Names,
+                    CommonTokens.GenericName,
                     CommonTokens.Newline,
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 3
+
+            # <name>
+            name_leaf = cast(Leaf, nodes[1])
+            name_info = cast(str, ExtractToken(name_leaf))
+
+            SetLexerInfo(
+                node,
+                DeleteStatementLexerInfo(
+                    CreateLexerRegions(node, name_leaf),  # type: ignore
+                    name_info,
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

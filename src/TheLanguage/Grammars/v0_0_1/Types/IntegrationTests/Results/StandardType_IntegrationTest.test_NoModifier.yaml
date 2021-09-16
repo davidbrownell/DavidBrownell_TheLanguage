@@ -21,13 +21,12 @@ Children:
                               Match: "<_sre.SRE_Match object; span=(0, 3), match='Int'>"
                             Whitespace: None
                         Info: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                          Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                            Modifier: None
-                            TypeName: "Int"
-                          Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
+                          Modifier: None
+                          Regions: # <class 'types.StandardTypeLexerInfoRegions'>
                             Modifier: None
                             Self__: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
                             TypeName: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+                          TypeName: "Int"
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Type: "Standard Type <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -161,28 +160,31 @@ Children:
                 IterEnd: "[3, 1] (21)"
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
-              Data: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerData'>
-                ClassModifier: None
-                MethodType: "MethodType.standard"
-                Name: "Func"
-                Parameters: None
-                ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
-                  Data: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerData'>
-                    Modifier: None
-                    TypeName: "Int"
-                  Regions: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerRegions'>
-                    Modifier: None
-                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
-                    TypeName: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
-                Visibility: "VisibilityModifier.private"
-              Regions: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerRegions'>
+              ClassModifier: None
+              MethodType: "MethodType.standard"
+              Name: "Func"
+              Parameters: None
+              Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                 ClassModifier: None
                 MethodType: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
                 Name: "[Ln 1, Col 5] -> [Ln 1, Col 9]"
                 Parameters: None
                 ReturnType: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
                 Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+                Statements: "[Ln 1, Col 11] -> [Ln 3, Col 1]"
                 Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+              ReturnType: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                Modifier: None
+                Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                  Modifier: None
+                  Self__: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+                  TypeName: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+                TypeName: "Int"
+              Statements:
+                - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                  Regions: # <class 'types.LexerInfoRegions'>
+                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (21)"
             Type: "Func And Method Definition Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

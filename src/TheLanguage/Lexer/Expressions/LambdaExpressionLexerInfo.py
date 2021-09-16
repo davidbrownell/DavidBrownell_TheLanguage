@@ -31,27 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
+    from .ExpressionLexerInfo import ExpressionLexerInfo
     from ..Common.ParametersLexerInfo import ParametersLexerInfo
-    from ..LexerInfo import LexerRegions, Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class LambdaExpressionLexerData(ExpressionLexerData):
-    Parameters: Optional[ParametersLexerInfo]
-    Expression: ExpressionLexerInfo
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class LambdaExpressionLexerRegions(LexerRegions):
-    Parameters: Optional[Region]
-    Expression: Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class LambdaExpressionLexerInfo(ExpressionLexerInfo):
-    Data: LambdaExpressionLexerData
-    Regions: LambdaExpressionLexerRegions
+    Parameters: Optional[ParametersLexerInfo]
+    Expression: ExpressionLexerInfo

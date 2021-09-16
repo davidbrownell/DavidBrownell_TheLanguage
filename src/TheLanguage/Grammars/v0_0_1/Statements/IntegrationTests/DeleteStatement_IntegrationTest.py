@@ -43,10 +43,6 @@ def test_Standard():
             textwrap.dedent(
                 """\
                 del foo
-
-                # This statement isn't valid, but it should parse correctly before
-                # an error is produced.
-                del (a, b,)
                 """,
             ),
         ),

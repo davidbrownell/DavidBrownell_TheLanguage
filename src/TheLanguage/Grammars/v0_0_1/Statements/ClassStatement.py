@@ -47,9 +47,7 @@ with InitRelativeImports():
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.Statements.ClassStatementLexerInfo import (
         ClassDependencyLexerInfo,
-        ClassDependencyLexerRegions,
         ClassStatementLexerInfo,
-        ClassStatementLexerRegions,
         ClassType,
         StatementLexerInfo,
     )
@@ -273,31 +271,31 @@ class ClassStatement(GrammarPhrase):
         visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
 
         if visibility_node is not None:
-            visibility_data = VisibilityModifier.Extract(visibility_node)
+            visibility_info = VisibilityModifier.Extract(visibility_node)
         else:
-            visibility_data = None
+            visibility_info = None
 
         # <class_modifier>?
         class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
 
         if class_modifier_node is not None:
-            class_modifier_data = ClassModifier.Extract(class_modifier_node)
+            class_modifier_info = ClassModifier.Extract(class_modifier_node)
         else:
-            class_modifier_data = None
+            class_modifier_info = None
 
         # <class_type>
         class_type_node = cast(Node, nodes[3])
-        class_type_data = cls._ExtractClassType(class_type_node)
+        class_type_info = cls._ExtractClassType(class_type_node)
 
         # <name>
         class_name_leaf = cast(Leaf, nodes[4])
-        class_name_data = cast(str, ExtractToken(class_name_leaf))
+        class_name_info = cast(str, ExtractToken(class_name_leaf))
 
         # Base Info
         base_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[7])))
 
         if base_node is None:
-            base_data = None
+            base_info = None
         else:
             base_infos = cls._ExtractBaseInfo(base_node)
             assert base_infos
@@ -305,7 +303,7 @@ class ClassStatement(GrammarPhrase):
             if len(base_infos) > 1:
                 raise MultipleBasesError.FromNode(base_node)
 
-            base_data = base_infos[0]
+            base_info = base_infos[0]
 
         # Interfaces and Mixins
         interfaces_and_mixins: Dict[
@@ -349,7 +347,6 @@ class ClassStatement(GrammarPhrase):
             node,
             ClassStatementLexerInfo(
                 CreateLexerRegions(
-                    ClassStatementLexerRegions, # type: ignore
                     node,
                     visibility_node,
                     class_modifier_node,
@@ -360,30 +357,28 @@ class ClassStatement(GrammarPhrase):
                     interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None,))[0],  # type: ignore
                     statements_node,
                 ),
-                visibility_data,  # type: ignore
-                class_modifier_data,  # type: ignore
-                class_type_data,
-                class_name_data,  # type: ignore
-                base_data,  # type: ignore
-                interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None, []))[1], # type: ignore
-                interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None, []))[1],  # type: ignore
+                visibility_info,  # type: ignore
+                class_modifier_info,  # type: ignore
+                class_type_info,
+                class_name_info,  # type: ignore
+                base_info,  # type: ignore
+                interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None, None))[1], # type: ignore
+                interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None, None))[1],  # type: ignore
             ),
         )
 
         # ----------------------------------------------------------------------
-        def ApplyStatements():
+        def FinalConstruct():
             lexer_info = cast(ClassStatementLexerInfo, GetLexerInfo(node))
 
-            lexer_info.SetStatements(
-                [
-                    cast(StatementLexerInfo, GetLexerInfo(statement))
-                    for statement in StatementsPhraseItem.Extract(statements_node)
-                ],
-            )
+            # <statement>+
+            statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
+
+            lexer_info.FinalConstruct(statements_info)
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(ApplyStatements)
+        return GrammarPhrase.ExtractLexerInfoResult(FinalConstruct)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -440,26 +435,25 @@ class ClassStatement(GrammarPhrase):
             visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], base_items[0])))
 
             if visibility_node is not None:
-                visibility = VisibilityModifier.Extract(visibility_node)
+                visibility_info = VisibilityModifier.Extract(visibility_node)
             else:
-                visibility = None
+                visibility_info = None
 
             # <name>
             name_leaf = cast(Leaf, base_items[1])
-            name = cast(str, ExtractToken(name_leaf))
+            name_info = cast(str, ExtractToken(name_leaf))
 
             # Commit the results
             results.append(
                 # <Too many positional arguments> pylint: disable=too-many-function-args
                 ClassDependencyLexerInfo(
                     CreateLexerRegions(
-                        ClassDependencyLexerRegions,  # type: ignore
                         node,
                         visibility_node,
                         name_leaf,
-                    ),
-                    visibility,  # type: ignore
-                    name,  # type: ignore
+                    ),  # type: ignore
+                    visibility_info,  # type: ignore
+                    name_info,  # type: ignore
                 ),
             )
 

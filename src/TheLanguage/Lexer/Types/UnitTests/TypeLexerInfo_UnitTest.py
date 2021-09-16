@@ -17,8 +17,6 @@
 
 import os
 
-from dataclasses import fields
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -33,7 +31,6 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-def test_Fields():
-    info_fields = set(field.name for field in fields(TypeLexerInfo))
-
-    assert info_fields == set(["Data", "Regions"])
+# TODO: Remove this in favor of a real test once the LexerInfo object does something more interesting
+def test_Placeholder():
+    assert True

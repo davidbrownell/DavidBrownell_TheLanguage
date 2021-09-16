@@ -31,50 +31,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionLexerInfo import ExpressionLexerData, ExpressionLexerInfo
-    from ..LexerInfo import LexerData, LexerInfo, LexerRegions, Region
+    from .ExpressionLexerInfo import ExpressionLexerInfo, LexerInfo
     from ..Types.TypeLexerInfo import TypeLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class MatchValueCasePhraseLexerData(LexerData):
+class MatchValueCasePhraseLexerInfo(LexerInfo):
     Cases: List[TypeLexerInfo]
     Expression: ExpressionLexerInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class MatchValueCasePhraseLexerRegions(LexerRegions):
-    Cases: Region
-    Expression: Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class MatchValueCasePhraseLexerInfo(LexerInfo):
-    Data: MatchValueCasePhraseLexerData
-    Regions: MatchValueCasePhraseLexerRegions
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class MatchValueExpressionLexerData(ExpressionLexerData):
+class MatchValueExpressionLexerInfo(ExpressionLexerInfo):
     Expression: ExpressionLexerInfo
     CasePhrases: List[MatchValueCasePhraseLexerInfo]
     Default: Optional[ExpressionLexerInfo]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class MatchValueExpressionLexerRegions(LexerRegions):
-    Expression: Region
-    CasePhrases: Region
-    Default: Optional[Region]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class MatchValueExpressionLexerInfo(ExpressionLexerInfo):
-    Data: MatchValueExpressionLexerData
-    Regions: MatchValueExpressionLexerRegions

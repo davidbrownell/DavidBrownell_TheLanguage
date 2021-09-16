@@ -32,10 +32,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeLexerInfo import TypeLexerData, TypeLexerInfo
+    from .TypeLexerInfo import TypeLexerInfo, Region
     from ..Common.TypeModifier import TypeModifier
     from ..LexerError import LexerError
-    from ..LexerInfo import LexerRegions, Region
 
 
 # ----------------------------------------------------------------------
@@ -51,26 +50,14 @@ class InvalidModifierError(LexerError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class StandardTypeLexerData(TypeLexerData):
+class StandardTypeLexerInfo(TypeLexerInfo):
     TypeName: str
     Modifier: Optional[TypeModifier]
 
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class StandardTypeLexerRegions(LexerRegions):
-    TypeName: Region
-    Modifier: Optional[Region]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class StandardTypeLexerInfo(TypeLexerInfo):
-    Data: StandardTypeLexerData
-    Regions: StandardTypeLexerRegions
-
     # ----------------------------------------------------------------------
-    def __post_init__(self):
+    def __post_init__(self, regions):
+        super(StandardTypeLexerInfo, self).__post_init__(regions)
+
         invalid_modifiers = [
             TypeModifier.mutable,
             TypeModifier.immutable,
@@ -79,25 +66,23 @@ class StandardTypeLexerInfo(TypeLexerInfo):
             TypeModifier.ref,
         ]
 
-        if self.Data.Modifier in invalid_modifiers:
-            assert self.Data.Modifier is not None
-            assert self.Regions.Modifier is not None
+        if self.Modifier in invalid_modifiers:
+            assert self.Modifier is not None
+            assert self.Regions.Modifier is not None  # pylint: disable=no-member
 
             valid_modifiers = [m for m in TypeModifier if m not in invalid_modifiers]
 
             raise InvalidModifierError(
-                self.Regions.Modifier,
-                cast(str, self.Data.Modifier.name),
+                self.Regions.Modifier,  # pylint: disable=no-member
+                cast(str, self.Modifier.name),
                 ", ".join(["'{}'".format(m.name) for m in valid_modifiers]),
             )
-
-        super(StandardTypeLexerInfo, self).__post_init__()
 
     # ----------------------------------------------------------------------
     @Interface.override
     def GetTypeModifier(self) -> Optional[Tuple[TypeModifier, Region]]:
-        if self.Data.Modifier is None:
+        if self.Modifier is None:
             return None
 
-        assert self.Regions.Modifier is not None
-        return self.Data.Modifier, self.Regions.Modifier
+        assert self.Regions.Modifier is not None  # pylint: disable=no-member
+        return self.Modifier, self.Regions.Modifier  # pylint: disable=no-member

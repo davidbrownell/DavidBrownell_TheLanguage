@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  BinaryStatementLexerInfo_UnitTest.py
+# |  DeleteStatementLexerInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-14 09:01:25
+# |      2021-09-14 15:06:51
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for BinaryStatementLexerInfo.py"""
+"""Unit test for DeleteStatementLexerInfo.py"""
 
 import os
 
@@ -27,7 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..BinaryStatementLexerInfo import *
+    from ..DeleteStatementLexerInfo import *
 
 
 # ----------------------------------------------------------------------
