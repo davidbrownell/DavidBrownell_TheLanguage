@@ -97,6 +97,21 @@ Children:
                   End: 15
                   Start: 14
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.YieldStatementLexerInfo.YieldStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                  Name: "foo"
+                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                    Name: "[Ln 1, Col 12] -> [Ln 1, Col 15]"
+                    Self__: "[Ln 1, Col 12] -> [Ln 1, Col 15]"
+                Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                  Name: "[Ln 1, Col 12] -> [Ln 1, Col 15]"
+                  Self__: "[Ln 1, Col 12] -> [Ln 1, Col 15]"
+              IsRecursive: True
+              Regions: # <class 'types.YieldStatementLexerInfoRegions'>
+                Expression: "[Ln 1, Col 12] -> [Ln 1, Col 15]"
+                IsRecursive: "[Ln 1, Col 7] -> [Ln 1, Col 11]"
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (15)"
             Type: "Yield Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -396,6 +411,44 @@ Children:
                   End: 34
                   Start: 33
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.YieldStatementLexerInfo.YieldStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.TupleExpressionLexerInfo.TupleExpressionLexerInfo'>
+                Expressions:
+                  - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "a"
+                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                        Name: "[Ln 2, Col 13] -> [Ln 2, Col 14]"
+                        Self__: "[Ln 2, Col 13] -> [Ln 2, Col 14]"
+                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                      Name: "[Ln 2, Col 13] -> [Ln 2, Col 14]"
+                      Self__: "[Ln 2, Col 13] -> [Ln 2, Col 14]"
+                  - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "b"
+                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                        Name: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                        Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                      Name: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                      Self__: "[Ln 2, Col 15] -> [Ln 2, Col 16]"
+                  - # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "c"
+                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                        Name: "[Ln 2, Col 17] -> [Ln 2, Col 18]"
+                        Self__: "[Ln 2, Col 17] -> [Ln 2, Col 18]"
+                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                      Name: "[Ln 2, Col 17] -> [Ln 2, Col 18]"
+                      Self__: "[Ln 2, Col 17] -> [Ln 2, Col 18]"
+                Regions: # <class 'types.TupleExpressionLexerInfoRegions'>
+                  Expressions: "[Ln 2, Col 12] -> [Ln 2, Col 19]"
+                  Self__: "[Ln 2, Col 12] -> [Ln 2, Col 19]"
+              IsRecursive: True
+              Regions: # <class 'types.YieldStatementLexerInfoRegions'>
+                Expression: "[Ln 2, Col 12] -> [Ln 2, Col 19]"
+                IsRecursive: "[Ln 2, Col 7] -> [Ln 2, Col 11]"
+                Self__: "[Ln 2, Col 1] -> [Ln 3, Col 1]"
             IterBegin: "[2, 1] (15)"
             IterEnd: "[3, 1] (34)"
             Type: "Yield Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

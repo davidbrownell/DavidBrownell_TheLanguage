@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..LexerInfo import LexerInfo, Region
+    from ..LexerInfo import LexerInfo
     from ..Expressions.ExpressionLexerInfo import ExpressionLexerInfo
     from ..Types.TypeLexerInfo import TypeLexerInfo
 

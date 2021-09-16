@@ -106,6 +106,25 @@ Children:
                   End: 15
                   Start: 14
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.VariableDeclarationStatementLexerInfo.VariableDeclarationStatementLexerInfo'>
+              Expression: # <class 'TheLanguage.Lexer.Expressions.FuncInvocationExpressionLexerInfo.FuncInvocationExpressionLexerInfo'>
+                Arguments: None
+                Name: "Func"
+                Regions: # <class 'types.FuncInvocationExpressionLexerInfoRegions'>
+                  Arguments: None
+                  Name: "[Ln 1, Col 9] -> [Ln 1, Col 13]"
+                  Self__: "[Ln 1, Col 9] -> [Ln 1, Col 15]"
+              Modifier: None
+              Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                Name: "value"
+                Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                  Name: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                  Self__: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+              Regions: # <class 'types.VariableDeclarationStatementLexerInfoRegions'>
+                Expression: "[Ln 1, Col 9] -> [Ln 1, Col 15]"
+                Modifier: None
+                Name: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (15)"
             Type: "Variable Declaration Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

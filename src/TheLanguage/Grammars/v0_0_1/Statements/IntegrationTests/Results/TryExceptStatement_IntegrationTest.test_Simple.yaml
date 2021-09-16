@@ -262,6 +262,29 @@ Children:
                 IterBegin: "[3, 1] (18)"
                 IterEnd: "[6, 1] (40)"
                 Type: "Repeat: {Except, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+            Info: # <class 'TheLanguage.Lexer.Statements.TryExceptStatementLexerInfo.TryExceptStatementLexerInfo'>
+              DefaultStatements:
+                - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                  Arguments: None
+                  Name: "Func1b"
+                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                    Arguments: None
+                    Name: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
+                    Self__: "[Ln 4, Col 5] -> [Ln 6, Col 1]"
+              ExceptClauses: None
+              Regions: # <class 'types.TryExceptStatementLexerInfoRegions'>
+                DefaultStatements: "[Ln 3, Col 1] -> [Ln 6, Col 1]"
+                ExceptClauses: None
+                Self__: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+                TryStatements: "[Ln 1, Col 4] -> [Ln 3, Col 1]"
+              TryStatements:
+                - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                  Arguments: None
+                  Name: "Func1a"
+                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                    Arguments: None
+                    Name: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
+                    Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[6, 1] (40)"
             Type: "Try Except Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -653,6 +676,43 @@ Children:
                 IterBegin: "[9, 1] (71)"
                 IterEnd: "[12, 1] (105)"
                 Type: "Repeat: {Except, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+            Info: # <class 'TheLanguage.Lexer.Statements.TryExceptStatementLexerInfo.TryExceptStatementLexerInfo'>
+              DefaultStatements:
+                - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                  Arguments: None
+                  Name: "Func2c"
+                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                    Arguments: None
+                    Name: "[Ln 10, Col 5] -> [Ln 10, Col 11]"
+                    Self__: "[Ln 10, Col 5] -> [Ln 11, Col 1]"
+                - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                  Arguments: None
+                  Name: "Func2d"
+                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                    Arguments: None
+                    Name: "[Ln 11, Col 5] -> [Ln 11, Col 11]"
+                    Self__: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
+              ExceptClauses: None
+              Regions: # <class 'types.TryExceptStatementLexerInfoRegions'>
+                DefaultStatements: "[Ln 9, Col 1] -> [Ln 12, Col 1]"
+                ExceptClauses: None
+                Self__: "[Ln 6, Col 1] -> [Ln 12, Col 1]"
+                TryStatements: "[Ln 6, Col 4] -> [Ln 9, Col 1]"
+              TryStatements:
+                - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                  Arguments: None
+                  Name: "Func2a"
+                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                    Arguments: None
+                    Name: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
+                    Self__: "[Ln 7, Col 5] -> [Ln 8, Col 1]"
+                - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                  Arguments: None
+                  Name: "Func2b"
+                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                    Arguments: None
+                    Name: "[Ln 8, Col 5] -> [Ln 8, Col 11]"
+                    Self__: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
             IterBegin: "[6, 1] (40)"
             IterEnd: "[12, 1] (105)"
             Type: "Try Except Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

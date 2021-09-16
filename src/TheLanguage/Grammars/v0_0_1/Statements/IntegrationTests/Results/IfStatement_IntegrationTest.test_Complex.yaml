@@ -289,6 +289,9 @@ Children:
                                               End: 74
                                               Start: 72
                                             Whitespace: None
+                                        Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                          Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                            Self__: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
                                         IterBegin: "[5, 5] (68)"
                                         IterEnd: "[7, 1] (74)"
                                         Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1223,6 +1226,9 @@ Children:
                                                       End: 234
                                                       Start: 233
                                                     Whitespace: None
+                                                Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                                  Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                                    Self__: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
                                                 IterBegin: "[22, 5] (229)"
                                                 IterEnd: "[23, 1] (234)"
                                                 Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -1294,9 +1300,9 @@ Children:
                         Arguments: None
                         Name: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
                         Self__: "[Ln 2, Col 5] -> [Ln 4, Col 1]"
-                    - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                      Regions: # <class 'types.LexerInfoRegions'>
-                        Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+                    - # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                      Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                        Self__: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
                 - # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementClauseLexerInfo'>
                   Condition: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
                     Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
@@ -1392,9 +1398,9 @@ Children:
                         Name: "[Ln 19, Col 5] -> [Ln 19, Col 11]"
                         Self__: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
               ElseStatements:
-                - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions: # <class 'types.LexerInfoRegions'>
-                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+                - # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                  Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                    Self__: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
               Regions: # <class 'types.IfStatementLexerInfoRegions'>
                 Clauses: "[Ln 1, Col 1] -> [Ln 23, Col 1]"
                 ElseStatements: "[Ln 21, Col 1] -> [Ln 23, Col 1]"

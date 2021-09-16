@@ -189,6 +189,9 @@ Children:
                                                   End: 26
                                                   Start: 25
                                                 Whitespace: None
+                                            Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                                              Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                                                Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
                                             IterBegin: "[2, 5] (21)"
                                             IterEnd: "[3, 1] (26)"
                                             Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -249,9 +252,9 @@ Children:
                     TypeName: "[Ln 1, Col 2] -> [Ln 1, Col 5]"
                   TypeName: "Int"
               Statements:
-                - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
-                  Regions: # <class 'types.LexerInfoRegions'>
-                    Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
+                - # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+                  Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                    Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
               Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (26)"

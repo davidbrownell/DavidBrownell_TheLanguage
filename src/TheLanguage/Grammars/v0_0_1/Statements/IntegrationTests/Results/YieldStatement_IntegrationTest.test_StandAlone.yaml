@@ -23,6 +23,13 @@ Children:
                   End: 6
                   Start: 5
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.YieldStatementLexerInfo.YieldStatementLexerInfo'>
+              Expression: None
+              IsRecursive: None
+              Regions: # <class 'types.YieldStatementLexerInfoRegions'>
+                Expression: None
+                IsRecursive: None
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (6)"
             Type: "Yield Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
