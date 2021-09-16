@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,14 +31,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import StatementsPhraseItem
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Lexer.Statements.WhileStatementLexerInfo import (
+        ExpressionLexerInfo,
+        WhileStatementLexerInfo,
+    )
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractSequence,
+        Node,
+    )
 
 
 # ----------------------------------------------------------------------
 class WhileStatement(GrammarPhrase):
     """\
-    Exectues statements while a condition is true.
+    Executes statements while a condition is true.
 
     'while' <expr> ':'
         <statement>+
@@ -67,3 +83,36 @@ class WhileStatement(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 3
+
+            # <expr>
+            expr_node = cast(Node, ExtractDynamic(cast(Node, nodes[1])))
+            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+
+            # <statements>
+            statements_node = cast(Node, nodes[2])
+            statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
+
+            SetLexerInfo(
+                node,
+                WhileStatementLexerInfo(
+                    CreateLexerRegions(node, expr_node, statements_node),  # type: ignore
+                    expr_info,
+                    statements_info,
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

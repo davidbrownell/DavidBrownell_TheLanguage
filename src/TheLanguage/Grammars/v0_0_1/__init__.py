@@ -5,3 +5,5 @@
 #               ...
 #               return foo;
 #           }();
+
+# TODO: Remove @classmethod from GrammarPhrase.ExtractLexerInfo
