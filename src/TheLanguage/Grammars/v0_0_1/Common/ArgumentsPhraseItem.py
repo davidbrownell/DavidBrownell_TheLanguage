@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import cast, List, Optional, Tuple
+from typing import cast, List, Optional
 
 from dataclasses import dataclass
 
@@ -130,7 +130,7 @@ def Create() -> PhraseItem:
 
 
 # ----------------------------------------------------------------------
-def ExtractLexerData(
+def ExtractLexerInfo(
     node: Node,
 ) -> Optional[List[ArgumentLexerInfo]]:
     nodes = ExtractSequence(node)

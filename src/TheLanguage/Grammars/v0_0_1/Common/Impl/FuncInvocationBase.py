@@ -102,7 +102,7 @@ class FuncInvocationBase(GrammarPhrase):
 
             # Arguments
             arguments_node = cast(Node, nodes[1])
-            arguments_info = ArgumentsPhraseItem.ExtractLexerData(arguments_node)
+            arguments_info = ArgumentsPhraseItem.ExtractLexerInfo(arguments_node)
             if arguments_info is None:
                 arguments_node = None
 
