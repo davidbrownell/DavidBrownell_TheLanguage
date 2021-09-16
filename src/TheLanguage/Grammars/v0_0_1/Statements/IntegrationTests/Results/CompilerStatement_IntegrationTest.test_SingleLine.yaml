@@ -184,6 +184,29 @@ Children:
                 IterBegin: "[5, 8] (37)"
                 IterEnd: "[10, 1] (81)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+            Info: # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementLexerInfo'>
+              Clauses:
+                - # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementClauseLexerInfo'>
+                  Condition: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "cond"
+                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                        Name: "[Ln 5, Col 4] -> [Ln 5, Col 8]"
+                        Self__: "[Ln 5, Col 4] -> [Ln 5, Col 8]"
+                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                      Name: "[Ln 5, Col 4] -> [Ln 5, Col 8]"
+                      Self__: "[Ln 5, Col 4] -> [Ln 5, Col 8]"
+                  Regions: # <class 'types.IfStatementClauseLexerInfoRegions'>
+                    Condition: "[Ln 5, Col 4] -> [Ln 5, Col 8]"
+                    Self__: "[Ln 5, Col 1] -> [Ln 10, Col 1]"
+                    Statements: "[Ln 5, Col 8] -> [Ln 10, Col 1]"
+                  Statements:
+                    - "Single line 2."
+              ElseStatements: None
+              Regions: # <class 'types.IfStatementLexerInfoRegions'>
+                Clauses: "[Ln 5, Col 1] -> [Ln 10, Col 1]"
+                ElseStatements: None
+                Self__: "[Ln 5, Col 1] -> [Ln 10, Col 1]"
             IterBegin: "[5, 1] (30)"
             IterEnd: "[10, 1] (81)"
             Type: "If Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

@@ -178,6 +178,35 @@ Children:
                 IterBegin: "[1, 10] (9)"
                 IterEnd: "[4, 1] (25)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+            Info: # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementLexerInfo'>
+              Clauses:
+                - # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementClauseLexerInfo'>
+                  Condition: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "cond1"
+                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                        Name: "[Ln 1, Col 6] -> [Ln 1, Col 10]"
+                        Self__: "[Ln 1, Col 5] -> [Ln 1, Col 10]"
+                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                      Name: "[Ln 1, Col 5] -> [Ln 1, Col 10]"
+                      Self__: "[Ln 1, Col 5] -> [Ln 1, Col 10]"
+                  Regions: # <class 'types.IfStatementClauseLexerInfoRegions'>
+                    Condition: "[Ln 1, Col 5] -> [Ln 1, Col 10]"
+                    Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+                    Statements: "[Ln 1, Col 10] -> [Ln 4, Col 1]"
+                  Statements:
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func1a"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
+                        Self__: "[Ln 2, Col 5] -> [Ln 4, Col 1]"
+              ElseStatements: None
+              Regions: # <class 'types.IfStatementLexerInfoRegions'>
+                Clauses: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+                ElseStatements: None
+                Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[4, 1] (25)"
             Type: "If Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -485,6 +514,49 @@ Children:
                 IterBegin: "[4, 9] (33)"
                 IterEnd: "[9, 1] (75)"
                 Type: "Statements <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
+            Info: # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementLexerInfo'>
+              Clauses:
+                - # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementClauseLexerInfo'>
+                  Condition: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "cond2"
+                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                        Name: "[Ln 4, Col 4] -> [Ln 4, Col 9]"
+                        Self__: "[Ln 4, Col 4] -> [Ln 4, Col 9]"
+                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                      Name: "[Ln 4, Col 4] -> [Ln 4, Col 9]"
+                      Self__: "[Ln 4, Col 4] -> [Ln 4, Col 9]"
+                  Regions: # <class 'types.IfStatementClauseLexerInfoRegions'>
+                    Condition: "[Ln 4, Col 4] -> [Ln 4, Col 9]"
+                    Self__: "[Ln 4, Col 1] -> [Ln 9, Col 1]"
+                    Statements: "[Ln 4, Col 9] -> [Ln 9, Col 1]"
+                  Statements:
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func2a"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 5, Col 5] -> [Ln 5, Col 11]"
+                        Self__: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func2b"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 6, Col 5] -> [Ln 6, Col 11]"
+                        Self__: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func2c"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 8, Col 5] -> [Ln 8, Col 11]"
+                        Self__: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
+              ElseStatements: None
+              Regions: # <class 'types.IfStatementLexerInfoRegions'>
+                Clauses: "[Ln 4, Col 1] -> [Ln 9, Col 1]"
+                ElseStatements: None
+                Self__: "[Ln 4, Col 1] -> [Ln 9, Col 1]"
             IterBegin: "[4, 1] (25)"
             IterEnd: "[9, 1] (75)"
             Type: "If Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

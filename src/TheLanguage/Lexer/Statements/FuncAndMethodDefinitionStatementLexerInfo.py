@@ -230,28 +230,28 @@ class FuncAndMethodDefinitionStatementLexerInfo(StatementLexerInfo):
             # Visibility
             if visibility is None:
                 visibility = VisibilityModifier.private
-                object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # pylint: disable=no-member
+                object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
             object.__setattr__(self, "Visibility", visibility)
 
             # MethodType
             if method_type is None:
                 method_type = MethodType.standard
-                object.__setattr__(self.Regions, "MethodType", self.Regions.Self__)  # pylint: disable=no-member
+                object.__setattr__(self.Regions, "MethodType", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
             elif method_type != MethodType.standard:
-                raise InvalidFunctionMethodTypeError(self.Regions.MethodType, method_type.name)  # pylint: disable=no-member
+                raise InvalidFunctionMethodTypeError(self.Regions.MethodType, method_type.name)  # type: ignore && pylint: disable=no-member
 
             object.__setattr__(self, "MethodType", method_type)
 
             # ClassModifier
             if class_modifier is not None:
-                raise InvalidFunctionClassModifierError(self.Regions.ClassModifier)  # pylint: disable=no-member
+                raise InvalidFunctionClassModifierError(self.Regions.ClassModifier)  # type: ignore && pylint: disable=no-member
 
             object.__setattr__(self, "ClassModifier", class_modifier)
 
             # Statements
             if not self.Statements:
-                raise FunctionStatementsRequiredError(self.Regions.Self__)  # pylint: disable=no-member
+                raise FunctionStatementsRequiredError(self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
         else:
             # Set defaults based on the class type
@@ -259,19 +259,19 @@ class FuncAndMethodDefinitionStatementLexerInfo(StatementLexerInfo):
             # Visibility
             if visibility is None:
                 visibility = class_lexer_info.TypeInfo.DefaultMemberVisibility
-                object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # pylint: disable=no-member
+                object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
-            class_lexer_info.ValidateMemberVisibility(visibility, self.Regions.Visibility)  # pylint: disable=no-member
+            class_lexer_info.ValidateMemberVisibility(visibility, self.Regions.Visibility)  # type: ignore && pylint: disable=no-member
             object.__setattr__(self, "Visibility", visibility)
 
             # MethodType
             if method_type is None:
                 method_type = class_lexer_info.TypeInfo.DefaultMethodType
-                object.__setattr__(self.Regions, "MethodType", self.Regions.Self__)  # pylint: disable=no-member
+                object.__setattr__(self.Regions, "MethodType", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
             if method_type not in class_lexer_info.TypeInfo.AllowedMethodTypes:
                 raise InvalidMethodTypeError(
-                    self.Regions.MethodType,  # pylint: disable=no-member
+                    self.Regions.MethodType,  # type: ignore && pylint: disable=no-member
                     class_lexer_info.ClassType.value,
                     method_type.name,
                     ", ".join(["'{}'".format(m.name) for m in class_lexer_info.TypeInfo.AllowedMethodTypes]),
@@ -282,24 +282,24 @@ class FuncAndMethodDefinitionStatementLexerInfo(StatementLexerInfo):
             # ClassModifier
             if method_type == MethodType.static:
                 if class_modifier is not None:
-                    raise InvalidClassModifierOnStaticError(self.Regions.ClassModifier)  # pylint: disable=no-member
+                    raise InvalidClassModifierOnStaticError(self.Regions.ClassModifier)  # type: ignore && pylint: disable=no-member
             else:
                 if class_modifier is None:
                     class_modifier = class_lexer_info.TypeInfo.DefaultClassModifier
-                    object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)  # pylint: disable=no-member
+                    object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
-                class_lexer_info.ValidateMemberClassModifier(class_modifier, self.Regions.ClassModifier)  # pylint: disable=no-member
+                class_lexer_info.ValidateMemberClassModifier(class_modifier, self.Regions.ClassModifier)  # type: ignore && pylint: disable=no-member
 
             object.__setattr__(self, "ClassModifier", class_modifier)
 
             # Statements
             if self.Statements and method_type in [MethodType.deferred, MethodType.abstract]:
-                raise MethodStatementsUnexpectedError(self.Regions.Self__, method_type.name)  # pylint: disable=no-member
+                raise MethodStatementsUnexpectedError(self.Regions.Self__, method_type.name)  # type: ignore && pylint: disable=no-member
 
             if (
                 self.Statements is None
                 and method_type not in [MethodType.deferred, MethodType.abstract]
             ):
-                raise MethodStatementsRequiredError(self.Regions.Self__, method_type.name)  # pylint: disable=no-member
+                raise MethodStatementsRequiredError(self.Regions.Self__, method_type.name)  # type: ignore && pylint: disable=no-member
 
         self.Validate()

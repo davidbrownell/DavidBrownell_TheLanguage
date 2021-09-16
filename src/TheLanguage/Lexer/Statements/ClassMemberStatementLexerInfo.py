@@ -91,26 +91,26 @@ class ClassMemberStatementLexerInfo(StatementLexerInfo):
         )
 
         if class_lexer_info is None:
-            raise InvalidClassMemberError(self.Regions.Self__)  # pylint: disable=no-member
+            raise InvalidClassMemberError(self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
         # Set the default values as necessary
         if not class_lexer_info.TypeInfo.AllowDataMembers:
-            raise DataMembersNotSupportedError(self.Regions.Self__, class_lexer_info.ClassType.value)  # pylint: disable=no-member
+            raise DataMembersNotSupportedError(self.Regions.Self__, class_lexer_info.ClassType.value)  # type: ignore && pylint: disable=no-member
 
         # Visibility
         if visibility is None:
             visibility = class_lexer_info.TypeInfo.DefaultMemberVisibility
-            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # pylint: disable=no-member
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
-        class_lexer_info.ValidateMemberVisibility(visibility, self.Regions.Visibility)  # pylint: disable=no-member
+        class_lexer_info.ValidateMemberVisibility(visibility, self.Regions.Visibility)  # type: ignore && pylint: disable=no-member
         object.__setattr__(self, "Visibility", visibility)
 
         # ClassModifier
         if class_modifier is None:
             class_modifier = class_lexer_info.TypeInfo.DefaultClassModifier
-            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)  # pylint: disable=no-member
+            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
-        class_lexer_info.ValidateMemberClassModifier(class_modifier, self.Regions.ClassModifier)  # pylint: disable=no-member
+        class_lexer_info.ValidateMemberClassModifier(class_modifier, self.Regions.ClassModifier)  # type: ignore && pylint: disable=no-member
         object.__setattr__(self, "ClassModifier", class_modifier)
 
         # Final validation
