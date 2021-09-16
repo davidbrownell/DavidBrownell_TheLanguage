@@ -150,10 +150,8 @@ def ExtractLexerInfo(
     for argument_node in itertools.chain(
         [arguments_nodes[0]],
         [
-            ExtractSequence(node)[1] for node in cast(
-                List[Node],
-                ExtractRepeat(cast(Node, arguments_nodes[1])),
-            )
+            ExtractSequence(delimited_node)[1]
+            for delimited_node in cast(List[Node], ExtractRepeat(cast(Node, arguments_nodes[1])))
         ],
     ):
         argument_node = cast(Node, argument_node)

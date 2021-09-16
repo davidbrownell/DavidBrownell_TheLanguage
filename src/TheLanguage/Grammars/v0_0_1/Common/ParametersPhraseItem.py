@@ -450,10 +450,8 @@ def _EnumTraditional(
         itertools.chain(
             [nodes[0]],
             [
-                ExtractSequence(node)[1] for node in cast(
-                    List[Node],
-                    ExtractRepeat(cast(Node, nodes[1])),
-                )
+                ExtractSequence(delimited_node)[1]
+                for delimited_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[1])))
             ],
         ),
     ):
@@ -547,7 +545,8 @@ def _EnumNewStyle(
         parameters = list(
             itertools.chain(
                 [nodes[2]],
-                [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[3])))],
+                [ExtractSequence(delimited_node)[1]
+                for delimited_node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[3])))],
             ),
         )
 

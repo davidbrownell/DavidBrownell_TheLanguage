@@ -151,8 +151,8 @@ class FuncType(GrammarPhrase):
                 for parameter_node in itertools.chain(
                     [parameters_nodes[0]],
                     [
-                        ExtractSequence(parameter_node)[1]
-                        for parameter_node in cast(
+                        ExtractSequence(delimited_node)[1]
+                        for delimited_node in cast(
                             List[Node],
                             ExtractRepeat(cast(Node, parameters_nodes[1])),
                         )
