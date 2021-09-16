@@ -597,6 +597,86 @@ Children:
                 IterBegin: "[3, 1] (23)"
                 IterEnd: "[8, 1] (86)"
                 Type: "Repeat: {Elif, 0, None} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+            Info: # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementLexerInfo'>
+              Clauses:
+                - # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementClauseLexerInfo'>
+                  Condition: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "cond1"
+                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                        Name: "[Ln 1, Col 4] -> [Ln 1, Col 9]"
+                        Self__: "[Ln 1, Col 4] -> [Ln 1, Col 9]"
+                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                      Name: "[Ln 1, Col 4] -> [Ln 1, Col 9]"
+                      Self__: "[Ln 1, Col 4] -> [Ln 1, Col 9]"
+                  Regions: # <class 'types.IfStatementClauseLexerInfoRegions'>
+                    Condition: "[Ln 1, Col 4] -> [Ln 1, Col 9]"
+                    Self__: "[Ln 1, Col 1] -> [Ln 8, Col 1]"
+                    Statements: "[Ln 1, Col 9] -> [Ln 3, Col 1]"
+                  Statements:
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func1a"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
+                        Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                - # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementClauseLexerInfo'>
+                  Condition: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "cond2"
+                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                        Name: "[Ln 3, Col 6] -> [Ln 3, Col 11]"
+                        Self__: "[Ln 3, Col 6] -> [Ln 3, Col 11]"
+                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                      Name: "[Ln 3, Col 6] -> [Ln 3, Col 11]"
+                      Self__: "[Ln 3, Col 6] -> [Ln 3, Col 11]"
+                  Regions: # <class 'types.IfStatementClauseLexerInfoRegions'>
+                    Condition: "[Ln 3, Col 6] -> [Ln 3, Col 11]"
+                    Self__: "[Ln 3, Col 1] -> [Ln 5, Col 1]"
+                    Statements: "[Ln 3, Col 11] -> [Ln 5, Col 1]"
+                  Statements:
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func2a"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
+                        Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+                - # <class 'TheLanguage.Lexer.Statements.IfStatementLexerInfo.IfStatementClauseLexerInfo'>
+                  Condition: # <class 'TheLanguage.Lexer.Expressions.VariableExpressionLexerInfo.VariableExpressionLexerInfo'>
+                    Name: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
+                      Name: "cond3"
+                      Regions: # <class 'types.VariableNameLexerInfoRegions'>
+                        Name: "[Ln 5, Col 6] -> [Ln 5, Col 11]"
+                        Self__: "[Ln 5, Col 6] -> [Ln 5, Col 11]"
+                    Regions: # <class 'types.VariableExpressionLexerInfoRegions'>
+                      Name: "[Ln 5, Col 6] -> [Ln 5, Col 11]"
+                      Self__: "[Ln 5, Col 6] -> [Ln 5, Col 11]"
+                  Regions: # <class 'types.IfStatementClauseLexerInfoRegions'>
+                    Condition: "[Ln 5, Col 6] -> [Ln 5, Col 11]"
+                    Self__: "[Ln 5, Col 1] -> [Ln 8, Col 1]"
+                    Statements: "[Ln 5, Col 11] -> [Ln 8, Col 1]"
+                  Statements:
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func3a"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 6, Col 5] -> [Ln 6, Col 11]"
+                        Self__: "[Ln 6, Col 5] -> [Ln 7, Col 1]"
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func3b"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
+                        Self__: "[Ln 7, Col 5] -> [Ln 8, Col 1]"
+              ElseStatements: None
+              Regions: # <class 'types.IfStatementLexerInfoRegions'>
+                Clauses: "[Ln 1, Col 1] -> [Ln 8, Col 1]"
+                ElseStatements: None
+                Self__: "[Ln 1, Col 1] -> [Ln 8, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[8, 1] (86)"
             Type: "If Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
