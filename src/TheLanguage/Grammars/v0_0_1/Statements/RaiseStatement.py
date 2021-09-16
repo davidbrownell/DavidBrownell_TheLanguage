@@ -17,7 +17,10 @@
 
 import os
 
+from typing import cast, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,8 +31,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Lexer.Statements.RaiseStatementLexerInfo import (
+        ExpressionLexerInfo,
+        RaiseStatementLexerInfo,
+    )
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractOptional,
+        ExtractSequence,
+        Node,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -63,3 +81,34 @@ class RaiseStatement(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        cls,
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 3
+
+            # <expr>?
+            expression_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
+            if expression_node is not None:
+                expression_info = cast(ExpressionLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, expression_node))))
+            else:
+                expression_info = None
+
+            SetLexerInfo(
+                node,
+                RaiseStatementLexerInfo(
+                    CreateLexerRegions(node, expression_node),  # type: ignore
+                    expression_info,
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
