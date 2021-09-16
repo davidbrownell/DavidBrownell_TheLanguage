@@ -91,7 +91,7 @@ def Create(
 
 
 # ----------------------------------------------------------------------
-def Extract(
+def ExtractData(
     node: Optional[Node],
 ) -> List[AttributeData]:
     if node is None:

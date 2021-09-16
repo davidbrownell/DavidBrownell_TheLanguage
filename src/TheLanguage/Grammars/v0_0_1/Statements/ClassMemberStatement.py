@@ -139,8 +139,8 @@ class ClassMemberStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 7
 
-            # <attributes>?
-            attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
+            # <attributes>*
+            attributes_data = AttributesPhraseItem.ExtractData(cast(Optional[Node], nodes[0]))
 
             # <visibility>?
             visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))

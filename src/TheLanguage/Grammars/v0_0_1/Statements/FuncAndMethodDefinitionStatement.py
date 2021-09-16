@@ -243,7 +243,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             assert len(nodes) == 8
 
             # <attributes>*
-            attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
+            attributes_data = AttributesPhraseItem.ExtractData(cast(Optional[Node], nodes[0]))
 
             # <visibility>?
             visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
