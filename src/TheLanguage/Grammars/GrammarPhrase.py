@@ -111,9 +111,8 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     # TODO: Create a file called Lex.py that invokes this functionality
-    # TODO: Method should be abstract
     @staticmethod
-    @Interface.extensionmethod
+    @Interface.abstractmethod
     def ExtractLexerInfo(
         node: Node,
     ) -> Optional["GrammarPhrase.ExtractLexerInfoResult"]:
@@ -123,9 +122,7 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         This method is invoked during calls to Parser.py:Validate and should be invoked after calls
         to Parser.py:Prune.
         """
-
-        # No validation be default
-        return None
+        raise Exception("Abstract method")
 
 
 # ----------------------------------------------------------------------

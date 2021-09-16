@@ -128,10 +128,9 @@ class ClassMemberStatement(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
-    @classmethod
+    @staticmethod
     @Interface.override
     def ExtractLexerInfo(
-        cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------

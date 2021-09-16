@@ -330,6 +330,15 @@ class ImportStatement(ImportGrammarStatement):
         return TranslationUnitsParserObserver.ImportInfo(source, source_filename)
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        node: Node,
+    ) -> Optional[ImportGrammarStatement.ExtractLexerInfoResult]:
+        # TODO
+        pass
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @staticmethod
