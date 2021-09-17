@@ -23,6 +23,9 @@ Children:
                   End: 5
                   Start: 4
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.PassStatementLexerInfo.PassStatementLexerInfo'>
+              Regions: # <class 'types.PassStatementLexerInfoRegions'>
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (5)"
             Type: "Pass Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

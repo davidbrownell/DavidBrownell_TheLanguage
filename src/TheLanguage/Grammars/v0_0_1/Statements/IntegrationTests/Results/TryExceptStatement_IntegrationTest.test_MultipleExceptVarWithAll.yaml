@@ -173,36 +173,16 @@ Children:
                         IterBegin: "[3, 8] (25)"
                         IterEnd: "[3, 18] (35)"
                         Type: "DynamicPhrasesType.Types <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                        Children:
-                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                            Children:
-                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                Children:
-                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                    IsIgnored: False
-                                    IterBegin: "[3, 19] (36)"
-                                    IterEnd: "[3, 28] (45)"
-                                    Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                      Match: "<_sre.SRE_Match object; span=(36, 45), match='exception'>"
-                                    Whitespace:
-                                      - 35
-                                      - 36
-                                Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Name: "exception"
-                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
-                                    Name: "[Ln 3, Col 19] -> [Ln 3, Col 28]"
-                                    Self__: "[Ln 3, Col 19] -> [Ln 3, Col 28]"
-                                IterBegin: "[3, 19] (36)"
-                                IterEnd: "[3, 28] (45)"
-                                Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                            IterBegin: "[3, 19] (36)"
-                            IterEnd: "[3, 28] (45)"
-                            Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
                         IterBegin: "[3, 19] (36)"
                         IterEnd: "[3, 28] (45)"
-                        Type: "DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                        Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(36, 45), match='exception'>"
+                        Whitespace:
+                          - 35
+                          - 36
                       - # <class 'TheLanguage.Parser.Components.AST.Node'>
                         Children:
                           - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
@@ -363,36 +343,16 @@ Children:
                         IterBegin: "[5, 8] (67)"
                         IterEnd: "[5, 18] (77)"
                         Type: "DynamicPhrasesType.Types <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
-                      - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                        Children:
-                          - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                            Children:
-                              - # <class 'TheLanguage.Parser.Components.AST.Node'>
-                                Children:
-                                  - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
-                                    IsIgnored: False
-                                    IterBegin: "[5, 19] (78)"
-                                    IterEnd: "[5, 21] (80)"
-                                    Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
-                                    Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
-                                      Match: "<_sre.SRE_Match object; span=(78, 80), match='ex'>"
-                                    Whitespace:
-                                      - 77
-                                      - 78
-                                Info: # <class 'TheLanguage.Lexer.Names.VariableNameLexerInfo.VariableNameLexerInfo'>
-                                  Name: "ex"
-                                  Regions: # <class 'types.VariableNameLexerInfoRegions'>
-                                    Name: "[Ln 5, Col 19] -> [Ln 5, Col 21]"
-                                    Self__: "[Ln 5, Col 19] -> [Ln 5, Col 21]"
-                                IterBegin: "[5, 19] (78)"
-                                IterEnd: "[5, 21] (80)"
-                                Type: "Variable Name <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
-                            IterBegin: "[5, 19] (78)"
-                            IterEnd: "[5, 21] (80)"
-                            Type: "0.0.1 Grammar <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
+                      - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
+                        IsIgnored: False
                         IterBegin: "[5, 19] (78)"
                         IterEnd: "[5, 21] (80)"
-                        Type: "DynamicPhrasesType.Names <class 'TheLanguage.Parser.Phrases.DynamicPhrase.DynamicPhrase'>"
+                        Type: "<generic_name> <class 'TheLanguage.Parser.Components.Token.RegexToken'>"
+                        Value: # <class 'TheLanguage.Parser.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(78, 80), match='ex'>"
+                        Whitespace:
+                          - 77
+                          - 78
                       - # <class 'TheLanguage.Parser.Components.AST.Node'>
                         Children:
                           - # <class 'TheLanguage.Parser.Components.AST.Leaf'>
@@ -647,6 +607,73 @@ Children:
                 IterBegin: "[7, 1] (95)"
                 IterEnd: "[9, 1] (116)"
                 Type: "Repeat: {Except, 0, 1} <class 'TheLanguage.Parser.Phrases.RepeatPhrase.RepeatPhrase'>"
+            Info: # <class 'TheLanguage.Lexer.Statements.TryExceptStatementLexerInfo.TryExceptStatementLexerInfo'>
+              DefaultStatements:
+                - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                  Arguments: None
+                  Name: "Func1d"
+                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                    Arguments: None
+                    Name: "[Ln 8, Col 5] -> [Ln 8, Col 11]"
+                    Self__: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
+              ExceptClauses:
+                - # <class 'TheLanguage.Lexer.Statements.TryExceptStatementLexerInfo.TryExceptStatementClauseLexerInfo'>
+                  Name: "exception"
+                  Regions: # <class 'types.TryExceptStatementClauseLexerInfoRegions'>
+                    Name: "[Ln 3, Col 19] -> [Ln 3, Col 28]"
+                    Self__: "[Ln 3, Col 1] -> [Ln 5, Col 1]"
+                    Statements: "[Ln 3, Col 28] -> [Ln 5, Col 1]"
+                    Type: "[Ln 3, Col 8] -> [Ln 3, Col 18]"
+                  Statements:
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func1b"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 4, Col 5] -> [Ln 4, Col 11]"
+                        Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+                  Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                    Modifier: None
+                    Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                      Modifier: None
+                      Self__: "[Ln 3, Col 8] -> [Ln 3, Col 18]"
+                      TypeName: "[Ln 3, Col 8] -> [Ln 3, Col 18]"
+                    TypeName: "Exception1"
+                - # <class 'TheLanguage.Lexer.Statements.TryExceptStatementLexerInfo.TryExceptStatementClauseLexerInfo'>
+                  Name: "ex"
+                  Regions: # <class 'types.TryExceptStatementClauseLexerInfoRegions'>
+                    Name: "[Ln 5, Col 19] -> [Ln 5, Col 21]"
+                    Self__: "[Ln 5, Col 1] -> [Ln 7, Col 1]"
+                    Statements: "[Ln 5, Col 21] -> [Ln 7, Col 1]"
+                    Type: "[Ln 5, Col 8] -> [Ln 5, Col 18]"
+                  Statements:
+                    - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                      Arguments: None
+                      Name: "Func1c"
+                      Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                        Arguments: None
+                        Name: "[Ln 6, Col 5] -> [Ln 6, Col 11]"
+                        Self__: "[Ln 6, Col 5] -> [Ln 7, Col 1]"
+                  Type: # <class 'TheLanguage.Lexer.Types.StandardTypeLexerInfo.StandardTypeLexerInfo'>
+                    Modifier: None
+                    Regions: # <class 'types.StandardTypeLexerInfoRegions'>
+                      Modifier: None
+                      Self__: "[Ln 5, Col 8] -> [Ln 5, Col 18]"
+                      TypeName: "[Ln 5, Col 8] -> [Ln 5, Col 18]"
+                    TypeName: "Exception2"
+              Regions: # <class 'types.TryExceptStatementLexerInfoRegions'>
+                DefaultStatements: "[Ln 7, Col 1] -> [Ln 9, Col 1]"
+                ExceptClauses: "[Ln 3, Col 1] -> [Ln 7, Col 1]"
+                Self__: "[Ln 1, Col 1] -> [Ln 9, Col 1]"
+                TryStatements: "[Ln 1, Col 4] -> [Ln 3, Col 1]"
+              TryStatements:
+                - # <class 'TheLanguage.Lexer.Statements.FuncInvocationStatementLexerInfo.FuncInvocationStatementLexerInfo'>
+                  Arguments: None
+                  Name: "Func1a"
+                  Regions: # <class 'types.FuncInvocationStatementLexerInfoRegions'>
+                    Arguments: None
+                    Name: "[Ln 2, Col 5] -> [Ln 2, Col 11]"
+                    Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[9, 1] (116)"
             Type: "Try Except Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

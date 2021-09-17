@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Dict, Generator, List, Optional, Tuple, Union
+from typing import cast, Generator, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -306,14 +306,14 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def ExtractLexerInfo(
     node: Node,
-) -> Tuple[Optional[Node], Optional[ParametersLexerInfo]]:
+) -> Optional[ParametersLexerInfo]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
 
     # <parameters>
     all_parameters_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
     if all_parameters_node is None:
-        return None, None
+        return None
 
     all_parameters_node = cast(Node, ExtractOr(all_parameters_node))
     assert all_parameters_node.Type is not None
@@ -414,20 +414,17 @@ def ExtractLexerInfo(
         else:
             assert False, parameters_type
 
-    return (
-        node,
-        # pylint: disable=too-many-function-args
-        ParametersLexerInfo(
-            CreateLexerRegions(
-                all_parameters_node,
-                positional_parameters_node,
-                keyword_parameters_node,
-                any_parameters_node,
-            ),  # type: ignore
-            positional_parameters_info,
-            keyword_parameters_info,
-            any_parameters_info,
-        ),
+    # pylint: disable=too-many-function-args
+    return ParametersLexerInfo(
+        CreateLexerRegions(
+            all_parameters_node,
+            positional_parameters_node,
+            keyword_parameters_node,
+            any_parameters_node,
+        ),  # type: ignore
+        positional_parameters_info,
+        keyword_parameters_info,
+        any_parameters_info,
     )
 
 
@@ -453,10 +450,8 @@ def _EnumTraditional(
         itertools.chain(
             [nodes[0]],
             [
-                ExtractSequence(node)[1] for node in cast(
-                    List[Node],
-                    ExtractRepeat(cast(Node, nodes[1])),
-                )
+                ExtractSequence(delimited_node)[1]
+                for delimited_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[1])))
             ],
         ),
     ):
@@ -550,7 +545,8 @@ def _EnumNewStyle(
         parameters = list(
             itertools.chain(
                 [nodes[2]],
-                [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[3])))],
+                [ExtractSequence(delimited_node)[1]
+                for delimited_node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[3])))],
             ),
         )
 

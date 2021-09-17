@@ -330,8 +330,8 @@ class MatchExpressionBase(GrammarPhrase):
                 for case_item_node in itertools.chain(
                     [case_items_nodes[0]],
                     [
-                        ExtractSequence(this_node)[1]
-                        for this_node in cast(
+                        ExtractSequence(delimited_node)[1]
+                        for delimited_node in cast(
                             List[Node],
                             ExtractRepeat(cast(Node, case_items_nodes[1])),
                         )

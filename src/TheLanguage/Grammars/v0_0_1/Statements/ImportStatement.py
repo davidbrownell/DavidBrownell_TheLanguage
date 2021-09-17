@@ -330,6 +330,15 @@ class ImportStatement(ImportGrammarStatement):
         return TranslationUnitsParserObserver.ImportInfo(source, source_filename)
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        node: Node,
+    ) -> Optional[ImportGrammarStatement.ExtractLexerInfoResult]:
+        # TODO
+        pass
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @staticmethod
@@ -362,7 +371,13 @@ class ImportStatement(ImportGrammarStatement):
 
         for content_item_node in itertools.chain(
             [content_nodes[0]],
-            [ExtractSequence(content_node)[1] for content_node in cast(List[Node], ExtractRepeat(cast(Node, content_nodes[1])))],
+            [
+                ExtractSequence(delimited_node)[1]
+                for delimited_node in cast(
+                    List[Node],
+                    ExtractRepeat(cast(Node, content_nodes[1])),
+                )
+            ],
         ):
             content_item_nodes = ExtractSequence(cast(Node, content_item_node))
             assert len(content_item_nodes) == 2

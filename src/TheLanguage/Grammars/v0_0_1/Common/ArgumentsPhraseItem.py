@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import cast, List, Optional, Tuple
+from typing import cast, List, Optional
 
 from dataclasses import dataclass
 
@@ -132,13 +132,13 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def ExtractLexerInfo(
     node: Node,
-) -> Tuple[Optional[Node], Optional[List[ArgumentLexerInfo]]]:
+) -> Optional[List[ArgumentLexerInfo]]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
 
     arguments_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
     if arguments_node is None:
-        return None, None
+        return None
 
     # Extract the arguments
     arguments_nodes = ExtractSequence(arguments_node)
@@ -150,10 +150,8 @@ def ExtractLexerInfo(
     for argument_node in itertools.chain(
         [arguments_nodes[0]],
         [
-            ExtractSequence(node)[1] for node in cast(
-                List[Node],
-                ExtractRepeat(cast(Node, arguments_nodes[1])),
-            )
+            ExtractSequence(delimited_node)[1]
+            for delimited_node in cast(List[Node], ExtractRepeat(cast(Node, arguments_nodes[1])))
         ],
     ):
         argument_node = cast(Node, argument_node)
@@ -197,4 +195,4 @@ def ExtractLexerInfo(
         )
 
     assert argument_infos
-    return arguments_node, argument_infos
+    return argument_infos

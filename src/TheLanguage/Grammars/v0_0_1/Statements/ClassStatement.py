@@ -49,7 +49,6 @@ with InitRelativeImports():
         ClassDependencyLexerInfo,
         ClassStatementLexerInfo,
         ClassType,
-        StatementLexerInfo,
     )
 
     from ....Parser.Phrases.DSL import (
@@ -264,8 +263,8 @@ class ClassStatement(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 14
 
-        # <attributes>?
-        attributes = AttributesPhraseItem.Extract(cast(Optional[Node], nodes[0]))
+        # <attributes>*
+        attributes_data = AttributesPhraseItem.ExtractData(cast(Optional[Node], nodes[0]))
 
         # <visibility>?
         visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
@@ -424,7 +423,13 @@ class ClassStatement(GrammarPhrase):
 
         for base_item in itertools.chain(
             [nodes[0]],
-            [ExtractSequence(node)[1] for node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[1])))],
+            [
+                ExtractSequence(delimited_node)[1]
+                for delimited_node in cast(List[Node], ExtractRepeat(
+                    cast(Optional[Node],
+                    nodes[1])),
+                )
+            ],
         ):
             assert base_item is not None
 

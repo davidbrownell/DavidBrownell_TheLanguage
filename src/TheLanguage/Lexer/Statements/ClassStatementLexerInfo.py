@@ -373,7 +373,7 @@ class ClassDependencyLexerInfo(LexerInfo):
         # Visibility
         if visibility is None:
             visibility = VisibilityModifier.private
-            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # pylint: disable=no-member
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
         object.__setattr__(self, "Visibility", visibility)
 
@@ -415,11 +415,11 @@ class ClassStatementLexerInfo(StatementLexerInfo):
         # Visibility
         if visibility is None:
             visibility = type_info.DefaultClassVisibility
-            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # pylint: disable=no-member
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
         if visibility not in type_info.AllowedClassVisibilities:
             raise InvalidClassVisibilityError(
-                self.Regions.Visibility,  # pylint: disable=no-member
+                self.Regions.Visibility,  # type: ignore && pylint: disable=no-member
                 self.ClassType.value,
                 visibility.name,
                 ", ".join(["'{}'".format(v.name) for v in type_info.AllowedClassVisibilities]),
@@ -430,11 +430,11 @@ class ClassStatementLexerInfo(StatementLexerInfo):
         # ClassModifier
         if class_modifier is None:
             class_modifier = type_info.DefaultClassModifier
-            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)  # pylint: disable=no-member
+            object.__setattr__(self.Regions, "ClassModifier", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
         if class_modifier not in type_info.AllowedClassModifiers:
             raise InvalidClassModifierError(
-                self.Regions.ClassModifier,  # pylint: disable=no-member
+                self.Regions.ClassModifier,  # type: ignore && pylint: disable=no-member
                 self.ClassType.value,
                 class_modifier.name,
                 ", ".join(["'{}'".format(m.name) for m in type_info.AllowedClassModifiers]),
@@ -444,13 +444,13 @@ class ClassStatementLexerInfo(StatementLexerInfo):
 
         # Validate bases, interfaces, and mixins
         if self.Base is not None and not type_info.AllowBases:
-            raise InvalidBaseError(self.Regions.Base, self.ClassType.value)  # pylint: disable=no-member
+            raise InvalidBaseError(self.Regions.Base, self.ClassType.value)  # type: ignore && pylint: disable=no-member
 
         if self.Interfaces and not type_info.AllowInterfaces:
-            raise InvalidInterfacesError(self.Regions.Interfaces, self.ClassType.value)  # pylint: disable=no-member
+            raise InvalidInterfacesError(self.Regions.Interfaces, self.ClassType.value)  # type: ignore && pylint: disable=no-member
 
         if self.Mixins and not type_info.AllowMixins:
-            raise InvalidMixinsError(self.Regions.Mixins, self.ClassType.value)  # pylint: disable=no-member
+            raise InvalidMixinsError(self.Regions.Mixins, self.ClassType.value)  # type: ignore && pylint: disable=no-member
 
         # Set TypeInfo
         object.__setattr__(self, "TypeInfo", type_info)

@@ -15,9 +15,13 @@
 # ----------------------------------------------------------------------
 """Contains the ScopedRefStatement object"""
 
+import itertools
 import os
 
+from typing import cast, List, Optional
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,8 +35,24 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import TypeModifier
 
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.Phrases.DSL import CreatePhrase, DynamicPhrasesType, PhraseItem
+    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+
+    from ....Lexer.LexerInfo import SetLexerInfo
+    from ....Lexer.Statements.ScopedRefStatementLexerInfo import (
+        ScopedRefStatementLexerInfo,
+        VariableNameLexerInfo,
+    )
+
+    from ....Parser.Phrases.DSL import (
+        CreatePhrase,
+        ExtractOr,
+        ExtractRepeat,
+        ExtractSequence,
+        ExtractToken,
+        Leaf,
+        Node,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -66,14 +86,14 @@ class ScopedRefStatement(GrammarPhrase):
             name="Refs",
             item=[
                 # <ref_expression>
-                DynamicPhrasesType.Names,
+                CommonTokens.GenericName,
 
                 # (',' <ref_expression>)*
                 PhraseItem(
                     name="Comma and Ref",
                     item=[
                         ",",
-                        DynamicPhrasesType.Names,
+                        CommonTokens.GenericName,
                     ],
                     arity="*",
                 ),
@@ -134,3 +154,65 @@ class ScopedRefStatement(GrammarPhrase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def ExtractLexerInfo(
+        node: Node,
+    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # ----------------------------------------------------------------------
+        def CreateLexerInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 5
+
+            # Refs
+            refs_node = cast(Node, ExtractOr(cast(Node, nodes[1])))
+
+            assert refs_node.Type is not None
+            if refs_node.Type.Name == "Grouped":
+                refs_nodes = ExtractSequence(refs_node)
+                assert len(refs_nodes) == 5
+
+                refs_node = cast(Node, refs_nodes[2])
+
+            refs_nodes = ExtractSequence(refs_node)
+            assert len(refs_nodes) == 3
+
+            variable_infos: List[VariableNameLexerInfo] = []
+
+            for variable_node in itertools.chain(
+                [refs_nodes[0]],
+                [
+                    ExtractSequence(delimited_node)[1]
+                    for delimited_node in cast(List[Node], ExtractRepeat(cast(Node, refs_nodes[1])))
+                ],
+            ):
+                variable_leaf = cast(Leaf, variable_node)
+                variable_info = cast(str, ExtractToken(variable_leaf))
+
+                variable_infos.append(
+                    VariableNameLexerInfo(
+                        CreateLexerRegions(variable_leaf, variable_leaf),  # type: ignore
+                        variable_info,
+                    ),
+                )
+
+            assert variable_infos
+
+            # Statements
+            statements_node = cast(Node, nodes[4])
+            statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
+
+            SetLexerInfo(
+                node,
+                ScopedRefStatementLexerInfo(
+                    CreateLexerRegions(node, refs_node, statements_node),  # type: ignore
+                    variable_infos,
+                    statements_info,
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)

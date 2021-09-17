@@ -203,7 +203,7 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
         # ----------------------------------------------------------------------
 
         for the_field in fields(self):
-            if the_field.name in self._regionless_attributes:
+            if the_field.name in self._regionless_attributes:  # type: ignore && pylint: disable=unsupported-membership-test
                 continue
 
             data_value = getattr(self, the_field.name)
@@ -227,7 +227,7 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
             if region_value is None:
                 continue
 
-            assert region_value in self.Regions.Self__, (field.name, region_value, self.Regions.Self__)
+            assert region_value in self.Regions.Self__, (field.name, region_value, self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
 
 # ----------------------------------------------------------------------

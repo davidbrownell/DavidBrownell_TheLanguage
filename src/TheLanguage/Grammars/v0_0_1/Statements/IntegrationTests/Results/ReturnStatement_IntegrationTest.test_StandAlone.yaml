@@ -23,6 +23,11 @@ Children:
                   End: 7
                   Start: 6
                 Whitespace: None
+            Info: # <class 'TheLanguage.Lexer.Statements.ReturnStatementLexerInfo.ReturnStatementLexerInfo'>
+              Expression: None
+              Regions: # <class 'types.ReturnStatementLexerInfoRegions'>
+                Expression: None
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (7)"
             Type: "Return Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

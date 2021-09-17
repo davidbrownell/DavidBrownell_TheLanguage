@@ -93,10 +93,9 @@ class LambdaExpression(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
-    @classmethod
+    @staticmethod
     @Interface.override
     def ExtractLexerInfo(
-        cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # ----------------------------------------------------------------------
@@ -105,7 +104,10 @@ class LambdaExpression(GrammarPhrase):
             assert len(nodes) == 4
 
             # <parameters>
-            parameters_node, parameters_info = ParametersPhraseItem.ExtractLexerInfo(cast(Node, nodes[1]))
+            parameters_node = cast(Node, nodes[1])
+            parameters_info = ParametersPhraseItem.ExtractLexerInfo(parameters_node)
+            if parameters_info is None:
+                parameters_node = None
 
             # <expr>
             expression_node = ExtractDynamic(cast(Node, nodes[3]))
