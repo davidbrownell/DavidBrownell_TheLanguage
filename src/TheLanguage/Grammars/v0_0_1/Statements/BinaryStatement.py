@@ -31,18 +31,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Lexer.Statements.BinaryStatementLexerInfo import (
-        BinaryStatementLexerInfo,
-        ExpressionLexerInfo,
-        NameLexerInfo,
+    from ....Parser.Statements.BinaryStatementParserInfo import (
+        BinaryStatementParserInfo,
+        ExpressionParserInfo,
+        NameParserInfo,
         OperatorType,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -112,17 +112,17 @@ class BinaryStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 4
 
             # <name>
             name_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
-            name_info = cast(NameLexerInfo, GetLexerInfo(name_node))
+            name_info = cast(NameParserInfo, GetParserInfo(name_node))
 
             # <op>
             operator_leaf = cast(Leaf, ExtractOr(cast(Node, nodes[1])))
@@ -163,12 +163,12 @@ class BinaryStatement(GrammarPhrase):
 
             # <expr>
             expr_node = ExtractDynamic(cast(Node, nodes[2]))
-            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                BinaryStatementLexerInfo(
-                    CreateLexerRegions(node, name_node, operator_leaf, expr_node),  # type: ignore
+                BinaryStatementParserInfo(
+                    CreateParserRegions(node, name_node, operator_leaf, expr_node),  # type: ignore
                     name_info,
                     operator_info,
                     expr_info,
@@ -177,4 +177,4 @@ class BinaryStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

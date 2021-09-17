@@ -33,12 +33,12 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import TypeModifier
 
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Lexer.Types.StandardTypeLexerInfo import StandardTypeLexerInfo
+    from ....Parser.ParserInfo import SetParserInfo
+    from ....Parser.Types.StandardTypeParserInfo import StandardTypeParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractOptional,
         ExtractSequence,
@@ -86,9 +86,9 @@ class StandardType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
@@ -105,10 +105,10 @@ class StandardType(GrammarPhrase):
             modifier_info = None
 
         # pylint: disable=too-many-function-args
-        SetLexerInfo(
+        SetParserInfo(
             node,
-            StandardTypeLexerInfo(
-                CreateLexerRegions(node, type_leaf, modifier_node),  # type: ignore
+            StandardTypeParserInfo(
+                CreateParserRegions(node, type_leaf, modifier_node),  # type: ignore
                 type_info,
                 modifier_info,  # type: ignore
             ),

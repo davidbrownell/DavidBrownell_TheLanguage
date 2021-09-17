@@ -1,0 +1,61 @@
+# <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+      DataItems:
+        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 7] (6)"
+            Token: "lower"
+            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(0, 6), match='lower1'>"
+            Whitespace: None
+          Phrase: "lower"
+        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[1, 7] (6)"
+            IterEnd: "[3, 1] (8)"
+            Token: "Newline+"
+            Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+              End: 8
+              Start: 6
+            Whitespace: None
+          Phrase: "Newline+"
+      IsComplete: True
+    Phrase: "Sequence: [lower, Newline+]"
+  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[3, 1] (8)"
+Success: True
+
+# <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+      DataItems:
+        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: True
+          IterBegin: "[3, 1] (8)"
+          IterEnd: "[3, 19] (26)"
+          Token: "Comment"
+          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+            Match: "<_sre.SRE_Match object; span=(8, 26), match='# Trailing comment'>"
+          Whitespace: None
+        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: True
+          IterBegin: "[3, 19] (26)"
+          IterEnd: "[4, 1] (27)"
+          Token: "Newline+"
+          Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+            End: 27
+            Start: 26
+          Whitespace: None
+      IsComplete: True
+    Phrase: "End of File Whitespace and/or Comment(s)"
+  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+IterBegin: "[3, 1] (8)"
+IterEnd: "[4, 1] (27)"
+Success: True

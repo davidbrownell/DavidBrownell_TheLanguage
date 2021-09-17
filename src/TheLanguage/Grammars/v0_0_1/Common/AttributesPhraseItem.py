@@ -34,7 +34,7 @@ with InitRelativeImports():
     from . import ArgumentsPhraseItem
     from . import Tokens as CommonTokens
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         ExtractOptional,
         ExtractRepeat,
         ExtractSequence,
@@ -50,7 +50,7 @@ with InitRelativeImports():
 class AttributeData(object):
     Name: str
     NameLeaf: Leaf
-    Arguments: Optional[List[ArgumentsPhraseItem.ArgumentLexerInfo]]
+    Arguments: Optional[List[ArgumentsPhraseItem.ArgumentParserInfo]]
     ArgumentsNode: Optional[Node]
 
     # ----------------------------------------------------------------------
@@ -121,7 +121,7 @@ def _ExtractAttribute(
     # <<Arguments>>?
     arguments_node = cast(Optional[Node], ExtractOptional(cast(Node, nodes[2])))
     if arguments_node is not None:
-        arguments_info = ArgumentsPhraseItem.ExtractLexerInfo(cast(Node, arguments_node))
+        arguments_info = ArgumentsPhraseItem.ExtractParserInfo(cast(Node, arguments_node))
     else:
         arguments_info = None
 

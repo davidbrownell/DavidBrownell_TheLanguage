@@ -42,16 +42,16 @@ with InitRelativeImports():
     from ..Common.Impl import ModifierImpl
 
     from ...GrammarError import GrammarError
-    from ...GrammarPhrase import CreateLexerRegion, CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegion, CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Statements.ClassStatementLexerInfo import (
-        ClassDependencyLexerInfo,
-        ClassStatementLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Statements.ClassStatementParserInfo import (
+        ClassDependencyParserInfo,
+        ClassStatementParserInfo,
         ClassType,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractOptional,
         ExtractOr,
@@ -256,10 +256,10 @@ class ClassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 14
 
@@ -309,7 +309,7 @@ class ClassStatement(GrammarPhrase):
             Type[ClassStatement.BaseTypeIndicator],
             Tuple[
                 Node,
-                List[ClassDependencyLexerInfo],
+                List[ClassDependencyParserInfo],
             ]
         ] = {}
 
@@ -342,10 +342,10 @@ class ClassStatement(GrammarPhrase):
         # TODO: Leverage attributes
 
         # pylint: disable=too-many-function-args
-        SetLexerInfo(
+        SetParserInfo(
             node,
-            ClassStatementLexerInfo(
-                CreateLexerRegions(
+            ClassStatementParserInfo(
+                CreateParserRegions(
                     node,
                     visibility_node,
                     class_modifier_node,
@@ -370,33 +370,33 @@ class ClassStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
         def FinalConstruct():
             # <statement>+
-            statements_info, docstring_info = StatementsPhraseItem.ExtractLexerInfoWithDocstrings(
+            statements_info, docstring_info = StatementsPhraseItem.ExtractParserInfoWithDocstrings(
                 statements_node,
             )
 
             if docstring_info is not None:
                 docstring_info = (
                     docstring_info[0],
-                    CreateLexerRegion(docstring_info[1]),
+                    CreateParserRegion(docstring_info[1]),
                 )
 
-            lexer_info = cast(ClassStatementLexerInfo, GetLexerInfo(node))
+            lexer_info = cast(ClassStatementParserInfo, GetParserInfo(node))
             lexer_info.FinalConstruct(statements_info, docstring_info)
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(FinalConstruct)
+        return GrammarPhrase.ExtractParserInfoResult(FinalConstruct)
 
     # ----------------------------------------------------------------------
     @classmethod
-    def GetContainingClassLexerInfo(
+    def GetContainingClassParserInfo(
         cls,
         child_node: Node,
         # Taking this as a parameter to avoid circular dependencies, as
         # FuncAndMethodDefinitionStatement.py imports this file.
         func_and_method_statement_name: str,
-    ) -> Optional[ClassStatementLexerInfo]:
-        """Returns the ClassStatementLexerInfo for the class that contains the given node"""
+    ) -> Optional[ClassStatementParserInfo]:
+        """Returns the ClassStatementParserInfo for the class that contains the given node"""
 
         node = child_node.Parent
 
@@ -423,11 +423,11 @@ class ClassStatement(GrammarPhrase):
     def _ExtractBaseInfo(
         cls,
         node: Node,
-    ) -> List[ClassDependencyLexerInfo]:
+    ) -> List[ClassDependencyParserInfo]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 3
 
-        results: List[ClassDependencyLexerInfo] = []
+        results: List[ClassDependencyParserInfo] = []
 
         for base_item in itertools.chain(
             [nodes[0]],
@@ -459,8 +459,8 @@ class ClassStatement(GrammarPhrase):
             # Commit the results
             results.append(
                 # <Too many positional arguments> pylint: disable=too-many-function-args
-                ClassDependencyLexerInfo(
-                    CreateLexerRegions(
+                ClassDependencyParserInfo(
+                    CreateParserRegions(
                         node,
                         visibility_node,
                         name_leaf,

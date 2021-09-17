@@ -32,15 +32,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Types.FuncTypeLexerInfo import (
-        TypeLexerInfo,
-        FuncTypeLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Types.FuncTypeParserInfo import (
+        TypeParserInfo,
+        FuncTypeParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -127,17 +127,17 @@ class FuncType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 8
 
             # <type>
             return_type_node = ExtractDynamic(cast(Node, nodes[2]))
-            return_type_info = cast(TypeLexerInfo, GetLexerInfo(return_type_node))
+            return_type_info = cast(TypeParserInfo, GetParserInfo(return_type_node))
 
             # <parameters>
             parameters_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
@@ -158,13 +158,13 @@ class FuncType(GrammarPhrase):
                     ],
                 ):
                     parameter_node = ExtractDynamic(cast(Node, parameter_node))
-                    parameters_info.append(GetLexerInfo(parameter_node))
+                    parameters_info.append(GetParserInfo(parameter_node))
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                FuncTypeLexerInfo(
-                    CreateLexerRegions(node, return_type_node, parameters_node),  # type: ignore
+                FuncTypeParserInfo(
+                    CreateParserRegions(node, return_type_node, parameters_node),  # type: ignore
                     return_type_info,
                     parameters_info or None,
                 ),
@@ -172,4 +172,4 @@ class FuncType(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

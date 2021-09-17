@@ -31,15 +31,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Types.VariantTypeLexerInfo import (
-        TypeLexerInfo,
-        VariantTypeLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Types.VariantTypeParserInfo import (
+        TypeParserInfo,
+        VariantTypeParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -104,38 +104,38 @@ class VariantType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 8
 
-            type_infos: List[TypeLexerInfo] = []
+            type_infos: List[TypeParserInfo] = []
 
             # <type>
-            type_infos.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, nodes[2])))))
+            type_infos.append(cast(TypeParserInfo, GetParserInfo(ExtractDynamic(cast(Node, nodes[2])))))
 
             # (<type> '|') *
             for child in cast(List[Node], ExtractRepeat(cast(Node, nodes[4]))):
                 child_nodes = ExtractSequence(child)
                 assert len(child_nodes) == 2
 
-                type_infos.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, child_nodes[0])))))
+                type_infos.append(cast(TypeParserInfo, GetParserInfo(ExtractDynamic(cast(Node, child_nodes[0])))))
 
             # <type>
-            type_infos.append(cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, nodes[5])))))
+            type_infos.append(cast(TypeParserInfo, GetParserInfo(ExtractDynamic(cast(Node, nodes[5])))))
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                VariantTypeLexerInfo(
-                    CreateLexerRegions(node, node),  # type: ignore
+                VariantTypeParserInfo(
+                    CreateParserRegions(node, node),  # type: ignore
                     type_infos,
                 ),
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

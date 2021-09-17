@@ -31,17 +31,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import TypeModifier
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.Expressions.CastExpressionLexerInfo import (
-        CastExpressionLexerInfo,
-        ExpressionLexerInfo,
-        TypeLexerInfo,
+    from ....Parser.Expressions.CastExpressionParserInfo import (
+        CastExpressionParserInfo,
+        ExpressionParserInfo,
+        TypeParserInfo,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -101,17 +101,17 @@ class CastExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
             # <expr>
             expr_node = ExtractDynamic(cast(Node, nodes[0]))
-            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
 
             # <modifier> | <type>
             type_node = cast(Node, ExtractOr(cast(Node, nodes[2])))
@@ -120,13 +120,13 @@ class CastExpression(GrammarPhrase):
             if type_node.Type.Name == "Modifier":
                 type_info = TypeModifier.Extract(type_node)
             else:
-                type_info = cast(TypeLexerInfo, GetLexerInfo(ExtractDynamic(type_node)))
+                type_info = cast(TypeParserInfo, GetParserInfo(ExtractDynamic(type_node)))
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                CastExpressionLexerInfo(
-                    CreateLexerRegions(node, expr_node, type_node),  # type: ignore
+                CastExpressionParserInfo(
+                    CreateParserRegions(node, expr_node, type_node),  # type: ignore
                     expr_info,
                     type_info,  # type: ignore
                 ),
@@ -134,4 +134,4 @@ class CastExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

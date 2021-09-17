@@ -30,17 +30,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.Expressions.BinaryExpressionLexerInfo import (
-        BinaryExpressionLexerInfo,
-        ExpressionLexerInfo,
+    from ....Parser.Expressions.BinaryExpressionParserInfo import (
+        BinaryExpressionParserInfo,
+        ExpressionParserInfo,
         OperatorType,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -126,17 +126,17 @@ class BinaryExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
             # <expr>
             left_node = ExtractDynamic(cast(Node, nodes[0]))
-            left_info = cast(ExpressionLexerInfo, GetLexerInfo(left_node))
+            left_info = cast(ExpressionParserInfo, GetParserInfo(left_node))
 
             # <op>
             operator_leaf = cast(Leaf, ExtractOr(cast(Node, nodes[1])))
@@ -201,12 +201,12 @@ class BinaryExpression(GrammarPhrase):
 
             # <expr>
             right_node = ExtractDynamic(cast(Node, nodes[2]))
-            right_info = cast(ExpressionLexerInfo, GetLexerInfo(right_node))
+            right_info = cast(ExpressionParserInfo, GetParserInfo(right_node))
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                BinaryExpressionLexerInfo(
-                    CreateLexerRegions(node, left_node, operator_leaf, right_node),  # type: ignore
+                BinaryExpressionParserInfo(
+                    CreateParserRegions(node, left_node, operator_leaf, right_node),  # type: ignore
                     left_info,
                     operator_info,
                     right_info,
@@ -215,4 +215,4 @@ class BinaryExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

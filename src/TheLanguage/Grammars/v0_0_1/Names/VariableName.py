@@ -31,12 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Lexer.Names.VariableNameLexerInfo import VariableNameLexerInfo
+    from ....Parser.ParserInfo import SetParserInfo
+    from ....Parser.Names.VariableNameParserInfo import VariableNameParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractSequence,
         ExtractToken,
@@ -76,9 +76,9 @@ class VariableName(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
@@ -86,10 +86,10 @@ class VariableName(GrammarPhrase):
         name_info = cast(str, ExtractToken(name_leaf))
 
         # pylint: disable=too-many-function-args
-        SetLexerInfo(
+        SetParserInfo(
             node,
-            VariableNameLexerInfo(
-                CreateLexerRegions(node, name_leaf),  # type: ignore
+            VariableNameParserInfo(
+                CreateParserRegions(node, name_leaf),  # type: ignore
                 name_info,
             ),
         )

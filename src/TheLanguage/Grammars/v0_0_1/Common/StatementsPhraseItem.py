@@ -38,10 +38,10 @@ with InitRelativeImports():
 
     from ...GrammarError import GrammarError
 
-    from ....Lexer.LexerInfo import GetLexerInfo
-    from ....Lexer.Statements.StatementLexerInfo import StatementLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo
+    from ....Parser.Statements.StatementParserInfo import StatementParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOr,
@@ -124,26 +124,26 @@ def Create() -> PhraseItem:
 
 
 # ----------------------------------------------------------------------
-def ExtractLexerInfoWithDocstrings(
+def ExtractParserInfoWithDocstrings(
     node: Node,
 ) -> Tuple[
-    List[StatementLexerInfo],
+    List[StatementParserInfo],
     Optional[Tuple[str, Leaf]],
 ]:
-    return _ExtractLexerInfoImpl(
+    return _ExtractParserInfoImpl(
         node,
         validate_docstrings=True,
     )
 
 
 # ----------------------------------------------------------------------
-def ExtractLexerInfo(
+def ExtractParserInfo(
     node: Node,
-) -> List[StatementLexerInfo]:
+) -> List[StatementParserInfo]:
     # Don't validate docstrings, as we don't want to generate nitpicky errors about the usage of the
     # docstrings when they aren't even valid in this context. So, suppress errors and then generate
     # an error here if a docstring was encountered.
-    statement_infos, docstring_info = _ExtractLexerInfoImpl(
+    statement_infos, docstring_info = _ExtractParserInfoImpl(
         node,
         validate_docstrings=False,
     )
@@ -160,12 +160,12 @@ def ExtractLexerInfo(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-def _ExtractLexerInfoImpl(
+def _ExtractParserInfoImpl(
     node: Node,
     *,
     validate_docstrings: bool,
 ) -> Tuple[
-    List[StatementLexerInfo],
+    List[StatementParserInfo],
     Optional[Tuple[str, Leaf]],
 ]:
     nodes = ExtractSequence(node)
@@ -192,7 +192,7 @@ def _ExtractLexerInfoImpl(
     docstring_leaf = None
     docstring_str = None
 
-    statement_infos: List[StatementLexerInfo] = []
+    statement_infos: List[StatementParserInfo] = []
 
     for statement_node_index, statement_node in enumerate(statement_nodes):
         if statement_node.Type is not None:
@@ -211,7 +211,7 @@ def _ExtractLexerInfoImpl(
 
                 docstring_leaf, docstring_str = DocstringStatement.GetInfo(cast(Node, statement_node))
 
-        statement_info = cast(StatementLexerInfo, GetLexerInfo(statement_node))
+        statement_info = cast(StatementParserInfo, GetParserInfo(statement_node))
 
         if statement_info is not None:
             statement_infos.append(statement_info)

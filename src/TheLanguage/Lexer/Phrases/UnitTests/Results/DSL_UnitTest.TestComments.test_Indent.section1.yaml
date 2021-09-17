@@ -1,0 +1,124 @@
+# <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    DataItems:
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[1, 1] (0)"
+          IterEnd: "[1, 4] (3)"
+          Token: "Word Token"
+          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+            Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+          Whitespace: None
+        Phrase: "Word Token"
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[1, 4] (3)"
+          IterEnd: "[1, 5] (4)"
+          Token: "Colon"
+          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+            Match: "<_sre.SRE_Match object; span=(3, 4), match=':'>"
+          Whitespace: None
+        Phrase: "Colon"
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        IsIgnored: True
+        IterBegin: "[1, 7] (6)"
+        IterEnd: "[1, 18] (17)"
+        Token: "Comment"
+        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+          Match: "<_sre.SRE_Match object; span=(6, 17), match='# Comment 1'>"
+        Whitespace:
+          - 4
+          - 6
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[1, 18] (17)"
+          IterEnd: "[2, 1] (18)"
+          Token: "Newline+"
+          Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+            End: 18
+            Start: 17
+          Whitespace: None
+        Phrase: "Newline+"
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[2, 1] (18)"
+          IterEnd: "[2, 5] (22)"
+          Token: "Indent"
+          Value: # <class 'TheLanguage.Lexer.Components.Token.IndentToken.MatchResult'>
+            End: 22
+            Start: 18
+            Value: 4
+          Whitespace: None
+        Phrase: "Indent"
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+          DataItems:
+            - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                IsIgnored: False
+                IterBegin: "[2, 5] (22)"
+                IterEnd: "[2, 8] (25)"
+                Token: "Upper Token"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(22, 25), match='TWO'>"
+                Whitespace: None
+              Phrase: "Upper Token"
+            - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                IsIgnored: False
+                IterBegin: "[2, 8] (25)"
+                IterEnd: "[3, 1] (26)"
+                Token: "Newline+"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  End: 26
+                  Start: 25
+                Whitespace: None
+              Phrase: "Newline+"
+          IsComplete: True
+        Phrase: "Sequence: [Upper Token, Newline+]"
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+          DataItems:
+            - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                IsIgnored: False
+                IterBegin: "[3, 5] (30)"
+                IterEnd: "[3, 6] (31)"
+                Token: "Number Token"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(30, 31), match='3'>"
+                Whitespace: None
+              Phrase: "Number Token"
+            - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                IsIgnored: False
+                IterBegin: "[3, 6] (31)"
+                IterEnd: "[4, 1] (32)"
+                Token: "Newline+"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  End: 32
+                  Start: 31
+                Whitespace: None
+              Phrase: "Newline+"
+          IsComplete: True
+        Phrase: "Sequence: [Number Token, Newline+]"
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[4, 1] (32)"
+          IterEnd: "[4, 1] (32)"
+          Token: "Dedent"
+          Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
+            {}
+          Whitespace: None
+        Phrase: "Dedent"
+    IsComplete: True
+  Phrase: "Indent"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[4, 1] (32)"
+Success: True

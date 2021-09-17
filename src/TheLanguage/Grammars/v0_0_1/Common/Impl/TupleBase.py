@@ -33,7 +33,7 @@ with InitRelativeImports():
     from .. import Tokens as CommonTokens
     from ....GrammarPhrase import GrammarPhrase, Leaf, Node
 
-    from .....Parser.Phrases.DSL import (
+    from .....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
