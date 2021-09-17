@@ -54,12 +54,13 @@ def test_SingleLine():
             Single line 1.
             >>>
 
-            if cond1:
+            class Foo():
                 <<<
                 Single line 2.
                 >>>
+                pass
 
-            class Foo():
+            class Bar():
                 <<<
                 With escape \\>>>
                 >>>
@@ -81,7 +82,7 @@ def test_SingleLine():
     assert value == "Single line 1."
 
     # Item 2 (This is a pain to get to)
-    leaf, value = DocstringStatement.GetInfo(node.Children[1].Children[0].Children[0].Children[2].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+    leaf, value = DocstringStatement.GetInfo(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
 
     assert leaf.IterBegin.Line == 6
     assert leaf.IterBegin.Column == 5
@@ -92,9 +93,9 @@ def test_SingleLine():
     # Item 3 (This is a pain to get to)
     leaf, value = DocstringStatement.GetInfo(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
 
-    assert leaf.IterBegin.Line == 11
+    assert leaf.IterBegin.Line == 12
     assert leaf.IterBegin.Column == 5
-    assert leaf.IterEnd.Line == 13
+    assert leaf.IterEnd.Line == 14
     assert leaf.IterEnd.Column == 8
     assert value == "With escape >>>"
 
@@ -110,15 +111,16 @@ def test_Multiline():
             1
             >>>
 
-            if cond:
+            class Foo():
                 <<<
                 Multi
                 line
                     **1**
                   **2**
                 >>>
+                pass
 
-            class Foo():
+            class Bar():
                 <<<
                 With
                 escape
@@ -142,7 +144,7 @@ def test_Multiline():
     assert value == "Multi\nline\n1"
 
     # Item 2 (This is a pain to get to)
-    leaf, value = DocstringStatement.GetInfo(node.Children[1].Children[0].Children[0].Children[2].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+    leaf, value = DocstringStatement.GetInfo(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
 
     assert leaf.IterBegin.Line == 8
     assert leaf.IterBegin.Column == 5
@@ -153,9 +155,9 @@ def test_Multiline():
     # Item 3
     leaf, value = DocstringStatement.GetInfo(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
 
-    assert leaf.IterBegin.Line == 16
+    assert leaf.IterBegin.Line == 17
     assert leaf.IterBegin.Column == 5
-    assert leaf.IterEnd.Line == 21
+    assert leaf.IterEnd.Line == 22
     assert leaf.IterEnd.Column == 8
     assert value == "With\nescape\n>>>\nmore."
 

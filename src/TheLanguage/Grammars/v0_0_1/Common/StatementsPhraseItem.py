@@ -80,6 +80,14 @@ class MisplacedDocstringError(GrammarError):
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class StatementsRequiredError(GrammarError):
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Statements are required.",
+    )
+
+
+# ----------------------------------------------------------------------
 def Create() -> PhraseItem:
     return PhraseItem(
         name="Statements",
@@ -142,6 +150,9 @@ def ExtractLexerInfo(
 
     if docstring_info is not None:
         raise InvalidDocstringError.FromNode(docstring_info[1])
+
+    if not statement_infos:
+        raise StatementsRequiredError.FromNode(node)
 
     return statement_infos
 
