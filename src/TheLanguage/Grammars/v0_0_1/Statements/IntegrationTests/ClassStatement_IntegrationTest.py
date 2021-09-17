@@ -33,7 +33,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..ClassStatement import *
-    from ...Common.AutomatedTests import Execute
+    from ...Common.AutomatedTests import Execute, ExecuteEx
+    from ...Common.StatementsPhraseItem import (
+        InvalidDocstringError,
+        MisplacedDocstringError,
+        MultipleDocstringsError,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -350,3 +355,161 @@ def test_MultipleBasesError():
     assert ex.Region.Begin.Column == 16
     assert ex.Region.End.Line == 1
     assert ex.Region.End.Column == 28
+
+
+# ----------------------------------------------------------------------
+class TestStatementsPhraseItem(object):
+    # ----------------------------------------------------------------------
+    def test_Standard(self):
+        result, node = ExecuteEx(
+            textwrap.dedent(
+                """\
+                class Class():
+                    <<<
+                    This is the documentation for the class.
+                    >>>
+                    pass
+                """,
+            ),
+        )
+
+        info = node.Children[0].Children[0].Children[0].Info
+
+        assert info.Documentation == "This is the documentation for the class."
+        assert info.Regions.Documentation.Begin.Line == 2
+        assert info.Regions.Documentation.Begin.Column == 5
+        assert info.Regions.Documentation.End.Line == 4
+        assert info.Regions.Documentation.End.Column == 8
+
+    # ----------------------------------------------------------------------
+    def test_RemovedStatements(self):
+        result, node = ExecuteEx(
+            textwrap.dedent(
+                """\
+                class Class():
+                    <<<
+                    Docstrings are removed.
+                    >>>
+
+                    <<<!!!
+                    Compiler statements are removed
+                    !!!>>>
+
+                    @AttributesAreRemoved1
+                    @AttributesAreRemoved2
+                    private Char PrivateFunc():
+                        pass
+                """,
+            ),
+        )
+
+        info = node.Children[0].Children[0].Children[0].Info
+
+        assert len(info.Statements) == 1
+
+    # ----------------------------------------------------------------------
+    def test_InvalidDocumentation(self):
+        with pytest.raises(InvalidDocstringError) as ex:
+            Execute(
+                textwrap.dedent(
+                    """\
+                    class Class():
+                        if Foo:
+                            <<<
+                            This is not valid here.
+                            >>>
+                    """,
+                ),
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "Docstrings are not supported in this context."
+        assert ex.Region.Begin.Line == 3
+        assert ex.Region.Begin.Column == 9
+        assert ex.Region.End.Line == 5
+        assert ex.Region.End.Column == 12
+
+    # ----------------------------------------------------------------------
+    def test_MultipleDocstringsError(self):
+        with pytest.raises(MultipleDocstringsError) as ex:
+            Execute(
+                textwrap.dedent(
+                    """\
+                    class Class():
+                        <<<
+                        This docstring is valid.
+                        >>>
+                        <<<
+                        This docstring is not valid...
+                        ...as there can only be one!
+                        >>>
+                        pass
+                    """,
+                ),
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "There may only be one docstring within a single scope."
+        assert ex.Region.Begin.Line == 5
+        assert ex.Region.Begin.Column == 5
+        assert ex.Region.End.Line == 8
+        assert ex.Region.End.Column == 8
+
+    # ----------------------------------------------------------------------
+    def test_MisplacedDocstringError1(self):
+        with pytest.raises(MisplacedDocstringError) as ex:
+            Execute(
+                textwrap.dedent(
+                    """\
+                    class Class():
+                        pass
+                        <<<
+                        This docstring is not valid...
+                        ...as it is the 2nd statement.
+                        >>>
+
+                    """,
+                ),
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "Docstrings must be the 1st statement within a scope; this is the '2nd' statement."
+        assert ex.Region.Begin.Line == 3
+        assert ex.Region.Begin.Column == 5
+        assert ex.Region.End.Line == 6
+        assert ex.Region.End.Column == 8
+
+    # ----------------------------------------------------------------------
+    def test_MisplacedDocstringError2(self):
+        with pytest.raises(MisplacedDocstringError) as ex:
+            Execute(
+                textwrap.dedent(
+                    """\
+                    class Class():
+                        pass
+
+                        pass
+
+                        pass
+
+
+
+                        <<<
+                        This docstring is not valid...
+                        ...as it is the Nth statement.
+                        >>>
+
+                    """,
+                ),
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "Docstrings must be the 1st statement within a scope; this is the '4th' statement."
+        assert ex.Region.Begin.Line == 10
+        assert ex.Region.Begin.Column == 5
+        assert ex.Region.End.Line == 13
+        assert ex.Region.End.Column == 8

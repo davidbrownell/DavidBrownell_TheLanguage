@@ -379,6 +379,7 @@ def _ValidateRoot(
 
 
 # ----------------------------------------------------------------------
+# TODO: This should be done from a different file (Lex.py), and when complete, should invoke StatementsPhraseItem.ExtractLexerData to get valid statements and documentation info
 def _ValidateNode(
     node: Union[Leaf, Node],
 ) -> List[Callable[[], None]]:

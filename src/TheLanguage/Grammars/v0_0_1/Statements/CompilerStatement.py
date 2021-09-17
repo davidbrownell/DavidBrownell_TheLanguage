@@ -19,6 +19,8 @@ import os
 
 from typing import Optional
 
+from dataclasses import dataclass
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -30,9 +32,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .ClassStatement import ClassStatement
     from ..Common.Impl.MultilineStatementBase import MultilineStatementBase
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarError import GrammarError
+    from ...GrammarPhrase import GetParentNode, GrammarPhrase
+    from ....Lexer.LexerInfo import SetLexerInfo
     from ....Parser.Phrases.DSL import Leaf, Node
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidCompilerStatementPlacementError(GrammarError):
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Compiler statements must appear at the root or within a class statement.",
+    )
 
 
 # ----------------------------------------------------------------------
@@ -65,5 +78,15 @@ class CompilerStatement(MultilineStatementBase):
         leaf: Leaf,
         value: str,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+        # Compiler statements may only appear at the root or within a class
+        parent_node = GetParentNode(node)
+        if not (
+            parent_node is None
+            or (parent_node.Type is not None and parent_node.Type.Name == ClassStatement.PHRASE_NAME)
+        ):
+            raise InvalidCompilerStatementPlacementError.FromNode(leaf)
+
         # Persist the info
-        object.__setattr__(node, "Info", value)
+        pass # TODO
+
+        SetLexerInfo(node, None)

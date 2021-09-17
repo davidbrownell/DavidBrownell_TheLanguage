@@ -296,11 +296,21 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             # <statements> or Newline
             statements_node = cast(Node, ExtractOr(cast(Node, nodes[7])))
 
+            docstring_leaf = None
+            docstring_value = None
+
             if isinstance(statements_node, Leaf):
                 statements_node = None
                 statements_info = None
+
             else:
-                statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
+                (
+                    statements_info,
+                    docstring_info,
+                ) = StatementsPhraseItem.ExtractLexerInfoWithDocstrings(statements_node)
+
+                if docstring_info is not None:
+                    docstring_value, docstring_leaf = docstring_info  # type: ignore
 
             # TODO: Leverage attributes
 
@@ -317,6 +327,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                         parameters_node,
                         class_modifier_node,
                         statements_node,
+                        docstring_leaf,
                     ),  # type: ignore
                     ClassStatement.GetContainingClassLexerInfo(  # type: ignore
                         node,
@@ -329,6 +340,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                     parameters_info,  # type: ignore
                     class_modifier_info,  # type: ignore
                     statements_info,
+                    docstring_value,
                 ),
             )
 

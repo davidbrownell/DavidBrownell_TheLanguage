@@ -146,7 +146,7 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
         cls_fields = fields(self)
 
         num_expected_fields = len(cls_fields) - len(self._regionless_attributes)
-        assert len(regions) == num_expected_fields + 1, (len(regions), num_expected_fields, "The number of regions must match the number of attributes")
+        assert len(regions) == num_expected_fields + 1, (len(regions), num_expected_fields + 1, "The number of regions provided must match the number of attributes that require them")
 
         # Populate the region values
         new_regions = {
@@ -233,7 +233,7 @@ class LexerInfo(YamlRepr.ObjectReprImplBase):
 # ----------------------------------------------------------------------
 def SetLexerInfo(
     obj: Any,
-    arg: LexerInfo,
+    arg: Optional[LexerInfo],
 ):
     object.__setattr__(obj, "Info", arg)
 
@@ -241,15 +241,6 @@ def SetLexerInfo(
 # ----------------------------------------------------------------------
 def GetLexerInfo(
     obj: Any,
-) -> LexerInfo:
-    result = getattr(obj, "Info", None)
-
-    # TODO: Eventually, everything will have Info. However, that isn't the case right now.
-    # TODO: Remove this code ASAP
-    if result is None:
-        # pylint: disable=too-many-function-args
-        return LexerInfo([Region(Location(1, 1), Location(1, 1))])  # type: ignore
-    # TODO: End
-
-    assert result is not None, obj
-    return result
+) -> Optional[LexerInfo]:
+    assert hasattr(obj, "Info")
+    return getattr(obj, "Info", None)

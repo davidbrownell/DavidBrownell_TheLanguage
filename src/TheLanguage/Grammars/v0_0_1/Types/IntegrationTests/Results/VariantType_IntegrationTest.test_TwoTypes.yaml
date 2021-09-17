@@ -276,11 +276,13 @@ Children:
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
+              Documentation: None
               MethodType: "MethodType.standard"
               Name: "Func"
               Parameters: None
               Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                 ClassModifier: None
+                Documentation: None
                 MethodType: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
                 Name: "[Ln 1, Col 18] -> [Ln 1, Col 22]"
                 Parameters: None

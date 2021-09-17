@@ -91,6 +91,7 @@ def test_ClassStatementLexerData():
                 CreateRegion(25, 26, 27, 28),
                 CreateRegion(29, 30, 31, 32),
                 None,
+                None,
             ],
             visibility,
             class_modifier,
@@ -123,6 +124,7 @@ class TestClassStatementLexerDataValidateMethods(object):
             CreateRegion(21, 22, 23, 24),
             CreateRegion(25, 26, 27, 28),
             CreateRegion(29, 30, 31, 32),
+            None,
             None,
         ],
         VisibilityModifier.private,
@@ -176,6 +178,7 @@ def test_MutableOnImmutableClass():
             CreateRegion(25, 26, 27, 28),
             CreateRegion(29, 30, 31, 32),
             None,
+            None,
         ],
         VisibilityModifier.public,
         ClassModifier.immutable,
@@ -207,6 +210,7 @@ class TestClassStatementLexerInfo(object):
         "Interfaces": CreateRegion(21, 22, 23, 24),
         "Mixins": CreateRegion(25, 26, 27, 28),
         "Statements": CreateRegion(29, 30, 31, 32),
+        "Documentation" : None,
     }
 
     _dependency                             = ClassDependencyLexerInfo(
@@ -409,3 +413,82 @@ class TestClassStatementLexerInfo(object):
 
         assert str(ex) == "Mixins cannot be used with 'interface' types."
         assert ex.Region == self._default_regions["Mixins"]
+
+    # ----------------------------------------------------------------------
+    def test_FinalConstructNoDocumentation(self):
+        regions = copy.deepcopy(self._default_regions)
+
+        regions["Base"] = None
+        regions["Interfaces"] = None
+        regions["Mixins"] = None
+
+        info = ClassStatementLexerInfo(
+            list(regions.values()),
+            VisibilityModifier.private,
+            ClassModifier.immutable,
+            ClassType.Class,
+            "TheClass",
+            None, # Base
+            None, # Interfaces
+            None, # Mixins
+        )
+
+        assert info.Regions == info.RegionsType(**regions)
+
+        info.FinalConstruct([None], None)
+
+        assert info.Regions == info.RegionsType(**regions)
+
+    # ----------------------------------------------------------------------
+    def test_FinalConstructWithDocumentation(self):
+        regions = copy.deepcopy(self._default_regions)
+
+        regions["Base"] = None
+        regions["Interfaces"] = None
+        regions["Mixins"] = None
+
+        info = ClassStatementLexerInfo(
+            list(regions.values()),
+            VisibilityModifier.private,
+            ClassModifier.immutable,
+            ClassType.Class,
+            "TheClass",
+            None, # Base
+            None, # Interfaces
+            None, # Mixins
+        )
+
+        assert info.Regions == info.RegionsType(**regions)
+
+        regions["Documentation"] = CreateRegion(33, 34, 35, 36)
+
+        info.FinalConstruct([None], ("Here are the docs", regions["Documentation"]))
+
+        assert info.Regions == info.RegionsType(**regions)
+
+    # ----------------------------------------------------------------------
+    def test_StatementsRequiredError(self):
+        with pytest.raises(StatementsRequiredError) as ex:
+            regions = copy.deepcopy(self._default_regions)
+
+            regions["Base"] = None
+            regions["Interfaces"] = None
+            regions["Mixins"] = None
+
+            info = ClassStatementLexerInfo(
+                list(regions.values()),
+                VisibilityModifier.private,
+                ClassModifier.immutable,
+                ClassType.Class,
+                "TheClass",
+                None, # Base
+                None, # Interfaces
+                None, # Mixins
+            )
+
+            info.FinalConstruct([], None)
+
+        ex = ex.value
+
+        assert str(ex) == "Statements are reqired for 'class' types."
+        assert ex.Region == self._default_regions["Statements"]

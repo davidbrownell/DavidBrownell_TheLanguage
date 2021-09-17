@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..DocstringStatement import *
-    from ...Common.AutomatedTests import Execute
+    from ...Common.AutomatedTests import ExecuteEx
 
     from ...Common.Impl.MultilineStatementBase import (
         InvalidMultilineHeaderError,
@@ -47,64 +47,125 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_SingleLine():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
+    result, node = ExecuteEx(
+        textwrap.dedent(
+            """\
+            <<<
+            Single line 1.
+            >>>
+
+            class Foo():
                 <<<
-                Single line 1.
+                Single line 2.
                 >>>
+                pass
 
-                if cond:
-                    <<<
-                    Single line 2.
-                    >>>
-
+            class Bar():
                 <<<
                 With escape \\>>>
                 >>>
-                """,
-            ),
+
+                pass
+            """,
         ),
     )
+
+    CompareResultsFromFile(result)
+
+    # Item 1
+    leaf, value = DocstringStatement.GetInfo(node.Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 1
+    assert leaf.IterBegin.Column == 1
+    assert leaf.IterEnd.Line == 3
+    assert leaf.IterEnd.Column == 4
+    assert value == "Single line 1."
+
+    # Item 2 (This is a pain to get to)
+    leaf, value = DocstringStatement.GetInfo(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 6
+    assert leaf.IterBegin.Column == 5
+    assert leaf.IterEnd.Line == 8
+    assert leaf.IterEnd.Column == 8
+    assert value == "Single line 2."
+
+    # Item 3 (This is a pain to get to)
+    leaf, value = DocstringStatement.GetInfo(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 12
+    assert leaf.IterBegin.Column == 5
+    assert leaf.IterEnd.Line == 14
+    assert leaf.IterEnd.Column == 8
+    assert value == "With escape >>>"
 
 
 # ----------------------------------------------------------------------
 def test_Multiline():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
+    result, node = ExecuteEx(
+        textwrap.dedent(
+            """\
+            <<<
+            Multi
+            line
+            1
+            >>>
+
+            class Foo():
                 <<<
                 Multi
                 line
-                1
+                    **1**
+                  **2**
                 >>>
+                pass
 
-                if cond:
-                    <<<
-                    Multi
-                    line
-                        **1**
-                      **2**
-                    >>>
-
+            class Bar():
                 <<<
                 With
                 escape
                 \\>>>
                 more.
                 >>>
-                """,
-            ),
+                pass
+            """,
         ),
     )
+
+    CompareResultsFromFile(result)
+
+    # Item 1
+    leaf, value = DocstringStatement.GetInfo(node.Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 1
+    assert leaf.IterBegin.Column == 1
+    assert leaf.IterEnd.Line == 5
+    assert leaf.IterEnd.Column == 4
+    assert value == "Multi\nline\n1"
+
+    # Item 2 (This is a pain to get to)
+    leaf, value = DocstringStatement.GetInfo(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 8
+    assert leaf.IterBegin.Column == 5
+    assert leaf.IterEnd.Line == 13
+    assert leaf.IterEnd.Column == 8
+    assert value == "Multi\nline\n    **1**\n  **2**"
+
+    # Item 3
+    leaf, value = DocstringStatement.GetInfo(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 17
+    assert leaf.IterBegin.Column == 5
+    assert leaf.IterEnd.Line == 22
+    assert leaf.IterEnd.Column == 8
+    assert value == "With\nescape\n>>>\nmore."
 
 
 # ----------------------------------------------------------------------
 def test_InvalidHeaderError():
     with pytest.raises(NoClosingMultilineTokenError) as ex:
-        Execute(
+        ExecuteEx(
             textwrap.dedent(
                 """\
                 <<<This is not valid
@@ -120,7 +181,7 @@ def test_InvalidHeaderError():
     assert ex.Column == 1
 
     with pytest.raises(NoClosingMultilineTokenError) as ex:
-        Execute(
+        ExecuteEx(
             textwrap.dedent(
                 """\
                 if cond:
@@ -140,7 +201,7 @@ def test_InvalidHeaderError():
 # ----------------------------------------------------------------------
 def test_InvalidFooterError():
     with pytest.raises(NoClosingMultilineTokenError) as ex:
-        Execute(
+        ExecuteEx(
             textwrap.dedent(
                 """\
                 <<<
@@ -156,7 +217,7 @@ def test_InvalidFooterError():
     assert ex.Column == 1
 
     with pytest.raises(NoClosingMultilineTokenError) as ex:
-        Execute(
+        ExecuteEx(
             textwrap.dedent(
                 """\
                 if cond:
@@ -176,7 +237,7 @@ def test_InvalidFooterError():
 # ----------------------------------------------------------------------
 def test_InvalidIndentError():
     with pytest.raises(InvalidMultilineIndentError) as ex:
-        Execute(
+        ExecuteEx(
             textwrap.dedent(
                 """\
                 if cond:
@@ -198,7 +259,7 @@ def test_InvalidIndentError():
 
     # More complicated test
     with pytest.raises(InvalidMultilineIndentError) as ex:
-        Execute(
+        ExecuteEx(
             textwrap.dedent(
                 """\
                 if cond:
@@ -224,7 +285,7 @@ def test_InvalidIndentError():
 # ----------------------------------------------------------------------
 def test_EmptyContentError():
     with pytest.raises(InvalidMultilineContentError) as ex:
-        Execute(
+        ExecuteEx(
             textwrap.dedent(
                 """\
                 <<<
@@ -243,7 +304,7 @@ def test_EmptyContentError():
 
     # With indent
     with pytest.raises(InvalidMultilineContentError) as ex:
-        Execute(
+        ExecuteEx(
             textwrap.dedent(
                 """\
                 if cond:

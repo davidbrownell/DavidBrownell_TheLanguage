@@ -364,6 +364,7 @@ Children:
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
+              Documentation: None
               MethodType: "MethodType.standard"
               Name: "Func1"
               Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
@@ -428,6 +429,7 @@ Children:
                   Self__: "[Ln 1, Col 11] -> [Ln 1, Col 38]"
               Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                 ClassModifier: None
+                Documentation: None
                 MethodType: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 Name: "[Ln 1, Col 5] -> [Ln 1, Col 10]"
                 Parameters: "[Ln 1, Col 10] -> [Ln 1, Col 39]"
@@ -900,6 +902,7 @@ Children:
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
+              Documentation: None
               MethodType: "MethodType.standard"
               Name: "Func2"
               Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
@@ -964,6 +967,7 @@ Children:
                   Self__: "[Ln 4, Col 15] -> [Ln 4, Col 55]"
               Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                 ClassModifier: None
+                Documentation: None
                 MethodType: "[Ln 4, Col 1] -> [Ln 6, Col 1]"
                 Name: "[Ln 4, Col 9] -> [Ln 4, Col 14]"
                 Parameters: "[Ln 4, Col 14] -> [Ln 4, Col 56]"
