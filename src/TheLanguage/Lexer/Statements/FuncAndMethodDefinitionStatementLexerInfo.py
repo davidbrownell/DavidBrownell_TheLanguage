@@ -208,6 +208,7 @@ class FuncAndMethodDefinitionStatementLexerInfo(StatementLexerInfo):
     ClassModifier: Optional[ClassModifierType]          = field(init=False)
 
     Statements: Optional[List[StatementLexerInfo]]
+    Documentation: Optional[str]
 
     # ----------------------------------------------------------------------
     def __post_init__(

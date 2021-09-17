@@ -350,6 +350,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.mutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "Foo"
@@ -357,6 +358,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 1, Col 8]"
                 ClassType: "[Ln 1, Col 9] -> [Ln 1, Col 14]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 1, Col 15] -> [Ln 1, Col 18]"

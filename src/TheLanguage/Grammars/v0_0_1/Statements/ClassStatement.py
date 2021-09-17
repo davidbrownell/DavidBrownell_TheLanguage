@@ -42,7 +42,7 @@ with InitRelativeImports():
     from ..Common.Impl import ModifierImpl
 
     from ...GrammarError import GrammarError
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateLexerRegion, CreateLexerRegions, GrammarPhrase
 
     from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
     from ....Lexer.Statements.ClassStatementLexerInfo import (
@@ -355,6 +355,7 @@ class ClassStatement(GrammarPhrase):
                     interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None,))[0],  # type: ignore
                     interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None,))[0],  # type: ignore
                     statements_node,
+                    None, # Documentation
                 ),
                 visibility_info,  # type: ignore
                 class_modifier_info,  # type: ignore
@@ -368,12 +369,19 @@ class ClassStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
         def FinalConstruct():
-            lexer_info = cast(ClassStatementLexerInfo, GetLexerInfo(node))
-
             # <statement>+
-            statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
+            statements_info, docstring_info = StatementsPhraseItem.ExtractLexerInfoWithDocstrings(
+                statements_node,
+            )
 
-            lexer_info.FinalConstruct(statements_info)
+            if docstring_info is not None:
+                docstring_info = (
+                    docstring_info[0],
+                    CreateLexerRegion(docstring_info[1]),
+                )
+
+            lexer_info = cast(ClassStatementLexerInfo, GetLexerInfo(node))
+            lexer_info.FinalConstruct(statements_info, docstring_info)
 
         # ----------------------------------------------------------------------
 

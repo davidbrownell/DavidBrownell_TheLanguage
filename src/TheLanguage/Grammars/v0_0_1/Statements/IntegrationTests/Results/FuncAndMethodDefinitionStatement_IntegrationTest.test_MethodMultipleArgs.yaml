@@ -444,6 +444,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.standard"
                                           Name: "Method1"
                                           Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
@@ -508,6 +509,7 @@ Children:
                                               Self__: "[Ln 2, Col 17] -> [Ln 2, Col 44]"
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 2, Col 5] -> [Ln 5, Col 5]"
+                                            Documentation: None
                                             MethodType: "[Ln 2, Col 5] -> [Ln 5, Col 5]"
                                             Name: "[Ln 2, Col 9] -> [Ln 2, Col 16]"
                                             Parameters: "[Ln 2, Col 16] -> [Ln 2, Col 45]"
@@ -980,6 +982,7 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.standard"
                                           Name: "Method2"
                                           Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
@@ -1044,6 +1047,7 @@ Children:
                                               Self__: "[Ln 5, Col 21] -> [Ln 5, Col 61]"
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
                                             Name: "[Ln 5, Col 13] -> [Ln 5, Col 20]"
                                             Parameters: "[Ln 5, Col 20] -> [Ln 5, Col 62]"
@@ -1096,6 +1100,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "Foo"
@@ -1103,6 +1108,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 7, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
@@ -1112,6 +1118,7 @@ Children:
               Statements:
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.standard"
                   Name: "Method1"
                   Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
@@ -1176,6 +1183,7 @@ Children:
                       Self__: "[Ln 2, Col 17] -> [Ln 2, Col 44]"
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 2, Col 5] -> [Ln 5, Col 5]"
+                    Documentation: None
                     MethodType: "[Ln 2, Col 5] -> [Ln 5, Col 5]"
                     Name: "[Ln 2, Col 9] -> [Ln 2, Col 16]"
                     Parameters: "[Ln 2, Col 16] -> [Ln 2, Col 45]"
@@ -1197,6 +1205,7 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.standard"
                   Name: "Method2"
                   Parameters: # <class 'TheLanguage.Lexer.Common.ParametersLexerInfo.ParametersLexerInfo'>
@@ -1261,6 +1270,7 @@ Children:
                       Self__: "[Ln 5, Col 21] -> [Ln 5, Col 61]"
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
                     Name: "[Ln 5, Col 13] -> [Ln 5, Col 20]"
                     Parameters: "[Ln 5, Col 20] -> [Ln 5, Col 62]"

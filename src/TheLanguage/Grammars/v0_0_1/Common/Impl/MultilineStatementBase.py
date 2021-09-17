@@ -218,6 +218,8 @@ class MultilineStatementBase(GrammarPhrase):
         if not value:
             raise InvalidMultilineContentError.FromNode(leaf)
 
+        value = value.replace("\\", "")
+
         return self._ValidateSyntaxImpl(node, leaf, value)
 
     # ----------------------------------------------------------------------

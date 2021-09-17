@@ -159,6 +159,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "PublicClass"
@@ -166,6 +167,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 2, Col 1] -> [Ln 5, Col 1]"
                 ClassType: "[Ln 2, Col 8] -> [Ln 2, Col 13]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 2, Col 14] -> [Ln 2, Col 25]"
@@ -345,6 +347,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "ProtectedClass"
@@ -352,6 +355,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 5, Col 1] -> [Ln 8, Col 1]"
                 ClassType: "[Ln 5, Col 11] -> [Ln 5, Col 16]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 5, Col 17] -> [Ln 5, Col 31]"
@@ -531,6 +535,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "PrivateClass"
@@ -538,6 +543,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 8, Col 1] -> [Ln 11, Col 1]"
                 ClassType: "[Ln 8, Col 9] -> [Ln 8, Col 14]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 8, Col 15] -> [Ln 8, Col 27]"
@@ -697,6 +703,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "DefaultClass"
@@ -704,6 +711,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 11, Col 1] -> [Ln 14, Col 1]"
                 ClassType: "[Ln 11, Col 1] -> [Ln 11, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 11, Col 7] -> [Ln 11, Col 19]"
@@ -883,6 +891,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Exception"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "PublicException"
@@ -890,6 +899,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 15, Col 1] -> [Ln 18, Col 1]"
                 ClassType: "[Ln 15, Col 8] -> [Ln 15, Col 17]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 15, Col 18] -> [Ln 15, Col 33]"
@@ -1049,6 +1059,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Exception"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "DefaultException"
@@ -1056,6 +1067,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 18, Col 1] -> [Ln 21, Col 1]"
                 ClassType: "[Ln 18, Col 1] -> [Ln 18, Col 10]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 18, Col 11] -> [Ln 18, Col 27]"
@@ -1235,6 +1247,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Enum"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "PublicEnum"
@@ -1242,6 +1255,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 22, Col 1] -> [Ln 25, Col 1]"
                 ClassType: "[Ln 22, Col 8] -> [Ln 22, Col 12]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 22, Col 13] -> [Ln 22, Col 23]"
@@ -1421,6 +1435,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Interface"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "ProtectedInterface"
@@ -1428,6 +1443,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 25, Col 1] -> [Ln 28, Col 1]"
                 ClassType: "[Ln 25, Col 11] -> [Ln 25, Col 20]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 25, Col 21] -> [Ln 25, Col 39]"
@@ -1607,6 +1623,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Mixin"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "PrivateMixin"
@@ -1614,6 +1631,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 28, Col 1] -> [Ln 30, Col 1]"
                 ClassType: "[Ln 28, Col 9] -> [Ln 28, Col 14]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 28, Col 15] -> [Ln 28, Col 27]"
