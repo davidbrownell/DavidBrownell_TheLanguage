@@ -104,6 +104,13 @@ def test_FunctionMultipleStatements():
             textwrap.dedent(
                 """\
                 Int Func():
+                    <<<
+                    Functions may
+                        be
+                    decorated with
+                        docstrings!
+                    >>>
+
                     pass
                     pass
 
@@ -199,6 +206,11 @@ def test_MethodMultipleStatements():
                 """\
                 class Foo():
                     Int Method():
+                        <<<
+                        A method may
+                        have docstrings!
+                        >>>
+
                         pass
 
                         pass
@@ -299,6 +311,11 @@ def test_Abstract():
                     public abstract Int PublicAbstractMethod()
                     protected abstract Bool ProtectedAbstractMethod()
                     private abstract Char PrivateAbstractMethod()
+
+                    private abstract Char PrivateAbstractMethodWithDocstring():
+                        <<<
+                        An abstract method can have a docstring, but cannot have statements.
+                        >>>
                 """,
             ),
         ),
@@ -313,6 +330,11 @@ def test_Deferred():
                 """\
                 primitive Foo():
                     public deferred Int PublicDeferredMethod()
+
+                    public deferred Int PublicDeferredMethodWithDocstring():
+                        <<<
+                        A deferred method can have a docstring, but cannot have statements.
+                        >>>
                 """,
             ),
         ),

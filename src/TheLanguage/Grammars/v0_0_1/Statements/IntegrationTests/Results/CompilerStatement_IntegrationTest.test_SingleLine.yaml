@@ -23,7 +23,6 @@ Children:
                   End: 30
                   Start: 28
                 Whitespace: None
-            Info: "Single line 1."
             IterBegin: "[1, 1] (0)"
             IterEnd: "[5, 1] (30)"
             Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -154,7 +153,6 @@ Children:
                                               End: 81
                                               Start: 79
                                             Whitespace: None
-                                        Info: "Single line 2."
                                         IterBegin: "[6, 5] (43)"
                                         IterEnd: "[10, 1] (81)"
                                         Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -201,7 +199,9 @@ Children:
                     Self__: "[Ln 5, Col 1] -> [Ln 10, Col 1]"
                     Statements: "[Ln 5, Col 8] -> [Ln 10, Col 1]"
                   Statements:
-                    - "Single line 2."
+                    - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                      Regions: # <class 'types.LexerInfoRegions'>
+                        Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               ElseStatements: None
               Regions: # <class 'types.IfStatementLexerInfoRegions'>
                 Clauses: "[Ln 5, Col 1] -> [Ln 10, Col 1]"
@@ -239,7 +239,6 @@ Children:
                   End: 115
                   Start: 114
                 Whitespace: None
-            Info: "With escape \\!!!>>>"
             IterBegin: "[10, 1] (81)"
             IterEnd: "[13, 1] (115)"
             Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

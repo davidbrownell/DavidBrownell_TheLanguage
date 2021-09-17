@@ -23,14 +23,6 @@ Children:
                   End: 59
                   Start: 58
                 Whitespace: None
-            Info: |-
-              We should see
-
-              <<<
-              All
-              >>>
-
-              of this content.
             IterBegin: "[1, 1] (0)"
             IterEnd: "[10, 1] (59)"
             Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

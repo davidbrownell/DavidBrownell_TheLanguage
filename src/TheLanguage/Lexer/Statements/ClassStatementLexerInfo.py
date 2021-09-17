@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Tuple
 
 from dataclasses import dataclass, field, InitVar
 
@@ -171,6 +171,16 @@ class InvalidMixinsError(LexerError):
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Mixins cannot be used with '{ClassType}' types.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class StatementsRequiredError(LexerError):
+    ClassType: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Statements are reqired for '{ClassType}' types.",
     )
 
 
@@ -400,6 +410,7 @@ class ClassStatementLexerInfo(StatementLexerInfo):
 
     # Constructed during Phase 2
     Statements: List[StatementLexerInfo]    = field(init=False, default_factory=list)
+    Documentation: Optional[str]            = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions, visibility, class_modifier):
@@ -459,11 +470,21 @@ class ClassStatementLexerInfo(StatementLexerInfo):
     def FinalConstruct(
         self,
         statements: List[StatementLexerInfo],
+        documentation: Optional[Tuple[str, Region]],
     ):
-        assert statements
         assert not self.Statements
 
+        if not statements:
+            raise StatementsRequiredError(
+                self.Regions.Statements,  # type: ignore && pylint: disable=no-member
+                self.ClassType.value,
+            )
+
         object.__setattr__(self, "Statements", statements)
+
+        if documentation is not None:
+            object.__setattr__(self, "Documentation", documentation[0])
+            object.__setattr__(self.Regions, "Documentation", documentation[1])
 
         self.Validate()
 

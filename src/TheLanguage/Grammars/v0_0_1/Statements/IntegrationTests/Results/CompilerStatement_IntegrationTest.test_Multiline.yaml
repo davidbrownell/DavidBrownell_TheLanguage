@@ -23,10 +23,6 @@ Children:
                   End: 28
                   Start: 26
                 Whitespace: None
-            Info: |-
-              Multi
-              line
-              1
             IterBegin: "[1, 1] (0)"
             IterEnd: "[7, 1] (28)"
             Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -157,11 +153,6 @@ Children:
                                               End: 105
                                               Start: 103
                                             Whitespace: None
-                                        Info: |-
-                                          Multi
-                                          line
-                                              **1**
-                                            **2**
                                         IterBegin: "[8, 5] (41)"
                                         IterEnd: "[15, 1] (105)"
                                         Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"
@@ -208,11 +199,9 @@ Children:
                     Self__: "[Ln 7, Col 1] -> [Ln 15, Col 1]"
                     Statements: "[Ln 7, Col 8] -> [Ln 15, Col 1]"
                   Statements:
-                    - |-
-                      Multi
-                      line
-                          **1**
-                        **2**
+                    - # <class 'TheLanguage.Lexer.LexerInfo.LexerInfo'>
+                      Regions: # <class 'types.LexerInfoRegions'>
+                        Self__: "[Ln 1, Col 1] -> [Ln 1, Col 1]"
               ElseStatements: None
               Regions: # <class 'types.IfStatementLexerInfoRegions'>
                 Clauses: "[Ln 7, Col 1] -> [Ln 15, Col 1]"
@@ -250,11 +239,6 @@ Children:
                   End: 145
                   Start: 144
                 Whitespace: None
-            Info: |-
-              With
-              escape
-              \\!!!>>>
-              more.
             IterBegin: "[15, 1] (105)"
             IterEnd: "[21, 1] (145)"
             Type: "Compiler Statement <class 'TheLanguage.Parser.Phrases.SequencePhrase.SequencePhrase'>"

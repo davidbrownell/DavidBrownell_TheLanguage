@@ -32,6 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common.Impl.MultilineStatementBase import MultilineStatementBase
     from ...GrammarPhrase import GrammarPhrase
+    from ....Lexer.LexerInfo import SetLexerInfo
     from ....Parser.Phrases.DSL import Leaf, Node
 
 
@@ -66,4 +67,6 @@ class CompilerStatement(MultilineStatementBase):
         value: str,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
         # Persist the info
-        object.__setattr__(node, "Info", value)
+        pass # TODO
+
+        SetLexerInfo(node, None)

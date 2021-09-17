@@ -110,7 +110,6 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         self.Phrase                         = phrase
 
     # ----------------------------------------------------------------------
-    # TODO: Create a file called Lex.py that invokes this functionality
     @staticmethod
     @Interface.abstractmethod
     def ExtractLexerInfo(

@@ -229,6 +229,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "PublicClass"
@@ -236,6 +237,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 5, Col 1]"
                 ClassType: "[Ln 1, Col 8] -> [Ln 1, Col 13]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 1, Col 14] -> [Ln 1, Col 25]"

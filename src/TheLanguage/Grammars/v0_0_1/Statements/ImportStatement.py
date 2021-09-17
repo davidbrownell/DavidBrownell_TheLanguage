@@ -107,6 +107,8 @@ class ImportStatement(ImportGrammarStatement):
         SourceFilename: str
         ImportItems: List["ImportStatement.ImportItemInfo"]
 
+    # TODO: Special lexing
+
     # ----------------------------------------------------------------------
     # |
     # |  Public Methods
