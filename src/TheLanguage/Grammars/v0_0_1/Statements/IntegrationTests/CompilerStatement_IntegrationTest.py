@@ -55,10 +55,11 @@ def test_SingleLine():
                 Single line 1.
                 !!!>>>
 
-                if cond:
+                class Foo():
                     <<<!!!
                     Single line 2.
                     !!!>>>
+                    pass
 
                 <<<!!!
                 With escape \\!!!>>>
@@ -81,13 +82,14 @@ def test_Multiline():
                 1
                 !!!>>>
 
-                if cond:
+                class Foo():
                     <<<!!!
                     Multi
                     line
                         **1**
                       **2**
                     !!!>>>
+                    pass
 
                 <<<!!!
                 With
@@ -144,7 +146,7 @@ def test_InvalidHeaderError():
         Execute(
             textwrap.dedent(
                 """\
-                if cond:
+                class Foo():
                     <<<!!!This is not valid
                     !!!>>>
                 """,
@@ -180,7 +182,7 @@ def test_InvalidFooterError():
         Execute(
             textwrap.dedent(
                 """\
-                if cond:
+                class Foo():
                     <<<!!!
                     Text!!!>>>
                 """,
@@ -200,7 +202,7 @@ def test_InvalidIndentError():
         Execute(
             textwrap.dedent(
                 """\
-                if cond:
+                class Foo():
                     <<<!!!
                     One
                 Two
@@ -222,7 +224,7 @@ def test_InvalidIndentError():
         Execute(
             textwrap.dedent(
                 """\
-                if cond:
+                class Foo():
                     <<<!!!
                     One
                         Two
@@ -267,7 +269,7 @@ def test_EmptyContentError():
         Execute(
             textwrap.dedent(
                 """\
-                if cond:
+                class Foo():
                     <<<!!!
                     !!!>>>
                 """,
@@ -281,3 +283,27 @@ def test_EmptyContentError():
     assert ex.Region.Begin.Column == 5
     assert ex.Region.End.Line == 3
     assert ex.Region.End.Column == 11
+
+
+# ----------------------------------------------------------------------
+def test_InvalidCompilerStatementPlacementError():
+    with pytest.raises(InvalidCompilerStatementPlacementError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                class Foo():
+                    if cond:
+                        <<<!!!
+                        This is a problem, as compiler statements can't appear here.
+                        !!!>>>
+                """,
+            ),
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "Compiler statements must appear at the root or within a class statement."
+    assert ex.Region.Begin.Line == 3
+    assert ex.Region.Begin.Column == 9
+    assert ex.Region.End.Line == 5
+    assert ex.Region.End.Column == 15

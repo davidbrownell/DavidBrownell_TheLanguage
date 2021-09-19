@@ -424,6 +424,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "Foo"
@@ -431,6 +432,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"

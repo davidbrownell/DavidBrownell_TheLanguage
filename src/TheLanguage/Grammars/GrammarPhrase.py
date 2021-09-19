@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import cast, Any, Callable, Dict, List, Optional, Union
 
 from dataclasses import dataclass, field
 
@@ -110,7 +110,6 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         self.Phrase                         = phrase
 
     # ----------------------------------------------------------------------
-    # TODO: Create a file called Lex.py that invokes this functionality
     @staticmethod
     @Interface.abstractmethod
     def ExtractLexerInfo(
@@ -206,3 +205,26 @@ def CreateLexerRegions(
                 CreateLexerRegion(node)
         for node in nodes
     ]
+
+
+# ----------------------------------------------------------------------
+def GetParentNode(
+    node: Node,
+) -> Optional[Node]:
+    """\
+    Returns the statement that is the logical parent of this node.
+
+    This code attempts to handle the complexities of embedded phrases (for example, a statement that
+    is made up of other phrases) where this node may be nested multiple levels below what ultimately
+    constitutes its parent.
+    """
+
+    parent = node.Parent
+
+    while parent is not None:
+        if parent.Type is not None and parent.Type.Name.endswith("Statement"):
+            break
+
+        parent = parent.Parent
+
+    return cast(Optional[Node], parent)

@@ -218,6 +218,7 @@ Children:
                 Visibility: "VisibilityModifier.private"
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface1"
@@ -232,6 +233,7 @@ Children:
                 Base: "[Ln 1, Col 14] -> [Ln 1, Col 19]"
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Documentation: None
                 Interfaces: "[Ln 1, Col 21] -> [Ln 1, Col 42]"
                 Mixins: None
                 Name: "[Ln 1, Col 7] -> [Ln 1, Col 13]"
@@ -470,6 +472,7 @@ Children:
                 Visibility: "VisibilityModifier.private"
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
@@ -484,6 +487,7 @@ Children:
                 Base: "[Ln 4, Col 14] -> [Ln 4, Col 19]"
                 ClassModifier: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 ClassType: "[Ln 4, Col 1] -> [Ln 4, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: "[Ln 4, Col 21] -> [Ln 4, Col 32]"
                 Name: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
@@ -780,6 +784,7 @@ Children:
                 Visibility: "VisibilityModifier.private"
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface3"
@@ -801,6 +806,7 @@ Children:
                 Base: "[Ln 7, Col 14] -> [Ln 7, Col 19]"
                 ClassModifier: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
                 ClassType: "[Ln 7, Col 1] -> [Ln 7, Col 6]"
+                Documentation: None
                 Interfaces: "[Ln 7, Col 21] -> [Ln 7, Col 43]"
                 Mixins: "[Ln 7, Col 44] -> [Ln 7, Col 55]"
                 Name: "[Ln 7, Col 7] -> [Ln 7, Col 13]"
@@ -1143,6 +1149,7 @@ Children:
                 Visibility: "VisibilityModifier.private"
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface4A"
@@ -1171,6 +1178,7 @@ Children:
                 Base: "[Ln 10, Col 14] -> [Ln 10, Col 19]"
                 ClassModifier: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
                 ClassType: "[Ln 10, Col 1] -> [Ln 10, Col 6]"
+                Documentation: None
                 Interfaces: "[Ln 10, Col 34] -> [Ln 10, Col 70]"
                 Mixins: "[Ln 10, Col 21] -> [Ln 10, Col 33]"
                 Name: "[Ln 10, Col 7] -> [Ln 10, Col 13]"
@@ -1706,6 +1714,7 @@ Children:
                 Visibility: "VisibilityModifier.private"
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
                   Name: "Interface5A"
@@ -1748,6 +1757,7 @@ Children:
                 Base: "[Ln 13, Col 34] -> [Ln 13, Col 39]"
                 ClassModifier: "[Ln 13, Col 11] -> [Ln 13, Col 20]"
                 ClassType: "[Ln 13, Col 21] -> [Ln 13, Col 26]"
+                Documentation: None
                 Interfaces: "[Ln 14, Col 5] -> [Ln 17, Col 6]"
                 Mixins: "[Ln 18, Col 5] -> [Ln 22, Col 6]"
                 Name: "[Ln 13, Col 27] -> [Ln 13, Col 33]"

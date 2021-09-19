@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional
+from typing import Optional, Tuple
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,10 +32,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common.Impl.MultilineStatementBase import MultilineStatementBase
     from ...GrammarPhrase import GrammarPhrase
+    from ....Lexer.LexerInfo import SetLexerInfo
     from ....Parser.Phrases.DSL import Leaf, Node
 
-
-# TODO: The lexer should not have knowledge of this statement; it should be part of the NodeInfo for the associated class/func/etc.
 
 # ----------------------------------------------------------------------
 class DocstringStatement(MultilineStatementBase):
@@ -69,6 +68,16 @@ class DocstringStatement(MultilineStatementBase):
         )
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    def GetInfo(
+        node: Node,
+    ) -> Tuple[Leaf, str]:
+        info = getattr(node, "_docstring_info", None)
+        assert info is not None
+
+        return info
+
+    # ----------------------------------------------------------------------
     @Interface.override
     def _ValidateSyntaxImpl(
         self,
@@ -76,5 +85,5 @@ class DocstringStatement(MultilineStatementBase):
         leaf: Leaf,
         value: str,
     ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
-        # Persist the info
-        object.__setattr__(node, "Info", value)
+        object.__setattr__(node, "_docstring_info", (leaf, value))
+        SetLexerInfo(node, None)

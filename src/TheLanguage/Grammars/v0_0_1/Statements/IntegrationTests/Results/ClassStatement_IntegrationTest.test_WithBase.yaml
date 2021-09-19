@@ -188,6 +188,7 @@ Children:
                 Visibility: "VisibilityModifier.public"
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "Class1"
@@ -195,6 +196,7 @@ Children:
                 Base: "[Ln 1, Col 14] -> [Ln 1, Col 26]"
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 1, Col 7] -> [Ln 1, Col 13]"
@@ -383,6 +385,7 @@ Children:
                 Visibility: "VisibilityModifier.private"
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "Class2"
@@ -390,6 +393,7 @@ Children:
                 Base: "[Ln 4, Col 14] -> [Ln 4, Col 19]"
                 ClassModifier: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 ClassType: "[Ln 4, Col 1] -> [Ln 4, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
@@ -609,6 +613,7 @@ Children:
                 Visibility: "VisibilityModifier.protected"
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "Class3"
@@ -616,6 +621,7 @@ Children:
                 Base: "[Ln 8, Col 5] -> [Ln 9, Col 11]"
                 ClassModifier: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
                 ClassType: "[Ln 7, Col 1] -> [Ln 7, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 7, Col 7] -> [Ln 7, Col 13]"

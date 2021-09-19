@@ -184,11 +184,13 @@ Children:
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
+              Documentation: None
               MethodType: "MethodType.standard"
               Name: "PublicFunc"
               Parameters: None
               Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                 ClassModifier: None
+                Documentation: None
                 MethodType: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 Name: "[Ln 1, Col 12] -> [Ln 1, Col 22]"
                 Parameters: None
@@ -401,11 +403,13 @@ Children:
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
+              Documentation: None
               MethodType: "MethodType.standard"
               Name: "ProtectedFunc"
               Parameters: None
               Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                 ClassModifier: None
+                Documentation: None
                 MethodType: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 Name: "[Ln 4, Col 16] -> [Ln 4, Col 29]"
                 Parameters: None
@@ -618,11 +622,13 @@ Children:
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
+              Documentation: None
               MethodType: "MethodType.standard"
               Name: "PrivateFunc"
               Parameters: None
               Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                 ClassModifier: None
+                Documentation: None
                 MethodType: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
                 Name: "[Ln 7, Col 14] -> [Ln 7, Col 25]"
                 Parameters: None
@@ -815,11 +821,13 @@ Children:
                 Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
             Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
               ClassModifier: None
+              Documentation: None
               MethodType: "MethodType.standard"
               Name: "DefaultFunc"
               Parameters: None
               Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                 ClassModifier: None
+                Documentation: None
                 MethodType: "[Ln 10, Col 1] -> [Ln 12, Col 1]"
                 Name: "[Ln 10, Col 8] -> [Ln 10, Col 19]"
                 Parameters: None

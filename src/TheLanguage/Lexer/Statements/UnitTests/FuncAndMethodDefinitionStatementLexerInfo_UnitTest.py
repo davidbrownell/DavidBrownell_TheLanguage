@@ -57,6 +57,7 @@ class TestStandard(object):
         "Parameters": CreateRegion(17, 18, 19, 20),
         "ClassModifier": CreateRegion(21, 22, 23, 24),
         "Statements": CreateRegion(25, 26, 27, 28),
+        "Documentation": None,
     }
 
     _regions_no_modifier                    = copy.deepcopy(_regions)
@@ -73,6 +74,7 @@ class TestStandard(object):
             CreateRegion(2900, 3000, 3100, 3200),
             CreateRegion(3300, 3400, 3500, 3600),
             CreateRegion(3700, 3800, 3900, 4000),
+            None,
         ],
         VisibilityModifier.public,
         ClassModifier.mutable,
@@ -94,6 +96,7 @@ class TestStandard(object):
             CreateRegion(6500, 6600, 6700, 6800),
             CreateRegion(6900, 7000, 7100, 7200),
             CreateRegion(7300, 7400, 7500, 7600),
+            None,
         ],
         VisibilityModifier.public,
         ClassModifier.immutable,
@@ -115,6 +118,7 @@ class TestStandard(object):
             CreateRegion(10100, 10200, 10300, 10400),
             CreateRegion(10500, 10600, 10700, 10800),
             CreateRegion(10900, 11000, 11100, 11200),
+            None,
         ],
         VisibilityModifier.private,
         ClassModifier.mutable,
@@ -136,6 +140,7 @@ class TestStandard(object):
             CreateRegion(13700, 13800, 13900, 14000),
             CreateRegion(14100, 14200, 14300, 14400),
             CreateRegion(14500, 14600, 14700, 14800),
+            None,
         ],
         VisibilityModifier.public,
         ClassModifier.mutable,
@@ -158,6 +163,7 @@ class TestStandard(object):
             [self._return_type],
             None,
             [None],
+            None,
         )
 
         assert info.Visibility == VisibilityModifier.public
@@ -180,6 +186,7 @@ class TestStandard(object):
             [self._return_type],
             None,
             [None],
+            None,
         )
 
         assert info.Visibility == VisibilityModifier.public
@@ -202,6 +209,7 @@ class TestStandard(object):
             [self._return_type],
             ClassModifier.immutable,
             [None],
+            None,
         )
 
         assert info.Visibility == VisibilityModifier.public
@@ -224,6 +232,7 @@ class TestStandard(object):
             [],
             None,
             [None],
+            None,
         )
 
         assert info.Visibility == VisibilityModifier.private
@@ -241,6 +250,7 @@ class TestStandard(object):
             [],
             None,
             [None],
+            None,
         )
 
         assert info.MethodType == MethodType.standard
@@ -259,6 +269,7 @@ class TestStandard(object):
                 [],
                 None,
                 [None],
+                None,
             )
 
         ex = ex.value
@@ -279,7 +290,8 @@ class TestStandard(object):
                 "Function",
                 [],
                 ClassModifier.mutable,
-                True,
+                [None],
+                None,
             )
 
         ex = ex.value
@@ -298,6 +310,7 @@ class TestStandard(object):
                 self._return_type,
                 "Function",
                 [],
+                None,
                 None,
                 None,
             )
@@ -323,6 +336,7 @@ class TestStandard(object):
                 [],
                 ClassModifier.mutable,
                 [None],
+                None,
             )
 
             assert info.Visibility == expected_visibility
@@ -341,6 +355,7 @@ class TestStandard(object):
                 [],
                 ClassModifier.mutable,
                 [None],
+                None,
             )
 
         ex = ex.value
@@ -370,6 +385,7 @@ class TestStandard(object):
                 [],
                 None,
                 [None] if statements_expected else None,
+                None,
             )
 
             assert info.MethodType == expected_method_type
@@ -386,6 +402,7 @@ class TestStandard(object):
                 self._return_type,
                 "Method",
                 [],
+                None,
                 None,
                 None,
             )
@@ -411,6 +428,7 @@ class TestStandard(object):
                 [],
                 None,
                 [None],
+                None,
             )
 
             assert info.ClassModifier == expected_class_modifier
@@ -428,7 +446,8 @@ class TestStandard(object):
                 "Method",
                 [],
                 ClassModifier.mutable,
-                True,
+                [None],
+                None,
             )
 
         ex = ex.value
@@ -449,6 +468,7 @@ class TestStandard(object):
                 [],
                 ClassModifier.immutable,
                 [None],
+                None,
             )
 
         ex = ex.value
@@ -473,6 +493,7 @@ class TestStandard(object):
                     [],
                     None,
                     [None],
+                    None,
                 )
 
             ex = ex.value
@@ -495,6 +516,7 @@ class TestStandard(object):
                     self._return_type,
                     "Method",
                     [],
+                    None,
                     None,
                     None,
                 )

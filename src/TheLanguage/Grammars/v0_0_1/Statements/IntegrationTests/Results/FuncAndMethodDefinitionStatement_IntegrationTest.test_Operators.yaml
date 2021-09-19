@@ -183,11 +183,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.ToBool"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 2, Col 5] -> [Ln 2, Col 13]"
                                             Name: "[Ln 2, Col 18] -> [Ln 2, Col 28]"
                                             Parameters: None
@@ -316,11 +318,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.ToString"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 3, Col 5] -> [Ln 3, Col 13]"
                                             Name: "[Ln 3, Col 18] -> [Ln 3, Col 30]"
                                             Parameters: None
@@ -449,11 +453,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Repr"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 4, Col 5] -> [Ln 4, Col 13]"
                                             Name: "[Ln 4, Col 18] -> [Ln 4, Col 26]"
                                             Parameters: None
@@ -582,11 +588,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Clone"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 5, Col 5] -> [Ln 5, Col 13]"
                                             Name: "[Ln 5, Col 18] -> [Ln 5, Col 27]"
                                             Parameters: None
@@ -715,11 +723,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Serialize"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 6, Col 5] -> [Ln 6, Col 13]"
                                             Name: "[Ln 6, Col 18] -> [Ln 6, Col 31]"
                                             Parameters: None
@@ -848,11 +858,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Init"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 8, Col 5] -> [Ln 8, Col 13]"
                                             Name: "[Ln 8, Col 18] -> [Ln 8, Col 26]"
                                             Parameters: None
@@ -981,11 +993,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.PostInit"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 9, Col 5] -> [Ln 9, Col 13]"
                                             Name: "[Ln 9, Col 18] -> [Ln 9, Col 30]"
                                             Parameters: None
@@ -1114,11 +1128,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.GetAttribute"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 11, Col 5] -> [Ln 11, Col 13]"
                                             Name: "[Ln 11, Col 18] -> [Ln 11, Col 34]"
                                             Parameters: None
@@ -1247,11 +1263,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Call"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 12, Col 5] -> [Ln 12, Col 13]"
                                             Name: "[Ln 12, Col 18] -> [Ln 12, Col 26]"
                                             Parameters: None
@@ -1380,11 +1398,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Cast"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 13, Col 5] -> [Ln 13, Col 13]"
                                             Name: "[Ln 13, Col 18] -> [Ln 13, Col 26]"
                                             Parameters: None
@@ -1513,11 +1533,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Index"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 14, Col 5] -> [Ln 14, Col 13]"
                                             Name: "[Ln 14, Col 18] -> [Ln 14, Col 27]"
                                             Parameters: None
@@ -1646,11 +1668,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Contains"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 16, Col 5] -> [Ln 16, Col 13]"
                                             Name: "[Ln 16, Col 18] -> [Ln 16, Col 30]"
                                             Parameters: None
@@ -1779,11 +1803,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Length"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 17, Col 5] -> [Ln 17, Col 13]"
                                             Name: "[Ln 17, Col 18] -> [Ln 17, Col 28]"
                                             Parameters: None
@@ -1912,11 +1938,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Iter"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 18, Col 5] -> [Ln 18, Col 13]"
                                             Name: "[Ln 18, Col 18] -> [Ln 18, Col 26]"
                                             Parameters: None
@@ -2045,11 +2073,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.AtEnd"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 19, Col 5] -> [Ln 19, Col 13]"
                                             Name: "[Ln 19, Col 18] -> [Ln 19, Col 27]"
                                             Parameters: None
@@ -2178,11 +2208,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Compare"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 21, Col 5] -> [Ln 21, Col 13]"
                                             Name: "[Ln 21, Col 18] -> [Ln 21, Col 29]"
                                             Parameters: None
@@ -2311,11 +2343,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Equal"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 22, Col 5] -> [Ln 22, Col 13]"
                                             Name: "[Ln 22, Col 18] -> [Ln 22, Col 27]"
                                             Parameters: None
@@ -2444,11 +2478,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.NotEqual"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 23, Col 5] -> [Ln 23, Col 13]"
                                             Name: "[Ln 23, Col 18] -> [Ln 23, Col 30]"
                                             Parameters: None
@@ -2577,11 +2613,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Less"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 24, Col 5] -> [Ln 24, Col 13]"
                                             Name: "[Ln 24, Col 18] -> [Ln 24, Col 26]"
                                             Parameters: None
@@ -2710,11 +2748,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.LessEqual"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 25, Col 5] -> [Ln 25, Col 13]"
                                             Name: "[Ln 25, Col 18] -> [Ln 25, Col 31]"
                                             Parameters: None
@@ -2843,11 +2883,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Greater"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 26, Col 5] -> [Ln 26, Col 13]"
                                             Name: "[Ln 26, Col 18] -> [Ln 26, Col 29]"
                                             Parameters: None
@@ -2976,11 +3018,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.GreaterEqual"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 27, Col 5] -> [Ln 27, Col 13]"
                                             Name: "[Ln 27, Col 18] -> [Ln 27, Col 34]"
                                             Parameters: None
@@ -3109,11 +3153,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.And"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 29, Col 5] -> [Ln 29, Col 13]"
                                             Name: "[Ln 29, Col 18] -> [Ln 29, Col 25]"
                                             Parameters: None
@@ -3242,11 +3288,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Or"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 30, Col 5] -> [Ln 30, Col 13]"
                                             Name: "[Ln 30, Col 18] -> [Ln 30, Col 24]"
                                             Parameters: None
@@ -3375,11 +3423,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Not"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 31, Col 5] -> [Ln 31, Col 13]"
                                             Name: "[Ln 31, Col 18] -> [Ln 31, Col 25]"
                                             Parameters: None
@@ -3508,11 +3558,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Add"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 33, Col 5] -> [Ln 33, Col 13]"
                                             Name: "[Ln 33, Col 18] -> [Ln 33, Col 25]"
                                             Parameters: None
@@ -3641,11 +3693,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Subtract"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 34, Col 5] -> [Ln 34, Col 13]"
                                             Name: "[Ln 34, Col 18] -> [Ln 34, Col 30]"
                                             Parameters: None
@@ -3774,11 +3828,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Multiply"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 35, Col 5] -> [Ln 35, Col 13]"
                                             Name: "[Ln 35, Col 18] -> [Ln 35, Col 30]"
                                             Parameters: None
@@ -3907,11 +3963,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Divide"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 36, Col 5] -> [Ln 36, Col 13]"
                                             Name: "[Ln 36, Col 18] -> [Ln 36, Col 28]"
                                             Parameters: None
@@ -4040,11 +4098,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.DivideFloor"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 37, Col 5] -> [Ln 37, Col 13]"
                                             Name: "[Ln 37, Col 18] -> [Ln 37, Col 33]"
                                             Parameters: None
@@ -4173,11 +4233,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Power"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 38, Col 5] -> [Ln 38, Col 13]"
                                             Name: "[Ln 38, Col 18] -> [Ln 38, Col 27]"
                                             Parameters: None
@@ -4306,11 +4368,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Mod"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 39, Col 5] -> [Ln 39, Col 13]"
                                             Name: "[Ln 39, Col 18] -> [Ln 39, Col 25]"
                                             Parameters: None
@@ -4439,11 +4503,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Positive"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 40, Col 5] -> [Ln 40, Col 13]"
                                             Name: "[Ln 40, Col 18] -> [Ln 40, Col 30]"
                                             Parameters: None
@@ -4572,11 +4638,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.Negative"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 41, Col 5] -> [Ln 41, Col 13]"
                                             Name: "[Ln 41, Col 18] -> [Ln 41, Col 30]"
                                             Parameters: None
@@ -4705,11 +4773,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.AddInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 43, Col 5] -> [Ln 43, Col 13]"
                                             Name: "[Ln 43, Col 18] -> [Ln 43, Col 32]"
                                             Parameters: None
@@ -4838,11 +4908,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.SubtractInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 44, Col 5] -> [Ln 44, Col 13]"
                                             Name: "[Ln 44, Col 18] -> [Ln 44, Col 37]"
                                             Parameters: None
@@ -4971,11 +5043,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.MultiplyInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 45, Col 5] -> [Ln 45, Col 13]"
                                             Name: "[Ln 45, Col 18] -> [Ln 45, Col 37]"
                                             Parameters: None
@@ -5104,11 +5178,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.DivideInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 46, Col 5] -> [Ln 46, Col 13]"
                                             Name: "[Ln 46, Col 18] -> [Ln 46, Col 35]"
                                             Parameters: None
@@ -5237,11 +5313,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.DivideFloorInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 47, Col 5] -> [Ln 47, Col 13]"
                                             Name: "[Ln 47, Col 18] -> [Ln 47, Col 40]"
                                             Parameters: None
@@ -5370,11 +5448,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.PowerInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 48, Col 5] -> [Ln 48, Col 13]"
                                             Name: "[Ln 48, Col 18] -> [Ln 48, Col 34]"
                                             Parameters: None
@@ -5503,11 +5583,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.ModInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 49, Col 5] -> [Ln 49, Col 13]"
                                             Name: "[Ln 49, Col 18] -> [Ln 49, Col 32]"
                                             Parameters: None
@@ -5636,11 +5718,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.ShiftLeft"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 51, Col 5] -> [Ln 51, Col 13]"
                                             Name: "[Ln 51, Col 18] -> [Ln 51, Col 31]"
                                             Parameters: None
@@ -5769,11 +5853,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.ShiftRight"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 52, Col 5] -> [Ln 52, Col 13]"
                                             Name: "[Ln 52, Col 18] -> [Ln 52, Col 32]"
                                             Parameters: None
@@ -5902,11 +5988,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.BitAnd"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 53, Col 5] -> [Ln 53, Col 13]"
                                             Name: "[Ln 53, Col 18] -> [Ln 53, Col 28]"
                                             Parameters: None
@@ -6035,11 +6123,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.BitOr"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 54, Col 5] -> [Ln 54, Col 13]"
                                             Name: "[Ln 54, Col 18] -> [Ln 54, Col 27]"
                                             Parameters: None
@@ -6168,11 +6258,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.BitXor"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 55, Col 5] -> [Ln 55, Col 13]"
                                             Name: "[Ln 55, Col 18] -> [Ln 55, Col 28]"
                                             Parameters: None
@@ -6301,11 +6393,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.BitFlip"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 56, Col 5] -> [Ln 56, Col 13]"
                                             Name: "[Ln 56, Col 18] -> [Ln 56, Col 29]"
                                             Parameters: None
@@ -6434,11 +6528,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.ShiftLeftInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 58, Col 5] -> [Ln 58, Col 13]"
                                             Name: "[Ln 58, Col 18] -> [Ln 58, Col 38]"
                                             Parameters: None
@@ -6567,11 +6663,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.ShiftRightInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 59, Col 5] -> [Ln 59, Col 13]"
                                             Name: "[Ln 59, Col 18] -> [Ln 59, Col 39]"
                                             Parameters: None
@@ -6700,11 +6798,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.BitAndInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 60, Col 5] -> [Ln 60, Col 13]"
                                             Name: "[Ln 60, Col 18] -> [Ln 60, Col 35]"
                                             Parameters: None
@@ -6833,11 +6933,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.BitOrInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 61, Col 5] -> [Ln 61, Col 13]"
                                             Name: "[Ln 61, Col 18] -> [Ln 61, Col 34]"
                                             Parameters: None
@@ -6966,11 +7068,13 @@ Children:
                                             Type: "Or: (Statements, Newline+) <class 'TheLanguage.Parser.Phrases.OrPhrase.OrPhrase'>"
                                         Info: # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                                           ClassModifier: "ClassModifier.immutable"
+                                          Documentation: None
                                           MethodType: "MethodType.abstract"
                                           Name: "OperatorType.BitXorInplace"
                                           Parameters: None
                                           Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                                             ClassModifier: "[Ln 62, Col 5] -> [Ln 63, Col 1]"
+                                            Documentation: None
                                             MethodType: "[Ln 62, Col 5] -> [Ln 62, Col 13]"
                                             Name: "[Ln 62, Col 18] -> [Ln 62, Col 35]"
                                             Parameters: None
@@ -7020,6 +7124,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins: None
               Name: "Foo"
@@ -7027,6 +7132,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 63, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: None
                 Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
@@ -7036,11 +7142,13 @@ Children:
               Statements:
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.ToBool"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 2, Col 5] -> [Ln 2, Col 13]"
                     Name: "[Ln 2, Col 18] -> [Ln 2, Col 28]"
                     Parameters: None
@@ -7059,11 +7167,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.ToString"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 3, Col 5] -> [Ln 3, Col 13]"
                     Name: "[Ln 3, Col 18] -> [Ln 3, Col 30]"
                     Parameters: None
@@ -7082,11 +7192,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Repr"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 4, Col 5] -> [Ln 4, Col 13]"
                     Name: "[Ln 4, Col 18] -> [Ln 4, Col 26]"
                     Parameters: None
@@ -7105,11 +7217,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Clone"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 5, Col 5] -> [Ln 5, Col 13]"
                     Name: "[Ln 5, Col 18] -> [Ln 5, Col 27]"
                     Parameters: None
@@ -7128,11 +7242,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Serialize"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 6, Col 5] -> [Ln 6, Col 13]"
                     Name: "[Ln 6, Col 18] -> [Ln 6, Col 31]"
                     Parameters: None
@@ -7151,11 +7267,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Init"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 8, Col 5] -> [Ln 8, Col 13]"
                     Name: "[Ln 8, Col 18] -> [Ln 8, Col 26]"
                     Parameters: None
@@ -7174,11 +7292,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.PostInit"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 9, Col 5] -> [Ln 9, Col 13]"
                     Name: "[Ln 9, Col 18] -> [Ln 9, Col 30]"
                     Parameters: None
@@ -7197,11 +7317,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.GetAttribute"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 11, Col 5] -> [Ln 11, Col 13]"
                     Name: "[Ln 11, Col 18] -> [Ln 11, Col 34]"
                     Parameters: None
@@ -7220,11 +7342,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Call"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 12, Col 5] -> [Ln 12, Col 13]"
                     Name: "[Ln 12, Col 18] -> [Ln 12, Col 26]"
                     Parameters: None
@@ -7243,11 +7367,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Cast"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 13, Col 5] -> [Ln 13, Col 13]"
                     Name: "[Ln 13, Col 18] -> [Ln 13, Col 26]"
                     Parameters: None
@@ -7266,11 +7392,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Index"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 14, Col 5] -> [Ln 14, Col 13]"
                     Name: "[Ln 14, Col 18] -> [Ln 14, Col 27]"
                     Parameters: None
@@ -7289,11 +7417,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Contains"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 16, Col 5] -> [Ln 16, Col 13]"
                     Name: "[Ln 16, Col 18] -> [Ln 16, Col 30]"
                     Parameters: None
@@ -7312,11 +7442,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Length"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 17, Col 5] -> [Ln 17, Col 13]"
                     Name: "[Ln 17, Col 18] -> [Ln 17, Col 28]"
                     Parameters: None
@@ -7335,11 +7467,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Iter"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 18, Col 5] -> [Ln 18, Col 13]"
                     Name: "[Ln 18, Col 18] -> [Ln 18, Col 26]"
                     Parameters: None
@@ -7358,11 +7492,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.AtEnd"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 19, Col 5] -> [Ln 19, Col 13]"
                     Name: "[Ln 19, Col 18] -> [Ln 19, Col 27]"
                     Parameters: None
@@ -7381,11 +7517,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Compare"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 21, Col 5] -> [Ln 21, Col 13]"
                     Name: "[Ln 21, Col 18] -> [Ln 21, Col 29]"
                     Parameters: None
@@ -7404,11 +7542,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Equal"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 22, Col 5] -> [Ln 22, Col 13]"
                     Name: "[Ln 22, Col 18] -> [Ln 22, Col 27]"
                     Parameters: None
@@ -7427,11 +7567,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.NotEqual"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 23, Col 5] -> [Ln 23, Col 13]"
                     Name: "[Ln 23, Col 18] -> [Ln 23, Col 30]"
                     Parameters: None
@@ -7450,11 +7592,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Less"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 24, Col 5] -> [Ln 24, Col 13]"
                     Name: "[Ln 24, Col 18] -> [Ln 24, Col 26]"
                     Parameters: None
@@ -7473,11 +7617,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.LessEqual"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 25, Col 5] -> [Ln 25, Col 13]"
                     Name: "[Ln 25, Col 18] -> [Ln 25, Col 31]"
                     Parameters: None
@@ -7496,11 +7642,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Greater"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 26, Col 5] -> [Ln 26, Col 13]"
                     Name: "[Ln 26, Col 18] -> [Ln 26, Col 29]"
                     Parameters: None
@@ -7519,11 +7667,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.GreaterEqual"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 27, Col 5] -> [Ln 27, Col 13]"
                     Name: "[Ln 27, Col 18] -> [Ln 27, Col 34]"
                     Parameters: None
@@ -7542,11 +7692,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.And"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 29, Col 5] -> [Ln 29, Col 13]"
                     Name: "[Ln 29, Col 18] -> [Ln 29, Col 25]"
                     Parameters: None
@@ -7565,11 +7717,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Or"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 30, Col 5] -> [Ln 30, Col 13]"
                     Name: "[Ln 30, Col 18] -> [Ln 30, Col 24]"
                     Parameters: None
@@ -7588,11 +7742,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Not"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 31, Col 5] -> [Ln 31, Col 13]"
                     Name: "[Ln 31, Col 18] -> [Ln 31, Col 25]"
                     Parameters: None
@@ -7611,11 +7767,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Add"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 33, Col 5] -> [Ln 33, Col 13]"
                     Name: "[Ln 33, Col 18] -> [Ln 33, Col 25]"
                     Parameters: None
@@ -7634,11 +7792,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Subtract"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 34, Col 5] -> [Ln 34, Col 13]"
                     Name: "[Ln 34, Col 18] -> [Ln 34, Col 30]"
                     Parameters: None
@@ -7657,11 +7817,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Multiply"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 35, Col 5] -> [Ln 35, Col 13]"
                     Name: "[Ln 35, Col 18] -> [Ln 35, Col 30]"
                     Parameters: None
@@ -7680,11 +7842,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Divide"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 36, Col 5] -> [Ln 36, Col 13]"
                     Name: "[Ln 36, Col 18] -> [Ln 36, Col 28]"
                     Parameters: None
@@ -7703,11 +7867,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.DivideFloor"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 37, Col 5] -> [Ln 37, Col 13]"
                     Name: "[Ln 37, Col 18] -> [Ln 37, Col 33]"
                     Parameters: None
@@ -7726,11 +7892,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Power"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 38, Col 5] -> [Ln 38, Col 13]"
                     Name: "[Ln 38, Col 18] -> [Ln 38, Col 27]"
                     Parameters: None
@@ -7749,11 +7917,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Mod"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 39, Col 5] -> [Ln 39, Col 13]"
                     Name: "[Ln 39, Col 18] -> [Ln 39, Col 25]"
                     Parameters: None
@@ -7772,11 +7942,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Positive"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 40, Col 5] -> [Ln 40, Col 13]"
                     Name: "[Ln 40, Col 18] -> [Ln 40, Col 30]"
                     Parameters: None
@@ -7795,11 +7967,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.Negative"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 41, Col 5] -> [Ln 41, Col 13]"
                     Name: "[Ln 41, Col 18] -> [Ln 41, Col 30]"
                     Parameters: None
@@ -7818,11 +7992,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.AddInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 43, Col 5] -> [Ln 43, Col 13]"
                     Name: "[Ln 43, Col 18] -> [Ln 43, Col 32]"
                     Parameters: None
@@ -7841,11 +8017,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.SubtractInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 44, Col 5] -> [Ln 44, Col 13]"
                     Name: "[Ln 44, Col 18] -> [Ln 44, Col 37]"
                     Parameters: None
@@ -7864,11 +8042,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.MultiplyInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 45, Col 5] -> [Ln 45, Col 13]"
                     Name: "[Ln 45, Col 18] -> [Ln 45, Col 37]"
                     Parameters: None
@@ -7887,11 +8067,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.DivideInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 46, Col 5] -> [Ln 46, Col 13]"
                     Name: "[Ln 46, Col 18] -> [Ln 46, Col 35]"
                     Parameters: None
@@ -7910,11 +8092,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.DivideFloorInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 47, Col 5] -> [Ln 47, Col 13]"
                     Name: "[Ln 47, Col 18] -> [Ln 47, Col 40]"
                     Parameters: None
@@ -7933,11 +8117,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.PowerInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 48, Col 5] -> [Ln 48, Col 13]"
                     Name: "[Ln 48, Col 18] -> [Ln 48, Col 34]"
                     Parameters: None
@@ -7956,11 +8142,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.ModInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 49, Col 5] -> [Ln 49, Col 13]"
                     Name: "[Ln 49, Col 18] -> [Ln 49, Col 32]"
                     Parameters: None
@@ -7979,11 +8167,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.ShiftLeft"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 51, Col 5] -> [Ln 51, Col 13]"
                     Name: "[Ln 51, Col 18] -> [Ln 51, Col 31]"
                     Parameters: None
@@ -8002,11 +8192,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.ShiftRight"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 52, Col 5] -> [Ln 52, Col 13]"
                     Name: "[Ln 52, Col 18] -> [Ln 52, Col 32]"
                     Parameters: None
@@ -8025,11 +8217,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.BitAnd"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 53, Col 5] -> [Ln 53, Col 13]"
                     Name: "[Ln 53, Col 18] -> [Ln 53, Col 28]"
                     Parameters: None
@@ -8048,11 +8242,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.BitOr"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 54, Col 5] -> [Ln 54, Col 13]"
                     Name: "[Ln 54, Col 18] -> [Ln 54, Col 27]"
                     Parameters: None
@@ -8071,11 +8267,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.BitXor"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 55, Col 5] -> [Ln 55, Col 13]"
                     Name: "[Ln 55, Col 18] -> [Ln 55, Col 28]"
                     Parameters: None
@@ -8094,11 +8292,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.BitFlip"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 56, Col 5] -> [Ln 56, Col 13]"
                     Name: "[Ln 56, Col 18] -> [Ln 56, Col 29]"
                     Parameters: None
@@ -8117,11 +8317,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.ShiftLeftInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 58, Col 5] -> [Ln 58, Col 13]"
                     Name: "[Ln 58, Col 18] -> [Ln 58, Col 38]"
                     Parameters: None
@@ -8140,11 +8342,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.ShiftRightInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 59, Col 5] -> [Ln 59, Col 13]"
                     Name: "[Ln 59, Col 18] -> [Ln 59, Col 39]"
                     Parameters: None
@@ -8163,11 +8367,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.BitAndInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 60, Col 5] -> [Ln 60, Col 13]"
                     Name: "[Ln 60, Col 18] -> [Ln 60, Col 35]"
                     Parameters: None
@@ -8186,11 +8392,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.BitOrInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 61, Col 5] -> [Ln 61, Col 13]"
                     Name: "[Ln 61, Col 18] -> [Ln 61, Col 34]"
                     Parameters: None
@@ -8209,11 +8417,13 @@ Children:
                   Visibility: "VisibilityModifier.private"
                 - # <class 'TheLanguage.Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo.FuncAndMethodDefinitionStatementLexerInfo'>
                   ClassModifier: "ClassModifier.immutable"
+                  Documentation: None
                   MethodType: "MethodType.abstract"
                   Name: "OperatorType.BitXorInplace"
                   Parameters: None
                   Regions: # <class 'types.FuncAndMethodDefinitionStatementLexerInfoRegions'>
                     ClassModifier: "[Ln 62, Col 5] -> [Ln 63, Col 1]"
+                    Documentation: None
                     MethodType: "[Ln 62, Col 5] -> [Ln 62, Col 13]"
                     Name: "[Ln 62, Col 18] -> [Ln 62, Col 35]"
                     Parameters: None

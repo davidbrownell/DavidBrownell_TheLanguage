@@ -189,6 +189,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
@@ -203,6 +204,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
                 ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: "[Ln 1, Col 16] -> [Ln 1, Col 27]"
                 Name: "[Ln 1, Col 7] -> [Ln 1, Col 13]"
@@ -425,6 +427,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
@@ -439,6 +442,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
                 ClassType: "[Ln 4, Col 1] -> [Ln 4, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: "[Ln 4, Col 16] -> [Ln 4, Col 28]"
                 Name: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
@@ -682,6 +686,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
@@ -696,6 +701,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
                 ClassType: "[Ln 7, Col 1] -> [Ln 7, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: "[Ln 7, Col 16] -> [Ln 9, Col 2]"
                 Name: "[Ln 7, Col 7] -> [Ln 7, Col 13]"
@@ -959,6 +965,7 @@ Children:
               Base: None
               ClassModifier: "ClassModifier.immutable"
               ClassType: "ClassType.Class"
+              Documentation: None
               Interfaces: None
               Mixins:
                 - # <class 'TheLanguage.Lexer.Statements.ClassStatementLexerInfo.ClassDependencyLexerInfo'>
@@ -973,6 +980,7 @@ Children:
                 Base: None
                 ClassModifier: "[Ln 12, Col 1] -> [Ln 16, Col 1]"
                 ClassType: "[Ln 12, Col 1] -> [Ln 12, Col 6]"
+                Documentation: None
                 Interfaces: None
                 Mixins: "[Ln 12, Col 16] -> [Ln 14, Col 2]"
                 Name: "[Ln 12, Col 7] -> [Ln 12, Col 13]"
