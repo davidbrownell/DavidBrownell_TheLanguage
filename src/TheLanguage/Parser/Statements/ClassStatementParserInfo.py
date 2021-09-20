@@ -44,28 +44,115 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class ClassType(Enum):
-    # <Line too long> pylint: disable=C0301
     """\
-    |-----------|--------------------|----------------------------|---------------------------|-----------------------------|---------------------|------------------------------------------------------|--------------------------------|------------------------|-------------------------|-------------------------------------|----------------------|-------------------------------------|--------------------------------------------------|--------|-------------|---------|-----------|
-    |           | Default Visibility |    Allowed Visibilities    | Default Member Visibility | Allowed Member Visibilities | Default Method Type |               Allowed Method Types                   |    Allow Method Definitions?   | Default Class Modifier | Allowed Class Modifiers | Requires Special Member Definitions | Allows Data Members? | Allows Mutable Public Data Members? |          Can Be Instantiated Directly?           | Bases? | Interfaces? | Mixins? |           |
-    |-----------|--------------------|----------------------------|---------------------------|-----------------------------|---------------------|------------------------------------------------------|--------------------------------|------------------------|-------------------------|-------------------------------------|----------------------|-------------------------------------|--------------------------------------------------|--------|-------------|---------|-----------|
-    | Primitive |      private       | public, protected, private |          public           |           public            |      deferred       |        deferred, standard (for special members)      | yes (only for special members) |        immutable       |    mutable, immutable   |                 yes                 |          yes         |                 no                  |                       yes                        |   no   |      no     |   no    | Primitive |
-    | Class     |      private       | public, protected, private |          private          | public, protected, private  |      standard       | standard, static, abstract, virtual, override, final |               yes              |        immutable       |    mutable, immutable   |   no (defaults will be generated)   |          yes         |                 no                  |                       yes                        |   yes  |      yes    |   yes   |     Class |
-    | Struct    |      private       |          private           |          public           |           public            |      standard       | standard, static, abstract, virtual, override, final |               yes              |         mutable        |         mutable         |   no (defaults will be generated)   |          yes         |                 yes                 |                       yes                        |   yes  |      no     |   yes   |    Struct |
-    | Exception |      public        |          public            |          public           | public, protected, private  |      standard       | standard, static, abstract, virtual, override, final |               yes              |        immutable       |        immutable        |   no (defaults will be generated)   |          yes         |                 no                  |                       yes                        |   yes  |      yes    |   yes   | Exception |
-    | Enum      |      private       | public, protected, private |          public           |           public            |      standard       | standard, static, abstract, virtual, override, final |               yes              |        immutable       |    mutable, immutable   |   no (defaults will be generated)   |          yes         |                 no                  |                       yes                        |   no   |      no     |   no    |      Enum |
-    | Interface |      private       | public, protected, private |          public           |           public            |      abstract       |       static, abstract, virtual, override, final     |               yes              |        immutable       |    mutable, immutable   |   no (defaults will be generated)   |          no          |                 no                  |     no (must be implemented by a super class)    |   no   |      yes    |   no    | Interface |
-    | Mixin     |      private       | public, protected, private |          private          | public, protected, private  |      standard       | standard, static, abstract, virtual, override, final |               yes              |        immutable       |    mutable, immutable   |                 no                  |          yes         |                 no                  | no (functionality is "grafted" into super class) |   yes  |      no     |   yes   |     Mixin |
-    |-----------|--------------------|----------------------------|---------------------------|-----------------------------|---------------------|------------------------------------------------------|--------------------------------|------------------------|-------------------------|-------------------------------------|----------------------|-------------------------------------|--------------------------------------------------|--------|-------------|---------|-----------|
+    |-----------------------------------------------------------------------------------------------------------------------|
+    | VISIBILITY                                                                                                            |
+    |-----------|--------------------|----------------------------|---------------------------|-----------------------------|
+    |   Type    | Default Visibility |    Allowed Visibilities    | Default Member Visibility | Allowed Member Visibilities |
+    |-----------|--------------------|----------------------------|---------------------------|-----------------------------|
+    | Class     |      private       | public, protected, private |          private          | public, protected, private  |
+    | Enum      |      private       | public, protected, private |          public           | public  protected, private  |
+    | Exception |      public        |          public            |          public           | public, protected, private  |
+    | Interface |      private       | public, protected, private |          public           | public, protected, private  |
+    | Mixin     |      private       | public, protected, private |          private          | public, protected, private  |
+    | Primitive |      private       | public, protected, private |          public           | public, protected, private  |
+    | Struct    |      private       |          private           |          public           | public, protected, private  |
+    | Trait     |      private       | public, protected, private |          public           | public, protected, private  |
+    |-----------|--------------------|----------------------------|---------------------------|-----------------------------|
+
+
+    |--------------------------------------------------------------|
+    | CLASS MODIFIERS                                              |
+    |-----------|------------------------|-------------------------|
+    |   Type    | Default Class Modifier | Allowed Class Modifiers |
+    |-----------|------------------------|-------------------------|
+    | Class     |       immutable        |    mutable, immutable   |
+    | Enum      |       immutable        |    mutable, immutable   |
+    | Exception |       immutable        |        immutable        |
+    | Interface |       immutable        |    mutable, immutable   |
+    | Mixin     |       immutable        |    mutable, immutable   |
+    | Primitive |       immutable        |    mutable, immutable   |
+    | Struct    |        mutable         |         mutable         |
+    | Trait     |       immutable        |    mutable, immutable   |
+    |-----------|------------------------|-------------------------|
+
+
+    |-------------------------------------------------------------------------------------------------|
+    | METHODS                                                                                         |
+    |-----------|---------------------|----------------------|----------------------------------------|
+    |   Type    | Default Method Type | Allowed Method Types |               Notes                    |
+    |-----------|---------------------|----------------------|----------------------------------------|
+    | Class     |      standard       |                      |                                        |
+    | Enum      |      standard       |                      |                                        |
+    | Exception |      standard       |                      |                                        |
+    | Interface |      abstract       |  -deferred, -static  |                                        |
+    | Mixin     |      standard       |                      | 'abstract' is resolved at compile-time |
+    | Primitive |      deferred       |      +deferred       | Implementation is resolved by target   |
+    | Struct    |      standard       |                      |                                        |
+    | Trait     |      abstract       |  -deferred, -static  | 'abstract' is resolved at compile-time |
+    |-----------|---------------------|----------------------|----------------------------------------|
+
+
+    |---------------------------------------------------------------------------------------|
+    | DEPENDENCIES (Bases)                                                                  |
+    |-----------|-------|------|-----------|-----------|-------|-----------|--------|-------|
+    |   Type    | Class | Enum | Exception | Interface | Mixin | Primitive | Struct | Trait |
+    |-----------|-------|------|-----------|-----------|-------|-----------|--------|-------|
+    | Class     |   X   |      |           |           |       |           |        |       |
+    | Enum      |       |      |           |           |       |           |        |       |
+    | Exception |       |      |     X     |           |       |           |        |       |
+    | Interface |       |      |           |           |       |           |        |       |
+    | Mixin     |       |      |           |           |   X   |           |        |       |
+    | Primitive |       |      |           |           |       |           |        |       |
+    | Struct    |       |      |           |           |       |           |    X   |       |
+    | Trait     |       |      |           |           |       |           |        |       |
+    |-----------|-------|------|-----------|-----------|-------|-----------|--------|-------|
+
+
+    |---------------------------------------------------------------------------------------|
+    | DEPENDENCIES (Implements)                                                             |
+    |-----------|-------|------|-----------|-----------|-------|-----------|--------|-------|
+    |   Type    | Class | Enum | Exception | Interface | Mixin | Primitive | Struct | Trait |
+    |-----------|-------|------|-----------|-----------|-------|-----------|--------|-------|
+    | Class     |       |      |           |     X     |       |           |        |   X   |
+    | Enum      |       |      |           |           |       |           |        |       |
+    | Exception |       |      |           |     X     |       |           |        |   X   |
+    | Interface |       |      |           |     X     |       |           |        |       |
+    | Mixin     |       |      |           |           |       |           |        |       |
+    | Primitive |       |      |           |           |       |           |        |       |
+    | Struct    |       |      |           |           |       |           |        |       |
+    | Trait     |       |      |           |           |       |           |        |   X   |
+    |-----------|-------|------|-----------|-----------|-------|-----------|--------|-------|
+
+
+    TODO: This needs some work:
+
+    |---------------------------------------------------------------------------------------|
+    | DEPENDENCIES (Uses)                                                                   |
+    |-----------|-------|------|-----------|-----------|-------|-----------|--------|-------|
+    |   Type    | Class | Enum | Exception | Interface | Mixin | Primitive | Struct | Trait |
+    |-----------|-------|------|-----------|-----------|-------|-----------|--------|-------|
+    | Class     |       |      |           |           |   X   |           |        |       |
+    | Enum      |       |      |           |           |       |           |        |       |
+    | Exception |       |      |           |           |   X   |           |        |       |
+    | Interface |       |      |           |           |       |           |        |       |
+    | Mixin     |       |      |           |           |   X   |           |        |       |
+    | Primitive |       |      |           |           |       |           |        |       |
+    | Struct    |       |      |           |           |   ?   |           |        |       |
+    | Trait     |       |      |           |           |       |           |        |       |
+    |-----------|-------|------|-----------|-----------|-------|-----------|--------|-------|
+
     """
 
-    Primitive                               = "primitive"
+
     Class                                   = "class"
-    Struct                                  = "struct"
-    Exception                               = "exception"
     Enum                                    = "enum"
+    Exception                               = "exception"
     Interface                               = "interface"
     Mixin                                   = "mixin"
+    Primitive                               = "primitive"
+    Struct                                  = "struct"
+    # TODO: Trait                                   = "trait"
 
     # TODO: Enum doesn't seem to fit here
 
@@ -76,128 +163,34 @@ class MethodType(Enum):
     Modifies how a method should be consumed
     """
 
-    standard                                = auto()
-    deferred                                = auto()
-    static                                  = auto()
     abstract                                = auto()
-    virtual                                 = auto()
-    override                                = auto()
+    deferred                                = auto()
     final                                   = auto()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidClassVisibilityError(ParserError):
-    ClassType: str
-    Visibility: str
-    AllowedVisibilities: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Visibility}' is not a supported visibility for '{ClassType}' types; supported values are {AllowedVisibilities}.",
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidClassModifierError(ParserError):
-    ClassType: str
-    Modifier: str
-    AllowedModifiers: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Modifier}' is not a supported modifier for '{ClassType}' types; supported values are {AllowedModifiers}.",
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidMemberVisibilityError(ParserError):
-    ClassType: str
-    Visibility: str
-    AllowedVisibilities: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Visibility}' is not a supported visibility for members of '{ClassType}' types; supported values are {AllowedVisibilities}.",
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidMemberClassModifierError(ParserError):
-    ClassType: str
-    Modifier: str
-    AllowedModifiers: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Modifier}' is not a supported modifier for members of '{ClassType}' types; supported values are {AllowedModifiers}.",
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidMutableClassModifierError(ParserError):
-    ClassType: str
-    Modifier: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Modifier}' is not a valid member modifier for an immutable '{ClassType}' type.",
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidBaseError(ParserError):
-    ClassType: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "Base classes cannot be used with '{ClassType}' types.",
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidInterfacesError(ParserError):
-    ClassType: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "Interfaces cannot be used with '{ClassType}' types.",
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class InvalidMixinsError(ParserError):
-    ClassType: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "Mixins cannot be used with '{ClassType}' types.",
-    )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class StatementsRequiredError(ParserError):
-    ClassType: str
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "Statements are reqired for '{ClassType}' types.",
-    )
+    override                                = auto()
+    standard                                = auto()
+    static                                  = auto()
+    virtual                                 = auto()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class TypeInfo(object):
+    # Visibility
     DefaultClassVisibility: VisibilityModifier
     AllowedClassVisibilities: List[VisibilityModifier]
 
     DefaultMemberVisibility: VisibilityModifier
     AllowedMemberVisibilities: List[VisibilityModifier]
 
+    # Class Modifiers
     DefaultClassModifier: ClassModifier
     AllowedClassModifiers: List[ClassModifier]
 
+    # Methods
     DefaultMethodType: MethodType
     AllowedMethodTypes: List[MethodType]
+
+    # TODO: Dependencies
 
     AllowDataMembers: bool
     AllowMutablePublicDataMembers: bool
@@ -363,6 +356,105 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
 del _non_deferred_method_types
 del _all_class_modifiers
 del _all_visibilities
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidClassVisibilityError(ParserError):
+    ClassType: str
+    Visibility: str
+    AllowedVisibilities: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "'{Visibility}' is not a supported visibility for '{ClassType}' types; supported values are {AllowedVisibilities}.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidClassModifierError(ParserError):
+    ClassType: str
+    Modifier: str
+    AllowedModifiers: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "'{Modifier}' is not a supported modifier for '{ClassType}' types; supported values are {AllowedModifiers}.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidMemberVisibilityError(ParserError):
+    ClassType: str
+    Visibility: str
+    AllowedVisibilities: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "'{Visibility}' is not a supported visibility for members of '{ClassType}' types; supported values are {AllowedVisibilities}.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidMemberClassModifierError(ParserError):
+    ClassType: str
+    Modifier: str
+    AllowedModifiers: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "'{Modifier}' is not a supported modifier for members of '{ClassType}' types; supported values are {AllowedModifiers}.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidMutableClassModifierError(ParserError):
+    ClassType: str
+    Modifier: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "'{Modifier}' is not a valid member modifier for an immutable '{ClassType}' type.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidBaseError(ParserError):
+    ClassType: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Base classes cannot be used with '{ClassType}' types.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidInterfacesError(ParserError):
+    ClassType: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Interfaces cannot be used with '{ClassType}' types.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidMixinsError(ParserError):
+    ClassType: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Mixins cannot be used with '{ClassType}' types.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class StatementsRequiredError(ParserError):
+    ClassType: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Statements are reqired for '{ClassType}' types.",
+    )
 
 
 # ----------------------------------------------------------------------

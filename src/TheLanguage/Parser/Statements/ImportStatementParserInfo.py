@@ -69,7 +69,7 @@ class ImportStatementParserInfo(StatementParserInfo):
         # Visibility
         if visibility is None:
             visibility = VisibilityModifier.private
-            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # type: ignore
+            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
 
         object.__setattr__(self, "Visibility", visibility)
 
