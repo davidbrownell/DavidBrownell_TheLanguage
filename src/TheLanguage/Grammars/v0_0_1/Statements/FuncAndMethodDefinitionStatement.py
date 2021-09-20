@@ -186,6 +186,8 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                     # <attributes>*
                     AttributesPhraseItem.Create(),
 
+                    # TODO: Begin ignore whitespace
+
                     # <visibility>?
                     PhraseItem(
                         name="Visibility",
@@ -215,6 +217,8 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                         item=ClassModifier.CreatePhraseItem(),
                         arity="?",
                     ),
+
+                    # TODO: End ignore whitespace
 
                     # - Multi-line Definition
                     # - Single-line Definition

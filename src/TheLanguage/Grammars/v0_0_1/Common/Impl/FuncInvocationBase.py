@@ -66,6 +66,8 @@ class FuncInvocationBase(GrammarPhrase):
         grammar_phrase_type: GrammarPhrase.Type,
     ):
         phrase_items = [
+            # TODO: This doesn't work, as we need a way to invoke anonymous functions or a function returned by another function
+
             # <generic_name>
             CommonTokens.GenericName,
 
