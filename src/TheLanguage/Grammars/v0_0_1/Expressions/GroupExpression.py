@@ -31,16 +31,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.Expressions.GroupExpressionLexerInfo import (
-        ExpressionLexerInfo,
-        GroupExpressionLexerInfo,
+    from ....Parser.Expressions.GroupExpressionParserInfo import (
+        ExpressionParserInfo,
+        GroupExpressionParserInfo,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -87,27 +87,27 @@ class GroupExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
             # <expr>
             expression_node = ExtractDynamic(cast(Node, nodes[2]))
-            expression_info = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                GroupExpressionLexerInfo(
-                    CreateLexerRegions(node, expression_node),  # type: ignore
+                GroupExpressionParserInfo(
+                    CreateParserRegions(node, expression_node),  # type: ignore
                     expression_info,
                 ),
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

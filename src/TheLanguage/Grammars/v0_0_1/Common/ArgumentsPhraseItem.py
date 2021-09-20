@@ -36,16 +36,16 @@ with InitRelativeImports():
     from . import Tokens as CommonTokens
 
     from ...GrammarError import GrammarError
-    from ...GrammarPhrase import CreateLexerRegions
+    from ...GrammarPhrase import CreateParserRegions
 
-    from ....Lexer.Common.ArgumentLexerInfo import (
-        ArgumentLexerInfo,
-        ExpressionLexerInfo,
+    from ....Parser.Common.ArgumentParserInfo import (
+        ArgumentParserInfo,
+        ExpressionParserInfo,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
@@ -130,9 +130,9 @@ def Create() -> PhraseItem:
 
 
 # ----------------------------------------------------------------------
-def ExtractLexerInfo(
+def ExtractParserInfo(
     node: Node,
-) -> Optional[List[ArgumentLexerInfo]]:
+) -> Optional[List[ArgumentParserInfo]]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
 
@@ -144,7 +144,7 @@ def ExtractLexerInfo(
     arguments_nodes = ExtractSequence(arguments_node)
     assert len(arguments_nodes) == 3
 
-    argument_infos: List[ArgumentLexerInfo] = []
+    argument_infos: List[ArgumentParserInfo] = []
     encountered_keyword = False
 
     for argument_node in itertools.chain(
@@ -179,12 +179,12 @@ def ExtractLexerInfo(
 
         # Expression
         expression_node = ExtractDynamic(cast(Node, argument_nodes[1]))
-        expression_info = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
+        expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
         # pylint: disable=too-many-function-args
         argument_infos.append(
-            ArgumentLexerInfo(
-                CreateLexerRegions(
+            ArgumentParserInfo(
+                CreateParserRegions(
                     argument_node,
                     expression_node,
                     keyword_node,

@@ -38,7 +38,7 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ...GrammarPhrase import ImportGrammarStatement
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractOptional,
         ExtractOr,
@@ -51,8 +51,8 @@ with InitRelativeImports():
         RegexToken,
     )
 
-    from ....Parser.TranslationUnitsParser import (
-        Observer as TranslationUnitsParserObserver,
+    from ....Lexer.TranslationUnitsLexer import (
+        Observer as TranslationUnitsLexerObserver,
         UnknownSourceError,
     )
 
@@ -221,7 +221,7 @@ class ImportStatement(ImportGrammarStatement):
         source_roots: List[str],
         fully_qualified_name: str,
         node: Node,
-    ) -> TranslationUnitsParserObserver.ImportInfo:
+    ) -> TranslationUnitsLexerObserver.ImportInfo:
 
         assert fully_qualified_name
 
@@ -310,7 +310,7 @@ class ImportStatement(ImportGrammarStatement):
                 import_type = ImportStatement.ImportType.SourceIsDirectory
 
         if source_filename is None:
-            return TranslationUnitsParserObserver.ImportInfo(source, None)
+            return TranslationUnitsLexerObserver.ImportInfo(source, None)
 
         assert import_type is not None
 
@@ -329,14 +329,14 @@ class ImportStatement(ImportGrammarStatement):
             ),
         )
 
-        return TranslationUnitsParserObserver.ImportInfo(source, source_filename)
+        return TranslationUnitsLexerObserver.ImportInfo(source, source_filename)
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[ImportGrammarStatement.ExtractLexerInfoResult]:
+    ) -> Optional[ImportGrammarStatement.ExtractParserInfoResult]:
         # TODO
         pass
 

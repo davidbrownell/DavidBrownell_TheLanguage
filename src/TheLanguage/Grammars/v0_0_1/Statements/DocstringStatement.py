@@ -32,8 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common.Impl.MultilineStatementBase import MultilineStatementBase
     from ...GrammarPhrase import GrammarPhrase
-    from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Parser.Phrases.DSL import Leaf, Node
+    from ....Parser.ParserInfo import SetParserInfo
+    from ....Lexer.Phrases.DSL import Leaf, Node
 
 
 # ----------------------------------------------------------------------
@@ -84,6 +84,6 @@ class DocstringStatement(MultilineStatementBase):
         node: Node,
         leaf: Leaf,
         value: str,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         object.__setattr__(node, "_docstring_info", (leaf, value))
-        SetLexerInfo(node, None)
+        SetParserInfo(node, None)

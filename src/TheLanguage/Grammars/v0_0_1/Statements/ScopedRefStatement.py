@@ -35,15 +35,15 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import TypeModifier
 
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Lexer.Statements.ScopedRefStatementLexerInfo import (
-        ScopedRefStatementLexerInfo,
-        VariableNameLexerInfo,
+    from ....Parser.ParserInfo import SetParserInfo
+    from ....Parser.Statements.ScopedRefStatementParserInfo import (
+        ScopedRefStatementParserInfo,
+        VariableNameParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractOr,
         ExtractRepeat,
@@ -158,11 +158,11 @@ class ScopedRefStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
@@ -179,7 +179,7 @@ class ScopedRefStatement(GrammarPhrase):
             refs_nodes = ExtractSequence(refs_node)
             assert len(refs_nodes) == 3
 
-            variable_infos: List[VariableNameLexerInfo] = []
+            variable_infos: List[VariableNameParserInfo] = []
 
             for variable_node in itertools.chain(
                 [refs_nodes[0]],
@@ -192,8 +192,8 @@ class ScopedRefStatement(GrammarPhrase):
                 variable_info = cast(str, ExtractToken(variable_leaf))
 
                 variable_infos.append(
-                    VariableNameLexerInfo(
-                        CreateLexerRegions(variable_leaf, variable_leaf),  # type: ignore
+                    VariableNameParserInfo(
+                        CreateParserRegions(variable_leaf, variable_leaf),  # type: ignore
                         variable_info,
                     ),
                 )
@@ -202,12 +202,12 @@ class ScopedRefStatement(GrammarPhrase):
 
             # Statements
             statements_node = cast(Node, nodes[4])
-            statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
+            statements_info = StatementsPhraseItem.ExtractParserInfo(statements_node)
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                ScopedRefStatementLexerInfo(
-                    CreateLexerRegions(node, refs_node, statements_node),  # type: ignore
+                ScopedRefStatementParserInfo(
+                    CreateParserRegions(node, refs_node, statements_node),  # type: ignore
                     variable_infos,
                     statements_info,
                 ),
@@ -215,4 +215,4 @@ class ScopedRefStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

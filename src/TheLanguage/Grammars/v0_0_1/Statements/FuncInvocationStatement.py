@@ -33,8 +33,8 @@ with InitRelativeImports():
     from ..Common.Impl.FuncInvocationBase import FuncInvocationBase, Node
     from ...GrammarPhrase import GrammarPhrase
 
-    from ....Lexer.Statements.FuncInvocationStatementLexerInfo import (
-        FuncInvocationStatementLexerInfo,
+    from ....Parser.Statements.FuncInvocationStatementParserInfo import (
+        FuncInvocationStatementParserInfo,
     )
 
 
@@ -52,8 +52,8 @@ class FuncInvocationStatement(FuncInvocationBase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
-        return cls._ExtractLexerInfoImpl(FuncInvocationStatementLexerInfo, node)
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        return cls._ExtractParserInfoImpl(FuncInvocationStatementParserInfo, node)

@@ -30,17 +30,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.Expressions.UnaryExpressionLexerInfo import (
-        ExpressionLexerInfo,
+    from ....Parser.Expressions.UnaryExpressionParserInfo import (
+        ExpressionParserInfo,
         OperatorType,
-        UnaryExpressionLexerInfo,
+        UnaryExpressionParserInfo,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -110,11 +110,11 @@ class UnaryExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 2
 
@@ -147,12 +147,12 @@ class UnaryExpression(GrammarPhrase):
 
             # <expr>
             expr_node = ExtractDynamic(cast(Node, nodes[1]))
-            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                UnaryExpressionLexerInfo(
-                    CreateLexerRegions(node, operator_leaf, expr_node),  # type: ignore
+                UnaryExpressionParserInfo(
+                    CreateParserRegions(node, operator_leaf, expr_node),  # type: ignore
                     operator_info,
                     expr_info,
                 ),
@@ -160,4 +160,4 @@ class UnaryExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

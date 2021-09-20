@@ -31,16 +31,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import StatementsPhraseItem
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Statements.IfStatementLexerInfo import (
-        ExpressionLexerInfo,
-        IfStatementClauseLexerInfo,
-        IfStatementLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Statements.IfStatementParserInfo import (
+        ExpressionParserInfo,
+        IfStatementClauseParserInfo,
+        IfStatementParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -131,16 +131,16 @@ class IfStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = cast(List[Node], ExtractSequence(node))
             assert len(nodes) == 5
 
-            clauses: List[IfStatementClauseLexerInfo] = []
+            clauses: List[IfStatementClauseParserInfo] = []
 
             # 'if'...
             clauses.append(cls._CreateIfStatementClause(nodes))
@@ -155,16 +155,16 @@ class IfStatement(GrammarPhrase):
                 else_nodes = ExtractSequence(else_node)
                 assert len(else_nodes) == 2
 
-                else_info = StatementsPhraseItem.ExtractLexerInfo(cast(Node, else_nodes[1]))
+                else_info = StatementsPhraseItem.ExtractParserInfo(cast(Node, else_nodes[1]))
             else:
                 else_info = None
 
             assert clauses
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                IfStatementLexerInfo(
-                    CreateLexerRegions(node, node, else_node),  # type: ignore
+                IfStatementParserInfo(
+                    CreateParserRegions(node, node, else_node),  # type: ignore
                     clauses,
                     else_info,
                 ),
@@ -172,7 +172,7 @@ class IfStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -180,7 +180,7 @@ class IfStatement(GrammarPhrase):
     @staticmethod
     def _CreateIfStatementClause(
         node_or_nodes: Union[Node, List[Node]],
-    ) -> IfStatementClauseLexerInfo:
+    ) -> IfStatementClauseParserInfo:
         if isinstance(node_or_nodes, Node):
             nodes = ExtractSequence(node_or_nodes)
             containing_node = node_or_nodes
@@ -196,14 +196,14 @@ class IfStatement(GrammarPhrase):
         assert len(nodes) >= 3
 
         cond_node = cast(Node, ExtractDynamic(cast(Node, nodes[1])))
-        cond_info = cast(ExpressionLexerInfo, GetLexerInfo(cond_node))
+        cond_info = cast(ExpressionParserInfo, GetParserInfo(cond_node))
 
         statements_node = cast(Node, nodes[2])
-        statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
+        statements_info = StatementsPhraseItem.ExtractParserInfo(statements_node)
 
         # pylint: disable=too-many-function-args
-        return IfStatementClauseLexerInfo(
-            CreateLexerRegions(containing_node, cond_node, statements_node),  # type: ignore
+        return IfStatementClauseParserInfo(
+            CreateParserRegions(containing_node, cond_node, statements_node),  # type: ignore
             cond_info,
             statements_info,
         )

@@ -31,15 +31,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Statements.ReturnStatementLexerInfo import (
-        ExpressionLexerInfo,
-        ReturnStatementLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Statements.ReturnStatementParserInfo import (
+        ExpressionParserInfo,
+        ReturnStatementParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -85,29 +85,29 @@ class ReturnStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
             # <expr>?
             expression_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
             if expression_node is not None:
-                expression_info = cast(ExpressionLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, expression_node))))
+                expression_info = cast(ExpressionParserInfo, GetParserInfo(ExtractDynamic(cast(Node, expression_node))))
             else:
                 expression_info = None
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                ReturnStatementLexerInfo(
-                    CreateLexerRegions(node, expression_node),  # type: ignore
+                ReturnStatementParserInfo(
+                    CreateParserRegions(node, expression_node),  # type: ignore
                     expression_info,
                 ),
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

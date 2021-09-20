@@ -36,8 +36,8 @@ with InitRelativeImports():
     from ..Common.Impl.MultilineStatementBase import MultilineStatementBase
     from ...GrammarError import GrammarError
     from ...GrammarPhrase import GetParentNode, GrammarPhrase
-    from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Parser.Phrases.DSL import Leaf, Node
+    from ....Parser.ParserInfo import SetParserInfo
+    from ....Lexer.Phrases.DSL import Leaf, Node
 
 
 # ----------------------------------------------------------------------
@@ -77,7 +77,7 @@ class CompilerStatement(MultilineStatementBase):
         node: Node,
         leaf: Leaf,
         value: str,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # Compiler statements may only appear at the root or within a class
         parent_node = GetParentNode(node)
         if not (
@@ -89,4 +89,4 @@ class CompilerStatement(MultilineStatementBase):
         # Persist the info
         pass # TODO
 
-        SetLexerInfo(node, None)
+        SetParserInfo(node, None)

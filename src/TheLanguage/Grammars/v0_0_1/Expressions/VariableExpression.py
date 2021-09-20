@@ -30,16 +30,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.Expressions.VariableExpressionLexerInfo import (
-        NameLexerInfo,
-        VariableExpressionLexerInfo,
+    from ....Parser.Expressions.VariableExpressionParserInfo import (
+        NameParserInfo,
+        VariableExpressionParserInfo,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -87,22 +87,22 @@ class VariableExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             name_node = ExtractDynamic(node)
-            name_info = cast(NameLexerInfo, GetLexerInfo(name_node))
+            name_info = cast(NameParserInfo, GetParserInfo(name_node))
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                VariableExpressionLexerInfo(
-                    CreateLexerRegions(node, name_node),  # type: ignore
+                VariableExpressionParserInfo(
+                    CreateParserRegions(node, name_node),  # type: ignore
                     name_info,
                 ),
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

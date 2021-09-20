@@ -43,17 +43,17 @@ with InitRelativeImports():
     from ..Common.Impl import ModifierImpl
 
     from ...GrammarError import GrammarError
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Statements.FuncAndMethodDefinitionStatementLexerInfo import (
-        FuncAndMethodDefinitionStatementLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Statements.FuncAndMethodDefinitionStatementParserInfo import (
+        FuncAndMethodDefinitionStatementParserInfo,
         MethodType,
         OperatorType,
-        TypeLexerInfo,
+        TypeParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -186,6 +186,8 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                     # <attributes>*
                     AttributesPhraseItem.Create(),
 
+                    # TODO: Begin ignore whitespace
+
                     # <visibility>?
                     PhraseItem(
                         name="Visibility",
@@ -216,6 +218,8 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                         arity="?",
                     ),
 
+                    # TODO: End ignore whitespace
+
                     # - Multi-line Definition
                     # - Single-line Definition
                     # - Newline
@@ -233,12 +237,12 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 8
 
@@ -261,9 +265,9 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             else:
                 method_type_modifier_info = None
 
-            # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
+            # <type> (The TypeParserInfo will be extracted as part of a deferred callback)
             return_type_node = ExtractDynamic(cast(Node, nodes[3]))
-            return_type_info = cast(TypeLexerInfo, GetLexerInfo(return_type_node))
+            return_type_info = cast(TypeParserInfo, GetParserInfo(return_type_node))
 
             # <name>
             method_name_leaf = cast(Leaf, nodes[4])
@@ -281,7 +285,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
             # <parameters>
             parameters_node = cast(Node, nodes[5])
-            parameters_info = ParametersPhraseItem.ExtractLexerInfo(parameters_node)
+            parameters_info = ParametersPhraseItem.ExtractParserInfo(parameters_node)
             if parameters_info is None:
                 parameters_node = None
 
@@ -307,7 +311,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                 (
                     statements_info,
                     docstring_info,
-                ) = StatementsPhraseItem.ExtractLexerInfoWithDocstrings(statements_node)
+                ) = StatementsPhraseItem.ExtractParserInfoWithDocstrings(statements_node)
 
                 if docstring_info is not None:
                     docstring_value, docstring_leaf = docstring_info  # type: ignore
@@ -315,10 +319,10 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
             # TODO: Leverage attributes
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                FuncAndMethodDefinitionStatementLexerInfo(
-                    CreateLexerRegions(
+                FuncAndMethodDefinitionStatementParserInfo(
+                    CreateParserRegions(
                         node,
                         visibility_node,
                         method_type_modifier_node,
@@ -329,7 +333,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
                         statements_node,
                         docstring_leaf,
                     ),  # type: ignore
-                    ClassStatement.GetContainingClassLexerInfo(  # type: ignore
+                    ClassStatement.GetContainingClassParserInfo(  # type: ignore
                         node,
                         cls.PHRASE_NAME,
                     ),
@@ -346,7 +350,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

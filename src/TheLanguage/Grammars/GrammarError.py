@@ -31,14 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .GrammarPhrase import CreateLexerRegion
-    from ..Lexer.LexerError import LexerError
-    from ..Parser.Components.AST import Leaf, Node
+    from .GrammarPhrase import CreateParserRegion
+    from ..Parser.ParserError import ParserError
+    from ..Lexer.Components.AST import Leaf, Node
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class GrammarError(LexerError):
+class GrammarError(ParserError):
     """Base class for all Grammar-related errors"""
 
     # ----------------------------------------------------------------------
@@ -48,4 +48,4 @@ class GrammarError(LexerError):
         node: Union[Leaf, Node],
         *args,
     ):
-        return cls(CreateLexerRegion(node), *args)
+        return cls(CreateParserRegion(node), *args)

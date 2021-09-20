@@ -35,17 +35,17 @@ with InitRelativeImports():
     from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
 
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Statements.TryExceptStatementLexerInfo import (
-        StatementLexerInfo,
-        TryExceptStatementClauseLexerInfo,
-        TryExceptStatementLexerInfo,
-        TypeLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Statements.TryExceptStatementParserInfo import (
+        StatementParserInfo,
+        TryExceptStatementClauseParserInfo,
+        TryExceptStatementParserInfo,
+        TypeParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -136,21 +136,21 @@ class TryExceptStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 4
 
             # 'try'...
             try_statements_node = cast(Node, nodes[1])
-            try_statements_info = StatementsPhraseItem.ExtractLexerInfo(try_statements_node)
+            try_statements_info = StatementsPhraseItem.ExtractParserInfo(try_statements_node)
 
             # 'except' <type>...
             except_type_nodes = cast(Node, nodes[2])
-            except_infos: List[TryExceptStatementClauseLexerInfo] = []
+            except_infos: List[TryExceptStatementClauseParserInfo] = []
 
             for except_type_node in cast(List[Node], ExtractRepeat(except_type_nodes)):
                 these_type_expect_nodes = ExtractSequence(except_type_node)
@@ -158,7 +158,7 @@ class TryExceptStatement(GrammarPhrase):
 
                 # <type>
                 type_node = cast(Node, ExtractDynamic(cast(Node, these_type_expect_nodes[1])))
-                type_info = cast(TypeLexerInfo, GetLexerInfo(type_node))
+                type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
                 # <name>
                 name_leaf = cast(Leaf, these_type_expect_nodes[2])
@@ -166,12 +166,12 @@ class TryExceptStatement(GrammarPhrase):
 
                 # <statements>
                 statements_node = cast(Node, these_type_expect_nodes[3])
-                statements_info = StatementsPhraseItem.ExtractLexerInfo(statements_node)
+                statements_info = StatementsPhraseItem.ExtractParserInfo(statements_node)
 
                 except_infos.append(
                     # pylint: disable=too-many-function-args
-                    TryExceptStatementClauseLexerInfo(
-                        CreateLexerRegions(except_type_node, type_node, name_leaf, statements_node),  # type: ignore
+                    TryExceptStatementClauseParserInfo(
+                        CreateParserRegions(except_type_node, type_node, name_leaf, statements_node),  # type: ignore
                         type_info,
                         name_info,
                         statements_info,
@@ -184,14 +184,14 @@ class TryExceptStatement(GrammarPhrase):
                 except_nodes = ExtractSequence(except_node)
                 assert len(except_nodes) == 2
 
-                except_info = StatementsPhraseItem.ExtractLexerInfo(cast(Node, except_nodes[1]))
+                except_info = StatementsPhraseItem.ExtractParserInfo(cast(Node, except_nodes[1]))
             else:
                 except_info = None
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                TryExceptStatementLexerInfo(
-                    CreateLexerRegions(
+                TryExceptStatementParserInfo(
+                    CreateParserRegions(
                         node,
                         try_statements_node,
                         except_type_nodes if except_infos else None,
@@ -205,4 +205,4 @@ class TryExceptStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

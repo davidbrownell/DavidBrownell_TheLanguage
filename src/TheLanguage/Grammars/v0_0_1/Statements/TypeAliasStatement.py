@@ -31,15 +31,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Statements.TypeAliasStatementLexerInfo import (
-        TypeAliasStatementLexerInfo,
-        TypeLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Statements.TypeAliasStatementParserInfo import (
+        TypeAliasStatementParserInfo,
+        TypeParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -90,11 +90,11 @@ class TypeAliasStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
@@ -104,12 +104,12 @@ class TypeAliasStatement(GrammarPhrase):
 
             # <type>
             type_node = cast(Node, ExtractDynamic(cast(Node, nodes[3])))
-            type_info = cast(TypeLexerInfo, GetLexerInfo(type_node))
+            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                TypeAliasStatementLexerInfo(
-                    CreateLexerRegions(node, name_leaf, type_node),  # type: ignore
+                TypeAliasStatementParserInfo(
+                    CreateParserRegions(node, name_leaf, type_node),  # type: ignore
                     name_info,
                     type_info,
                 ),
@@ -117,4 +117,4 @@ class TypeAliasStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
