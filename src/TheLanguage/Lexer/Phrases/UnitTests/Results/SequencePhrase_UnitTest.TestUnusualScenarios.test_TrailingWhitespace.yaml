@@ -1,0 +1,65 @@
+# <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+      DataItems:
+        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 7] (6)"
+            Token: "lower"
+            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(0, 6), match='lower1'>"
+            Whitespace: None
+          Phrase: "lower"
+        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[1, 7] (6)"
+            IterEnd: "[2, 1] (7)"
+            Token: "Newline+"
+            Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+              End: 7
+              Start: 6
+            Whitespace: None
+          Phrase: "Newline+"
+      IsComplete: True
+    Phrase: "Sequence: [lower, Newline+]"
+  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[2, 1] (7)"
+Success: True
+
+# <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+      DataItems:
+        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[2, 1] (7)"
+            IterEnd: "[2, 7] (13)"
+            Token: "lower"
+            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(7, 13), match='lower2'>"
+            Whitespace: None
+          Phrase: "lower"
+        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[2, 7] (13)"
+            IterEnd: "[7, 1] (18)"
+            Token: "Newline+"
+            Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+              End: 18
+              Start: 13
+            Whitespace: None
+          Phrase: "Newline+"
+      IsComplete: True
+    Phrase: "Sequence: [lower, Newline+]"
+  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+IterBegin: "[2, 1] (7)"
+IterEnd: "[7, 1] (18)"
+Success: True

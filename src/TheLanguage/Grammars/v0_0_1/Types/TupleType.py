@@ -31,15 +31,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.Impl.TupleBase import TupleBase
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Types.TupleTypeLexerInfo import (
-        TupleTypeLexerInfo,
-        TypeLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Types.TupleTypeParserInfo import (
+        TupleTypeParserInfo,
+        TypeParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import Node
+    from ....Lexer.Phrases.DSL import Node
 
 
 # ----------------------------------------------------------------------
@@ -64,21 +64,21 @@ class TupleType(TupleBase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                TupleTypeLexerInfo(
-                    CreateLexerRegions(node, node),  # type: ignore
-                    [cast(TypeLexerInfo, GetLexerInfo(child)) for child in cls.EnumNodeValues(node)],
+                TupleTypeParserInfo(
+                    CreateParserRegions(node, node),  # type: ignore
+                    [cast(TypeParserInfo, GetParserInfo(child)) for child in cls.EnumNodeValues(node)],
                 ),
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

@@ -28,7 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Impl import ModifierImpl
-    from ....Lexer.Common.ClassModifier import ClassModifier as Enum
+    from ....Parser.Common.ClassModifier import ClassModifier as Enum
 
 
 # ----------------------------------------------------------------------

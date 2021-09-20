@@ -30,16 +30,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.Expressions.TernaryExpressionLexerInfo import (
-        ExpressionLexerInfo,
-        TernaryExpressionLexerInfo,
+    from ....Parser.Expressions.TernaryExpressionParserInfo import (
+        ExpressionParserInfo,
+        TernaryExpressionParserInfo,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -80,31 +80,31 @@ class TernaryExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
             # <expr> (True)
             true_node = ExtractDynamic(cast(Node, nodes[0]))
-            true_info = cast(ExpressionLexerInfo, GetLexerInfo(true_node))
+            true_info = cast(ExpressionParserInfo, GetParserInfo(true_node))
 
             # <expr> (Condition)
             cond_node = ExtractDynamic(cast(Node, nodes[2]))
-            cond_info = cast(ExpressionLexerInfo, GetLexerInfo(cond_node))
+            cond_info = cast(ExpressionParserInfo, GetParserInfo(cond_node))
 
             # <expr> (False)
             false_node = ExtractDynamic(cast(Node, nodes[4]))
-            false_info = cast(ExpressionLexerInfo, GetLexerInfo(false_node))
+            false_info = cast(ExpressionParserInfo, GetParserInfo(false_node))
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                TernaryExpressionLexerInfo(
-                    CreateLexerRegions(node, true_node, cond_node, false_node),  # type: ignore
+                TernaryExpressionParserInfo(
+                    CreateParserRegions(node, true_node, cond_node, false_node),  # type: ignore
                     true_info,
                     cond_info,
                     false_info,
@@ -113,4 +113,4 @@ class TernaryExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

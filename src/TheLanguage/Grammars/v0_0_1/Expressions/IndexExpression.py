@@ -30,16 +30,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.Expressions.IndexExpressionLexerInfo import (
-        ExpressionLexerInfo,
-        IndexExpressionLexerInfo,
+    from ....Parser.Expressions.IndexExpressionParserInfo import (
+        ExpressionParserInfo,
+        IndexExpressionParserInfo,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -88,27 +88,27 @@ class IndexExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 4
 
             # <expr>
             prefix_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
-            prefix_info = cast(ExpressionLexerInfo, GetLexerInfo(prefix_node))
+            prefix_info = cast(ExpressionParserInfo, GetParserInfo(prefix_node))
 
             # <expr>
             index_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
-            index_info = cast(ExpressionLexerInfo, GetLexerInfo(index_node))
+            index_info = cast(ExpressionParserInfo, GetParserInfo(index_node))
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                IndexExpressionLexerInfo(
-                    CreateLexerRegions(node, prefix_node, index_node),  # type: ignore
+                IndexExpressionParserInfo(
+                    CreateParserRegions(node, prefix_node, index_node),  # type: ignore
                     prefix_info,
                     index_info,
                 ),
@@ -116,4 +116,4 @@ class IndexExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

@@ -31,15 +31,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Statements.YieldStatementLexerInfo import (
-        ExpressionLexerInfo,
-        YieldStatementLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Statements.YieldStatementParserInfo import (
+        ExpressionParserInfo,
+        YieldStatementParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -92,11 +92,11 @@ class YieldStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
@@ -111,17 +111,17 @@ class YieldStatement(GrammarPhrase):
 
                 # <expr>
                 expr_node = ExtractDynamic(cast(Node, suffix_nodes[1]))
-                expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+                expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
             else:
                 is_recursive_node = None
 
                 expr_node = None
                 expr_info = None
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                YieldStatementLexerInfo(
-                    CreateLexerRegions(node, expr_node, is_recursive_node),  # type: ignore
+                YieldStatementParserInfo(
+                    CreateParserRegions(node, expr_node, is_recursive_node),  # type: ignore
                     expr_info,
                     True if is_recursive_node is not None else None,
                 ),
@@ -129,4 +129,4 @@ class YieldStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

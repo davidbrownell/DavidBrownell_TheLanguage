@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import cast, Any, Callable, Dict, List, Optional, Union
+from typing import cast, Any, Callable, List, Optional, Union
 
 from dataclasses import dataclass, field
 
@@ -34,16 +34,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Lexer.LexerInfo import (
-        Location as LexerLocation,
-        Region as LexerRegion,
+    from ..Parser.ParserInfo import (
+        Location as ParserLocation,
+        Region as ParserRegion,
     )
 
-    from ..Parser.Components.AST import Leaf, Node
+    from ..Lexer.Components.AST import Leaf, Node
 
-    from ..Parser.TranslationUnitsParser import (
+    from ..Lexer.TranslationUnitsLexer import (
         DynamicPhrasesInfo,                             # This is here as a convenience
-        Observer as TranslationUnitsParserObserver,
+        Observer as TranslationUnitsLexerObserver,
         Phrase,
     )
 
@@ -64,25 +64,8 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         Type                                = auto()
 
     # ----------------------------------------------------------------------
-    # TODO: This will go away in favor of LexerInfo
-    @dataclass(frozen=True, repr=False)
-    class NodeInfo(YamlRepr.ObjectReprImplBase):
-        TokenLookup: Dict[str, Union[Leaf, Node, None]]
-
-        # ----------------------------------------------------------------------
-        def __post_init__(
-            self,
-            **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
-        ):
-            YamlRepr.ObjectReprImplBase.__init__(
-                self,
-                TokenLookup=None,
-                **custom_display_funcs,
-            )
-
-    # ----------------------------------------------------------------------
     @dataclass(frozen=True)
-    class ExtractLexerInfoResult(object):
+    class ExtractParserInfoResult(object):
         # Function that should be called once all the nodes have been validated individually. This
         # can be used by phrases who need context information from their parents to complete
         # validation but can only do so after the parent itself has been validated.
@@ -112,14 +95,14 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional["GrammarPhrase.ExtractLexerInfoResult"]:
+    ) -> Optional["GrammarPhrase.ExtractParserInfoResult"]:
         """\
         Opportunity to validate the syntax of a node.
 
-        This method is invoked during calls to Parser.py:Validate and should be invoked after calls
-        to Parser.py:Prune.
+        This method is invoked during calls to Lexer.py:Validate and should be invoked after calls
+        to Lexer.py:Prune.
         """
         raise Exception("Abstract method")
 
@@ -147,7 +130,7 @@ class ImportGrammarStatement(GrammarPhrase):
         source_roots: List[str],
         fully_qualified_name: str,
         node: Node,
-    ) -> TranslationUnitsParserObserver.ImportInfo:
+    ) -> TranslationUnitsLexerObserver.ImportInfo:
         """\
         Returns ImportInfo for the statement.
 
@@ -158,14 +141,14 @@ class ImportGrammarStatement(GrammarPhrase):
 
 
 # ----------------------------------------------------------------------
-def CreateLexerRegion(
+def CreateParserRegion(
     node: Union[Leaf, Node],
-) -> LexerRegion:
+) -> ParserRegion:
     # ----------------------------------------------------------------------
     def CreateLocation(
         iter: Optional[Phrase.NormalizedIterator],
         adjust_for_whitespace=False,
-    ) -> LexerLocation:
+    ) -> ParserLocation:
         if iter is None:
             line = -1
             column = -1
@@ -181,12 +164,12 @@ def CreateLexerRegion(
                 column += node.Whitespace[1] - node.Whitespace[0] - 1
 
         # pylint: disable=too-many-function-args
-        return LexerLocation(line, column)
+        return ParserLocation(line, column)
 
     # ----------------------------------------------------------------------
 
     # pylint: disable=too-many-function-args
-    return LexerRegion(
+    return ParserRegion(
         CreateLocation(
             node.IterBegin,
             adjust_for_whitespace=True,
@@ -196,13 +179,13 @@ def CreateLexerRegion(
 
 
 # ----------------------------------------------------------------------
-def CreateLexerRegions(
-    *nodes: Union[Leaf, LexerRegion, Node, None],
-) -> List[Optional[LexerRegion]]:
+def CreateParserRegions(
+    *nodes: Union[Leaf, ParserRegion, Node, None],
+) -> List[Optional[ParserRegion]]:
     return [
         None if node is None else
-            node if isinstance(node, LexerRegion) else
-                CreateLexerRegion(node)
+            node if isinstance(node, ParserRegion) else
+                CreateParserRegion(node)
         for node in nodes
     ]
 

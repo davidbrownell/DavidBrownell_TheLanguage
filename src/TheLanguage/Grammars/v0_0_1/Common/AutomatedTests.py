@@ -37,9 +37,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....Parser.Components.AST import RootNode
-    from ....Parser.Parse import Parse, Prune, Validate
-    from ....Parser.TranslationUnitParser import SyntaxInvalidError
+    from ....Lexer.Components.AST import RootNode
+    from ....Lexer.Lex import Lex, Prune, Validate
+    from ....Lexer.TranslationUnitLexer import SyntaxInvalidError
 
 
 # ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ class PatchAndExecuteFlag(Flag):
     _prune_flag                             = auto()
     _validate_flag                          = auto()
 
-    Parse                                   = 0
+    Lex                                   = 0
     Prune                                   = _prune_flag
     Validate                                = _prune_flag | _validate_flag
 
@@ -60,7 +60,7 @@ def PatchAndExecute(
     ],
     fully_qualified_names: List[str],       # List of filenames to parse
     source_roots: List[str],
-    flag=PatchAndExecuteFlag.Parse,
+    flag=PatchAndExecuteFlag.Validate,
     max_num_threads: Optional[int]=None,
     debug_string_on_exception=True,
 ) -> Union[
@@ -91,7 +91,7 @@ def PatchAndExecute(
         patch("os.path.isdir", side_effect=IsDir), \
         patch("builtins.open", side_effect=lambda filename: StringIO(simulated_file_content[filename])) \
     :
-        result = Parse(
+        result = Lex(
             fully_qualified_names,
             source_roots,
             max_num_threads=max_num_threads,

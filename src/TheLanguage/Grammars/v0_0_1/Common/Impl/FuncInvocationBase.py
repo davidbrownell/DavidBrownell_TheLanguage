@@ -32,11 +32,11 @@ with InitRelativeImports():
     from .. import ArgumentsPhraseItem
     from .. import Tokens as CommonTokens
 
-    from ....GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ....GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from .....Lexer.LexerInfo import LexerInfo, SetLexerInfo
+    from .....Parser.ParserInfo import ParserInfo, SetParserInfo
 
-    from .....Parser.Phrases.DSL import (
+    from .....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractSequence,
         ExtractToken,
@@ -66,6 +66,8 @@ class FuncInvocationBase(GrammarPhrase):
         grammar_phrase_type: GrammarPhrase.Type,
     ):
         phrase_items = [
+            # TODO: This doesn't work, as we need a way to invoke anonymous functions or a function returned by another function
+
             # <generic_name>
             CommonTokens.GenericName,
 
@@ -87,12 +89,12 @@ class FuncInvocationBase(GrammarPhrase):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @staticmethod
-    def _ExtractLexerInfoImpl(
-        lexer_info_type: Type[LexerInfo],
+    def _ExtractParserInfoImpl(
+        lexer_info_type: Type[ParserInfo],
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) in [2, 3], nodes
 
@@ -102,15 +104,15 @@ class FuncInvocationBase(GrammarPhrase):
 
             # Arguments
             arguments_node = cast(Node, nodes[1])
-            arguments_info = ArgumentsPhraseItem.ExtractLexerInfo(arguments_node)
+            arguments_info = ArgumentsPhraseItem.ExtractParserInfo(arguments_node)
             if arguments_info is None:
                 arguments_node = None
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
                 lexer_info_type(
-                    CreateLexerRegions(node, name_leaf, arguments_node),
+                    CreateParserRegions(node, name_leaf, arguments_node),
                     name_info,  # type: ignore
                     arguments_info,
                 ),
@@ -118,4 +120,4 @@ class FuncInvocationBase(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

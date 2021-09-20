@@ -31,12 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import SetLexerInfo
-    from ....Lexer.Statements.PassStatementLexerInfo import PassStatementLexerInfo
+    from ....Parser.ParserInfo import SetParserInfo
+    from ....Parser.Statements.PassStatementParserInfo import PassStatementParserInfo
 
-    from ....Parser.Phrases.DSL import CreatePhrase, Node
+    from ....Lexer.Phrases.DSL import CreatePhrase, Node
 
 
 # ----------------------------------------------------------------------
@@ -69,12 +69,12 @@ class PassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
-        SetLexerInfo(
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        SetParserInfo(
             node,
-            PassStatementLexerInfo(
-                CreateLexerRegions(node),  # type: ignore
+            PassStatementParserInfo(
+                CreateParserRegions(node),  # type: ignore
             ),
         )

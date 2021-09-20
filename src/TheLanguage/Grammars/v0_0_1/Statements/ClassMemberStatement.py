@@ -38,16 +38,16 @@ with InitRelativeImports():
     from ..Common import ClassModifier
     from ..Common import VisibilityModifier
 
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Statements.ClassMemberStatementLexerInfo import (
-        ClassMemberStatementLexerInfo,
-        ExpressionLexerInfo,
-        TypeLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Statements.ClassMemberStatementParserInfo import (
+        ClassMemberStatementParserInfo,
+        ExpressionParserInfo,
+        TypeParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -80,7 +80,7 @@ class ClassMemberStatement(GrammarPhrase):
 
     PHRASE_NAME                             = "Class Member Statement"
 
-    # TODO (Lexer Impl): Potential Attributes: Init, ToStr, Serialize, Equality # <TODO> pylint: disable=W0511
+    # TODO (Parser Impl): Potential Attributes: Init, ToStr, Serialize, Equality # <TODO> pylint: disable=W0511
 
     # ----------------------------------------------------------------------
     def __init__(self):
@@ -130,11 +130,11 @@ class ClassMemberStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 7
 
@@ -149,9 +149,9 @@ class ClassMemberStatement(GrammarPhrase):
             else:
                 visibility_info = None
 
-            # <type> (The TypeLexerInfo will be extracted as part of a deferred callback)
+            # <type> (The TypeParserInfo will be extracted as part of a deferred callback)
             type_node = ExtractDynamic(cast(Node, nodes[2]))
-            type_info = cast(TypeLexerInfo, GetLexerInfo(type_node))
+            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
             # <name>
             name_leaf = cast(Leaf, nodes[3])
@@ -165,7 +165,7 @@ class ClassMemberStatement(GrammarPhrase):
             else:
                 class_modifier_info = None
 
-            # ('=' <expr>)? (The ExprLexerInfo will be extracted as part of a deferred callback)
+            # ('=' <expr>)? (The ExprParserInfo will be extracted as part of a deferred callback)
             default_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[5])))
 
             if default_node is not None:
@@ -176,17 +176,17 @@ class ClassMemberStatement(GrammarPhrase):
 
             # TODO: Leverage attributes (init, serialize, etc.)
 
-            # Get the default ExprLexerInfo
+            # Get the default ExprParserInfo
             if default_node is not None:
-                default_info = cast(ExpressionLexerInfo, GetLexerInfo(default_node))
+                default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
             else:
                 default_info = None
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                ClassMemberStatementLexerInfo(
-                    CreateLexerRegions(
+                ClassMemberStatementParserInfo(
+                    CreateParserRegions(
                         node,
                         visibility_node,
                         type_node,
@@ -194,7 +194,7 @@ class ClassMemberStatement(GrammarPhrase):
                         class_modifier_node,
                         default_node,
                     ),  # type: ignore
-                    ClassStatement.GetContainingClassLexerInfo(  # type: ignore
+                    ClassStatement.GetContainingClassParserInfo(  # type: ignore
                         node,
                         FuncAndMethodDefinitionStatement.PHRASE_NAME,
                     ),
@@ -208,4 +208,4 @@ class ClassMemberStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

@@ -32,16 +32,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import TypeModifier
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
-    from ....Lexer.Statements.VariableDeclarationStatementLexerInfo import (
-        ExpressionLexerInfo,
-        NameLexerInfo,
-        VariableDeclarationStatementLexerInfo,
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ....Parser.Statements.VariableDeclarationStatementParserInfo import (
+        ExpressionParserInfo,
+        NameParserInfo,
+        VariableDeclarationStatementParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -95,11 +95,11 @@ class VariableDeclarationStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
@@ -112,16 +112,16 @@ class VariableDeclarationStatement(GrammarPhrase):
 
             # <name>
             name_node = cast(Node, ExtractDynamic(cast(Node, nodes[1])))
-            name_info = cast(NameLexerInfo, GetLexerInfo(name_node))
+            name_info = cast(NameParserInfo, GetParserInfo(name_node))
 
             # <expr>
             expr_node = cast(Node, ExtractDynamic(cast(Node, nodes[3])))
-            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                VariableDeclarationStatementLexerInfo(
-                    CreateLexerRegions(node, modifier_node, name_node, expr_node),  # type: ignore
+                VariableDeclarationStatementParserInfo(
+                    CreateParserRegions(node, modifier_node, name_node, expr_node),  # type: ignore
                     modifier_info,  # type: ignore
                     name_info,
                     expr_info,
@@ -130,4 +130,4 @@ class VariableDeclarationStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

@@ -42,7 +42,7 @@ with InitRelativeImports():
         InvalidMultilineContentError,
     )
 
-    from .....Parser.Components.Normalize import NoClosingMultilineTokenError
+    from .....Lexer.Components.Normalize import NoClosingMultilineTokenError
 
 
 # ----------------------------------------------------------------------
