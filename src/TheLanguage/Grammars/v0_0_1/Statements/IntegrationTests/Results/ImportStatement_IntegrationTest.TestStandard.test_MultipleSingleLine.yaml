@@ -50,11 +50,6 @@ Children:
                             Whitespace:
                               - 17
                               - 18
-                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                            Children: []
-                            IterBegin: None
-                            IterEnd: None
-                            Type: "Repeat: {Suffix, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                         IterBegin: "[1, 19] (18)"
                         IterEnd: "[1, 23] (22)"
                         Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -198,11 +193,6 @@ Children:
                                     Whitespace:
                                       - 69
                                       - 70
-                                  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                                    Children: []
-                                    IterBegin: None
-                                    IterEnd: None
-                                    Type: "Repeat: {Suffix, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                                 IterBegin: "[1, 71] (70)"
                                 IterEnd: "[1, 75] (74)"
                                 Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -212,11 +202,6 @@ Children:
                         IterBegin: "[1, 23] (22)"
                         IterEnd: "[1, 75] (74)"
                         Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                     IterBegin: "[1, 19] (18)"
                     IterEnd: "[1, 75] (74)"
                     Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -232,22 +217,45 @@ Children:
                   End: 75
                   Start: 74
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: None
                   Name: "obj1"
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: None
+                    Name: "[Ln 1, Col 19] -> [Ln 1, Col 23]"
+                    Self__: "[Ln 1, Col 19] -> [Ln 1, Col 23]"
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: "obj2Decorated"
                   Name: "obj2"
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: "[Ln 1, Col 33] -> [Ln 1, Col 46]"
+                    Name: "[Ln 1, Col 25] -> [Ln 1, Col 29]"
+                    Self__: "[Ln 1, Col 25] -> [Ln 1, Col 46]"
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: "obj3Decorated"
                   Name: "obj3"
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: "[Ln 1, Col 56] -> [Ln 1, Col 69]"
+                    Name: "[Ln 1, Col 48] -> [Ln 1, Col 52]"
+                    Self__: "[Ln 1, Col 48] -> [Ln 1, Col 69]"
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: None
                   Name: "obj4"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: None
+                    Name: "[Ln 1, Col 71] -> [Ln 1, Col 75]"
+                    Self__: "[Ln 1, Col 71] -> [Ln 1, Col 75]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/Statements/File1.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 1, Col 19] -> [Ln 1, Col 75]"
+                ImportType: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+                SourceFilename: "[Ln 1, Col 6] -> [Ln 1, Col 11]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+              SourceFilename: "File1"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (75)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"

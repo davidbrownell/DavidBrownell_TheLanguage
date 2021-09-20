@@ -60,11 +60,6 @@ Children:
                                 Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
                                   Match: "<_sre.SRE_Match object; span=(19, 23), match='obj1'>"
                                 Whitespace: None
-                              - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                                Children: []
-                                IterBegin: None
-                                IterEnd: None
-                                Type: "Repeat: {Suffix, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                             IterBegin: "[1, 20] (19)"
                             IterEnd: "[1, 24] (23)"
                             Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -131,11 +126,6 @@ Children:
                             IterBegin: "[1, 24] (23)"
                             IterEnd: "[1, 47] (46)"
                             Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                            Children: []
-                            IterBegin: None
-                            IterEnd: None
-                            Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                         IterBegin: "[1, 20] (19)"
                         IterEnd: "[1, 47] (46)"
                         Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -162,16 +152,31 @@ Children:
                   End: 49
                   Start: 47
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: None
                   Name: "obj1"
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: None
+                    Name: "[Ln 1, Col 20] -> [Ln 1, Col 24]"
+                    Self__: "[Ln 1, Col 20] -> [Ln 1, Col 24]"
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: "obj2Decorated"
                   Name: "obj2"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: "[Ln 1, Col 34] -> [Ln 1, Col 47]"
+                    Name: "[Ln 1, Col 26] -> [Ln 1, Col 30]"
+                    Self__: "[Ln 1, Col 26] -> [Ln 1, Col 47]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/Statements/File1.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 1, Col 20] -> [Ln 1, Col 47]"
+                ImportType: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+                Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+                SourceFilename: "[Ln 1, Col 6] -> [Ln 1, Col 11]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+              SourceFilename: "File1"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (49)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -229,25 +234,6 @@ Children:
                         Whitespace:
                           - 69
                           - 70
-                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                        IsIgnored: True
-                        IterBegin: "[3, 23] (71)"
-                        IterEnd: "[4, 1] (72)"
-                        Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                          End: 72
-                          Start: 71
-                        Whitespace: None
-                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                        IsIgnored: True
-                        IterBegin: "[4, 1] (72)"
-                        IterEnd: "[4, 5] (76)"
-                        Type: "Indent <class 'TheLanguage.Lexer.Components.Token.IndentToken'>"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.IndentToken.MatchResult'>
-                          End: 76
-                          Start: 72
-                          Value: 4
-                        Whitespace: None
                       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
                         Children:
                           - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -305,15 +291,6 @@ Children:
                                     Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
                                       Match: "<_sre.SRE_Match object; span=(97, 98), match=','>"
                                     Whitespace: None
-                                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                                    IsIgnored: True
-                                    IterBegin: "[4, 27] (98)"
-                                    IterEnd: "[5, 1] (99)"
-                                    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                                    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                                      End: 99
-                                      Start: 98
-                                    Whitespace: None
                                   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
                                     Children:
                                       - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
@@ -324,11 +301,6 @@ Children:
                                         Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
                                           Match: "<_sre.SRE_Match object; span=(103, 107), match='obj4'>"
                                         Whitespace: None
-                                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                                        Children: []
-                                        IterBegin: None
-                                        IterEnd: None
-                                        Type: "Repeat: {Suffix, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                                     IterBegin: "[5, 5] (103)"
                                     IterEnd: "[5, 9] (107)"
                                     Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -344,25 +316,6 @@ Children:
                                     Type: "',' <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
                                     Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
                                       Match: "<_sre.SRE_Match object; span=(107, 108), match=','>"
-                                    Whitespace: None
-                                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                                    IsIgnored: True
-                                    IterBegin: "[5, 10] (108)"
-                                    IterEnd: "[7, 1] (110)"
-                                    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                                    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                                      End: 110
-                                      Start: 108
-                                    Whitespace: None
-                                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                                    IsIgnored: True
-                                    IterBegin: "[7, 1] (110)"
-                                    IterEnd: "[7, 9] (118)"
-                                    Type: "Indent <class 'TheLanguage.Lexer.Components.Token.IndentToken'>"
-                                    Value: # <class 'TheLanguage.Lexer.Components.Token.IndentToken.MatchResult'>
-                                      End: 118
-                                      Start: 110
-                                      Value: 8
                                     Whitespace: None
                                   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
                                     Children:
@@ -420,25 +373,6 @@ Children:
                                     Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
                                       Match: "<_sre.SRE_Match object; span=(139, 140), match=','>"
                                     Whitespace: None
-                                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                                    IsIgnored: True
-                                    IterBegin: "[7, 31] (140)"
-                                    IterEnd: "[9, 1] (142)"
-                                    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                                    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                                      End: 142
-                                      Start: 140
-                                    Whitespace: None
-                                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                                    IsIgnored: True
-                                    IterBegin: "[9, 1] (142)"
-                                    IterEnd: "[9, 13] (154)"
-                                    Type: "Indent <class 'TheLanguage.Lexer.Components.Token.IndentToken'>"
-                                    Value: # <class 'TheLanguage.Lexer.Components.Token.IndentToken.MatchResult'>
-                                      End: 154
-                                      Start: 142
-                                      Value: 12
-                                    Whitespace: None
                                   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
                                     Children:
                                       - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
@@ -449,44 +383,6 @@ Children:
                                         Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
                                           Match: "<_sre.SRE_Match object; span=(154, 158), match='obj6'>"
                                         Whitespace: None
-                                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                                        IsIgnored: True
-                                        IterBegin: "[9, 17] (158)"
-                                        IterEnd: "[10, 1] (159)"
-                                        Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                                          End: 159
-                                          Start: 158
-                                        Whitespace: None
-                                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                                        IsIgnored: True
-                                        IterBegin: "[10, 1] (159)"
-                                        IterEnd: "[10, 1] (159)"
-                                        Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
-                                        Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
-                                          {}
-                                        Whitespace: None
-                                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                                        IsIgnored: True
-                                        IterBegin: "[10, 1] (159)"
-                                        IterEnd: "[10, 1] (159)"
-                                        Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
-                                        Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
-                                          {}
-                                        Whitespace: None
-                                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                                        IsIgnored: True
-                                        IterBegin: "[10, 1] (159)"
-                                        IterEnd: "[10, 1] (159)"
-                                        Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
-                                        Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
-                                          {}
-                                        Whitespace: None
-                                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                                        Children: []
-                                        IterBegin: None
-                                        IterEnd: None
-                                        Type: "Repeat: {Suffix, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                                     IterBegin: "[9, 13] (154)"
                                     IterEnd: "[9, 17] (158)"
                                     Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -496,80 +392,9 @@ Children:
                             IterBegin: "[4, 26] (97)"
                             IterEnd: "[9, 17] (158)"
                             Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                          - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                            IsIgnored: True
-                            IterBegin: "[9, 17] (158)"
-                            IterEnd: "[10, 1] (159)"
-                            Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                            Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                              End: 159
-                              Start: 158
-                            Whitespace: None
-                          - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                            IsIgnored: True
-                            IterBegin: "[10, 1] (159)"
-                            IterEnd: "[10, 1] (159)"
-                            Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
-                            Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
-                              {}
-                            Whitespace: None
-                          - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                            IsIgnored: True
-                            IterBegin: "[10, 1] (159)"
-                            IterEnd: "[10, 1] (159)"
-                            Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
-                            Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
-                              {}
-                            Whitespace: None
-                          - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                            IsIgnored: True
-                            IterBegin: "[10, 1] (159)"
-                            IterEnd: "[10, 1] (159)"
-                            Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
-                            Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
-                              {}
-                            Whitespace: None
-                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                            Children: []
-                            IterBegin: None
-                            IterEnd: None
-                            Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                         IterBegin: "[4, 5] (76)"
                         IterEnd: "[9, 17] (158)"
                         Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                        IsIgnored: True
-                        IterBegin: "[9, 17] (158)"
-                        IterEnd: "[10, 1] (159)"
-                        Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                          End: 159
-                          Start: 158
-                        Whitespace: None
-                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                        IsIgnored: True
-                        IterBegin: "[10, 1] (159)"
-                        IterEnd: "[10, 1] (159)"
-                        Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
-                          {}
-                        Whitespace: None
-                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                        IsIgnored: True
-                        IterBegin: "[10, 1] (159)"
-                        IterEnd: "[10, 1] (159)"
-                        Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
-                          {}
-                        Whitespace: None
-                      - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                        IsIgnored: True
-                        IterBegin: "[10, 1] (159)"
-                        IterEnd: "[10, 1] (159)"
-                        Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
-                          {}
-                        Whitespace: None
                       - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
                         IsIgnored: False
                         IterBegin: "[10, 1] (159)"
@@ -593,22 +418,45 @@ Children:
                   End: 161
                   Start: 160
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: "obj3Decorated"
                   Name: "obj3"
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: "[Ln 4, Col 13] -> [Ln 4, Col 26]"
+                    Name: "[Ln 4, Col 5] -> [Ln 4, Col 9]"
+                    Self__: "[Ln 4, Col 5] -> [Ln 4, Col 26]"
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: None
                   Name: "obj4"
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: None
+                    Name: "[Ln 5, Col 5] -> [Ln 5, Col 9]"
+                    Self__: "[Ln 5, Col 5] -> [Ln 5, Col 9]"
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: "obj5Decorated"
                   Name: "obj5"
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: "[Ln 7, Col 17] -> [Ln 7, Col 30]"
+                    Name: "[Ln 7, Col 9] -> [Ln 7, Col 13]"
+                    Self__: "[Ln 7, Col 9] -> [Ln 7, Col 30]"
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: None
                   Name: "obj6"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: None
+                    Name: "[Ln 9, Col 13] -> [Ln 9, Col 17]"
+                    Self__: "[Ln 9, Col 13] -> [Ln 9, Col 17]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/File2.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 4, Col 5] -> [Ln 9, Col 17]"
+                ImportType: "[Ln 3, Col 1] -> [Ln 11, Col 1]"
+                Self__: "[Ln 3, Col 1] -> [Ln 11, Col 1]"
+                SourceFilename: "[Ln 3, Col 6] -> [Ln 3, Col 14]"
+                Visibility: "[Ln 3, Col 1] -> [Ln 11, Col 1]"
+              SourceFilename: "...File2"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[3, 1] (49)"
             IterEnd: "[11, 1] (161)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"

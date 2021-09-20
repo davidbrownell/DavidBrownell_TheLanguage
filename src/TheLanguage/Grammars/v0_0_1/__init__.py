@@ -15,3 +15,5 @@
 #            Int32 foo = "123".parse()
 #                              ^^^^^^ parse<Int32>() is invoked because variable is declared as Int32
 # TODO: Add optional visibility to import statements
+# TODO: Implement traits (compile-time interfaces)
+# TODO: Functionality in Normalize (or maybe NormalizeIterator) so that the same set of tools could be used to parse non-whitespace-delimited languages (like C++ for example)

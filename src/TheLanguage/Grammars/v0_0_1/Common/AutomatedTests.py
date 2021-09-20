@@ -60,7 +60,7 @@ def PatchAndExecute(
     ],
     fully_qualified_names: List[str],       # List of filenames to parse
     source_roots: List[str],
-    flag=PatchAndExecuteFlag.Lex,
+    flag=PatchAndExecuteFlag.Validate,
     max_num_threads: Optional[int]=None,
     debug_string_on_exception=True,
 ) -> Union[

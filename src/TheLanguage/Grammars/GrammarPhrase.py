@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import cast, Any, Callable, Dict, List, Optional, Union
+from typing import cast, Any, Callable, List, Optional, Union
 
 from dataclasses import dataclass, field
 
@@ -62,23 +62,6 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         Name                                = auto()
         Statement                           = auto()
         Type                                = auto()
-
-    # ----------------------------------------------------------------------
-    # TODO: This will go away in favor of ParserInfo
-    @dataclass(frozen=True, repr=False)
-    class NodeInfo(YamlRepr.ObjectReprImplBase):
-        TokenLookup: Dict[str, Union[Leaf, Node, None]]
-
-        # ----------------------------------------------------------------------
-        def __post_init__(
-            self,
-            **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
-        ):
-            YamlRepr.ObjectReprImplBase.__init__(
-                self,
-                TokenLookup=None,
-                **custom_display_funcs,
-            )
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)

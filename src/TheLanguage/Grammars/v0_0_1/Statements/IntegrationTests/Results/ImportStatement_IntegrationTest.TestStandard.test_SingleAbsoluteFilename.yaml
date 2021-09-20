@@ -50,24 +50,9 @@ Children:
                             Whitespace:
                               - 17
                               - 18
-                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                            Children: []
-                            IterBegin: None
-                            IterEnd: None
-                            Type: "Repeat: {Suffix, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                         IterBegin: "[1, 19] (18)"
                         IterEnd: "[1, 23] (22)"
                         Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                     IterBegin: "[1, 19] (18)"
                     IterEnd: "[1, 23] (22)"
                     Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -83,13 +68,24 @@ Children:
                   End: 23
                   Start: 22
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: None
                   Name: "obj1"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: None
+                    Name: "[Ln 1, Col 19] -> [Ln 1, Col 23]"
+                    Self__: "[Ln 1, Col 19] -> [Ln 1, Col 23]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/Statements/File1.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 1, Col 19] -> [Ln 1, Col 23]"
+                ImportType: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+                SourceFilename: "[Ln 1, Col 6] -> [Ln 1, Col 11]"
+                Visibility: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+              SourceFilename: "File1"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (23)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -182,16 +178,6 @@ Children:
                         IterBegin: "[2, 19] (41)"
                         IterEnd: "[2, 40] (62)"
                         Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                     IterBegin: "[2, 19] (41)"
                     IterEnd: "[2, 40] (62)"
                     Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -207,13 +193,24 @@ Children:
                   End: 64
                   Start: 62
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: "obj1Decorated"
                   Name: "obj1"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: "[Ln 2, Col 27] -> [Ln 2, Col 40]"
+                    Name: "[Ln 2, Col 19] -> [Ln 2, Col 23]"
+                    Self__: "[Ln 2, Col 19] -> [Ln 2, Col 40]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/Statements/File1.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 2, Col 19] -> [Ln 2, Col 40]"
+                ImportType: "[Ln 2, Col 1] -> [Ln 4, Col 1]"
+                Self__: "[Ln 2, Col 1] -> [Ln 4, Col 1]"
+                SourceFilename: "[Ln 2, Col 6] -> [Ln 2, Col 11]"
+                Visibility: "[Ln 2, Col 1] -> [Ln 4, Col 1]"
+              SourceFilename: "File1"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[2, 1] (23)"
             IterEnd: "[4, 1] (64)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -273,24 +270,9 @@ Children:
                             Whitespace:
                               - 81
                               - 82
-                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                            Children: []
-                            IterBegin: None
-                            IterEnd: None
-                            Type: "Repeat: {Suffix, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                         IterBegin: "[4, 19] (82)"
                         IterEnd: "[4, 23] (86)"
                         Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                     IterBegin: "[4, 19] (82)"
                     IterEnd: "[4, 23] (86)"
                     Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -306,13 +288,24 @@ Children:
                   End: 87
                   Start: 86
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: None
                   Name: "obj2"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: None
+                    Name: "[Ln 4, Col 19] -> [Ln 4, Col 23]"
+                    Self__: "[Ln 4, Col 19] -> [Ln 4, Col 23]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/File2.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 4, Col 19] -> [Ln 4, Col 23]"
+                ImportType: "[Ln 4, Col 1] -> [Ln 5, Col 1]"
+                Self__: "[Ln 4, Col 1] -> [Ln 5, Col 1]"
+                SourceFilename: "[Ln 4, Col 6] -> [Ln 4, Col 11]"
+                Visibility: "[Ln 4, Col 1] -> [Ln 5, Col 1]"
+              SourceFilename: "File2"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[4, 1] (64)"
             IterEnd: "[5, 1] (87)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -405,16 +398,6 @@ Children:
                         IterBegin: "[5, 19] (105)"
                         IterEnd: "[5, 40] (126)"
                         Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                     IterBegin: "[5, 19] (105)"
                     IterEnd: "[5, 40] (126)"
                     Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -430,13 +413,24 @@ Children:
                   End: 128
                   Start: 126
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: "obj2Decorated"
                   Name: "obj2"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: "[Ln 5, Col 27] -> [Ln 5, Col 40]"
+                    Name: "[Ln 5, Col 19] -> [Ln 5, Col 23]"
+                    Self__: "[Ln 5, Col 19] -> [Ln 5, Col 40]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/File2.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 5, Col 19] -> [Ln 5, Col 40]"
+                ImportType: "[Ln 5, Col 1] -> [Ln 7, Col 1]"
+                Self__: "[Ln 5, Col 1] -> [Ln 7, Col 1]"
+                SourceFilename: "[Ln 5, Col 6] -> [Ln 5, Col 11]"
+                Visibility: "[Ln 5, Col 1] -> [Ln 7, Col 1]"
+              SourceFilename: "File2"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[5, 1] (87)"
             IterEnd: "[7, 1] (128)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -496,24 +490,9 @@ Children:
                             Whitespace:
                               - 145
                               - 146
-                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                            Children: []
-                            IterBegin: None
-                            IterEnd: None
-                            Type: "Repeat: {Suffix, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                         IterBegin: "[7, 19] (146)"
                         IterEnd: "[7, 23] (150)"
                         Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                     IterBegin: "[7, 19] (146)"
                     IterEnd: "[7, 23] (150)"
                     Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -529,13 +508,24 @@ Children:
                   End: 151
                   Start: 150
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: None
                   Name: "obj3"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: None
+                    Name: "[Ln 7, Col 19] -> [Ln 7, Col 23]"
+                    Self__: "[Ln 7, Col 19] -> [Ln 7, Col 23]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir1/File3.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 7, Col 19] -> [Ln 7, Col 23]"
+                ImportType: "[Ln 7, Col 1] -> [Ln 8, Col 1]"
+                Self__: "[Ln 7, Col 1] -> [Ln 8, Col 1]"
+                SourceFilename: "[Ln 7, Col 6] -> [Ln 7, Col 11]"
+                Visibility: "[Ln 7, Col 1] -> [Ln 8, Col 1]"
+              SourceFilename: "File3"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[7, 1] (128)"
             IterEnd: "[8, 1] (151)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -628,16 +618,6 @@ Children:
                         IterBegin: "[8, 19] (169)"
                         IterEnd: "[8, 40] (190)"
                         Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                     IterBegin: "[8, 19] (169)"
                     IterEnd: "[8, 40] (190)"
                     Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -653,13 +633,24 @@ Children:
                   End: 192
                   Start: 190
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: "obj3Decorated"
                   Name: "obj3"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: "[Ln 8, Col 27] -> [Ln 8, Col 40]"
+                    Name: "[Ln 8, Col 19] -> [Ln 8, Col 23]"
+                    Self__: "[Ln 8, Col 19] -> [Ln 8, Col 40]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir1/File3.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 8, Col 19] -> [Ln 8, Col 40]"
+                ImportType: "[Ln 8, Col 1] -> [Ln 10, Col 1]"
+                Self__: "[Ln 8, Col 1] -> [Ln 10, Col 1]"
+                SourceFilename: "[Ln 8, Col 6] -> [Ln 8, Col 11]"
+                Visibility: "[Ln 8, Col 1] -> [Ln 10, Col 1]"
+              SourceFilename: "File3"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[8, 1] (151)"
             IterEnd: "[10, 1] (192)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -719,24 +710,9 @@ Children:
                             Whitespace:
                               - 219
                               - 220
-                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                            Children: []
-                            IterBegin: None
-                            IterEnd: None
-                            Type: "Repeat: {Suffix, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                         IterBegin: "[10, 29] (220)"
                         IterEnd: "[10, 33] (224)"
                         Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                     IterBegin: "[10, 29] (220)"
                     IterEnd: "[10, 33] (224)"
                     Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -752,13 +728,24 @@ Children:
                   End: 225
                   Start: 224
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: None
                   Name: "obj4"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: None
+                    Name: "[Ln 10, Col 29] -> [Ln 10, Col 33]"
+                    Self__: "[Ln 10, Col 29] -> [Ln 10, Col 33]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir1/Dir1/Dir2/File4.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 10, Col 29] -> [Ln 10, Col 33]"
+                ImportType: "[Ln 10, Col 1] -> [Ln 11, Col 1]"
+                Self__: "[Ln 10, Col 1] -> [Ln 11, Col 1]"
+                SourceFilename: "[Ln 10, Col 6] -> [Ln 10, Col 21]"
+                Visibility: "[Ln 10, Col 1] -> [Ln 11, Col 1]"
+              SourceFilename: "Dir1.Dir2.File4"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[10, 1] (192)"
             IterEnd: "[11, 1] (225)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -851,16 +838,6 @@ Children:
                         IterBegin: "[11, 29] (253)"
                         IterEnd: "[11, 50] (274)"
                         Type: "Content Item <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Comma and Content, 0, None} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children: []
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Repeat: {Trailing Comma, 0, 1} <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
                     IterBegin: "[11, 29] (253)"
                     IterEnd: "[11, 50] (274)"
                     Type: "Content Items <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -876,13 +853,24 @@ Children:
                   End: 275
                   Start: 274
                 Whitespace: None
-            Info: # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.NodeInfo'>
+            Info: # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
               ImportItems:
-                - # <class 'TheLanguage.Grammars.v0_0_1.Statements.ImportStatement.ImportStatement.ImportItemInfo'>
+                - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
                   Alias: "obj4Decorated"
                   Name: "obj4"
+                  Regions: # <class 'types.ImportItemParserInfoRegions'>
+                    Alias: "[Ln 11, Col 37] -> [Ln 11, Col 50]"
+                    Name: "[Ln 11, Col 29] -> [Ln 11, Col 33]"
+                    Self__: "[Ln 11, Col 29] -> [Ln 11, Col 50]"
               ImportType: "ImportType.SourceIsModule"
-              SourceFilename: "<generic_root>/Statements/IntegrationTests/Dir1/Dir1/Dir2/File4.TheLanguage"
+              Regions: # <class 'types.ImportStatementParserInfoRegions'>
+                ImportItems: "[Ln 11, Col 29] -> [Ln 11, Col 50]"
+                ImportType: "[Ln 11, Col 1] -> [Ln 12, Col 1]"
+                Self__: "[Ln 11, Col 1] -> [Ln 12, Col 1]"
+                SourceFilename: "[Ln 11, Col 6] -> [Ln 11, Col 21]"
+                Visibility: "[Ln 11, Col 1] -> [Ln 12, Col 1]"
+              SourceFilename: "Dir1.Dir2.File4"
+              Visibility: "VisibilityModifier.private"
             IterBegin: "[11, 1] (225)"
             IterEnd: "[12, 1] (275)"
             Type: "Import Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
