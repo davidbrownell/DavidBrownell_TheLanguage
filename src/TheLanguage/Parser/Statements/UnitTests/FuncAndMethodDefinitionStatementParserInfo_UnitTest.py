@@ -409,7 +409,7 @@ class TestStandard(object):
 
         ex = ex.value
 
-        assert str(ex) == "'static' is not a supported method type modifier for members of 'interface' types; supported values are 'standard', 'abstract', 'virtual', 'override', 'final'."
+        assert str(ex) == "'static' is not a supported method type modifier for members of 'interface' types; supported values are 'abstract', 'final', 'override', 'standard', 'virtual'."
         assert ex.Region == self._regions["MethodType"]
 
     # ----------------------------------------------------------------------

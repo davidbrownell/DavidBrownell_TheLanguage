@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassModifier.py
+# |  ImportStatementParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-07 15:27:09
+# |      2021-09-20 12:42:57
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,25 +13,24 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ClassModifier object"""
+"""Unit test for ImportStatementParserInfo.py"""
 
 import os
 
-from enum import auto, Enum
-
 import CommonEnvironment
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from ..ImportStatementParserInfo import *
+
 
 # ----------------------------------------------------------------------
-class ClassModifier(Enum):
-    """\
-    Modifies the mutability of a method or attribute.
-    """
-
-    immutable                               = auto()
-    mutable                                 = auto()
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
+def test_Placeholder():
+    assert True

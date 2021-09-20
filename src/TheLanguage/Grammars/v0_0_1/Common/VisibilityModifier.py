@@ -28,9 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Impl import ModifierImpl
-    from ....Parser.Common.VisibilityModifier import VisibilityModifier as Enum
+    from ....Parser.Common.VisibilityModifier import VisibilityModifier as VisibilityModifier
 
 
 # ----------------------------------------------------------------------
-CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(Enum)
-Extract                                     = ModifierImpl.CreateStandardExtractFunc(Enum)
+CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(VisibilityModifier)
+Extract                                     = ModifierImpl.CreateStandardExtractFunc(VisibilityModifier)
