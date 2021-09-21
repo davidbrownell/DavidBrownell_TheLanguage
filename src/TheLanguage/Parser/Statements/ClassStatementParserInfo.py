@@ -156,6 +156,7 @@ class ClassType(Enum):
 
     # TODO: Enum doesn't seem to fit here
 
+# TODO: Mutability is required for structs, can never be used on members
 
 # ----------------------------------------------------------------------
 class MethodType(Enum):
