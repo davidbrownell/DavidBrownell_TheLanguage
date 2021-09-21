@@ -37,18 +37,18 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
 
     from ...GrammarError import GrammarError
-    from ...GrammarPhrase import CreateLexerRegions
+    from ...GrammarPhrase import CreateParserRegions
 
-    from ....Lexer.Common.ParametersLexerInfo import (
-        ExpressionLexerInfo,
-        ParameterLexerInfo,
-        ParametersLexerInfo,
-        TypeLexerInfo,
+    from ....Parser.Common.ParametersParserInfo import (
+        ExpressionParserInfo,
+        ParameterParserInfo,
+        ParametersParserInfo,
+        TypeParserInfo,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
@@ -304,9 +304,9 @@ def Create() -> PhraseItem:
 
 
 # ----------------------------------------------------------------------
-def ExtractLexerInfo(
+def ExtractParserInfo(
     node: Node,
-) -> Optional[ParametersLexerInfo]:
+) -> Optional[ParametersParserInfo]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
 
@@ -343,7 +343,7 @@ def ExtractLexerInfo(
 
             # <type>
             parameter_type_node = cast(Node, ExtractDynamic(cast(Node, these_parameter_nodes[0])))
-            parameter_type_info = cast(TypeLexerInfo, GetLexerInfo(parameter_type_node))
+            parameter_type_info = cast(TypeParserInfo, GetParserInfo(parameter_type_node))
 
             # '*'?
             is_var_args_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], these_parameter_nodes[1])))
@@ -366,7 +366,7 @@ def ExtractLexerInfo(
                 default_nodes = ExtractSequence(default_node)
                 assert len(default_nodes) == 2
 
-                default_info = cast(ExpressionLexerInfo, GetLexerInfo(ExtractDynamic(cast(Node, default_nodes[1]))))
+                default_info = cast(ExpressionParserInfo, GetParserInfo(ExtractDynamic(cast(Node, default_nodes[1]))))
             else:
                 if encountered_default:
                     raise RequiredParameterAfterDefaultError.FromNode(parameter_node)
@@ -375,8 +375,8 @@ def ExtractLexerInfo(
 
             parameters.append(
                 # pylint: disable=too-many-function-args
-                ParameterLexerInfo(
-                    CreateLexerRegions(
+                ParameterParserInfo(
+                    CreateParserRegions(
                         parameter_node,
                         parameter_type_node,
                         name_leaf,
@@ -415,8 +415,8 @@ def ExtractLexerInfo(
             assert False, parameters_type
 
     # pylint: disable=too-many-function-args
-    return ParametersLexerInfo(
-        CreateLexerRegions(
+    return ParametersParserInfo(
+        CreateParserRegions(
             all_parameters_node,
             positional_parameters_node,
             keyword_parameters_node,

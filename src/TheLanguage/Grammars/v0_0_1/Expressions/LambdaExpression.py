@@ -32,16 +32,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import ParametersPhraseItem
 
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.Expressions.LambdaExpressionLexerInfo import (
-        ExpressionLexerInfo,
-        LambdaExpressionLexerInfo,
+    from ....Parser.Expressions.LambdaExpressionParserInfo import (
+        ExpressionParserInfo,
+        LambdaExpressionParserInfo,
     )
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -95,29 +95,29 @@ class LambdaExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 4
 
             # <parameters>
             parameters_node = cast(Node, nodes[1])
-            parameters_info = ParametersPhraseItem.ExtractLexerInfo(parameters_node)
+            parameters_info = ParametersPhraseItem.ExtractParserInfo(parameters_node)
             if parameters_info is None:
                 parameters_node = None
 
             # <expr>
             expression_node = ExtractDynamic(cast(Node, nodes[3]))
-            expression_info = cast(ExpressionLexerInfo, GetLexerInfo(expression_node))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
             # pylint: disable=too-many-function-args
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                LambdaExpressionLexerInfo(
-                    CreateLexerRegions(node, parameters_node, expression_node),  # type: ignore
+                LambdaExpressionParserInfo(
+                    CreateParserRegions(node, parameters_node, expression_node),  # type: ignore
                     parameters_info,
                     expression_info,
                 ),
@@ -125,4 +125,4 @@ class LambdaExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

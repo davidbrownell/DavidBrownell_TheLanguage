@@ -31,13 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Lexer.LexerInfo import GetLexerInfo, SetLexerInfo
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
-    from ....Lexer.Statements.DeleteStatementLexerInfo import DeleteStatementLexerInfo
+    from ....Parser.Statements.DeleteStatementParserInfo import DeleteStatementParserInfo
 
-    from ....Parser.Phrases.DSL import (
+    from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractSequence,
         ExtractToken,
@@ -77,11 +77,11 @@ class DeleteStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
@@ -89,14 +89,14 @@ class DeleteStatement(GrammarPhrase):
             name_leaf = cast(Leaf, nodes[1])
             name_info = cast(str, ExtractToken(name_leaf))
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
-                DeleteStatementLexerInfo(
-                    CreateLexerRegions(node, name_leaf),  # type: ignore
+                DeleteStatementParserInfo(
+                    CreateParserRegions(node, name_leaf),  # type: ignore
                     name_info,
                 ),
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

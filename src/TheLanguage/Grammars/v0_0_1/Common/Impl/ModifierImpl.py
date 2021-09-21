@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .....Parser.Phrases.DSL import ExtractOr, ExtractToken, Leaf, Node
+    from .....Lexer.Phrases.DSL import ExtractOr, ExtractToken, Leaf, Node
 
 
 # ----------------------------------------------------------------------

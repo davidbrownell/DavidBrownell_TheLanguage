@@ -38,14 +38,14 @@ with InitRelativeImports():
     from ....GrammarError import GrammarError
     from ....GrammarPhrase import GrammarPhrase
 
-    from .....Lexer.LexerInfo import (
-        Location as LexerLocation,
-        Region as LexerRegion,
+    from .....Parser.ParserInfo import (
+        Location as ParserLocation,
+        Region as ParserRegion,
     )
 
-    from .....Parser.Components.Normalize import TripletContentRegexTemplate
-    from .....Parser.Components.Token import RegexToken
-    from .....Parser.Phrases.DSL import (
+    from .....Lexer.Components.Normalize import TripletContentRegexTemplate
+    from .....Lexer.Components.Token import RegexToken
+    from .....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractSequence,
         ExtractToken,
@@ -72,9 +72,9 @@ class InvalidMultilineHeaderError(GrammarError):
     ):
         # pylint: disable=too-many-function-args
         return cls(
-            LexerRegion(
-                LexerLocation(node.IterBegin.Line, node.IterBegin.Column),
-                LexerLocation(node.IterBegin.Line, node.IterBegin.Column + len(header)),
+            ParserRegion(
+                ParserLocation(node.IterBegin.Line, node.IterBegin.Column),
+                ParserLocation(node.IterBegin.Line, node.IterBegin.Column + len(header)),
             ),
             header,
         )
@@ -102,9 +102,9 @@ class InvalidMultilineFooterError(GrammarError):
     ):
         # pylint: disable=too-many-function-args
         return cls(
-            LexerRegion(
-                LexerLocation(node.IterEnd.Line, node.IterEnd.Column - len(footer)),
-                LexerLocation(node.IterEnd.Line, node.IterEnd.Column),
+            ParserRegion(
+                ParserLocation(node.IterEnd.Line, node.IterEnd.Column - len(footer)),
+                ParserLocation(node.IterEnd.Line, node.IterEnd.Column),
             ),
             header,
             footer,
@@ -179,10 +179,10 @@ class MultilineStatementBase(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         self,
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # TODO: Revisit this
 
         nodes = ExtractSequence(node)
@@ -231,5 +231,5 @@ class MultilineStatementBase(GrammarPhrase):
         node: Node,
         leaf: Leaf,
         value: str,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         raise Exception("Abstract method")  # pragma: no cover

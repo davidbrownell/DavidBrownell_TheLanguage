@@ -32,13 +32,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .. import Tokens as CommonTokens
 
-    from ....GrammarPhrase import CreateLexerRegions, GrammarPhrase
+    from ....GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from .....Lexer.LexerInfo import GetLexerInfo, LexerInfo, SetLexerInfo
+    from .....Parser.ParserInfo import GetParserInfo, ParserInfo, SetParserInfo
 
-    from .....Lexer.Expressions.ExpressionLexerInfo import ExpressionLexerInfo
+    from .....Parser.Expressions.ExpressionParserInfo import ExpressionParserInfo
 
-    from .....Parser.Phrases.DSL import (
+    from .....Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
@@ -270,14 +270,14 @@ class MatchExpressionBase(GrammarPhrase):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @classmethod
-    def _ExtractLexerInfoImpl(
+    def _ExtractParserInfoImpl(
         cls,
-        match_lexer_info_type: Type[LexerInfo],
-        case_phrase_lexer_info_type: Type[LexerInfo],
+        match_lexer_info_type: Type[ParserInfo],
+        case_phrase_lexer_info_type: Type[ParserInfo],
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
         # ----------------------------------------------------------------------
-        def CreateLexerInfo():
+        def CreateParserInfo():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
@@ -305,7 +305,7 @@ class MatchExpressionBase(GrammarPhrase):
 
             # <expr>
             expr_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
-            expr_info = cast(ExpressionLexerInfo, GetLexerInfo(expr_node))
+            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
 
             # Cases
             cases_node = cast(Node, nodes[6])
@@ -337,7 +337,7 @@ class MatchExpressionBase(GrammarPhrase):
                         )
                     ],
                 ):
-                    case_items_info.append(GetLexerInfo(ExtractDynamic(cast(Node, case_item_node))))
+                    case_items_info.append(GetParserInfo(ExtractDynamic(cast(Node, case_item_node))))
 
                 assert case_items_info
 
@@ -347,7 +347,7 @@ class MatchExpressionBase(GrammarPhrase):
 
                 cases_info.append(
                     case_phrase_lexer_info_type(
-                        CreateLexerRegions(case_phrase_node, case_items_node, case_phrase_expr_node),  # type: ignore
+                        CreateParserRegions(case_phrase_node, case_items_node, case_phrase_expr_node),  # type: ignore
                         case_items_info,  # type: ignore
                         case_phrase_expr_info,
                     ),
@@ -365,10 +365,10 @@ class MatchExpressionBase(GrammarPhrase):
             else:
                 default_info = None
 
-            SetLexerInfo(
+            SetParserInfo(
                 node,
                 match_lexer_info_type(
-                    CreateLexerRegions(node, expr_node, cases_node, default_node),  # type: ignore
+                    CreateParserRegions(node, expr_node, cases_node, default_node),  # type: ignore
                     expr_info,  # type: ignore
                     cases_info,
                     default_info,
@@ -377,13 +377,13 @@ class MatchExpressionBase(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractLexerInfoResult(CreateLexerInfo)
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
 
     # ----------------------------------------------------------------------
     @staticmethod
     def _ExtractCaseExpression(
         node: Node,
-    ) -> ExpressionLexerInfo:
+    ) -> ExpressionParserInfo:
         node = cast(Node, ExtractOr(node))
         assert node.Type is not None
 
@@ -402,4 +402,4 @@ class MatchExpressionBase(GrammarPhrase):
         assert len(nodes) == num_nodes
 
         data_node = ExtractDynamic(cast(Node, nodes[node_index]))
-        return cast(ExpressionLexerInfo, GetLexerInfo(data_node))
+        return cast(ExpressionParserInfo, GetParserInfo(data_node))

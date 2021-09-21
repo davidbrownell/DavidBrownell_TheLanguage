@@ -1,0 +1,5 @@
+# <class 'TheLanguage.Lexer.Components.AST.Node'>
+Children: []
+IterBegin: None
+IterEnd: None
+Type: "Phrase <class 'TheLanguage.Lexer.Phrases.TokenPhrase.TokenPhrase'>"

@@ -34,12 +34,12 @@ with InitRelativeImports():
 
     from ...GrammarPhrase import GrammarPhrase
 
-    from ....Lexer.Expressions.MatchTypeExpressionLexerInfo import (
-        MatchTypeExpressionLexerInfo,
-        MatchTypeCasePhraseLexerInfo,
+    from ....Parser.Expressions.MatchTypeExpressionParserInfo import (
+        MatchTypeExpressionParserInfo,
+        MatchTypeCasePhraseParserInfo,
     )
 
-    from ....Parser.Phrases.DSL import DynamicPhrasesType, Node
+    from ....Lexer.Phrases.DSL import DynamicPhrasesType, Node
 
 
 # ----------------------------------------------------------------------
@@ -63,12 +63,12 @@ class MatchTypeExpression(MatchExpressionBase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ExtractLexerInfo(
+    def ExtractParserInfo(
         cls,
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractLexerInfoResult]:
-        return cls._ExtractLexerInfoImpl(
-            MatchTypeExpressionLexerInfo,
-            MatchTypeCasePhraseLexerInfo,
+    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        return cls._ExtractParserInfoImpl(
+            MatchTypeExpressionParserInfo,
+            MatchTypeCasePhraseParserInfo,
             node,
         )
