@@ -13,21 +13,17 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that parses content"""
+"""Contains functionality that lexes content"""
 
 import asyncio
 import os
-import importlib
-import sys
 
-from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Awaitable, cast, Callable, Dict, List, Optional, Set, Union
+from typing import Any, Awaitable, Dict, List, Optional, Union
 
 from semantic_version import Version as SemVer
 
 import CommonEnvironment
-from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -57,77 +53,12 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-Grammars: Dict[SemVer, DynamicPhrasesInfo]              = OrderedDict()
-GrammarPhraseLookup: Dict[Phrase, GrammarPhrase]        = OrderedDict()
-
-
-# ----------------------------------------------------------------------
-def _LoadDynamicPhrasesFromFile(
-    filename: str,
-    module_attribute_name: str=None,
-) -> DynamicPhrasesInfo:
-    assert os.path.isfile(filename), filename
-
-    dirname, basename = os.path.split(filename)
-    basename = os.path.splitext(basename)[0]
-
-    sys.path.insert(0, dirname)
-    with CallOnExit(lambda: sys.path.pop(0)):
-        mod = importlib.import_module(basename)
-
-        grammar_phrases = getattr(mod, module_attribute_name or "GrammarPhrases", None)
-        assert grammar_phrases is not None, filename
-
-        expressions: List[Phrase] = []
-        names: List[Phrase] = []
-        statements: List[Phrase] = []
-        types: List[Phrase] = []
-        name_lookup: Set[str] = set()
-
-        for grammar_phrase in grammar_phrases:
-            if grammar_phrase.TypeValue == GrammarPhrase.Type.Expression:
-                expressions.append(grammar_phrase.Phrase)
-            elif grammar_phrase.TypeValue == GrammarPhrase.Type.Name:
-                names.append(grammar_phrase.Phrase)
-            elif grammar_phrase.TypeValue == GrammarPhrase.Type.Statement:
-                statements.append(grammar_phrase.Phrase)
-            elif grammar_phrase.TypeValue == GrammarPhrase.Type.Type:
-                types.append(grammar_phrase.Phrase)
-            else:
-                assert False, grammar_phrase.TypeValue  # pragma: no cover
-
-            assert grammar_phrase.Phrase not in GrammarPhraseLookup, grammar_phrase.Phrase
-            GrammarPhraseLookup[grammar_phrase.Phrase] = grammar_phrase
-
-            # Ensure that phrase names are unique
-            assert grammar_phrase.Phrase.Name not in name_lookup, grammar_phrase.Phrase.Name
-            name_lookup.add(grammar_phrase.Phrase.Name)
-
-        del sys.modules[basename]
-
-        # pylint: disable=too-many-function-args
-        return DynamicPhrasesInfo(
-            expressions,
-            names,
-            statements,
-            types,
-            AllowParentTraversal=False,
-        )
-
-
-# ----------------------------------------------------------------------
-Grammars[SemVer("0.0.1")]                   = _LoadDynamicPhrasesFromFile(os.path.join(_script_dir, "..", "Grammars", "v0_0_1", "All.py"))
-
-
-# ----------------------------------------------------------------------
-assert GrammarPhraseLookup, "We should have entries for all encountered phrases"
-del _LoadDynamicPhrasesFromFile
-
-
-# ----------------------------------------------------------------------
 def Lex(
+    grammars: Dict[SemVer, DynamicPhrasesInfo],
+    grammar_phrase_lookup: Dict[Phrase, GrammarPhrase],
     fully_qualified_names: List[str],
     source_roots: List[str],
+    *,
     max_num_threads: Optional[int]=None,
 ) -> Union[
     None,                                   # Cancellation
@@ -147,10 +78,11 @@ def Lex(
 
     syntax_observer = SyntaxObserver(
         _LexObserver(
+            grammar_phrase_lookup,
             source_roots,
             max_num_threads=max_num_threads,
         ),
-        Grammars,
+        grammars,
     )
 
     return asyncio.get_event_loop().run_until_complete(
@@ -166,29 +98,27 @@ def Lex(
 # ----------------------------------------------------------------------
 def Prune(
     roots: Dict[str, RootNode],
+    *,
     max_num_threads: Optional[int]=None,
 ):
     """Removes Leaf nodes that have been explicitly ignored (for easier parsing)"""
 
-    _Execute(
-        lambda fqn, node: _Prune(node),
-        roots,
-        max_num_threads=max_num_threads,
-    )
+    single_threaded = max_num_threads == 1 or len(roots) == 1
 
+    if single_threaded:
+        for v in roots.values():
+            _Prune(v)
 
-# ----------------------------------------------------------------------
-def Validate(
-    roots: Dict[str, RootNode],
-    max_num_threads: Optional[int]=None,
-):
-    """Invokes functionality to validate a node and its children in isolation"""
+    else:
+        with ThreadPoolExecutor(
+            max_workers=max_num_threads,
+        ) as executor:
+            futures = [
+                executor.submit(lambda v=v: _Prune(v))
+                for v in roots.values()
+            ]
 
-    _Execute(
-        _ValidateRoot,
-        roots,
-        max_num_threads=max_num_threads,
-    )
+            [future.result() for future in futures]
 
 
 # ----------------------------------------------------------------------
@@ -198,6 +128,7 @@ class _LexObserver(TranslationUnitsObserver):
     # ----------------------------------------------------------------------
     def __init__(
         self,
+        grammar_phrase_lookup: Dict[Phrase, GrammarPhrase],
         source_roots: List[str],
         max_num_threads: Optional[int]=None,
     ):
@@ -207,6 +138,7 @@ class _LexObserver(TranslationUnitsObserver):
         assert max_num_threads is None or max_num_threads > 0, max_num_threads
 
         self._is_cancelled                  = False
+        self._grammar_phrase_lookup         = grammar_phrase_lookup
         self._source_roots                  = source_roots
         self._executor                      = CreateThreadPool(max_workers=max_num_threads)
 
@@ -287,7 +219,7 @@ class _LexObserver(TranslationUnitsObserver):
         TranslationUnitsObserver.ImportInfo,            # Import information (if any) resulting from the parsed phrase
     ]:
         try:
-            grammar_phrase = GrammarPhraseLookup.get(phrase, None)
+            grammar_phrase = self._grammar_phrase_lookup.get(phrase, None)
         except TypeError:
             grammar_phrase = None
 
@@ -300,30 +232,6 @@ class _LexObserver(TranslationUnitsObserver):
                 )
 
         return not self._is_cancelled
-
-
-# ----------------------------------------------------------------------
-def _Execute(
-    func: Callable[[str, RootNode], None],
-    roots: Dict[str, RootNode],
-    max_num_threads: Optional[int]=None,
-):
-    single_threaded = max_num_threads == 1 or len(roots) == 1
-
-    if single_threaded:
-        for k, v in roots.items():
-            func(k, v)
-
-    else:
-        with ThreadPoolExecutor(
-            max_workers=max_num_threads,
-        ) as executor:
-            futures = [
-                executor.submit(lambda k=k, v=v: func(k, v))
-                for k, v in roots.items()
-            ]
-
-            [future.result() for future in futures]
 
 
 # ----------------------------------------------------------------------
@@ -355,51 +263,3 @@ def _Prune(
             continue
 
         del node.Children[child_index]
-
-
-# ----------------------------------------------------------------------
-def _ValidateRoot(
-    fully_qualified_name: str,
-    root: RootNode,
-):
-    try:
-        funcs: List[Callable[[], None]] = []
-
-        for child in root.Children:
-            funcs += _ValidateNode(child)
-
-        for func in reversed(funcs):
-            func()
-
-    except Exception as ex:
-        if not hasattr(ex, "FullyQualifiedName"):
-            object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
-
-        raise
-
-
-# ----------------------------------------------------------------------
-# TODO: This should be done from a different file (Parse.py), and when complete, should invoke StatementsPhraseItem.ExtractParserData to get valid statements and documentation info
-def _ValidateNode(
-    node: Union[Leaf, Node],
-) -> List[Callable[[], None]]:
-
-    funcs: List[Callable[[], None]] = []
-
-    if isinstance(node.Type, Phrase):
-        grammar_phrase = GrammarPhraseLookup.get(node.Type, None)
-        if grammar_phrase is not None:
-            result = grammar_phrase.ExtractParserInfo(cast(Node, node))
-            if result is not None:
-                assert isinstance(result, GrammarPhrase.ExtractParserInfoResult), result
-
-                if result.PostExtractFunc is not None:
-                    funcs.append(result.PostExtractFunc)
-
-                if not result.AllowChildTraversal:
-                    return funcs
-
-    for child in getattr(node, "Children", []):
-        funcs += _ValidateNode(child)
-
-    return funcs
