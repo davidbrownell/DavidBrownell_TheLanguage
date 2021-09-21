@@ -121,14 +121,15 @@ class SyntaxInvalidError(LexerError):
 
                 last_matches.append((node, depth))
 
-        assert last_matches
+        if last_matches:
+            # Select the node with the lowest depth (as this is likely to include the other nodes)
+            last_matches.sort(
+                key=lambda value: value[-1] if value[-1] != 1 else sys.maxsize
+            )
 
-        # Select the node with the lowest depth (as this is likely to include the other nodes)
-        last_matches.sort(
-            key=lambda value: value[-1] if value[-1] != 1 else sys.maxsize
-        )
-
-        last_match = last_matches[0][0]
+            last_match = last_matches[0][0]
+        else:
+            last_match = self.Root
 
         object.__setattr__(self, "LastMatch", last_match)
 

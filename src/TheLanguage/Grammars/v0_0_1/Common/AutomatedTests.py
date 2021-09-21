@@ -37,19 +37,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ....AllGrammars import Lex, Prune, Parse
     from ....Lexer.Components.AST import RootNode
-    from ....Lexer.Lex import Lex, Prune, Validate
     from ....Lexer.TranslationUnitLexer import SyntaxInvalidError
 
 
 # ----------------------------------------------------------------------
 class PatchAndExecuteFlag(Flag):
     _prune_flag                             = auto()
-    _validate_flag                          = auto()
+    _parse_flag                             = auto()
 
-    Lex                                   = 0
+    Lex                                     = 0
     Prune                                   = _prune_flag
-    Validate                                = _prune_flag | _validate_flag
+    Parse                                   = _prune_flag | _parse_flag
 
 
 # ----------------------------------------------------------------------
@@ -60,7 +60,7 @@ def PatchAndExecute(
     ],
     fully_qualified_names: List[str],       # List of filenames to parse
     source_roots: List[str],
-    flag=PatchAndExecuteFlag.Validate,
+    flag=PatchAndExecuteFlag.Parse,
     max_num_threads: Optional[int]=None,
     debug_string_on_exception=True,
 ) -> Union[
@@ -132,8 +132,8 @@ def PatchAndExecute(
                 max_num_threads=max_num_threads,
             )
 
-        if flag & PatchAndExecuteFlag._validate_flag:
-            Validate(
+        if flag & PatchAndExecuteFlag._parse_flag:
+            Parse(
                 result,
                 max_num_threads=max_num_threads,
             )
@@ -153,7 +153,7 @@ def ExecuteEx(
         },
         ["filename"],
         [],
-        flag=PatchAndExecuteFlag.Validate,
+        flag=PatchAndExecuteFlag.Parse,
         # TODO: We are using too many threads in the pool when not single threaded
         max_num_threads=1,
     )
