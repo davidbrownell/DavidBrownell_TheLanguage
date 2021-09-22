@@ -97,6 +97,7 @@ class FuncAndMethodDefinitionStatement(GrammarPhrase):
         OperatorType.Repr: "__Repr__",
         OperatorType.Clone: "__Clone__",
         OperatorType.Serialize: "__Serialize__",
+        OperatorType.Deserialize: "__Deserialize__",
 
         OperatorType.Init: "__Init__",
         OperatorType.PostInit: "__PostInit__",

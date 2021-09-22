@@ -50,16 +50,55 @@ Children:
                     Children:
                       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
                         Children:
-                          - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                            IsIgnored: False
+                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                            Children:
+                              - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                                    Children:
+                                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                                        Children:
+                                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                                            Children:
+                                              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                                                IsIgnored: False
+                                                IterBegin: "[1, 10] (9)"
+                                                IterEnd: "[1, 15] (14)"
+                                                Type: "<generic_name> <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+                                                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                                  Match: "<_sre.SRE_Match object; span=(9, 14), match='Func1'>"
+                                                Whitespace:
+                                                  - 8
+                                                  - 9
+                                            Info: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                                              Name: "Func1"
+                                              Regions: # <class 'types.VariableNameParserInfoRegions'>
+                                                Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                                                Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                                            IterBegin: "[1, 10] (9)"
+                                            IterEnd: "[1, 15] (14)"
+                                            Type: "Variable Name <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+                                        IterBegin: "[1, 10] (9)"
+                                        IterEnd: "[1, 15] (14)"
+                                        Type: "0.0.1 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                                    Info: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+                                      Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                                        Name: "Func1"
+                                        Regions: # <class 'types.VariableNameParserInfoRegions'>
+                                          Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                                          Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                                      Regions: # <class 'types.VariableExpressionParserInfoRegions'>
+                                        Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                                        Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                                    IterBegin: "[1, 10] (9)"
+                                    IterEnd: "[1, 15] (14)"
+                                    Type: "Variable Expression <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+                                IterBegin: "[1, 10] (9)"
+                                IterEnd: "[1, 15] (14)"
+                                Type: "Left Recursive Wrapper <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                             IterBegin: "[1, 10] (9)"
                             IterEnd: "[1, 15] (14)"
-                            Type: "<generic_name> <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                              Match: "<_sre.SRE_Match object; span=(9, 14), match='Func1'>"
-                            Whitespace:
-                              - 8
-                              - 9
+                            Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
                           - # <class 'TheLanguage.Lexer.Components.AST.Node'>
                             Children:
                               - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
@@ -407,10 +446,18 @@ Children:
                                 Expression: "[Ln 1, Col 32] -> [Ln 1, Col 37]"
                                 Keyword: "[Ln 1, Col 30] -> [Ln 1, Col 31]"
                                 Self__: "[Ln 1, Col 30] -> [Ln 1, Col 37]"
-                          Name: "Func1"
+                          Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+                            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                              Name: "Func1"
+                              Regions: # <class 'types.VariableNameParserInfoRegions'>
+                                Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                                Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                            Regions: # <class 'types.VariableExpressionParserInfoRegions'>
+                              Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                              Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
                           Regions: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
                             Arguments: "[Ln 1, Col 15] -> [Ln 1, Col 38]"
-                            Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                            Expression: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
                             Self__: "[Ln 1, Col 10] -> [Ln 1, Col 38]"
                         IterBegin: "[1, 10] (9)"
                         IterEnd: "[1, 38] (37)"
@@ -478,10 +525,18 @@ Children:
                       Expression: "[Ln 1, Col 32] -> [Ln 1, Col 37]"
                       Keyword: "[Ln 1, Col 30] -> [Ln 1, Col 31]"
                       Self__: "[Ln 1, Col 30] -> [Ln 1, Col 37]"
-                Name: "Func1"
+                Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+                  Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                    Name: "Func1"
+                    Regions: # <class 'types.VariableNameParserInfoRegions'>
+                      Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                      Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                  Regions: # <class 'types.VariableExpressionParserInfoRegions'>
+                    Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                    Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
                 Regions: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
                   Arguments: "[Ln 1, Col 15] -> [Ln 1, Col 38]"
-                  Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+                  Expression: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
                   Self__: "[Ln 1, Col 10] -> [Ln 1, Col 38]"
               Modifier: None
               Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
@@ -553,16 +608,55 @@ Children:
                     Children:
                       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
                         Children:
-                          - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                            IsIgnored: False
+                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                            Children:
+                              - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                                Children:
+                                  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                                    Children:
+                                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                                        Children:
+                                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                                            Children:
+                                              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                                                IsIgnored: False
+                                                IterBegin: "[3, 10] (48)"
+                                                IterEnd: "[3, 15] (53)"
+                                                Type: "<generic_name> <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+                                                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                                  Match: "<_sre.SRE_Match object; span=(48, 53), match='Func2'>"
+                                                Whitespace:
+                                                  - 47
+                                                  - 48
+                                            Info: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                                              Name: "Func2"
+                                              Regions: # <class 'types.VariableNameParserInfoRegions'>
+                                                Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                                                Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                                            IterBegin: "[3, 10] (48)"
+                                            IterEnd: "[3, 15] (53)"
+                                            Type: "Variable Name <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+                                        IterBegin: "[3, 10] (48)"
+                                        IterEnd: "[3, 15] (53)"
+                                        Type: "0.0.1 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                                    Info: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+                                      Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                                        Name: "Func2"
+                                        Regions: # <class 'types.VariableNameParserInfoRegions'>
+                                          Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                                          Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                                      Regions: # <class 'types.VariableExpressionParserInfoRegions'>
+                                        Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                                        Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                                    IterBegin: "[3, 10] (48)"
+                                    IterEnd: "[3, 15] (53)"
+                                    Type: "Variable Expression <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+                                IterBegin: "[3, 10] (48)"
+                                IterEnd: "[3, 15] (53)"
+                                Type: "Left Recursive Wrapper <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                             IterBegin: "[3, 10] (48)"
                             IterEnd: "[3, 15] (53)"
-                            Type: "<generic_name> <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                              Match: "<_sre.SRE_Match object; span=(48, 53), match='Func2'>"
-                            Whitespace:
-                              - 47
-                              - 48
+                            Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
                           - # <class 'TheLanguage.Lexer.Components.AST.Node'>
                             Children:
                               - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
@@ -973,10 +1067,18 @@ Children:
                                 Expression: "[Ln 7, Col 7] -> [Ln 7, Col 11]"
                                 Keyword: "[Ln 7, Col 5] -> [Ln 7, Col 6]"
                                 Self__: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
-                          Name: "Func2"
+                          Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+                            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                              Name: "Func2"
+                              Regions: # <class 'types.VariableNameParserInfoRegions'>
+                                Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                                Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                            Regions: # <class 'types.VariableExpressionParserInfoRegions'>
+                              Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                              Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
                           Regions: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
                             Arguments: "[Ln 3, Col 15] -> [Ln 8, Col 2]"
-                            Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                            Expression: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
                             Self__: "[Ln 3, Col 10] -> [Ln 8, Col 2]"
                         IterBegin: "[3, 10] (48)"
                         IterEnd: "[8, 2] (95)"
@@ -1059,10 +1161,18 @@ Children:
                       Expression: "[Ln 7, Col 7] -> [Ln 7, Col 11]"
                       Keyword: "[Ln 7, Col 5] -> [Ln 7, Col 6]"
                       Self__: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
-                Name: "Func2"
+                Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+                  Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                    Name: "Func2"
+                    Regions: # <class 'types.VariableNameParserInfoRegions'>
+                      Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                      Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                  Regions: # <class 'types.VariableExpressionParserInfoRegions'>
+                    Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                    Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
                 Regions: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
                   Arguments: "[Ln 3, Col 15] -> [Ln 8, Col 2]"
-                  Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+                  Expression: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
                   Self__: "[Ln 3, Col 10] -> [Ln 8, Col 2]"
               Modifier: None
               Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>

@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
-    from ..Common import TypeModifier
+    from ..Common.TypeModifier import TypeModifier
 
     from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
@@ -147,7 +147,7 @@ class ScopedRefStatement(GrammarPhrase):
                     "as",
 
                     # 'ref'
-                    TypeModifier.Enum.ref.name,
+                    TypeModifier.ref.name,
 
                     # ':' <statement>+
                     StatementsPhraseItem.Create(),

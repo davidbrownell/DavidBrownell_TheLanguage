@@ -480,7 +480,6 @@ class TestStandard(object):
     def test_MethodStatementsUnexpected(self):
         for class_info, method_type in [
             (self._class_lexer_info, MethodType.abstract),
-            (self._deferred_lexer_info, MethodType.deferred),
         ]:
             with pytest.raises(MethodStatementsUnexpectedError) as ex:
                 FuncAndMethodDefinitionStatementParserInfo(

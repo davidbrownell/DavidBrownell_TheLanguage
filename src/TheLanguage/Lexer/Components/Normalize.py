@@ -48,7 +48,6 @@ class InvalidTabsAndSpacesNormalizeError(LexerError):
     MessageTemplate                         = Interface.DerivedProperty("The spaces and/or tabs used to indent this line differ from the spaces and/or tabs used on previous lines.")  # type: ignore
 
 
-
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class NoClosingMultilineTokenError(LexerError):
@@ -136,7 +135,7 @@ TripletContentRegexTemplate                 = textwrap.dedent(
         Don't consume other triplets                    )(?!{triplet_item}{triplet_item}{triplet_item})(?#
         Value                                           )(?P<value>.*?)(?#
         No slash as a prefix to the closing triplet[s]  )(?<!\\)(?#
-        ){{footer}}""",
+    ){{footer}}""",
 ).format(
     triplet_item=r"[^A-Za-z0-9 \t\n]",
 )

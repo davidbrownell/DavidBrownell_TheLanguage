@@ -38,5 +38,5 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncInvocationExpressionParserInfo(ExpressionParserInfo):
-    Name: str
+    Expression: ExpressionParserInfo
     Arguments: Optional[List[ArgumentParserInfo]]

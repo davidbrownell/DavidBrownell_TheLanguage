@@ -18,7 +18,7 @@
 import os
 import re
 
-from typing import cast, Optional
+from typing import cast, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -183,8 +183,6 @@ class MultilineStatementBase(GrammarPhrase):
         self,
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
-        # TODO: Revisit this
-
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
@@ -218,7 +216,7 @@ class MultilineStatementBase(GrammarPhrase):
         if not value:
             raise InvalidMultilineContentError.FromNode(leaf)
 
-        value = value.replace("\\", "")
+        value = value.replace("\\{}".format(self.Footer), self.Footer)
 
         return self._ValidateSyntaxImpl(node, leaf, value)
 

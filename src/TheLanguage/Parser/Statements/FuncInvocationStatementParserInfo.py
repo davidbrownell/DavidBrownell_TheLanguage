@@ -33,10 +33,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
     from ..Common.ArgumentParserInfo import ArgumentParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncInvocationStatementParserInfo(StatementParserInfo):
-    Name: str
+    Expression: ExpressionParserInfo
     Arguments: Optional[List[ArgumentParserInfo]]

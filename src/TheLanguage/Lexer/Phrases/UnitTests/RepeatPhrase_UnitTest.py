@@ -794,3 +794,7 @@ async def test_OnInternalPhraseFalse(parse_mock):
     )
 
     assert result is None
+
+
+# BugBug: Create a scenario where we read N items, but there is an error in the last one preventing consumption.
+# BugBug: 2 tests: error in 1st token, error in 2nd token

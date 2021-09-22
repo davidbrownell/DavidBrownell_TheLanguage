@@ -85,5 +85,7 @@ class DocstringStatement(MultilineStatementBase):
         leaf: Leaf,
         value: str,
     ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        # TODO: Should not begin with whitespace
+
         object.__setattr__(node, "_docstring_info", (leaf, value))
         SetParserInfo(node, None)

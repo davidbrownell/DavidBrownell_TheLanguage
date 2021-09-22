@@ -59,6 +59,7 @@ class OperatorType(Enum):
     Repr                                    = auto()
     Clone                                   = auto()
     Serialize                               = auto()
+    Deserialize                             = auto()
 
     Init                                    = auto()
     PostInit                                = auto()

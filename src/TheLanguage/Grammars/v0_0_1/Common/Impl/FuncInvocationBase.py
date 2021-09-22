@@ -34,15 +34,17 @@ with InitRelativeImports():
 
     from ....GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from .....Parser.ParserInfo import ParserInfo, SetParserInfo
-
     from .....Lexer.Phrases.DSL import (
         CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
         ExtractSequence,
-        ExtractToken,
         Leaf,
         Node,
     )
+
+    from .....Parser.Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from .....Parser.ParserInfo import GetParserInfo, ParserInfo, SetParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -66,11 +68,10 @@ class FuncInvocationBase(GrammarPhrase):
         grammar_phrase_type: GrammarPhrase.Type,
     ):
         phrase_items = [
-            # TODO: This doesn't work, as we need a way to invoke anonymous functions or a function returned by another function
+            # <expr>
+            DynamicPhrasesType.Expressions,
 
-            # <generic_name>
-            CommonTokens.GenericName,
-
+            # Arguments
             ArgumentsPhraseItem.Create(),
         ]
 
@@ -98,9 +99,9 @@ class FuncInvocationBase(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) in [2, 3], nodes
 
-            # Func Name
-            name_leaf = cast(Leaf, nodes[0])
-            name_info = cast(str, ExtractToken(name_leaf))
+            # <expr>
+            expression_node = ExtractDynamic(cast(Node, nodes[0]))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
             # Arguments
             arguments_node = cast(Node, nodes[1])
@@ -112,8 +113,8 @@ class FuncInvocationBase(GrammarPhrase):
             SetParserInfo(
                 node,
                 lexer_info_type(
-                    CreateParserRegions(node, name_leaf, arguments_node),
-                    name_info,  # type: ignore
+                    CreateParserRegions(node, expression_node, arguments_node),
+                    expression_info,
                     arguments_info,
                 ),
             )

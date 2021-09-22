@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,21 +30,54 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Impl.FuncInvocationBase import FuncInvocationBase, Node
-    from ...GrammarPhrase import GrammarPhrase
+    from ..Common import ArgumentsPhraseItem
+    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.Expressions.FuncInvocationExpressionParserInfo import FuncInvocationExpressionParserInfo
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractSequence,
+        Node,
+    )
+
+    from ....Parser.Expressions.FuncInvocationExpressionParserInfo import (
+        ExpressionParserInfo,
+        FuncInvocationExpressionParserInfo,
+    )
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
 
 
 # ----------------------------------------------------------------------
-class FuncInvocationExpression(FuncInvocationBase):
-    """Invokes a function"""
+class FuncInvocationExpression(GrammarPhrase):
+    """\
+    A function invocation.
+
+    <expr> <<Arguments>>
+
+    Examples:
+        Func1()
+        Func2(a,)
+        Func3(a, b, c)
+        Func4(a, b, c=foo)
+    """
+
+    PHRASE_NAME                             = "Func Invocation Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(FuncInvocationExpression, self).__init__(
-            "Func Invocation Expression",
             GrammarPhrase.Type.Expression,
+            CreatePhrase(
+                name=self.PHRASE_NAME,
+                item=[
+                    # <expr>
+                    DynamicPhrasesType.Expressions,
+
+                    # Arguments
+                    ArgumentsPhraseItem.Create(),
+                ],
+            ),
         )
 
     # ----------------------------------------------------------------------
@@ -54,4 +87,31 @@ class FuncInvocationExpression(FuncInvocationBase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
-        return cls._ExtractParserInfoImpl(FuncInvocationExpressionParserInfo, node)
+        # ----------------------------------------------------------------------
+        def CreateParserInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) in [2, 3], nodes
+
+            # <expr>
+            expression_node = ExtractDynamic(cast(Node, nodes[0]))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
+
+            # Arguments
+            arguments_node = cast(Node, nodes[1])
+            arguments_info = ArgumentsPhraseItem.ExtractParserInfo(arguments_node)
+            if arguments_info is None:
+                arguments_node = None
+
+            # pylint: disable=too-many-function-args
+            SetParserInfo(
+                node,
+                FuncInvocationExpressionParserInfo(
+                    CreateParserRegions(node, expression_node, arguments_node),  # type: ignore
+                    expression_info,
+                    arguments_info,
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

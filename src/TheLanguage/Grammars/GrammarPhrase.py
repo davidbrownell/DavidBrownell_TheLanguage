@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import cast, Any, Callable, List, Optional, Union
+from typing import cast, Any, Callable, Dict, List, Optional, Union
 
 from dataclasses import dataclass, field
 
@@ -65,6 +65,12 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
+    class GetDynamicContentResult(object):
+        Expressions: List["GrammarPhrase"] # TODO: Not sure if this should be Phrase or GrammarPhrase
+        Attributes: Dict[str, "GrammarPhrase"]
+
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
     class ExtractParserInfoResult(object):
         # Function that should be called once all the nodes have been validated individually. This
         # can be used by phrases who need context information from their parents to complete
@@ -91,6 +97,19 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
 
         self.TypeValue                      = type_value
         self.Phrase                         = phrase
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def GetDynamicContent(
+        node: Node,
+    ) -> Optional["GrammarPhrase.GetDynamicContentResult"]:
+        """\
+        Returns any dynamic content that is made available once the phrase has been parsed.
+        """
+
+        # By default, a phrase does not generate dynamic content
+        return None
 
     # ----------------------------------------------------------------------
     @staticmethod

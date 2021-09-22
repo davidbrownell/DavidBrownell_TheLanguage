@@ -28,9 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Impl import ModifierImpl
-    from ....Parser.Common.ClassModifier import ClassModifier as Enum
+    from ....Parser.Common.ClassModifier import ClassModifier
 
 
 # ----------------------------------------------------------------------
-CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(Enum)
-Extract                                     = ModifierImpl.CreateStandardExtractFunc(Enum)
+CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(ClassModifier)
+Extract                                     = ModifierImpl.CreateStandardExtractFunc(ClassModifier)

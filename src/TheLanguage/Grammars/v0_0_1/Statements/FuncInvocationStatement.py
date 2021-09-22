@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,23 +30,40 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Impl.FuncInvocationBase import FuncInvocationBase, Node
+    from ..Common import Tokens as CommonTokens
+    from ..Expressions.FuncInvocationExpression import FuncInvocationExpression
+
     from ...GrammarPhrase import GrammarPhrase
 
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractSequence,
+        Node,
+    )
+
+    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
     from ....Parser.Statements.FuncInvocationStatementParserInfo import (
         FuncInvocationStatementParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class FuncInvocationStatement(FuncInvocationBase):
+class FuncInvocationStatement(GrammarPhrase):
     """Invokes a function"""
+
+    PHRASE_NAME                             = "Func Invocation Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(FuncInvocationStatement, self).__init__(
-            "Func Invocation Statement",
             GrammarPhrase.Type.Statement,
+            CreatePhrase(
+                name=self.PHRASE_NAME,
+                item=[
+                    FuncInvocationExpression().Phrase,
+                    CommonTokens.Newline,
+                ],
+            ),
         )
 
     # ----------------------------------------------------------------------
@@ -56,4 +73,16 @@ class FuncInvocationStatement(FuncInvocationBase):
         cls,
         node: Node,
     ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
-        return cls._ExtractParserInfoImpl(FuncInvocationStatementParserInfo, node)
+        # ----------------------------------------------------------------------
+        def CreateParserInfo():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 2
+
+            func_node = cast(Node, nodes[0])
+
+            SetParserInfo(node, GetParserInfo(func_node))
+            SetParserInfo(func_node, None)
+
+        # ----------------------------------------------------------------------
+
+        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)

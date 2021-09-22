@@ -45,6 +45,12 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class ClassType(Enum):
     """\
+    *****************
+    NOTE: (TODO)
+        These rules are a work in progress and likely to change as we gain my experience with the language.
+
+    *****************
+
     |-----------------------------------------------------------------------------------------------------------------------|
     | VISIBILITY                                                                                                            |
     |-----------|--------------------|----------------------------|---------------------------|-----------------------------|
@@ -165,7 +171,7 @@ class MethodType(Enum):
     """
 
     abstract                                = auto()
-    deferred                                = auto()
+    deferred                                = auto() # TOOD: Remove this; need to be able to support static functions that are deferred
     final                                   = auto()
     override                                = auto()
     standard                                = auto()
@@ -223,8 +229,8 @@ TYPE_INFOS: Dict[ClassType, "TypeInfo"]     = {
         ClassModifier.immutable,
         _all_class_modifiers,
 
-        MethodType.deferred,
-        [MethodType.deferred],
+        MethodType.standard,
+        [MethodType.deferred, MethodType.standard, MethodType.static],
 
         AllowDataMembers=True,
         AllowMutablePublicDataMembers=False,

@@ -480,6 +480,9 @@ class SequencePhrase(Phrase):
             lambda data_item: data_item,
         )
 
+        if self.Name == "Func Invocation Statement":
+            BugBug = 10
+
         for phrase_index, phrase in enumerate(self.Phrases[phrase_offset:]):
             phrase_index += phrase_offset
 
