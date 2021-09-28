@@ -240,7 +240,7 @@ def CreatePhrase(
 
     phrase = _PopulateItem(comment_token, item)
 
-    phrase.PopulateRecursive(phrase)
+    phrase.PopulateRecursive(None, phrase)
 
     return phrase
 

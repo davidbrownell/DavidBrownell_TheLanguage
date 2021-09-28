@@ -255,7 +255,7 @@ class OrPhrase(Phrase):
                 self.Phrases[phrase_index] = new_phrase
                 replaced_phrase = True
             else:
-                replaced_phrase = phrase.PopulateRecursive(new_phrase) or replaced_phrase
+                replaced_phrase = phrase.PopulateRecursive(self, new_phrase) or replaced_phrase
 
         if replaced_phrase and self._name_is_default:
             self.Name = self.__class__._CreateDefaultName(self.Phrases)

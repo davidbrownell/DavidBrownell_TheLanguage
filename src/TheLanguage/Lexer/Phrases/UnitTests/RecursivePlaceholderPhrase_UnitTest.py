@@ -54,7 +54,7 @@ async def test_Lex(parse_mock):
 # ----------------------------------------------------------------------
 def test_PopulateRecursive():
     with pytest.raises(Exception) as ex:
-        RecursivePlaceholderPhrase().PopulateRecursive(None)
+        RecursivePlaceholderPhrase().PopulateRecursive(None, None)
 
     ex = ex.value
 

@@ -82,7 +82,7 @@ def CreatePhrase(result):
 
     phrase = ThePhrase()
 
-    phrase.PopulateRecursive(phrase)
+    phrase.PopulateRecursive(None, phrase)
     return phrase
 
 

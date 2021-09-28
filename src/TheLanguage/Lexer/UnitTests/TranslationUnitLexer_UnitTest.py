@@ -55,6 +55,7 @@ with InitRelativeImports():
         DefaultCommentToken,
         OneOrMorePhraseItem,
         OrPhraseItem,
+        PhraseItem,
     )
 
 
@@ -184,7 +185,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [4, 1]
 
-            'Dedent' was expected in 'Phrase'.
+            '([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+])' was evaluated but not matched; therefore 'Dedent' was expected in 'Phrase'.
             """,
         )
 
@@ -838,10 +839,10 @@ class TestNewScopedPhrasesComplex(object):
 
 # ----------------------------------------------------------------------
 class TestEmbeddedPhrases(object):
-    _upper_lower_phrase                     = CreatePhrase(name="Upper Lower Phrase", item=[_upper_token, _lower_token, NewlineToken()])
+    _upper_lower_phrase_item                = PhraseItem.Create(name="Upper Lower Phrase", item=[_upper_token, _lower_token, NewlineToken()])
 
-    _uul_phrase                             = CreatePhrase(name="uul", item=[_upper_token, _upper_lower_phrase])
-    _lul_phrase                             = CreatePhrase(name="lul", item=[_lower_token, _upper_lower_phrase])
+    _uul_phrase                             = CreatePhrase(name="uul", item=[_upper_token, _upper_lower_phrase_item])
+    _lul_phrase                             = CreatePhrase(name="lul", item=[_lower_token, _upper_lower_phrase_item])
 
     _phrases                                = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_uul_phrase, _lul_phrase]})
 
@@ -1047,7 +1048,7 @@ async def test_DynamicExpressions(parse_mock):
 
 # ----------------------------------------------------------------------
 class TestCatastrophicInclude(object):
-    _include_phrase                         = CreatePhrase(
+    _include_phrase_item                    = PhraseItem.Create(
         name="Include Phrase",
         item=[
             RegexToken("include", re.compile(r"include")),
@@ -1062,7 +1063,7 @@ class TestCatastrophicInclude(object):
     _lower_include_phrase                   = CreatePhrase(
         name="Lower Include Phrase",
         item=[
-            _include_phrase,
+            _include_phrase_item,
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
         ],
@@ -1071,7 +1072,7 @@ class TestCatastrophicInclude(object):
     _number_include_phrase                  = CreatePhrase(
         name="Number Include Phrase",
         item=[
-            _include_phrase,
+            _include_phrase_item,
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
@@ -1117,7 +1118,7 @@ class TestCatastrophicInclude(object):
             iter_before: Phrase.NormalizedIterator,
             iter_after: Phrase.NormalizedIterator,
         ):
-            if phrase == cls._include_phrase:
+            if phrase.Name == cls._include_phrase_item.Name:
                 value = node.Children[1].Value.Match.group("value")
 
                 if value == "LOWER":

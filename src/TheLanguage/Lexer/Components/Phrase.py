@@ -291,16 +291,33 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     ):
         assert name
 
-        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
+        YamlRepr.ObjectReprImplBase.__init__(
+            self,
+            Parent=None,
+            **custom_display_funcs,
+        )
 
         self.Name                           = name
+        self.Parent                         = None
+
         self._is_populated                  = False
 
     # ----------------------------------------------------------------------
     def PopulateRecursive(
         self,
+        parent: Optional["Phrase"],
         new_phrase: "Phrase",
     ) -> bool:                              # True if changes were made based on population, False if no changes were made
+        if self.Parent is None:
+            self.Parent = parent
+        else:
+            assert self.Parent == parent, (
+                "A Phrase should not be the child of multiple parents; consider constructing the Phrase with 'PhraseItem' in '../Phrases/DLS.py'.",
+                self.Parent.Name,
+                parent.Name if parent is not None else None,
+                self.Name,
+            )
+
         if self._is_populated:
             return False
 

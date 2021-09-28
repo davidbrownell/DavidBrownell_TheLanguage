@@ -24,6 +24,7 @@ from collections import OrderedDict
 from typing import Any, Awaitable, cast, Dict, Generator, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
+import inflect as inflect_mod
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -48,6 +49,10 @@ with InitRelativeImports():
     from .Phrases.RepeatPhrase import RepeatPhrase
     from .Phrases.SequencePhrase import SequencePhrase
     from .Phrases.TokenPhrase import RegexToken, TokenPhrase
+
+
+# ----------------------------------------------------------------------
+inflect                                     = inflect_mod.engine()
 
 
 # ----------------------------------------------------------------------
@@ -196,12 +201,27 @@ class SyntaxInvalidError(Error):
                         # phrase right before it.
                         if len(error_node.Children) > 1:
                             potential_error_node = getattr(error_node.Children[-2], _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME, None)
-                            if potential_error_node is not None and potential_error_node.IterEnd is not None:
-                                error_node = potential_error_node
-                                continue
+                            if potential_error_node is not None:
+                                if potential_error_node.IterEnd is not None:
+                                    error_node = potential_error_node
+                                    continue
+
+                                assert potential_error_node.Type is not None
+
+                                if inflect.singular_noun(potential_error_node.Type.Name) is False:
+                                    verb_text = "was"
+                                else:
+                                    verb_text = "were"
+
+                                error_context = "'{}' {} evaluated but not matched; therefore ".format(
+                                    potential_error_node.Type.Name,
+                                    verb_text,
+                                )
 
                         expected_phrase = error_node.Type.Phrases[len(error_node.Children) - 1]
-                        error_context = "'{}' was expected in '{}'.".format(
+
+                        error_context = "{}'{}' was expected in '{}'.".format(
+                            error_context or "",
                             expected_phrase.Name,
                             error_node.Type.Name,
                         )
@@ -291,6 +311,20 @@ class DynamicPhrasesInfo(YamlRepr.ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __bool__(self):
         return bool(self.Phrases)
+
+    # ----------------------------------------------------------------------
+    def Clone(
+        self,
+        new_phrases: Optional[Dict[DynamicPhrasesType, List[Phrase]]]=None,
+        new_allow_parent_traversal: Optional[bool]=None,
+        new_name: Optional[str]=None,
+    ) -> "DynamicPhrasesInfo":
+        # pylint: disable=too-many-function-args
+        return DynamicPhrasesInfo(
+            self.Phrases if new_phrases is None else new_phrases,
+            self.AllowParentTraversal if new_allow_parent_traversal is None else new_allow_parent_traversal,
+            self.Name if new_name is None else new_name,
+        )
 
 
 # ----------------------------------------------------------------------

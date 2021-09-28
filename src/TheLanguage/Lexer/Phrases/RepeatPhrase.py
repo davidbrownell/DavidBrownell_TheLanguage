@@ -162,7 +162,7 @@ class RepeatPhrase(Phrase):
             self.Phrase = new_phrase
             replaced_phrase = True
         else:
-            replaced_phrase = self.Phrase.PopulateRecursive(new_phrase) or replaced_phrase
+            replaced_phrase = self.Phrase.PopulateRecursive(self, new_phrase) or replaced_phrase
 
         if replaced_phrase and self._name_is_default:
             self.Name = self.__class__._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)

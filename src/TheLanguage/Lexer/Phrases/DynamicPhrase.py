@@ -212,7 +212,7 @@ class DynamicPhrase(Phrase):
         self,
         new_phrase: Phrase,
     ) -> bool:
-        # Nothing to do here
+        # Nothing downstream has changed
         return False
 
     # ----------------------------------------------------------------------
