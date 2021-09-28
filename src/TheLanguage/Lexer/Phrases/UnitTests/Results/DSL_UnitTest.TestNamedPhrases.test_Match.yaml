@@ -60,7 +60,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
             IsComplete: True
           Phrase: "Upper Line"
         Phrase: "__Or__"
-      - # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -116,7 +116,6 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                 IsComplete: True
               Phrase: "__Repeat__"
           IsComplete: True
-        IgnoredErrorData: None
         Phrase: "{__Repeat__, 2, 2}"
     IsComplete: True
   Phrase: "__Phrase__"

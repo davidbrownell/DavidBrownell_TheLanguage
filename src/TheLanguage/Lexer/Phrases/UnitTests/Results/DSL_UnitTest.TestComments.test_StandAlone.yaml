@@ -1,5 +1,5 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -169,7 +169,6 @@ Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStanda
           IsComplete: True
         Phrase: "Multiline"
     IsComplete: True
-  IgnoredErrorData: None
   Phrase: "{Multiline, 1, None}"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[10, 1] (85)"

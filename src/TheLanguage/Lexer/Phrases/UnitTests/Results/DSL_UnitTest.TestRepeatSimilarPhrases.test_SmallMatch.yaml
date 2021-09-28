@@ -2,30 +2,12 @@
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
-      - # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems: []
           IsComplete: True
-        IgnoredErrorData: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-            DataItems:
-              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                  IsIgnored: False
-                  IterBegin: "[1, 1] (0)"
-                  IterEnd: "[1, 5] (4)"
-                  Token: "Word Token"
-                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                    Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
-                  Whitespace: None
-                Phrase: "Word Token"
-              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: None
-                Phrase: "Number Token"
-            IsComplete: True
-          Phrase: "Word & Number"
         Phrase: "{Word & Number, 0, None}"
-      - # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -39,7 +21,6 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                 Whitespace: None
               Phrase: "Word Token"
           IsComplete: True
-        IgnoredErrorData: None
         Phrase: "{Word Token, 0, 1}"
     IsComplete: True
   Phrase: "[{Word & Number, 0, None}, {Word Token, 0, 1}]"

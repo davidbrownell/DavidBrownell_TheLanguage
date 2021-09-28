@@ -42,25 +42,6 @@ class RepeatPhrase(Phrase):
     """Matches content that repeats the provided phrase N times"""
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True, repr=False)
-    class RepeatStandardLexResultData(Phrase.StandardLexResultData):
-        # When working with repeating statements, some errors are benign
-        # (indicating that we stopped repeating because the content no longer
-        # matched the phrase) and sometimes because there was a syntax error
-        # that prevented a phrase from matching the content. Preserve any
-        # error data that was generated so that we can display the appropriate
-        # information if we find ourselves in this second scenario.
-        IgnoredErrorData: Optional[Phrase.StandardLexResultData]
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
-    # ----------------------------------------------------------------------
     def __init__(
         self,
         phrase: Phrase,
@@ -134,7 +115,7 @@ class RepeatPhrase(Phrase):
                 assert self.MaxMatches is None or len(results) <= self.MaxMatches
 
                 # pylint: disable=too-many-function-args
-                data = self.__class__.RepeatStandardLexResultData(
+                data = self.__class__.StandardLexResultData(
                     self,
                     Phrase.MultipleLexResultData(results, True),
                     unique_id,

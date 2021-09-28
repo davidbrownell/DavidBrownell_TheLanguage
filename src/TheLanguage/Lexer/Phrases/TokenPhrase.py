@@ -114,7 +114,7 @@ class TokenPhrase(Phrase):
                 consume_dedent = False
 
             if process_whitespace:
-                data_item = cls._ExtractPotentialWhitespaceToken(
+                data_item = cls.ExtractPotentialWhitespaceToken(
                     normalized_iter,
                     consume_indent=consume_indent,
                     consume_dedent=consume_dedent,
@@ -158,6 +158,40 @@ class TokenPhrase(Phrase):
         return (data_items, normalized_iter, ignored_indentation_level)
 
     # ----------------------------------------------------------------------
+    # TODO: Caching opportunity
+    @staticmethod
+    def ExtractPotentialWhitespace(
+        normalized_iter: Phrase.NormalizedIterator,
+    ) -> Optional[Tuple[int, int]]:
+        """Consumes any whitespace located at the current offset"""
+
+        if normalized_iter.AtEnd():
+            return None
+
+        next_token_type = normalized_iter.GetNextTokenType()
+
+        if next_token_type == Phrase.NormalizedIterator.TokenType.WhitespacePrefix:
+            normalized_iter.SkipWhitespacePrefix()
+
+        elif (
+            next_token_type == Phrase.NormalizedIterator.TokenType.Content
+            or next_token_type == Phrase.NormalizedIterator.TokenType.WhitespaceSuffix
+        ):
+            start = normalized_iter.Offset
+
+            while (
+                normalized_iter.Offset < normalized_iter.LineInfo.OffsetEnd
+                and normalized_iter.Content[normalized_iter.Offset].isspace()
+                and normalized_iter.Content[normalized_iter.Offset] != "\n"
+            ):
+                normalized_iter.Advance(1)
+
+            if normalized_iter.Offset != start:
+                return start, normalized_iter.Offset
+
+        return None
+
+    # ----------------------------------------------------------------------
     # TODO: Caching Opportunity
     @Interface.override
     async def LexAsync(
@@ -176,7 +210,7 @@ class TokenPhrase(Phrase):
             # We only want to consume whitespace if there is a match that follows; collect
             # it for now, but do not modify the provided iterator.
             potential_iter = normalized_iter.Clone()
-            potential_whitespace = self.__class__._ExtractPotentialWhitespace(potential_iter)
+            potential_whitespace = self.__class__.ExtractPotentialWhitespace(potential_iter)
             potential_iter_begin = potential_iter.Clone()
 
             result = self.Token.Match(potential_iter)
@@ -299,7 +333,7 @@ class TokenPhrase(Phrase):
                 or normalized_iter.Offset == normalized_iter.LineInfo.ContentStart
             )
 
-            potential_whitespace = cls._ExtractPotentialWhitespace(normalized_iter)
+            potential_whitespace = cls.ExtractPotentialWhitespace(normalized_iter)
 
         normalized_iter_begin = normalized_iter.Clone()
 
@@ -323,7 +357,7 @@ class TokenPhrase(Phrase):
             # Add additional content to consume the entire line...
 
             # Capture the trailing newline
-            result = cls._ExtractPotentialWhitespaceToken(
+            result = cls.ExtractPotentialWhitespaceToken(
                 results[-1].IterEnd,
                 consume_indent=False,
                 consume_dedent=False,
@@ -341,7 +375,7 @@ class TokenPhrase(Phrase):
                 and results[-1].IterEnd.GetNextTokenType() == Phrase.NormalizedIterator.TokenType.Dedent
                 and not next_phrase_is_dedent
             ):
-                result = cls._ExtractPotentialWhitespaceToken(
+                result = cls.ExtractPotentialWhitespaceToken(
                     results[-1].IterEnd,
                     consume_indent=False,
                     consume_dedent=True,
@@ -358,7 +392,7 @@ class TokenPhrase(Phrase):
     # ----------------------------------------------------------------------
     # TODO: Caching opportunity
     @classmethod
-    def _ExtractPotentialWhitespaceToken(
+    def ExtractPotentialWhitespaceToken(
         cls,
         normalized_iter: Phrase.NormalizedIterator,
         *,
@@ -416,7 +450,7 @@ class TokenPhrase(Phrase):
             if next_token_type == Phrase.NormalizedIterator.TokenType.EndOfLine:
                 potential_whitespace = None
             else:
-                potential_whitespace = cls._ExtractPotentialWhitespace(normalized_iter)
+                potential_whitespace = cls.ExtractPotentialWhitespace(normalized_iter)
 
             if normalized_iter.GetNextTokenType() == Phrase.NormalizedIterator.TokenType.EndOfLine:
                 result = cls._newline_token.Match(normalized_iter)
@@ -431,39 +465,5 @@ class TokenPhrase(Phrase):
                     normalized_iter,
                     IsIgnored=True,
                 )
-
-        return None
-
-    # ----------------------------------------------------------------------
-    # TODO: Caching opportunity
-    @staticmethod
-    def _ExtractPotentialWhitespace(
-        normalized_iter: Phrase.NormalizedIterator,
-    ) -> Optional[Tuple[int, int]]:
-        """Consumes any whitespace located at the current offset"""
-
-        if normalized_iter.AtEnd():
-            return None
-
-        next_token_type = normalized_iter.GetNextTokenType()
-
-        if next_token_type == Phrase.NormalizedIterator.TokenType.WhitespacePrefix:
-            normalized_iter.SkipWhitespacePrefix()
-
-        elif (
-            next_token_type == Phrase.NormalizedIterator.TokenType.Content
-            or next_token_type == Phrase.NormalizedIterator.TokenType.WhitespaceSuffix
-        ):
-            start = normalized_iter.Offset
-
-            while (
-                normalized_iter.Offset < normalized_iter.LineInfo.OffsetEnd
-                and normalized_iter.Content[normalized_iter.Offset].isspace()
-                and normalized_iter.Content[normalized_iter.Offset] != "\n"
-            ):
-                normalized_iter.Advance(1)
-
-            if normalized_iter.Offset != start:
-                return start, normalized_iter.Offset
 
         return None

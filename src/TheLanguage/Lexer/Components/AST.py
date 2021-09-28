@@ -66,6 +66,7 @@ class _ASTBase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     def Enum(
         *,
         leaves_only=False,
+        nodes_only=False,
         children_first=False,
     ) -> Generator[Union["Leaf", "Node"], None, None]:
         """Enumerate this item and all of its children"""
@@ -124,6 +125,7 @@ class Node(_ASTBase):
         self,
         *,
         leaves_only=False,
+        nodes_only=False,
         children_first=False,
     ) -> Generator[Union["Leaf", "Node"], None, None]:
         if not leaves_only and not children_first:
@@ -132,6 +134,7 @@ class Node(_ASTBase):
         for child in self.Children:  # pylint: disable=not-an-iterable
             yield from child.Enum(
                 leaves_only=leaves_only,
+                nodes_only=nodes_only,
                 children_first=children_first,
             )
 
@@ -156,6 +159,8 @@ class Leaf(_ASTBase):
         self,
         *,
         leaves_only=False,
+        nodes_only=False,
         children_first=False,
     ) -> Generator[Union["Leaf", Node], None, None]:
-        yield self
+        if not nodes_only:
+            yield self

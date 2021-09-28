@@ -1,0 +1,203 @@
+# <class 'TheLanguage.Lexer.Components.AST.Node'>
+Children:
+  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[1, 1] (0)"
+                IterEnd: "[1, 4] (3)"
+                Type: "Upper <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(0, 3), match='ONE'>"
+                Whitespace: None
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[1, 4] (3)"
+                IterEnd: "[2, 1] (4)"
+                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  End: 4
+                  Start: 3
+                Whitespace: None
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[2, 1] (4)"
+            Type: "Upper Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IterBegin: "[1, 1] (0)"
+        IterEnd: "[2, 1] (4)"
+        Type: "(Upper Phrase | Indent Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[1, 1] (0)"
+    IterEnd: "[2, 1] (4)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+            IsIgnored: False
+            IterBegin: "[2, 1] (4)"
+            IterEnd: "[2, 5] (8)"
+            Type: "Indent <class 'TheLanguage.Lexer.Components.Token.IndentToken'>"
+            Value: # <class 'TheLanguage.Lexer.Components.Token.IndentToken.MatchResult'>
+              End: 8
+              Start: 4
+              Value: 4
+            Whitespace: None
+        IterBegin: "[2, 1] (4)"
+        IterEnd: "[2, 5] (8)"
+        Type: "(Upper Phrase | Indent Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[2, 1] (4)"
+    IterEnd: "[2, 5] (8)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[2, 5] (8)"
+                IterEnd: "[2, 8] (11)"
+                Type: "Lower <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(8, 11), match='two'>"
+                Whitespace: None
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[2, 8] (11)"
+                IterEnd: "[3, 1] (12)"
+                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  End: 12
+                  Start: 11
+                Whitespace: None
+            IterBegin: "[2, 5] (8)"
+            IterEnd: "[3, 1] (12)"
+            Type: "Lower Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IterBegin: "[2, 5] (8)"
+        IterEnd: "[3, 1] (12)"
+        Type: "(Lower Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[2, 5] (8)"
+    IterEnd: "[3, 1] (12)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[3, 5] (16)"
+                IterEnd: "[3, 10] (21)"
+                Type: "Lower <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(16, 21), match='three'>"
+                Whitespace: None
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[3, 10] (21)"
+                IterEnd: "[4, 1] (22)"
+                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  End: 22
+                  Start: 21
+                Whitespace: None
+            IterBegin: "[3, 5] (16)"
+            IterEnd: "[4, 1] (22)"
+            Type: "Lower Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IterBegin: "[3, 5] (16)"
+        IterEnd: "[4, 1] (22)"
+        Type: "(Lower Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[3, 5] (16)"
+    IterEnd: "[4, 1] (22)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[4, 5] (26)"
+                IterEnd: "[4, 9] (30)"
+                Type: "Lower <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(26, 30), match='four'>"
+                Whitespace: None
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[4, 9] (30)"
+                IterEnd: "[6, 1] (32)"
+                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  End: 32
+                  Start: 30
+                Whitespace: None
+            IterBegin: "[4, 5] (26)"
+            IterEnd: "[6, 1] (32)"
+            Type: "Lower Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IterBegin: "[4, 5] (26)"
+        IterEnd: "[6, 1] (32)"
+        Type: "(Lower Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[4, 5] (26)"
+    IterEnd: "[6, 1] (32)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+            IsIgnored: False
+            IterBegin: "[6, 1] (32)"
+            IterEnd: "[6, 1] (32)"
+            Type: "Dedent <class 'TheLanguage.Lexer.Components.Token.DedentToken'>"
+            Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
+              {}
+            Whitespace: None
+        IterBegin: "[6, 1] (32)"
+        IterEnd: "[6, 1] (32)"
+        Type: "(Lower Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[6, 1] (32)"
+    IterEnd: "[6, 1] (32)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[6, 1] (32)"
+                IterEnd: "[6, 5] (36)"
+                Type: "Upper <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(32, 36), match='FIVE'>"
+                Whitespace: None
+              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                IsIgnored: False
+                IterBegin: "[6, 5] (36)"
+                IterEnd: "[7, 1] (37)"
+                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  End: 37
+                  Start: 36
+                Whitespace: None
+            IterBegin: "[6, 1] (32)"
+            IterEnd: "[7, 1] (37)"
+            Type: "Upper Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IterBegin: "[6, 1] (32)"
+        IterEnd: "[7, 1] (37)"
+        Type: "(Upper Phrase | Indent Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IterBegin: "[6, 1] (32)"
+    IterEnd: "[7, 1] (37)"
+    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[7, 1] (37)"
+Type: "<None>"

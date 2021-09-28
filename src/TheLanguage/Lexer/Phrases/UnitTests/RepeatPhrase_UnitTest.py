@@ -76,7 +76,7 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -105,7 +105,6 @@ class TestStandard(object):
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
                 IsComplete: True
-              IgnoredErrorData: None
               Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (4)"
@@ -179,7 +178,7 @@ class TestStandard(object):
                 Phrase: "(Word | Newline+)"
             16) EndPhrase, "(Word | Newline+)" [True]
             17) OnInternalPhraseAsync, 0, 4
-                # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
                     - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -208,7 +207,6 @@ class TestStandard(object):
                         Phrase: "Newline+"
                       Phrase: "(Word | Newline+)"
                   IsComplete: True
-                IgnoredErrorData: None
                 Phrase: "{(Word | Newline+), 2, 4}"
             18) EndPhrase, "{(Word | Newline+), 2, 4}" [True]
             """,
@@ -233,7 +231,7 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -287,7 +285,6 @@ class TestStandard(object):
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
                 IsComplete: True
-              IgnoredErrorData: None
               Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (8)"
@@ -317,7 +314,7 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -371,7 +368,6 @@ class TestStandard(object):
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
                 IsComplete: True
-              IgnoredErrorData: None
               Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (8)"
@@ -498,7 +494,7 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -552,7 +548,6 @@ class TestStandard(object):
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
                 IsComplete: True
-              IgnoredErrorData: None
               Phrase: "{(Word | Newline+), 4, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (8)"
@@ -580,7 +575,7 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -634,7 +629,6 @@ class TestStandard(object):
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
                 IsComplete: True
-              IgnoredErrorData: None
               Phrase: "{(Word | Newline+), 4, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (8)"
@@ -709,7 +703,7 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -738,17 +732,6 @@ class TestStandard(object):
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
                 IsComplete: True
-              IgnoredErrorData: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                  DataItems:
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: None
-                      Phrase: "Word"
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: None
-                      Phrase: "Newline+"
-                  IsComplete: True
-                Phrase: "(Word | Newline+)"
               Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (4)"
@@ -775,7 +758,7 @@ class TestStandard(object):
         assert str(result) == textwrap.dedent(
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -816,17 +799,6 @@ class TestStandard(object):
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
                 IsComplete: True
-              IgnoredErrorData: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                  DataItems:
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: None
-                      Phrase: "Word"
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: None
-                      Phrase: "Newline+"
-                  IsComplete: True
-                Phrase: "(Word | Newline+)"
               Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 4] (7)"

@@ -29,7 +29,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
           IsComplete: True
         Phrase: "[Number Token, Newline+]"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
             DataItems:
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -62,7 +62,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                         IsComplete: True
                       Phrase: "[Number Token, Newline+]"
                     - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase.RepeatStandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                           DataItems:
                             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -125,13 +125,11 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                                 IsComplete: True
                               Phrase: "Recursive Phrase"
                           IsComplete: True
-                        IgnoredErrorData: None
                         Phrase: "{Recursive Phrase, 1, 2}"
                       Phrase: "({Recursive Phrase, 1, 2} | [Word Token, Newline+])"
                   IsComplete: True
                 Phrase: "Recursive Phrase"
             IsComplete: True
-          IgnoredErrorData: None
           Phrase: "{Recursive Phrase, 1, 2}"
         Phrase: "({Recursive Phrase, 1, 2} | [Word Token, Newline+])"
     IsComplete: True

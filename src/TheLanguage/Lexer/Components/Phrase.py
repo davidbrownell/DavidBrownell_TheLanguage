@@ -32,7 +32,7 @@ from typing import (
     Union,
 )
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -148,12 +148,14 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         Phrase: "Phrase"  # type: ignore
         Data: Optional["Phrase.LexResultData"]
         UniqueId: Optional[Tuple[str, ...]]
+        PotentialErrorContext: Optional["Phrase.LexResultData"]             = field(default=None)
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
             super(Phrase.StandardLexResultData, self).__post_init__(
                 Phrase=lambda phrase: phrase.Name,
                 UniqueId=None,
+                PotentialErrorContext=None,
             )
 
             assert (

@@ -122,6 +122,9 @@ class NormalizedIterator(object):
 
     # ----------------------------------------------------------------------
     def __eq__(self, other):
+        if other is None:
+            return False
+
         return self.ToCacheKey() == other.ToCacheKey()
 
     # ----------------------------------------------------------------------
