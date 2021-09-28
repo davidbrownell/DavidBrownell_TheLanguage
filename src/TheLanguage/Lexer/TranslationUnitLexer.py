@@ -273,7 +273,6 @@ class DynamicPhrasesInfo(YamlRepr.ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        assert self.Phrases
         assert all(phrases for phrases in self.Phrases.values())
 
         YamlRepr.ObjectReprImplBase.__init__(
@@ -288,6 +287,10 @@ class DynamicPhrasesInfo(YamlRepr.ObjectReprImplBase):
                 ],
             ),
         )
+
+    # ----------------------------------------------------------------------
+    def __bool__(self):
+        return bool(self.Phrases)
 
 
 # ----------------------------------------------------------------------
@@ -1006,13 +1009,14 @@ class _PhraseObserver(Phrase.Observer):
         )
 
         if isinstance(result, DynamicPhrasesInfo):
-            with self._scope_tracker_lock:
-                self._scope_tracker.AddScopeItem(
-                    data.UniqueId,
-                    self._scope_level,
-                    iter_after,
-                    result,
-                )
+            if result:
+                with self._scope_tracker_lock:
+                    self._scope_tracker.AddScopeItem(
+                        data.UniqueId,
+                        self._scope_level,
+                        iter_after,
+                        result,
+                    )
 
             return True
 

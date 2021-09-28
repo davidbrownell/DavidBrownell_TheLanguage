@@ -1221,3 +1221,33 @@ class TestCatastrophicInclude(object):
 
         CompareResultsFromFile(str(result))
         assert this_parse_mock.method_calls == []
+
+
+# ----------------------------------------------------------------------
+@pytest.mark.asyncio
+async def test_EmptyDynamicPhrasesInfo(parse_mock):
+    parse_mock.OnPhraseCompleteAsync = CoroutineMock(
+        return_value=DynamicPhrasesInfo({}),
+    )
+
+    result = await LexAsync(
+        DefaultCommentToken,
+        DynamicPhrasesInfo(
+            {
+                DynamicPhrasesType.Statements: [
+                    CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()]),
+                ],
+            },
+        ),
+        CreateIterator(
+            textwrap.dedent(
+                """\
+
+                word
+                """,
+            ),
+        ),
+        parse_mock,
+    )
+
+    CompareResultsFromFile(str(result))
