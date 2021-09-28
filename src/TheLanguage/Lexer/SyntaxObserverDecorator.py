@@ -254,22 +254,22 @@ class SyntaxObserverDecorator(TranslationUnitsLexerObserver):
     def __init__(
         self,
         observer: TranslationUnitsLexerObserver,
-        syntaxes: Dict[SemVer, DynamicPhrasesInfo],
+        grammars: Dict[SemVer, DynamicPhrasesInfo],
         configuration: Configurations,
         target: str,
-        default_syntax: Optional[SemVer]=None,
+        default_grammar: Optional[SemVer]=None,
     ):
         assert observer
-        assert syntaxes
-        assert all(bool(phrase_info) for phrase_info in syntaxes.values())
+        assert grammars
+        assert all(bool(phrase_info) for phrase_info in grammars.values())
         assert configuration
         assert target
 
-        # Augment the syntaxes to include the syntax statements and calculate the max version
-        updated_syntaxes: Dict[SemVer, DynamicPhrasesInfo] = {}
+        # Augment the grammars to include the syntax statements and calculate the max version
+        updated_grammars: Dict[SemVer, DynamicPhrasesInfo] = {}
         max_ver: Optional[SemVer] = None
 
-        for semver, phrase_info in syntaxes.items():
+        for semver, phrase_info in grammars.items():
             existing_statements = phrase_info.Phrases.get(DynamicPhrasesType.Statements, [])
 
             # Augment the existing statements with _statements
@@ -292,7 +292,7 @@ class SyntaxObserverDecorator(TranslationUnitsLexerObserver):
                 else:
                     updated_phrases[phrase_type] = statements
 
-            updated_syntaxes[semver] = phrase_info.Clone(
+            updated_grammars[semver] = phrase_info.Clone(
                 new_phrases=updated_phrases,
                 new_allow_parent_traversal=False,
                 new_name="{} Grammar".format(semver),
@@ -304,13 +304,13 @@ class SyntaxObserverDecorator(TranslationUnitsLexerObserver):
 
         assert max_ver is not None
 
-        if default_syntax is None:
-            default_syntax = max_ver
+        if default_grammar is None:
+            default_grammar = max_ver
         else:
-            assert default_syntax in updated_syntaxes, default_syntax
+            assert default_grammar in updated_grammars, default_grammar
 
-        self.Syntaxes                       = updated_syntaxes
-        self.DefaultVersion                 = default_syntax
+        self.Grammars                       = updated_grammars
+        self.DefaultGrammarVersion          = default_grammar
         self.Configuration                  = configuration
         self.Target                         = target
 
@@ -441,7 +441,7 @@ class SyntaxObserverDecorator(TranslationUnitsLexerObserver):
                 version_value,
             )
 
-        phrases_info = self.Syntaxes.get(semver, None)
+        phrases_info = self.Grammars.get(semver, None)
         if phrases_info is None:
             raise SyntaxInvalidVersionError(
                 version_leaf.IterBegin.Line,

@@ -88,13 +88,13 @@ class TestStandard(object):
     def test_Properties(self):
         observer = self.CreateObserver({})
 
-        assert observer.DefaultVersion == SemVer("2.0.0")
+        assert observer.DefaultGrammarVersion == SemVer("2.0.0")
 
-        assert len(observer.Syntaxes) == 2
+        assert len(observer.Grammars) == 2
 
         # The syntax statements should have been added to each
-        assert len(observer.Syntaxes[SemVer("1.0.0")].Phrases[DynamicPhrasesType.Statements]) == 4
-        assert len(observer.Syntaxes[SemVer("2.0.0")].Phrases[DynamicPhrasesType.Statements]) == 5
+        assert len(observer.Grammars[SemVer("1.0.0")].Phrases[DynamicPhrasesType.Statements]) == 4
+        assert len(observer.Grammars[SemVer("2.0.0")].Phrases[DynamicPhrasesType.Statements]) == 5
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -114,7 +114,7 @@ class TestStandard(object):
         result = await LexAsync(
             DefaultCommentToken,
             ["one"],
-            observer.Syntaxes[observer.DefaultVersion],
+            observer.Grammars[observer.DefaultGrammarVersion],
             observer,
         )
 
@@ -151,7 +151,7 @@ class TestStandard(object):
         result = await LexAsync(
             DefaultCommentToken,
             ["one"],
-            observer.Syntaxes[observer.DefaultVersion],
+            observer.Grammars[observer.DefaultGrammarVersion],
             observer,
         )
 
@@ -188,7 +188,7 @@ class TestStandard(object):
         result = await LexAsync(
             DefaultCommentToken,
             ["one"],
-            observer.Syntaxes[observer.DefaultVersion],
+            observer.Grammars[observer.DefaultGrammarVersion],
             observer,
         )
 
@@ -220,7 +220,7 @@ class TestStandard(object):
         result = await LexAsync(
             DefaultCommentToken,
             ["one"],
-            observer.Syntaxes[observer.DefaultVersion],
+            observer.Grammars[observer.DefaultGrammarVersion],
             observer,
         )
 
@@ -256,7 +256,7 @@ class TestStandard(object):
         result = await LexAsync(
             DefaultCommentToken,
             ["one"],
-            observer.Syntaxes[observer.DefaultVersion],
+            observer.Grammars[observer.DefaultGrammarVersion],
             observer,
         )
 
@@ -286,7 +286,7 @@ class TestStandard(object):
         result = await LexAsync(
             DefaultCommentToken,
             ["one"],
-            observer.Syntaxes[observer.DefaultVersion],
+            observer.Grammars[observer.DefaultGrammarVersion],
             observer,
         )
 
@@ -316,7 +316,7 @@ class TestStandard(object):
         result = await LexAsync(
             DefaultCommentToken,
             ["one"],
-            observer.Syntaxes[observer.DefaultVersion],
+            observer.Grammars[observer.DefaultGrammarVersion],
             observer,
         )
 
@@ -356,7 +356,7 @@ class TestStandard(object):
         result = await LexAsync(
             DefaultCommentToken,
             ["one"],
-            observer.Syntaxes[observer.DefaultVersion],
+            observer.Grammars[observer.DefaultGrammarVersion],
             observer,
         )
 
