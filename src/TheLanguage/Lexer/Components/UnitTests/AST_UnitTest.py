@@ -32,9 +32,13 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Node():
-    node = Node(None)
+    node = Node(
+        None,
+        IsIgnored=False,
+    )
 
     assert node.Type is None
+    assert node.IsIgnored == False
     assert node.Parent is None
     assert node.Children == []
     assert node.IterBegin is None

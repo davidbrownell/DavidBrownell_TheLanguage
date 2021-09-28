@@ -37,6 +37,7 @@
           End: 4
           Start: 3
         Whitespace: None
+    IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (4)"
     Type: "Lower <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -62,9 +63,11 @@
               End: 4
               Start: 3
             Whitespace: None
+        IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (4)"
         Type: "Lower <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+    IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (4)"
     Type: "(Include | Upper | Lower | Number | New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
@@ -92,12 +95,15 @@
                   End: 4
                   Start: 3
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (4)"
             Type: "Lower <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (4)"
         Type: "(Include | Upper | Lower | Number | New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (4)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -140,6 +146,7 @@
           End: 8
           Start: 7
         Whitespace: None
+    IsIgnored: False
     IterBegin: "[2, 1] (4)"
     IterEnd: "[3, 1] (8)"
     Type: "Upper <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -174,9 +181,11 @@
               End: 8
               Start: 7
             Whitespace: None
+        IsIgnored: False
         IterBegin: "[2, 1] (4)"
         IterEnd: "[3, 1] (8)"
         Type: "Upper <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+    IsIgnored: False
     IterBegin: "[2, 1] (4)"
     IterEnd: "[3, 1] (8)"
     Type: "(Include | Upper | Lower | Number | New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
@@ -204,12 +213,15 @@
                   End: 8
                   Start: 7
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[2, 1] (4)"
             IterEnd: "[3, 1] (8)"
             Type: "Upper <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[2, 1] (4)"
         IterEnd: "[3, 1] (8)"
         Type: "(Include | Upper | Lower | Number | New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[2, 1] (4)"
     IterEnd: "[3, 1] (8)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -252,6 +264,7 @@
           End: 10
           Start: 9
         Whitespace: None
+    IsIgnored: False
     IterBegin: "[3, 1] (8)"
     IterEnd: "[4, 1] (10)"
     Type: "Number <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -277,9 +290,11 @@
               End: 10
               Start: 9
             Whitespace: None
+        IsIgnored: False
         IterBegin: "[3, 1] (8)"
         IterEnd: "[4, 1] (10)"
         Type: "Number <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+    IsIgnored: False
     IterBegin: "[3, 1] (8)"
     IterEnd: "[4, 1] (10)"
     Type: "(Include | Upper | Lower | Number | New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
@@ -307,12 +322,15 @@
                   End: 10
                   Start: 9
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[3, 1] (8)"
             IterEnd: "[4, 1] (10)"
             Type: "Number <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[3, 1] (8)"
         IterEnd: "[4, 1] (10)"
         Type: "(Include | Upper | Lower | Number | New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[3, 1] (8)"
     IterEnd: "[4, 1] (10)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"

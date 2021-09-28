@@ -576,7 +576,10 @@ class TestStandard(object):
 
 # ----------------------------------------------------------------------
 def test_NodeStrNoChildren():
-    node = Node(CreatePhrase(name="Phrase", item=NewlineToken()))
+    node = Node(
+        CreatePhrase(name="Phrase", item=NewlineToken()),
+        IsIgnored=False,
+    )
 
     CompareResultsFromFile(str(node))
 

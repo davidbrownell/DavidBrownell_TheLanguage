@@ -291,18 +291,23 @@ class TestSyntaxInvalidError(object):
                         Children:
                           - # <class 'TheLanguage.Lexer.Components.AST.Node'>
                             Children: []
+                            IsIgnored: False
                             IterBegin: None
                             IterEnd: None
                             Type: "Upper <class 'TheLanguage.Lexer.Phrases.TokenPhrase.TokenPhrase'>"
+                        IsIgnored: False
                         IterBegin: None
                         IterEnd: None
                         Type: "Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+                    IsIgnored: False
                     IterBegin: None
                     IterEnd: None
                     Type: "(Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
                 IterBegin: None
                 IterEnd: None
                 Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+            IsIgnored: False
             IterBegin: None
             IterEnd: None
             Type: "<None>"

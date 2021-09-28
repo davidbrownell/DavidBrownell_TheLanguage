@@ -42,6 +42,7 @@ Children:
                       End: 19
                       Start: 17
                     Whitespace: None
+                IsIgnored: False
                 IterBegin: "[2, 1] (12)"
                 IterEnd: "[4, 1] (19)"
                 Type: "[Lower, Newline+] <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -100,18 +101,23 @@ Children:
                       End: 55
                       Start: 54
                     Whitespace: None
+                IsIgnored: False
                 IterBegin: "[6, 1] (47)"
                 IterEnd: "[7, 1] (55)"
                 Type: "[Lower, Newline+] <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+            IsIgnored: False
             IterBegin: "[2, 1] (12)"
             IterEnd: "[7, 1] (55)"
             Type: "Phrase <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
+        IsIgnored: False
         IterBegin: "[2, 1] (12)"
         IterEnd: "[7, 1] (55)"
         Type: "(Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[2, 1] (12)"
     IterEnd: "[7, 1] (55)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IsIgnored: False
 IterBegin: "[2, 1] (12)"
 IterEnd: "[7, 1] (55)"
 Type: "<None>"

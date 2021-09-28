@@ -35,6 +35,7 @@ Children:
                       End: 15
                       Start: 14
                     Whitespace: None
+                IsIgnored: False
                 IterBegin: "[1, 1] (0)"
                 IterEnd: "[2, 1] (15)"
                 Type: "Include Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
@@ -61,12 +62,15 @@ Children:
                               End: 17
                               Start: 16
                             Whitespace: None
+                        IsIgnored: False
                         IterBegin: "[2, 1] (15)"
                         IterEnd: "[3, 1] (17)"
                         Type: "Number Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+                    IsIgnored: False
                     IterBegin: "[2, 1] (15)"
                     IterEnd: "[3, 1] (17)"
                     Type: "(Lower Include Phrase | Number Include Phrase) / (Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
                 IterBegin: "[2, 1] (15)"
                 IterEnd: "[3, 1] (17)"
                 Type: "DynamicPhrasesType.Statements <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -93,12 +97,15 @@ Children:
                               End: 19
                               Start: 18
                             Whitespace: None
+                        IsIgnored: False
                         IterBegin: "[3, 1] (17)"
                         IterEnd: "[4, 1] (19)"
                         Type: "Number Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+                    IsIgnored: False
                     IterBegin: "[3, 1] (17)"
                     IterEnd: "[4, 1] (19)"
                     Type: "(Lower Include Phrase | Number Include Phrase) / (Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
                 IterBegin: "[3, 1] (17)"
                 IterEnd: "[4, 1] (19)"
                 Type: "DynamicPhrasesType.Statements <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -125,21 +132,27 @@ Children:
                               End: 22
                               Start: 20
                             Whitespace: None
+                        IsIgnored: False
                         IterBegin: "[4, 1] (19)"
                         IterEnd: "[6, 1] (22)"
                         Type: "Number Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+                    IsIgnored: False
                     IterBegin: "[4, 1] (19)"
                     IterEnd: "[6, 1] (22)"
                     Type: "(Lower Include Phrase | Number Include Phrase) / (Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
                 IterBegin: "[4, 1] (19)"
                 IterEnd: "[6, 1] (22)"
                 Type: "DynamicPhrasesType.Statements <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+            IsIgnored: False
             IterBegin: "[1, 1] (0)"
             IterEnd: "[6, 1] (22)"
             Type: "Number Include Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[6, 1] (22)"
         Type: "(Lower Include Phrase | Number Include Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[6, 1] (22)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -166,12 +179,15 @@ Children:
                   End: 24
                   Start: 23
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[6, 1] (22)"
             IterEnd: "[7, 1] (24)"
             Type: "Number Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[6, 1] (22)"
         IterEnd: "[7, 1] (24)"
         Type: "(Lower Include Phrase | Number Include Phrase) / (Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[6, 1] (22)"
     IterEnd: "[7, 1] (24)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -198,15 +214,19 @@ Children:
                   End: 26
                   Start: 25
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[7, 1] (24)"
             IterEnd: "[8, 1] (26)"
             Type: "Number Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[7, 1] (24)"
         IterEnd: "[8, 1] (26)"
         Type: "(Lower Include Phrase | Number Include Phrase) / (Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[7, 1] (24)"
     IterEnd: "[8, 1] (26)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IsIgnored: False
 IterBegin: "[1, 1] (0)"
 IterEnd: "[8, 1] (26)"
 Type: "<None>"

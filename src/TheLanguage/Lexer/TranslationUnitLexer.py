@@ -368,7 +368,10 @@ async def LexAsync(
         name=name,
     )
 
-    root = AST.Node(None)
+    root = AST.Node(
+        None,
+        IsIgnored=False,
+    )
 
     # ----------------------------------------------------------------------
     def FinalInit(
@@ -857,7 +860,10 @@ class _PhraseObserver(Phrase.Observer):
             if isinstance(data.Phrase, TokenPhrase) and data.Data is not None:
                 node = self.__class__.CreateLeaf(cast(Phrase.TokenLexResultData, data.Data), parent)
             else:
-                node = AST.Node(data.Phrase)
+                node = AST.Node(
+                    data.Phrase,
+                    IsIgnored=False,
+                )
 
         assert node is not None
 
@@ -896,11 +902,11 @@ class _PhraseObserver(Phrase.Observer):
     ) -> AST.Leaf:
         leaf = AST.Leaf(
             data.Token,
+            data.IsIgnored,
             data.Whitespace,
             data.Value,
             data.IterBegin,
             data.IterEnd,
-            data.IsIgnored,
         )
 
         if parent:

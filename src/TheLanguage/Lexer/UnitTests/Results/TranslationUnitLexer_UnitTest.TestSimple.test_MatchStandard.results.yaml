@@ -23,12 +23,15 @@ Children:
                   End: 4
                   Start: 3
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (4)"
             Type: "Upper Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (4)"
         Type: "(Upper Phrase | Lower Phrase | Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (4)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -55,12 +58,15 @@ Children:
                   End: 8
                   Start: 7
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[2, 1] (4)"
             IterEnd: "[3, 1] (8)"
             Type: "Lower Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[2, 1] (4)"
         IterEnd: "[3, 1] (8)"
         Type: "(Upper Phrase | Lower Phrase | Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[2, 1] (4)"
     IterEnd: "[3, 1] (8)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -87,15 +93,19 @@ Children:
                   End: 14
                   Start: 13
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[3, 1] (8)"
             IterEnd: "[4, 1] (14)"
             Type: "Number Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[3, 1] (8)"
         IterEnd: "[4, 1] (14)"
         Type: "(Upper Phrase | Lower Phrase | Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[3, 1] (8)"
     IterEnd: "[4, 1] (14)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IsIgnored: False
 IterBegin: "[1, 1] (0)"
 IterEnd: "[4, 1] (14)"
 Type: "<None>"

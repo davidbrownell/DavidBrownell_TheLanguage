@@ -28,9 +28,11 @@ Children:
                         Whitespace:
                           - 4
                           - 5
+                    IsIgnored: False
                     IterBegin: "[1, 6] (5)"
                     IterEnd: "[1, 10] (9)"
                     Type: "(Expression) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
                 IterBegin: "[1, 6] (5)"
                 IterEnd: "[1, 10] (9)"
                 Type: "DynamicPhrasesType.Expressions <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -53,15 +55,19 @@ Children:
                   End: 16
                   Start: 15
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (16)"
             Type: "Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (16)"
         Type: "(Statement) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (16)"
     Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IsIgnored: False
 IterBegin: "[1, 1] (0)"
 IterEnd: "[2, 1] (16)"
 Type: "<None>"

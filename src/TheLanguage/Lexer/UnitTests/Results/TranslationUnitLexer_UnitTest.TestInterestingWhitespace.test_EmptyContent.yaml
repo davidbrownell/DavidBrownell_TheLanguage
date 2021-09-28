@@ -9,6 +9,7 @@ Children:
       End: 1
       Start: 0
     Whitespace: None
+IsIgnored: False
 IterBegin: None
 IterEnd: None
 Type: "<None>"

@@ -46,6 +46,7 @@ class _ASTBase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     """Common base class for nodes and leaves"""
 
     Type: Union[None, Phrase, Token]
+    IsIgnored: bool
     Parent: Optional["_ASTBase"]            = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
@@ -151,7 +152,6 @@ class Leaf(_ASTBase):
     Value: Token.MatchResult
     IterBegin: NormalizedIterator
     IterEnd: NormalizedIterator
-    IsIgnored: bool
 
     # ----------------------------------------------------------------------
     @Interface.override
