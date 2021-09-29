@@ -164,14 +164,9 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
         assert on_phrase_complete_func
         assert max_num_threads is None or max_num_threads > 0, max_num_threads
 
-        self._is_cancelled                  = False
         self._source_roots                  = source_roots
         self._on_phrase_complete_func       = on_phrase_complete_func
         self._executor                      = CreateThreadPool(max_workers=max_num_threads)
-
-    # ----------------------------------------------------------------------
-    def Cancel(self):
-        self._is_cancelled = True
 
     # ----------------------------------------------------------------------
     @staticmethod
