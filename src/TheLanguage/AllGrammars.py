@@ -59,6 +59,7 @@ with InitRelativeImports():
     from .Parser.Parser import (
         Parse as ParseImpl,
         ParserInfo,
+        RootParserInfo,
     )
 
 
@@ -211,7 +212,7 @@ def Parse(
     max_num_threads: Optional[int]=None,
 ) -> Union[
     None,
-    Dict[str, ParserInfo],
+    Dict[str, RootParserInfo],
     List[Exception],
 ]:
     # ----------------------------------------------------------------------

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  TypeParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-30 10:42:43
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Contains the TypeParserInfo object"""
 
 import os
 
+from typing import Optional, Tuple
+
+from dataclasses import dataclass
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,40 +32,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-    from .Expressions.VariableExpression import VariableExpression
-
-    # Names
-    from .Names.VariableName import VariableName
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-    from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
-
-    # Types
-    from .Types.StandardType import StandardType
+    from ..Common.TypeModifier import TypeModifier
+    from ..ParserInfo import ParserInfo, Region
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
+@dataclass(frozen=True, repr=False)
+class TypeParserInfo(ParserInfo, Interface.Interface):
+    """Abstract base class for all type-related ParserInfo objects"""
 
-GrammarPhrases                              = [
-    # Attributes
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def GetTypeModifier() -> Optional[Tuple[TypeModifier, Region]]:
+        """Returns information a TypeModifier associated with the type (if any)"""
 
-    # Expressions
-    VariableExpression(),
-
-    # Names
-    VariableName(),
-
-    # Statements
-    PassStatement(),
-    VariableDeclarationStatement(),
-
-    # Types
-    StandardType(),
-]
+        # By default, no TypeModifier
+        return None

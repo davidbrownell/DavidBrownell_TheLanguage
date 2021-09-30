@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement.py
+# |  VariableName.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 10:16:11
+# |      2021-09-30 12:57:46
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement object"""
+"""Contains the VariableName object"""
 
 import os
 
-from typing import Callable, Union
+from typing import Callable, cast, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -34,36 +34,41 @@ with InitRelativeImports():
 
     from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
-    from ....Lexer.Phrases.DSL import CreatePhrase
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractSequence,
+        ExtractToken,
+    )
 
     from ....Parser.Parser import CreateParserRegions
-    from ....Parser.Statements.NoopStatementParserInfo import NoopStatementParserInfo
+    from ....Parser.Names.VariableNameParserInfo import VariableNameParserInfo
 
 
 # ----------------------------------------------------------------------
-class PassStatement(GrammarPhrase):
+class VariableName(GrammarPhrase):
     """\
-    Noop (No-Operation) statement.
+    A variable name.
 
-    'pass'
+    <name>
 
-    Example:
-        Int var Func():
-            pass
+    Examples:
+        foo
+        bar
     """
 
-    PHRASE_NAME                             = "Pass Statement"
+    PHRASE_NAME                             = "Variable Name"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(PassStatement, self).__init__(
-            DynamicPhrasesType.Statements,
+        super(VariableName, self).__init__(
+            DynamicPhrasesType.Names,
             CreatePhrase(
                 name=self.PHRASE_NAME,
-                item=[
-                    "pass",
-                    CommonTokens.Newline,
-                ],
+
+                # Note that this needs to be a sequence rather than just the name as this is the only
+                # way to ensure that the extraction below is invoked. If just the name, there would
+                # be nothing to tie the token to this phrase.
+                item=[CommonTokens.VariableName],
             ),
         )
 
@@ -77,6 +82,14 @@ class PassStatement(GrammarPhrase):
         ParserInfo,
         Callable[[], ParserInfo],
     ]:
-        return NoopStatementParserInfo(
-            CreateParserRegions(node),  # type: ignore
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 1
+
+        # <name>
+        name_leaf = cast(AST.Leaf, nodes[0])
+        name_info = cast(str, ExtractToken(name_leaf))
+
+        return VariableNameParserInfo(
+            CreateParserRegions(node, name_leaf),  # type: ignore
+            name_info,
         )

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  RootParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-30 15:00:25
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Contains the RootParserInfo object"""
 
 import os
+
+from typing import List
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -27,40 +31,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-    from .Expressions.VariableExpression import VariableExpression
-
-    # Names
-    from .Names.VariableName import VariableName
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-    from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
-
-    # Types
-    from .Types.StandardType import StandardType
+    from .ParserInfo import ParserInfo
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
+@dataclass(frozen=True, repr=False)
+class RootParserInfo(ParserInfo):
+    Statements: List[ParserInfo]
 
-GrammarPhrases                              = [
-    # Attributes
-
-    # Expressions
-    VariableExpression(),
-
-    # Names
-    VariableName(),
-
-    # Statements
-    PassStatement(),
-    VariableDeclarationStatement(),
-
-    # Types
-    StandardType(),
-]
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(RootParserInfo, self).__post_init__(
+            regions,
+            regionless_attributes=["Statements"],
+        )

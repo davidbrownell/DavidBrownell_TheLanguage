@@ -120,12 +120,10 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
 
     regions: InitVar[List[Optional[Region]]]
 
-    RegionsType: Any                        = field(init=False, default=None)
-    Regions: Dict[str, Optional[Region]]    = field(init=False, default_factory=dict)
+    RegionsType__: Any                      = field(init=False, default=None)
+    Regions__: Dict[str, Optional[Region]]  = field(init=False, default_factory=dict)
 
     _regionless_attributes: Set[str]        = field(init=False, default_factory=set)
-
-    Children: List["ParserInfo"]            = field(init=False, default_factory=list)
 
     # ----------------------------------------------------------------------
     def __post_init__(
@@ -140,10 +138,9 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
 
         regionless_attributes_set = set(regionless_attributes or [])
 
-        regionless_attributes_set.add("RegionsType")
-        regionless_attributes_set.add("Regions")
+        regionless_attributes_set.add("RegionsType__")
+        regionless_attributes_set.add("Regions__")
         regionless_attributes_set.add("_regionless_attributes")
-        regionless_attributes_set.add("Children")
 
         object.__setattr__(self, "_regionless_attributes", regionless_attributes_set)
 
@@ -178,8 +175,8 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
         # Create an instance of the new class
         new_regions_instance = new_regions_class(**new_regions)
 
-        object.__setattr__(self, "RegionsType", new_regions_class)
-        object.__setattr__(self, "Regions", new_regions_instance)
+        object.__setattr__(self, "RegionsType__", new_regions_class)
+        object.__setattr__(self, "Regions__", new_regions_instance)
 
         YamlRepr.ObjectReprImplBase.__init__(
             self,
@@ -215,7 +212,7 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
                 assert data_value, (the_field.name, "Lists should never be empty; wrap it in 'Optional' if an empty list is a valid value")
 
             # The data and region values should both be None of both be not None
-            region_value = getattr(self.Regions, the_field.name)
+            region_value = getattr(self.Regions__, the_field.name)
 
             if data_value is None:
                 assert IsOptional(the_field), (the_field.name, "The field definition should be 'Optional' when the value is None")
@@ -224,9 +221,9 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
                 assert region_value is not None, (the_field.name, "The region value should not be None when the data value is not None")
 
         # Ensure that all regions fall within Self__
-        for field in fields(self.Regions):
-            region_value = getattr(self.Regions, field.name)
+        for field in fields(self.Regions__):
+            region_value = getattr(self.Regions__, field.name)
             if region_value is None:
                 continue
 
-            assert region_value in self.Regions.Self__, (field.name, region_value, self.Regions.Self__)  # type: ignore && pylint: disable=no-member
+            assert region_value in self.Regions__.Self__, (field.name, region_value, self.Regions__.Self__)  # type: ignore && pylint: disable=no-member

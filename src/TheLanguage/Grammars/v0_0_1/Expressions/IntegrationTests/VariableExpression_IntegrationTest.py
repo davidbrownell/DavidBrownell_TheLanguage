@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  VariableExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-30 16:05:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Automated test for VariableExpression.py"""
 
 import os
+import textwrap
 
 import CommonEnvironment
 
@@ -27,40 +28,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-    from .Expressions.VariableExpression import VariableExpression
-
-    # Names
-    from .Names.VariableName import VariableName
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-    from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
-
-    # Types
-    from .Types.StandardType import StandardType
+    from .....IntegrationTests import *
+    from ..VariableExpression import *
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
-
-GrammarPhrases                              = [
-    # Attributes
-
-    # Expressions
-    VariableExpression(),
-
-    # Names
-    VariableName(),
-
-    # Statements
-    PassStatement(),
-    VariableDeclarationStatement(),
-
-    # Types
-    StandardType(),
-]
+def test_Standard():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            one = value
+            """,
+        ),
+    )))

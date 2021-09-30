@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  TypeModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-30 12:34:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Functionality associated with type modifiers"""
 
 import os
 
@@ -27,40 +27,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-    from .Expressions.VariableExpression import VariableExpression
-
-    # Names
-    from .Names.VariableName import VariableName
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-    from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
-
-    # Types
-    from .Types.StandardType import StandardType
+    from .Impl import ModifierImpl
+    from ....Parser.Common.TypeModifier import TypeModifier
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
-
-GrammarPhrases                              = [
-    # Attributes
-
-    # Expressions
-    VariableExpression(),
-
-    # Names
-    VariableName(),
-
-    # Statements
-    PassStatement(),
-    VariableDeclarationStatement(),
-
-    # Types
-    StandardType(),
-]
+CreatePhraseItem                            = ModifierImpl.StandardCreatePhraseItemFuncFactory(TypeModifier)
+Extract                                     = ModifierImpl.StandardExtractFuncFactory(TypeModifier)

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  VariableNameParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-30 13:02:01
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Contains the VariableNameParserInfo object"""
 
 import os
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -27,40 +29,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-    from .Expressions.VariableExpression import VariableExpression
-
-    # Names
-    from .Names.VariableName import VariableName
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-    from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
-
-    # Types
-    from .Types.StandardType import StandardType
+    from .NameParserInfo import NameParserInfo
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
+@dataclass(frozen=True, repr=False)
+class VariableNameParserInfo(NameParserInfo):
+    Name: str
 
-GrammarPhrases                              = [
-    # Attributes
-
-    # Expressions
-    VariableExpression(),
-
-    # Names
-    VariableName(),
-
-    # Statements
-    PassStatement(),
-    VariableDeclarationStatement(),
-
-    # Types
-    StandardType(),
-]
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        assert self.Name
+        super(VariableNameParserInfo, self).__post_init__(regions)

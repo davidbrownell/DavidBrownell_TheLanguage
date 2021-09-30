@@ -31,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ParserInfo import Location, ParserInfo, Region
+    from .RootParserInfo import RootParserInfo
 
     from ..Lexer.Lexer import AST, Phrase
     from ..Lexer.Phrases.DynamicPhrase import DynamicPhrase
@@ -59,7 +60,7 @@ def Parse(
     max_num_threads: Optional[int]=None,
 ) -> Union[
     None,                                   # Cancellation
-    Dict[str, ParserInfo],                  # Successful results
+    Dict[str, RootParserInfo],              # Successful results
     List[Exception],                        # Errors
 ]:
 
@@ -69,7 +70,7 @@ def Parse(
     def CreateAndExtract(
         fully_qualified_name: str,
         root: AST.Node,
-    ) -> Optional[ParserInfo]:
+    ) -> Optional[RootParserInfo]:
         try:
             # Create the parser info
             funcs: List[Tuple[AST.Node, Callable[[], ParserInfo]]] = []
@@ -86,21 +87,28 @@ def Parse(
                         return None
 
                 elif isinstance(result, ParserInfo):
-                    SetParserInfo(node, result)
+                    _SetParserInfo(node, result)
 
                 elif callable(result):
                     funcs.append((node, result))
 
             for node, func in reversed(funcs):
-                SetParserInfo(node, func())
+                _SetParserInfo(node, func())
 
             # Extract the info
-            result = _Extract(root)
-            if result is None:
-                # pylint: disable=too-many-function-args
-                result = ParserInfo(CreateParserRegions(root))  # type: ignore
+            children = []
 
-            return result
+            for child in root.Children:
+                if isinstance(child, AST.Leaf):
+                    continue
+
+                children.append(_Extract(cast(AST.Node, child)))
+
+            # pylint: disable=too-many-function-args
+            return RootParserInfo(
+                CreateParserRegions(root),  # type: ignore
+                children,
+            )
 
         except Exception as ex:
             if not hasattr(ex, "FullyQualifiedName"):
@@ -145,17 +153,9 @@ def Parse(
         return errors
 
     return {
-        fully_qualified_name : cast(ParserInfo, result)
+        fully_qualified_name : cast(RootParserInfo, result)
         for fully_qualified_name, result in zip(roots.keys(), results)
     }
-
-
-# ----------------------------------------------------------------------
-def SetParserInfo(
-    obj: Any,
-    arg: Optional[ParserInfo],
-):
-    object.__setattr__(obj, "Info", arg)
 
 
 # ----------------------------------------------------------------------
@@ -221,10 +221,22 @@ def CreateParserRegions(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
+def _SetParserInfo(
+    obj: Any,
+    arg: Optional[ParserInfo],
+):
+    object.__setattr__(obj, "Info", arg)
+
+
+# ----------------------------------------------------------------------
 def _Extract(
     node: AST.Node,
 ) -> Optional[ParserInfo]:
     parser_info = GetParserInfo(node)
+
+    if parser_info is not None:
+        return parser_info
+
     children: List[ParserInfo] = []
 
     for child in node.Children:
@@ -235,16 +247,8 @@ def _Extract(
         if child_parser_info is not None:
             children.append(child_parser_info)
 
-    if parser_info is None and not children:
+    if not children:
         return None
 
-    if parser_info is None:
-        if len(children) == 1 and isinstance(node.Type, (DynamicPhrase, OrPhrase)):
-            return children[0]
-
-        # pylint: disable=too-many-function-args
-        parser_info = ParserInfo(CreateParserRegions(node))  # type: ignore
-
-    object.__setattr__(parser_info, "Children", children)
-
-    return parser_info
+    assert len(children) == 1
+    return children[0]
