@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  Tokens.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-29 10:25:55
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Tokens used in the creation of multiple phrases"""
 
 import os
 
@@ -27,32 +27,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-
-    # Names
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-
-    # Types
+    from ....Lexer.Components.Token import (
+        DedentToken,
+        IndentToken,
+        NewlineToken,
+        PopIgnoreWhitespaceControlToken,
+        PopPreserveWhitespaceControlToken,
+        PushIgnoreWhitespaceControlToken,
+        PushPreserveWhitespaceControlToken,
+        RegexToken,
+    )
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
+Dedent                                      = DedentToken()
+Indent                                      = IndentToken()
+Newline                                     = NewlineToken()
 
-GrammarPhrases                              = [
-    # Attributes
+PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
+PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
-    # Expressions
-
-    # Names
-
-    # Statements
-    PassStatement(),
-
-    # Types
-]
+PopPreserveWhitespaceControl                = PopPreserveWhitespaceControlToken()
+PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken()

@@ -117,12 +117,15 @@ class Region(object):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ParserInfo(YamlRepr.ObjectReprImplBase):
+
     regions: InitVar[List[Optional[Region]]]
 
     RegionsType: Any                        = field(init=False, default=None)
     Regions: Dict[str, Optional[Region]]    = field(init=False, default_factory=dict)
 
     _regionless_attributes: Set[str]        = field(init=False, default_factory=set)
+
+    Children: List["ParserInfo"]            = field(init=False, default_factory=list)
 
     # ----------------------------------------------------------------------
     def __post_init__(
@@ -140,6 +143,7 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
         regionless_attributes_set.add("RegionsType")
         regionless_attributes_set.add("Regions")
         regionless_attributes_set.add("_regionless_attributes")
+        regionless_attributes_set.add("Children")
 
         object.__setattr__(self, "_regionless_attributes", regionless_attributes_set)
 
@@ -226,18 +230,3 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
                 continue
 
             assert region_value in self.Regions.Self__, (field.name, region_value, self.Regions.Self__)  # type: ignore && pylint: disable=no-member
-
-
-# ----------------------------------------------------------------------
-def SetParserInfo(
-    obj: Any,
-    arg: Optional[ParserInfo],
-):
-    object.__setattr__(obj, "Info", arg)
-
-
-# ----------------------------------------------------------------------
-def GetParserInfo(
-    obj: Any,
-) -> Optional[ParserInfo]:
-    return getattr(obj, "Info")

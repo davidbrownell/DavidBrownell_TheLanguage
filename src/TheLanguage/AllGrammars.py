@@ -56,6 +56,11 @@ with InitRelativeImports():
         TranslationUnitsLexerObserver,
     )
 
+    from .Parser.Parser import (
+        Parse as ParseImpl,
+        ParserInfo,
+    )
+
 
 # ----------------------------------------------------------------------
 Grammars: Dict[SemVer, DynamicPhrasesInfo]              = OrderedDict()
@@ -130,7 +135,7 @@ del _LoadDynamicContentFromFile
 
 # ----------------------------------------------------------------------
 def Lex(
-    cancellation: threading.Event,
+    cancellation_event: threading.Event,
     configuration: Configurations,
     target: str,
     fully_qualified_names: List[str],
@@ -167,7 +172,7 @@ def Lex(
                 node,
             )
 
-        return not cancellation.is_set()
+        return not cancellation_event.is_set()
 
     # ----------------------------------------------------------------------
 
@@ -200,79 +205,38 @@ def Prune(
 
 # ----------------------------------------------------------------------
 def Parse(
-    cancellation: threading.Event,
+    cancellation_event: threading.Event,
     roots: Dict[str, AST.Node],
     *,
     max_num_threads: Optional[int]=None,
-):
-    singled_threaded = max_num_threads == 1 or len(roots) == 1
-
-    if singled_threaded:
-        for k, v in roots.items():
-            _Parse(cancellation, k, v)
-    else:
-        with ThreadPoolExecutor(
-            max_workers=max_num_threads,
-        ) as executor:
-            futures = [
-                executor.submit(lambda k=k, v=v: _Parse(cancellation, k, v))
-                for k, v in roots.items()
-            ]
-
-            [future.result() for future in futures]
-
-
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-def _Parse(
-    cancellation: threading.Event,
-    fully_qualified_name: str,
-    root: AST.Node,
-) -> None:
-    try:
-        funcs: List[Callable[[], None]] = []
-
-        for child in root.Children:
-            funcs += _ParseImpl(cancellation, child)
-
-        if not cancellation.is_set():
-            for func in reversed(funcs):
-                func()
-
-    except Exception as ex:
-        if not hasattr(ex, "FullyQualifiedName"):
-            object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
-
-        raise
-
-
-# ----------------------------------------------------------------------
-def _ParseImpl(
-    cancellation: threading.Event,
-    node: Union[AST.Leaf, AST.Node],
-) -> List[Callable[[], None]]:
-
-    if cancellation.is_set():
-        return []
-
-    funcs: List[Callable[[], None]] = []
-
-    if not isinstance(node, AST.Leaf):
+) -> Union[
+    None,
+    Dict[str, ParserInfo],
+    List[Exception],
+]:
+    # ----------------------------------------------------------------------
+    def CreateParserInfo(
+        node: AST.Node,
+    ) -> Union[
+        None,
+        bool,
+        ParserInfo,
+        Callable[[], ParserInfo],
+    ]:
         if isinstance(node.Type, Phrase):
             grammar_phrase = GrammarPhraseLookup.get(node.Type, None)
             if grammar_phrase is not None:
-                result = grammar_phrase.ExtractParserInfo(node)
-                if result is not None:
-                    assert isinstance(result, GrammarPhrase.ExtractParserInfoResult), result
+                return grammar_phrase.ExtractParserInfo(node)
 
-                    if result.PostExtractFunc is not None:
-                        funcs.append(result.PostExtractFunc)
+        if cancellation_event.is_set():
+            return False
 
-                    if not result.AllowChildTraversal:
-                        return funcs
+        return None
 
-        for child in node.Children:
-            funcs += _ParseImpl(cancellation, child)
+    # ----------------------------------------------------------------------
 
-    return funcs
+    return ParseImpl(
+        roots,
+        CreateParserInfo,
+        max_num_threads=max_num_threads,
+    )

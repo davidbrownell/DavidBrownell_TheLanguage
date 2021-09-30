@@ -1,0 +1,8 @@
+# <class 'TheLanguage.Parser.ParserInfo.ParserInfo'>
+Children:
+  - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+    Children: []
+    Regions: # <class 'types.NoopStatementParserInfoRegions'>
+      Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+Regions: # <class 'types.ParserInfoRegions'>
+  Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"

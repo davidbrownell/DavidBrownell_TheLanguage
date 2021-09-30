@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  NoopStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-29 10:12:40
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Contains the NoopStatementParserInfo object"""
 
 import os
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -27,32 +29,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-
-    # Names
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-
-    # Types
+    from .StatementParserInfo import StatementParserInfo
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
-
-GrammarPhrases                              = [
-    # Attributes
-
-    # Expressions
-
-    # Names
-
-    # Statements
-    PassStatement(),
-
-    # Types
-]
+@dataclass(frozen=True, repr=False)
+class NoopStatementParserInfo(StatementParserInfo):
+    """Represents a Noop (No-Operation) statement"""
+    pass

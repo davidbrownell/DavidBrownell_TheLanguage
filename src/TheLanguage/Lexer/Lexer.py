@@ -156,8 +156,6 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
         on_phrase_complete_func: OnPhraseCompleteFuncType,
         max_num_threads: Optional[int]=None,
     ):
-        assert source_roots
-
         for source_root in source_roots:
             assert os.path.isdir(source_root), source_root
 
@@ -257,6 +255,8 @@ def _Prune(
 
     while child_index < len(node.Children):
         child = node.Children[child_index]
+
+        should_delete = False
 
         if child.IsIgnored:
             should_delete = True

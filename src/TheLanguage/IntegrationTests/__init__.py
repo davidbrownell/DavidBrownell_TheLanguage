@@ -40,6 +40,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..AllGrammars import AST, Configurations, Lex, Prune, Parse
     from ..Lexer.TranslationUnitLexer import SyntaxInvalidError
+    from ..Parser.ParserInfo import ParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -67,7 +68,8 @@ def PatchAndExecute(
     max_num_threads: Optional[int]=None,
     debug_string_on_exception=True,
 ) -> Union[
-    Dict[str, AST.Node],
+    Dict[str, AST.Node],                    # when flag == PatchAndExecuteFlag.Lex or PatchAndExecuteFlag.Prune
+    Dict[str, ParserInfo],                  # when flag == PatchAndExecuteFlag.Parse
     List[Exception],
 ]:
     """\
@@ -94,20 +96,39 @@ def PatchAndExecute(
         patch("os.path.isdir", side_effect=IsDir), \
         patch("builtins.open", side_effect=lambda filename: StringIO(simulated_file_content[filename])) \
     :
-        cancellation = threading.Event()
+        cancellation_event = threading.Event()
 
         result = Lex(
-            cancellation,
+            cancellation_event,
             configuration or Configurations.Debug,
             target or "Standard",
             fully_qualified_names,
             source_roots,
             max_num_threads=max_num_threads,
         )
+        assert result is not None
+
+        if not isinstance(result, list):
+            result = cast(Dict[str, AST.Node], result)
+
+            if flag & PatchAndExecuteFlag.prune_flag:
+                Prune(
+                    result,
+                    max_num_threads=max_num_threads,
+                )
+
+            if flag & PatchAndExecuteFlag.parse_flag:
+                result = Parse(
+                    cancellation_event,
+                    result,
+                    max_num_threads=max_num_threads,
+                )
+
+            assert result is not None
 
         if isinstance(result, list):
             if len(result) == 1:
-                if debug_string_on_exception and isinstance(result[0], SyntaxInvalidError):
+                if debug_string_on_exception:
                     print(
                         textwrap.dedent(
                             """\
@@ -126,27 +147,6 @@ def PatchAndExecute(
 
                 raise result[0]
 
-            return result
-
-        result = cast(Dict[str, AST.Node], result)
-
-        assert len(result) == len(simulated_file_content)
-        for name in result.keys():
-            assert name in simulated_file_content
-
-        if flag & PatchAndExecuteFlag.prune_flag:
-            Prune(
-                result,
-                max_num_threads=max_num_threads,
-            )
-
-        if flag & PatchAndExecuteFlag.parse_flag:
-            Parse(
-                cancellation,
-                result,
-                max_num_threads=max_num_threads,
-            )
-
         return result
 
 
@@ -158,7 +158,7 @@ def Execute(
     configuration: Optional[Configurations]=None,
     target: Optional[str]=None,
     max_num_threads: Optional[int]=None,
-) -> AST.Node:
+) -> ParserInfo:
     result = PatchAndExecute(
         {
             "filename" : content,
@@ -177,4 +177,4 @@ def Execute(
     assert len(result) == 1, result
     assert "filename" in result, result
 
-    return result["filename"]
+    return cast(ParserInfo, result["filename"])

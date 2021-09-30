@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  PassStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-30 08:26:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Integration test for PassStatement.py"""
 
 import os
+import textwrap
 
 import CommonEnvironment
 
@@ -27,32 +28,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-
-    # Names
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-
-    # Types
+    from .....IntegrationTests import *
+    from ..PassStatement import *
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
-
-GrammarPhrases                              = [
-    # Attributes
-
-    # Expressions
-
-    # Names
-
-    # Statements
-    PassStatement(),
-
-    # Types
-]
+def test_Standard():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            pass
+            """,
+        ),
+    )))

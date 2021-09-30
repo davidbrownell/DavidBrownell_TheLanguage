@@ -31,9 +31,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .GrammarInfo import CreateParserRegion
     from ..Lexer.Components.AST import Leaf, Node
     from ..Parser.Error import Error as ParserError
+    from ..Parser.Parser import CreateParserRegion
 
 
 # ----------------------------------------------------------------------

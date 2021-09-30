@@ -34,6 +34,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Lexer.Phrases.DSL import DynamicPhrasesType, Phrase
+
+    from ..Lexer.TranslationUnitLexer import inflect
+
     from ..Lexer.TranslationUnitsLexer import (
         AST,
         DynamicPhrasesInfo,                             # This is here as a convenience
@@ -41,7 +44,7 @@ with InitRelativeImports():
         Phrase,
     )
 
-    from ..Parser.ParserInfo import Location, Region
+    from ..Parser.ParserInfo import ParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -59,15 +62,6 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         Expressions: Dict[str, "GrammarPhrase"]
 
     # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class ExtractParserInfoResult(object):
-        # Function that should be called once all the nodes have been validated individually. This
-        # can be used by phrases who need context information from their parents to complete
-        # validation but can only do so after the parent itself has been validated.
-        PostExtractFunc: Optional[Callable[[], None]]   = field(default=None)
-        AllowChildTraversal: bool                       = field(default=True)
-
-    # ----------------------------------------------------------------------
     # |
     # |  Public Methods
     # |
@@ -78,6 +72,11 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         phrase: Phrase,
         **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
+        # Verify that the phrase name has the expected suffix
+        singular_suffix = inflect.singular_noun(type.name)
+        assert isinstance(singular_suffix, str), type.name
+        assert phrase.Name.endswith(singular_suffix), phrase.Name
+
         YamlRepr.ObjectReprImplBase.__init__(
             self,
             Phrase=lambda phrase: phrase.Name,
@@ -105,7 +104,11 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     @Interface.abstractmethod
     def ExtractParserInfo(
         node: AST.Node,
-    ) -> Optional["GrammarPhrase.ExtractParserInfoResult"]:
+    ) -> Union[
+        None,                               # No ParserInfo associated with this node
+        ParserInfo,                         # ParserInfo
+        Callable[[], ParserInfo],           # Callback to invoke after the first pass to get the ParserInfo
+    ]:
         """Extracts parser information from a node"""
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -128,59 +131,6 @@ class ImportGrammarPhrase(GrammarPhrase):
         Note that this method is called during the lexing process, so content will not have been pruned yet.
         """
         raise Exception("Abstract method")  # pragma: no cover
-
-
-# ----------------------------------------------------------------------
-def CreateParserRegion(
-    node: Union[AST.Leaf, AST.Node],
-) -> Region:
-    """Uses information in a node to create a Region"""
-
-    # ----------------------------------------------------------------------
-    def CreateLocation(
-        iter: Optional[Phrase.NormalizedIterator],
-        adjust_for_whitespace=False,
-    ) -> Location:
-        if iter is None:
-            line = -1
-            column = -1
-        else:
-            line = iter.Line
-            column = iter.Column
-
-            if (
-                isinstance(node, AST.Leaf)
-                and adjust_for_whitespace
-                and node.Whitespace is not None
-            ):
-                column += node.Whitespace[1] - node.Whitespace[0] - 1
-
-        return Location(line, column)
-
-    # ----------------------------------------------------------------------
-
-    return Region(
-        CreateLocation(
-            node.IterBegin,
-            adjust_for_whitespace=True,
-        ),
-        CreateLocation(node.IterEnd),
-    )
-
-
-# ----------------------------------------------------------------------
-def CreateParserRegions(
-    *nodes: Union[AST.Leaf, AST.Node, Region, None],
-) -> List[Optional[Region]]:
-    """Creates regions for the provided input"""
-
-    # TODO: Ensure that TheLanguage can handle statements formatted like this
-    return [
-        None if node is None else
-            node if isinstance(node, Region) else
-                CreateParserRegion(node)
-        for node in nodes
-    ]
 
 
 # ----------------------------------------------------------------------

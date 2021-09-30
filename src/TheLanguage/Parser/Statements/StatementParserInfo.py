@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  StatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-29 10:13:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Contains the StatementParserInfo object"""
 
 import os
 
+from dataclasses import dataclass
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,32 +30,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-
-    # Names
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-
-    # Types
+    from ..ParserInfo import ParserInfo
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
+@dataclass(frozen=True, repr=False)
+class StatementParserInfo(ParserInfo, Interface.Interface):
+    """Abstract base class for all statement-related parser info objects"""
 
-GrammarPhrases                              = [
-    # Attributes
-
-    # Expressions
-
-    # Names
-
-    # Statements
-    PassStatement(),
-
-    # Types
-]
+    pass
