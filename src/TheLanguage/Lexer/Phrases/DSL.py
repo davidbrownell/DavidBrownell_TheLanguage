@@ -278,12 +278,10 @@ def ExtractDynamic(
 
         return ExtractOr(node)
 
-    # Handle the left-recursive scenario
-    if (
-        node.Parent is not None
-        and node == getattr(node.Parent, "Children", [None])[0]
-        and isinstance(node.Type, SequencePhrase)
-        and isinstance(node.Type.Phrases[0], DynamicPhrase)
+    # A left-recursive node will already be resolved
+    if isinstance(node.Type, Phrase) and DynamicPhrase.IsLeftRecursivePhrase(
+        node.Type,
+        phrases_type=None,
     ):
         return node
 

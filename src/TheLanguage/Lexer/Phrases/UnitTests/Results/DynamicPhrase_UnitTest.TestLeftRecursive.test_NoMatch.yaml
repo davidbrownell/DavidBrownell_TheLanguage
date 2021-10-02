@@ -3,72 +3,18 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[1, 1] (0)"
-            IterEnd: "[1, 20] (19)"
-            Token: "Lower"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(0, 19), match='this_will_not_match'>"
-            Whitespace: None
-          Phrase: "Lower"
-        Phrase: "Custom Display <Prefix>"
-      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: None
-                    Phrase: "'+'"
-                IsComplete: True
-              Phrase: "Add"
+              Data: None
+              Phrase: "Lower"
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: None
-                    Phrase: "'-'"
-                IsComplete: True
-              Phrase: "Sub"
-            - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: None
-                    Phrase: "'*'"
-                IsComplete: True
-              Phrase: "Mul"
-            - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: None
-                    Phrase: "'/'"
-                IsComplete: True
-              Phrase: "Div"
-            - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: None
-                    Phrase: "'if'"
-                IsComplete: True
-              Phrase: "Ter"
-            - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: None
-                    Phrase: "'['"
-                IsComplete: True
-              Phrase: "Index"
+              Data: None
+              Phrase: "Upper"
           IsComplete: True
-        Phrase: "Custom Display <Suffix>"
+        Phrase: "Custom Display <Prefix>"
     IsComplete: True
   Phrase: "Dynamic Phrases"
 IterBegin: "[1, 1] (0)"
-IterEnd: "[1, 20] (19)"
+IterEnd: "[1, 1] (0)"
 Success: False

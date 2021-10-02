@@ -359,7 +359,21 @@ class TestLeftRecursive(object):
             str(
                 await self._left_recursive_phrase.LexAsync(
                     ("root", ),
-                    CreateIterator("this_will_not_match"),
+                    CreateIterator("!!this_will_not_match!!"),
+                    parse_mock_ex,
+                ),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_SingleWord(self, parse_mock_ex):
+        # This will match, as we can have either a single word or a left-recursive match
+        CompareResultsFromFile(
+            str(
+                await self._left_recursive_phrase.LexAsync(
+                    ("root", ),
+                    CreateIterator("this_will_match"),
                     parse_mock_ex,
                 ),
             ),

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  StandardType_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 08:58:36
+# |      2021-09-30 12:51:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All grammar phrases for this grammar"""
+"""Automated test for StandardType.py"""
 
 import os
+import textwrap
 
 import CommonEnvironment
 
@@ -27,42 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Phrases.DSL import DefaultCommentToken
-
-    # Attributes
-
-    # Expressions
-    from .Expressions.BinaryExpression import BinaryExpression
-    from .Expressions.VariableExpression import VariableExpression
-
-    # Names
-    from .Names.VariableName import VariableName
-
-    # Statements
-    from .Statements.PassStatement import PassStatement
-    from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
-
-    # Types
-    from .Types.StandardType import StandardType
+    from .....IntegrationTests import *
+    from ..StandardType import *
 
 
 # ----------------------------------------------------------------------
-GrammarCommentToken                         = DefaultCommentToken
-
-GrammarPhrases                              = [
-    # Attributes
-
-    # Expressions
-    BinaryExpression(),
-    VariableExpression(),
-
-    # Names
-    VariableName(),
-
-    # Statements
-    PassStatement(),
-    VariableDeclarationStatement(),
-
-    # Types
-    StandardType(),
-]
+# TODO

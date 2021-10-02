@@ -75,7 +75,7 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         # Verify that the phrase name has the expected suffix
         singular_suffix = inflect.singular_noun(type.name)
         assert isinstance(singular_suffix, str), type.name
-        assert phrase.Name.endswith(" {}".format(singular_suffix)), phrase.Name
+        assert phrase.Name.endswith(" {}".format(singular_suffix)), (phrase.Name, singular_suffix)
 
         YamlRepr.ObjectReprImplBase.__init__(
             self,

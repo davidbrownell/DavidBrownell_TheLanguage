@@ -34,8 +34,6 @@ with InitRelativeImports():
     from .RootParserInfo import RootParserInfo
 
     from ..Lexer.Lexer import AST, Phrase
-    from ..Lexer.Phrases.DynamicPhrase import DynamicPhrase
-    from ..Lexer.Phrases.OrPhrase import OrPhrase
 
 
 # ----------------------------------------------------------------------
