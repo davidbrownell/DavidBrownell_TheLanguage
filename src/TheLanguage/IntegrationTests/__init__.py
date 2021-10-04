@@ -66,7 +66,7 @@ def PatchAndExecute(
     configuration: Optional[Configurations]=None,
     target: Optional[str]=None,
     max_num_threads: Optional[int]=None,
-    debug_string_on_exception=True,
+    debug_string_on_exceptions: Optional[bool]=None,
 ) -> Union[
     Dict[str, AST.Node],                    # when flag == PatchAndExecuteFlag.Lex or PatchAndExecuteFlag.Prune
     Dict[str, ParserInfo],                  # when flag == PatchAndExecuteFlag.Parse
@@ -76,6 +76,9 @@ def PatchAndExecute(
     Patches file system methods invoked by systems under tests and replaces them
     so that they simulate files via the file content provided.
     """
+
+    if debug_string_on_exceptions is None:
+        debug_string_on_exceptions = True
 
     # ----------------------------------------------------------------------
     def IsFile(filename):
@@ -128,7 +131,7 @@ def PatchAndExecute(
 
         if isinstance(result, list):
             if len(result) == 1:
-                if debug_string_on_exception:
+                if debug_string_on_exceptions:
                     print(
                         textwrap.dedent(
                             """\
@@ -158,6 +161,7 @@ def Execute(
     configuration: Optional[Configurations]=None,
     target: Optional[str]=None,
     max_num_threads: Optional[int]=None,
+    debug_string_on_exceptions: Optional[bool]=None,
 ) -> ParserInfo:
     result = PatchAndExecute(
         {
@@ -171,6 +175,7 @@ def Execute(
         # TODO: We are using too many threads in the pool when not single threaded
         # max_num_threads=max_num_threads,
         max_num_threads=1,
+        debug_string_on_exceptions=debug_string_on_exceptions,
     )
 
     assert isinstance(result, dict), result

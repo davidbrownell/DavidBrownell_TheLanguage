@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  BinaryExpression_IntegrationTest.py
+# |  FuncInvocationExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-30 19:06:40
+# |      2021-10-04 08:37:01
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for BinaryExpression.py"""
+"""Automated tests for FuncInvocationExpression.py"""
 
 import os
 import textwrap
@@ -29,51 +29,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .....IntegrationTests import *
-    from ..BinaryExpression import *
+    from ..FuncInvocationExpression import *
+    from ...Common.ArgumentsPhraseItem import PositionalAfterKeywordError
 
 
 # ----------------------------------------------------------------------
-def test_Logical():
+def test_NoArgs():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            var1 = one and two
-            var2 = three or four
-            var3 = five in six
-            var4 = seven is eight
-            """,
-        ),
-    )))
+            value1 = Func1()
 
-
-# ----------------------------------------------------------------------
-def test_Comparison():
-    CompareResultsFromFile(str(Execute(
-        textwrap.dedent(
-            """\
-            var1 = one < two
-            var2 = three <= four
-            var3 = six > seven
-            var4 = eight >= nine
-            var5 = ten == eleven
-            var6 = twelve != thirteen
-            """,
-        ),
-    )))
-
-
-# ----------------------------------------------------------------------
-def test_FunctionInvocation():
-    CompareResultsFromFile(str(Execute(
-        textwrap.dedent(
-            """\
-            var1 = func1().func2().func3()
-            var2 = func4().func5()->func6()
-
-            var3 = (
-                funcA()
-                    .funcB()
-                    .funcC()
+            value2 = Func2(
             )
             """,
         ),
@@ -81,45 +48,69 @@ def test_FunctionInvocation():
 
 
 # ----------------------------------------------------------------------
-def test_Mathematical():
+def test_SingleArg():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            var1 = one + two
-            var2 = three - four
-            var3 = five * six
-            var4 = seven ** eight
-            var5 = nine / ten
-            var6 = eleven // twelve
-            var7 = thirteen % fourteen
+            value1 = Func1(arg)
 
-            var10 = one + two - three
+            # TODO: Enable this when tuples are available
+            # value2 = Func2((a, ))
+
+            value3 = Func3(
+                argument,
+            )
             """,
         ),
     )))
 
 
 # ----------------------------------------------------------------------
-def test_BitManipulation():
+def test_MultipleArgs():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            var1 = one << two
-            var2 = three >> four
-            var3 = five & six
-            var4 = seven | eight
-            var5 = nine ^ ten
+            value1 = Func1(a, b, c)
+            value2 = Func2(e, InnerFunc(f, g / h), i)
             """,
         ),
     )))
 
 
 # ----------------------------------------------------------------------
-def test_Nested():
+def test_WithKeywords():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            var1 = one + two + three - four == five
+            value1 = Func1(a=one, b=two, c=three)
+
+            value2 = Func2(
+                a,
+                b,
+                c=three,
+                d=four,
+            )
             """,
         ),
     )))
+
+
+# ----------------------------------------------------------------------
+def test_PositionalAfterKeywordError():
+    with pytest.raises(PositionalAfterKeywordError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                value = Func(a, b, c=three, dee, e=five)
+                """,
+            ),
+            debug_string_on_exceptions=False,
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "Positional arguments may not appear after keyword arguments."
+    assert ex.Region.Begin.Line == 1
+    assert ex.Region.Begin.Column == 29
+    assert ex.Region.End.Line == 1
+    assert ex.Region.End.Column == 32

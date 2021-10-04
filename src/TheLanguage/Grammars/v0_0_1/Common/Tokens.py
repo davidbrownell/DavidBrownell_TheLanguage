@@ -114,3 +114,7 @@ def _CreateVariableName():
 VariableName                                = _CreateVariableName()
 
 del _CreateVariableName
+
+
+ArgumentName                                = VariableName
+ParameterName                               = VariableName

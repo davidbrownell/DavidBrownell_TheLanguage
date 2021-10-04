@@ -1,0 +1,163 @@
+# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Self__: "[Ln 1, Col 1] -> [Ln 9, Col 1]"
+Statements:
+  - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'TheLanguage.Parser.Expressions.FuncInvocationExpressionParserInfo.FuncInvocationExpressionParserInfo'>
+      Arguments:
+        - # <class 'TheLanguage.Parser.Common.ArgumentParserInfo.ArgumentParserInfo'>
+          Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "one"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+                Self__: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+              Self__: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+          Keyword: "a"
+          Regions__: # <class 'types.ArgumentParserInfoRegions'>
+            Expression: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+            Keyword: "[Ln 1, Col 16] -> [Ln 1, Col 17]"
+            Self__: "[Ln 1, Col 16] -> [Ln 1, Col 21]"
+        - # <class 'TheLanguage.Parser.Common.ArgumentParserInfo.ArgumentParserInfo'>
+          Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "two"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 1, Col 25] -> [Ln 1, Col 28]"
+                Self__: "[Ln 1, Col 25] -> [Ln 1, Col 28]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 1, Col 25] -> [Ln 1, Col 28]"
+              Self__: "[Ln 1, Col 25] -> [Ln 1, Col 28]"
+          Keyword: "b"
+          Regions__: # <class 'types.ArgumentParserInfoRegions'>
+            Expression: "[Ln 1, Col 25] -> [Ln 1, Col 28]"
+            Keyword: "[Ln 1, Col 23] -> [Ln 1, Col 24]"
+            Self__: "[Ln 1, Col 23] -> [Ln 1, Col 28]"
+        - # <class 'TheLanguage.Parser.Common.ArgumentParserInfo.ArgumentParserInfo'>
+          Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "three"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 1, Col 32] -> [Ln 1, Col 37]"
+                Self__: "[Ln 1, Col 32] -> [Ln 1, Col 37]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 1, Col 32] -> [Ln 1, Col 37]"
+              Self__: "[Ln 1, Col 32] -> [Ln 1, Col 37]"
+          Keyword: "c"
+          Regions__: # <class 'types.ArgumentParserInfoRegions'>
+            Expression: "[Ln 1, Col 32] -> [Ln 1, Col 37]"
+            Keyword: "[Ln 1, Col 30] -> [Ln 1, Col 31]"
+            Self__: "[Ln 1, Col 30] -> [Ln 1, Col 37]"
+      Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+          Name: "Func1"
+          Regions__: # <class 'types.VariableNameParserInfoRegions'>
+            Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+            Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+          Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+          Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+      Regions__: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
+        Arguments: "[Ln 1, Col 15] -> [Ln 1, Col 38]"
+        Expression: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
+        Self__: "[Ln 1, Col 10] -> [Ln 1, Col 38]"
+    Modifier: None
+    Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "value1"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
+        Self__: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 1, Col 10] -> [Ln 1, Col 38]"
+      Modifier: None
+      Name: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
+      Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+  - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'TheLanguage.Parser.Expressions.FuncInvocationExpressionParserInfo.FuncInvocationExpressionParserInfo'>
+      Arguments:
+        - # <class 'TheLanguage.Parser.Common.ArgumentParserInfo.ArgumentParserInfo'>
+          Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "a"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 4, Col 5] -> [Ln 4, Col 6]"
+                Self__: "[Ln 4, Col 5] -> [Ln 4, Col 6]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 4, Col 5] -> [Ln 4, Col 6]"
+              Self__: "[Ln 4, Col 5] -> [Ln 4, Col 6]"
+          Keyword: None
+          Regions__: # <class 'types.ArgumentParserInfoRegions'>
+            Expression: "[Ln 4, Col 5] -> [Ln 4, Col 6]"
+            Keyword: None
+            Self__: "[Ln 4, Col 5] -> [Ln 4, Col 6]"
+        - # <class 'TheLanguage.Parser.Common.ArgumentParserInfo.ArgumentParserInfo'>
+          Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "b"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+                Self__: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+              Self__: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+          Keyword: None
+          Regions__: # <class 'types.ArgumentParserInfoRegions'>
+            Expression: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+            Keyword: None
+            Self__: "[Ln 5, Col 5] -> [Ln 5, Col 6]"
+        - # <class 'TheLanguage.Parser.Common.ArgumentParserInfo.ArgumentParserInfo'>
+          Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "three"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 6, Col 7] -> [Ln 6, Col 12]"
+                Self__: "[Ln 6, Col 7] -> [Ln 6, Col 12]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 6, Col 7] -> [Ln 6, Col 12]"
+              Self__: "[Ln 6, Col 7] -> [Ln 6, Col 12]"
+          Keyword: "c"
+          Regions__: # <class 'types.ArgumentParserInfoRegions'>
+            Expression: "[Ln 6, Col 7] -> [Ln 6, Col 12]"
+            Keyword: "[Ln 6, Col 5] -> [Ln 6, Col 6]"
+            Self__: "[Ln 6, Col 5] -> [Ln 6, Col 12]"
+        - # <class 'TheLanguage.Parser.Common.ArgumentParserInfo.ArgumentParserInfo'>
+          Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "four"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 7, Col 7] -> [Ln 7, Col 11]"
+                Self__: "[Ln 7, Col 7] -> [Ln 7, Col 11]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 7, Col 7] -> [Ln 7, Col 11]"
+              Self__: "[Ln 7, Col 7] -> [Ln 7, Col 11]"
+          Keyword: "d"
+          Regions__: # <class 'types.ArgumentParserInfoRegions'>
+            Expression: "[Ln 7, Col 7] -> [Ln 7, Col 11]"
+            Keyword: "[Ln 7, Col 5] -> [Ln 7, Col 6]"
+            Self__: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
+      Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+          Name: "Func2"
+          Regions__: # <class 'types.VariableNameParserInfoRegions'>
+            Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+            Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+          Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+          Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+      Regions__: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
+        Arguments: "[Ln 3, Col 15] -> [Ln 8, Col 2]"
+        Expression: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
+        Self__: "[Ln 3, Col 10] -> [Ln 8, Col 2]"
+    Modifier: None
+    Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "value2"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 3, Col 1] -> [Ln 3, Col 7]"
+        Self__: "[Ln 3, Col 1] -> [Ln 3, Col 7]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 3, Col 10] -> [Ln 8, Col 2]"
+      Modifier: None
+      Name: "[Ln 3, Col 1] -> [Ln 3, Col 7]"
+      Self__: "[Ln 3, Col 1] -> [Ln 9, Col 1]"
