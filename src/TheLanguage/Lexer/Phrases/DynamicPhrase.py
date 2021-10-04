@@ -248,11 +248,26 @@ class DynamicPhrase(Phrase):
         cls,
         unique_id: Tuple[str, ...],
     ) -> bool:
-        for id_part in unique_id:
-            if cls._SUFFIX_UNIQUE_ID_DECORATOR_REGEX.match(id_part):  # type: ignore
-                return True
+        # When looking at a left-recursive suffix invocation, the unique id will look something
+        # like this:
+        #
+        #   (
+        #       "root",
+        #       "0.0.1 Grammar",
+        #       "0.0.1 Grammar [3]",
+        #       "Variable Declaration Statement [3]",
+        #       "Suffix [0]",                           <----- Look at this value
+        #       "0.0.1 Grammar <Suffix> [0]",
+        #       "Binary Expression [2]",
+        #   )
+        #
+        # We are using the indicated part to determine if we are in the left-recursive suffix
+        # invocation scenario.
 
-        return False
+        return (
+            len(unique_id) >= 3
+            and bool(cls._SUFFIX_UNIQUE_ID_DECORATOR_REGEX.match(unique_id[-3]))  # type: ignore
+        )
 
     # ----------------------------------------------------------------------
     async def _LexStandardAsync(

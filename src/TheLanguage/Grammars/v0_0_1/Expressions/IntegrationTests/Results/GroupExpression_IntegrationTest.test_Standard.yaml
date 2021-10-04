@@ -1,0 +1,320 @@
+# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Self__: "[Ln 1, Col 1] -> [Ln 15, Col 1]"
+Statements:
+  - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+      Left: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+          Name: "one"
+          Regions__: # <class 'types.VariableNameParserInfoRegions'>
+            Name: "[Ln 1, Col 10] -> [Ln 1, Col 13]"
+            Self__: "[Ln 1, Col 10] -> [Ln 1, Col 13]"
+        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+          Name: "[Ln 1, Col 10] -> [Ln 1, Col 13]"
+          Self__: "[Ln 1, Col 10] -> [Ln 1, Col 13]"
+      Operator: "OperatorType.LogicalOr"
+      Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+        Left: "[Ln 1, Col 10] -> [Ln 1, Col 13]"
+        Operator: "[Ln 1, Col 14] -> [Ln 1, Col 16]"
+        Right: "[Ln 1, Col 17] -> [Ln 1, Col 32]"
+        Self__: "[Ln 1, Col 10] -> [Ln 1, Col 32]"
+      Right: # <class 'TheLanguage.Parser.Expressions.GroupExpressionParserInfo.GroupExpressionParserInfo'>
+        Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+          Left: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "two"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+                Self__: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+              Self__: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+          Operator: "OperatorType.LogicalAnd"
+          Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+            Left: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+            Operator: "[Ln 1, Col 22] -> [Ln 1, Col 25]"
+            Right: "[Ln 1, Col 26] -> [Ln 1, Col 31]"
+            Self__: "[Ln 1, Col 18] -> [Ln 1, Col 31]"
+          Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "three"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 1, Col 26] -> [Ln 1, Col 31]"
+                Self__: "[Ln 1, Col 26] -> [Ln 1, Col 31]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 1, Col 26] -> [Ln 1, Col 31]"
+              Self__: "[Ln 1, Col 26] -> [Ln 1, Col 31]"
+        Regions__: # <class 'types.GroupExpressionParserInfoRegions'>
+          Expression: "[Ln 1, Col 18] -> [Ln 1, Col 31]"
+          Self__: "[Ln 1, Col 17] -> [Ln 1, Col 32]"
+    Modifier: None
+    Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "value1"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
+        Self__: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 1, Col 10] -> [Ln 1, Col 32]"
+      Modifier: None
+      Name: "[Ln 1, Col 1] -> [Ln 1, Col 7]"
+      Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+  - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+      Left: # <class 'TheLanguage.Parser.Expressions.GroupExpressionParserInfo.GroupExpressionParserInfo'>
+        Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+          Left: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+            Left: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                Name: "one"
+                Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                  Name: "[Ln 3, Col 11] -> [Ln 3, Col 14]"
+                  Self__: "[Ln 3, Col 11] -> [Ln 3, Col 14]"
+              Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+                Name: "[Ln 3, Col 11] -> [Ln 3, Col 14]"
+                Self__: "[Ln 3, Col 11] -> [Ln 3, Col 14]"
+            Operator: "OperatorType.Add"
+            Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+              Left: "[Ln 3, Col 11] -> [Ln 3, Col 14]"
+              Operator: "[Ln 3, Col 15] -> [Ln 3, Col 16]"
+              Right: "[Ln 3, Col 17] -> [Ln 3, Col 20]"
+              Self__: "[Ln 3, Col 11] -> [Ln 3, Col 20]"
+            Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                Name: "two"
+                Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                  Name: "[Ln 3, Col 17] -> [Ln 3, Col 20]"
+                  Self__: "[Ln 3, Col 17] -> [Ln 3, Col 20]"
+              Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+                Name: "[Ln 3, Col 17] -> [Ln 3, Col 20]"
+                Self__: "[Ln 3, Col 17] -> [Ln 3, Col 20]"
+          Operator: "OperatorType.Subtract"
+          Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+            Left: "[Ln 3, Col 11] -> [Ln 3, Col 20]"
+            Operator: "[Ln 3, Col 21] -> [Ln 3, Col 22]"
+            Right: "[Ln 3, Col 23] -> [Ln 3, Col 28]"
+            Self__: "[Ln 3, Col 11] -> [Ln 3, Col 28]"
+          Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "three"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 3, Col 23] -> [Ln 3, Col 28]"
+                Self__: "[Ln 3, Col 23] -> [Ln 3, Col 28]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 3, Col 23] -> [Ln 3, Col 28]"
+              Self__: "[Ln 3, Col 23] -> [Ln 3, Col 28]"
+        Regions__: # <class 'types.GroupExpressionParserInfoRegions'>
+          Expression: "[Ln 3, Col 11] -> [Ln 3, Col 28]"
+          Self__: "[Ln 3, Col 10] -> [Ln 3, Col 29]"
+      Operator: "OperatorType.Multiply"
+      Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+        Left: "[Ln 3, Col 10] -> [Ln 3, Col 29]"
+        Operator: "[Ln 3, Col 30] -> [Ln 3, Col 31]"
+        Right: "[Ln 3, Col 32] -> [Ln 3, Col 36]"
+        Self__: "[Ln 3, Col 10] -> [Ln 3, Col 36]"
+      Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+          Name: "four"
+          Regions__: # <class 'types.VariableNameParserInfoRegions'>
+            Name: "[Ln 3, Col 32] -> [Ln 3, Col 36]"
+            Self__: "[Ln 3, Col 32] -> [Ln 3, Col 36]"
+        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+          Name: "[Ln 3, Col 32] -> [Ln 3, Col 36]"
+          Self__: "[Ln 3, Col 32] -> [Ln 3, Col 36]"
+    Modifier: None
+    Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "value2"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 3, Col 1] -> [Ln 3, Col 7]"
+        Self__: "[Ln 3, Col 1] -> [Ln 3, Col 7]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 3, Col 10] -> [Ln 3, Col 36]"
+      Modifier: None
+      Name: "[Ln 3, Col 1] -> [Ln 3, Col 7]"
+      Self__: "[Ln 3, Col 1] -> [Ln 5, Col 1]"
+  - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+      Left: # <class 'TheLanguage.Parser.Expressions.GroupExpressionParserInfo.GroupExpressionParserInfo'>
+        Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+          Left: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+            Left: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                Name: "one"
+                Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                  Name: "[Ln 5, Col 11] -> [Ln 5, Col 14]"
+                  Self__: "[Ln 5, Col 11] -> [Ln 5, Col 14]"
+              Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+                Name: "[Ln 5, Col 11] -> [Ln 5, Col 14]"
+                Self__: "[Ln 5, Col 11] -> [Ln 5, Col 14]"
+            Operator: "OperatorType.Add"
+            Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+              Left: "[Ln 5, Col 11] -> [Ln 5, Col 14]"
+              Operator: "[Ln 5, Col 15] -> [Ln 5, Col 16]"
+              Right: "[Ln 5, Col 17] -> [Ln 5, Col 20]"
+              Self__: "[Ln 5, Col 11] -> [Ln 5, Col 20]"
+            Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                Name: "two"
+                Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                  Name: "[Ln 5, Col 17] -> [Ln 5, Col 20]"
+                  Self__: "[Ln 5, Col 17] -> [Ln 5, Col 20]"
+              Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+                Name: "[Ln 5, Col 17] -> [Ln 5, Col 20]"
+                Self__: "[Ln 5, Col 17] -> [Ln 5, Col 20]"
+          Operator: "OperatorType.Subtract"
+          Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+            Left: "[Ln 5, Col 11] -> [Ln 5, Col 20]"
+            Operator: "[Ln 5, Col 21] -> [Ln 5, Col 22]"
+            Right: "[Ln 5, Col 23] -> [Ln 5, Col 28]"
+            Self__: "[Ln 5, Col 11] -> [Ln 5, Col 28]"
+          Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "three"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 5, Col 23] -> [Ln 5, Col 28]"
+                Self__: "[Ln 5, Col 23] -> [Ln 5, Col 28]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 5, Col 23] -> [Ln 5, Col 28]"
+              Self__: "[Ln 5, Col 23] -> [Ln 5, Col 28]"
+        Regions__: # <class 'types.GroupExpressionParserInfoRegions'>
+          Expression: "[Ln 5, Col 11] -> [Ln 5, Col 28]"
+          Self__: "[Ln 5, Col 10] -> [Ln 5, Col 29]"
+      Operator: "OperatorType.Multiply"
+      Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+        Left: "[Ln 5, Col 10] -> [Ln 5, Col 29]"
+        Operator: "[Ln 5, Col 30] -> [Ln 5, Col 31]"
+        Right: "[Ln 5, Col 32] -> [Ln 5, Col 45]"
+        Self__: "[Ln 5, Col 10] -> [Ln 5, Col 45]"
+      Right: # <class 'TheLanguage.Parser.Expressions.GroupExpressionParserInfo.GroupExpressionParserInfo'>
+        Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+          Left: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "four"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 5, Col 33] -> [Ln 5, Col 37]"
+                Self__: "[Ln 5, Col 33] -> [Ln 5, Col 37]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 5, Col 33] -> [Ln 5, Col 37]"
+              Self__: "[Ln 5, Col 33] -> [Ln 5, Col 37]"
+          Operator: "OperatorType.Add"
+          Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+            Left: "[Ln 5, Col 33] -> [Ln 5, Col 37]"
+            Operator: "[Ln 5, Col 38] -> [Ln 5, Col 39]"
+            Right: "[Ln 5, Col 40] -> [Ln 5, Col 44]"
+            Self__: "[Ln 5, Col 33] -> [Ln 5, Col 44]"
+          Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "five"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 5, Col 40] -> [Ln 5, Col 44]"
+                Self__: "[Ln 5, Col 40] -> [Ln 5, Col 44]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 5, Col 40] -> [Ln 5, Col 44]"
+              Self__: "[Ln 5, Col 40] -> [Ln 5, Col 44]"
+        Regions__: # <class 'types.GroupExpressionParserInfoRegions'>
+          Expression: "[Ln 5, Col 33] -> [Ln 5, Col 44]"
+          Self__: "[Ln 5, Col 32] -> [Ln 5, Col 45]"
+    Modifier: None
+    Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "value3"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 5, Col 1] -> [Ln 5, Col 7]"
+        Self__: "[Ln 5, Col 1] -> [Ln 5, Col 7]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 5, Col 10] -> [Ln 5, Col 45]"
+      Modifier: None
+      Name: "[Ln 5, Col 1] -> [Ln 5, Col 7]"
+      Self__: "[Ln 5, Col 1] -> [Ln 7, Col 1]"
+  - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+      Left: # <class 'TheLanguage.Parser.Expressions.GroupExpressionParserInfo.GroupExpressionParserInfo'>
+        Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+          Left: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+            Left: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                Name: "one"
+                Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                  Name: "[Ln 8, Col 5] -> [Ln 8, Col 8]"
+                  Self__: "[Ln 8, Col 5] -> [Ln 8, Col 8]"
+              Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+                Name: "[Ln 8, Col 5] -> [Ln 8, Col 8]"
+                Self__: "[Ln 8, Col 5] -> [Ln 8, Col 8]"
+            Operator: "OperatorType.Add"
+            Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+              Left: "[Ln 8, Col 5] -> [Ln 8, Col 8]"
+              Operator: "[Ln 9, Col 5] -> [Ln 9, Col 6]"
+              Right: "[Ln 9, Col 7] -> [Ln 9, Col 10]"
+              Self__: "[Ln 8, Col 5] -> [Ln 9, Col 10]"
+            Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                Name: "two"
+                Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                  Name: "[Ln 9, Col 7] -> [Ln 9, Col 10]"
+                  Self__: "[Ln 9, Col 7] -> [Ln 9, Col 10]"
+              Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+                Name: "[Ln 9, Col 7] -> [Ln 9, Col 10]"
+                Self__: "[Ln 9, Col 7] -> [Ln 9, Col 10]"
+          Operator: "OperatorType.Subtract"
+          Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+            Left: "[Ln 8, Col 5] -> [Ln 9, Col 10]"
+            Operator: "[Ln 10, Col 5] -> [Ln 10, Col 6]"
+            Right: "[Ln 10, Col 7] -> [Ln 10, Col 12]"
+            Self__: "[Ln 8, Col 5] -> [Ln 10, Col 12]"
+          Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "three"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 10, Col 7] -> [Ln 10, Col 12]"
+                Self__: "[Ln 10, Col 7] -> [Ln 10, Col 12]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 10, Col 7] -> [Ln 10, Col 12]"
+              Self__: "[Ln 10, Col 7] -> [Ln 10, Col 12]"
+        Regions__: # <class 'types.GroupExpressionParserInfoRegions'>
+          Expression: "[Ln 8, Col 5] -> [Ln 10, Col 12]"
+          Self__: "[Ln 7, Col 10] -> [Ln 11, Col 2]"
+      Operator: "OperatorType.Multiply"
+      Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+        Left: "[Ln 7, Col 10] -> [Ln 11, Col 2]"
+        Operator: "[Ln 11, Col 3] -> [Ln 11, Col 4]"
+        Right: "[Ln 11, Col 5] -> [Ln 14, Col 2]"
+        Self__: "[Ln 7, Col 10] -> [Ln 14, Col 2]"
+      Right: # <class 'TheLanguage.Parser.Expressions.GroupExpressionParserInfo.GroupExpressionParserInfo'>
+        Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+          Left: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "four"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 12, Col 5] -> [Ln 12, Col 9]"
+                Self__: "[Ln 12, Col 5] -> [Ln 12, Col 9]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 12, Col 5] -> [Ln 12, Col 9]"
+              Self__: "[Ln 12, Col 5] -> [Ln 12, Col 9]"
+          Operator: "OperatorType.Add"
+          Regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+            Left: "[Ln 12, Col 5] -> [Ln 12, Col 9]"
+            Operator: "[Ln 13, Col 13] -> [Ln 13, Col 14]"
+            Right: "[Ln 13, Col 15] -> [Ln 13, Col 19]"
+            Self__: "[Ln 12, Col 5] -> [Ln 13, Col 19]"
+          Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "five"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 13, Col 15] -> [Ln 13, Col 19]"
+                Self__: "[Ln 13, Col 15] -> [Ln 13, Col 19]"
+            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+              Name: "[Ln 13, Col 15] -> [Ln 13, Col 19]"
+              Self__: "[Ln 13, Col 15] -> [Ln 13, Col 19]"
+        Regions__: # <class 'types.GroupExpressionParserInfoRegions'>
+          Expression: "[Ln 12, Col 5] -> [Ln 13, Col 19]"
+          Self__: "[Ln 11, Col 5] -> [Ln 14, Col 2]"
+    Modifier: None
+    Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "value4"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 7, Col 1] -> [Ln 7, Col 7]"
+        Self__: "[Ln 7, Col 1] -> [Ln 7, Col 7]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 7, Col 10] -> [Ln 14, Col 2]"
+      Modifier: None
+      Name: "[Ln 7, Col 1] -> [Ln 7, Col 7]"
+      Self__: "[Ln 7, Col 1] -> [Ln 15, Col 1]"

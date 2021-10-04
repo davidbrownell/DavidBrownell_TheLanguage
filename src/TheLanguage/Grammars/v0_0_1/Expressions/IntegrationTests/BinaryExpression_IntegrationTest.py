@@ -63,7 +63,7 @@ def test_Comparison():
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("Restore this test when func invocations and group expressions are available")
+@pytest.mark.skip("Restore this test when func invocations are available")
 def test_FunctionInvocation():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
@@ -93,6 +93,8 @@ def test_Mathematical():
             var5 = nine / ten
             var6 = eleven // twelve
             var7 = thirteen % fourteen
+
+            var10 = one + two - three
             """,
         ),
     )))
