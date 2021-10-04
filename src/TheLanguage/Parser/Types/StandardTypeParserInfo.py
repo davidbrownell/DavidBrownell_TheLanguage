@@ -77,4 +77,4 @@ class StandardTypeParserInfo(TypeParserInfo):
         if self.Modifier is None:
             return None
 
-        return (self.Modifier, self.Regions.Modifier)  # type: ignore && pylint: disable=no-member
+        return (self.Modifier, self.Regions__.Modifier)  # type: ignore && pylint: disable=no-member

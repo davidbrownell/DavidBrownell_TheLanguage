@@ -33,6 +33,7 @@ with InitRelativeImports():
 
     # Expressions
     from .Expressions.BinaryExpression import BinaryExpression
+    from .Expressions.CastExpression import CastExpression
     from .Expressions.FuncInvocationExpression import FuncInvocationExpression
     from .Expressions.GroupExpression import GroupExpression
     from .Expressions.VariableExpression import VariableExpression
@@ -56,6 +57,7 @@ GrammarPhrases                              = [
 
     # Expressions
     BinaryExpression(),
+    CastExpression(),
     FuncInvocationExpression(),
     GroupExpression(),
     VariableExpression(),
