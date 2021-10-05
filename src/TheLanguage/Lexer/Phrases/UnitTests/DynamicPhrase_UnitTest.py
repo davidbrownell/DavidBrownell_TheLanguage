@@ -317,6 +317,68 @@ class TestStandard(object):
 
 
 # ----------------------------------------------------------------------
+class BugBugTestLeftRecursiveSemicolonSuffix(object):
+    _standard_phrases                       = [
+        CreatePhrase(RegexToken("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
+        CreatePhrase(RegexToken("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)"))),
+    ]
+
+    _left_recursive_phrases                 = [
+        CreatePhrase(name="Add", item=[DynamicPhrasesType.Statements, "+", DynamicPhrasesType.Statements, ";"]),
+        CreatePhrase(name="Sub", item=[DynamicPhrasesType.Statements, "-", DynamicPhrasesType.Statements, ";"]),
+        CreatePhrase(name="Mul", item=[DynamicPhrasesType.Statements, "*", DynamicPhrasesType.Statements, ";"]),
+        CreatePhrase(name="Div", item=[DynamicPhrasesType.Statements, "/", DynamicPhrasesType.Statements, ";"]),
+        CreatePhrase(name="Ter", item=[DynamicPhrasesType.Statements, "if", DynamicPhrasesType.Statements, "else", DynamicPhrasesType.Statements]),
+        CreatePhrase(name="Index", item=[DynamicPhrasesType.Statements, "[", DynamicPhrasesType.Statements, "]"]),
+    ]
+
+    _left_recursive_phrase                  = DynamicPhrase(
+        DynamicPhrasesType.Statements,
+        lambda *args, **kwargs: (TestLeftRecursiveSemicolonSuffix._standard_phrases + TestLeftRecursiveSemicolonSuffix._left_recursive_phrases, "Custom Display"),
+    )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @pytest.fixture
+    def parse_mock_ex(cls, parse_mock):
+        # ----------------------------------------------------------------------
+        def GetDynamicPhrases(*args, **kwargs):
+            return cls._standard_phrases + [cls._left_recursive_phrase], "All Phrases"
+
+        # ----------------------------------------------------------------------
+
+        parse_mock.GetDynamicPhrases = GetDynamicPhrases
+
+        return parse_mock
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_3Items1(self, parse_mock_ex):
+        CompareResultsFromFile(
+            str(
+                await self._left_recursive_phrase.LexAsync(
+                    ("root", ),
+                    CreateIterator("one + TWO - three;;"),
+                    parse_mock_ex,
+                ),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_3Items2(self, parse_mock_ex):
+        CompareResultsFromFile(
+            str(
+                await self._left_recursive_phrase.LexAsync(
+                    ("root", ),
+                    CreateIterator("one + TWO; - three;"),
+                    parse_mock_ex,
+                ),
+            ),
+        )
+
+
+# ----------------------------------------------------------------------
 class TestLeftRecursive(object):
     _standard_phrases                       = [
         CreatePhrase(RegexToken("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
@@ -343,7 +405,7 @@ class TestLeftRecursive(object):
     def parse_mock_ex(cls, parse_mock):
         # ----------------------------------------------------------------------
         def GetDynamicPhrases(*args, **kwargs):
-            return cls._standard_phrases + [cls._left_recursive_phrase], "Phrases"
+            return cls._standard_phrases + [cls._left_recursive_phrase], "All Phrases"
 
         # ----------------------------------------------------------------------
 
@@ -400,7 +462,23 @@ class TestLeftRecursive(object):
                 await self._left_recursive_phrase.LexAsync(
                     ("root", ),
                     CreateIterator("one + TWO - three"),
+                    # BugBug CreateIterator("one[a][b][c][d] + TWO[e][f][g] - three[h][i]"),
                     parse_mock_ex,
+                    single_threaded=True, # BugBug
+                ),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_3ItemsWithIndexes(self, parse_mock_ex):
+        CompareResultsFromFile(
+            str(
+                await self._left_recursive_phrase.LexAsync(
+                    ("root", ),
+                    CreateIterator("one[a][b][c][d] + TWO[e][f][g] - three[h][i]"),
+                    parse_mock_ex,
+                    single_threaded=True, # BugBug
                 ),
             ),
         )

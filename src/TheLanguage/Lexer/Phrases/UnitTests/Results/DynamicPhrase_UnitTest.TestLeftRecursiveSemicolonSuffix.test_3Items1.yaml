@@ -77,16 +77,36 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                               Phrase: "Lower"
                             Phrase: "Phrases"
                           Phrase: "DynamicPhrasesType.Statements"
+                        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                            IsIgnored: False
+                            IterBegin: "[1, 18] (17)"
+                            IterEnd: "[1, 19] (18)"
+                            Token: "';'"
+                            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                              Match: "<_sre.SRE_Match object; span=(17, 18), match=';'>"
+                            Whitespace: None
+                          Phrase: "';'"
                       IsComplete: True
                     Phrase: "Sub"
                   Phrase: "Custom Display <Suffix>"
                 Phrase: "Dynamic Phrases"
               Phrase: "Phrases"
             Phrase: "DynamicPhrasesType.Statements"
+          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+              IsIgnored: False
+              IterBegin: "[1, 19] (18)"
+              IterEnd: "[1, 20] (19)"
+              Token: "';'"
+              Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                Match: "<_sre.SRE_Match object; span=(18, 19), match=';'>"
+              Whitespace: None
+            Phrase: "';'"
         IsComplete: True
       Phrase: "Add"
     Phrase: "Custom Display <Suffix>"
   Phrase: "Dynamic Phrases"
 IterBegin: "[1, 1] (0)"
-IterEnd: "[1, 18] (17)"
+IterEnd: "[1, 20] (19)"
 Success: True

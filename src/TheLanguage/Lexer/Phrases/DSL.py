@@ -90,6 +90,9 @@ class PhraseItem(object):
     Item: PhraseItemItemType
     Name: Optional[str]
 
+    # List of phrase or phrase names that should never be matched by this phrase item
+    Excludes: List[Union[str, Phrase]]      = field(default_factory=list)
+
     # ----------------------------------------------------------------------
     # This method is here to provide an interface similar to CreatePhrase (in that arguments begin
     # with lowercase) while still creating an object that follows the upper-case name convention
@@ -98,8 +101,14 @@ class PhraseItem(object):
     def Create(
         item: PhraseItemItemType,
         name: Optional[str]=None,
+        excludes: Optional[List[Union[str, Phrase]]]=None,
     ) -> "PhraseItem":
-        return PhraseItem(item, name)
+        if excludes is None:
+            excludes = []
+        else:
+            assert excludes
+
+        return PhraseItem(item, name, excludes)
 
 
 # ----------------------------------------------------------------------
@@ -278,6 +287,7 @@ def ExtractDynamic(
 
         return ExtractOr(node)
 
+    # BugBug: I want to remove this code below
     # A left-recursive node will already be resolved
     if isinstance(node.Type, Phrase) and DynamicPhrase.IsLeftRecursivePhrase(
         node.Type,
@@ -397,11 +407,14 @@ def _PopulateItem(
     comment_token: RegexToken,
     item: PhraseItemItemType,
 ) -> Phrase:
+    excludes = None
+
     # Get a custom name
     if isinstance(item, Phrase):
         name = item.Name
     elif isinstance(item, PhraseItem):
         name = item.Name
+        excludes = item.Excludes
         item = item.Item
     else:
         name = None
@@ -445,9 +458,11 @@ def _PopulateItem(
     # below handles the OptionalPhraseItem that wraps a PhraseItem.
     if isinstance(item, PhraseItem):
         assert name is None
+        assert excludes is None
         assert arity is not None
 
         name = item.Name
+        excludes = item.Excludes
         item = item.Item
 
     assert not isinstance(
@@ -460,6 +475,9 @@ def _PopulateItem(
             OneOrMorePhraseItem,
         ),
     ), item
+
+    # Certain PhraseItem decorators can only be used with certain item types
+    assert not excludes or isinstance(item, DynamicPhrasesType), (excludes, item)
 
     # Begin the conversion process
     if isinstance(item, Phrase):
@@ -483,6 +501,7 @@ def _PopulateItem(
         phrase = DynamicPhrase(
             item,
             lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type),
+            exclude_names=excludes,
             name=name or str(item),
         )
 

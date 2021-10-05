@@ -2,16 +2,18 @@
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-        IsIgnored: False
-        IterBegin: "[1, 1] (0)"
-        IterEnd: "[1, 16] (15)"
-        Token: "Lower"
-        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-          Match: "<_sre.SRE_Match object; span=(0, 15), match='this_will_match'>"
-        Whitespace: None
-      Phrase: "Lower"
-    Phrase: "Custom Display <Prefix>"
+      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[1, 1] (0)"
+          IterEnd: "[1, 16] (15)"
+          Token: "Lower"
+          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+            Match: "<_sre.SRE_Match object; span=(0, 15), match='this_will_match'>"
+          Whitespace: None
+        Phrase: "Lower"
+      Phrase: "Custom Display <Prefix>"
+    Phrase: "Dynamic Phrases"
   Phrase: "Dynamic Phrases"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[1, 16] (15)"

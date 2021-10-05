@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Callable, List, Optional, Tuple, Union
+from typing import cast, Callable, Generator, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -78,7 +78,7 @@ class DynamicPhrase(Phrase):
     ):
         assert get_dynamic_phrases_func
 
-        name = name or "Dynamic Phrases"
+        name = name or "Dynamic Phrase"
 
         super(DynamicPhrase, self).__init__(name)
 
@@ -138,6 +138,22 @@ class DynamicPhrase(Phrase):
         )
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    def IsRightRecursivePhrase(
+        phrase: Phrase,
+        phrases_type: Optional[DynamicPhrasesType],
+    ) -> bool:
+        return (
+            isinstance(phrase, SequencePhrase)
+            and len(phrase.Phrases) > 2
+            and isinstance(phrase.Phrases[-1], DynamicPhrase)
+            and (
+                phrases_type is None
+                or phrase.Phrases[-1].DynamicPhrasesType == phrases_type
+            )
+        )
+
+    # ----------------------------------------------------------------------
     @Interface.override
     async def LexAsync(
         self,
@@ -181,10 +197,7 @@ class DynamicPhrase(Phrase):
                 else:
                     standard_phrases.append(phrase)
 
-            if (
-                left_recursive_phrases
-                and not self.__class__._IsLeftRecursiveSuffixInvocation(unique_id)
-            ):
+            if left_recursive_phrases:
                 standard_phrases = [
                     phrase for phrase in standard_phrases if self._left_recursive_standard_filter_func(phrase)
                 ]
@@ -212,8 +225,18 @@ class DynamicPhrase(Phrase):
                 )
 
             if result is None:
-                # pylint: disable=too-many-function-args
-                result = Phrase.LexResult(False, normalized_iter, normalized_iter, None)
+                return None
+
+            if (
+                result.Success
+                and result.Data is not None
+                and not await observer.OnInternalPhraseAsync(
+                    result.Data,
+                    result.IterBegin,
+                    result.IterEnd,
+                )
+            ):
+                return None
 
             return result
 
@@ -222,11 +245,12 @@ class DynamicPhrase(Phrase):
     # |  Private Data
     # |
     # ----------------------------------------------------------------------
-    _PREFIX_PHRASE_DECORATOR                = " <Prefix>"
+    # BugBug: It might be possible to remove this
+    _PREFIX_PHRASE_DECORATOR                = " <Prefix>" # BugBug: Remove
     _PREFIX_UNIQUE_ID_DECORATOR             = "Prefix"
 
-    _SUFFIX_PHRASE_DECORATOR                = " <Suffix>"
-    _SUFFIX_UNIQUE_ID_DECORATOR_TEMPLATE    = "Suffix [{iteration}]"
+    _SUFFIX_PHRASE_DECORATOR                = " <Suffix>" # BugBug: Remove
+    _SUFFIX_UNIQUE_ID_DECORATOR_TEMPLATE    = "Suffix [i: {iteration}]"
     _SUFFIX_UNIQUE_ID_DECORATOR_REGEX       = RegularExpression.TemplateStringToRegex(_SUFFIX_UNIQUE_ID_DECORATOR_TEMPLATE)
 
     # ----------------------------------------------------------------------
@@ -241,33 +265,6 @@ class DynamicPhrase(Phrase):
     ) -> bool:
         # Nothing downstream has changed
         return False
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _IsLeftRecursiveSuffixInvocation(
-        cls,
-        unique_id: Tuple[str, ...],
-    ) -> bool:
-        # When looking at a left-recursive suffix invocation, the unique id will look something
-        # like this:
-        #
-        #   (
-        #       "root",
-        #       "0.0.1 Grammar",
-        #       "0.0.1 Grammar [3]",
-        #       "Variable Declaration Statement [3]",
-        #       "Suffix [0]",                           <----- Look at this value
-        #       "0.0.1 Grammar <Suffix> [0]",
-        #       "Binary Expression [2]",
-        #   )
-        #
-        # We are using the indicated part to determine if we are in the left-recursive suffix
-        # invocation scenario.
-
-        return (
-            len(unique_id) >= 3
-            and bool(cls._SUFFIX_UNIQUE_ID_DECORATOR_REGEX.match(unique_id[-3]))  # type: ignore
-        )
 
     # ----------------------------------------------------------------------
     async def _LexStandardAsync(
@@ -298,16 +295,13 @@ class DynamicPhrase(Phrase):
             return None
 
         # pylint: disable=too-many-function-args
-        data = Phrase.StandardLexResultData(self, result.Data, unique_id)
-
-        if (
-            result.Success
-            and not await observer.OnInternalPhraseAsync(data, normalized_iter, result.IterEnd)
-        ):
-            return None
-
-        # pylint: disable=too-many-function-args
-        return Phrase.LexResult(result.Success, normalized_iter, result.IterEnd, data)
+        return Phrase.LexResult(
+            result.Success,
+            normalized_iter,
+            result.IterEnd,
+            # pylint: disable=too-many-function-args
+            Phrase.StandardLexResultData(self, result.Data, unique_id),
+        )
 
     # ----------------------------------------------------------------------
     async def _LexLeftRecursiveAsync(
@@ -322,6 +316,285 @@ class DynamicPhrase(Phrase):
         ignore_whitespace: bool,
         single_threaded: bool,
     ) -> Optional[Phrase.LexResult]:
+
+        # If here, we need to simulate greedy left-recursive consumption without devolving into
+        # infinite recursion scenarios. To simulate this, simulate recursion interspersed with
+        # attempts to match non-left-recursive phrases. Try the left recursive phrases at 1 level
+        # of recursion first, then try the non-left-recursive phrases.
+
+        assert left_recursive_phrases
+        assert standard_phrases
+
+        original_normalized_iter = normalized_iter.Clone()
+
+        # Attempt to match the prefix
+        prefix_phrase = OrPhrase(
+            standard_phrases,
+            name="{} <Prefix>".format(dynamic_phrases_name or ""),
+        )
+
+        prefix_result = await prefix_phrase.LexAsync(
+            unique_id + ("Prefix", ),
+            normalized_iter,
+            observer,
+            ignore_whitespace=ignore_whitespace,
+            single_threaded=single_threaded,
+        )
+
+        if prefix_result is None:
+            return None
+
+        data = Phrase.StandardLexResultData(
+            self,
+            prefix_result.Data,
+            prefix_result.Data.UniqueId if prefix_result.Data is not None else None,
+        )
+
+        if not prefix_result.Success:
+            return Phrase.LexResult(
+                False,
+                original_normalized_iter,
+                prefix_result.IterEnd,
+                data,
+            )
+
+        normalized_iter = prefix_result.IterEnd
+
+        # Attempt to match the suffix one or more times
+        suffix_phrase = OrPhrase(
+            [_SuffixWrapper(cast(SequencePhrase, phrase)) for phrase in left_recursive_phrases],
+            name="{} <Suffix>".format(dynamic_phrases_name or ""),
+        )
+
+        iteration = 0
+
+        while True:
+            suffix_result = await suffix_phrase.LexAsync(
+                unique_id + ("Suffix", str(iteration)),
+                normalized_iter,
+                observer,
+                ignore_whitespace=ignore_whitespace,
+                single_threaded=single_threaded,
+            )
+
+            iteration += 1
+
+            if suffix_result is None:
+                return None
+
+            normalized_iter = suffix_result.IterEnd
+
+            if not suffix_result.Success:
+                if suffix_result.Data is not None:
+                    # Augment the existing data with information about this error
+                    data = Phrase.StandardLexResultData(
+                        data.Phrase,
+                        data.Data,
+                        data.UniqueId,
+                        suffix_result.Data,
+                    )
+
+                break
+
+            assert suffix_result.Data is not None
+            assert suffix_result.Data.Data is not None
+            assert isinstance(suffix_result.Data.Data.Phrase, SequencePhrase)
+            assert isinstance(suffix_result.Data.Data.Data, Phrase.MultipleLexResultData)
+            assert len(suffix_result.Data.Data.Data.DataItems) == len(suffix_result.Data.Data.Phrase.Phrases) - 1
+
+            suffix_result.Data.Data.Data.DataItems.insert(0, data)
+            data = suffix_result.Data
+
+
+         # BugBug
+        return Phrase.LexResult(True, original_normalized_iter, normalized_iter, data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # The first time through the loop, invoke the non-recursive phrase before the recursive
+        # phrase. After that, invoke the recursive phrase before the non-recursive phrase.
+
+        # ----------------------------------------------------------------------
+        def Iterator() -> Generator[
+            Tuple[str, Phrase, Phrase],
+            None,
+            None,
+        ]:
+            iteration = 0
+
+            if not any(id_part.startswith("dyn: ") for id_part in unique_id):
+                yield ("dyn: {}".format(iteration), non_recursive_phrase, recursive_phrase)
+
+            while True:
+                iteration += 1
+                yield ("dyn: {}".format(iteration), recursive_phrase, non_recursive_phrase)
+
+        # ----------------------------------------------------------------------
+
+        original_normalized_iter = normalized_iter.Clone()
+
+        iter = Iterator()
+
+        data: Optional[Phrase.StandardLexResultData] = None
+        error_results: List[Optional[Phrase.StandardLexResultData]] = []
+
+        while len(error_results) < 2 and not normalized_iter.AtEnd():
+            error_results = []
+
+            iteration, phrase1, phrase2 = next(iter)
+
+            for phrase, id_suffix in [
+                (phrase1, "A"),
+                (phrase2, "B"),
+            ]:
+                this_result = await phrase.LexAsync(
+                    unique_id + (iteration, id_suffix),
+                    normalized_iter,
+                    observer,
+                    ignore_whitespace=ignore_whitespace,
+                    single_threaded=single_threaded,
+                )
+
+                if this_result.Success:
+                    assert this_result.Data is not None
+                    assert this_result.Data.Data is not None
+
+                    if isinstance(this_result.Data.Data.Phrase, SequencePhrase):
+                        assert data is not None
+                        assert isinstance(this_result.Data.Data.Data, Phrase.MultipleLexResultData)
+                        assert len(this_result.Data.Data.Data.DataItems) == len(this_result.Data.Data.Phrase.Phrases) - 1
+
+                        this_result.Data.Data.Data.DataItems.insert(0, data)
+
+                    data = this_result.Data
+                    normalized_iter = this_result.IterEnd
+
+                    break
+
+                error_results.append(this_result.Data)
+
+        if error_results:
+            error_data = Phrase.MultipleLexResultData(
+                cast(List[Optional[Phrase.LexResultData]], error_results),
+                True,
+            )
+        else:
+            error_data = None
+
+        if data is None:
+            data = Phrase.StandardLexResultData(
+                self,
+                error_data,
+                unique_id,
+            )
+
+            success = False
+
+        else:
+            assert data.Data is not None
+
+            data = Phrase.StandardLexResultData(
+                self,
+                data,
+                unique_id,
+                error_data,
+            )
+
+            if self.IsRightRecursivePhrase(data.Data.Data.Phrase, self.DynamicPhrasesType):
+                right_data = data.Data.Data.Data.DataItems[-1]
+
+                # Drill into the dynamic phrase and or phrase
+                assert isinstance(right_data.Phrase, DynamicPhrase), right_data
+                right_data = right_data.Data
+
+                assert isinstance(right_data.Phrase, OrPhrase), right_data
+                right_data = right_data.Data
+
+                # Is this a dynamic phrase as well?
+                if (
+                    isinstance(right_data.Phrase, DynamicPhrase)
+                    and isinstance(right_data.Data.Phrase, OrPhrase)
+                    and self.IsRightRecursivePhrase(
+                        right_data.Data.Data.Phrase,
+                        right_data.Phrase.DynamicPhrasesType,
+                    )
+                ):
+                    # Splitting phrases into those that are left-recursive and those that
+                    # aren't avoids infinite recursion with left-recursive phrases, but it
+                    # means that we are overly greedy for those phrases that are also right-
+                    # recursive. So, we have to perform some tree manipulation to end up with
+                    # the results that we want. The diagrams below illustrate the scenario and operations.
+                    #
+                    # Scenario:
+                    #
+                    #     1 + 2 - 3
+                    #
+                    # Which should be parsed as:
+                    #
+                    #     (1 + 2) - 3
+                    #
+                    # What we have (incorrect):
+                    #
+                    #     +      <-- root
+                    #    / \
+                    #   1   -    <-- pivot
+                    #      / \
+                    #     2   3
+                    #
+                    # What we want (correct):
+                    #
+                    #  pivot -->    -
+                    #              / \
+                    #  root -->   +   3
+                    #            / \
+                    #           1   2
+                    #
+                    # Adjust the tree accordingly.
+
+                    root_data = data.Data.Data.Data
+                    assert isinstance(root_data, Phrase.MultipleLexResultData)
+
+                    pivot = root_data.DataItems[-1].Data.Data
+                    pivot_data = pivot.Data.Data.Data
+                    assert isinstance(pivot_data, Phrase.MultipleLexResultData)
+
+                    root_data.DataItems[-1] = pivot_data.DataItems[0]
+                    pivot_data.DataItems[0] = data
+
+                    data = pivot
+
+            success = True
+
+        return Phrase.LexResult(success, original_normalized_iter, normalized_iter, data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         assert left_recursive_phrases
         assert standard_phrases
 
@@ -459,53 +732,177 @@ class DynamicPhrase(Phrase):
             assert root_data.Data is not None
             UpdateUniqueIds(root_data.Data)
 
-            root_data = Phrase.StandardLexResultData(self, root_data, unique_id)
+            data = Phrase.StandardLexResultData(self, root_data, unique_id)
 
         else:
             # The first result in the list of results needs to be updated to match the first phrase
             # within the sequence; use the data at index 1 as a reference to get this info.
-            # Wrap this object in a 2nd layer of Parser.StandardLexResultData to ensure a
-            # consistent interface across all data items in the for loop below.
-
             data_items[0] = Phrase.StandardLexResultData(  # pylint: disable=too-many-function-args
-                None,                                   # This value will never be used
-                Phrase.StandardLexResultData(  # pylint: disable=too-many-function-args
+                cast(
+                    SequencePhrase,
                     cast(
-                        SequencePhrase,
-                        cast(
-                            Phrase.StandardLexResultData,
-                            data_items[1].Data,
-                        ).Phrase,
-                    ).Phrases[0],
-                    data_items[0],
-                    data_items[0].UniqueId,
-                ),
-                data_items[0].UniqueId,                 # This value will never be used
+                        Phrase.StandardLexResultData,
+                        data_items[1].Data,
+                    ).Phrase,
+                ).Phrases[0],
+                data_items[0],
+                data_items[0].UniqueId,
             )
 
             # For the remaining items, make the previous match the first element in the new match
             for data_item_index in range(1, len(data_items)):
-                previous_data_item_data = data_items[data_item_index - 1].Data
                 current_data_item = data_items[data_item_index]
+                previous_data_item = data_items[data_item_index - 1]
 
-                assert isinstance(current_data_item, Phrase.StandardLexResultData)
                 assert isinstance(current_data_item.Data, Phrase.StandardLexResultData)
+                assert isinstance(current_data_item.Data.Phrase, SequencePhrase)
                 assert isinstance(current_data_item.Data.Data, Phrase.MultipleLexResultData)
+                assert len(current_data_item.Data.Data.DataItems) == len(current_data_item.Data.Phrase.Phrases) - 1
 
-                current_data_item.Data.Data.DataItems.insert(0, previous_data_item_data)
+                current_data_item.Data.Data.DataItems.insert(0, previous_data_item)
 
-            root_data = cast(
-                Phrase.StandardLexResultData,
-                cast(Phrase.StandardLexResultData, data_items[-1]).Data,
-            )
+            data = data_items[-1]
 
-            UpdateUniqueIds(root_data)
+            # Splitting the phrases into those that are left-recursive and those that are not solved
+            # the left-recursive problem, but created a new one in that the results now right-heavy.
+            # For example, given the input "1 + 2 - 3", we get data that corresponds to:
+            #
+            # Before:
+            #
+            #     +      <-- root
+            #    / \
+            #   1   -    <-- pivot
+            #      / \
+            #     2   3
+            #
+            # But want a tree that looks like:
+            #
+            #
+            # After:
+            #
+            #  pivot -->    -
+            #              / \
+            #  root -->   +   3
+            #            / \
+            #           1   2
+            #
+            # Adjust the tree accordingly.
 
-        assert root_data is not None
-        assert root_data.Data is not None
+            assert data.Data is not None
+
+            if self.IsRightRecursivePhrase(data.Data.Phrase, self.DynamicPhrasesType):
+                # If here, we know that the phrase is also left-recursive. Therefore, we only need
+                # to worry about modifying the left- and right-most children.
+                root = data
+
+                assert isinstance(root, Phrase.StandardLexResultData)
+                assert isinstance(root.Data, Phrase.StandardLexResultData)
+                assert isinstance(root.Data.Phrase, SequencePhrase)
+                assert isinstance(root.Data.Data, Phrase.MultipleLexResultData)
+
+                pivot = root.Data.Data.DataItems[-1]
+
+                assert isinstance(pivot, Phrase.StandardLexResultData)
+                assert isinstance(pivot.Data, Phrase.StandardLexResultData)
+                assert isinstance(pivot.Data.Phrase, SequencePhrase)
+                assert isinstance(pivot.Data.Data, Phrase.MultipleLexResultData)
+
+                BugBug = 10
+
+            BugBug = 10
+
+            # BugBug # The first result in the list of results needs to be updated to match the first phrase
+            # BugBug # within the sequence; use the data at index 1 as a reference to get this info.
+            # BugBug # Wrap this object in a 2nd layer of Parser.StandardLexResultData to ensure a
+            # BugBug # consistent interface across all data items in the for loop below.
+            # BugBug
+            # BugBug data_items[0] = Phrase.StandardLexResultData(  # pylint: disable=too-many-function-args
+            # BugBug     None,                                   # This value will never be used
+            # BugBug     Phrase.StandardLexResultData(  # pylint: disable=too-many-function-args
+            # BugBug         cast(
+            # BugBug             SequencePhrase,
+            # BugBug             cast(
+            # BugBug                 Phrase.StandardLexResultData,
+            # BugBug                 data_items[1].Data,
+            # BugBug             ).Phrase,
+            # BugBug         ).Phrases[0],
+            # BugBug         data_items[0],
+            # BugBug         data_items[0].UniqueId,
+            # BugBug     ),
+            # BugBug     data_items[0].UniqueId,                 # This value will never be used
+            # BugBug )
+            # BugBug
+            # BugBug # For the remaining items, make the previous match the first element in the new match
+            # BugBug for data_item_index in range(1, len(data_items)):
+            # BugBug     previous_data_item_data = data_items[data_item_index - 1].Data
+            # BugBug     current_data_item = data_items[data_item_index]
+            # BugBug
+            # BugBug     assert isinstance(current_data_item, Phrase.StandardLexResultData)
+            # BugBug     assert isinstance(current_data_item.Data, Phrase.StandardLexResultData)
+            # BugBug     assert isinstance(current_data_item.Data.Data, Phrase.MultipleLexResultData)
+            # BugBug
+            # BugBug     current_data_item.Data.Data.DataItems.insert(0, previous_data_item_data)
+            # BugBug
+            # BugBug data = cast(
+            # BugBug     Phrase.StandardLexResultData,
+            # BugBug     cast(Phrase.StandardLexResultData, data_items[-1]).Data,
+            # BugBug )
+
+            # We need to modify the tree itself, as the algorithm will produce a tree weighted towards
+            # the right rather than one weighted towards the left.
+            #
+            # For example, given the phrase:
+            #
+            #     a + b - c
+            #
+            # We will have at this point:
+            #
+            #         +
+            #        / \
+            #       a   -
+            #          / \
+            #         b   c
+            #
+            # And what we want is:
+            #
+            #         -
+            #        / \
+            #       +   c
+            #      / \
+            #     a   b
+
+            # BugBug
+            #   a + b
+            #   -
+            #   c
+
+            BugBug = 10
+
+            # BugBug assert isinstance(root_data.Data, Phrase.MultipleLexResultData)
+            # BugBug assert root_data.Data.DataItems
+            # BugBug assert isinstance(root_data.Data.DataItems[-1], Phrase.StandardLexResultData)
+            # BugBug assert isinstance(root_data.Data.DataItems[-1].Data, Phrase.StandardLexResultData)
+            # BugBug assert isinstance(root_data.Data.DataItems[-1].Data.Data, Phrase.StandardLexResultData)
+            # BugBug
+            # BugBug if self.__class__.IsLeftRecursivePhrase(root_data.Data.DataItems[-1].Data.Data.Phrase, self.DynamicPhrasesType):
+            # BugBug     new_root = root_data.Data.DataItems[-1]
+            # BugBug
+            # BugBug     root_data.Data.DataItems[-1] = root_data
+            # BugBug     root_data = new_root
+            # BugBug
+            # BugBug
+            # BugBug     BugBug = 10
+
+
+            UpdateUniqueIds(data)
+
+        assert data is not None
+
+        if not await observer.OnInternalPhraseAsync(data, original_normalized_iter, normalized_iter):
+            return None
 
         # pylint: disable=too-many-function-args
-        return Phrase.LexResult(True, original_normalized_iter, normalized_iter, root_data)
+        return Phrase.LexResult(True, original_normalized_iter, normalized_iter, data)
 
 
 # ----------------------------------------------------------------------
