@@ -95,7 +95,7 @@ Children:
     IsIgnored: False
     IterBegin: "[4, 1] (3)"
     IterEnd: "[11, 1] (21)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 IsIgnored: False
 IterBegin: "[4, 1] (3)"
 IterEnd: "[11, 1] (21)"

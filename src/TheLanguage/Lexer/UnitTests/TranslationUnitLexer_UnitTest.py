@@ -307,7 +307,7 @@ class TestSyntaxInvalidError(object):
                 IsIgnored: False
                 IterBegin: None
                 IterEnd: None
-                Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+                Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
             IsIgnored: False
             IterBegin: None
             IterEnd: None
