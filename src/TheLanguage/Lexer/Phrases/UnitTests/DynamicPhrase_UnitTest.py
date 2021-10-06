@@ -23,7 +23,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile, ReallyReallyWantToDoThis # BugBug
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -74,7 +74,7 @@ class TestStandard(object):
                     Whitespace: None
                   Phrase: "lower"
                 Phrase: "(lower)"
-              Phrase: "Dynamic Phrases"
+              Phrase: "Dynamic Phrase"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 5] (4)"
             Success: True
@@ -104,7 +104,7 @@ class TestStandard(object):
                       Phrase: "lower"
                   IsComplete: True
                 Phrase: "(lower)"
-              Phrase: "Dynamic Phrases"
+              Phrase: "Dynamic Phrase"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 1] (0)"
             Success: False
@@ -138,7 +138,7 @@ class TestStandard(object):
                     Whitespace: None
                   Phrase: "number"
                 Phrase: "(lower | number)"
-              Phrase: "Dynamic Phrases"
+              Phrase: "Dynamic Phrase"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 5] (4)"
             Success: True
@@ -172,7 +172,7 @@ class TestStandard(object):
                     Whitespace: None
                   Phrase: "lower"
                 Phrase: "(lower | number)"
-              Phrase: "Dynamic Phrases"
+              Phrase: "Dynamic Phrase"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 5] (4)"
             Success: True
@@ -212,7 +212,7 @@ class TestStandard(object):
                     Whitespace: None
                   Phrase: "number"
                 Phrase: "(lower | number)"
-              Phrase: "Dynamic Phrases"
+              Phrase: "Dynamic Phrase"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 5] (4)"
             Success: True
@@ -221,7 +221,7 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0) StartPhrase, "Dynamic Phrases"
+            0) StartPhrase, "Dynamic Phrase"
             1) StartPhrase, "(lower | number)"
             2) StartPhrase, "lower"
             3) EndPhrase, "lower" [False]
@@ -266,8 +266,8 @@ class TestStandard(object):
                       Whitespace: None
                     Phrase: "number"
                   Phrase: "(lower | number)"
-                Phrase: "Dynamic Phrases"
-            10) EndPhrase, "Dynamic Phrases" [True]
+                Phrase: "Dynamic Phrase"
+            10) EndPhrase, "Dynamic Phrase" [True]
             """,
         )
 
@@ -297,7 +297,7 @@ class TestStandard(object):
                       Phrase: "lower"
                   IsComplete: True
                 Phrase: "(lower)"
-              Phrase: "Dynamic Phrases"
+              Phrase: "Dynamic Phrase"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 1] (0)"
             Success: False
@@ -306,24 +306,21 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0) StartPhrase, "Dynamic Phrases"
+            0) StartPhrase, "Dynamic Phrase"
             1) StartPhrase, "(lower)"
             2) StartPhrase, "lower"
             3) EndPhrase, "lower" [False]
             4) EndPhrase, "(lower)" [False]
-            5) EndPhrase, "Dynamic Phrases" [False]
+            5) EndPhrase, "Dynamic Phrase" [False]
             """,
         )
 
 
 # ----------------------------------------------------------------------
-class BugBugTestLeftRecursiveSemicolonSuffix(object):
-    _standard_phrases                       = [
+class TestLeftRecursiveSemicolonSuffix(object):
+    _phrases                                = [
         CreatePhrase(RegexToken("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
         CreatePhrase(RegexToken("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)"))),
-    ]
-
-    _left_recursive_phrases                 = [
         CreatePhrase(name="Add", item=[DynamicPhrasesType.Statements, "+", DynamicPhrasesType.Statements, ";"]),
         CreatePhrase(name="Sub", item=[DynamicPhrasesType.Statements, "-", DynamicPhrasesType.Statements, ";"]),
         CreatePhrase(name="Mul", item=[DynamicPhrasesType.Statements, "*", DynamicPhrasesType.Statements, ";"]),
@@ -332,9 +329,9 @@ class BugBugTestLeftRecursiveSemicolonSuffix(object):
         CreatePhrase(name="Index", item=[DynamicPhrasesType.Statements, "[", DynamicPhrasesType.Statements, "]"]),
     ]
 
-    _left_recursive_phrase                  = DynamicPhrase(
+    _phrase                                 = DynamicPhrase(
         DynamicPhrasesType.Statements,
-        lambda *args, **kwargs: (TestLeftRecursiveSemicolonSuffix._standard_phrases + TestLeftRecursiveSemicolonSuffix._left_recursive_phrases, "Custom Display"),
+        lambda unique_id, dynamic_phrases_type, observer: observer.GetDynamicPhrases(unique_id, dynamic_phrases_type),
     )
 
     # ----------------------------------------------------------------------
@@ -343,7 +340,7 @@ class BugBugTestLeftRecursiveSemicolonSuffix(object):
     def parse_mock_ex(cls, parse_mock):
         # ----------------------------------------------------------------------
         def GetDynamicPhrases(*args, **kwargs):
-            return cls._standard_phrases + [cls._left_recursive_phrase], "All Phrases"
+            return cls._phrases, "All Phrases"
 
         # ----------------------------------------------------------------------
 
@@ -356,7 +353,7 @@ class BugBugTestLeftRecursiveSemicolonSuffix(object):
     async def test_3Items1(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("one + TWO - three;;"),
                     parse_mock_ex,
@@ -369,7 +366,7 @@ class BugBugTestLeftRecursiveSemicolonSuffix(object):
     async def test_3Items2(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("one + TWO; - three;"),
                     parse_mock_ex,
@@ -380,12 +377,9 @@ class BugBugTestLeftRecursiveSemicolonSuffix(object):
 
 # ----------------------------------------------------------------------
 class TestLeftRecursive(object):
-    _standard_phrases                       = [
+    _phrases                                = [
         CreatePhrase(RegexToken("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
         CreatePhrase(RegexToken("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)"))),
-    ]
-
-    _left_recursive_phrases                 = [
         CreatePhrase(name="Add", item=[DynamicPhrasesType.Statements, "+", DynamicPhrasesType.Statements]),
         CreatePhrase(name="Sub", item=[DynamicPhrasesType.Statements, "-", DynamicPhrasesType.Statements]),
         CreatePhrase(name="Mul", item=[DynamicPhrasesType.Statements, "*", DynamicPhrasesType.Statements]),
@@ -394,9 +388,9 @@ class TestLeftRecursive(object):
         CreatePhrase(name="Index", item=[DynamicPhrasesType.Statements, "[", DynamicPhrasesType.Statements, "]"]),
     ]
 
-    _left_recursive_phrase                  = DynamicPhrase(
+    _phrase                                 = DynamicPhrase(
         DynamicPhrasesType.Statements,
-        lambda *args, **kwargs: (TestLeftRecursive._standard_phrases + TestLeftRecursive._left_recursive_phrases, "Custom Display"),
+        lambda unique_id, dynamic_phrases_type, observer: observer.GetDynamicPhrases(unique_id, dynamic_phrases_type),
     )
 
     # ----------------------------------------------------------------------
@@ -405,7 +399,7 @@ class TestLeftRecursive(object):
     def parse_mock_ex(cls, parse_mock):
         # ----------------------------------------------------------------------
         def GetDynamicPhrases(*args, **kwargs):
-            return cls._standard_phrases + [cls._left_recursive_phrase], "All Phrases"
+            return cls._phrases, "All Phrases"
 
         # ----------------------------------------------------------------------
 
@@ -419,7 +413,7 @@ class TestLeftRecursive(object):
         # No match, as we are explicitly asking for a left-recursive match
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("!!this_will_not_match!!"),
                     parse_mock_ex,
@@ -433,7 +427,7 @@ class TestLeftRecursive(object):
         # This will match, as we can have either a single word or a left-recursive match
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("this_will_match"),
                     parse_mock_ex,
@@ -446,7 +440,7 @@ class TestLeftRecursive(object):
     async def test_Simple(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("one + TWO"),
                     parse_mock_ex,
@@ -459,12 +453,10 @@ class TestLeftRecursive(object):
     async def test_3Items(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("one + TWO - three"),
-                    # BugBug CreateIterator("one[a][b][c][d] + TWO[e][f][g] - three[h][i]"),
                     parse_mock_ex,
-                    single_threaded=True, # BugBug
                 ),
             ),
         )
@@ -474,11 +466,10 @@ class TestLeftRecursive(object):
     async def test_3ItemsWithIndexes(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("one[a][b][c][d] + TWO[e][f][g] - three[h][i]"),
                     parse_mock_ex,
-                    single_threaded=True, # BugBug
                 ),
             ),
         )
@@ -488,9 +479,22 @@ class TestLeftRecursive(object):
     async def test_4Items(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("one + TWO - three * FOUR"),
+                    parse_mock_ex,
+                ),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_5Items(self, parse_mock_ex):
+        CompareResultsFromFile(
+            str(
+                await self._phrase.LexAsync(
+                    ("root", ),
+                    CreateIterator("one + TWO - three * FOUR / five"),
                     parse_mock_ex,
                 ),
             ),
@@ -501,7 +505,7 @@ class TestLeftRecursive(object):
     async def test_1Index(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("var[a]"),
                     parse_mock_ex,
@@ -514,7 +518,7 @@ class TestLeftRecursive(object):
     async def test_2Indexes(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("var[a][b]"),
                     parse_mock_ex,
@@ -527,7 +531,7 @@ class TestLeftRecursive(object):
     async def test_ManyIndexes(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("var[a][b][c][d][e][f][g]"),
                     parse_mock_ex,
@@ -540,7 +544,7 @@ class TestLeftRecursive(object):
     async def test_Complicated1(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("one + true if CONDITION else false - three[a][b][c][d] * FOUR"),
                     parse_mock_ex,
@@ -557,7 +561,7 @@ class TestLeftRecursive(object):
     async def test_Complicated2(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("one + var[a][b][c] + three + four if CONDITION else five"),
                     parse_mock_ex,
@@ -574,7 +578,7 @@ class TestLeftRecursive(object):
     async def test_Complicated3(self, parse_mock_ex):
         CompareResultsFromFile(
             str(
-                await self._left_recursive_phrase.LexAsync(
+                await self._phrase.LexAsync(
                     ("root", ),
                     CreateIterator("TRUE if var[a][one if CONDITION else two] else FALSE"),
                     parse_mock_ex,
