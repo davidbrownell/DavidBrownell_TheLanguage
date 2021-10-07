@@ -34,6 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .OrPhrase import OrPhrase
     from .SequencePhrase import SequencePhrase
+    from .TokenPhrase import TokenPhrase
+
     from ..Components.Phrase import DynamicPhrasesType, Phrase
 
 
@@ -407,12 +409,20 @@ class DynamicPhrase(Phrase):
                 assert isinstance(data_item.Data, Phrase.MultipleLexResultData)
 
                 # The number of existing (non-ignored) data items should be 1 less than the number
-                # of expected data items; merging this one will complete the phrase.
-                assert sum(
+                # of expected (non-control-token) data items; merging this one will complete the phrase.
+                non_ignored_data_items = sum(
                     1 if not isinstance(di, Phrase.TokenLexResultData) or not di.IsIgnored else 0
                     for di in data_item.Data.DataItems
-                ) == len(data_item.Phrase.Phrases) - 1
+                )
 
+                non_control_token_phrases = sum(
+                    1 if not isinstance(phrase, TokenPhrase) or not phrase.Token.IsControlToken else 0
+                    for phrase in data_item.Phrase.Phrases
+                )
+
+                assert non_ignored_data_items == non_control_token_phrases - 1
+
+                # Insert the previous element into the current data item
                 data_item.Data.DataItems.insert(0, previous_data_item)
 
             # pylint: disable=too-many-function-args

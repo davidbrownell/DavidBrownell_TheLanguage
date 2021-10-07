@@ -37,6 +37,7 @@ with InitRelativeImports():
     from .Expressions.FuncInvocationExpression import FuncInvocationExpression
     from .Expressions.GeneratorExpression import GeneratorExpression
     from .Expressions.GroupExpression import GroupExpression
+    from .Expressions.IndexExpression import IndexExpression
     from .Expressions.VariableExpression import VariableExpression
 
     # Names
@@ -62,6 +63,7 @@ GrammarPhrases                              = [
     FuncInvocationExpression(),
     GeneratorExpression(),
     GroupExpression(),
+    IndexExpression(),
     VariableExpression(),
 
     # Names
