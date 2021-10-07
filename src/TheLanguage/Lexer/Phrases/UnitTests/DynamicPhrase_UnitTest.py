@@ -23,7 +23,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile, ReallyReallyWantToDoThis # BugBug
+from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 

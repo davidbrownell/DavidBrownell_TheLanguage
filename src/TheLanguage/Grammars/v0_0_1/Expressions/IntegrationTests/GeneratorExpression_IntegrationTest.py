@@ -37,8 +37,8 @@ def test_Standard():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            # BugBug a = value1 for value1 in OneToTen()
-            # BugBug b = AddOne(value2) for value2 in OneToTen()
+            a = value1 for value1 in OneToTen()
+            b = AddOne(value2) for value2 in OneToTen()
             c = AddOne(value3) for value3 in OneToTen() if value3 % two
             """,
         ),

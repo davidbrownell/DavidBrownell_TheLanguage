@@ -280,22 +280,11 @@ def ExtractToken(
 def ExtractDynamic(
     node: Node,
 ) -> Union[Leaf, Node]:
-    # Drill into the dynamic node
-    if isinstance(node.Type, DynamicPhrase):
-        assert len(node.Children) == 1
-        node = cast(Node, node.Children[0])
+    assert isinstance(node.Type, DynamicPhrase), node.Type
+    assert len(node.Children) == 1
+    node = cast(Node, node.Children[0])
 
-        return ExtractOr(node)
-
-    # BugBug: I want to remove this code below
-    # A left-recursive node will already be resolved
-    if isinstance(node.Type, Phrase) and DynamicPhrase.IsLeftRecursivePhrase(
-        node.Type,
-        phrases_type=None,
-    ):
-        return node
-
-    assert False, node
+    return ExtractOr(node)
 
 
 # ----------------------------------------------------------------------

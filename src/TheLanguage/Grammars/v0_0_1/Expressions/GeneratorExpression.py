@@ -141,7 +141,7 @@ class GeneratorExpression(GrammarPhrase):
                 conditional_nodes = ExtractSequence(conditional_node)
                 assert len(conditional_nodes) == 2
 
-                conditional_node = conditional_nodes[1]
+                conditional_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, conditional_nodes[1])))
                 conditional_info = cast(ExpressionParserInfo, GetParserInfo(conditional_node))
 
             return GeneratorExpressionParserInfo(

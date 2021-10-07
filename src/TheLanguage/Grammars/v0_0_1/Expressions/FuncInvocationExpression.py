@@ -107,10 +107,7 @@ class FuncInvocationExpression(GrammarPhrase):
 
             # <<Arguments>>
             arguments_node = cast(AST.Node, nodes[1])
-
             arguments_info = ArgumentsPhraseItem.ExtractParserInfo(arguments_node)
-            if arguments_info is None:
-                arguments_node = None
 
             return FuncInvocationExpressionParserInfo(
                 CreateParserRegions(node, expression_node, arguments_node),  # type: ignore

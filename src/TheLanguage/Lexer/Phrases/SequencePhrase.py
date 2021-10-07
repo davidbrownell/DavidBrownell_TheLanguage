@@ -249,15 +249,6 @@ class SequencePhrase(Phrase):
         preserved_ignore_whitespace_ctr: Optional[int] = None
 
         for phrase_index in range(starting_phrase_index, len(self.Phrases)):
-            if (
-                (
-                    self.Name == "Generator Expression"
-                    or self.Name == "Func Invocation Expression"
-                )
-                and normalized_iter.Offset == 130
-            ): # 139:
-                BugBug = 10
-
             phrase = self.Phrases[phrase_index]
 
             # Extract whitespace or comments

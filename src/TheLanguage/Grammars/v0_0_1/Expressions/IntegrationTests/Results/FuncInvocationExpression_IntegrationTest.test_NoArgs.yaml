@@ -4,7 +4,7 @@ Regions__: # <class 'types.RootParserInfoRegions'>
 Statements:
   - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
     Expression: # <class 'TheLanguage.Parser.Expressions.FuncInvocationExpressionParserInfo.FuncInvocationExpressionParserInfo'>
-      Arguments: None
+      Arguments: False
       Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
         Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
           Name: "Func1"
@@ -15,7 +15,7 @@ Statements:
           Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
           Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
       Regions__: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
-        Arguments: None
+        Arguments: "[Ln 1, Col 15] -> [Ln 1, Col 17]"
         Expression: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
         Self__: "[Ln 1, Col 10] -> [Ln 1, Col 17]"
     Modifier: None
@@ -31,7 +31,7 @@ Statements:
       Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
   - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
     Expression: # <class 'TheLanguage.Parser.Expressions.FuncInvocationExpressionParserInfo.FuncInvocationExpressionParserInfo'>
-      Arguments: None
+      Arguments: False
       Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
         Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
           Name: "Func2"
@@ -42,7 +42,7 @@ Statements:
           Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
           Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
       Regions__: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
-        Arguments: None
+        Arguments: "[Ln 3, Col 15] -> [Ln 4, Col 2]"
         Expression: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
         Self__: "[Ln 3, Col 10] -> [Ln 4, Col 2]"
     Modifier: None

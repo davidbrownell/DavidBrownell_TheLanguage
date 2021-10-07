@@ -16,6 +16,7 @@
 """Contains the DynamicPhrase object"""
 
 import os
+import uuid
 
 from typing import cast, Callable, Generator, List, Optional, Tuple, Union
 
@@ -322,7 +323,7 @@ class DynamicPhrase(Phrase):
                     standard_phrases,
                     name="{} <Prefix>".format(dynamic_phrases_name or ""),
                 ),
-                unique_id + ("Prefix", ),
+                unique_id + ("__Prefix__", ),
             )
 
             # Suffix(es)
@@ -337,7 +338,7 @@ class DynamicPhrase(Phrase):
             iteration = 0
 
             while True:
-                yield (suffix_phrase, unique_id + ("Suffix", str(iteration)))
+                yield (suffix_phrase, unique_id + ("__Suffix__", str(iteration)))
                 iteration += 1
 
         # ----------------------------------------------------------------------
@@ -397,15 +398,20 @@ class DynamicPhrase(Phrase):
 
             data_items[data_item_index] = data_item.Data
 
-        # If we only have 1 item, that means that only the prefix was a match; in other words, this
-        # is not a left recursive phrase.
+        # Massage the results into the expected format
         for data_item_index, data_item in enumerate(data_items):
             if data_item_index != 0:
                 previous_data_item = data_items[data_item_index - 1]
 
                 assert isinstance(data_item.Phrase, SequencePhrase)
                 assert isinstance(data_item.Data, Phrase.MultipleLexResultData)
-                assert len(data_item.Data.DataItems) == len(data_item.Phrase.Phrases) - 1
+
+                # The number of existing (non-ignored) data items should be 1 less than the number
+                # of expected data items; merging this one will complete the phrase.
+                assert sum(
+                    1 if not isinstance(di, Phrase.TokenLexResultData) or not di.IsIgnored else 0
+                    for di in data_item.Data.DataItems
+                ) == len(data_item.Phrase.Phrases) - 1
 
                 data_item.Data.DataItems.insert(0, previous_data_item)
 
@@ -415,7 +421,9 @@ class DynamicPhrase(Phrase):
                 Phrase.StandardLexResultData(
                     pseudo_or_phrase,
                     data_item,
-                    unique_id + ("Pseudo", ),
+                    # Don't worry about providing an unique_id here, as they are all going to be
+                    # overwritten below.
+                    unique_id,
                 ),
                 unique_id,
             )
@@ -521,6 +529,47 @@ class DynamicPhrase(Phrase):
                 travel.Data.DataItems[0] = data
 
                 data = new_root_dynamic
+
+        # At this point, we have massaged and modified the structure of the tree to the point where
+        # attempting to use previously cached values will not work. Update all of the unique_ids for
+        # all data in the hierarchy to prevent caching.
+
+        unique_id_suffix_str = "Psuedo ({})".format(uuid.uuid4())
+        unique_id_suffix_iteration = 0
+
+        # ----------------------------------------------------------------------
+        def UpdateUniqueIds(
+            data: Optional[Phrase.LexResultData],
+        ):
+            nonlocal unique_id_suffix_iteration
+
+            if data is None:
+                return
+
+            if isinstance(data, Phrase.StandardLexResultData):
+                object.__setattr__(
+                    data,
+                    "UniqueId",
+                    (unique_id_suffix_str, str(unique_id_suffix_iteration), ),
+                )
+
+                unique_id_suffix_iteration += 1
+                UpdateUniqueIds(data.Data)
+
+            elif isinstance(data, Phrase.MultipleLexResultData):
+                for data_item in data.DataItems:
+                    UpdateUniqueIds(data_item)
+
+            elif isinstance(data, Phrase.TokenLexResultData):
+                # Nothing to do here
+                pass
+
+            else:
+                assert False, data  # pragma: no cover
+
+        # ----------------------------------------------------------------------
+
+        UpdateUniqueIds(data)
 
         # Create data that includes the error info
         data = cast(Phrase.StandardLexResultData, data)

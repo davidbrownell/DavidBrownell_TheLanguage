@@ -33,4 +33,35 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-# TODO
+@pytest.mark.skip("Enable when Function Declarations are implemented")
+def test_NoModifier():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            Int Func():
+                pass
+            """,
+        ),
+    )))
+
+
+# ----------------------------------------------------------------------
+@pytest.mark.skip("Enable when Function Declarations are implemented")
+def test_WithModifier():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            Int var Func1():
+                pass
+
+            Char view Func2():
+                pass
+            """,
+        ),
+    )))
+
+
+# ----------------------------------------------------------------------
+# TODO: Remove this placeholder once Function Declarations are implemented
+def test_Placeholder():
+    assert True

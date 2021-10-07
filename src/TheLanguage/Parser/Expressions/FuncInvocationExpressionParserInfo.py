@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import List, Union
 
 from dataclasses import dataclass
 
@@ -39,4 +39,17 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class FuncInvocationExpressionParserInfo(ExpressionParserInfo):
     Expression: ExpressionParserInfo
-    Arguments: Optional[List[ArgumentParserInfo]]
+
+    Arguments: Union[
+        bool,                               # Should always be False; indicates that no arguments were found
+        List[ArgumentParserInfo],           # Non-empty list of arguments
+    ]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(FuncInvocationExpressionParserInfo, self).__post_init__(regions)
+
+        if isinstance(self.Arguments, bool):
+            assert self.Arguments is False, self.Arguments
+        else:
+            assert self.Arguments
