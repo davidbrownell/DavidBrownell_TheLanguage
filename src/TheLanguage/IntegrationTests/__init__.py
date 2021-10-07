@@ -150,7 +150,7 @@ def PatchAndExecute(
 
                 raise result[0]
 
-        return result
+        return result  # type: ignore
 
 
 # ----------------------------------------------------------------------

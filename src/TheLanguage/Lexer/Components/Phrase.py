@@ -133,15 +133,6 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         ):
             YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
 
-        # ----------------------------------------------------------------------
-        @Interface.extensionmethod
-        def Enum(self) -> Generator[
-            "Phrase.LexResultData",
-            None,
-            None,
-        ]:
-            yield self
-
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class StandardLexResultData(LexResultData):
@@ -168,17 +159,6 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     class MultipleLexResultData(LexResultData):
         DataItems: List[Optional["Phrase.LexResultData"]]
         IsComplete: bool
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def Enum(self) -> Generator[
-            "Phrase.LexResultData",
-            None,
-            None,
-        ]:
-            for data in self.DataItems:
-                if data is not None:
-                    yield from data.Enum()
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)

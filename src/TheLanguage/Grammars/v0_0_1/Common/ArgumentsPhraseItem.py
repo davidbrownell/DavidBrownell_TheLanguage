@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import cast, List, Optional
+from typing import cast, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -131,13 +131,16 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def ExtractParserInfo(
     node: Node,
-) -> Optional[List[ArgumentParserInfo]]:
+) -> Union[bool, List[ArgumentParserInfo]]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
 
     arguments_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
     if arguments_node is None:
-        return None
+        # We don't want to return None here, as there aren't arguments, but argument information
+        # (e.g. '(' and ')' was found). Return a non-null value so that the caller can associate
+        # a node with the result.
+        return False
 
     # Extract the arguments
     arguments_nodes = ExtractSequence(arguments_node)

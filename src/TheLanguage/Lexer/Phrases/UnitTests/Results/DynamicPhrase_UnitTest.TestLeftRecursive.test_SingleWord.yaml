@@ -11,8 +11,8 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
           Match: "<_sre.SRE_Match object; span=(0, 15), match='this_will_match'>"
         Whitespace: None
       Phrase: "Lower"
-    Phrase: "Custom Display <Prefix>"
-  Phrase: "Dynamic Phrases"
+    Phrase: "All Phrases"
+  Phrase: "Dynamic Phrase"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[1, 16] (15)"
 Success: True

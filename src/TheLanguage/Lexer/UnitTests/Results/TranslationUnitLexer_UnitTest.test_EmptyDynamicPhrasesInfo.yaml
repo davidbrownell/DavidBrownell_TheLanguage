@@ -43,7 +43,7 @@ Children:
     IsIgnored: False
     IterBegin: "[2, 1] (1)"
     IterEnd: "[3, 1] (6)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 IsIgnored: False
 IterBegin: "[2, 1] (1)"
 IterEnd: "[3, 1] (6)"

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncInvocationExpressionParserInfo.py
+# |  GeneratorExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-04 08:24:01
+# |      2021-10-04 09:49:23
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncInvocationExpressionParserInfo object"""
+"""Contains the GeneratorExpressionParserInfo object"""
 
 import os
 
-from typing import List, Union
+from typing import Optional
 
 from dataclasses import dataclass
 
@@ -32,24 +32,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
-    from ..Common.ArgumentParserInfo import ArgumentParserInfo
+    from ..Names.NameParserInfo import NameParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncInvocationExpressionParserInfo(ExpressionParserInfo):
-    Expression: ExpressionParserInfo
+class GeneratorExpressionParserInfo(ExpressionParserInfo):
+    """\
+    Example syntax:
 
-    Arguments: Union[
-        bool,                               # Should always be False; indicates that no arguments were found
-        List[ArgumentParserInfo],           # Non-empty list of arguments
-    ]
+        DecorateValue(value) for value in [1, 2, 3] if value & 1
+        --------------------     -----    ---------    ---------
+        |                        |        |            |
+        |                        |        |            - Condition Expression
+        |                        |        - Source Expression
+        |                        - Name
+        - Result Expression
+    """
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(FuncInvocationExpressionParserInfo, self).__post_init__(regions)
-
-        if isinstance(self.Arguments, bool):
-            assert self.Arguments is False, self.Arguments
-        else:
-            assert self.Arguments
+    ResultExpression: ExpressionParserInfo
+    Name: NameParserInfo
+    SourceExpression: ExpressionParserInfo
+    ConditionExpression: Optional[ExpressionParserInfo]

@@ -106,7 +106,7 @@
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (4)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 5) 4, 7
     # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
     IsIgnored: False
@@ -224,7 +224,7 @@
     IsIgnored: False
     IterBegin: "[2, 1] (4)"
     IterEnd: "[3, 1] (8)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 11) 8, 15
     # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
     IsIgnored: False
@@ -363,7 +363,7 @@
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (2)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 19) 2, 3
     # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
     IsIgnored: False
@@ -472,7 +472,7 @@
     IsIgnored: False
     IterBegin: "[2, 1] (2)"
     IterEnd: "[3, 1] (4)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 24) 4, 5
     # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
     IsIgnored: False
@@ -581,7 +581,7 @@
     IsIgnored: False
     IterBegin: "[3, 1] (4)"
     IterEnd: "[4, 1] (6)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 29) 8, 15
     # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
     IsIgnored: False
@@ -676,7 +676,7 @@
     IsIgnored: False
     IterBegin: "[3, 1] (8)"
     IterEnd: "[4, 1] (23)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 32) 23, 24
     # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
     IsIgnored: False
@@ -794,4 +794,4 @@
     IsIgnored: False
     IterBegin: "[4, 1] (23)"
     IterEnd: "[5, 1] (25)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"

@@ -34,7 +34,7 @@ Children:
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (7)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -69,7 +69,7 @@ Children:
     IsIgnored: False
     IterBegin: "[2, 1] (7)"
     IterEnd: "[3, 1] (14)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -104,7 +104,7 @@ Children:
     IsIgnored: False
     IterBegin: "[3, 1] (14)"
     IterEnd: "[5, 1] (20)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -267,7 +267,7 @@ Children:
     IsIgnored: False
     IterBegin: "[5, 1] (20)"
     IterEnd: "[9, 1] (64)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -395,7 +395,7 @@ Children:
     IsIgnored: False
     IterBegin: "[9, 1] (64)"
     IterEnd: "[12, 1] (99)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -430,7 +430,7 @@ Children:
     IsIgnored: False
     IterBegin: "[12, 1] (99)"
     IterEnd: "[13, 1] (106)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 IsIgnored: False
 IterBegin: "[1, 1] (0)"
 IterEnd: "[13, 1] (106)"

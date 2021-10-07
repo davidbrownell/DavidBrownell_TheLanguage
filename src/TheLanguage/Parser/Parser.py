@@ -159,8 +159,13 @@ def Parse(
 # ----------------------------------------------------------------------
 def GetParserInfo(
     obj: Any,
+    *,
+    allow_none: bool=False,
 ) -> Optional[ParserInfo]:
-    return getattr(obj, "Info", None)
+    result = getattr(obj, "Info", None)
+    assert allow_none or result is not None
+
+    return result
 
 
 # ----------------------------------------------------------------------
@@ -230,7 +235,10 @@ def _SetParserInfo(
 def _Extract(
     node: AST.Node,
 ) -> Optional[ParserInfo]:
-    parser_info = GetParserInfo(node)
+    parser_info = GetParserInfo(
+        node,
+        allow_none=True,
+    )
 
     if parser_info is not None:
         return parser_info

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  StandardType_IntegrationTest.py
+# |  GeneratorExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-30 12:51:04
+# |      2021-10-04 10:23:33
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for StandardType.py"""
+"""Automated tests for GeneratorExpression.py"""
 
 import os
 import textwrap
@@ -29,39 +29,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .....IntegrationTests import *
-    from ..StandardType import *
+    from ..GeneratorExpression import *
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("Enable when Function Declarations are implemented")
-def test_NoModifier():
+def test_Standard():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            Int Func():
-                pass
+            a = value1 for value1 in OneToTen()
+            b = AddOne(value2) for value2 in OneToTen()
+            c = AddOne(value3) for value3 in OneToTen() if value3 % two
             """,
         ),
     )))
-
-
-# ----------------------------------------------------------------------
-@pytest.mark.skip("Enable when Function Declarations are implemented")
-def test_WithModifier():
-    CompareResultsFromFile(str(Execute(
-        textwrap.dedent(
-            """\
-            Int var Func1():
-                pass
-
-            Char view Func2():
-                pass
-            """,
-        ),
-    )))
-
-
-# ----------------------------------------------------------------------
-# TODO: Remove this placeholder once Function Declarations are implemented
-def test_Placeholder():
-    assert True

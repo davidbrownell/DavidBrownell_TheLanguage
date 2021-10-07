@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  StandardType_IntegrationTest.py
+# |  GeneratorExpressionParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-30 12:51:04
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for StandardType.py"""
+"""Unit test for GeneratorExpressionParserInfo.py"""
 
 import os
-import textwrap
 
 import CommonEnvironment
 
@@ -28,40 +27,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .....IntegrationTests import *
-    from ..StandardType import *
+    from ..GeneratorExpressionParserInfo import *
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("Enable when Function Declarations are implemented")
-def test_NoModifier():
-    CompareResultsFromFile(str(Execute(
-        textwrap.dedent(
-            """\
-            Int Func():
-                pass
-            """,
-        ),
-    )))
-
-
-# ----------------------------------------------------------------------
-@pytest.mark.skip("Enable when Function Declarations are implemented")
-def test_WithModifier():
-    CompareResultsFromFile(str(Execute(
-        textwrap.dedent(
-            """\
-            Int var Func1():
-                pass
-
-            Char view Func2():
-                pass
-            """,
-        ),
-    )))
-
-
-# ----------------------------------------------------------------------
-# TODO: Remove this placeholder once Function Declarations are implemented
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
 def test_Placeholder():
     assert True

@@ -1,226 +1,234 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-    DataItems:
-      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+        DataItems:
+          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 5] (4)"
+                  Token: "Upper"
+                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 4), match='TRUE'>"
+                  Whitespace: None
+                Phrase: "Upper"
+              Phrase: "All Phrases"
+            Phrase: "Dynamic Phrase"
+          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
               IsIgnored: False
-              IterBegin: "[1, 1] (0)"
-              IterEnd: "[1, 5] (4)"
-              Token: "Upper"
+              IterBegin: "[1, 6] (5)"
+              IterEnd: "[1, 8] (7)"
+              Token: "'if'"
               Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                Match: "<_sre.SRE_Match object; span=(0, 4), match='TRUE'>"
-              Whitespace: None
-            Phrase: "Upper"
-          Phrase: "Custom Display <Prefix>"
-        Phrase: "DynamicPhrasesType.Statements"
-      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          IsIgnored: False
-          IterBegin: "[1, 6] (5)"
-          IterEnd: "[1, 8] (7)"
-          Token: "'if'"
-          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-            Match: "<_sre.SRE_Match object; span=(5, 7), match='if'>"
-          Whitespace:
-            - 4
-            - 5
-        Phrase: "'if'"
-      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-              DataItems:
-                - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                    DataItems:
-                      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                              IsIgnored: False
-                              IterBegin: "[1, 9] (8)"
-                              IterEnd: "[1, 12] (11)"
-                              Token: "Lower"
-                              Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                                Match: "<_sre.SRE_Match object; span=(8, 11), match='var'>"
-                              Whitespace:
-                                - 7
-                                - 8
-                            Phrase: "Lower"
-                          Phrase: "Custom Display <Prefix>"
-                        Phrase: "DynamicPhrasesType.Statements"
-                      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                          IsIgnored: False
-                          IterBegin: "[1, 12] (11)"
-                          IterEnd: "[1, 13] (12)"
-                          Token: "'['"
-                          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                            Match: "<_sre.SRE_Match object; span=(11, 12), match='['>"
-                          Whitespace: None
-                        Phrase: "'['"
-                      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                              IsIgnored: False
-                              IterBegin: "[1, 13] (12)"
-                              IterEnd: "[1, 14] (13)"
-                              Token: "Lower"
-                              Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                                Match: "<_sre.SRE_Match object; span=(12, 13), match='a'>"
-                              Whitespace: None
-                            Phrase: "Lower"
-                          Phrase: "Phrases"
-                        Phrase: "DynamicPhrasesType.Statements"
-                      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                          IsIgnored: False
-                          IterBegin: "[1, 14] (13)"
-                          IterEnd: "[1, 15] (14)"
-                          Token: "']'"
-                          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                            Match: "<_sre.SRE_Match object; span=(13, 14), match=']'>"
-                          Whitespace: None
-                        Phrase: "']'"
-                    IsComplete: True
-                  Phrase: "Index"
-                - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                    IsIgnored: False
-                    IterBegin: "[1, 15] (14)"
-                    IterEnd: "[1, 16] (15)"
-                    Token: "'['"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(14, 15), match='['>"
-                    Whitespace: None
-                  Phrase: "'['"
-                - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
-                        DataItems:
-                          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                                  IsIgnored: False
-                                  IterBegin: "[1, 16] (15)"
-                                  IterEnd: "[1, 19] (18)"
-                                  Token: "Lower"
-                                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                                    Match: "<_sre.SRE_Match object; span=(15, 18), match='one'>"
-                                  Whitespace: None
-                                Phrase: "Lower"
-                              Phrase: "Custom Display <Prefix>"
-                            Phrase: "DynamicPhrasesType.Statements"
-                          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                              IsIgnored: False
-                              IterBegin: "[1, 20] (19)"
-                              IterEnd: "[1, 22] (21)"
-                              Token: "'if'"
-                              Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                                Match: "<_sre.SRE_Match object; span=(19, 21), match='if'>"
-                              Whitespace:
-                                - 18
-                                - 19
-                            Phrase: "'if'"
-                          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                                  IsIgnored: False
-                                  IterBegin: "[1, 23] (22)"
-                                  IterEnd: "[1, 32] (31)"
-                                  Token: "Upper"
-                                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                                    Match: "<_sre.SRE_Match object; span=(22, 31), match='CONDITION'>"
-                                  Whitespace:
-                                    - 21
-                                    - 22
-                                Phrase: "Upper"
-                              Phrase: "Phrases"
-                            Phrase: "DynamicPhrasesType.Statements"
-                          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                              IsIgnored: False
-                              IterBegin: "[1, 33] (32)"
-                              IterEnd: "[1, 37] (36)"
-                              Token: "'else'"
-                              Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                                Match: "<_sre.SRE_Match object; span=(32, 36), match='else'>"
-                              Whitespace:
-                                - 31
-                                - 32
-                            Phrase: "'else'"
-                          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                                  IsIgnored: False
-                                  IterBegin: "[1, 38] (37)"
-                                  IterEnd: "[1, 41] (40)"
-                                  Token: "Lower"
-                                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                                    Match: "<_sre.SRE_Match object; span=(37, 40), match='two'>"
-                                  Whitespace:
-                                    - 36
-                                    - 37
-                                Phrase: "Lower"
-                              Phrase: "Phrases"
-                            Phrase: "DynamicPhrasesType.Statements"
-                        IsComplete: True
-                      Phrase: "Ter"
-                    Phrase: "Phrases"
-                  Phrase: "DynamicPhrasesType.Statements"
-                - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                    IsIgnored: False
-                    IterBegin: "[1, 41] (40)"
-                    IterEnd: "[1, 42] (41)"
-                    Token: "']'"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                      Match: "<_sre.SRE_Match object; span=(40, 41), match=']'>"
-                    Whitespace: None
-                  Phrase: "']'"
-              IsComplete: True
-            Phrase: "Index"
-          Phrase: "Phrases"
-        Phrase: "DynamicPhrasesType.Statements"
-      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          IsIgnored: False
-          IterBegin: "[1, 43] (42)"
-          IterEnd: "[1, 47] (46)"
-          Token: "'else'"
-          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-            Match: "<_sre.SRE_Match object; span=(42, 46), match='else'>"
-          Whitespace:
-            - 41
-            - 42
-        Phrase: "'else'"
-      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-              IsIgnored: False
-              IterBegin: "[1, 48] (47)"
-              IterEnd: "[1, 53] (52)"
-              Token: "Upper"
-              Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                Match: "<_sre.SRE_Match object; span=(47, 52), match='FALSE'>"
+                Match: "<_sre.SRE_Match object; span=(5, 7), match='if'>"
               Whitespace:
-                - 46
-                - 47
-            Phrase: "Upper"
-          Phrase: "Phrases"
-        Phrase: "DynamicPhrasesType.Statements"
-    IsComplete: True
-  Phrase: "Ter"
+                - 4
+                - 5
+            Phrase: "'if'"
+          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+                  DataItems:
+                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+                            DataItems:
+                              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                      IsIgnored: False
+                                      IterBegin: "[1, 9] (8)"
+                                      IterEnd: "[1, 12] (11)"
+                                      Token: "Lower"
+                                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                        Match: "<_sre.SRE_Match object; span=(8, 11), match='var'>"
+                                      Whitespace:
+                                        - 7
+                                        - 8
+                                    Phrase: "Lower"
+                                  Phrase: "All Phrases"
+                                Phrase: "DynamicPhrasesType.Statements"
+                              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                  IsIgnored: False
+                                  IterBegin: "[1, 12] (11)"
+                                  IterEnd: "[1, 13] (12)"
+                                  Token: "'['"
+                                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                    Match: "<_sre.SRE_Match object; span=(11, 12), match='['>"
+                                  Whitespace: None
+                                Phrase: "'['"
+                              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                      IsIgnored: False
+                                      IterBegin: "[1, 13] (12)"
+                                      IterEnd: "[1, 14] (13)"
+                                      Token: "Lower"
+                                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                        Match: "<_sre.SRE_Match object; span=(12, 13), match='a'>"
+                                      Whitespace: None
+                                    Phrase: "Lower"
+                                  Phrase: "All Phrases"
+                                Phrase: "DynamicPhrasesType.Statements"
+                              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                  IsIgnored: False
+                                  IterBegin: "[1, 14] (13)"
+                                  IterEnd: "[1, 15] (14)"
+                                  Token: "']'"
+                                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                    Match: "<_sre.SRE_Match object; span=(13, 14), match=']'>"
+                                  Whitespace: None
+                                Phrase: "']'"
+                            IsComplete: True
+                          Phrase: "Index"
+                        Phrase: "All Phrases"
+                      Phrase: "DynamicPhrasesType.Statements"
+                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                        IsIgnored: False
+                        IterBegin: "[1, 15] (14)"
+                        IterEnd: "[1, 16] (15)"
+                        Token: "'['"
+                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(14, 15), match='['>"
+                        Whitespace: None
+                      Phrase: "'['"
+                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+                            DataItems:
+                              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                      IsIgnored: False
+                                      IterBegin: "[1, 16] (15)"
+                                      IterEnd: "[1, 19] (18)"
+                                      Token: "Lower"
+                                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                        Match: "<_sre.SRE_Match object; span=(15, 18), match='one'>"
+                                      Whitespace: None
+                                    Phrase: "Lower"
+                                  Phrase: "All Phrases"
+                                Phrase: "DynamicPhrasesType.Statements"
+                              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                  IsIgnored: False
+                                  IterBegin: "[1, 20] (19)"
+                                  IterEnd: "[1, 22] (21)"
+                                  Token: "'if'"
+                                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                    Match: "<_sre.SRE_Match object; span=(19, 21), match='if'>"
+                                  Whitespace:
+                                    - 18
+                                    - 19
+                                Phrase: "'if'"
+                              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                      IsIgnored: False
+                                      IterBegin: "[1, 23] (22)"
+                                      IterEnd: "[1, 32] (31)"
+                                      Token: "Upper"
+                                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                        Match: "<_sre.SRE_Match object; span=(22, 31), match='CONDITION'>"
+                                      Whitespace:
+                                        - 21
+                                        - 22
+                                    Phrase: "Upper"
+                                  Phrase: "All Phrases"
+                                Phrase: "DynamicPhrasesType.Statements"
+                              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                  IsIgnored: False
+                                  IterBegin: "[1, 33] (32)"
+                                  IterEnd: "[1, 37] (36)"
+                                  Token: "'else'"
+                                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                    Match: "<_sre.SRE_Match object; span=(32, 36), match='else'>"
+                                  Whitespace:
+                                    - 31
+                                    - 32
+                                Phrase: "'else'"
+                              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                      IsIgnored: False
+                                      IterBegin: "[1, 38] (37)"
+                                      IterEnd: "[1, 41] (40)"
+                                      Token: "Lower"
+                                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                                        Match: "<_sre.SRE_Match object; span=(37, 40), match='two'>"
+                                      Whitespace:
+                                        - 36
+                                        - 37
+                                    Phrase: "Lower"
+                                  Phrase: "All Phrases"
+                                Phrase: "DynamicPhrasesType.Statements"
+                            IsComplete: True
+                          Phrase: "Ter"
+                        Phrase: "All Phrases"
+                      Phrase: "DynamicPhrasesType.Statements"
+                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                        IsIgnored: False
+                        IterBegin: "[1, 41] (40)"
+                        IterEnd: "[1, 42] (41)"
+                        Token: "']'"
+                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(40, 41), match=']'>"
+                        Whitespace: None
+                      Phrase: "']'"
+                  IsComplete: True
+                Phrase: "Index"
+              Phrase: "All Phrases"
+            Phrase: "DynamicPhrasesType.Statements"
+          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+              IsIgnored: False
+              IterBegin: "[1, 43] (42)"
+              IterEnd: "[1, 47] (46)"
+              Token: "'else'"
+              Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                Match: "<_sre.SRE_Match object; span=(42, 46), match='else'>"
+              Whitespace:
+                - 41
+                - 42
+            Phrase: "'else'"
+          - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 48] (47)"
+                  IterEnd: "[1, 53] (52)"
+                  Token: "Upper"
+                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(47, 52), match='FALSE'>"
+                  Whitespace:
+                    - 46
+                    - 47
+                Phrase: "Upper"
+              Phrase: "All Phrases"
+            Phrase: "DynamicPhrasesType.Statements"
+        IsComplete: True
+      Phrase: "Ter"
+    Phrase: "All Phrases"
+  Phrase: "Dynamic Phrase"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[1, 53] (52)"
 Success: True

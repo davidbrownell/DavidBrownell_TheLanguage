@@ -901,7 +901,7 @@ class _PhraseObserver(Phrase.Observer):
 
         assert node is not None
 
-        # Assign the parent (if necessary(
+        # Assign the parent (if necessary)
         if parent != node.Parent:
             assert parent is not None
 
@@ -911,7 +911,14 @@ class _PhraseObserver(Phrase.Observer):
         # Populate the children (if necessary)
         if not was_cached:
             if isinstance(node, AST.Node) and data.Data is not None:
-                for data_item in data.Data.Enum():
+                if isinstance(data.Data, Phrase.StandardLexResultData):
+                    data_items = [data.Data]
+                elif isinstance(data.Data, Phrase.MultipleLexResultData):
+                    data_items = data.Data.DataItems
+                else:
+                    assert False, data.Data  # pragma: no cover
+
+                for data_item in data_items:
                     if isinstance(data_item, Phrase.TokenLexResultData):
                         self.__class__.CreateLeaf(data_item, node)
                     elif isinstance(data_item, Phrase.StandardLexResultData):

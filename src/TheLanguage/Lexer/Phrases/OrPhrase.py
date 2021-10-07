@@ -95,7 +95,7 @@ class OrPhrase(Phrase):
             # ----------------------------------------------------------------------
             async def ExecuteAsync(phrase_index, phrase):
                 return await phrase.LexAsync(
-                    unique_id + ("{} [{}]".format(self.Name, phrase_index), ),
+                    unique_id + ("{} ({})".format(self.Name, phrase_index), ),
                     normalized_iter.Clone(),
                     observer,
                     ignore_whitespace=ignore_whitespace,
