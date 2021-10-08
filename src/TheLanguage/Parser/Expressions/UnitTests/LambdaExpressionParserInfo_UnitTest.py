@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableDeclarationStatementParserInfo.py
+# |  LambdaExpressionParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-30 13:27:25
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableDeclarationStatementParserInfo object"""
+"""Unit test for LambdaExpressionParserInfo.py"""
 
 import os
-
-from typing import Optional
-
-from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -31,17 +27,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import StatementParserInfo
-    from ..Common.TypeModifier import TypeModifier
-    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..Names.NameParserInfo import NameParserInfo
+    from ..LambdaExpressionParserInfo import *
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableDeclarationStatementParserInfo(StatementParserInfo):
-    Modifier: Optional[TypeModifier]
-    Name: NameParserInfo
-    Expression: ExpressionParserInfo
-
-    # TODO: Not all type modifiers are valid in this context
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
+def test_Placeholder():
+    assert True

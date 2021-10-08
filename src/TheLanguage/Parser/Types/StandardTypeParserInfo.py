@@ -57,6 +57,8 @@ class StandardTypeParserInfo(TypeParserInfo):
     def __post_init__(self, regions):
         super(StandardTypeParserInfo, self).__post_init__(regions)
 
+        # TODO: I don't think that this is valid in this context
+
         # Not all modifiers are valid in this context
         valid_modifiers = [
             TypeModifier.var,

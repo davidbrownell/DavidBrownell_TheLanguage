@@ -440,7 +440,8 @@ class DynamicPhrase(Phrase):
 
         data = data_items[-1]
 
-        # We may need to alter the tree if we are working with right-recursive phrases
+        # We may need to alter the tree if we are working with a combination of left- and right-
+        # recursive phrases
 
         # ----------------------------------------------------------------------
         def SkipDynamicData(
@@ -462,7 +463,10 @@ class DynamicPhrase(Phrase):
 
         value_data = SkipDynamicData(data)
 
-        if self.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType):
+        if (
+            self.IsLeftRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
+            and self.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
+        ):
             assert isinstance(value_data.Data, Phrase.MultipleLexResultData)
             assert isinstance(value_data.Data.DataItems[-1], Phrase.StandardLexResultData)
 

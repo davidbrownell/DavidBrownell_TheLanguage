@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableDeclarationStatementParserInfo.py
+# |  LambdaExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-30 13:27:25
+# |      2021-10-07 15:28:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableDeclarationStatementParserInfo object"""
+"""Contains the LambdaExpressionParserInfo object"""
 
 import os
 
-from typing import Optional
+from typing import Union
 
 from dataclasses import dataclass
 
@@ -31,17 +31,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import StatementParserInfo
-    from ..Common.TypeModifier import TypeModifier
-    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..Names.NameParserInfo import NameParserInfo
+    from .ExpressionParserInfo import ExpressionParserInfo
+    from ..Common.ParametersParserInfo import ParametersParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableDeclarationStatementParserInfo(StatementParserInfo):
-    Modifier: Optional[TypeModifier]
-    Name: NameParserInfo
+class LambdaExpressionParserInfo(ExpressionParserInfo):
+    """Single-line anonymous function definition"""
+
+    Parameters: Union[
+        bool,                               # Should always be False; indicates that no parameters were found
+        ParametersParserInfo,               # Non-empty list of parameters
+    ]
+
     Expression: ExpressionParserInfo
 
-    # TODO: Not all type modifiers are valid in this context
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(LambdaExpressionParserInfo, self).__post_init__(regions)
+
+        if isinstance(self.Parameters, bool):
+            assert self.Parameters is False, self.Parameters
+        else:
+            assert self.Parameters

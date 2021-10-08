@@ -42,7 +42,7 @@ def StandardCreatePhraseItemFuncFactory(
     the_enum: Type[EnumType],
 ) -> Callable[[], Tuple[str, ...]]:
     # ----------------------------------------------------------------------
-    def CreatePhraseItem():
+    def CreatePhraseItem() -> Tuple[str, ...]:
         return tuple(e.name for e in the_enum)
 
     # ----------------------------------------------------------------------
@@ -67,6 +67,46 @@ def StandardExtractFuncFactory(
         )
 
         return the_enum[value]
+
+    # ----------------------------------------------------------------------
+
+    return Extract
+
+
+# ----------------------------------------------------------------------
+def ByValueCreatePhraseItemFuncFactory(
+    the_enum: Type[EnumType],
+) -> Callable[[], Tuple[str, ...]]:
+    # ----------------------------------------------------------------------
+    def CreatePhraseItem() -> Tuple[str, ...]:
+        return tuple(e.value for e in the_enum)
+
+    # ----------------------------------------------------------------------
+
+    return CreatePhraseItem
+
+
+# ----------------------------------------------------------------------
+def ByValueExtractFuncFactory(
+    the_enum: Type[EnumType],
+) -> Callable[[Node], EnumType]:
+    # ----------------------------------------------------------------------
+    def Extract(
+        node: Node,
+    ) -> EnumType:
+        value = cast(
+            str,
+            ExtractToken(
+                cast(Leaf, ExtractOr(node)),
+                use_match=True,
+            ),
+        )
+
+        for e in the_enum:
+            if e.value == value:
+                return e
+
+        assert False, value
 
     # ----------------------------------------------------------------------
 
