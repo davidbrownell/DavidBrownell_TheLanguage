@@ -215,13 +215,9 @@ Statements:
             Expression: "[Ln 15, Col 5] -> [Ln 15, Col 7]"
             Keyword: None
             Self__: "[Ln 15, Col 5] -> [Ln 15, Col 7]"
-      Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-          Name: "Func"
-          Regions__: # <class 'types.VariableNameParserInfoRegions'>
-            Name: "[Ln 9, Col 8] -> [Ln 9, Col 12]"
-            Self__: "[Ln 9, Col 8] -> [Ln 9, Col 12]"
-        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+      Expression: # <class 'TheLanguage.Parser.Expressions.FuncNameExpressionParserInfo.FuncNameExpressionParserInfo'>
+        Name: "Func"
+        Regions__: # <class 'types.FuncNameExpressionParserInfoRegions'>
           Name: "[Ln 9, Col 8] -> [Ln 9, Col 12]"
           Self__: "[Ln 9, Col 8] -> [Ln 9, Col 12]"
       Regions__: # <class 'types.FuncInvocationExpressionParserInfoRegions'>

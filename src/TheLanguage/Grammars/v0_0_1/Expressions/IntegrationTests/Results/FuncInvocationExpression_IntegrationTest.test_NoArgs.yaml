@@ -5,13 +5,9 @@ Statements:
   - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
     Expression: # <class 'TheLanguage.Parser.Expressions.FuncInvocationExpressionParserInfo.FuncInvocationExpressionParserInfo'>
       Arguments: False
-      Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-          Name: "Func1"
-          Regions__: # <class 'types.VariableNameParserInfoRegions'>
-            Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
-            Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
-        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+      Expression: # <class 'TheLanguage.Parser.Expressions.FuncNameExpressionParserInfo.FuncNameExpressionParserInfo'>
+        Name: "Func1"
+        Regions__: # <class 'types.FuncNameExpressionParserInfoRegions'>
           Name: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
           Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
       Regions__: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
@@ -32,13 +28,9 @@ Statements:
   - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
     Expression: # <class 'TheLanguage.Parser.Expressions.FuncInvocationExpressionParserInfo.FuncInvocationExpressionParserInfo'>
       Arguments: False
-      Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-          Name: "Func2"
-          Regions__: # <class 'types.VariableNameParserInfoRegions'>
-            Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
-            Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
-        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+      Expression: # <class 'TheLanguage.Parser.Expressions.FuncNameExpressionParserInfo.FuncNameExpressionParserInfo'>
+        Name: "Func2"
+        Regions__: # <class 'types.FuncNameExpressionParserInfoRegions'>
           Name: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
           Self__: "[Ln 3, Col 10] -> [Ln 3, Col 15]"
       Regions__: # <class 'types.FuncInvocationExpressionParserInfoRegions'>

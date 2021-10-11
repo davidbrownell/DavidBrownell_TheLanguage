@@ -30,25 +30,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..CastExpressionParserInfo import *
-    from ...Common.AutomatedTests import CreateRegion
+    from ...Common.AutomatedTests import RegionCreator
     from ...Types.StandardTypeParserInfo import StandardTypeParserInfo
 
 
 # ----------------------------------------------------------------------
 def test_TypeWithModifierError():
+    region_creator = RegionCreator()
+
     with pytest.raises(TypeWithModifierError) as ex:
         CastExpressionParserInfo(
             [
-                CreateRegion(1, 2, 3000, 4000),
-                CreateRegion(5, 6, 7, 8),
-                CreateRegion(9, 10, 11, 12),
+                region_creator(container=True),
+                region_creator(),
+                region_creator(),
             ],
-            ExpressionParserInfo([CreateRegion(13, 14, 150, 160)]),
+            ExpressionParserInfo([region_creator(container=True)]),
             StandardTypeParserInfo(
                 [
-                    CreateRegion(17, 18, 190, 200),
-                    CreateRegion(21, 22, 23, 24),
-                    CreateRegion(25, 26, 27, 28),
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(expected_error=True),
                 ],
                 "TheType",
                 TypeModifier.val,
@@ -58,23 +60,25 @@ def test_TypeWithModifierError():
     ex = ex.value
 
     assert str(ex) == "Cast expressions may specify a type or a modifier, but not both."
-    assert ex.Region == CreateRegion(25, 26, 27, 28)
+    assert ex.Region == region_creator.ExpectedErrorRegion()
 
 
 # ----------------------------------------------------------------------
 def test_InvalidModifierError():
+    region_creator = RegionCreator()
+
     with pytest.raises(InvalidModifierError) as ex:
         CastExpressionParserInfo(
             [
-                CreateRegion(1, 2, 3000, 4000),
-                CreateRegion(5, 6, 7, 8),
-                CreateRegion(9, 10, 11, 12),
+                region_creator(container=True),
+                region_creator(),
+                region_creator(expected_error=True),
             ],
-            ExpressionParserInfo([CreateRegion(13, 14, 150, 160)]),
+            ExpressionParserInfo([region_creator(container=True),]),
             TypeModifier.mutable,
         )
 
     ex = ex.value
 
     assert str(ex) == "'mutable' cannot be used in cast expressions; supported values are 'ref', 'val', 'view'."
-    assert ex.Region == CreateRegion(9, 10, 11, 12)
+    assert ex.Region == region_creator.ExpectedErrorRegion()

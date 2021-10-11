@@ -77,6 +77,11 @@ def PatchAndExecute(
     so that they simulate files via the file content provided.
     """
 
+    # TODO: We are using too many threads in the pool when not single threaded; remove this clause
+    # when that issue has been resolved.
+    if max_num_threads is None:
+        max_num_threads = 1
+
     if debug_string_on_exceptions is None:
         debug_string_on_exceptions = True
 
@@ -154,6 +159,36 @@ def PatchAndExecute(
 
 
 # ----------------------------------------------------------------------
+def ExecuteEx(
+    content: str,
+    flag: PatchAndExecuteFlag=PatchAndExecuteFlag.Prune,
+    *,
+    configuration: Optional[Configurations]=None,
+    target: Optional[str]=None,
+    max_num_threads: Optional[int]=None,
+    debug_string_on_exceptions: Optional[bool]=None,
+) -> AST.Node:
+    result = PatchAndExecute(
+        {
+            "filename" : content,
+        },
+        ["filename"],
+        [],
+        flag,
+        configuration=configuration,
+        target=target,
+        max_num_threads=max_num_threads,
+        debug_string_on_exceptions=debug_string_on_exceptions,
+    )
+
+    assert isinstance(result, dict), result
+    assert len(result) == 1, result
+    assert "filename" in result, result
+
+    return cast(AST.Node, result["filename"])
+
+
+# ----------------------------------------------------------------------
 def Execute(
     content: str,
     flag: PatchAndExecuteFlag=PatchAndExecuteFlag.Parse,
@@ -172,9 +207,7 @@ def Execute(
         flag,
         configuration=configuration,
         target=target,
-        # TODO: We are using too many threads in the pool when not single threaded
-        # max_num_threads=max_num_threads,
-        max_num_threads=1,
+        max_num_threads=max_num_threads,
         debug_string_on_exceptions=debug_string_on_exceptions,
     )
 

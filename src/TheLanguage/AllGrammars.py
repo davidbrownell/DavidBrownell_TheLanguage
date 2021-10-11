@@ -166,12 +166,17 @@ def Lex(
         except TypeError:
             grammar_phrase = None
 
-        if isinstance(grammar_phrase, ImportGrammarPhrase):
-            return grammar_phrase.ProcessImportNode(
-                source_roots,
-                fully_qualified_name,
-                node,
-            )
+        if grammar_phrase is not None:
+            if isinstance(grammar_phrase, ImportGrammarPhrase):
+                return grammar_phrase.ProcessImportNode(
+                    source_roots,
+                    fully_qualified_name,
+                    node,
+                )
+
+            result = grammar_phrase.GetDynamicContent(node)
+
+            # TODO: Process result
 
         return not cancellation_event.is_set()
 

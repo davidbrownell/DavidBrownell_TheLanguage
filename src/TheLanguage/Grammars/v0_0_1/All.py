@@ -35,6 +35,7 @@ with InitRelativeImports():
     from .Expressions.BinaryExpression import BinaryExpression
     from .Expressions.CastExpression import CastExpression
     from .Expressions.FuncInvocationExpression import FuncInvocationExpression
+    from .Expressions.FuncNameExpression import FuncNameExpression
     from .Expressions.GeneratorExpression import GeneratorExpression
     from .Expressions.GroupExpression import GroupExpression
     from .Expressions.IndexExpression import IndexExpression
@@ -45,6 +46,9 @@ with InitRelativeImports():
     from .Names.VariableName import VariableName
 
     # Statements
+    # TODO from .Statements.ClassStatement import ClassStatement
+    from .Statements.DocstringStatement import DocstringStatement
+    from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
     from .Statements.PassStatement import PassStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
 
@@ -62,6 +66,7 @@ GrammarPhrases                              = [
     BinaryExpression(),
     CastExpression(),
     FuncInvocationExpression(),
+    FuncNameExpression(),
     GeneratorExpression(),
     GroupExpression(),
     IndexExpression(),
@@ -72,6 +77,9 @@ GrammarPhrases                              = [
     VariableName(),
 
     # Statements
+    # TODO: ClassStatement(),
+    DocstringStatement(),
+    FuncDefinitionStatement(),
     PassStatement(),
     VariableDeclarationStatement(),
 

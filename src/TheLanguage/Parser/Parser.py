@@ -169,56 +169,61 @@ def GetParserInfo(
 
 
 # ----------------------------------------------------------------------
+def CreateLocation(
+    iter: Optional[Phrase.NormalizedIterator],
+) -> Location:
+    if iter is None:
+        line = -1
+        column = -1
+    else:
+        line = iter.Line
+        column = iter.Column
+
+    return Location(line, column)
+
+
+# ----------------------------------------------------------------------
 def CreateParserRegion(
     node: Union[AST.Leaf, AST.Node],
 ) -> Region:
     """Uses information in a node to create a Region"""
 
-    # ----------------------------------------------------------------------
-    def CreateLocation(
-        iter: Optional[Phrase.NormalizedIterator],
-        adjust_for_whitespace=False,
-    ) -> Location:
-        if iter is None:
-            line = -1
-            column = -1
-        else:
-            line = iter.Line
-            column = iter.Column
+    location_begin = CreateLocation(node.IterBegin)
 
-            if (
-                isinstance(node, AST.Leaf)
-                and adjust_for_whitespace
-                and node.Whitespace is not None
-            ):
-                column += node.Whitespace[1] - node.Whitespace[0] - 1
+    if isinstance(node, AST.Leaf) and node.Whitespace is not None:
+        location_begin = Location(
+            location_begin.Line,
+            location_begin.Column + node.Whitespace[1] - node.Whitespace[0] - 1,
+        )
 
-        return Location(line, column)
-
-    # ----------------------------------------------------------------------
-
-    return Region(
-        CreateLocation(
-            node.IterBegin,
-            adjust_for_whitespace=True,
-        ),
-        CreateLocation(node.IterEnd),
-    )
+    return Region(location_begin, CreateLocation(node.IterEnd))
 
 
 # ----------------------------------------------------------------------
 def CreateParserRegions(
-    *nodes: Union[AST.Leaf, AST.Node, Region, None],
+    *nodes: Union[
+        AST.Leaf,
+        AST.Node,
+        Region,
+        Tuple[Phrase.NormalizedIterator, Phrase.NormalizedIterator],
+        None,
+    ],
 ) -> List[Optional[Region]]:
     """Creates regions for the provided input"""
 
-    # TODO: Ensure that TheLanguage can handle statements formatted like this
-    return [
-        None if node is None else
-            node if isinstance(node, Region) else
-                CreateParserRegion(node)
-        for node in nodes
-    ]
+    results: List[Optional[Region]] = []
+
+    for node in nodes:
+        if node is None:
+            results.append(None)
+        elif isinstance(node, Region):
+            results.append(node)
+        elif isinstance(node, tuple):
+            results.append(Region(CreateLocation(node[0]), CreateLocation(node[1])))
+        else:
+            results.append(CreateParserRegion(node))
+
+    return results
 
 
 # ----------------------------------------------------------------------

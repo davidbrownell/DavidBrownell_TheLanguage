@@ -91,7 +91,10 @@ class PhraseItem(object):
     Name: Optional[str]
 
     # List of phrase or phrase names that should never be matched by this phrase item
-    Excludes: List[Union[str, Phrase]]      = field(default_factory=list)
+    Excludes: Optional[List[Union[str, Phrase]]]        = field(default=None)
+
+    # When creating an OrPhrase, any ambiguities are resolved using the order in which they appear
+    AmbiguitiesResolvedByOrder: Optional[bool]          = field(default=None)
 
     # ----------------------------------------------------------------------
     # This method is here to provide an interface similar to CreatePhrase (in that arguments begin
@@ -102,13 +105,9 @@ class PhraseItem(object):
         item: PhraseItemItemType,
         name: Optional[str]=None,
         excludes: Optional[List[Union[str, Phrase]]]=None,
+        ambiguities_resolved_by_order: Optional[bool]=None,
     ) -> "PhraseItem":
-        if excludes is None:
-            excludes = []
-        else:
-            assert excludes
-
-        return PhraseItem(item, name, excludes)
+        return PhraseItem(item, name, excludes, ambiguities_resolved_by_order)
 
 
 # ----------------------------------------------------------------------
@@ -257,7 +256,9 @@ def CreatePhrase(
 # ----------------------------------------------------------------------
 def ExtractToken(
     leaf: Leaf,
+    *,
     use_match=False,
+    group_dict_name: Optional[str]=None,
 ) -> Optional[str]:
     assert isinstance(leaf, Leaf), leaf
 
@@ -265,6 +266,9 @@ def ExtractToken(
         return None
 
     if isinstance(leaf.Value, RegexToken.MatchResult):
+        if group_dict_name is not None:
+            return leaf.Value.Match.group(group_dict_name)
+
         groups_dict = leaf.Value.Match.groupdict()
 
         if len(groups_dict) == 1:
@@ -274,6 +278,40 @@ def ExtractToken(
             return leaf.Value.Match.string[leaf.Value.Match.start() : leaf.Value.Match.end()]
 
     return cast(Token, leaf.Type).Name
+
+
+# ----------------------------------------------------------------------
+def ExtractTokenSpan(
+    leaf: Leaf,
+    match_group_name: str,
+) -> Optional[Tuple[Phrase.NormalizedIterator, Phrase.NormalizedIterator]]:
+    """\
+    Returns the iterators associated with the start and end of a group within a match (or None if the
+    group didn't match).
+    """
+
+    assert isinstance(leaf.Value, RegexToken.MatchResult)
+
+    start = leaf.Value.Match.start(match_group_name)
+    end = leaf.Value.Match.end(match_group_name)
+
+    if start == end:
+        return None
+
+    assert start >= leaf.IterBegin.Offset
+    assert end >= leaf.IterBegin.Offset
+    assert start < end, (start, end)
+
+    start -= leaf.IterBegin.Offset
+    end -= leaf.IterBegin.Offset
+
+    begin_iter = leaf.IterBegin.Clone()
+    begin_iter.Advance(start)
+
+    end_iter = leaf.IterBegin.Clone()
+    end_iter.Advance(end)
+
+    return begin_iter, end_iter
 
 
 # ----------------------------------------------------------------------
@@ -397,6 +435,7 @@ def _PopulateItem(
     item: PhraseItemItemType,
 ) -> Phrase:
     excludes = None
+    ambiguities_resolved_by_order = None
 
     # Get a custom name
     if isinstance(item, Phrase):
@@ -404,6 +443,7 @@ def _PopulateItem(
     elif isinstance(item, PhraseItem):
         name = item.Name
         excludes = item.Excludes
+        ambiguities_resolved_by_order = item.AmbiguitiesResolvedByOrder
         item = item.Item
     else:
         name = None
@@ -448,10 +488,12 @@ def _PopulateItem(
     if isinstance(item, PhraseItem):
         assert name is None
         assert excludes is None
+        assert ambiguities_resolved_by_order is None
         assert arity is not None
 
         name = item.Name
         excludes = item.Excludes
+        ambiguities_resolved_by_order = item.AmbiguitiesResolvedByOrder
         item = item.Item
 
     assert not isinstance(
@@ -466,7 +508,8 @@ def _PopulateItem(
     ), item
 
     # Certain PhraseItem decorators can only be used with certain item types
-    assert not excludes or isinstance(item, DynamicPhrasesType), (excludes, item)
+    assert excludes is None or (excludes and isinstance(item, DynamicPhrasesType)), (excludes, item)
+    assert ambiguities_resolved_by_order is None or (ambiguities_resolved_by_order and isinstance(item, (tuple, OrPhrase))), (ambiguities_resolved_by_order, item)
 
     # Begin the conversion process
     if isinstance(item, Phrase):
@@ -513,6 +556,7 @@ def _PopulateItem(
         phrase = OrPhrase(
             or_phrases,
             name=name,
+            ambiguities_resolved_by_order=ambiguities_resolved_by_order,
         )
 
     elif isinstance(item, OrPhraseItem):
@@ -525,6 +569,7 @@ def _PopulateItem(
         phrase = OrPhrase(
             or_phrases,
             name=name,
+            ambiguities_resolved_by_order=ambiguities_resolved_by_order,
         )
 
     elif item is None:

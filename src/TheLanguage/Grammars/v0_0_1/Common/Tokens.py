@@ -17,6 +17,7 @@
 
 import os
 import re
+import textwrap
 
 import CommonEnvironment
 
@@ -50,13 +51,6 @@ PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
 PopPreserveWhitespaceControl                = PopPreserveWhitespaceControlToken()
 PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken()
-
-
-# ----------------------------------------------------------------------
-TypeName                                    = RegexToken(
-    "<type_name>",
-    re.compile(r"(?P<value>_?[A-Z][A-Za-z0-9_]+(?!<__))\b"),
-)
 
 
 # ----------------------------------------------------------------------
@@ -107,14 +101,56 @@ def _CreateVariableName():
     for do_not_match_keyword in DoNotMatchKeywords:
         regex_suffixes.append(r"(?<!{})".format(re.escape(do_not_match_keyword)))
 
-    regex = r"(?P<value>_?[A-Za-z0-9_]+(?:\.\.\.)?\??)(?!<__)\b{}".format("".join(regex_suffixes))
+    regex = r"(?P<value>_?[a-z][A-Za-z0-9_]*)(?<!__)\b{}".format("".join(regex_suffixes))
 
     return RegexToken("<variable_name>", re.compile(regex))
+
 
 VariableName                                = _CreateVariableName()
 
 del _CreateVariableName
 
 
-ArgumentName                                = VariableName
-ParameterName                               = VariableName
+# ----------------------------------------------------------------------
+ArgumentName                                = RegexToken(
+    "<argument_name>",
+    re.compile(r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b"),
+)
+
+
+AttributeName                               = RegexToken(
+    "<attribute_name>",
+    re.compile(r"(?P<value>[A-Z][A-Za-z0-9_]+(?<!__))\b"),
+)
+
+
+FuncName                                    = RegexToken(
+    "<func_name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+                Underscores                             )_{0,2}(?#
+                Func Name                               )[A-Z][A-Za-z0-9_]+(?#
+                Do not include 'Async' in the name     `)(?<!Async)(?#
+                Do not include '__' in the name         )(?<!__)(?#
+                is_async                                )(?P<is_async>Async)?(?#
+                End of Word                             )\b(?#
+                is_generator                            )(?P<is_generator>\.\.\.)?(?#
+                is_exceptional                          )(?P<is_exceptional>\?)?(?#
+                Underscores                             )(?:_{1,2}\b)?(?#
+            ))""",
+        ),
+    ),
+)
+
+
+ParameterName                               = RegexToken(
+    "<parameter_name>",
+    re.compile(r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b"),
+)
+
+
+TypeName                                    = RegexToken(
+    "<type_name>",
+    re.compile(r"(?P<value>_?[A-Z][A-Za-z0-9_]+(?<!__))\b"),
+)

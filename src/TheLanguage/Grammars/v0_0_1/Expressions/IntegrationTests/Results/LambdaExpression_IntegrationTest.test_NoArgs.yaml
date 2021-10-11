@@ -201,13 +201,9 @@ Statements:
             Expression: "[Ln 7, Col 35] -> [Ln 7, Col 36]"
             Keyword: None
             Self__: "[Ln 7, Col 35] -> [Ln 7, Col 36]"
-      Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-          Name: "Func1"
-          Regions__: # <class 'types.VariableNameParserInfoRegions'>
-            Name: "[Ln 7, Col 8] -> [Ln 7, Col 13]"
-            Self__: "[Ln 7, Col 8] -> [Ln 7, Col 13]"
-        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+      Expression: # <class 'TheLanguage.Parser.Expressions.FuncNameExpressionParserInfo.FuncNameExpressionParserInfo'>
+        Name: "Func1"
+        Regions__: # <class 'types.FuncNameExpressionParserInfoRegions'>
           Name: "[Ln 7, Col 8] -> [Ln 7, Col 13]"
           Self__: "[Ln 7, Col 8] -> [Ln 7, Col 13]"
       Regions__: # <class 'types.FuncInvocationExpressionParserInfoRegions'>
@@ -302,13 +298,9 @@ Statements:
             Expression: "[Ln 11, Col 5] -> [Ln 11, Col 27]"
             Keyword: None
             Self__: "[Ln 11, Col 5] -> [Ln 11, Col 27]"
-      Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-          Name: "Func2"
-          Regions__: # <class 'types.VariableNameParserInfoRegions'>
-            Name: "[Ln 9, Col 8] -> [Ln 9, Col 13]"
-            Self__: "[Ln 9, Col 8] -> [Ln 9, Col 13]"
-        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+      Expression: # <class 'TheLanguage.Parser.Expressions.FuncNameExpressionParserInfo.FuncNameExpressionParserInfo'>
+        Name: "Func2"
+        Regions__: # <class 'types.FuncNameExpressionParserInfoRegions'>
           Name: "[Ln 9, Col 8] -> [Ln 9, Col 13]"
           Self__: "[Ln 9, Col 8] -> [Ln 9, Col 13]"
       Regions__: # <class 'types.FuncInvocationExpressionParserInfoRegions'>

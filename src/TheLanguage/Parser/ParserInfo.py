@@ -156,11 +156,11 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
 
         next_regions_index = 1
 
-        for field in cls_fields:
-            if field.name in self._regionless_attributes: # pylint: disable=unsupported-membership-test
+        for the_field in cls_fields:
+            if the_field.name in self._regionless_attributes: # pylint: disable=unsupported-membership-test
                 continue
 
-            new_regions[field.name] = regions[next_regions_index]
+            new_regions[the_field.name] = regions[next_regions_index]
             next_regions_index += 1
 
         # Dynamically create the Regions class
@@ -221,9 +221,9 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
                 assert region_value is not None, (the_field.name, "The region value should not be None when the data value is not None")
 
         # Ensure that all regions fall within Self__
-        for field in fields(self.Regions__):
-            region_value = getattr(self.Regions__, field.name)
+        for the_field in fields(self.Regions__):
+            region_value = getattr(self.Regions__, the_field.name)
             if region_value is None:
                 continue
 
-            assert region_value in self.Regions__.Self__, (field.name, region_value, self.Regions__.Self__)  # type: ignore && pylint: disable=no-member
+            assert region_value in self.Regions__.Self__, (the_field.name, region_value, self.Regions__.Self__)  # type: ignore && pylint: disable=no-member

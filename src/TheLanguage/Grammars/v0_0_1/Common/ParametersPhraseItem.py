@@ -110,7 +110,7 @@ class TraditionalDelimiterOrderError(Error):
 @dataclass(frozen=True)
 class TraditionalDelimiterDuplicatePositionalError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "The positional delimiter ('{}') may only appear once is a list of parameters.".format(
+        "The positional delimiter ('{}') may only appear once in a list of parameters.".format(
             TraditionalParameterDelimiter.Positional.value,
         ),
     )
@@ -120,7 +120,7 @@ class TraditionalDelimiterDuplicatePositionalError(Error):
 @dataclass(frozen=True)
 class TraditionalDelimiterDuplicateKeywordError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "The keyword delimiter ('{}') may only appear once is a list of parameters.".format(
+        "The keyword delimiter ('{}') may only appear once in a list of parameters.".format(
             TraditionalParameterDelimiter.Keyword.value,
         ),
     )
@@ -335,7 +335,7 @@ def ExtractParserInfo(
                 default_nodes = ExtractSequence(default_node)
                 assert len(default_nodes) == 2
 
-                default_node = ExtractDynamic(cast(Node, default_nodes[0]))
+                default_node = ExtractDynamic(cast(Node, default_nodes[1]))
                 default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
 
             parameters.append(
@@ -448,15 +448,14 @@ def _EnumTraditional(
 
     parameters: List[Node] = []
 
-    for parameter_node_index, parameter_node in enumerate(parameter_nodes):
+    for parameter_node_index, parameter_node in enumerate(cast(List[Node], parameter_nodes)):
         # Drill into the or node
-        parameter_node = cast(Node, ExtractOr(cast(Node, parameter_node)))
+        parameter_or_delimiter_node = cast(Node, ExtractOr(parameter_node))
 
-        if isinstance(parameter_node, Node):
-            parameters.append(parameter_node)
+        if isinstance(parameter_or_delimiter_node, Node):
+            parameters.append(parameter_or_delimiter_node)
             continue
 
-        assert isinstance(parameter_node, Leaf)
         delimiter_value = TraditionalParameterDelimiter.Extract(parameter_node)  # type: ignore
 
         if delimiter_value == TraditionalParameterDelimiter.Positional:
@@ -477,7 +476,6 @@ def _EnumTraditional(
             assert parameters
 
             yield ParametersType.pos, node, parameters
-            parameters = []
 
         elif delimiter_value == TraditionalParameterDelimiter.Keyword:
             # We shouldn't see this more than once
@@ -491,6 +489,8 @@ def _EnumTraditional(
 
         else:
             assert False, delimiter_value  # pragma: no cover
+
+        parameters = []
 
     # The keyword delimiter should never be the last parameter
     if keyword_parameter_index == len(parameter_nodes) - 1:

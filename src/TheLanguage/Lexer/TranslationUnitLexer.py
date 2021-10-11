@@ -96,6 +96,9 @@ class SyntaxInvalidError(Error):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, iter_begin, iter_end):
+        error_node: Optional[AST.Node] = None
+        error_context: Optional[str] = None
+
         # When this exception is created, we are only provided with the root node.
         # This algorithm attempts to drill down into the exact error to provided better
         # contextual information.
@@ -138,12 +141,13 @@ class SyntaxInvalidError(Error):
                 node_matches.append((depth, node))
 
         # Attempt to provide more helpful information
-        error_context = None
-
         if not node_matches:
-            assert self.Root.IterEnd is None
-
             error_node = self.Root
+
+            if iter_end.GetNextTokenType() == Phrase.NormalizedIterator.TokenType.Dedent:
+                error_context = "Dedent was expected."
+            else:
+                assert self.Root.IterEnd is None
 
         else:
             # Select the node with the lowest depth (or closest to the root), as it will include the
@@ -152,10 +156,11 @@ class SyntaxInvalidError(Error):
                 key=lambda value: value[:-1],
             )
 
-            error_node = node_matches[-1][-1]
+            error_node = cast(AST.Node, node_matches[-1][-1])
 
             # Attempt to provide more helpful information
             while True:
+                assert error_node is not None
                 assert error_node.Type is not None
 
                 if isinstance(error_node, AST.Leaf):
@@ -173,7 +178,7 @@ class SyntaxInvalidError(Error):
                             error_node_parent = cast(AST.Node, error_node.Parent)
 
                             if len(error_node_parent.Children) > 1 and error_node_parent.Children[-2] == error_node:
-                                error_node = error_node_parent.Children[-1]
+                                error_node = cast(AST.Node, error_node_parent.Children[-1])
                                 break
 
                             error_node = cast(AST.Node, error_node.Parent)
@@ -184,7 +189,7 @@ class SyntaxInvalidError(Error):
 
                         if isinstance(error_node.Type, DynamicPhrase):
                             assert len(error_node.Children) == 1
-                            error_node = error_node.Children[0]
+                            error_node = cast(AST.Node, error_node.Children[0])
 
                         assert error_node.Type is not None
                         phrase_name = error_node.Type.Name
@@ -229,7 +234,7 @@ class SyntaxInvalidError(Error):
                         break
 
                     if error_node.Children[-1].IterEnd is not None:
-                        error_node = error_node.Children[-1]
+                        error_node = cast(AST.Node, error_node.Children[-1])
                         continue
 
                 elif isinstance(error_node.Type, RepeatPhrase):
@@ -244,17 +249,17 @@ class SyntaxInvalidError(Error):
                         break
 
                     if error_node.Children[-1].IterEnd is not None:
-                        error_node = error_node.Children[-1]
+                        error_node = cast(AST.Node, error_node.Children[-1])
                         continue
 
                 elif isinstance(error_node.Type, OrPhrase):
                     assert error_node.IterEnd is not None
 
-                    child_error_node = None
+                    child_error_node: Optional[AST.Node] = None
 
                     for child_node in error_node.Children:
                         if child_node.IterEnd == error_node.IterEnd:
-                            child_error_node = child_node
+                            child_error_node = cast(AST.Node, child_node)
                             break
 
                     assert child_error_node is not None
@@ -275,7 +280,7 @@ class SyntaxInvalidError(Error):
                 object.__setattr__(self, "Column", column)
                 object.__setattr__(self, "Line", error_node.IterEnd.Line)
 
-        if error_context is None:
+        if error_context is None and error_node is not None:
             error_context = error_node.ToYamlString().rstrip()
 
         object.__setattr__(self, "ErrorNode", error_node)

@@ -17,6 +17,8 @@
 
 import os
 
+from typing import List, Optional
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -31,10 +33,55 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-def CreateRegion(
-    start_line: int,
-    start_column: int,
-    end_line: int,
-    end_column: int,
-) -> Region:
-    return Region(Location(start_line, start_column), Location(end_line, end_column))
+class RegionCreator(object):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        start=1,
+    ):
+        self._start: int                                = start
+        self._regions: List[Region]                     = []
+        self._expected_error: Optional[Region]          = None
+
+    # ----------------------------------------------------------------------
+    def __call__(
+        self,
+        *,
+        container=False,
+        expected_error=False,
+    ) -> Region:
+        if not self._regions:
+            end_factor = 1000000
+        elif container:
+            end_factor = 10000
+        else:
+            end_factor = 1
+
+        region = Region(
+            Location(self._start, self._start + 1),
+            Location(
+                (self._start + 2) * end_factor,
+                (self._start + 3) * end_factor,
+            ),
+        )
+
+        self._start += 4
+
+        if expected_error:
+            assert self._expected_error is None
+            self._expected_error = region
+
+        self._regions.append(region)
+        return region
+
+    # ----------------------------------------------------------------------
+    def __getitem__(
+        self,
+        index: int,
+    ) -> Region:
+        return self._regions[index]
+
+    # ----------------------------------------------------------------------
+    def ExpectedErrorRegion(self) -> Region:
+        assert self._expected_error is not None
+        return self._expected_error
