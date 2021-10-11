@@ -40,6 +40,7 @@ with InitRelativeImports():
     from .Expressions.GroupExpression import GroupExpression
     from .Expressions.IndexExpression import IndexExpression
     from .Expressions.LambdaExpression import LambdaExpression
+    from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.VariableExpression import VariableExpression
 
     # Names
@@ -61,6 +62,8 @@ GrammarCommentToken                         = DefaultCommentToken
 
 GrammarPhrases                              = [
     # Attributes
+    # TODO: Deferred
+    # TODO: Synchronized
 
     # Expressions
     BinaryExpression(),
@@ -71,7 +74,9 @@ GrammarPhrases                              = [
     GroupExpression(),
     IndexExpression(),
     LambdaExpression(),
+    TernaryExpression(),
     VariableExpression(),
+    # TODO: AnonymousFunction
 
     # Names
     VariableName(),
@@ -85,4 +90,5 @@ GrammarPhrases                              = [
 
     # Types
     StandardType(),
+    # TODO: TypeProgression (for use with Generators?)
 ]

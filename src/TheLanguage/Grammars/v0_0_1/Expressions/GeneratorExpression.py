@@ -30,6 +30,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .TernaryExpression import TernaryExpression
+
     from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
@@ -90,7 +92,7 @@ class GeneratorExpression(GrammarPhrase):
                         # Don't let the TernaryExpression capture the 'if' token that may follow, as
                         # the TernaryExpression requires an 'else' clause. This will never match
                         # here, as there will never be an else clause prior to the 'if' below.
-                        # TODO: excludes=[TernaryExpression.PHRASE_NAME],
+                        excludes=[TernaryExpression.PHRASE_NAME],
                     ),
 
                     # ('if' <expression>)?
