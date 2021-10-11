@@ -1,0 +1,42 @@
+# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+Statements:
+  - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+    ClassModifier: None
+    Documentation: None
+    IsAsync: None
+    IsDeferred: None
+    IsExceptional: None
+    IsGenerator: None
+    IsSynchronized: None
+    MethodModifier: "MethodModifier.standard"
+    Name: "Func"
+    Parameters: False
+    Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
+      ClassModifier: None
+      Documentation: None
+      IsAsync: None
+      IsDeferred: None
+      IsExceptional: None
+      IsGenerator: None
+      IsSynchronized: None
+      MethodModifier: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+      Name: "[Ln 1, Col 5] -> [Ln 1, Col 9]"
+      Parameters: "[Ln 1, Col 9] -> [Ln 1, Col 11]"
+      ReturnType: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+      Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+      Statements: "[Ln 1, Col 11] -> [Ln 3, Col 1]"
+      Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+    ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+      Modifier: None
+      Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+        Modifier: None
+        Self__: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+        TypeName: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+      TypeName: "Int"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+    Visibility: "VisibilityModifier.private"

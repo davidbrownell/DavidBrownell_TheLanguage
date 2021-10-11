@@ -235,7 +235,7 @@ def test_InvalidFooterError():
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("Restore this test when conditional statements are available")
+@pytest.mark.skip("TODO: Restore this test when conditional statements are available")
 def test_InvalidIndentError():
     with pytest.raises(InvalidMultilineIndentError) as ex:
         ExecuteEx(
