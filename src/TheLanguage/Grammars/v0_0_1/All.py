@@ -41,6 +41,7 @@ with InitRelativeImports():
     from .Expressions.IndexExpression import IndexExpression
     from .Expressions.LambdaExpression import LambdaExpression
     from .Expressions.MatchTypeExpression import MatchTypeExpression
+    from .Expressions.MatchValueExpression import MatchValueExpression
     from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.TupleExpression import TupleExpression
     from .Expressions.UnaryExpression import UnaryExpression
@@ -78,6 +79,7 @@ GrammarPhrases                              = [
     IndexExpression(),
     LambdaExpression(),
     MatchTypeExpression(),
+    MatchValueExpression(),
     TernaryExpression(),
     TupleExpression(),
     UnaryExpression(),

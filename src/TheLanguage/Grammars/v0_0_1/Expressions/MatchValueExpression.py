@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  MatchTypeExpression.py
+# |  MatchValueExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-12 09:50:51
+# |      2021-10-12 10:28:57
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the MatchTypeExpression object"""
+"""Contains the MatchValueExpression object"""
 
 import os
 
@@ -34,31 +34,31 @@ with InitRelativeImports():
 
     from ...GrammarInfo import AST, DynamicPhrasesType, ParserInfo
 
-    from ....Parser.Expressions.MatchTypeExpressionParserInfo import (
-        MatchTypeCasePhraseParserInfo,
-        MatchTypeExpressionParserInfo,
+    from ....Parser.Expressions.MatchValueExpressionParserInfo import (
+        MatchValueCasePhraseParserInfo,
+        MatchValueExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class MatchTypeExpression(MatchExpressionBase):
+class MatchValueExpression(MatchExpressionBase):
     """\
-    Typed version of a match expression.
+    Value-based version of a match expression.
 
     Examples:
-        int_value = (
-            match type Add(1, 2):
-                case Int: __match_value
-                case String: ConvertToInt(__match_value)
-                default: raise UnexpectedType(__match_type)
+        str_value = (
+            match value Add(1, 2):
+                case 1, 2: "Too low"
+                case 3: "Correct"
+                default: "Way off!"
         )
     """
 
-    PHRASE_NAME                             = "Match Type Expression"
+    PHRASE_NAME                             = "Match Value Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(MatchTypeExpression, self).__init__(DynamicPhrasesType.Types, self.PHRASE_NAME)
+        super(MatchValueExpression, self).__init__(DynamicPhrasesType.Expressions, self.PHRASE_NAME)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -72,7 +72,7 @@ class MatchTypeExpression(MatchExpressionBase):
         Callable[[], ParserInfo],
     ]:
         return cls._ExtractParserInfoImpl(
-            MatchTypeExpressionParserInfo,
-            MatchTypeCasePhraseParserInfo,
+            MatchValueExpressionParserInfo,
+            MatchValueCasePhraseParserInfo,
             node,
         )
