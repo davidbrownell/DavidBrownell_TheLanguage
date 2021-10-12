@@ -36,18 +36,6 @@ with InitRelativeImports():
     from ..Common import ClassModifier
     from ..Common import ParametersPhraseItem
 
-    # Convenience imports
-    # <<unused-import> pylint: disable=W0611
-    from ..Common.ParametersPhraseItem import (
-        NewStyleParameterGroupDuplicateError,
-        TraditionalDelimiterOrderError,
-        TraditionalDelimiterDuplicatePositionalError,
-        TraditionalDelimiterDuplicateKeywordError,
-        TraditionalDelimiterPositionalError,
-        TraditionalDelimiterKeywordError,
-        RequiredParameterAfterDefaultError,
-    )
-
     from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
@@ -74,6 +62,26 @@ with InitRelativeImports():
         MethodModifierType,
         OperatorType,
         TypeParserInfo,
+    )
+
+    # Convenience imports
+    # <<unused-import> pylint: disable=W0611
+    from ..Common.ParametersPhraseItem import (
+        NewStyleParameterGroupDuplicateError,
+        TraditionalDelimiterOrderError,
+        TraditionalDelimiterDuplicatePositionalError,
+        TraditionalDelimiterDuplicateKeywordError,
+        TraditionalDelimiterPositionalError,
+        TraditionalDelimiterKeywordError,
+        RequiredParameterAfterDefaultError,
+    )
+
+    # <<unused-import> pylint: disable=W0611
+    from ..Common.StatementsPhraseItem import (
+        InvalidDocstringError,
+        MultipleDocstringsError,
+        MisplacedDocstringError,
+        StatementsRequiredError,
     )
 
 

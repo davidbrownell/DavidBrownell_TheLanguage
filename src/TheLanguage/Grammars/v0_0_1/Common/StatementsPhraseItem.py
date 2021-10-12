@@ -198,11 +198,11 @@ def _ExtractParserInfoImpl(
         if statement_node.Type is not None and statement_node.Type.Name == DocstringStatement.PHRASE_NAME:
             if validate_docstrings:
                 if docstring_leaf is not None:
-                    raise MultipleDocstringsError.FromNode(statement_node)
+                    raise MultipleDocstringsError.FromNode(cast(Node, statement_node).Children[0],)
 
                 if statement_node_index != 0:
                     raise MisplacedDocstringError.FromNode(
-                        statement_node,
+                        cast(Node, statement_node).Children[0],
                         inflect.engine().ordinal(statement_node_index + 1),
                     )
 

@@ -1,0 +1,220 @@
+# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Self__: "[Ln 2, Col 1] -> [Ln 30, Col 1]"
+Statements:
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements: None
+    Name: "PublicClass"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 2, Col 1] -> [Ln 5, Col 1]"
+      ClassType: "[Ln 2, Col 8] -> [Ln 2, Col 13]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 2, Col 14] -> [Ln 2, Col 25]"
+      Self__: "[Ln 2, Col 1] -> [Ln 5, Col 1]"
+      Statements: "[Ln 2, Col 27] -> [Ln 5, Col 1]"
+      Uses: None
+      Visibility: "[Ln 2, Col 1] -> [Ln 2, Col 7]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 3, Col 5] -> [Ln 5, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.public"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements: None
+    Name: "ProtectedClass"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 5, Col 1] -> [Ln 8, Col 1]"
+      ClassType: "[Ln 5, Col 11] -> [Ln 5, Col 16]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 5, Col 17] -> [Ln 5, Col 31]"
+      Self__: "[Ln 5, Col 1] -> [Ln 8, Col 1]"
+      Statements: "[Ln 5, Col 33] -> [Ln 8, Col 1]"
+      Uses: None
+      Visibility: "[Ln 5, Col 1] -> [Ln 5, Col 10]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.protected"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements: None
+    Name: "PrivateClass"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 8, Col 1] -> [Ln 11, Col 1]"
+      ClassType: "[Ln 8, Col 9] -> [Ln 8, Col 14]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 8, Col 15] -> [Ln 8, Col 27]"
+      Self__: "[Ln 8, Col 1] -> [Ln 11, Col 1]"
+      Statements: "[Ln 8, Col 29] -> [Ln 11, Col 1]"
+      Uses: None
+      Visibility: "[Ln 8, Col 1] -> [Ln 8, Col 8]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.private"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements: None
+    Name: "DefaultClass"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 11, Col 1] -> [Ln 14, Col 1]"
+      ClassType: "[Ln 11, Col 1] -> [Ln 11, Col 6]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 11, Col 7] -> [Ln 11, Col 19]"
+      Self__: "[Ln 11, Col 1] -> [Ln 14, Col 1]"
+      Statements: "[Ln 11, Col 21] -> [Ln 14, Col 1]"
+      Uses: None
+      Visibility: "[Ln 11, Col 1] -> [Ln 14, Col 1]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 12, Col 5] -> [Ln 14, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.private"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Exception"
+    Documentation: None
+    Implements: None
+    Name: "PublicException"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 15, Col 1] -> [Ln 18, Col 1]"
+      ClassType: "[Ln 15, Col 8] -> [Ln 15, Col 17]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 15, Col 18] -> [Ln 15, Col 33]"
+      Self__: "[Ln 15, Col 1] -> [Ln 18, Col 1]"
+      Statements: "[Ln 15, Col 35] -> [Ln 18, Col 1]"
+      Uses: None
+      Visibility: "[Ln 15, Col 1] -> [Ln 15, Col 7]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 16, Col 5] -> [Ln 18, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.public"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Exception"
+    Documentation: None
+    Implements: None
+    Name: "DefaultException"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 18, Col 1] -> [Ln 21, Col 1]"
+      ClassType: "[Ln 18, Col 1] -> [Ln 18, Col 10]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 18, Col 11] -> [Ln 18, Col 27]"
+      Self__: "[Ln 18, Col 1] -> [Ln 21, Col 1]"
+      Statements: "[Ln 18, Col 29] -> [Ln 21, Col 1]"
+      Uses: None
+      Visibility: "[Ln 18, Col 1] -> [Ln 21, Col 1]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.private"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Enum"
+    Documentation: None
+    Implements: None
+    Name: "PublicEnum"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 22, Col 1] -> [Ln 25, Col 1]"
+      ClassType: "[Ln 22, Col 8] -> [Ln 22, Col 12]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 22, Col 13] -> [Ln 22, Col 23]"
+      Self__: "[Ln 22, Col 1] -> [Ln 25, Col 1]"
+      Statements: "[Ln 22, Col 25] -> [Ln 25, Col 1]"
+      Uses: None
+      Visibility: "[Ln 22, Col 1] -> [Ln 22, Col 7]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 23, Col 5] -> [Ln 25, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.public"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Interface"
+    Documentation: None
+    Implements: None
+    Name: "ProtectedInterface"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 25, Col 1] -> [Ln 28, Col 1]"
+      ClassType: "[Ln 25, Col 11] -> [Ln 25, Col 20]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 25, Col 21] -> [Ln 25, Col 39]"
+      Self__: "[Ln 25, Col 1] -> [Ln 28, Col 1]"
+      Statements: "[Ln 25, Col 41] -> [Ln 28, Col 1]"
+      Uses: None
+      Visibility: "[Ln 25, Col 1] -> [Ln 25, Col 10]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 26, Col 5] -> [Ln 28, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.protected"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Mixin"
+    Documentation: None
+    Implements: None
+    Name: "PrivateMixin"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 28, Col 1] -> [Ln 30, Col 1]"
+      ClassType: "[Ln 28, Col 9] -> [Ln 28, Col 14]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 28, Col 15] -> [Ln 28, Col 27]"
+      Self__: "[Ln 28, Col 1] -> [Ln 30, Col 1]"
+      Statements: "[Ln 28, Col 29] -> [Ln 30, Col 1]"
+      Uses: None
+      Visibility: "[Ln 28, Col 1] -> [Ln 28, Col 8]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.private"

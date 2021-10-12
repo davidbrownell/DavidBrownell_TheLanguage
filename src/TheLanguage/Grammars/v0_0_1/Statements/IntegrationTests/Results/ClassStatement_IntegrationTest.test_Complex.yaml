@@ -1,0 +1,238 @@
+# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Self__: "[Ln 1, Col 1] -> [Ln 25, Col 1]"
+Statements:
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      Name: "Base1"
+      Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Name: "[Ln 1, Col 14] -> [Ln 1, Col 19]"
+        Self__: "[Ln 1, Col 14] -> [Ln 1, Col 19]"
+        Visibility: "[Ln 1, Col 14] -> [Ln 1, Col 19]"
+      Visibility: "VisibilityModifier.private"
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements:
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Interface1"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 1, Col 32] -> [Ln 1, Col 42]"
+          Self__: "[Ln 1, Col 32] -> [Ln 1, Col 42]"
+          Visibility: "[Ln 1, Col 32] -> [Ln 1, Col 42]"
+        Visibility: "VisibilityModifier.private"
+    Name: "Class1"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: "[Ln 1, Col 14] -> [Ln 1, Col 19]"
+      ClassModifier: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+      ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+      Documentation: None
+      Implements: "[Ln 1, Col 21] -> [Ln 1, Col 42]"
+      Name: "[Ln 1, Col 7] -> [Ln 1, Col 13]"
+      Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+      Statements: "[Ln 1, Col 42] -> [Ln 4, Col 1]"
+      Uses: None
+      Visibility: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 2, Col 5] -> [Ln 4, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.private"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      Name: "Base2"
+      Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Name: "[Ln 4, Col 14] -> [Ln 4, Col 19]"
+        Self__: "[Ln 4, Col 14] -> [Ln 4, Col 19]"
+        Visibility: "[Ln 4, Col 14] -> [Ln 4, Col 19]"
+      Visibility: "VisibilityModifier.private"
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements: None
+    Name: "Class2"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: "[Ln 4, Col 14] -> [Ln 4, Col 19]"
+      ClassModifier: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
+      ClassType: "[Ln 4, Col 1] -> [Ln 4, Col 6]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 4, Col 7] -> [Ln 4, Col 13]"
+      Self__: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
+      Statements: "[Ln 4, Col 32] -> [Ln 7, Col 1]"
+      Uses: "[Ln 4, Col 21] -> [Ln 4, Col 32]"
+      Visibility: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
+    Uses:
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Mixin2"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 4, Col 26] -> [Ln 4, Col 32]"
+          Self__: "[Ln 4, Col 26] -> [Ln 4, Col 32]"
+          Visibility: "[Ln 4, Col 26] -> [Ln 4, Col 32]"
+        Visibility: "VisibilityModifier.private"
+    Visibility: "VisibilityModifier.private"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      Name: "Base3"
+      Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Name: "[Ln 7, Col 14] -> [Ln 7, Col 19]"
+        Self__: "[Ln 7, Col 14] -> [Ln 7, Col 19]"
+        Visibility: "[Ln 7, Col 14] -> [Ln 7, Col 19]"
+      Visibility: "VisibilityModifier.private"
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements:
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Interface3"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 7, Col 32] -> [Ln 7, Col 42]"
+          Self__: "[Ln 7, Col 32] -> [Ln 7, Col 43]"
+          Visibility: "[Ln 7, Col 32] -> [Ln 7, Col 43]"
+        Visibility: "VisibilityModifier.private"
+    Name: "Class3"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: "[Ln 7, Col 14] -> [Ln 7, Col 19]"
+      ClassModifier: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
+      ClassType: "[Ln 7, Col 1] -> [Ln 7, Col 6]"
+      Documentation: None
+      Implements: "[Ln 7, Col 21] -> [Ln 7, Col 43]"
+      Name: "[Ln 7, Col 7] -> [Ln 7, Col 13]"
+      Self__: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
+      Statements: "[Ln 7, Col 55] -> [Ln 10, Col 1]"
+      Uses: "[Ln 7, Col 44] -> [Ln 7, Col 55]"
+      Visibility: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 8, Col 5] -> [Ln 10, Col 1]"
+    Uses:
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Mixin3"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 7, Col 49] -> [Ln 7, Col 55]"
+          Self__: "[Ln 7, Col 49] -> [Ln 7, Col 55]"
+          Visibility: "[Ln 7, Col 49] -> [Ln 7, Col 55]"
+        Visibility: "VisibilityModifier.private"
+    Visibility: "VisibilityModifier.private"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      Name: "Base4"
+      Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Name: "[Ln 10, Col 14] -> [Ln 10, Col 19]"
+        Self__: "[Ln 10, Col 14] -> [Ln 10, Col 19]"
+        Visibility: "[Ln 10, Col 14] -> [Ln 10, Col 19]"
+      Visibility: "VisibilityModifier.private"
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements:
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Interface4A"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 10, Col 45] -> [Ln 10, Col 56]"
+          Self__: "[Ln 10, Col 45] -> [Ln 10, Col 70]"
+          Visibility: "[Ln 10, Col 45] -> [Ln 10, Col 70]"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Interface4B"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 10, Col 58] -> [Ln 10, Col 69]"
+          Self__: "[Ln 10, Col 45] -> [Ln 10, Col 70]"
+          Visibility: "[Ln 10, Col 45] -> [Ln 10, Col 70]"
+        Visibility: "VisibilityModifier.private"
+    Name: "Class4"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: "[Ln 10, Col 14] -> [Ln 10, Col 19]"
+      ClassModifier: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
+      ClassType: "[Ln 10, Col 1] -> [Ln 10, Col 6]"
+      Documentation: None
+      Implements: "[Ln 10, Col 34] -> [Ln 10, Col 70]"
+      Name: "[Ln 10, Col 7] -> [Ln 10, Col 13]"
+      Self__: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
+      Statements: "[Ln 10, Col 70] -> [Ln 13, Col 1]"
+      Uses: "[Ln 10, Col 21] -> [Ln 10, Col 33]"
+      Visibility: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 11, Col 5] -> [Ln 13, Col 1]"
+    Uses:
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Mixin4"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 10, Col 26] -> [Ln 10, Col 32]"
+          Self__: "[Ln 10, Col 26] -> [Ln 10, Col 33]"
+          Visibility: "[Ln 10, Col 26] -> [Ln 10, Col 33]"
+        Visibility: "VisibilityModifier.private"
+    Visibility: "VisibilityModifier.private"
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      Name: "Base5"
+      Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Name: "[Ln 13, Col 34] -> [Ln 13, Col 39]"
+        Self__: "[Ln 13, Col 34] -> [Ln 13, Col 39]"
+        Visibility: "[Ln 13, Col 34] -> [Ln 13, Col 39]"
+      Visibility: "VisibilityModifier.private"
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements:
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Interface5A"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 15, Col 9] -> [Ln 15, Col 20]"
+          Self__: "[Ln 15, Col 9] -> [Ln 16, Col 21]"
+          Visibility: "[Ln 15, Col 9] -> [Ln 16, Col 21]"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Interface5B"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 16, Col 9] -> [Ln 16, Col 20]"
+          Self__: "[Ln 15, Col 9] -> [Ln 16, Col 21]"
+          Visibility: "[Ln 15, Col 9] -> [Ln 16, Col 21]"
+        Visibility: "VisibilityModifier.private"
+    Name: "Class5"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: "[Ln 13, Col 34] -> [Ln 13, Col 39]"
+      ClassModifier: "[Ln 13, Col 11] -> [Ln 13, Col 20]"
+      ClassType: "[Ln 13, Col 21] -> [Ln 13, Col 26]"
+      Documentation: None
+      Implements: "[Ln 14, Col 5] -> [Ln 17, Col 6]"
+      Name: "[Ln 13, Col 27] -> [Ln 13, Col 33]"
+      Self__: "[Ln 13, Col 1] -> [Ln 25, Col 1]"
+      Statements: "[Ln 23, Col 1] -> [Ln 25, Col 1]"
+      Uses: "[Ln 18, Col 5] -> [Ln 22, Col 6]"
+      Visibility: "[Ln 13, Col 1] -> [Ln 13, Col 10]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
+    Uses:
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Mixin5A"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 19, Col 16] -> [Ln 19, Col 23]"
+          Self__: "[Ln 19, Col 9] -> [Ln 21, Col 25]"
+          Visibility: "[Ln 19, Col 9] -> [Ln 19, Col 15]"
+        Visibility: "VisibilityModifier.public"
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Mixin5B"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 20, Col 19] -> [Ln 20, Col 26]"
+          Self__: "[Ln 19, Col 9] -> [Ln 21, Col 25]"
+          Visibility: "[Ln 20, Col 9] -> [Ln 20, Col 18]"
+        Visibility: "VisibilityModifier.protected"
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+        Name: "Mixin5C"
+        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+          Name: "[Ln 21, Col 17] -> [Ln 21, Col 24]"
+          Self__: "[Ln 19, Col 9] -> [Ln 21, Col 25]"
+          Visibility: "[Ln 21, Col 9] -> [Ln 21, Col 16]"
+        Visibility: "VisibilityModifier.private"
+    Visibility: "VisibilityModifier.protected"
