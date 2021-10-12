@@ -40,6 +40,7 @@ with InitRelativeImports():
     from .Expressions.GroupExpression import GroupExpression
     from .Expressions.IndexExpression import IndexExpression
     from .Expressions.LambdaExpression import LambdaExpression
+    from .Expressions.MatchTypeExpression import MatchTypeExpression
     from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.TupleExpression import TupleExpression
     from .Expressions.UnaryExpression import UnaryExpression
@@ -76,6 +77,7 @@ GrammarPhrases                              = [
     GroupExpression(),
     IndexExpression(),
     LambdaExpression(),
+    MatchTypeExpression(),
     TernaryExpression(),
     TupleExpression(),
     UnaryExpression(),

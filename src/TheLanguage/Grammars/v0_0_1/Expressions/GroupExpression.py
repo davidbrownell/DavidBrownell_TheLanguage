@@ -38,7 +38,6 @@ with InitRelativeImports():
         CreatePhrase,
         ExtractDynamic,
         ExtractSequence,
-        PhraseItem,
     )
 
     from ....Parser.Parser import CreateParserRegions, GetParserInfo
