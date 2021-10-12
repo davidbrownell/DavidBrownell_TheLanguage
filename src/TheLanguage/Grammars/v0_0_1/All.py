@@ -60,6 +60,7 @@ with InitRelativeImports():
 
     # Types
     from .Types.StandardType import StandardType
+    from .Types.TupleType import TupleType
 
 
 # ----------------------------------------------------------------------
@@ -100,5 +101,6 @@ GrammarPhrases                              = [
 
     # Types
     StandardType(),
+    TupleType(),
     # TODO: TypeProgression (for use with Generators?)
 ]
