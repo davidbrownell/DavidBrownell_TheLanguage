@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, cast, Optional, Union
+from typing import Callable, cast, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -89,6 +89,7 @@ class StandardType(GrammarPhrase):
         None,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 2

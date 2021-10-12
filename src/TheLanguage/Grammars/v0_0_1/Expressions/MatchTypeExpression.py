@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, Union
+from typing import Callable, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -70,6 +70,7 @@ class MatchTypeExpression(MatchExpressionBase):
         None,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         return cls._ExtractParserInfoImpl(
             MatchTypeExpressionParserInfo,

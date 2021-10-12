@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, cast, Union
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -81,6 +81,7 @@ class VariableName(GrammarPhrase):
         None,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 1

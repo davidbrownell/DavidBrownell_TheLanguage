@@ -42,10 +42,11 @@ CreateParserInfoFuncType                    = Callable[
         AST.Node,
     ],
     Union[
-        None,                               # No parser info associated with the node
-        bool,                               # True to continue processing, False to terminate
-        ParserInfo,                         # The result; implies that we should continue processing
-        Callable[[], ParserInfo],           # A callback that must be invoked before the ParserInfo is available; implies that we should continue processing
+        None,                                           # No parser info associated with the node
+        bool,                                           # True to continue processing, False to terminate
+        ParserInfo,                                     # The result; implies that we should continue processing
+        Callable[[], ParserInfo],                       # A callback that must be invoked before the ParserInfo is available; implies that we should continue processing
+        Tuple[ParserInfo, Callable[[], ParserInfo]],    # A combination of the previous 2 items
     ]
 ]
 
@@ -80,7 +81,7 @@ def Parse(
                 if result is None:
                     continue
 
-                if isinstance(result, bool):
+                elif isinstance(result, bool):
                     if not result:
                         return None
 
@@ -89,6 +90,15 @@ def Parse(
 
                 elif callable(result):
                     funcs.append((node, result))
+
+                elif isinstance(result, tuple):
+                    parser_info, callback = result
+
+                    _SetParserInfo(node, parser_info)
+                    funcs.append((node, callback))
+
+                else:
+                    assert False, result  # pragma: no cover
 
             for node, func in reversed(funcs):
                 _SetParserInfo(node, func())

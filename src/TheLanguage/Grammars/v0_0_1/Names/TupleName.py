@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, cast, List, Union
+from typing import Callable, cast, List, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -69,6 +69,7 @@ class TupleName(TupleBase):
         None,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         # ----------------------------------------------------------------------
         def Impl():

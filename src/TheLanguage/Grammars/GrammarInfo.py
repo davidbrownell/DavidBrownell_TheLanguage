@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Callable, cast, Dict, List, Optional, Union
+from typing import Any, Callable, cast, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -108,6 +108,7 @@ class GrammarPhrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         None,                               # No ParserInfo associated with this node
         ParserInfo,                         # ParserInfo
         Callable[[], ParserInfo],           # Callback to invoke after the first pass to get the ParserInfo
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         """Extracts parser information from a node"""
         raise Exception("Abstract method")  # pragma: no cover

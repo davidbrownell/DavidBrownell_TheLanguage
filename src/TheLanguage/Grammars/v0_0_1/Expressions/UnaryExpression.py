@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, cast, Dict, Union
+from typing import Callable, cast, Dict, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -117,6 +117,7 @@ class UnaryExpression(GrammarPhrase):
         None,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         # ----------------------------------------------------------------------
         def Impl():

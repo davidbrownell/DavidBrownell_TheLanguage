@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, cast, Optional, Union
+from typing import Callable, cast, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -116,6 +116,7 @@ class GeneratorExpression(GrammarPhrase):
         None,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         # ----------------------------------------------------------------------
         def Impl():

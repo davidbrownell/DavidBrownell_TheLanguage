@@ -21,8 +21,7 @@ import sys
 import threading
 
 from collections import OrderedDict
-from concurrent.futures import ThreadPoolExecutor
-from typing import Callable, Dict, List, Optional, Set, Union
+from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -228,6 +227,7 @@ def Parse(
         bool,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         if isinstance(node.Type, Phrase):
             grammar_phrase = GrammarPhraseLookup.get(node.Type, None)

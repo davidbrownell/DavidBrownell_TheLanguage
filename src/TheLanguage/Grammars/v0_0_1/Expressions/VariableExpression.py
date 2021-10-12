@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, cast, Union
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -90,6 +90,7 @@ class VariableExpression(GrammarPhrase):
         None,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         # ----------------------------------------------------------------------
         def Impl():

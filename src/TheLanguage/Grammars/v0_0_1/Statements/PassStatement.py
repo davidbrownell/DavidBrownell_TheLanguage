@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, Union
+from typing import Callable, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -76,6 +76,7 @@ class PassStatement(GrammarPhrase):
         None,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         return NoopStatementParserInfo(
             CreateParserRegions(node),  # type: ignore

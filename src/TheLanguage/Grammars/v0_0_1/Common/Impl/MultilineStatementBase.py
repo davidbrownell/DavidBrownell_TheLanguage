@@ -234,6 +234,7 @@ class MultilineStatementBase(GrammarPhrase):
         None,
         ParserInfo,
         Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
         # No parser info, as multi-line statements will never be consumed by the parser
         return None
