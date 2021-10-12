@@ -56,6 +56,7 @@ with InitRelativeImports():
     from .Statements.ClassStatement import ClassStatement
     from .Statements.DeleteStatement import DeleteStatement
     from .Statements.DocstringStatement import DocstringStatement
+    from .Statements.ForStatement import ForStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
     from .Statements.PassStatement import PassStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
@@ -100,6 +101,7 @@ GrammarPhrases                              = [
     ClassStatement(),
     DeleteStatement(),
     DocstringStatement(),
+    ForStatement(),
     FuncDefinitionStatement(),
     PassStatement(),
     VariableDeclarationStatement(),
