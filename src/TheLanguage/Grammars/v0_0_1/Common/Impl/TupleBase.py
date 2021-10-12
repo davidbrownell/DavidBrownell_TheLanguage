@@ -125,8 +125,8 @@ class TupleBase(GrammarPhrase):
     # |  Protected Methods
     # |
     # ----------------------------------------------------------------------
+    @staticmethod
     def _EnumNodes(
-        self,
         node: AST.Node,
     ) -> Generator[
         Union[AST.Leaf, AST.Node],

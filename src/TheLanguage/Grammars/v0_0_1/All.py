@@ -48,6 +48,7 @@ with InitRelativeImports():
     from .Expressions.VariableExpression import VariableExpression
 
     # Names
+    from .Names.TupleName import TupleName
     from .Names.VariableName import VariableName
 
     # Statements
@@ -87,6 +88,7 @@ GrammarPhrases                              = [
     # TODO: AnonymousFunction
 
     # Names
+    TupleName(),
     VariableName(),
 
     # Statements

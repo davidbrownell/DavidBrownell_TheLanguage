@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleExpression.py
+# |  TupleName.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-12 08:26:09
+# |      2021-10-12 10:57:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleExpression object"""
+"""Contains the TupleName object"""
 
 import os
 
@@ -36,30 +36,28 @@ with InitRelativeImports():
 
     from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
-    from ....Parser.Expressions.TupleExpressionParserInfo import (
-        ExpressionParserInfo,
-        TupleExpressionParserInfo,
+    from ....Parser.Names.TupleNameParserInfo import (
+        NameParserInfo,
+        TupleNameParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class TupleExpression(TupleBase):
+class TupleName(TupleBase):
     """\
-    A tuple of expressions.
+    A tuple of names.
 
-    '(' (<expression> ',')+ ')'
+    '(' (<name> ',')+ ')'
 
     Examples:
-        value1 = (a,)
-        value2 = (a, b, c, d, e)
-        Func((a, b), (d,))
+        (a, b, (c, d)) = value
     """
 
-    PHRASE_NAME                             = "Tuple Expression"
+    PHRASE_NAME                             = "Tuple Name"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleExpression, self).__init__(DynamicPhrasesType.Expressions, self.PHRASE_NAME)
+        super(TupleName, self).__init__(DynamicPhrasesType.Names, self.PHRASE_NAME)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -74,14 +72,14 @@ class TupleExpression(TupleBase):
     ]:
         # ----------------------------------------------------------------------
         def Impl():
-            expressions: List[ExpressionParserInfo] = []
+            names: List[NameParserInfo] = []
 
-            for expression_node in cast(List[AST.Node], cls._EnumNodes(node)):
-                expressions.append(cast(ExpressionParserInfo, GetParserInfo(expression_node)))
+            for name_node in cast(List[AST.Node], cls._EnumNodes(node)):
+                names.append(cast(NameParserInfo, GetParserInfo(name_node)))
 
-            return TupleExpressionParserInfo(
+            return TupleNameParserInfo(
                 CreateParserRegions(node),  # type: ignore
-                expressions,
+                names,
             )
 
         # ----------------------------------------------------------------------
