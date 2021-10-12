@@ -41,6 +41,7 @@ with InitRelativeImports():
     from .Expressions.IndexExpression import IndexExpression
     from .Expressions.LambdaExpression import LambdaExpression
     from .Expressions.TernaryExpression import TernaryExpression
+    from .Expressions.UnaryExpression import UnaryExpression
     from .Expressions.VariableExpression import VariableExpression
 
     # Names
@@ -75,6 +76,7 @@ GrammarPhrases                              = [
     IndexExpression(),
     LambdaExpression(),
     TernaryExpression(),
+    UnaryExpression(),
     VariableExpression(),
     # TODO: AnonymousFunction
 
