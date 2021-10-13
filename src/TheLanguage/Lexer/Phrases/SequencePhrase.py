@@ -248,39 +248,44 @@ class SequencePhrase(Phrase):
         data_items: List[Optional[Phrase.LexResultData]] = []
         preserved_ignore_whitespace_ctr: Optional[int] = None
 
-        # TODO: Refactor this so that we only extract whitespace once, and then apply those results
-        #       if we find a phrase that matches.
+        comments_or_whitespace_data_items: Optional[List[Phrase.TokenLexResultData]] = None
+        prev_token_was_pop_control = False
 
         for phrase_index in range(starting_phrase_index, len(self.Phrases)):
             phrase = self.Phrases[phrase_index]
 
-            # Extract whitespace or comments
-            pre_whitespace_iter = normalized_iter.Clone()
+            # Extract whitespace or comments if necessary
+            if (
+                comments_or_whitespace_data_items is None
+                or (isinstance(phrase, TokenPhrase) and not prev_token_was_pop_control)
+            ):
+                if comments_or_whitespace_data_items:
+                    normalized_iter = comments_or_whitespace_data_items[0].IterBegin  # pylint: disable=unsubscriptable-object
 
-            if isinstance(phrase, TokenPhrase):
-                next_phrase_is_indent = isinstance(phrase.Token, IndentToken)
-                next_phrase_is_dedent = isinstance(phrase.Token, DedentToken)
-            else:
-                next_phrase_is_indent = False
-                next_phrase_is_dedent = False
+                comments_or_whitespace_data_items = []
 
-            potential_comments_or_whitespace_result = TokenPhrase.ExtractPotentialCommentsOrWhitespace(
-                self.CommentToken,
-                normalized_iter,
-                ignored_indentation_level,
-                ignore_whitespace=ignore_whitespace_ctr != 0,
-                next_phrase_is_indent=next_phrase_is_indent,
-                next_phrase_is_dedent=next_phrase_is_dedent,
-            )
+                if isinstance(phrase, TokenPhrase):
+                    next_phrase_is_indent = isinstance(phrase.Token, IndentToken)
+                    next_phrase_is_dedent = isinstance(phrase.Token, DedentToken)
+                else:
+                    next_phrase_is_indent = False
+                    next_phrase_is_dedent = False
 
-            if potential_comments_or_whitespace_result is not None:
-                (
-                    comments_or_whitespace_data_items,
+                potential_comments_or_whitespace_result = TokenPhrase.ExtractPotentialCommentsOrWhitespace(
+                    self.CommentToken,
                     normalized_iter,
                     ignored_indentation_level,
-                ) = potential_comments_or_whitespace_result
+                    ignore_whitespace=ignore_whitespace_ctr != 0,
+                    next_phrase_is_indent=next_phrase_is_indent,
+                    next_phrase_is_dedent=next_phrase_is_dedent,
+                )
 
-                data_items += comments_or_whitespace_data_items
+                if potential_comments_or_whitespace_result is not None:
+                    (
+                        comments_or_whitespace_data_items,
+                        normalized_iter,
+                        ignored_indentation_level,
+                    ) = potential_comments_or_whitespace_result
 
             # Process control tokens
             if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
@@ -306,7 +311,20 @@ class SequencePhrase(Phrase):
                 else:
                     assert False, phrase.Token  # pragma: no cover
 
+                # If we are pushing a new value, reset the collected comment or whitespace tokens
+                # as they might be impacted by the new value. If popping, preserve the tokens that
+                # we collected under the previous settings.
+                prev_token_was_pop_control = phrase.Token.OpeningToken is not None
+
+                if not prev_token_was_pop_control:
+                    if comments_or_whitespace_data_items:
+                        normalized_iter = comments_or_whitespace_data_items[0].IterBegin
+
+                    comments_or_whitespace_data_items = None
+
                 continue
+
+            prev_token_was_pop_control = False
 
             # Process the phrase
             result = await phrase.LexAsync(
@@ -322,20 +340,32 @@ class SequencePhrase(Phrase):
 
             # Preserve the results
             if result.Data is not None:
+                if result.Success and comments_or_whitespace_data_items is not None:
+                    data_items += comments_or_whitespace_data_items
+
+                    comments_or_whitespace_data_items = None
+
                 data_items.append(result.Data)
 
             # Update the iterator
-            if result.IterEnd == normalized_iter:
-                # Nothing was matched, so revert back to the iterator before whitespace was consumed
-                normalized_iter = pre_whitespace_iter
-            else:
-                normalized_iter = result.IterEnd.Clone()
+            normalized_iter = result.IterEnd.Clone()
 
             if not result.Success:
                 success = False
                 break
 
             success = True
+
+        if comments_or_whitespace_data_items:
+            # If the previous token was a pop, we should consider the output as part of the current
+            # phrase. Otherwise, we should consider the tokens as part of the next phrase.
+            if prev_token_was_pop_control:
+                data_items += comments_or_whitespace_data_items
+                normalized_iter = comments_or_whitespace_data_items[-1].IterEnd
+            else:
+                normalized_iter = comments_or_whitespace_data_items[0].IterBegin
+
+            comments_or_whitespace_data_items = None
 
         # pylint: disable=too-many-function-args
         return Phrase.LexResult(
