@@ -23,6 +23,9 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
             Start: 3
           Whitespace: None
         Phrase: "Newline+"
+      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: None
+        Phrase: "Indent"
     IsComplete: True
   Phrase: "Phrase"
 IterBegin: "[1, 1] (0)"

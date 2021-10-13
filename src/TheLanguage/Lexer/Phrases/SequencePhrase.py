@@ -248,6 +248,9 @@ class SequencePhrase(Phrase):
         data_items: List[Optional[Phrase.LexResultData]] = []
         preserved_ignore_whitespace_ctr: Optional[int] = None
 
+        # TODO: Refactor this so that we only extract whitespace once, and then apply those results
+        #       if we find a phrase that matches.
+
         for phrase_index in range(starting_phrase_index, len(self.Phrases)):
             phrase = self.Phrases[phrase_index]
 
@@ -278,10 +281,6 @@ class SequencePhrase(Phrase):
                 ) = potential_comments_or_whitespace_result
 
                 data_items += comments_or_whitespace_data_items
-
-            if normalized_iter.AtEnd():
-                success = False
-                break
 
             # Process control tokens
             if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:

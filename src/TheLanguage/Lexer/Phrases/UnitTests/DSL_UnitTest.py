@@ -331,7 +331,7 @@ class TestLexIndentAndDedent(object):
         )
 
         CompareResultsFromFile(str(result))
-        assert len(parse_mock.method_calls) == 8
+        assert len(parse_mock.method_calls) == 10
 
 
 # ----------------------------------------------------------------------

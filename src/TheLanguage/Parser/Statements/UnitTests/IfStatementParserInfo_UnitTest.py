@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  IteratorStatementParserInfo_UnitTest.py
+# |  IfStatementParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-10-04 09:10:56
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for IteratorStatementParserInfo.py"""
+"""Unit test for IfStatementParserInfo.py"""
 
 import os
 
@@ -27,7 +27,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..IterateStatementParserInfo import *
+    from ..IfStatementParserInfo import *
 
 
 # ----------------------------------------------------------------------

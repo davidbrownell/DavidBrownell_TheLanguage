@@ -99,4 +99,4 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
   Phrase: "Phrase"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[6, 1] (36)"
-Success: False
+Success: True
