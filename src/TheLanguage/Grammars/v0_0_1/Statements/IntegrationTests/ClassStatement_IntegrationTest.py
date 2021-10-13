@@ -374,7 +374,6 @@ class TestStatementsPhraseItem(object):
         )))
 
     # ----------------------------------------------------------------------
-    @pytest.mark.skip("TODO: Dependens on If Statements")
     def test_InvalidDocumentation(self):
         with pytest.raises(InvalidDocstringError) as ex:
             Execute(
@@ -484,3 +483,26 @@ class TestStatementsPhraseItem(object):
         assert ex.Region.Begin.Column == 5
         assert ex.Region.End.Line == 13
         assert ex.Region.End.Column == 8
+
+    # ----------------------------------------------------------------------
+    def test_StatementsRequiredError(self):
+        with pytest.raises(StatementsRequiredError) as ex:
+            Execute(
+                textwrap.dedent(
+                    """\
+                    class Invalid():
+                        <<<
+                        A docstring cannot be the only statement within a class.
+                        >>>
+                    """,
+                ),
+                debug_string_on_exceptions=False,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "Classes must have at least one statement."
+        assert ex.Region.Begin.Line == 1
+        assert ex.Region.Begin.Column == 16
+        assert ex.Region.End.Line == 5
+        assert ex.Region.End.Column == 1

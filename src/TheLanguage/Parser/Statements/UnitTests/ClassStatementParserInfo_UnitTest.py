@@ -83,7 +83,7 @@ def test_ClassStatementExplicitPhase1():
             None,
         ],
         VisibilityModifier.public,
-        ClassModifier.mutable,
+        ClassModifierType.mutable,
         ClassType.Class,
         "TheClass",
         None,
@@ -92,7 +92,7 @@ def test_ClassStatementExplicitPhase1():
     )
 
     assert info.Visibility == VisibilityModifier.public
-    assert info.ClassModifier == ClassModifier.mutable
+    assert info.ClassModifier == ClassModifierType.mutable
     assert info.ClassType == ClassType.Class
     assert info.Name == "TheClass"
     assert info.Base is None
@@ -135,7 +135,7 @@ def test_ClassStatementDefaultVisibility():
                 None,
             ],
             None,
-            ClassModifier.mutable,
+            ClassModifierType.mutable,
             class_type,
             "TheClass",
             None,
@@ -150,8 +150,8 @@ def test_ClassStatementDefaultVisibility():
 # ----------------------------------------------------------------------
 def test_ClassStatementDefaultModifier():
     for class_type, expected_modifier in [
-        (ClassType.Class, ClassModifier.immutable),
-        (ClassType.Struct, ClassModifier.mutable),
+        (ClassType.Class, ClassModifierType.immutable),
+        (ClassType.Struct, ClassModifierType.mutable),
     ]:
         region_creator = RegionCreator()
 
@@ -199,7 +199,7 @@ def test_ClassStatementWithBase():
             None,
         ],
         VisibilityModifier.public,
-        ClassModifier.mutable,
+        ClassModifierType.mutable,
         ClassType.Class,
         "TheClass",
         ClassDependencyParserInfo(
@@ -238,7 +238,7 @@ def test_ClassStatementWithImplements():
             None,
         ],
         VisibilityModifier.public,
-        ClassModifier.mutable,
+        ClassModifierType.mutable,
         ClassType.Class,
         "TheClass",
         None,
@@ -291,7 +291,7 @@ def test_ClassStatementWithUses():
             None,
         ],
         VisibilityModifier.public,
-        ClassModifier.mutable,
+        ClassModifierType.mutable,
         ClassType.Class,
         "TheClass",
         None,
@@ -333,7 +333,7 @@ def test_ClassStatementFinalConstructNoDocumentation():
             None,
         ],
         VisibilityModifier.public,
-        ClassModifier.mutable,
+        ClassModifierType.mutable,
         ClassType.Class,
         "TheClass",
         None,
@@ -377,7 +377,7 @@ def test_ClassStatementFinalConstructWithDocumentation():
             region_creator(),
         ],
         VisibilityModifier.public,
-        ClassModifier.mutable,
+        ClassModifierType.mutable,
         ClassType.Class,
         "TheClass",
         None,

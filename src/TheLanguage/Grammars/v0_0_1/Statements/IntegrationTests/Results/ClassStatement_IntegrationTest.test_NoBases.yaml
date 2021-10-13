@@ -145,7 +145,7 @@ Statements:
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
     Uses: None
-    Visibility: "VisibilityModifier.private"
+    Visibility: "VisibilityModifier.public"
   - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"

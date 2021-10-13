@@ -48,6 +48,13 @@ with InitRelativeImports():
 
     from ..Error import Error
 
+    # Conveninence Imports
+    from .ClassStatementParserInfo import (
+        InvalidMemberClassModifierError,
+        InvalidMemberMutableModifierError,
+        InvalidMemberVisibilityError,
+    )
+
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
@@ -95,6 +102,7 @@ class OperatorType(Enum):
     Add                                     = auto()
     Subtract                                = auto()
     Multiply                                = auto()
+    Power                                   = auto()
     Divide                                  = auto()
     DivideFloor                             = auto()
     Modulo                                  = auto()
@@ -104,6 +112,7 @@ class OperatorType(Enum):
     AddInplace                              = auto()
     SubtractInplace                         = auto()
     MultiplyInplace                         = auto()
+    PowerInplace                            = auto()
     DivideInplace                           = auto()
     DivideFloorInplace                      = auto()
     ModuloInplace                           = auto()
@@ -315,7 +324,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                     class_modifier = class_parser_info.TypeInfo.DefaultClassModifier
                     object.__setattr__(self.Regions__, "ClassModifier", self.Regions__.Self__)  # type: ignore && pylint: disable=no-member
 
-                class_parser_info.ValidateClassModifier(class_modifier, self.Regions__.ClassModifier)  # type: ignore && pylint: disable=no-member
+                class_parser_info.ValidateMemberClassModifier(class_modifier, self.Regions__.ClassModifier)  # type: ignore && pylint: disable=no-member
 
             object.__setattr__(self, "ClassModifier", class_modifier)
 

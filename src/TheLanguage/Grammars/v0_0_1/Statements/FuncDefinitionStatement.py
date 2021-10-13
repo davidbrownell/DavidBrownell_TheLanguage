@@ -154,6 +154,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         OperatorType.Add: "__Add__",
         OperatorType.Subtract: "__Subtract__",
         OperatorType.Multiply: "__Multiply__",
+        OperatorType.Power: "__Power__",
         OperatorType.Divide: "__Divide__",
         OperatorType.DivideFloor: "__DivideFloor__",
         OperatorType.Modulo: "__Modulo__",
@@ -163,6 +164,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         OperatorType.AddInplace: "__AddInplace__",
         OperatorType.SubtractInplace: "__SubtractInplace__",
         OperatorType.MultiplyInplace: "__MultiplyInplace__",
+        OperatorType.PowerInplace: "__PowerInplace__",
         OperatorType.DivideInplace: "__DivideInplace__",
         OperatorType.DivideFloorInplace: "__DivideFloorInplace__",
         OperatorType.ModuloInplace: "__ModuloInplace__",
@@ -286,13 +288,24 @@ class FuncDefinitionStatement(GrammarPhrase):
             func_name_leaf = cast(AST.Leaf, nodes[4])
             func_name_info = cast(str, ExtractToken(func_name_leaf, group_dict_name="value"))
 
-            is_async_region = ExtractTokenSpan(func_name_leaf, "is_async")
-            is_async_info = None if is_async_region is None else True
+            # Get the alphanumeric portion of the function name to determine if it is async
+            alpha_region = ExtractTokenSpan(func_name_leaf, "alphanum")
+            assert alpha_region is not None
 
-            is_generator_region = ExtractTokenSpan(func_name_leaf, "is_generator")
+            alpha_text = alpha_region[0].Content[alpha_region[0].Offset : alpha_region[1].Offset]
+            if alpha_text.endswith("Async"):
+                alpha_region[0].Advance(len(alpha_text) - len("Async"))
+
+                is_async_info = True
+                is_async_region = alpha_region
+            else:
+                is_async_info = None
+                is_async_region = None
+
+            is_generator_region = ExtractTokenSpan(func_name_leaf, "generator_suffix")
             is_generator_info = None if is_generator_region is None else True
 
-            is_exceptional_region = ExtractTokenSpan(func_name_leaf, "is_exceptional")
+            is_exceptional_region = ExtractTokenSpan(func_name_leaf, "exceptional_suffix")
             is_exceptional_info = None if is_exceptional_region is None else True
 
             if func_name_info.startswith("__") or func_name_info.endswith("__"):
@@ -318,7 +331,9 @@ class FuncDefinitionStatement(GrammarPhrase):
             statements_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[7])))
 
             if isinstance(statements_node, AST.Leaf):
+                statements_node = None
                 statements_info = None
+
                 docstring_leaf = None
                 docstring_info = None
             else:
@@ -328,6 +343,10 @@ class FuncDefinitionStatement(GrammarPhrase):
                     docstring_leaf = None
                 else:
                     docstring_info, docstring_leaf = docstring_info
+
+                    if not statements_info:
+                        statements_info = None
+                        statements_node = None
 
             # TODO: Extract information from the func attributes
             is_deferred_region = None

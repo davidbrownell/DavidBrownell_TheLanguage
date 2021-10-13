@@ -130,14 +130,11 @@ FuncName                                    = RegexToken(
         textwrap.dedent(
             r"""(?P<value>(?#
                 Underscores                             )_{0,2}(?#
-                Func Name                               )[A-Z][A-Za-z0-9_]+(?#
-                Do not include 'Async' in the name     `)(?<!Async)(?#
-                Do not include '__' in the name         )(?<!__)(?#
-                is_async                                )(?P<is_async>Async)?(?#
-                End of Word                             )\b(?#
-                is_generator                            )(?P<is_generator>\.\.\.)?(?#
-                is_exceptional                          )(?P<is_exceptional>\?)?(?#
-                Underscores                             )(?:_{1,2}\b)?(?#
+                Func Name                               )(?P<alphanum>[A-Z][A-Za-z0-9_]+)(?<!_)(?#
+                generator suffix                        )(?P<generator_suffix>\.\.\.)?(?#
+                exceptional suffix                      )(?P<exceptional_suffix>\?)?(?#
+                Underscores                             )_{0,2}(?#
+                End of Word                             )(?#
             ))""",
         ),
     ),

@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
 
-    from ..Common.ClassModifier import ClassModifier
+    from ..Common.ClassModifier import ClassModifier as ClassModifierType
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..Error import Error
@@ -94,8 +94,8 @@ class TypeInfo(object):
     AllowedUsesTypes: List[ClassType]
 
     # Modifiers
-    DefaultClassModifier: ClassModifier
-    AllowedClassModifiers: List[ClassModifier]
+    DefaultClassModifier: ClassModifierType
+    AllowedClassModifiers: List[ClassModifierType]
 
     # Methods
     DefaultMethodModifier: MethodModifier
@@ -112,7 +112,7 @@ class TypeInfo(object):
 # |
 # ----------------------------------------------------------------------
 _all_method_types                           = list(MethodModifier)
-_all_modifiers                              = list(ClassModifier)
+_all_modifiers                              = list(ClassModifierType)
 _all_visibilities                           = list(VisibilityModifier)
 
 
@@ -146,7 +146,7 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         [ClassType.Mixin],
 
         # Modifier
-        ClassModifier.immutable,
+        ClassModifierType.immutable,
         _all_modifiers,
 
         # Methods
@@ -185,7 +185,7 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         [ClassType.Mixin],
 
         # Modifier
-        ClassModifier.immutable,
+        ClassModifierType.immutable,
         _all_modifiers,
 
         # Methods
@@ -201,31 +201,31 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
     # |  Exception
     ClassType.Exception: TypeInfo(
         # Class
-        VisibilityModifier.private,
-        _all_visibilities,
+        VisibilityModifier.public,
+        [VisibilityModifier.public],
 
         # Members
-        VisibilityModifier.private,
-        _all_visibilities,
+        VisibilityModifier.public,
+        [VisibilityModifier.public],
 
         # Base
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Class],
+        VisibilityModifier.public,
+        [VisibilityModifier.public],
+        [ClassType.Exception],
 
         # Implements
         VisibilityModifier.public,
-        _all_visibilities,
+        [VisibilityModifier.public],
         [ClassType.Interface, ClassType.Trait],
 
         # Uses
-        VisibilityModifier.private,
-        _all_visibilities,
+        VisibilityModifier.public,
+        [VisibilityModifier.public],
         [ClassType.Mixin],
 
         # Modifier
-        ClassModifier.immutable,
-        _all_modifiers,
+        ClassModifierType.immutable,
+        [ClassModifierType.immutable],
 
         # Methods
         MethodModifier.standard,
@@ -263,12 +263,12 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         [ClassType.Mixin],
 
         # Modifier
-        ClassModifier.immutable,
+        ClassModifierType.immutable,
         _all_modifiers,
 
         # Methods
-        MethodModifier.standard,
-        _all_method_types,
+        MethodModifier.abstract,
+        [MethodModifier.abstract, MethodModifier.override, MethodModifier.virtual],
 
         # Members
         AllowDataMembers=True,
@@ -302,7 +302,7 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         [ClassType.Mixin],
 
         # Modifier
-        ClassModifier.immutable,
+        ClassModifierType.immutable,
         _all_modifiers,
 
         # Methods
@@ -341,7 +341,7 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         [ClassType.Mixin],
 
         # Modifier
-        ClassModifier.immutable,
+        ClassModifierType.immutable,
         _all_modifiers,
 
         # Methods
@@ -380,7 +380,7 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         [],
 
         # Modifier
-        ClassModifier.mutable,
+        ClassModifierType.mutable,
         _all_modifiers,
 
         # Methods
@@ -419,7 +419,7 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         [ClassType.Mixin],
 
         # Modifier
-        ClassModifier.immutable,
+        ClassModifierType.immutable,
         _all_modifiers,
 
         # Methods
@@ -641,10 +641,10 @@ class ClassStatementParserInfo(StatementParserInfo):
 
     # Values constructed during phase 1
     visibility: InitVar[Optional[VisibilityModifier]]
-    class_modifier: InitVar[Optional[ClassModifier]]
+    class_modifier: InitVar[Optional[ClassModifierType]]
 
     Visibility: VisibilityModifier          = field(init=False)
-    ClassModifier: ClassModifier            = field(init=False)
+    ClassModifier: ClassModifierType        = field(init=False)
 
     ClassType: ClassType
     Name: str
@@ -810,8 +810,8 @@ class ClassStatementParserInfo(StatementParserInfo):
             )
 
         if (
-            self.ClassModifier == ClassModifier.immutable
-            and class_modifier == ClassModifier.mutable
+            self.ClassModifier == ClassModifierType.immutable
+            and class_modifier == ClassModifierType.mutable
         ):
             raise InvalidMemberMutableModifierError(
                 class_modifier_region,
