@@ -32,6 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .ClassStatement import ClassStatement
+
     from ..Common import AttributesPhraseItem
     from ..Common import ClassModifier
     from ..Common import ParametersPhraseItem
@@ -351,7 +353,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                     is_generator_region,
                     is_synchronized_region,
                 ), # type: ignore
-                None, # type: ignore # TODO: ClassStatement.GetContainingClassParserInfo(node, cls.PHRASE_NAME),
+                ClassStatement.GetContainingClassParserInfo(node, cls.PHRASE_NAME),  # type: ignore
                 visibility_info,  # type: ignore
                 method_type_modifier_info,  # type: ignore
                 class_modifier_info,  # type: ignore

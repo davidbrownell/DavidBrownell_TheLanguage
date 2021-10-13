@@ -50,20 +50,21 @@ def test_SingleLine():
             Single line 1.
             >>>
 
-            # TODO: class Foo():
-            # TODO:     <<<
-            # TODO:     Single line 2.
-            # TODO:     >>>
-            # TODO:     pass
-            # TODO:
-            # TODO: class Bar():
-            # TODO:     <<<
-            # TODO:     With escape \\>>>
-            # TODO:     >>>
-            # TODO:
-            # TODO:     pass
+            class Foo():
+                <<<
+                Single line 2.
+                >>>
+                pass
+
+            class Bar():
+                <<<
+                With escape \\>>>
+                >>>
+
+                pass
             """,
         ),
+
     )
 
     CompareResultsFromFile(str(node))
@@ -77,23 +78,23 @@ def test_SingleLine():
     assert leaf.IterEnd.Column == 4
     assert value == "Single line 1."
 
-    # TODO: # Item 2 (This is a pain to get to)
-    # TODO: leaf, value = DocstringStatement.GetMultilineContent(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
-    # TODO:
-    # TODO: assert leaf.IterBegin.Line == 6
-    # TODO: assert leaf.IterBegin.Column == 5
-    # TODO: assert leaf.IterEnd.Line == 8
-    # TODO: assert leaf.IterEnd.Column == 8
-    # TODO: assert value == "Single line 2."
-    # TODO:
-    # TODO: # Item 3 (This is a pain to get to)
-    # TODO: leaf, value = DocstringStatement.GetMultilineContent(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
-    # TODO:
-    # TODO: assert leaf.IterBegin.Line == 12
-    # TODO: assert leaf.IterBegin.Column == 5
-    # TODO: assert leaf.IterEnd.Line == 14
-    # TODO: assert leaf.IterEnd.Column == 8
-    # TODO: assert value == "With escape >>>"
+    # Item 2 (This is a pain to get to)
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 6
+    assert leaf.IterBegin.Column == 5
+    assert leaf.IterEnd.Line == 8
+    assert leaf.IterEnd.Column == 8
+    assert value == "Single line 2."
+
+    # Item 3 (This is a pain to get to)
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 12
+    assert leaf.IterBegin.Column == 5
+    assert leaf.IterEnd.Line == 14
+    assert leaf.IterEnd.Column == 8
+    assert value == "With escape >>>"
 
 
 # ----------------------------------------------------------------------
@@ -107,23 +108,23 @@ def test_Multiline():
             1
             >>>
 
-            # TODO: class Foo():
-            # TODO:     <<<
-            # TODO:     Multi
-            # TODO:     line
-            # TODO:         **1**
-            # TODO:       **2**
-            # TODO:     >>>
-            # TODO:     pass
-            # TODO:
-            # TODO: class Bar():
-            # TODO:     <<<
-            # TODO:     With
-            # TODO:     escape
-            # TODO:     \\>>>
-            # TODO:     more.
-            # TODO:     >>>
-            # TODO:     pass
+            class Foo():
+                <<<
+                Multi
+                line
+                    **1**
+                  **2**
+                >>>
+                pass
+
+            class Bar():
+                <<<
+                With
+                escape
+                \\>>>
+                more.
+                >>>
+                pass
             """,
         ),
     )
@@ -139,23 +140,23 @@ def test_Multiline():
     assert leaf.IterEnd.Column == 4
     assert value == "Multi\nline\n1"
 
-    # TODO: # Item 2 (This is a pain to get to)
-    # TODO: leaf, value = DocstringStatement.GetMultilineContent(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
-    # TODO:
-    # TODO: assert leaf.IterBegin.Line == 8
-    # TODO: assert leaf.IterBegin.Column == 5
-    # TODO: assert leaf.IterEnd.Line == 13
-    # TODO: assert leaf.IterEnd.Column == 8
-    # TODO: assert value == "Multi\nline\n    **1**\n  **2**"
-    # TODO:
-    # TODO: # Item 3
-    # TODO: leaf, value = DocstringStatement.GetMultilineContent(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
-    # TODO:
-    # TODO: assert leaf.IterBegin.Line == 17
-    # TODO: assert leaf.IterBegin.Column == 5
-    # TODO: assert leaf.IterEnd.Line == 22
-    # TODO: assert leaf.IterEnd.Column == 8
-    # TODO: assert value == "With\nescape\n>>>\nmore."
+    # Item 2 (This is a pain to get to)
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 8
+    assert leaf.IterBegin.Column == 5
+    assert leaf.IterEnd.Line == 13
+    assert leaf.IterEnd.Column == 8
+    assert value == "Multi\nline\n    **1**\n  **2**"
+
+    # Item 3
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+
+    assert leaf.IterBegin.Line == 17
+    assert leaf.IterBegin.Column == 5
+    assert leaf.IterEnd.Line == 22
+    assert leaf.IterEnd.Column == 8
+    assert value == "With\nescape\n>>>\nmore."
 
 
 # ----------------------------------------------------------------------
@@ -177,23 +178,23 @@ def test_InvalidHeaderError():
     assert ex.Line == 2
     assert ex.Column == 1
 
-    # TODO: with pytest.raises(NoClosingMultilineTokenError) as ex:
-    # TODO:     ExecuteEx(
-    # TODO:         textwrap.dedent(
-    # TODO:             """\
-    # TODO:             if cond:
-    # TODO:                 <<<This is not valid
-    # TODO:                 >>>
-    # TODO:             """,
-    # TODO:         ),
-    # TODO:         debug_string_on_exceptions=False,
-    # TODO:     )
-    # TODO:
-    # TODO: ex = ex.value
-    # TODO:
-    # TODO: assert str(ex) == "A closing token was not found to match this multi-line opening token."
-    # TODO: assert ex.Line == 3
-    # TODO: assert ex.Column == 5
+    with pytest.raises(NoClosingMultilineTokenError) as ex:
+        ExecuteEx(
+            textwrap.dedent(
+                """\
+                if cond:
+                    <<<This is not valid
+                    >>>
+                """,
+            ),
+            debug_string_on_exceptions=False,
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "A closing token was not found to match this multi-line opening token."
+    assert ex.Line == 3
+    assert ex.Column == 5
 
 
 # ----------------------------------------------------------------------
@@ -215,27 +216,26 @@ def test_InvalidFooterError():
     assert ex.Line == 1
     assert ex.Column == 1
 
-    # TODO: with pytest.raises(NoClosingMultilineTokenError) as ex:
-    # TODO:     ExecuteEx(
-    # TODO:         textwrap.dedent(
-    # TODO:             """\
-    # TODO:             if cond:
-    # TODO:                 <<<
-    # TODO:                 Text>>>
-    # TODO:             """,
-    # TODO:         ),
-    # TODO:         debug_string_on_exceptions=False,
-    # TODO:     )
-    # TODO:
-    # TODO: ex = ex.value
-    # TODO:
-    # TODO: assert str(ex) == "A closing token was not found to match this multi-line opening token."
-    # TODO: assert ex.Line == 2
-    # TODO: assert ex.Column == 5
+    with pytest.raises(NoClosingMultilineTokenError) as ex:
+        ExecuteEx(
+            textwrap.dedent(
+                """\
+                if cond:
+                    <<<
+                    Text>>>
+                """,
+            ),
+            debug_string_on_exceptions=False,
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "A closing token was not found to match this multi-line opening token."
+    assert ex.Line == 2
+    assert ex.Column == 5
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.skip("TODO: Restore this test when conditional statements are available")
 def test_InvalidIndentError():
     with pytest.raises(InvalidMultilineIndentError) as ex:
         ExecuteEx(
@@ -253,7 +253,7 @@ def test_InvalidIndentError():
 
     ex = ex.value
 
-    assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<') [Line 2]."
+    assert str(ex) == "Multi-line content must be aligned horizontally with the header ('<<<') [Line 2]."
     assert ex.Region.Begin.Line == 2
     assert ex.Region.Begin.Column == 5
     assert ex.Region.End.Line == 5
@@ -279,7 +279,7 @@ def test_InvalidIndentError():
 
     ex = ex.value
 
-    assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<') [Line 4]."
+    assert str(ex) == "Multi-line content must be aligned horizontally with the header ('<<<') [Line 4]."
     assert ex.Region.Begin.Line == 2
     assert ex.Region.Begin.Column == 5
     assert ex.Region.End.Line == 8
@@ -308,22 +308,22 @@ def test_EmptyContentError():
     assert ex.Region.End.Column == 4
 
     # With indent
-    # TODO: with pytest.raises(InvalidMultilineContentError) as ex:
-    # TODO:     ExecuteEx(
-    # TODO:         textwrap.dedent(
-    # TODO:             """\
-    # TODO:             if cond:
-    # TODO:                 <<<
-    # TODO:                 >>>
-    # TODO:             """,
-    # TODO:         ),
-    # TODO:         debug_string_on_exceptions=False,
-    # TODO:     )
-    # TODO:
-    # TODO: ex = ex.value
-    # TODO:
-    # TODO: assert str(ex) == "Multi-line content cannot be empty."
-    # TODO: assert ex.Region.Begin.Line == 2
-    # TODO: assert ex.Region.Begin.Column == 5
-    # TODO: assert ex.Region.End.Line == 3
-    # TODO: assert ex.Region.End.Column == 8
+    with pytest.raises(InvalidMultilineContentError) as ex:
+        ExecuteEx(
+            textwrap.dedent(
+                """\
+                if cond:
+                    <<<
+                    >>>
+                """,
+            ),
+            debug_string_on_exceptions=False,
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "Multi-line content cannot be empty."
+    assert ex.Region.Begin.Line == 2
+    assert ex.Region.Begin.Column == 5
+    assert ex.Region.End.Line == 3
+    assert ex.Region.End.Column == 8
