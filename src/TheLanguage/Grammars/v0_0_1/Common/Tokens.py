@@ -67,6 +67,12 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 # We should not generically match these keywords:
 #
 DoNotMatchKeywords                          = [
+    # ../Statements/BreakStatement.py
+    "break",
+
+    # ../Statements/ContinueStatement.py
+    "continue",
+
     # ../Statements/DeleteStatement.py
     "del",
 

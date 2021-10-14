@@ -64,6 +64,7 @@ with InitRelativeImports():
     from .Statements.ReturnStatement import ReturnStatement
     from .Statements.TryStatement import TryStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
+    from .Statements.WhileStatement import WhileStatement
     from .Statements.YieldStatement import YieldStatement
 
     # TODO: Remaining
@@ -72,7 +73,9 @@ with InitRelativeImports():
     #       - ImportStatement
     #       - ScopedRefStatement
     #       - TypeAliasStatement
-    #       - WhileStatement
+    #       - BreakStatement
+    #       - ContinueStatement
+
 
     # Types
     from .Types.StandardType import StandardType
@@ -122,6 +125,7 @@ GrammarPhrases                              = [
     ReturnStatement(),
     TryStatement(),
     VariableDeclarationStatement(),
+    WhileStatement(),
     YieldStatement(),
     # TODO: CompilerStatement
 
