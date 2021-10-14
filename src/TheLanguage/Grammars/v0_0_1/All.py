@@ -61,6 +61,7 @@ with InitRelativeImports():
     from .Statements.IfStatement import IfStatement
     from .Statements.PassStatement import PassStatement
     from .Statements.RaiseStatement import RaiseStatement
+    from .Statements.ReturnStatement import ReturnStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
     from .Statements.YieldStatement import YieldStatement
 
@@ -68,7 +69,6 @@ with InitRelativeImports():
     #       - ClassMemberStatement
     #       - FuncInvocationStatement
     #       - ImportStatement
-    #       - ReturnStatement
     #       - ScopedRefStatement
     #       - TryExceptStatement
     #       - TypeAliasStatement
@@ -119,6 +119,7 @@ GrammarPhrases                              = [
     IfStatement(),
     PassStatement(),
     RaiseStatement(),
+    ReturnStatement(),
     VariableDeclarationStatement(),
     YieldStatement(),
     # TODO: CompilerStatement
