@@ -48,7 +48,7 @@ with InitRelativeImports():
 
     from ..Error import Error
 
-    # Conveninence Imports
+    # Convenience Imports
     from .ClassStatementParserInfo import (
         InvalidMemberClassModifierError,
         InvalidMemberMutableModifierError,

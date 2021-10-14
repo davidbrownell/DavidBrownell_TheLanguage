@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression_IntegrationTest.py
+# |  YieldStatementParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-11 16:55:16
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for TernaryExpression.py"""
+"""Unit test for YieldStatementParserInfo.py"""
 
 import os
-import textwrap
 
 import CommonEnvironment
 
@@ -28,17 +27,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .....IntegrationTests import *
-    from ..TernaryExpression import *
+    from ..YieldStatementParserInfo import *
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    CompareResultsFromFile(str(Execute(
-        textwrap.dedent(
-            """\
-            value1 = TrueFunc() if Condition1() else FalseFunc()
-            value2 = (a, b, c) if Condition2() else (d,)
-            """,
-        ),
-    )))
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
+def test_Placeholder():
+    assert True

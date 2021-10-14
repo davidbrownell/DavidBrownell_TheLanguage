@@ -652,6 +652,7 @@ class ClassStatementParserInfo(StatementParserInfo):
     Implements: Optional[List[ClassDependencyParserInfo]]
     Uses: Optional[List[ClassDependencyParserInfo]]
 
+    type_info: InitVar[Optional[TypeInfo]]  = None  # type: ignore
     TypeInfo: TypeInfo                      = field(init=False)
 
     # Values constructed during phase 2
@@ -659,15 +660,25 @@ class ClassStatementParserInfo(StatementParserInfo):
     Documentation: Optional[str]            = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, visibility, class_modifier):
+    def __post_init__(self, regions, visibility, class_modifier, type_info):
         super(ClassStatementParserInfo, self).__post_init__(
             regions,
             regionless_attributes=["TypeInfo"],
             should_validate=False,
             TypeInfo=None,
+
+            # Note that this should not be necessary, but it seems that the dataclass will include
+            # this var as part of the class (likely due to the default initialization). Unfortunately,
+            # I wasn't able to remove the attribute from the class instance, so suppressing the
+            # output is the next best option.
+            type_info=None,
         )
 
-        type_info = TYPE_INFOS[self.ClassType]
+        # TypeInfo
+        if type_info is None:
+            type_info = TYPE_INFOS[self.ClassType]
+
+        object.__setattr__(self, "TypeInfo", type_info)
 
         # Visibility
         if visibility is None:
@@ -750,9 +761,6 @@ class ClassStatementParserInfo(StatementParserInfo):
                         dependency.Visibility.name,
                         ", ".join(["'{}'".format(e.name) for e in type_info.AllowedUsesVisibilities]),
                     )
-
-        # Set TypeInfo
-        object.__setattr__(self, "TypeInfo", type_info)
 
     # ----------------------------------------------------------------------
     def FinalConstruct(

@@ -15,7 +15,10 @@
 # ----------------------------------------------------------------------
 """Unit test for ClassStatementParserInfo.py"""
 
+import copy
 import os
+
+import pytest
 
 import CommonEnvironment
 
@@ -403,4 +406,446 @@ def test_ClassStatementFinalConstructWithDocumentation():
     assert info.Regions__.Documentation == region_creator[9]
 
 
-# TODO: Test errors generated
+# ----------------------------------------------------------------------
+class TestErrors(object):
+    _type_info                              = TypeInfo(
+        # Visibility
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
+
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
+
+        # Base
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
+        [ClassType.Mixin],
+
+        # Implements
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
+        [ClassType.Mixin],
+
+        # Uses
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
+        [ClassType.Mixin],
+
+        # Modifiers
+        ClassModifierType.mutable,
+        [ClassModifierType.mutable],
+
+        # Methods
+        MethodModifier.final,
+        [MethodModifier.final],
+
+        # Members
+        False,
+        False,
+    )
+
+    # ----------------------------------------------------------------------
+    def test_InvalidClassVisibilityError(self):
+        with pytest.raises(InvalidClassVisibilityError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(expected_error=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    None,
+                    None,
+                    region_creator(),
+                    None,
+                ],
+                VisibilityModifier.public,
+                ClassModifierType.immutable,
+                ClassType.Class,
+                "TheClass",
+                None,
+                None,
+                None,
+                self._type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "'public' is not a supported visibility for 'class' types; supported values are 'private'."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidClassModifierError(self):
+        with pytest.raises(InvalidClassModifierError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(expected_error=True),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    None,
+                    None,
+                    region_creator(),
+                    None,
+                ],
+                VisibilityModifier.private,
+                ClassModifierType.immutable,
+                ClassType.Class,
+                "TheClass",
+                None,
+                None,
+                None,
+                self._type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "'immutable' is not a supported modifier for 'class' types; supported values are 'mutable'."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidBaseError(self):
+        type_info = copy.deepcopy(self._type_info)
+
+        object.__setattr__(type_info, "AllowedBaseTypes", [])
+
+        with pytest.raises(InvalidBaseError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(expected_error=True),
+                    None,
+                    None,
+                    region_creator(),
+                    None,
+                ],
+                VisibilityModifier.private,
+                ClassModifierType.mutable,
+                ClassType.Class,
+                "TheClass",
+                True, # Note that this type isn't valid, but enough to trigger the error
+                None,
+                None,
+                type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "Base-types cannot be used with 'class' types."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidBaseVisibilityError(self):
+        with pytest.raises(InvalidBaseVisibilityError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    None,
+                    region_creator(),
+                    None,
+                ],
+                VisibilityModifier.private,
+                ClassModifierType.mutable,
+                ClassType.Class,
+                "TheClass",
+                ClassDependencyParserInfo(
+                    [
+                        region_creator(container=True),
+                        region_creator(expected_error=True),
+                        region_creator(),
+                    ],
+                    VisibilityModifier.public,
+                    "TheBase",
+                ),
+                None,
+                None,
+                self._type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "'public' is not a supported visibility for bases of 'class' types; supported values are 'private'."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.skip("TODO: No way to test this yet")
+    def test_InvalidBaseTypeError(self):
+        with pytest.raises(InvalidBaseTypeError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    None,
+                    None,
+                    region_creator(),
+                    None,
+                ],
+                visibility,
+                class_modifier,
+                class_type,
+                "TheClass",
+                None,
+                None,
+                None,
+                self._type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == ""
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidImplementsError(self):
+        type_info = copy.deepcopy(self._type_info)
+
+        object.__setattr__(type_info, "AllowedImplementsTypes", [])
+
+        with pytest.raises(InvalidImplementsError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    region_creator(expected_error=True),
+                    None,
+                    region_creator(),
+                    None,
+                ],
+                VisibilityModifier.private,
+                ClassModifierType.mutable,
+                ClassType.Class,
+                "TheClass",
+                None,
+                True, # Note that this type isn't valid, but enough to trigger the error
+                None,
+                type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "Implements-types cannot be used with 'class' types."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidImplementsVisibilityError(self):
+        with pytest.raises(InvalidImplementsVisibilityError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    region_creator(),
+                    None,
+                    region_creator(),
+                    None,
+                ],
+                VisibilityModifier.private,
+                ClassModifierType.mutable,
+                ClassType.Class,
+                "TheClass",
+                None,
+                [
+                    ClassDependencyParserInfo(
+                        [
+                            region_creator(container=True),
+                            region_creator(expected_error=True),
+                            region_creator(),
+                        ],
+                        VisibilityModifier.public,
+                        "TheImplements",
+                    ),
+                ],
+                None,
+                self._type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "'public' is not a supported visibility for types implemented by 'class' types; supported values are 'private'."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.skip("TODO: No way to test this yet")
+    def test_InvalidImplementsTypeError(self):
+        with pytest.raises(InvalidImplementsTypeError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    None,
+                    None,
+                    region_creator(),
+                    None,
+                ],
+                visibility,
+                class_modifier,
+                class_type,
+                "TheClass",
+                None,
+                None,
+                None,
+                self._type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == ""
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidUsesError(self):
+        type_info = copy.deepcopy(self._type_info)
+
+        object.__setattr__(type_info, "AllowedUsesTypes", [])
+
+        with pytest.raises(InvalidUsesError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    None,
+                    region_creator(expected_error=True),
+                    region_creator(),
+                    None,
+                ],
+                VisibilityModifier.private,
+                ClassModifierType.mutable,
+                ClassType.Class,
+                "TheClass",
+                None,
+                None,
+                True, # Note that this type isn't valid, but enough to trigger the error
+                type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "Uses-types cannot be used with 'class' types."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidUsesVisibilityError(self):
+        with pytest.raises(InvalidUsesVisibilityError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    None,
+                    region_creator(),
+                    region_creator(),
+                    None,
+                ],
+                VisibilityModifier.private,
+                ClassModifierType.mutable,
+                ClassType.Class,
+                "TheClass",
+                None,
+                None,
+                [
+                    ClassDependencyParserInfo(
+                        [
+                            region_creator(container=True),
+                            region_creator(expected_error=True),
+                            region_creator(),
+                        ],
+                        VisibilityModifier.public,
+                        "TheUses",
+                    ),
+                ],
+                self._type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "'public' is not a supported visibility for types used by 'class' types; supported values are 'private'."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.skip("TODO: No way to test this yet")
+    def test_InvalidUsesTypeError(self):
+        with pytest.raises(InvalidUsesTypeError) as ex:
+            region_creator = RegionCreator()
+
+            ClassStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                    None,
+                    None,
+                    region_creator(),
+                    None,
+                ],
+                visibility,
+                class_modifier,
+                class_type,
+                "TheClass",
+                None,
+                None,
+                None,
+                self._type_info,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == ""
+        assert ex.Region == region_creator.ExpectedErrorRegion()

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression_IntegrationTest.py
+# |  YieldStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-11 16:55:16
+# |      2021-10-14 09:24:55
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for TernaryExpression.py"""
+"""Contains the YieldStatementParserInfo object"""
 
 import os
-import textwrap
+
+from typing import Optional
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -28,17 +31,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .....IntegrationTests import *
-    from ..TernaryExpression import *
+    from .StatementParserInfo import StatementParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    CompareResultsFromFile(str(Execute(
-        textwrap.dedent(
-            """\
-            value1 = TrueFunc() if Condition1() else FalseFunc()
-            value2 = (a, b, c) if Condition2() else (d,)
-            """,
-        ),
-    )))
+@dataclass(frozen=True, repr=False)
+class YieldStatementParserInfo(StatementParserInfo):
+    Expression: Optional[ExpressionParserInfo]
+    IsRecursive: Optional[bool]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(YieldStatementParserInfo, self).__post_init__(regions)
+
+        assert self.IsRecursive is None or self.IsRecursive, "Valid values are True and None"
+        assert self.IsRecursive is None or self.Expression is not None, "IsRecursive should never be set without a corresponding Expression"

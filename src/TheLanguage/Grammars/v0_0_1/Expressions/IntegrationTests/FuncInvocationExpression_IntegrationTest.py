@@ -54,8 +54,7 @@ def test_SingleArg():
             """\
             value1 = Func1(arg)
 
-            # TODO: Enable this when tuples are available
-            # value2 = Func2((a, ))
+            value2 = Func2((a, ))
 
             value3 = Func3(
                 argument,

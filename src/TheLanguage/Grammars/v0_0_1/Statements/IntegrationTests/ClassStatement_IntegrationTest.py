@@ -351,7 +351,7 @@ class TestStatementsPhraseItem(object):
         )))
 
     # ----------------------------------------------------------------------
-    @pytest.mark.skip("TODO: Dependens on Compiler Statements")
+    @pytest.mark.skip("TODO: Depends on Compiler Statements")
     def test_RemovedStatements(self):
         CompareResultsFromFile(str(Execute(
             textwrap.dedent(

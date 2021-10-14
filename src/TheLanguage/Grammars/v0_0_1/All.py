@@ -61,6 +61,7 @@ with InitRelativeImports():
     from .Statements.IfStatement import IfStatement
     from .Statements.PassStatement import PassStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
+    from .Statements.YieldStatement import YieldStatement
 
     # TODO: Remaining
     #       - ClassMemberStatement
@@ -72,7 +73,6 @@ with InitRelativeImports():
     #       - TryExceptStatement
     #       - TypeAliasStatement
     #       - WhileStatement
-    #       - YieldStatement
 
     # Types
     from .Types.StandardType import StandardType
@@ -119,6 +119,7 @@ GrammarPhrases                              = [
     IfStatement(),
     PassStatement(),
     VariableDeclarationStatement(),
+    YieldStatement(),
     # TODO: CompilerStatement
 
     # Types

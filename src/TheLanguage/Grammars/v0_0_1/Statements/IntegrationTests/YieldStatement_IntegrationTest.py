@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression_IntegrationTest.py
+# |  YieldStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-11 16:55:16
+# |      2021-10-14 09:39:14
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for TernaryExpression.py"""
+"""Automated tests for YieldStatement.py"""
 
 import os
 import textwrap
@@ -29,16 +29,39 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .....IntegrationTests import *
-    from ..TernaryExpression import *
+    from ..YieldStatement import *
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
+def test_StandAlone():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            value1 = TrueFunc() if Condition1() else FalseFunc()
-            value2 = (a, b, c) if Condition2() else (d,)
+            yield
+            """,
+        ),
+    )))
+
+
+# ----------------------------------------------------------------------
+def test_WithValue():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            yield foo
+            yield (value,)
+            """,
+        ),
+    )))
+
+
+# ----------------------------------------------------------------------
+def test_From():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            yield from foo
+            yield from (a, b, c)
             """,
         ),
     )))
