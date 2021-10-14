@@ -1,0 +1,48 @@
+# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+Statements:
+  - # <class 'TheLanguage.Parser.Statements.TypeAliasStatementParserInfo.TypeAliasStatementParserInfo'>
+    Name: "SmallInt"
+    Regions__: # <class 'types.TypeAliasStatementParserInfoRegions'>
+      Name: "[Ln 1, Col 7] -> [Ln 1, Col 15]"
+      Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+      Type: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+    Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+      Modifier: None
+      Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+        Modifier: None
+        Self__: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+        TypeName: "[Ln 1, Col 18] -> [Ln 1, Col 21]"
+      TypeName: "Int"
+  - # <class 'TheLanguage.Parser.Statements.TypeAliasStatementParserInfo.TypeAliasStatementParserInfo'>
+    Name: "MyTuple"
+    Regions__: # <class 'types.TypeAliasStatementParserInfoRegions'>
+      Name: "[Ln 2, Col 7] -> [Ln 2, Col 14]"
+      Self__: "[Ln 2, Col 1] -> [Ln 3, Col 1]"
+      Type: "[Ln 2, Col 17] -> [Ln 2, Col 34]"
+    Type: # <class 'TheLanguage.Parser.Types.TupleTypeParserInfo.TupleTypeParserInfo'>
+      Regions__: # <class 'types.TupleTypeParserInfoRegions'>
+        Self__: "[Ln 2, Col 17] -> [Ln 2, Col 34]"
+      Types:
+        - # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 2, Col 18] -> [Ln 2, Col 21]"
+            TypeName: "[Ln 2, Col 18] -> [Ln 2, Col 21]"
+          TypeName: "Int"
+        - # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 2, Col 23] -> [Ln 2, Col 27]"
+            TypeName: "[Ln 2, Col 23] -> [Ln 2, Col 27]"
+          TypeName: "Bool"
+        - # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 2, Col 29] -> [Ln 2, Col 33]"
+            TypeName: "[Ln 2, Col 29] -> [Ln 2, Col 33]"
+          TypeName: "Char"

@@ -66,6 +66,7 @@ with InitRelativeImports():
     from .Statements.ReturnStatement import ReturnStatement
     from .Statements.ScopedRefStatement import ScopedRefStatement
     from .Statements.TryStatement import TryStatement
+    from .Statements.TypeAliasStatement import TypeAliasStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
     from .Statements.WhileStatement import WhileStatement
     from .Statements.YieldStatement import YieldStatement
@@ -74,8 +75,6 @@ with InitRelativeImports():
     #       - ClassMemberStatement
     #       - FuncInvocationStatement
     #       - ImportStatement
-    #       - TypeAliasStatement
-
 
     # Types
     from .Types.StandardType import StandardType
@@ -127,6 +126,7 @@ GrammarPhrases                              = [
     ReturnStatement(),
     ScopedRefStatement(),
     TryStatement(),
+    TypeAliasStatement(),
     VariableDeclarationStatement(),
     WhileStatement(),
     YieldStatement(),
