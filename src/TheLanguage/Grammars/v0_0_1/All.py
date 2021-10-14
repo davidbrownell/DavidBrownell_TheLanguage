@@ -53,7 +53,9 @@ with InitRelativeImports():
 
     # Statements
     from .Statements.BinaryStatement import BinaryStatement
+    from .Statements.BreakStatement import BreakStatement
     from .Statements.ClassStatement import ClassStatement
+    from .Statements.ContinueStatement import ContinueStatement
     from .Statements.DeleteStatement import DeleteStatement
     from .Statements.DocstringStatement import DocstringStatement
     from .Statements.ForStatement import ForStatement
@@ -73,8 +75,6 @@ with InitRelativeImports():
     #       - ImportStatement
     #       - ScopedRefStatement
     #       - TypeAliasStatement
-    #       - BreakStatement
-    #       - ContinueStatement
 
 
     # Types
@@ -114,7 +114,9 @@ GrammarPhrases                              = [
 
     # Statements
     BinaryStatement(),
+    BreakStatement(),
     ClassStatement(),
+    ContinueStatement(),
     DeleteStatement(),
     DocstringStatement(),
     ForStatement(),
