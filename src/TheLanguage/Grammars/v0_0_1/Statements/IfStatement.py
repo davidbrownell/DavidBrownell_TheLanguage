@@ -58,10 +58,10 @@ class IfStatement(GrammarPhrase):
     """\
     If/Else If/Else statement,
 
-    'if' <expr> ':'
+    'if' <expression> ':'
         <statement>+
     (
-        'elif' <expr> ':'
+        'elif' <expression> ':'
             <statement>+
     )*
     (
@@ -90,14 +90,14 @@ class IfStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # 'if' <expr> ':'
+                    # 'if' <expression> ':'
                     #     <statement>+
                     "if",
                     DynamicPhrasesType.Expressions,
                     statements_item,
 
                     # (
-                    #     'elif' <expr> ':'
+                    #     'elif' <expression> ':'
                     #         <statement>+
                     # )*
                     ZeroOrMorePhraseItem.Create(

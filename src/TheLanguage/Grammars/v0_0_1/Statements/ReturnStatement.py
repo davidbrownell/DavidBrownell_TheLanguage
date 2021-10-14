@@ -55,7 +55,7 @@ class ReturnStatement(GrammarPhrase):
     """\
     Returns from a function.
 
-    'return' <expr>?
+    'return' <expression>?
 
     Examples:
         return
@@ -74,7 +74,7 @@ class ReturnStatement(GrammarPhrase):
                     # 'return'
                     "return",
 
-                    # <expr>?
+                    # <expression>?
                     OptionalPhraseItem.Create(DynamicPhrasesType.Expressions),
 
                     CommonTokens.Newline,
@@ -98,7 +98,7 @@ class ReturnStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # <expr>?
+            # <expression>?
             expression_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
             if expression_node is None:
                 expression_info = None

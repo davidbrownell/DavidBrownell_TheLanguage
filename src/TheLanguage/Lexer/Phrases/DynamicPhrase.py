@@ -49,9 +49,9 @@ class DynamicPhrase(Phrase):
 
     Examples:
         # The phrase is an expression and the first phrase within the sequence is also an expression
-        AddExpression:= <expr> '+' <expr>
-        CastExpression:= <expr> 'as' <type>
-        IndexExpression:= <expr> '[' <expr> ']'
+        AddExpression:= <expression> '+' <expression>
+        CastExpression:= <expression> 'as' <type>
+        IndexExpression:= <expression> '[' <expression> ']'
     """
 
     # ----------------------------------------------------------------------

@@ -54,7 +54,7 @@ class BinaryExpression(GrammarPhrase):
     """\
     Expression in the form:
 
-    <expr> <op> <expr>
+    <expression> <op> <expression>
 
     Examples:
         one + two
@@ -110,7 +110,7 @@ class BinaryExpression(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
 
                     # <op>
@@ -119,7 +119,7 @@ class BinaryExpression(GrammarPhrase):
                         item=tuple(self.__class__.OPERATOR_MAP.keys()),
                     ),
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
                 ],
             ),
@@ -142,7 +142,7 @@ class BinaryExpression(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # <expr>
+            # <expression>
             left_node = ExtractDynamic(cast(AST.Node, nodes[0]))
             left_info = cast(ExpressionParserInfo, GetParserInfo(left_node))
 
@@ -159,7 +159,7 @@ class BinaryExpression(GrammarPhrase):
 
             operator_info = cls.OPERATOR_MAP[op_value]
 
-            # <expr>
+            # <expression>
             right_node = ExtractDynamic(cast(AST.Node, nodes[2]))
             right_info = cast(ExpressionParserInfo, GetParserInfo(right_node))
 

@@ -55,7 +55,7 @@ class YieldStatement(GrammarPhrase):
     """\
     Yields a value to the caller from an async function.
 
-    'yield' ('from'? <expr>)?
+    'yield' ('from'? <expression>)?
 
     Examples:
         yield
@@ -75,7 +75,7 @@ class YieldStatement(GrammarPhrase):
                     # 'yield'
                     "yield",
 
-                    # ('from'? <expr>)?
+                    # ('from'? <expression>)?
                     OptionalPhraseItem.Create(
                         name="Suffix",
                         item=[
@@ -105,7 +105,7 @@ class YieldStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # ('from'? <expr>)?
+            # ('from'? <expression>)?
             suffix_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
             if suffix_node is None:
                 is_recursive_node = None
@@ -123,7 +123,7 @@ class YieldStatement(GrammarPhrase):
                     ExtractOptional(cast(Optional[AST.Node], suffix_nodes[0])),
                 )
 
-                # <expr>
+                # <expression>
                 expression_node = ExtractDynamic(cast(AST.Node, suffix_nodes[1]))
                 expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 

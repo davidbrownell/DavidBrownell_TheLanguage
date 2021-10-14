@@ -57,7 +57,7 @@ class GeneratorExpression(GrammarPhrase):
     """\
     Expression that generates values.
 
-    <expr> 'for' <name> 'in' <expr> ('if' <expr>)?
+    <expression> 'for' <name> 'in' <expression> ('if' <expression>)?
 
     Examples:
         AddOne(value) for value in OneToTen()

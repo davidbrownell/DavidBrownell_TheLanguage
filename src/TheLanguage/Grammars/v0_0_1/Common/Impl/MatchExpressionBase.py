@@ -59,11 +59,11 @@ class MatchExpressionBase(GrammarPhrase):
     '(' 'match' ('type' | 'value') ':'
         (
             'case' <type|expr> (',' <type|expr>)* ','? ':'
-                <expr>
+                <expression>
         )+
         (
             'default' ':'
-                <expr>
+                <expression>
         )?
     ')'
 

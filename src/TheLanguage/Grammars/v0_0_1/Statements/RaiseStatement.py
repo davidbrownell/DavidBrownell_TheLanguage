@@ -55,7 +55,7 @@ class RaiseStatement(GrammarPhrase):
     """\
     Raises an exception.
 
-    'raise' <expr>?
+    'raise' <expression>?
 
     Examples:
         raise
@@ -75,7 +75,7 @@ class RaiseStatement(GrammarPhrase):
                     # 'raise'
                     "raise",
 
-                    # <expr>?
+                    # <expression>?
                     OptionalPhraseItem(DynamicPhrasesType.Expressions),
 
                     CommonTokens.Newline,
@@ -99,7 +99,7 @@ class RaiseStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # <expr>?
+            # <expression>?
             expression_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
             if expression_node is None:
                 expression_info = None
