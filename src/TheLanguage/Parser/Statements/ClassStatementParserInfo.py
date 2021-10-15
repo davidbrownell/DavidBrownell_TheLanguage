@@ -17,7 +17,6 @@
 
 import os
 
-from enum import auto, Enum
 from typing import Dict, Optional, List, Tuple
 
 from dataclasses import dataclass, field, InitVar
@@ -34,411 +33,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
+    from .Impl.ClassTypeInfos import TypeInfo, TYPE_INFOS
 
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
+    from ..Common.ClassType import ClassType
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..Error import Error
     from ..ParserInfo import ParserInfo, Region
-
-
-# ----------------------------------------------------------------------
-class ClassType(Enum):
-    Class                                   = "class"
-    Enum                                    = "enum"
-    Exception                               = "exception"
-    Interface                               = "interface"
-    Mixin                                   = "mixin"
-    Primitive                               = "primitive"
-    Struct                                  = "struct"
-    Trait                                   = "trait"
-
-    # TODO: Introduce synchronized; only mutable, no public data members, ...
-
-# ----------------------------------------------------------------------
-class MethodModifier(Enum):
-    """Modifies how a method should be consumed"""
-
-    abstract                                = auto()
-    final                                   = auto()
-    override                                = auto()
-    standard                                = auto()
-    static                                  = auto()
-    virtual                                 = auto()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class TypeInfo(object):
-    # TODO: This needs refinement
-
-    # Visibility
-    DefaultClassVisibility: VisibilityModifier
-    AllowedClassVisibilities: List[VisibilityModifier]
-
-    DefaultMemberVisibility: VisibilityModifier
-    AllowedMemberVisibilities: List[VisibilityModifier]
-
-    # Base
-    DefaultBaseVisibility: Optional[VisibilityModifier]
-    AllowedBaseVisibilities: List[VisibilityModifier]
-    AllowedBaseTypes: List[ClassType]
-
-    # Implements
-    DefaultImplementsVisibility: Optional[VisibilityModifier]
-    AllowedImplementsVisibilities: List[VisibilityModifier]
-    AllowedImplementsTypes: List[ClassType]
-
-    # Uses
-    DefaultUsesVisibility: Optional[VisibilityModifier]
-    AllowedUsesVisibilities: List[VisibilityModifier]
-    AllowedUsesTypes: List[ClassType]
-
-    # Modifiers
-    DefaultClassModifier: ClassModifierType
-    AllowedClassModifiers: List[ClassModifierType]
-
-    # Methods
-    DefaultMethodModifier: MethodModifier
-    AllowedMethodModifiers: List[MethodModifier]
-
-    # Members
-    AllowDataMembers: bool
-    AllowMutablePublicDataMembers: bool
-
-
-# ----------------------------------------------------------------------
-# |
-# |  Create TypeInfo instances for all ClassType values
-# |
-# ----------------------------------------------------------------------
-_all_method_types                           = list(MethodModifier)
-_all_modifiers                              = list(ClassModifierType)
-_all_visibilities                           = list(VisibilityModifier)
-
-
-TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
-    # TODO: This needs to be completed
-    # TODO: Cog nice tables for this
-
-    # ----------------------------------------------------------------------
-    # |  Class
-    ClassType.Class: TypeInfo(
-        # Class
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Members
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Base
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Class],
-
-        # Implements
-        VisibilityModifier.public,
-        _all_visibilities,
-        [ClassType.Interface, ClassType.Trait],
-
-        # Uses
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Mixin],
-
-        # Modifier
-        ClassModifierType.immutable,
-        _all_modifiers,
-
-        # Methods
-        MethodModifier.standard,
-        _all_method_types,
-
-        # Members
-        AllowDataMembers=True,
-        AllowMutablePublicDataMembers=False,
-    ),
-
-    # ----------------------------------------------------------------------
-    # |  Enum
-    ClassType.Enum: TypeInfo(
-        # Class
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Members
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Base
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Class],
-
-        # Implements
-        VisibilityModifier.public,
-        _all_visibilities,
-        [ClassType.Interface, ClassType.Trait],
-
-        # Uses
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Mixin],
-
-        # Modifier
-        ClassModifierType.immutable,
-        _all_modifiers,
-
-        # Methods
-        MethodModifier.standard,
-        _all_method_types,
-
-        # Members
-        AllowDataMembers=True,
-        AllowMutablePublicDataMembers=False,
-    ),
-
-    # ----------------------------------------------------------------------
-    # |  Exception
-    ClassType.Exception: TypeInfo(
-        # Class
-        VisibilityModifier.public,
-        [VisibilityModifier.public],
-
-        # Members
-        VisibilityModifier.public,
-        [VisibilityModifier.public],
-
-        # Base
-        VisibilityModifier.public,
-        [VisibilityModifier.public],
-        [ClassType.Exception],
-
-        # Implements
-        VisibilityModifier.public,
-        [VisibilityModifier.public],
-        [ClassType.Interface, ClassType.Trait],
-
-        # Uses
-        VisibilityModifier.public,
-        [VisibilityModifier.public],
-        [ClassType.Mixin],
-
-        # Modifier
-        ClassModifierType.immutable,
-        [ClassModifierType.immutable],
-
-        # Methods
-        MethodModifier.standard,
-        _all_method_types,
-
-        # Members
-        AllowDataMembers=True,
-        AllowMutablePublicDataMembers=False,
-    ),
-
-    # ----------------------------------------------------------------------
-    # |  Interface
-    ClassType.Interface: TypeInfo(
-        # Class
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Members
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Base
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Class],
-
-        # Implements
-        VisibilityModifier.public,
-        _all_visibilities,
-        [ClassType.Interface, ClassType.Trait],
-
-        # Uses
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Mixin],
-
-        # Modifier
-        ClassModifierType.immutable,
-        _all_modifiers,
-
-        # Methods
-        MethodModifier.abstract,
-        [MethodModifier.abstract, MethodModifier.override, MethodModifier.virtual],
-
-        # Members
-        AllowDataMembers=True,
-        AllowMutablePublicDataMembers=False,
-    ),
-
-    # ----------------------------------------------------------------------
-    # |  Mixin
-    ClassType.Mixin: TypeInfo(
-        # Class
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Members
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Base
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Class],
-
-        # Implements
-        VisibilityModifier.public,
-        _all_visibilities,
-        [ClassType.Interface, ClassType.Trait],
-
-        # Uses
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Mixin],
-
-        # Modifier
-        ClassModifierType.immutable,
-        _all_modifiers,
-
-        # Methods
-        MethodModifier.standard,
-        _all_method_types,
-
-        # Members
-        AllowDataMembers=True,
-        AllowMutablePublicDataMembers=False,
-    ),
-
-    # ----------------------------------------------------------------------
-    # |  Primitive
-    ClassType.Primitive: TypeInfo(
-        # Class
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Members
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Base
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Class],
-
-        # Implements
-        VisibilityModifier.public,
-        _all_visibilities,
-        [ClassType.Interface, ClassType.Trait],
-
-        # Uses
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Mixin],
-
-        # Modifier
-        ClassModifierType.immutable,
-        _all_modifiers,
-
-        # Methods
-        MethodModifier.standard,
-        _all_method_types,
-
-        # Members
-        AllowDataMembers=True,
-        AllowMutablePublicDataMembers=False,
-    ),
-
-    # ----------------------------------------------------------------------
-    # |  Struct
-    ClassType.Struct: TypeInfo(
-        # Class
-        VisibilityModifier.public,
-        _all_visibilities,
-
-        # Members
-        VisibilityModifier.public,
-        _all_visibilities,
-
-        # Base
-        VisibilityModifier.public,
-        _all_visibilities,
-        [ClassType.Struct],
-
-        # Implements
-        None,
-        [],
-        [],
-
-        # Uses
-        None,
-        [],
-        [],
-
-        # Modifier
-        ClassModifierType.mutable,
-        _all_modifiers,
-
-        # Methods
-        MethodModifier.standard,
-        _all_method_types,
-
-        # Members
-        AllowDataMembers=True,
-        AllowMutablePublicDataMembers=True,
-    ),
-
-    # ----------------------------------------------------------------------
-    # |  Trait
-    ClassType.Trait: TypeInfo(
-        # Class
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Members
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Base
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Class],
-
-        # Implements
-        VisibilityModifier.public,
-        _all_visibilities,
-        [ClassType.Interface, ClassType.Trait],
-
-        # Uses
-        VisibilityModifier.private,
-        _all_visibilities,
-        [ClassType.Mixin],
-
-        # Modifier
-        ClassModifierType.immutable,
-        _all_modifiers,
-
-        # Methods
-        MethodModifier.standard,
-        _all_method_types,
-
-        # Members
-        AllowDataMembers=True,
-        AllowMutablePublicDataMembers=False,
-    ),
-}
-
-assert len(TYPE_INFOS) == len(ClassType)
-
-del _all_visibilities
-del _all_modifiers
-del _all_method_types
 
 
 # ----------------------------------------------------------------------
@@ -828,3 +430,296 @@ class ClassStatementParserInfo(StatementParserInfo):
                 self.ClassType.value,
                 class_modifier.name,
             )
+
+# [[[cog
+#    import os
+#    import sys
+#    import textwrap
+#
+#    import cog
+#
+#    from CommonEnvironmentEx.Package import InitRelativeImports
+#
+#    sys.path.insert(0, os.path.join(os.path.dirname(cog.inFile), "Impl"))
+#    from ClassTypeInfos import *
+#    del sys.path[0]
+#
+#    cog.outl(
+#        textwrap.dedent(
+#            """\
+#
+#            # ----------------------------------------------------------------------------------------
+#            # |                                                                                      |
+#            # |  These comments have been auto-generated by Cog. To update this documentation, run:  |
+#            # |                                                                                      |
+#            # |      cog -r -c -s "  // Generated by Cog" ClassStatementParserInfo.py                |
+#            # |                                                                                      |
+#            # ----------------------------------------------------------------------------------------
+#
+#           """,
+#        ),
+#    )
+#
+#    cog.outl(CogCreateCompleteTable())
+#    cog.outl(CogCreateMembershipTable("Class Visibility", VisibilityModifier, "DefaultClassVisibility", "AllowedClassVisibilities"))
+#    cog.outl(CogCreateMembershipTable("Member Visibility", VisibilityModifier, "DefaultMemberVisibility", "AllowedMemberVisibilities"))
+#    cog.outl(CogCreateMembershipTable("Allowed Bases", ClassType, None, "AllowedBaseTypes"))
+#    cog.outl(CogCreateMembershipTable("Base Visibility", VisibilityModifier, "DefaultBaseVisibility", "AllowedBaseVisibilities"))
+#    cog.outl(CogCreateMembershipTable("Allowed Implements", ClassType, None, "AllowedImplementsTypes"))
+#    cog.outl(CogCreateMembershipTable("Implements Visibility", VisibilityModifier, "DefaultImplementsVisibility", "AllowedImplementsVisibilities"))
+#    cog.outl(CogCreateMembershipTable("Allowed Uses", ClassType, None, "AllowedUsesTypes"))
+#    cog.outl(CogCreateMembershipTable("Uses Visibility", VisibilityModifier, "DefaultUsesVisibility", "AllowedUsesVisibilities"))
+#    cog.outl(CogCreateMembershipTable("Class Modifier", ClassModifierType, "DefaultClassModifier", "AllowedClassModifiers"))
+#    cog.outl(CogCreateMembershipTable("Method Modifier", MethodModifier, "DefaultMethodModifier", "AllowedMethodModifiers"))
+#    cog.outl(CogCreateFlagsTable())
+#
+# ]]]
+
+# ----------------------------------------------------------------------------------------  // Generated by Cog
+# |                                                                                      |  // Generated by Cog
+# |  These comments have been auto-generated by Cog. To update this documentation, run:  |  // Generated by Cog
+# |                                                                                      |  // Generated by Cog
+# |      cog -r -c -s "  // Generated by Cog" ClassStatementParserInfo.py                |  // Generated by Cog
+# |                                                                                      |  // Generated by Cog
+# ----------------------------------------------------------------------------------------  // Generated by Cog
+
+
+# region All Info  // Generated by Cog
+# =================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================  // Generated by Cog
+# ||                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ||  // Generated by Cog
+# ||                                                                                                                                                                                                                                                          All Info                                                                                                                                                                                                                                                           ||  // Generated by Cog
+# ||                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ||  // Generated by Cog
+# =================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================  // Generated by Cog
+# |           |        Class Visibility        |       Member Visibility        |                        Allowed Bases                        |        Base Visibility         |                     Allowed Implements                      |     Implements Visibility      |                        Allowed Uses                         |        Uses Visibility         |    Class Modifier     |                       Method Modifier                       | AllowDataMembers | AllowMutablePublicDataMembers |           |  // Generated by Cog
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  // Generated by Cog
+# | Class     | private*  protected   public   | private*  protected   public   | Class  -       -         -       -       -       -      -   | private*  protected   public   |   -    -       -     Interface   -       -       -    Trait | private   protected   public*  |   -    -       -         -     Mixin     -       -      -   | private*  protected   public   | immutable*  mutable   | abstract   final   override   standard*  static   virtual   |        Y         |               -               |     Class |  // Generated by Cog
+# | Enum      | private*  protected   public   | private*  protected   public   |   -    -       -         -       -       -       -      -   |    -          -         -      |   -    -       -     Interface   -       -       -    Trait |    -          -       public*  |   -    -       -         -       -       -       -      -   |    -          -         -      | immutable*     -      | abstract   final   override   standard*  static   virtual   |        -         |               -               |      Enum |  // Generated by Cog
+# | Exception |    -          -       public*  |    -          -       public*  |   -    -   Exception     -       -       -       -      -   |    -          -       public*  |   -    -       -     Interface   -       -       -    Trait |    -          -       public*  |   -    -       -         -     Mixin     -       -      -   |    -          -       public*  | immutable*     -      | abstract   final   override   standard*  static   virtual   |        Y         |               -               | Exception |  // Generated by Cog
+# | Interface | private*  protected   public   | private*  protected   public   |   -    -       -         -       -       -       -      -   |    -          -         -      |   -    -       -     Interface   -       -       -    Trait |    -          -       public*  |   -    -       -         -       -       -       -      -   |    -          -         -      | immutable*  mutable   | abstract*    -     override      -         -      virtual   |        -         |               -               | Interface |  // Generated by Cog
+# | Mixin     | private*  protected   public   | private*  protected   public   | Class  -       -         -       -       -       -      -   | private*  protected   public   |   -    -       -     Interface   -       -       -    Trait | private   protected   public*  |   -    -       -         -     Mixin     -       -      -   | private*  protected   public   | immutable*  mutable   | abstract   final   override   standard*  static   virtual   |        Y         |               -               |     Mixin |  // Generated by Cog
+# | Primitive | private*  protected   public   | private*  protected   public   |   -    -       -         -       -       -       -      -   |    -          -         -      |   -    -       -         -       -       -       -      -   |    -          -         -      |   -    -       -         -       -       -       -      -   |    -          -         -      | immutable*  mutable   |    -         -        -       standard*  static      -      |        -         |               -               | Primitive |  // Generated by Cog
+# | Struct    | private   protected   public*  | private   protected   public*  |   -    -       -         -       -       -     Struct   -   |    -          -       public*  |   -    -       -         -       -       -       -      -   |    -          -         -      |   -    -       -         -       -       -     Struct   -   |    -          -       public*  | immutable   mutable*  | abstract   final   override   standard*  static   virtual   |        Y         |               Y               |    Struct |  // Generated by Cog
+# | Trait     | private*  protected   public   | private*  protected   public   |   -    -       -         -       -       -       -      -   |    -          -         -      |   -    -       -     Interface   -       -       -    Trait |    -          -       public*  |   -    -       -         -       -       -       -      -   |    -          -         -      | immutable*  mutable   | abstract*    -     override      -         -      virtual   |        -         |               -               |     Trait |  // Generated by Cog
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  // Generated by Cog
+# endregion (All Info)  // Generated by Cog
+
+
+# region Class Visibility  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ||                   Class Visibility                   ||  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            |           | private  | protected  | public |           |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+#            | Class     |   Yes*   |    Yes     |  Yes   |     Class |  // Generated by Cog
+#            | Enum      |   Yes*   |    Yes     |  Yes   |      Enum |  // Generated by Cog
+#            | Exception |    -     |     -      |  Yes*  | Exception |  // Generated by Cog
+#            | Interface |   Yes*   |    Yes     |  Yes   | Interface |  // Generated by Cog
+#            | Mixin     |   Yes*   |    Yes     |  Yes   |     Mixin |  // Generated by Cog
+#            | Primitive |   Yes*   |    Yes     |  Yes   | Primitive |  // Generated by Cog
+#            | Struct    |   Yes    |    Yes     |  Yes*  |    Struct |  // Generated by Cog
+#            | Trait     |   Yes*   |    Yes     |  Yes   |     Trait |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+# endregion (Class Visibility)  // Generated by Cog
+
+
+# region Member Visibility  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ||                  Member Visibility                   ||  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            |           | private  | protected  | public |           |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+#            | Class     |   Yes*   |    Yes     |  Yes   |     Class |  // Generated by Cog
+#            | Enum      |   Yes*   |    Yes     |  Yes   |      Enum |  // Generated by Cog
+#            | Exception |    -     |     -      |  Yes*  | Exception |  // Generated by Cog
+#            | Interface |   Yes*   |    Yes     |  Yes   | Interface |  // Generated by Cog
+#            | Mixin     |   Yes*   |    Yes     |  Yes   |     Mixin |  // Generated by Cog
+#            | Primitive |   Yes*   |    Yes     |  Yes   | Primitive |  // Generated by Cog
+#            | Struct    |   Yes    |    Yes     |  Yes*  |    Struct |  // Generated by Cog
+#            | Trait     |   Yes*   |    Yes     |  Yes   |     Trait |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+# endregion (Member Visibility)  // Generated by Cog
+
+
+# region Allowed Bases  // Generated by Cog
+# ===========================================================================================================  // Generated by Cog
+# ||                                                                                                       ||  // Generated by Cog
+# ||                                             Allowed Bases                                             ||  // Generated by Cog
+# ||                                                                                                       ||  // Generated by Cog
+# ===========================================================================================================  // Generated by Cog
+# |           | Class  | Enum | Exception  | Interface  | Mixin  | Primitive  | Struct | Trait  |           |  // Generated by Cog
+# -----------------------------------------------------------------------------------------------------------  // Generated by Cog
+# | Class     |  Yes   |  -   |     -      |     -      |   -    |     -      |   -    |   -    |     Class |  // Generated by Cog
+# | Enum      |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    |      Enum |  // Generated by Cog
+# | Exception |   -    |  -   |    Yes     |     -      |   -    |     -      |   -    |   -    | Exception |  // Generated by Cog
+# | Interface |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    | Interface |  // Generated by Cog
+# | Mixin     |  Yes   |  -   |     -      |     -      |   -    |     -      |   -    |   -    |     Mixin |  // Generated by Cog
+# | Primitive |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    | Primitive |  // Generated by Cog
+# | Struct    |   -    |  -   |     -      |     -      |   -    |     -      |  Yes   |   -    |    Struct |  // Generated by Cog
+# | Trait     |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    |     Trait |  // Generated by Cog
+# -----------------------------------------------------------------------------------------------------------  // Generated by Cog
+# endregion (Allowed Bases)  // Generated by Cog
+
+
+# region Base Visibility  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ||                   Base Visibility                    ||  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            |           | private  | protected  | public |           |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+#            | Class     |   Yes*   |    Yes     |  Yes   |     Class |  // Generated by Cog
+#            | Enum      |    -     |     -      |   -    |      Enum |  // Generated by Cog
+#            | Exception |    -     |     -      |  Yes*  | Exception |  // Generated by Cog
+#            | Interface |    -     |     -      |   -    | Interface |  // Generated by Cog
+#            | Mixin     |   Yes*   |    Yes     |  Yes   |     Mixin |  // Generated by Cog
+#            | Primitive |    -     |     -      |   -    | Primitive |  // Generated by Cog
+#            | Struct    |    -     |     -      |  Yes*  |    Struct |  // Generated by Cog
+#            | Trait     |    -     |     -      |   -    |     Trait |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+# endregion (Base Visibility)  // Generated by Cog
+
+
+# region Allowed Implements  // Generated by Cog
+# ===========================================================================================================  // Generated by Cog
+# ||                                                                                                       ||  // Generated by Cog
+# ||                                          Allowed Implements                                           ||  // Generated by Cog
+# ||                                                                                                       ||  // Generated by Cog
+# ===========================================================================================================  // Generated by Cog
+# |           | Class  | Enum | Exception  | Interface  | Mixin  | Primitive  | Struct | Trait  |           |  // Generated by Cog
+# -----------------------------------------------------------------------------------------------------------  // Generated by Cog
+# | Class     |   -    |  -   |     -      |    Yes     |   -    |     -      |   -    |  Yes   |     Class |  // Generated by Cog
+# | Enum      |   -    |  -   |     -      |    Yes     |   -    |     -      |   -    |  Yes   |      Enum |  // Generated by Cog
+# | Exception |   -    |  -   |     -      |    Yes     |   -    |     -      |   -    |  Yes   | Exception |  // Generated by Cog
+# | Interface |   -    |  -   |     -      |    Yes     |   -    |     -      |   -    |  Yes   | Interface |  // Generated by Cog
+# | Mixin     |   -    |  -   |     -      |    Yes     |   -    |     -      |   -    |  Yes   |     Mixin |  // Generated by Cog
+# | Primitive |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    | Primitive |  // Generated by Cog
+# | Struct    |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    |    Struct |  // Generated by Cog
+# | Trait     |   -    |  -   |     -      |    Yes     |   -    |     -      |   -    |  Yes   |     Trait |  // Generated by Cog
+# -----------------------------------------------------------------------------------------------------------  // Generated by Cog
+# endregion (Allowed Implements)  // Generated by Cog
+
+
+# region Implements Visibility  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ||                Implements Visibility                 ||  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            |           | private  | protected  | public |           |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+#            | Class     |   Yes    |    Yes     |  Yes*  |     Class |  // Generated by Cog
+#            | Enum      |    -     |     -      |  Yes*  |      Enum |  // Generated by Cog
+#            | Exception |    -     |     -      |  Yes*  | Exception |  // Generated by Cog
+#            | Interface |    -     |     -      |  Yes*  | Interface |  // Generated by Cog
+#            | Mixin     |   Yes    |    Yes     |  Yes*  |     Mixin |  // Generated by Cog
+#            | Primitive |    -     |     -      |   -    | Primitive |  // Generated by Cog
+#            | Struct    |    -     |     -      |   -    |    Struct |  // Generated by Cog
+#            | Trait     |    -     |     -      |  Yes*  |     Trait |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+# endregion (Implements Visibility)  // Generated by Cog
+
+
+# region Allowed Uses  // Generated by Cog
+# ===========================================================================================================  // Generated by Cog
+# ||                                                                                                       ||  // Generated by Cog
+# ||                                             Allowed Uses                                              ||  // Generated by Cog
+# ||                                                                                                       ||  // Generated by Cog
+# ===========================================================================================================  // Generated by Cog
+# |           | Class  | Enum | Exception  | Interface  | Mixin  | Primitive  | Struct | Trait  |           |  // Generated by Cog
+# -----------------------------------------------------------------------------------------------------------  // Generated by Cog
+# | Class     |   -    |  -   |     -      |     -      |  Yes   |     -      |   -    |   -    |     Class |  // Generated by Cog
+# | Enum      |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    |      Enum |  // Generated by Cog
+# | Exception |   -    |  -   |     -      |     -      |  Yes   |     -      |   -    |   -    | Exception |  // Generated by Cog
+# | Interface |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    | Interface |  // Generated by Cog
+# | Mixin     |   -    |  -   |     -      |     -      |  Yes   |     -      |   -    |   -    |     Mixin |  // Generated by Cog
+# | Primitive |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    | Primitive |  // Generated by Cog
+# | Struct    |   -    |  -   |     -      |     -      |   -    |     -      |  Yes   |   -    |    Struct |  // Generated by Cog
+# | Trait     |   -    |  -   |     -      |     -      |   -    |     -      |   -    |   -    |     Trait |  // Generated by Cog
+# -----------------------------------------------------------------------------------------------------------  // Generated by Cog
+# endregion (Allowed Uses)  // Generated by Cog
+
+
+# region Uses Visibility  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ||                   Uses Visibility                    ||  // Generated by Cog
+#            ||                                                      ||  // Generated by Cog
+#            ==========================================================  // Generated by Cog
+#            |           | private  | protected  | public |           |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+#            | Class     |   Yes*   |    Yes     |  Yes   |     Class |  // Generated by Cog
+#            | Enum      |    -     |     -      |   -    |      Enum |  // Generated by Cog
+#            | Exception |    -     |     -      |  Yes*  | Exception |  // Generated by Cog
+#            | Interface |    -     |     -      |   -    | Interface |  // Generated by Cog
+#            | Mixin     |   Yes*   |    Yes     |  Yes   |     Mixin |  // Generated by Cog
+#            | Primitive |    -     |     -      |   -    | Primitive |  // Generated by Cog
+#            | Struct    |    -     |     -      |  Yes*  |    Struct |  // Generated by Cog
+#            | Trait     |    -     |     -      |   -    |     Trait |  // Generated by Cog
+#            ----------------------------------------------------------  // Generated by Cog
+# endregion (Uses Visibility)  // Generated by Cog
+
+
+# region Class Modifier  // Generated by Cog
+#                =================================================  // Generated by Cog
+#                ||                                             ||  // Generated by Cog
+#                ||               Class Modifier                ||  // Generated by Cog
+#                ||                                             ||  // Generated by Cog
+#                =================================================  // Generated by Cog
+#                |           | immutable  | mutable  |           |  // Generated by Cog
+#                -------------------------------------------------  // Generated by Cog
+#                | Class     |    Yes*    |   Yes    |     Class |  // Generated by Cog
+#                | Enum      |    Yes*    |    -     |      Enum |  // Generated by Cog
+#                | Exception |    Yes*    |    -     | Exception |  // Generated by Cog
+#                | Interface |    Yes*    |   Yes    | Interface |  // Generated by Cog
+#                | Mixin     |    Yes*    |   Yes    |     Mixin |  // Generated by Cog
+#                | Primitive |    Yes*    |   Yes    | Primitive |  // Generated by Cog
+#                | Struct    |    Yes     |   Yes*   |    Struct |  // Generated by Cog
+#                | Trait     |    Yes*    |   Yes    |     Trait |  // Generated by Cog
+#                -------------------------------------------------  // Generated by Cog
+# endregion (Class Modifier)  // Generated by Cog
+
+
+# region Method Modifier  // Generated by Cog
+# =======================================================================================  // Generated by Cog
+# ||                                                                                   ||  // Generated by Cog
+# ||                                  Method Modifier                                  ||  // Generated by Cog
+# ||                                                                                   ||  // Generated by Cog
+# =======================================================================================  // Generated by Cog
+# |           | abstract | final  | override | standard | static | virtual  |           |  // Generated by Cog
+# ---------------------------------------------------------------------------------------  // Generated by Cog
+# | Class     |   Yes    |  Yes   |   Yes    |   Yes*   |  Yes   |   Yes    |     Class |  // Generated by Cog
+# | Enum      |   Yes    |  Yes   |   Yes    |   Yes*   |  Yes   |   Yes    |      Enum |  // Generated by Cog
+# | Exception |   Yes    |  Yes   |   Yes    |   Yes*   |  Yes   |   Yes    | Exception |  // Generated by Cog
+# | Interface |   Yes*   |   -    |   Yes    |    -     |   -    |   Yes    | Interface |  // Generated by Cog
+# | Mixin     |   Yes    |  Yes   |   Yes    |   Yes*   |  Yes   |   Yes    |     Mixin |  // Generated by Cog
+# | Primitive |    -     |   -    |    -     |   Yes*   |  Yes   |    -     | Primitive |  // Generated by Cog
+# | Struct    |   Yes    |  Yes   |   Yes    |   Yes*   |  Yes   |   Yes    |    Struct |  // Generated by Cog
+# | Trait     |   Yes*   |   -    |   Yes    |    -     |   -    |   Yes    |     Trait |  // Generated by Cog
+# ---------------------------------------------------------------------------------------  // Generated by Cog
+# endregion (Method Modifier)  // Generated by Cog
+
+
+# region Flags  // Generated by Cog
+#   ============================================================================  // Generated by Cog
+#   ||                                                                        ||  // Generated by Cog
+#   ||                                 Flags                                  ||  // Generated by Cog
+#   ||                                                                        ||  // Generated by Cog
+#   ============================================================================  // Generated by Cog
+#   |           | AllowDataMembers | AllowMutablePublicDataMembers |           |  // Generated by Cog
+#   | Class     |        Y         |               -               |     Class |  // Generated by Cog
+#   | Enum      |        -         |               -               |      Enum |  // Generated by Cog
+#   | Exception |        Y         |               -               | Exception |  // Generated by Cog
+#   | Interface |        -         |               -               | Interface |  // Generated by Cog
+#   | Mixin     |        Y         |               -               |     Mixin |  // Generated by Cog
+#   | Primitive |        -         |               -               | Primitive |  // Generated by Cog
+#   | Struct    |        Y         |               Y               |    Struct |  // Generated by Cog
+#   | Trait     |        -         |               -               |     Trait |  // Generated by Cog
+#   ----------------------------------------------------------------------------  // Generated by Cog
+# endregion (Flags)  // Generated by Cog
+
+# [[[end]]] (checksum: 7ce49fa7491d737607493bc42ead1173)

@@ -32,6 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..ClassStatementParserInfo import *
     from ...Common.AutomatedTests import RegionCreator
+    from ...Common.MethodModifier import MethodModifier
 
 
 # ----------------------------------------------------------------------

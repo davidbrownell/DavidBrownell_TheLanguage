@@ -36,6 +36,7 @@ with InitRelativeImports():
 
     from ..Common import AttributesPhraseItem
     from ..Common import ClassModifier
+    from ..Common import MethodModifier
     from ..Common import ParametersPhraseItem
 
     from ..Common import StatementsPhraseItem
@@ -61,7 +62,6 @@ with InitRelativeImports():
 
     from ....Parser.Statements.FuncDefinitionStatementParserInfo import (
         FuncDefinitionStatementParserInfo,
-        MethodModifierType,
         OperatorType,
         TypeParserInfo,
     )
@@ -214,7 +214,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                     # <method_type_modifier>?
                     OptionalPhraseItem.Create(
                         name="Method Type",
-                        item=self._CreateMethodTypePhraseItem(),
+                        item=MethodModifier.CreatePhraseItem(),
                     ),
 
                     # <type>
@@ -278,7 +278,7 @@ class FuncDefinitionStatement(GrammarPhrase):
             if method_type_modifier_node is None:
                 method_type_modifier_info = None
             else:
-                method_type_modifier_info = cls._ExtractMethodType(method_type_modifier_node)
+                method_type_modifier_info = MethodModifier.Extract(method_type_modifier_node)
 
             # <type>
             return_type_node = ExtractDynamic(cast(AST.Node, nodes[3]))
@@ -391,9 +391,3 @@ class FuncDefinitionStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
 
         return Impl
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    _CreateMethodTypePhraseItem             = staticmethod(ModifierImpl.StandardCreatePhraseItemFuncFactory(MethodModifierType))
-    _ExtractMethodType                      = staticmethod(ModifierImpl.StandardExtractFuncFactory(MethodModifierType))

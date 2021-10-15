@@ -33,14 +33,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ClassStatementParserInfo import (
-        ClassStatementParserInfo,
-        MethodModifier as MethodModifierType,
-    )
+    from .ClassStatementParserInfo import ClassStatementParserInfo
 
     from .StatementParserInfo import StatementParserInfo
 
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
+    from ..Common.MethodModifier import MethodModifier as MethodModifierType
     from ..Common.ParametersParserInfo import ParametersParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier
 

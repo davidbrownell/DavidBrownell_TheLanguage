@@ -33,6 +33,7 @@ with InitRelativeImports():
     from ..ClassMemberStatementParserInfo import *
     from ..ClassStatementParserInfo import *
     from ...Common.AutomatedTests import RegionCreator
+    from ...Common.MethodModifier import MethodModifier
 
 
 # ----------------------------------------------------------------------
