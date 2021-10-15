@@ -202,14 +202,13 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
         # ----------------------------------------------------------------------
 
         for the_field in fields(self):
-            if the_field.name in self._regionless_attributes: # pylint: disable=unsupported-membership-test
-                continue
-
             data_value = getattr(self, the_field.name)
 
-            field_type = getattr(the_field.type, "__origin__", None)
-            if field_type == List:
+            if isinstance(data_value, list) and not data_value:
                 assert data_value, (the_field.name, "Lists should never be empty; wrap it in 'Optional' if an empty list is a valid value")
+
+            if the_field.name in self._regionless_attributes: # pylint: disable=unsupported-membership-test
+                continue
 
             # The data and region values should both be None of both be not None
             region_value = getattr(self.Regions__, the_field.name)

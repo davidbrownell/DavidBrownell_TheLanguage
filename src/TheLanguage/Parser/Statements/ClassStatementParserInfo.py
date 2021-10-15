@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, Optional, List, Tuple
+from typing import Optional, List, Tuple
 
 from dataclasses import dataclass, field, InitVar
 
@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
-    from .Impl.ClassTypeInfos import TypeInfo, TYPE_INFOS
+    from .Impl.ClassTypeInfos import TypeInfo, TYPE_INFOS  # <Incorrect: Unused TypeInfo> pylint: disable=W0611
 
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
     from ..Common.ClassType import ClassType
@@ -223,7 +223,7 @@ class ClassDependencyParserInfo(ParserInfo):
     Name: str
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, visibility):
+    def __post_init__(self, regions, visibility):  # <Parameters differ> pylint: disable=W0221
         super(ClassDependencyParserInfo, self).__post_init__(
             regions,
             should_validate=False,
@@ -264,7 +264,7 @@ class ClassStatementParserInfo(StatementParserInfo):
     Documentation: Optional[str]            = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, visibility, class_modifier, type_info):
+    def __post_init__(self, regions, visibility, class_modifier, type_info):  # <Parameters differ> pylint: disable=W0221
         super(ClassStatementParserInfo, self).__post_init__(
             regions,
             regionless_attributes=["TypeInfo"],
@@ -430,6 +430,10 @@ class ClassStatementParserInfo(StatementParserInfo):
                 self.ClassType.value,
                 class_modifier.name,
             )
+
+
+# pylint: disable=line-too-long
+# <line too long> pylint: disable=C0301
 
 # [[[cog
 #    import os

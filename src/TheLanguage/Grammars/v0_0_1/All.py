@@ -62,6 +62,7 @@ with InitRelativeImports():
     from .Statements.ForStatement import ForStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
     from .Statements.IfStatement import IfStatement
+    from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
     from .Statements.RaiseStatement import RaiseStatement
     from .Statements.ReturnStatement import ReturnStatement
@@ -74,7 +75,6 @@ with InitRelativeImports():
 
     # TODO: Remaining
     #       - FuncInvocationStatement
-    #       - ImportStatement
 
     # Types
     from .Types.StandardType import StandardType
@@ -122,6 +122,7 @@ GrammarPhrases                              = [
     ForStatement(),
     FuncDefinitionStatement(),
     IfStatement(),
+    ImportStatement(".TheLanguage"), # TODO: Update when the official name is known
     PassStatement(),
     RaiseStatement(),
     ReturnStatement(),
