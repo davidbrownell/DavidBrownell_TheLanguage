@@ -54,6 +54,7 @@ with InitRelativeImports():
     # Statements
     from .Statements.BinaryStatement import BinaryStatement
     from .Statements.BreakStatement import BreakStatement
+    from .Statements.ClassMemberStatement import ClassMemberStatement
     from .Statements.ClassStatement import ClassStatement
     from .Statements.ContinueStatement import ContinueStatement
     from .Statements.DeleteStatement import DeleteStatement
@@ -72,7 +73,6 @@ with InitRelativeImports():
     from .Statements.YieldStatement import YieldStatement
 
     # TODO: Remaining
-    #       - ClassMemberStatement
     #       - FuncInvocationStatement
     #       - ImportStatement
 
@@ -114,6 +114,7 @@ GrammarPhrases                              = [
     # Statements
     BinaryStatement(),
     BreakStatement(),
+    ClassMemberStatement(),
     ClassStatement(),
     ContinueStatement(),
     DeleteStatement(),

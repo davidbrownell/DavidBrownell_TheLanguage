@@ -53,6 +53,7 @@ class ClassType(Enum):
     Struct                                  = "struct"
     Trait                                   = "trait"
 
+    # TODO: Introduce synchronized; only mutable, no public data members, ...
 
 # ----------------------------------------------------------------------
 class MethodModifier(Enum):
@@ -118,6 +119,7 @@ _all_visibilities                           = list(VisibilityModifier)
 
 TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
     # TODO: This needs to be completed
+    # TODO: Cog nice tables for this
 
     # ----------------------------------------------------------------------
     # |  Class
@@ -389,7 +391,7 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
 
         # Members
         AllowDataMembers=True,
-        AllowMutablePublicDataMembers=False,
+        AllowMutablePublicDataMembers=True,
     ),
 
     # ----------------------------------------------------------------------

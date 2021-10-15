@@ -485,8 +485,8 @@ class TestStatementsPhraseItem(object):
         assert ex.Region.End.Column == 8
 
     # ----------------------------------------------------------------------
-    def test_StatementsRequiredError(self):
-        with pytest.raises(StatementsRequiredError) as ex:
+    def test_ClassStatementsRequiredError(self):
+        with pytest.raises(ClassStatementsRequiredError) as ex:
             Execute(
                 textwrap.dedent(
                     """\

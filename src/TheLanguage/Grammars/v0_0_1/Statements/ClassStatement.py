@@ -96,7 +96,7 @@ class DuplicateBaseTypeError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class StatementsRequiredError(Error):
+class ClassStatementsRequiredError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Classes must have at least one statement.",
     )
@@ -401,7 +401,7 @@ class ClassStatement(GrammarPhrase):
                 )
 
                 if not statement_info:
-                    raise StatementsRequiredError.FromNode(statements_node)
+                    raise ClassStatementsRequiredError.FromNode(statements_node)
 
             parser_info.FinalConstruct(statement_info, docstring_info)
 
