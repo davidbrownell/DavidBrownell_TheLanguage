@@ -59,7 +59,7 @@ with InitRelativeImports():
     from ....Parser.Parser import CreateParserRegions
 
     from ....Parser.Statements.ImportStatementParserInfo import (
-        ImportItemParserInfo,
+        ImportStatementItemParserInfo,
         ImportStatementParserInfo,
         ImportType,
     )
@@ -377,7 +377,7 @@ class ImportStatement(ImportGrammarPhrase):
         # Imports
         import_items = [
             # pylint: disable=too-many-function-args
-            ImportItemParserInfo(
+            ImportStatementItemParserInfo(
                 CreateParserRegions(data.node, data.name_leaf, data.alias_leaf),  # type: ignore
                 data.name_info,
                 data.alias_info,
@@ -399,7 +399,7 @@ class ImportStatement(ImportGrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     @dataclass
-    class ImportItemParserInfoData(object):
+    class ImportStatementItemParserInfoData(object):
         node: AST.Node
 
         name_leaf: AST.Leaf
@@ -425,9 +425,9 @@ class ImportStatement(ImportGrammarPhrase):
         cls,
         nodes: List[Union[None, AST.Leaf, AST.Node]],
     ) -> Generator[
-        # Note that we can't use ImportItemParserInfo here, as it will validate regions when constructed
+        # Note that we can't use ImportStatementItemParserInfo here, as it will validate regions when constructed
         # and regions may not be valid yes since this will be invoked so early within the lexing process.
-        "ImportItemParserInfoData",
+        "ImportStatementItemParserInfoData",
         None,
         None,
     ]:
@@ -464,7 +464,7 @@ class ImportStatement(ImportGrammarPhrase):
                 alias_node = cast(AST.Leaf, ExtractSequence(alias_node)[1])
                 alias_info = cast(str, ExtractToken(alias_node))
 
-            yield cls.ImportItemParserInfoData(
+            yield cls.ImportStatementItemParserInfoData(
                 cast(AST.Node, content_item_node),
                 name_leaf,
                 name_info,

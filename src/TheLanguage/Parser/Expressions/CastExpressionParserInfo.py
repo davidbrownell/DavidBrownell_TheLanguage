@@ -35,6 +35,8 @@ with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
 
     from ..Common.TypeModifier import TypeModifier
+    from ..Common.VisitorTools import StackHelper, VisitType
+
     from ..Types.TypeParserInfo import TypeParserInfo
 
     from ..Error import Error
@@ -90,3 +92,22 @@ class CastExpressionParserInfo(ExpressionParserInfo):
 
         else:
             assert False, self.Type  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnCastExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["Expression"]:
+                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+
+            if isinstance(self.Type, TypeParserInfo):
+                with helper["Type"]:
+                    results.append(self.Type.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnCastExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

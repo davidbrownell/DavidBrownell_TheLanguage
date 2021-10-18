@@ -22,6 +22,7 @@ from typing import Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
+    from ..Common.VisitorTools import StackHelper, VisitType
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
@@ -39,3 +41,18 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class RaiseStatementParserInfo(StatementParserInfo):
     Expression: Optional[ExpressionParserInfo]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnRaiseStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        if self.Expression is not None:
+            with StackHelper(stack)[(self, "Expression")] as helper:
+                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnRaiseStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

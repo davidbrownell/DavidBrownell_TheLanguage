@@ -22,6 +22,7 @@ from typing import Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
+
+    from ..Common.VisitorTools import StackHelper, VisitType
     from ..Names.NameParserInfo import NameParserInfo
 
 
@@ -54,3 +57,28 @@ class GeneratorExpressionParserInfo(ExpressionParserInfo):
     Name: NameParserInfo
     SourceExpression: ExpressionParserInfo
     ConditionExpression: Optional[ExpressionParserInfo]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnGeneratorExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["ResultExpression"]:
+                results.append(self.ResultExpression.Accept(visitor, helper.stack, *args, **kwargs))
+
+            with helper["Name"]:
+                results.append(self.Name.Accept(visitor, helper.stack, *args, **kwargs))
+
+            with helper["SourceExpression"]:
+                results.append(self.SourceExpression.Accept(visitor, helper.stack, *args, **kwargs))
+
+            if self.ConditionExpression is not None:
+                with helper["ConditionExpression"]:
+                    results.append(self.ConditionExpression.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnGeneratorExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

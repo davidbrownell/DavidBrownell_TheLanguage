@@ -37,6 +37,7 @@ with InitRelativeImports():
 
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
     from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Common.VisitorTools import StackHelper, VisitType
 
     from ..Error import Error
 
@@ -134,3 +135,22 @@ class ClassMemberStatementParserInfo(StatementParserInfo):
             raise PublicMutableDataMembersNotSupportedError(self.Regions__.ClassModifier, class_parser_info.ClassType.value)  # type: ignore && pylint: disable=no-member
 
         self.Validate()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnClassMemberStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["Type"]:
+                results.append(self.Type.Accept(visitor, helper.stack, *args, **kwargs))
+
+            if self.InitializedValue is not None:
+                with helper["InitializedValue"]:
+                    results.append(self.InitializedValue.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnClassMemberStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

@@ -22,6 +22,7 @@ from typing import List
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ParserInfo import ParserInfo
+    from .Common.VisitorTools import StackHelper, VisitType
 
 
 # ----------------------------------------------------------------------
@@ -45,3 +47,17 @@ class RootParserInfo(ParserInfo):
             regions,
             regionless_attributes=["Statements"],
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnRoot(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[(self, "Statements")] as helper:
+            results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])
+
+        results.append(visitor.OnRoot(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

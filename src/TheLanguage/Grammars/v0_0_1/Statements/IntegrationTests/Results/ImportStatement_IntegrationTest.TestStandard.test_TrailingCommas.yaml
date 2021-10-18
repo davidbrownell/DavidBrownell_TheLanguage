@@ -4,10 +4,10 @@ Regions__: # <class 'types.RootParserInfoRegions'>
 Statements:
   - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
     ImportItems:
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: None
         Name: "File1"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: None
           Name: "[Ln 1, Col 15] -> [Ln 1, Col 20]"
           Self__: "[Ln 1, Col 15] -> [Ln 1, Col 20]"
@@ -20,17 +20,17 @@ Statements:
     Visibility: "VisibilityModifier.private"
   - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
     ImportItems:
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: None
         Name: "Obj1"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: None
           Name: "[Ln 2, Col 22] -> [Ln 2, Col 26]"
           Self__: "[Ln 2, Col 22] -> [Ln 2, Col 26]"
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: None
         Name: "Obj2"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: None
           Name: "[Ln 2, Col 28] -> [Ln 2, Col 32]"
           Self__: "[Ln 2, Col 28] -> [Ln 2, Col 32]"
@@ -43,10 +43,10 @@ Statements:
     Visibility: "VisibilityModifier.private"
   - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
     ImportItems:
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: "Obj3Decorated"
         Name: "Obj3"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: "[Ln 5, Col 13] -> [Ln 5, Col 26]"
           Name: "[Ln 5, Col 5] -> [Ln 5, Col 9]"
           Self__: "[Ln 5, Col 5] -> [Ln 5, Col 26]"
@@ -59,17 +59,17 @@ Statements:
     Visibility: "VisibilityModifier.private"
   - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
     ImportItems:
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: None
         Name: "Obj4"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: None
           Name: "[Ln 9, Col 5] -> [Ln 9, Col 9]"
           Self__: "[Ln 9, Col 5] -> [Ln 9, Col 9]"
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: None
         Name: "obj5"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: None
           Name: "[Ln 9, Col 11] -> [Ln 9, Col 15]"
           Self__: "[Ln 9, Col 11] -> [Ln 9, Col 15]"
