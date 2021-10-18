@@ -22,6 +22,7 @@ from enum import auto, Enum
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
+    from ..Common.VisitorTools import StackHelper, VisitType
 
 
 # ----------------------------------------------------------------------
@@ -59,3 +61,17 @@ class OperatorType(Enum):
 class UnaryExpressionParserInfo(ExpressionParserInfo):
     Operator: OperatorType
     Expression: ExpressionParserInfo
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnUnaryExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[(self, "Expression")] as helper:
+            results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnUnaryExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

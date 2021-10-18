@@ -38,6 +38,7 @@ with InitRelativeImports():
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
     from ..Common.ClassType import ClassType
     from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Common.VisitorTools import StackHelper, VisitType
 
     from ..Error import Error
     from ..ParserInfo import ParserInfo, Region
@@ -216,7 +217,7 @@ class StatementsRequiredError(Error):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassDependencyParserInfo(ParserInfo):
+class ClassStatementDependencyParserInfo(ParserInfo):
     visibility: InitVar[Optional[VisibilityModifier]]
     Visibility: VisibilityModifier          = field(init=False)
 
@@ -224,7 +225,7 @@ class ClassDependencyParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions, visibility):  # <Parameters differ> pylint: disable=W0221
-        super(ClassDependencyParserInfo, self).__post_init__(
+        super(ClassStatementDependencyParserInfo, self).__post_init__(
             regions,
             should_validate=False,
         )
@@ -237,6 +238,11 @@ class ClassDependencyParserInfo(ParserInfo):
         object.__setattr__(self, "Visibility", visibility)
 
         self.Validate()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        return visitor.OnClassDependency(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -252,9 +258,9 @@ class ClassStatementParserInfo(StatementParserInfo):
 
     ClassType: ClassType
     Name: str
-    Base: Optional[ClassDependencyParserInfo]
-    Implements: Optional[List[ClassDependencyParserInfo]]
-    Uses: Optional[List[ClassDependencyParserInfo]]
+    Base: Optional[ClassStatementDependencyParserInfo]
+    Implements: Optional[List[ClassStatementDependencyParserInfo]]
+    Uses: Optional[List[ClassStatementDependencyParserInfo]]
 
     type_info: InitVar[Optional[TypeInfo]]  = None  # type: ignore
     TypeInfo: TypeInfo                      = field(init=False)
@@ -431,7 +437,37 @@ class ClassStatementParserInfo(StatementParserInfo):
                 class_modifier.name,
             )
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
 
+        results.append(visitor.OnClassStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            if self.Base is not None:
+                with helper["Base"]:
+                    results.append(self.Base.Accept(visitor, helper.stack, *args, **kwargs))
+
+            if self.Implements is not None:
+                with helper["Implements"]:
+                    results.append([dependency.Accept(visitor, helper.stack, *args, **kwargs) for dependency in self.Implements])
+
+            if self.Uses is not None:
+                with helper["Uses"]:
+                    results.append([dependency.Accept(visitor, helper.stack, *args, **kwargs) for dependency in self.Uses])
+
+            with helper["Statements"]:
+                results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])  # type: ignore && pylint: disable=not-an-iterable
+
+        results.append(visitor.OnClassStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results
+
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # pylint: disable=line-too-long
 # <line too long> pylint: disable=C0301
 
@@ -441,8 +477,6 @@ class ClassStatementParserInfo(StatementParserInfo):
 #    import textwrap
 #
 #    import cog
-#
-#    from CommonEnvironmentEx.Package import InitRelativeImports
 #
 #    sys.path.insert(0, os.path.join(os.path.dirname(cog.inFile), "Impl"))
 #    from ClassTypeInfos import *

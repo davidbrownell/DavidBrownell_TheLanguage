@@ -5,7 +5,7 @@ Statements:
   - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
     Expression: # <class 'TheLanguage.Parser.Expressions.MatchTypeExpressionParserInfo.MatchTypeExpressionParserInfo'>
       CasePhrases:
-        - # <class 'TheLanguage.Parser.Expressions.MatchTypeExpressionParserInfo.MatchTypeCasePhraseParserInfo'>
+        - # <class 'TheLanguage.Parser.Expressions.MatchTypeExpressionParserInfo.MatchTypeExpressionClauseParserInfo'>
           Cases:
             - # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
               Modifier: None
@@ -30,7 +30,7 @@ Statements:
             Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
               Name: "[Ln 3, Col 26] -> [Ln 3, Col 32]"
               Self__: "[Ln 3, Col 26] -> [Ln 3, Col 32]"
-          Regions__: # <class 'types.MatchTypeCasePhraseParserInfoRegions'>
+          Regions__: # <class 'types.MatchTypeExpressionClauseParserInfoRegions'>
             Cases: "[Ln 3, Col 14] -> [Ln 3, Col 24]"
             Expression: "[Ln 3, Col 26] -> [Ln 4, Col 1]"
             Self__: "[Ln 3, Col 9] -> [Ln 4, Col 1]"

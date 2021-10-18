@@ -29,6 +29,7 @@ from dataclasses import (
 )
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 from CommonEnvironment import YamlRepr
 
 # ----------------------------------------------------------------------
@@ -116,7 +117,7 @@ class Region(object):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ParserInfo(YamlRepr.ObjectReprImplBase):
+class ParserInfo(Interface.Interface, YamlRepr.ObjectReprImplBase):
 
     regions: InitVar[List[Optional[Region]]]
 
@@ -226,3 +227,9 @@ class ParserInfo(YamlRepr.ObjectReprImplBase):
                 continue
 
             assert region_value in self.Regions__.Self__, (the_field.name, region_value, self.Regions__.Self__)  # type: ignore && pylint: disable=no-member
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def Accept(visitor, stack, *args, **kwargs):
+        raise Exception("Abstract method")  # pragma: no cover

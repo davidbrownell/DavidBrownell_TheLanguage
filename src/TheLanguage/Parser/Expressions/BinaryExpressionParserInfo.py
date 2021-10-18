@@ -22,6 +22,7 @@ from enum import auto, Enum
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
+    from ..Common.VisitorTools import StackHelper, VisitType
 
 
 # ----------------------------------------------------------------------
@@ -77,3 +79,21 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
     Left: ExpressionParserInfo
     Operator: OperatorType
     Right: ExpressionParserInfo
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnBinaryExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["Left"]:
+                results.append(self.Left.Accept(visitor, helper.stack, *args, **kwargs))
+
+            with helper["Right"]:
+                results.append(self.Right.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnBinaryExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

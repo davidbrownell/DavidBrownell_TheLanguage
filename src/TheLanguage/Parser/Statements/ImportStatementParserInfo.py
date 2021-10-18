@@ -23,6 +23,7 @@ from typing import List, Optional
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -34,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfo, StatementParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Common.VisitorTools import StackHelper, VisitType
 
 
 # ----------------------------------------------------------------------
@@ -44,9 +46,14 @@ class ImportType(Enum):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ImportItemParserInfo(ParserInfo):
+class ImportStatementItemParserInfo(ParserInfo):
     Name: str
     Alias: Optional[str]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        return visitor.OnImportItem(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -56,7 +63,7 @@ class ImportStatementParserInfo(StatementParserInfo):
 
     Visibility: VisibilityModifier          = field(init=False)
     SourceFilename: str
-    ImportItems: List[ImportItemParserInfo]
+    ImportItems: List[ImportStatementItemParserInfo]
     ImportType: ImportType
 
     # ----------------------------------------------------------------------
@@ -75,3 +82,17 @@ class ImportStatementParserInfo(StatementParserInfo):
         object.__setattr__(self, "Visibility", visibility)
 
         self.Validate()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnImportStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[(self, "ImportItems")] as helper:
+            results.append([import_item.Accept(visitor, helper.stack, *args, **kwargs) for import_item in self.ImportItems])
+
+        results.append(visitor.OnImportStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

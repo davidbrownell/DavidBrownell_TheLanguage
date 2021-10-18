@@ -22,6 +22,7 @@ from typing import List, Union
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
     from ..Common.ArgumentParserInfo import ArgumentParserInfo
+    from ..Common.VisitorTools import StackHelper, VisitType
 
 
 # ----------------------------------------------------------------------
@@ -53,3 +55,22 @@ class FuncInvocationExpressionParserInfo(ExpressionParserInfo):
             assert self.Arguments is False, self.Arguments
         else:
             assert self.Arguments
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnFuncInvocationExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["Expression"]:
+                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+
+            if isinstance(self.Arguments, list):
+                with helper["Arguments"]:
+                    results.append([arg.Accept(visitor, helper.stack, *args, **kwargs) for arg in self.Arguments])
+
+        results.append(visitor.OnFuncInvocationExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

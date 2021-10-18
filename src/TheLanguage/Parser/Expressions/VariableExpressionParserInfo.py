@@ -20,6 +20,7 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
+    from ..Common.VisitorTools import StackHelper, VisitType
     from ..Names.NameParserInfo import NameParserInfo
 
 
@@ -37,3 +39,17 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class VariableExpressionParserInfo(ExpressionParserInfo):
     Name: NameParserInfo
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnVariableExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[(self, "Name")] as helper:
+            results.append(self.Name.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnVariableExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

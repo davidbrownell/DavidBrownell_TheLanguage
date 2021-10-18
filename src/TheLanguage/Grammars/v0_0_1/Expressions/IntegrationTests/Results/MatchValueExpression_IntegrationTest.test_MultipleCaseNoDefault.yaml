@@ -5,7 +5,7 @@ Statements:
   - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
     Expression: # <class 'TheLanguage.Parser.Expressions.MatchValueExpressionParserInfo.MatchValueExpressionParserInfo'>
       CasePhrases:
-        - # <class 'TheLanguage.Parser.Expressions.MatchValueExpressionParserInfo.MatchValueCasePhraseParserInfo'>
+        - # <class 'TheLanguage.Parser.Expressions.MatchValueExpressionParserInfo.MatchValueExpressionClauseParserInfo'>
           Cases:
             - # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
               Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
@@ -25,11 +25,11 @@ Statements:
             Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
               Name: "[Ln 3, Col 21] -> [Ln 3, Col 30]"
               Self__: "[Ln 3, Col 21] -> [Ln 3, Col 30]"
-          Regions__: # <class 'types.MatchValueCasePhraseParserInfoRegions'>
+          Regions__: # <class 'types.MatchValueExpressionClauseParserInfoRegions'>
             Cases: "[Ln 3, Col 14] -> [Ln 3, Col 19]"
             Expression: "[Ln 3, Col 21] -> [Ln 4, Col 1]"
             Self__: "[Ln 3, Col 9] -> [Ln 4, Col 1]"
-        - # <class 'TheLanguage.Parser.Expressions.MatchValueExpressionParserInfo.MatchValueCasePhraseParserInfo'>
+        - # <class 'TheLanguage.Parser.Expressions.MatchValueExpressionParserInfo.MatchValueExpressionClauseParserInfo'>
           Cases:
             - # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
               Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
@@ -49,7 +49,7 @@ Statements:
             Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
               Name: "[Ln 5, Col 13] -> [Ln 5, Col 24]"
               Self__: "[Ln 5, Col 13] -> [Ln 5, Col 24]"
-          Regions__: # <class 'types.MatchValueCasePhraseParserInfoRegions'>
+          Regions__: # <class 'types.MatchValueExpressionClauseParserInfoRegions'>
             Cases: "[Ln 4, Col 14] -> [Ln 4, Col 18]"
             Expression: "[Ln 4, Col 19] -> [Ln 6, Col 1]"
             Self__: "[Ln 4, Col 9] -> [Ln 6, Col 1]"

@@ -8,9 +8,9 @@ Statements:
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface1"
-        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 1, Col 27] -> [Ln 1, Col 37]"
           Self__: "[Ln 1, Col 27] -> [Ln 1, Col 37]"
           Visibility: "[Ln 1, Col 27] -> [Ln 1, Col 37]"
@@ -39,9 +39,9 @@ Statements:
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface2"
-        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 4, Col 27] -> [Ln 4, Col 37]"
           Self__: "[Ln 4, Col 27] -> [Ln 4, Col 38]"
           Visibility: "[Ln 4, Col 27] -> [Ln 4, Col 38]"
@@ -70,9 +70,9 @@ Statements:
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface3"
-        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 8, Col 16] -> [Ln 8, Col 26]"
           Self__: "[Ln 8, Col 16] -> [Ln 8, Col 26]"
           Visibility: "[Ln 8, Col 16] -> [Ln 8, Col 26]"
@@ -101,9 +101,9 @@ Statements:
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface4"
-        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 13, Col 16] -> [Ln 13, Col 26]"
           Self__: "[Ln 13, Col 16] -> [Ln 13, Col 27]"
           Visibility: "[Ln 13, Col 16] -> [Ln 13, Col 27]"
@@ -132,9 +132,9 @@ Statements:
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface5"
-        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 18, Col 23] -> [Ln 18, Col 33]"
           Self__: "[Ln 18, Col 16] -> [Ln 18, Col 33]"
           Visibility: "[Ln 18, Col 16] -> [Ln 18, Col 22]"
@@ -163,9 +163,9 @@ Statements:
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface6"
-        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 22, Col 28] -> [Ln 22, Col 38]"
           Self__: "[Ln 22, Col 28] -> [Ln 22, Col 38]"
           Visibility: "[Ln 22, Col 28] -> [Ln 22, Col 38]"
@@ -194,9 +194,9 @@ Statements:
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface7"
-        Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+        Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 27, Col 9] -> [Ln 27, Col 19]"
           Self__: "[Ln 27, Col 9] -> [Ln 27, Col 20]"
           Visibility: "[Ln 27, Col 9] -> [Ln 27, Col 20]"

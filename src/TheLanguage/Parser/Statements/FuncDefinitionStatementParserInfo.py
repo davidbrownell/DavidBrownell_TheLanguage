@@ -41,6 +41,7 @@ with InitRelativeImports():
     from ..Common.MethodModifier import MethodModifier as MethodModifierType
     from ..Common.ParametersParserInfo import ParametersParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Common.VisitorTools import StackHelper, VisitType
 
     from ..Types.TypeParserInfo import TypeParserInfo
 
@@ -336,3 +337,26 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                     raise MethodStatementsRequiredError(self.Regions__.Self__, method_modifier.name)  # type: ignore && pylint: disable=no-member
 
         self.Validate()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnFuncDefinitionStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["ReturnType"]:
+                results.append(self.ReturnType.Accept(visitor, helper.stack, *args, **kwargs))
+
+            if isinstance(self.Parameters, ParametersParserInfo):
+                with helper["Parameters"]:
+                    results.append(self.Parameters.Accept(visitor, helper.stack, *args, **kwargs))
+
+            if self.Statements is not None:
+                with helper["Statements"]:
+                    results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])
+
+        results.append(visitor.OnFundDefinitionStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

@@ -20,6 +20,7 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
+    from ..Common.VisitorTools import StackHelper, VisitType
     from ..Types.TypeParserInfo import TypeParserInfo
 
 
@@ -38,3 +40,17 @@ with InitRelativeImports():
 class TypeAliasStatementParserInfo(StatementParserInfo):
     Name: str
     Type: TypeParserInfo
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnTypeAliasStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[(self, "Type")] as helper:
+            results.append(self.Type.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnTypeAliasStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

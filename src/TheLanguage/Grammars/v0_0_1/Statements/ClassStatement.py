@@ -61,7 +61,7 @@ with InitRelativeImports():
     from ....Parser.Parser import CreateParserRegions, CreateParserRegion, GetParserInfo
 
     from ....Parser.Statements.ClassStatementParserInfo import (
-        ClassDependencyParserInfo,
+        ClassStatementDependencyParserInfo,
         ClassStatementParserInfo,
         ClassType,
     )
@@ -331,7 +331,7 @@ class ClassStatement(GrammarPhrase):
             ClassStatement.BaseTypeIndicator,
             Tuple[
                 AST.Node,
-                List[ClassDependencyParserInfo],
+                List[ClassStatementDependencyParserInfo],
             ]
         ] = {}
 
@@ -447,11 +447,11 @@ class ClassStatement(GrammarPhrase):
     def _ExtractBaseInfo(
         cls,
         node: AST.Node,
-    ) -> List[ClassDependencyParserInfo]:
+    ) -> List[ClassStatementDependencyParserInfo]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 3
 
-        results: List[ClassDependencyParserInfo] = []
+        results: List[ClassStatementDependencyParserInfo] = []
 
         for base_item in itertools.chain(
             [nodes[0]],
@@ -481,7 +481,7 @@ class ClassStatement(GrammarPhrase):
 
             results.append(
                 # pylint: disable=too-many-function-args
-                ClassDependencyParserInfo(
+                ClassStatementDependencyParserInfo(
                     CreateParserRegions(node, visibility_node, name_leaf),  # type: ignore
                     visibility_info,  # type: ignore
                     name_info,
