@@ -1,9 +1,9 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -27,9 +27,9 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                 Whitespace: None
               Phrase: "Newline+"
           IsComplete: True
-        Phrase: "Sequence: [Number Token, Newline+]"
+        Phrase: "[Number Token, Newline+]"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -53,13 +53,13 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                 Whitespace: None
               Phrase: "Newline+"
           IsComplete: True
-        Phrase: "Sequence: [Upper Token, Newline+]"
+        Phrase: "[Upper Token, Newline+]"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
             DataItems:
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
                     - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -83,9 +83,9 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                         Whitespace: None
                       Phrase: "Newline+"
                   IsComplete: True
-                Phrase: "Sequence: [Number Token, Newline+]"
+                Phrase: "[Number Token, Newline+]"
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
                     - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -109,13 +109,13 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                         Whitespace: None
                       Phrase: "Newline+"
                   IsComplete: True
-                Phrase: "Sequence: [Upper Token, Newline+]"
+                Phrase: "[Upper Token, Newline+]"
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                     DataItems:
                       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                           DataItems:
                             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -139,9 +139,9 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                                 Whitespace: None
                               Phrase: "Newline+"
                           IsComplete: True
-                        Phrase: "Sequence: [Number Token, Newline+]"
+                        Phrase: "[Number Token, Newline+]"
                       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                           DataItems:
                             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -165,10 +165,10 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                                 Whitespace: None
                               Phrase: "Newline+"
                           IsComplete: True
-                        Phrase: "Sequence: [Upper Token, Newline+]"
+                        Phrase: "[Upper Token, Newline+]"
                       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                             DataItems:
                               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -192,10 +192,10 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                                   Whitespace: None
                                 Phrase: "Newline+"
                             IsComplete: True
-                          Phrase: "Sequence: [Delimiter, Newline+]"
-                        Phrase: "Or: (Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Recursive, Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+])"
+                          Phrase: "[Delimiter, Newline+]"
+                        Phrase: "([[Number Token, Newline+], [Upper Token, Newline+], (Recursive | [Delimiter, Newline+]), [Word Token, Newline+]] | [Delimiter, Newline+])"
                       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                           DataItems:
                             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -219,12 +219,12 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                                 Whitespace: None
                               Phrase: "Newline+"
                           IsComplete: True
-                        Phrase: "Sequence: [Word Token, Newline+]"
+                        Phrase: "[Word Token, Newline+]"
                     IsComplete: True
-                  Phrase: "Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Recursive, Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]]"
-                Phrase: "Or: (Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Recursive, Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+])"
+                  Phrase: "[[Number Token, Newline+], [Upper Token, Newline+], ([[Number Token, Newline+], [Upper Token, Newline+], (Recursive | [Delimiter, Newline+]), [Word Token, Newline+]] | [Delimiter, Newline+]), [Word Token, Newline+]]"
+                Phrase: "([[Number Token, Newline+], [Upper Token, Newline+], (Recursive | [Delimiter, Newline+]), [Word Token, Newline+]] | [Delimiter, Newline+])"
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
                     - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -248,12 +248,12 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                         Whitespace: None
                       Phrase: "Newline+"
                   IsComplete: True
-                Phrase: "Sequence: [Word Token, Newline+]"
+                Phrase: "[Word Token, Newline+]"
             IsComplete: True
-          Phrase: "Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Recursive, Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]]"
-        Phrase: "Or: (Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Recursive, Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+])"
+          Phrase: "[[Number Token, Newline+], [Upper Token, Newline+], ([[Number Token, Newline+], [Upper Token, Newline+], (Recursive | [Delimiter, Newline+]), [Word Token, Newline+]] | [Delimiter, Newline+]), [Word Token, Newline+]]"
+        Phrase: "([[Number Token, Newline+], [Upper Token, Newline+], (Recursive | [Delimiter, Newline+]), [Word Token, Newline+]] | [Delimiter, Newline+])"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -277,9 +277,9 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                 Whitespace: None
               Phrase: "Newline+"
           IsComplete: True
-        Phrase: "Sequence: [Word Token, Newline+]"
+        Phrase: "[Word Token, Newline+]"
     IsComplete: True
-  Phrase: "Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Sequence: [Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+], Or: (Recursive, Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]], Sequence: [Delimiter, Newline+]), Sequence: [Word Token, Newline+]]"
+  Phrase: "[[Number Token, Newline+], [Upper Token, Newline+], ([[Number Token, Newline+], [Upper Token, Newline+], (Recursive | [Delimiter, Newline+]), [Word Token, Newline+]] | [Delimiter, Newline+]), [Word Token, Newline+]]"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[11, 1] (56)"
 Success: True

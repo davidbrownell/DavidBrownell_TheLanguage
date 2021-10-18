@@ -3,7 +3,7 @@
 # |  UnaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 11:43:02
+# |      2021-10-11 17:04:24
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Dict, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,26 +30,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractOr,
+        ExtractSequence,
+        ExtractToken,
+        PhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
     from ....Parser.Expressions.UnaryExpressionParserInfo import (
         ExpressionParserInfo,
         OperatorType,
         UnaryExpressionParserInfo,
-    )
-
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractOr,
-        ExtractSequence,
-        ExtractToken,
-        Leaf,
-        Node,
-        PhraseItem,
     )
 
 
@@ -58,68 +55,78 @@ class UnaryExpression(GrammarPhrase):
     """\
     A prefix to an expression.
 
-    <op> <expr>
+    <op> <expression>
 
-    Example:
+    Examples:
         not foo
-        -bar
+        ~bar
+        await baz
     """
 
     PHRASE_NAME                             = "Unary Expression"
 
+    # Note that any alphanumeric operators added here must also be added to 'DoNotMatchKeywords'
+    # in ../Common/Tokens.py.
+    OPERATOR_MAP: Dict[str, OperatorType]   = {
+        # Async
+        "await": OperatorType.Await,
+
+        # Transfer
+        "copy": OperatorType.Copy,
+        "move": OperatorType.Move,
+
+        # Logical
+        "not": OperatorType.Not,
+
+        # Mathematical
+        "+": OperatorType.Positive,
+        "-": OperatorType.Negative,
+
+        # Bit Manipulation
+        "~": OperatorType.BitCompliment,
+    }
+
+    assert len(OPERATOR_MAP) == len(OperatorType)
+
     # ----------------------------------------------------------------------
     def __init__(self):
         super(UnaryExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <op>
-                    PhraseItem(
+                    # <operator>
+                    PhraseItem.Create(
                         name="Operator",
-                        item=tuple(
-                            # Note that any alphanumeric operators added here must also be added to
-                            # `DoNotMatchKeywords` in ../Common/Tokens.py.
-                            [
-                                # Coroutine
-                                "await",
-
-                                # Transfer
-                                "copy",
-                                "move",
-
-                                # Logical
-                                "not",
-
-                                # Mathematical
-                                "+",
-                                "-",
-
-                                # Bit Manipulation
-                                "~",        # Bit Complement
-                            ],
-                        ),
+                        item=tuple(self.__class__.OPERATOR_MAP.keys()),
                     ),
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
                 ],
             ),
         )
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    @classmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        cls,
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 2
 
-            # <op>
-            operator_leaf = cast(Leaf, ExtractOr(cast(Node, nodes[0])))
+            # <operator>
+            operator_leaf = cast(AST.Leaf, ExtractOr(cast(AST.Node, nodes[0])))
+
             op_value = cast(
                 str,
                 ExtractToken(
@@ -128,36 +135,18 @@ class UnaryExpression(GrammarPhrase):
                 ),
             )
 
-            if op_value == "await":
-                operator_info = OperatorType.Await
-            elif op_value == "copy":
-                operator_info = OperatorType.Copy
-            elif op_value == "move":
-                operator_info = OperatorType.Move
-            elif op_value == "not":
-                operator_info = OperatorType.Not
-            elif op_value == "+":
-                operator_info = OperatorType.Positive
-            elif op_value == "-":
-                operator_info = OperatorType.Negative
-            elif op_value == "~":
-                operator_info = OperatorType.BitCompliment
-            else:
-                assert False, op_value
+            operator_info = cls.OPERATOR_MAP[op_value]
 
-            # <expr>
-            expr_node = ExtractDynamic(cast(Node, nodes[1]))
-            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
+            # <expression>
+            expression_node = ExtractDynamic(cast(AST.Node, nodes[1]))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            SetParserInfo(
-                node,
-                UnaryExpressionParserInfo(
-                    CreateParserRegions(node, operator_leaf, expr_node),  # type: ignore
-                    operator_info,
-                    expr_info,
-                ),
+            return UnaryExpressionParserInfo(
+                CreateParserRegions(node, operator_leaf, expression_node),  # type: ignore
+                operator_info,
+                expression_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

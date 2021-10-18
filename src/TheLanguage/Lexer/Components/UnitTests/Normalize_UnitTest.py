@@ -3,7 +3,7 @@
 # |  Normalize_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-04-09 19:46:46
+# |      2021-09-23 18:04:01
 # |
 # ----------------------------------------------------------------------
 # |
@@ -16,7 +16,6 @@
 """Unit tests for Normalize.py"""
 
 import os
-import sys
 import textwrap
 
 import pytest
@@ -40,8 +39,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
-        assert li.PosStart == 2
-        assert li.PosEnd == 3
+        assert li.ContentStart == 2
+        assert li.ContentEnd == 3
         assert li.NewIndentationValue is None
         assert li.NumDedents is None
         assert li.NewIndentationValue is None
@@ -58,8 +57,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 3
-        assert li.PosStart == 2
-        assert li.PosEnd == 3
+        assert li.ContentStart == 2
+        assert li.ContentEnd == 3
         assert li.NumDedents is None
         assert li.NewIndentationValue is None
 
@@ -75,8 +74,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
-        assert li.PosStart == 1
-        assert li.PosEnd == 3
+        assert li.ContentStart == 1
+        assert li.ContentEnd == 3
         assert li.NumDedents is None
         assert li.NewIndentationValue is None
 
@@ -92,8 +91,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
-        assert li.PosStart == 1
-        assert li.PosEnd == 3
+        assert li.ContentStart == 1
+        assert li.ContentEnd == 3
         assert li.NumDedents is None
         assert li.NewIndentationValue == 10
 
@@ -109,8 +108,8 @@ class TestLineInfo(object):
 
         assert li.OffsetStart == 1
         assert li.OffsetEnd == 4
-        assert li.PosStart == 1
-        assert li.PosEnd == 3
+        assert li.ContentStart == 1
+        assert li.ContentEnd == 3
         assert li.NumDedents == 2
         assert li.NewIndentationValue is None
 

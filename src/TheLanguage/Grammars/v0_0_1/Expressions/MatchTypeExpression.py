@@ -3,7 +3,7 @@
 # |  MatchTypeExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-30 15:47:58
+# |      2021-10-12 09:50:51
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional
+from typing import Callable, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,14 +32,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common.Impl.MatchExpressionBase import MatchExpressionBase
 
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarInfo import AST, DynamicPhrasesType, ParserInfo
 
     from ....Parser.Expressions.MatchTypeExpressionParserInfo import (
-        MatchTypeExpressionParserInfo,
         MatchTypeCasePhraseParserInfo,
+        MatchTypeExpressionParserInfo,
     )
-
-    from ....Lexer.Phrases.DSL import DynamicPhrasesType, Node
 
 
 # ----------------------------------------------------------------------
@@ -48,10 +46,12 @@ class MatchTypeExpression(MatchExpressionBase):
     Typed version of a match expression.
 
     Examples:
-        match type Add(1, 2):
-            case Int: match_value
-            case String: ConvertToInt(match_value)
-            default: raise UnexpectedType(match_type)
+        int_value = (
+            match type Add(1, 2):
+                case Int: __match_value
+                case String: ConvertToInt(__match_value)
+                default: raise UnexpectedType(__match_type)
+        )
     """
 
     PHRASE_NAME                             = "Match Type Expression"
@@ -65,8 +65,13 @@ class MatchTypeExpression(MatchExpressionBase):
     @Interface.override
     def ExtractParserInfo(
         cls,
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         return cls._ExtractParserInfoImpl(
             MatchTypeExpressionParserInfo,
             MatchTypeCasePhraseParserInfo,

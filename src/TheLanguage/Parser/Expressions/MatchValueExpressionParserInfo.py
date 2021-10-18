@@ -3,7 +3,7 @@
 # |  MatchValueExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-14 08:40:45
+# |      2021-10-12 10:25:10
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the MatchValueExpressionParserData, MatchValueExpressionParserInfo, and MatchValueExpressionParserRegions objects"""
+"""Contains types used with MatchValueExpressions"""
 
 import os
 
@@ -31,14 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo
-    from ..Types.TypeParserInfo import TypeParserInfo
+    from .ExpressionParserInfo import ExpressionParserInfo
+    from ..ParserInfo import ParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class MatchValueCasePhraseParserInfo(ParserInfo):
-    Cases: List[TypeParserInfo]
+    Cases: List[ExpressionParserInfo]
     Expression: ExpressionParserInfo
 
 

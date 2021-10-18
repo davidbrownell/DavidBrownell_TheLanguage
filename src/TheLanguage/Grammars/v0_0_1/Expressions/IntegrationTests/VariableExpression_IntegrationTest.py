@@ -3,7 +3,7 @@
 # |  VariableExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 15:44:30
+# |      2021-09-30 16:05:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,18 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for VariableExpression.py"""
+"""Automated test for VariableExpression.py"""
 
 import os
 import textwrap
 
-import pytest
-
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -34,18 +28,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..VariableExpression import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                one = value
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            one = value
+            """,
         ),
-    )
+    )))

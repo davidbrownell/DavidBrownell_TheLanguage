@@ -3,7 +3,7 @@
 # |  ScopedRefStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-16 10:46:59
+# |      2021-10-14 12:55:09
 # |
 # ----------------------------------------------------------------------
 # |
@@ -38,5 +38,5 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ScopedRefStatementParserInfo(StatementParserInfo):
-    Variables: List[VariableNameParserInfo]
+    Names: List[VariableNameParserInfo]
     Statements: List[StatementParserInfo]

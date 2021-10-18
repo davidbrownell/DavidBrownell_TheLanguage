@@ -3,7 +3,7 @@
 # |  ImportStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-20 12:43:31
+# |      2021-10-15 14:11:08
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains types that defined functionality used when important content"""
+"""Contains types that define functionality used when importing content"""
 
 import os
 
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import StatementParserInfo, ParserInfo
+    from .StatementParserInfo import ParserInfo, StatementParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier
 
 
@@ -52,26 +52,26 @@ class ImportItemParserInfo(ParserInfo):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ImportStatementParserInfo(StatementParserInfo):
-    visibility: InitVar[VisibilityModifier]
-    Visibility: VisibilityModifier          = field(init=False)
+    visibility: InitVar[Optional[VisibilityModifier]]
 
-    ImportType: ImportType
+    Visibility: VisibilityModifier          = field(init=False)
     SourceFilename: str
     ImportItems: List[ImportItemParserInfo]
+    ImportType: ImportType
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions, visibility):
         super(ImportStatementParserInfo, self).__post_init__(
             regions,
+            regionless_attributes=["ImportItems", "ImportType"],
             should_validate=False,
         )
 
         # Visibility
         if visibility is None:
             visibility = VisibilityModifier.private
-            object.__setattr__(self.Regions, "Visibility", self.Regions.Self__)  # type: ignore && pylint: disable=no-member
+            object.__setattr__(self.Regions__, "Visibility", self.Regions__.Self__)  # type: ignore && pylint: disable=no-member
 
         object.__setattr__(self, "Visibility", visibility)
 
-        # Validate
         self.Validate()

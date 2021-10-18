@@ -3,7 +3,7 @@
 # |  DocstringStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-29 06:25:24
+# |      2021-10-08 14:12:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional, Tuple
+from typing import Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,8 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.Impl.MultilineStatementBase import MultilineStatementBase
-    from ...GrammarPhrase import GrammarPhrase
-    from ....Parser.ParserInfo import SetParserInfo
+    from ...GrammarInfo import GrammarPhrase
     from ....Lexer.Phrases.DSL import Leaf, Node
 
 
@@ -68,22 +67,14 @@ class DocstringStatement(MultilineStatementBase):
         )
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    def GetInfo(
-        node: Node,
-    ) -> Tuple[Leaf, str]:
-        info = getattr(node, "_docstring_info", None)
-        assert info is not None
-
-        return info
-
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def _ValidateSyntaxImpl(
-        self,
+    def _GetDynamicContentImpl(
         node: Node,
         leaf: Leaf,
         value: str,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
-        object.__setattr__(node, "_docstring_info", (leaf, value))
-        SetParserInfo(node, None)
+    ) -> Optional[GrammarPhrase.GetDynamicContentResult]:
+        # Nothing dynamic about the content
+        return None

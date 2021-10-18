@@ -3,7 +3,7 @@
 # |  BinaryStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-17 13:07:26
+# |      2021-10-12 13:59:34
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Dict, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,9 +31,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractOr,
+        ExtractSequence,
+        ExtractToken,
+        PhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
     from ....Parser.Statements.BinaryStatementParserInfo import (
         BinaryStatementParserInfo,
@@ -42,24 +52,13 @@ with InitRelativeImports():
         OperatorType,
     )
 
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractOr,
-        ExtractSequence,
-        ExtractToken,
-        Leaf,
-        Node,
-    )
-
 
 # ----------------------------------------------------------------------
 class BinaryStatement(GrammarPhrase):
     """\
     Statement that follows the form:
 
-    <name> <op> <expr>
+    <name> <operator> <expression>
 
     Examples:
         value += one
@@ -68,64 +67,73 @@ class BinaryStatement(GrammarPhrase):
 
     PHRASE_NAME                             = "Binary Statement"
 
+    OPERATOR_MAP: Dict[str, OperatorType]   = {
+        # Mathematical
+        "+=": OperatorType.AddInplace,
+        "-=": OperatorType.SubtractInplace,
+        "*=": OperatorType.MultiplyInplace,
+        "**=": OperatorType.PowerInplace,
+        "/=": OperatorType.DivideInplace,
+        "//=": OperatorType.DivideFloorInplace,
+        "%=": OperatorType.ModuloInplace,
+
+        # Bit Manipulation
+        "<<=": OperatorType.BitShiftLeftInplace,
+        ">>=": OperatorType.BitShiftRightInplace,
+        "^=": OperatorType.BitXorInplace,
+        "&=": OperatorType.BitAndInplace,
+        "|=": OperatorType.BitOrInplace,
+    }
+
+    assert len(OPERATOR_MAP) == len(OperatorType)
+
     # ----------------------------------------------------------------------
     def __init__(self):
         super(BinaryStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # <name>
                     DynamicPhrasesType.Names,
 
-                    # <op>
-                    CreatePhrase(
+                    # <operator>
+                    PhraseItem.Create(
                         name="Operator",
-                        item=(
-                            # Mathematical
-                            "+=",           # Addition
-                            "-=",           # Subtraction
-                            "*=",           # Multiplication
-                            "**=",          # Power
-                            "/=",           # Decimal Division
-                            "//=",          # Integer Division
-                            "%=",           # Modulo
-
-                            # Bit Manipulation
-                            "<<=",          # Left Shift
-                            ">>=",          # Right Shift
-                            "^=",           # Xor
-                            "&=",           # Bitwise and
-                            "|=",           # Bitwise or
-                        ),
+                        item=tuple(self.__class__.OPERATOR_MAP.keys()),
                     ),
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
-
-                    # End
                     CommonTokens.Newline,
                 ],
             ),
         )
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    @classmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        cls,
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 4
 
             # <name>
-            name_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
+            name_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
             name_info = cast(NameParserInfo, GetParserInfo(name_node))
 
-            # <op>
-            operator_leaf = cast(Leaf, ExtractOr(cast(Node, nodes[1])))
+            # <operator>
+            operator_leaf = cast(AST.Leaf, ExtractOr(cast(AST.Node, nodes[1])))
+
             operator_value = cast(
                 str,
                 ExtractToken(
@@ -134,47 +142,19 @@ class BinaryStatement(GrammarPhrase):
                 ),
             )
 
-            if operator_value == "+=":
-                operator_info = OperatorType.AddInplace
-            elif operator_value == "-=":
-                operator_info = OperatorType.SubtractInplace
-            elif operator_value == "*=":
-                operator_info = OperatorType.MultiplyInplace
-            elif operator_value == "**=":
-                operator_info = OperatorType.PowerInplace
-            elif operator_value == "/=":
-                operator_info = OperatorType.DivideInplace
-            elif operator_value == "//=":
-                operator_info = OperatorType.DivideFloorInplace
-            elif operator_value == "%=":
-                operator_info = OperatorType.ModuloInplace
-            elif operator_value == "<<=":
-                operator_info = OperatorType.BitShiftLeftInplace
-            elif operator_value == ">>=":
-                operator_info = OperatorType.BitShiftRightInplace
-            elif operator_value == "^=":
-                operator_info = OperatorType.BitXorInplace
-            elif operator_value == "&=":
-                operator_info = OperatorType.BitAndInplace
-            elif operator_value == "|=":
-                operator_info = OperatorType.BitOrInplace
-            else:
-                assert False, operator_value
+            operator_info = cls.OPERATOR_MAP[operator_value]
 
-            # <expr>
-            expr_node = ExtractDynamic(cast(Node, nodes[2]))
-            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            SetParserInfo(
-                node,
-                BinaryStatementParserInfo(
-                    CreateParserRegions(node, name_node, operator_leaf, expr_node),  # type: ignore
-                    name_info,
-                    operator_info,
-                    expr_info,
-                ),
+            return BinaryStatementParserInfo(
+                CreateParserRegions(node, name_node, operator_leaf, expression_node),  # type: ignore
+                name_info,
+                operator_info,
+                expression_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

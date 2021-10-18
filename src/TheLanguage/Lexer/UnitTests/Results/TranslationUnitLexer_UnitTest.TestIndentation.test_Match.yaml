@@ -1,4 +1,4 @@
-# <class 'TheLanguage.Lexer.Components.AST.RootNode'>
+# <class 'TheLanguage.Lexer.Components.AST.Node'>
 Children:
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
@@ -68,15 +68,19 @@ Children:
                 Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
                   {}
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (23)"
             Type: "Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[3, 1] (23)"
         Type: "(Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[3, 1] (23)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IsIgnored: False
 IterBegin: "[1, 1] (0)"
 IterEnd: "[3, 1] (23)"
 Type: "<None>"

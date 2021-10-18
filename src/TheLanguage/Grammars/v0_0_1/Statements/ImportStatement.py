@@ -3,7 +3,7 @@
 # |  ImportStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 17:03:04
+# |      2021-10-15 14:27:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -19,7 +19,7 @@ import itertools
 import os
 import re
 
-from typing import Callable, cast, List, Optional
+from typing import Callable, cast, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -37,7 +37,7 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
-    from ...GrammarPhrase import CreateParserRegions, ImportGrammarStatement
+    from ...GrammarInfo import AST, DynamicPhrasesType, ImportGrammarPhrase, ParserInfo, TranslationUnitsLexerObserver
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
@@ -46,18 +46,17 @@ with InitRelativeImports():
         ExtractRepeat,
         ExtractSequence,
         ExtractToken,
-        Leaf,
-        Node,
+        OptionalPhraseItem,
         PhraseItem,
         RegexToken,
+        ZeroOrMorePhraseItem,
     )
 
     from ....Lexer.TranslationUnitsLexer import (
-        Observer as TranslationUnitsLexerObserver,
         UnknownSourceError,
     )
 
-    from ....Parser.ParserInfo import SetParserInfo
+    from ....Parser.Parser import CreateParserRegions
 
     from ....Parser.Statements.ImportStatementParserInfo import (
         ImportItemParserInfo,
@@ -73,13 +72,13 @@ class InvalidRelativePathError(UnknownSourceError):
     LineEnd: int
     ColumnEnd: int
 
-    MessageTemplate                         = Interface.DerivedProperty(
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The relative path '{SourceName}' is not valid for the origin '{OriginName}'.",
     )
 
 
 # ----------------------------------------------------------------------
-class ImportStatement(ImportGrammarStatement):
+class ImportStatement(ImportGrammarPhrase):
     """\
     Imports content from another file.
 
@@ -90,6 +89,7 @@ class ImportStatement(ImportGrammarStatement):
         from Module import Bar as _Bar
         from Module2 import Biz, Baz
         from Module.File import A, B, C
+        public from Module import X, Y
     """
 
     PHRASE_NAME                             = "Import Statement"
@@ -101,85 +101,86 @@ class ImportStatement(ImportGrammarStatement):
     ):
         assert file_extensions
 
+        # Note that we don't want to be too restrictive here, as we want to be able to import different
+        # types of content.
+        import_name = RegexToken("<import_name>", re.compile(r"(?P<value>[a-zA-Z0-9\._]+)"))
+
         # <name> ('as' <name>)?
-        content_item = PhraseItem(
+        content_phrase_item = PhraseItem.Create(
             name="Content Item",
             item=[
                 # <name>
-                CommonTokens.GenericName,
+                import_name,
 
                 # ('as' <name>)?
-                PhraseItem(
+                OptionalPhraseItem.Create(
                     name="Suffix",
                     item=[
                         "as",
-                        CommonTokens.GenericName,
+                        import_name,
                     ],
-                    arity="?",
                 ),
+
             ],
         )
 
-        # <content_item> (',' <content_item>)* ','?
-        content_items = PhraseItem(
+        # <content_phrase_item> (',' <content_phrase_item>)* ','?
+        content_phrase_items = PhraseItem.Create(
             name="Content Items",
             item=[
-                # <content_item>
-                content_item,
+                # <content_phrase_item>
+                content_phrase_item,
 
-                # (',' <content_item>)*
-                PhraseItem(
+                # (',' <content_phrase_item>)*
+                ZeroOrMorePhraseItem.Create(
                     name="Comma and Content",
                     item=[
                         ",",
-                        content_item,
+                        content_phrase_item,
                     ],
-                    arity="*",
                 ),
 
                 # ','?
-                PhraseItem(
+                OptionalPhraseItem.Create(
                     name="Trailing Comma",
                     item=",",
-                    arity="?",
                 ),
             ],
         )
 
         super(ImportStatement, self).__init__(
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # <visibility>?
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Visibility",
                         item=VisibilityModifier.CreatePhraseItem(),
-                        arity="?",
                     ),
 
                     # 'from'
                     "from",
 
-                    # <name>: Note that the possibility of a dot-only token means that we can't use
-                    #         CommonTokens.GenericName here.
-                    RegexToken("<dotted_generic_name>", re.compile(r"(?P<value>[a-zA-Z0-9\._]+)")),
+                    # <name>
+                    import_name,
 
                     # 'import'
                     "import",
 
                     # Content Items
-                    PhraseItem(
+                    PhraseItem.Create(
                         item=(
-                            # '(' <content_items> ')'
-                            PhraseItem(
+                            # '(' <content_phrase_items> ')'
+                            PhraseItem.Create(
                                 name="Grouped",
                                 item=[
                                     # '('
                                     "(",
                                     CommonTokens.PushIgnoreWhitespaceControl,
 
-                                    # <content_items>
-                                    content_items,
+                                    # <content_phrase_items>
+                                    content_phrase_items,
 
                                     # ')'
                                     CommonTokens.PopIgnoreWhitespaceControl,
@@ -187,12 +188,12 @@ class ImportStatement(ImportGrammarStatement):
                                 ],
                             ),
 
-                            # <content_items>
-                            content_items,
+                            # <content_phrase_items>
+                            content_phrase_items
                         ),
 
                         # Use the order to disambiguate between group clauses and tuples.
-                        ordered_by_priority=True,
+                        ambiguities_resolved_by_order=True,
                     ),
 
                     CommonTokens.Newline,
@@ -204,13 +205,12 @@ class ImportStatement(ImportGrammarStatement):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ProcessImportStatement(
+    def ProcessImportNode(
         self,
         source_roots: List[str],
         fully_qualified_name: str,
-        node: Node,
+        node: AST.Node,
     ) -> TranslationUnitsLexerObserver.ImportInfo:
-
         assert fully_qualified_name
 
         # Note that it tempting to try to extract ImportStatementParserInfo here, but we can't do that
@@ -220,45 +220,14 @@ class ImportStatement(ImportGrammarStatement):
         assert len(nodes) == 6
 
         # Source name
-        source_leaf = cast(Leaf, nodes[2])
+        source_leaf = cast(AST.Leaf, nodes[2])
         source_name = cast(str, ExtractToken(source_leaf))
-
-        # Import items
-        contents_node = cast(Node, ExtractOr(cast(Node, nodes[4])))
-
-        assert contents_node.Type is not None
-        if contents_node.Type.Name == "Grouped":
-            contents_node = cast(Node, ExtractSequence(contents_node)[2])
-
-        contents_nodes = ExtractSequence(contents_node)
-        assert len(contents_nodes) == 3
-
-        import_items: List[str] = []
-
-        for content_item_node in itertools.chain(
-            [contents_nodes[0]],
-            [
-                ExtractSequence(delimited_node)[1]
-                for delimited_node in cast(List[Node], ExtractRepeat(cast(Node, contents_nodes[1])))
-            ],
-        ):
-            content_item_nodes = ExtractSequence(cast(Node, content_item_node))
-            assert len(content_item_nodes)
-
-            import_items.append(cast(str, ExtractToken(cast(Leaf, content_item_nodes[0]))))
-
-        # We need to get the source and the items to import, however that information depends on
-        # context. The content will fall into one of these scenarios:
-        #
-        #   A) N import items, source is module name; import items are members of the module
-        #   B) 1 import item, source is module name; import item is a member of the module
-        #   C) 1 import item, source is a directory; import item is a module name
 
         # Update the source_roots if we are looking at a relative path
         working_dir = os.path.dirname(fully_qualified_name)
 
         # The all dots scenario is special
-        if all(char if char == "." else None for char in source_name):
+        if all(char == "." for char in source_name):
             importing_source_parts = [""] * len(source_name)
         else:
             importing_source_parts = source_name.split(".")
@@ -288,16 +257,45 @@ class ImportStatement(ImportGrammarStatement):
                 importing_root = potential_importing_root
                 importing_source_parts.pop(0)
 
-            source_roots = [importing_root]
+            source_roots = [importing_root, ]
 
+        # Import items
+        contents_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[4])))
+
+        assert contents_node.Type is not None
+        if contents_node.Type.Name == "Grouped":
+            contents_node = cast(AST.Node, ExtractSequence(contents_node)[2])
+
+        contents_nodes = ExtractSequence(contents_node)
+        assert len(contents_nodes) == 3
+
+        # We need to get the source and the items to import, however that information depends on
+        # context. The content will fall into one of these scenarios:
+        #
+        #   A) N import items, source is module name; import items are members of the module
+        #   B) 1 import item, source is module name; import item is a member of the module
+        #   C) 1 import item, source is a directory; import item is a module name
+        #
         # Figure out which scenario we are looking at
+
+        first_and_only_import_name: Union[
+            None,                           # No items have been found yet
+            str,                            # The name of the first item
+            bool,                           # Set to False if more than one item was found
+        ] = None
+
+        for import_item_info in self._EnumImportItemsData(nodes):
+            if first_and_only_import_name is None:
+                first_and_only_import_name = import_item_info.name_info
+            else:
+                first_and_only_import_name = False
+                break
 
         # ----------------------------------------------------------------------
         def FindSource(
             is_valid_root_func: Callable[[str], bool],
             root_suffix: Optional[str]=None,
         ) -> Optional[str]:
-
             for source_root in source_roots:
                 root = os.path.join(source_root, *importing_source_parts)
                 if not is_valid_root_func(root):
@@ -320,12 +318,10 @@ class ImportStatement(ImportGrammarStatement):
         source_filename = FindSource(lambda name: os.path.isdir(os.path.dirname(name)))
         if source_filename is not None:
             import_type = ImportType.SourceIsModule
-        elif len(import_items) == 1:
-            potential_module_name = import_items[0]
-
+        elif isinstance(first_and_only_import_name, str):
             source_filename = FindSource(
                 os.path.isdir,
-                root_suffix=potential_module_name,
+                root_suffix=first_and_only_import_name,
             )
 
             if source_filename is not None:
@@ -334,90 +330,144 @@ class ImportStatement(ImportGrammarStatement):
         if source_filename is None:
             return TranslationUnitsLexerObserver.ImportInfo(source_name, None)
 
-        # Cache the import type so that we don't need to calculate it again
+        # Cache info so that we don't need to calculate it again
         assert import_type is not None
 
-        object.__setattr__(node, "_import_type", import_type)
+        object.__setattr__(node, "_cached_import_info", import_type)
 
         return TranslationUnitsLexerObserver.ImportInfo(source_name, source_filename)
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
+    def GetDynamicContent(
+        node: AST.Node,
+    ) -> Optional[ImportGrammarPhrase.GetDynamicContentResult]:
+        # TODO: Return attributes and other compiler content made available via this import
+        return None
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[ImportGrammarStatement.ExtractParserInfoResult]:
+        self,
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
+        import_type = getattr(node, "_cached_import_info", None)
+        assert import_type is not None, "Cached import info could not be found; it is likely that this node was rebalanced as part of a left-recursive phrase"
+
         nodes = ExtractSequence(node)
         assert len(nodes) == 6
 
         # <visibility>?
-        visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[0])))
-        if visibility_node is not None:
-            visibility_info = VisibilityModifier.Extract(visibility_node)
-        else:
+        visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
+        if visibility_node is None:
             visibility_info = None
+        else:
+            visibility_info = VisibilityModifier.Extract(visibility_node)
 
         # <source>
-        source_leaf = cast(Leaf, nodes[2])
+        source_leaf = cast(AST.Leaf, nodes[2])
         source_info = cast(str, ExtractToken(source_leaf))
 
-        # Content items
-        contents_node = cast(Node, ExtractOr(cast(Node, nodes[4])))
+        # Imports
+        import_items = [
+            # pylint: disable=too-many-function-args
+            ImportItemParserInfo(
+                CreateParserRegions(data.node, data.name_leaf, data.alias_leaf),  # type: ignore
+                data.name_info,
+                data.alias_info,
+            )
+            for data in self._EnumImportItemsData(nodes)
+        ]
+
+        return ImportStatementParserInfo(
+            CreateParserRegions(node, visibility_node, source_leaf),  # type: ignore
+            visibility_info,  # type: ignore
+            source_info,
+            import_items,
+            import_type,
+        )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass
+    class ImportItemParserInfoData(object):
+        node: AST.Node
+
+        name_leaf: AST.Leaf
+        name_info: str
+
+        alias_leaf: Optional[AST.Leaf]
+        alias_info: Optional[str]
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            assert (
+                (self.alias_leaf is None and self.alias_info is None)
+                or (self.alias_leaf is not None and self.alias_info is not None)
+            )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _EnumImportItemsData(
+        cls,
+        nodes: List[Union[None, AST.Leaf, AST.Node]],
+    ) -> Generator[
+        # Note that we can't use ImportItemParserInfo here, as it will validate regions when constructed
+        # and regions may not be valid yes since this will be invoked so early within the lexing process.
+        "ImportItemParserInfoData",
+        None,
+        None,
+    ]:
+        assert len(nodes) == 6
+
+        contents_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[4])))
 
         assert contents_node.Type is not None
         if contents_node.Type.Name == "Grouped":
-            contents_node = cast(Node, ExtractSequence(contents_node)[2])
+            contents_node = cast(AST.Node, ExtractSequence(contents_node)[2])
 
         contents_nodes = ExtractSequence(contents_node)
         assert len(contents_nodes) == 3
-
-        import_items: List[ImportItemParserInfo] = []
 
         for content_item_node in itertools.chain(
             [contents_nodes[0]],
             [
                 ExtractSequence(delimited_node)[1]
-                for delimited_node in cast(List[Node], ExtractRepeat(cast(Node, contents_nodes[1])))
+                for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, contents_nodes[1])))
             ],
         ):
-            content_item_nodes = ExtractSequence(cast(Node, content_item_node))
+            content_item_nodes = ExtractSequence(cast(AST.Node, content_item_node))
             assert len(content_item_nodes) == 2
 
-            key_leaf = cast(Leaf, content_item_nodes[0])
-            key_info = cast(str, ExtractToken(key_leaf))
+            # <name>
+            name_leaf = cast(AST.Leaf, content_item_nodes[0])
+            name_info = cast(str, ExtractToken(name_leaf))
 
-            as_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], content_item_nodes[1])))
-            if as_node is not None:
-                as_nodes = ExtractSequence(as_node)
-                assert len(as_nodes) == 2
-
-                value_leaf = cast(Leaf, as_nodes[1])
-                value_info = cast(str, ExtractToken(value_leaf))
+            # ('as' <name>)?
+            alias_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], content_item_nodes[1])))
+            if alias_node is None:
+                alias_info = None
             else:
-                value_leaf = None
-                value_info = None
+                alias_node = cast(AST.Leaf, ExtractSequence(alias_node)[1])
+                alias_info = cast(str, ExtractToken(alias_node))
 
-            # pylint: disable=too-many-function-args
-            import_items.append(
-                ImportItemParserInfo(
-                    CreateParserRegions(content_item_node, key_leaf, value_leaf),  # type: ignore
-                    key_info,
-                    value_info,
-                ),
+            yield cls.ImportItemParserInfoData(
+                cast(AST.Node, content_item_node),
+                name_leaf,
+                name_info,
+                alias_node,
+                alias_info,
             )
-
-        assert import_items
-
-        # Extract the cached import type
-        import_type = node._import_type  # type: ignore
-
-        SetParserInfo(
-            node,
-            ImportStatementParserInfo(
-                CreateParserRegions(node, visibility_node, node, source_leaf, contents_node),  # type: ignore
-                visibility_info,  # type: ignore
-                import_type,
-                source_info,
-                import_items,
-            ),
-        )

@@ -3,7 +3,7 @@
 # |  WhileStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-18 16:17:46
+# |      2021-10-14 12:09:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,20 +31,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import StatementsPhraseItem
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-    from ....Parser.Statements.WhileStatementParserInfo import (
-        ExpressionParserInfo,
-        WhileStatementParserInfo,
-    )
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractDynamic,
         ExtractSequence,
-        Node,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Statements.WhileStatementParserInfo import (
+        ExpressionParserInfo,
+        WhileStatementParserInfo,
     )
 
 
@@ -53,7 +53,7 @@ class WhileStatement(GrammarPhrase):
     """\
     Executes statements while a condition is true.
 
-    'while' <expr> ':'
+    'while' <expression> ':'
         <statement>+
 
     Examples:
@@ -69,16 +69,17 @@ class WhileStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(WhileStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # 'while'
                     "while",
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
 
+                    # ':' <statement>+
                     StatementsPhraseItem.Create(),
                 ],
             ),
@@ -88,30 +89,32 @@ class WhileStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # <expr>
-            expr_node = cast(Node, ExtractDynamic(cast(Node, nodes[1])))
-            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            # <statements>
-            statements_node = cast(Node, nodes[2])
+            # <statement>+
+            statements_node = cast(AST.Node, nodes[2])
             statements_info = StatementsPhraseItem.ExtractParserInfo(statements_node)
 
-            SetParserInfo(
-                node,
-                WhileStatementParserInfo(
-                    CreateParserRegions(node, expr_node, statements_node),  # type: ignore
-                    expr_info,
-                    statements_info,
-                ),
+            return WhileStatementParserInfo(
+                CreateParserRegions(node, expression_node, statements_node),  # type: ignore
+                expression_info,
+                statements_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

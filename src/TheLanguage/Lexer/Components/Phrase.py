@@ -3,7 +3,7 @@
 # |  Phrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-08 00:31:12
+# |      2021-09-22 17:11:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -19,9 +19,20 @@ import os
 import threading
 
 from enum import auto, Enum
-from typing import Any, Awaitable, Callable, cast, Dict, Generator, List, Optional, TextIO, Tuple, Union
 
-from dataclasses import dataclass
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Generator,
+    List,
+    Optional,
+    TextIO,
+    Tuple,
+    Union,
+)
+
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -40,18 +51,18 @@ with InitRelativeImports():
     from .Token import Token as TokenClass
 
 
-
 # ----------------------------------------------------------------------
 class DynamicPhrasesType(Enum):
-    Expressions                             = auto()    # Phrase that returns a value
-    Names                                   = auto()    # Phrase that can be used as a name
-    Statements                              = auto()    # Phrase that doesn't return a value
-    Types                                   = auto()    # Phrase that can be used as a type
+    Attributes                              = auto()
+    Expressions                             = auto()
+    Names                                   = auto()
+    Statements                              = auto()
+    Types                                   = auto()
 
 
 # ----------------------------------------------------------------------
 class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
-    """Abstract base class for all phrases, where a phrase is a collection of tokens"""
+    """Abstract base class for all phrases, where a phrase is a collection of tokens to be matched"""
 
     # ----------------------------------------------------------------------
     # |
@@ -71,41 +82,41 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         def __post_init__(self):
             assert self.IterBegin.Offset <= self.IterEnd.Offset, self
 
-            self.UpdateStats()
+            self.UpdatePerformanceData()
 
         # ----------------------------------------------------------------------
-        # Set this value to True to enable basic statistic collection.
+        # Set this value to True to enable basic performance data collection.
         # ----------------------------------------------------------------------
         if False:
-            _stats = [0]
-            _stats_lock = threading.Lock()
+            _perf_data = [0]
+            _perf_data_lock = threading.Lock()
 
             # ----------------------------------------------------------------------
             @classmethod
-            def UpdateStats(cls):
-                with cls._stats_lock:
-                    cls._stats[0] += 1
+            def UpdatePerformanceData(cls):
+                with cls._perf_data_lock:
+                    cls._perf_data[0] += 1
 
             # ----------------------------------------------------------------------
             @classmethod
-            def DisplayStats(
+            def DisplayPerformanceData(
                 cls,
                 output_stream: TextIO,
             ):
-                with cls._stats_lock:
-                    output_stream.write("\n\nPhrase.PhraseResult Creation Count: {}\n\n".format(cls._stats[0]))
+                with cls._perf_data_lock:
+                    output_stream.write("\n\nPhrase.PhraseResult Creation Count: {}\n\n".format(cls._perf_data[0]))
 
             # ----------------------------------------------------------------------
 
         else:
             # ----------------------------------------------------------------------
             @staticmethod
-            def UpdateStats(*args, **kwargs):
+            def UpdatePerformanceData(*args, **kwargs):
                 pass
 
             # ----------------------------------------------------------------------
             @staticmethod
-            def DisplayStats(*args, **kwargs):
+            def DisplayPerformanceData(*args, **kwargs):
                 pass
 
             # ----------------------------------------------------------------------
@@ -113,7 +124,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class LexResultData(YamlRepr.ObjectReprImplBase):
-        """Abstract base class for data associated with a LexResult"""
+        """Abstract base class for data that is associated with a LexResult"""
 
         # ----------------------------------------------------------------------
         def __post_init__(
@@ -122,30 +133,20 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         ):
             YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
 
-        # ----------------------------------------------------------------------
-        @Interface.extensionmethod
-        def Enum(self) -> Generator[
-            "Phrase.LexResultData",
-            None,
-            None,
-        ]:
-            yield self
-
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class StandardLexResultData(LexResultData):
-        """Single phrase and data"""
-
-        # ----------------------------------------------------------------------
         Phrase: "Phrase"  # type: ignore
         Data: Optional["Phrase.LexResultData"]
         UniqueId: Optional[Tuple[str, ...]]
+        PotentialErrorContext: Optional["Phrase.LexResultData"]             = field(default=None)
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
             super(Phrase.StandardLexResultData, self).__post_init__(
                 Phrase=lambda phrase: phrase.Name,
-                UniqueId=None,  # type: ignore
+                UniqueId=None,
+                PotentialErrorContext=None,
             )
 
             assert (
@@ -155,30 +156,15 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
-    class MultipleStandardLexResultData(LexResultData):
-        """A collection of LexResultData items"""
-
-        # ----------------------------------------------------------------------
+    class MultipleLexResultData(LexResultData):
         DataItems: List[Optional["Phrase.LexResultData"]]
         IsComplete: bool
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def Enum(self) -> Generator[
-            "Phrase.LexResultData",
-            None,
-            None,
-        ]:
-            for data_item in self.DataItems:
-                if data_item is not None:
-                    yield from data_item.Enum()
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class TokenLexResultData(LexResultData):
-        """Result of parsing a Token"""
+        """Result from parsing a token"""
 
-        # ----------------------------------------------------------------------
         Token: TokenClass
 
         Whitespace: Optional[Tuple[int, int]]
@@ -195,7 +181,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     class Observer(Interface.Interface):
-        """Observes events generated by calls to LexAsync"""
+        """Observes events generated by calls to `LexAsync`"""
 
         # ----------------------------------------------------------------------
         @staticmethod
@@ -212,8 +198,8 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         def GetDynamicPhrases(
             unique_id: Tuple[str, ...],
             phrases_type: DynamicPhrasesType,
-        ) -> Tuple[Optional[str], List["Phrase"]]:
-            """Returns a list of dynamic phrases"""
+        ) -> Tuple[List["Phrase"], Optional[str]]:
+            """Returns a list of dynamic phrases and an optional name to refer to them by"""
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
@@ -221,9 +207,9 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         @Interface.abstractmethod
         def StartPhrase(
             unique_id: Tuple[str, ...],
-            phrase_stack: List["Phrase"],
+            phrase: "Phrase",
         ) -> None:
-            """Called before any event is generated for a particular unique_id"""
+            """Invoked when processing begins on a phrase"""
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
@@ -231,21 +217,17 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         @Interface.abstractmethod
         def EndPhrase(
             unique_id: Tuple[str, ...],
-            phrase_info_stack: List[
-                Tuple[
-                    "Phrase",
-                    Optional[bool],         # was successful or None if the event was generated by a child phrase and this one is not yet complete
-                ],
-            ],
+            phrase: "Phrase",
+            was_successful: bool,
         ) -> None:
-            """Called when all events have been generated for a particular unique_id"""
+            """Invoked when processing has completed on a phrase"""
             raise Exception("Abstract method")  # pragma: no cover
 
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        async def OnIndentAsync(
-            data_stack: List["Phrase.StandardLexResultData"],
+        async def OnPushScopeAsync(
+            data: "Phrase.StandardLexResultData",
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
         ) -> None:
@@ -254,8 +236,8 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        async def OnDedentAsync(
-            data_stack: List["Phrase.StandardLexResultData"],
+        async def OnPopScopeAsync(
+            data: "Phrase.StandardLexResultData",
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
         ) -> None:
@@ -265,7 +247,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
         @staticmethod
         @Interface.abstractmethod
         async def OnInternalPhraseAsync(
-            data_stack: List["Phrase.StandardLexResultData"],
+            data: "Phrase.StandardLexResultData",
             iter_before: NormalizedIterator,
             iter_after: NormalizedIterator,
         ) -> bool:                          # True to continue, False to terminate
@@ -273,6 +255,7 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
             raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
+    # Bring these types into the scope of derived classes
     EnqueueAsyncItemType                    = EnqueueAsyncItemType
     NormalizedIterator                      = NormalizedIterator
 
@@ -288,247 +271,53 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     ):
         assert name
 
-        YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
+        YamlRepr.ObjectReprImplBase.__init__(
+            self,
+            Parent=None,
+            **custom_display_funcs,
+        )
 
         self.Name                           = name
+        self.Parent                         = None
+
         self._is_populated                  = False
 
-        self._result_cache_lock                                             = threading.Lock()
-        self._result_cache: Dict[Any, "Phrase.LexResult"]                 = {}
-
     # ----------------------------------------------------------------------
-    def PopulateRecursive(self):
-        self.PopulateRecursiveImpl(self)
-
-    # ----------------------------------------------------------------------
-    async def LexAsync(
+    def PopulateRecursive(
         self,
+        parent: Optional["Phrase"],
+        new_phrase: "Phrase",
+    ) -> bool:                              # True if changes were made based on population, False if no changes were made
+        if self.Parent is None:
+            self.Parent = parent
+        else:
+            assert self.Parent == parent, (
+                "A Phrase should not be the child of multiple parents; consider constructing the Phrase with 'PhraseItem' in '../Phrases/DLS.py'.",
+                self.Parent.Name,
+                parent.Name if parent is not None else None,
+                self.Name,
+            )
+
+        if self._is_populated:
+            return False
+
+        self._is_populated = True
+        return self._PopulateRecursiveImpl(new_phrase)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    async def LexAsync(
         unique_id: Tuple[str, ...],
         normalized_iter: NormalizedIterator,
         observer: Observer,
         ignore_whitespace=False,
         single_threaded=False,
-    ):
-        # Look for the cached value
-        cache_key = normalized_iter.ToCacheKey()
-
-        with self._result_cache_lock:
-            cached_result = self._result_cache.get(cache_key, None)
-            if cached_result is not None:
-                return cached_result
-
-        # Invoke functionality
-        result = await self._LexAsyncImpl(
-            unique_id,
-            normalized_iter,
-            observer,
-            ignore_whitespace=ignore_whitespace,
-            single_threaded=single_threaded,
-        )
-
-        if result is None:
-            return None
-
-        # Cache the result; note that we don't want to cache successful results as that will prevent
-        # expected events from being generated for future invocations.
-        #
-        # TODO: It might be good to revisit the statement above so that we can send events for cached
-        #       values.
-        if not result.Success:
-            with self._result_cache_lock:
-                self._result_cache[cache_key] = result
-
-        return result
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Types
-    # |
-    # ----------------------------------------------------------------------
-    class ObserverDecorator(Observer):
-        """\
-        Common implementation for a Phrase that contains children; events will be modified
-        to include information about the current Phrase in addition to the child phrase(s).
-        """
-
-        # ----------------------------------------------------------------------
-        def __init__(
-            self,
-            phrase: "Phrase",
-            unique_id: Tuple[str, ...],
-            observer: "Phrase.Observer",
-            items: List[Any],
-            item_decorator_func: Callable[[Any], "Phrase.LexResultData"],
-            post_filter_dynamic_phrases_func: Optional[
-                Callable[
-                    [
-                        Tuple[str, ...],    # unique_id
-                        Optional[str],      # Unfiltered phrases name
-                        List["Phrase"],     # Unfiltered dynamic phrases
-                    ],
-                    Tuple[Optional[str], List["Phrase"]]                    # Filtered dynamic phrases
-                ]
-            ]=None,
-        ):
-            self._phrase                                = phrase
-            self._unique_id                             = unique_id
-            self._observer                              = observer
-            self._items                                 = items
-            self._item_decorator_func                   = item_decorator_func
-            self._post_filter_dynamic_phrases_func      = post_filter_dynamic_phrases_func
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def Enqueue(
-            self,
-            func_infos: List[EnqueueAsyncItemType],
-        ) -> Awaitable[Any]:
-            return self._observer.Enqueue(func_infos)
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def GetDynamicPhrases(
-            self,
-            unique_id: Tuple[str, ...],
-            phrases_type: DynamicPhrasesType,
-        ) -> Tuple[Optional[str], List["Phrase"]]:
-            name, phrases = self._observer.GetDynamicPhrases(unique_id, phrases_type)
-
-            if self._post_filter_dynamic_phrases_func:
-                name, phrases = self._post_filter_dynamic_phrases_func(unique_id, name, phrases)
-
-            return name, phrases
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def StartPhrase(
-            self,
-            unique_id: Tuple[str, ...],
-            phrase_stack: List["Phrase"],
-        ):
-            return self._observer.StartPhrase(
-                unique_id,
-                phrase_stack + [self._phrase],
-            )
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def EndPhrase(
-            self,
-            unique_id: Tuple[str, ...],
-            phrase_info_stack: List[
-                Tuple[
-                    "Phrase",
-                    Optional[bool],
-                ]
-            ],
-        ):
-            return self._observer.EndPhrase(
-                unique_id,
-                phrase_info_stack + cast(
-                    List[Tuple["Phrase", Optional[bool]]],
-                    [(self._phrase, None)],
-                ),
-            )
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def OnIndentAsync(
-            self,
-            data_stack: List["Phrase.StandardLexResultData"],
-            iter_before: NormalizedIterator,
-            iter_after: NormalizedIterator,
-        ):
-            return await self._OnImplAsync(
-                self._observer.OnIndentAsync,
-                data_stack,
-                iter_before,
-                iter_after,
-            )
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def OnDedentAsync(
-            self,
-            data_stack: List["Phrase.StandardLexResultData"],
-            iter_before: NormalizedIterator,
-            iter_after: NormalizedIterator,
-        ):
-            return await self._OnImplAsync(
-                self._observer.OnDedentAsync,
-                data_stack,
-                iter_before,
-                iter_after,
-            )
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def OnInternalPhraseAsync(
-            self,
-            data_stack: List["Phrase.StandardLexResultData"],
-            iter_before: NormalizedIterator,
-            iter_after: NormalizedIterator,
-        ):
-            return await self._OnImplAsync(
-                self._observer.OnInternalPhraseAsync,
-                data_stack,
-                iter_before,
-                iter_after,
-            )
-
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
-        async def _OnImplAsync(
-            self,
-            method_func: Callable[
-                [
-                    List["Phrase.StandardLexResultData"],
-                    NormalizedIterator,
-                    NormalizedIterator,
-                ],
-                Any,
-            ],
-            data_stack: List["Phrase.StandardLexResultData"],
-            iter_before: NormalizedIterator,
-            iter_after: NormalizedIterator,
-        ) -> Any:
-            return await method_func(
-                data_stack + [
-                    # pylint: disable=too-many-function-args
-                    Phrase.StandardLexResultData(
-                        self._phrase,
-                        # pylint: disable=too-many-function-args
-                        Phrase.MultipleStandardLexResultData(
-                            [
-                                None if item is None else self._item_decorator_func(item)
-                                for item in self._items
-                            ],
-                            False,
-                        ),
-                        self._unique_id,
-                    ),
-                ],
-                iter_before,
-                iter_after,
-            )
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    def PopulateRecursiveImpl(
-        self,
-        new_phrase: "Phrase",
-    ) -> bool:
-        if self._is_populated:
-            return False
-
-        result = self._PopulateRecursiveImpl(new_phrase)
-        self._is_populated = True
-
-        return result
+    ) -> Union[
+        "Phrase.LexResult",                 # Result may or may not be successful
+        None,                               # Terminate processing
+    ]:
+        raise Exception("Abstract method")
 
     # ----------------------------------------------------------------------
     # |
@@ -539,24 +328,6 @@ class Phrase(Interface.Interface, YamlRepr.ObjectReprImplBase):
     def _PopulateRecursiveImpl(
         self,
         new_phrase: "Phrase",
-    ) -> bool:
-        """\
-        Populates all instances of types that should be replaced (in the support
-        of recursive phrases).
-        """
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    async def _LexAsyncImpl(
-        unique_id: Tuple[str, ...],
-        normalized_iter: NormalizedIterator,
-        observer: Observer,
-        ignore_whitespace=False,
-        single_threaded=False,
-    ) -> Union[
-        "Phrase.LexResult",               # Result may or may not be successful
-        None,                               # Terminate processing
-    ]:
+    ) -> bool:                              # True if changes were made based on population, False if no changes were made
+        """Populates all instances of types that should be replaced (in the support of recursive phrase)."""
         raise Exception("Abstract method")  # pragma: no cover

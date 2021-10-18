@@ -3,7 +3,7 @@
 # |  TupleBase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 16:34:39
+# |      2021-10-12 08:07:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -31,7 +31,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .. import Tokens as CommonTokens
-    from ....GrammarPhrase import GrammarPhrase, Leaf, Node
+
+    from ....GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase
 
     from .....Lexer.Phrases.DSL import (
         CreatePhrase,
@@ -40,131 +41,122 @@ with InitRelativeImports():
         ExtractOr,
         ExtractRepeat,
         ExtractSequence,
+        OneOrMorePhraseItem,
+        OptionalPhraseItem,
         PhraseItem,
     )
 
 
 # ----------------------------------------------------------------------
 class TupleBase(GrammarPhrase):
-    """Base class for Tuple expressions, names, statements, and types"""
+    """Base class for tuple expressions, names, statements, and types"""
 
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        grammar_phrase_type: GrammarPhrase.Type,
+        dynamic_phrases_type: DynamicPhrasesType,
         phrase_name: str,
     ):
-        if grammar_phrase_type == GrammarPhrase.Type.Expression:
-            tuple_element_item = DynamicPhrasesType.Expressions
-
-        elif grammar_phrase_type == GrammarPhrase.Type.Name:
-            tuple_element_item = DynamicPhrasesType.Names
-
-        elif grammar_phrase_type == GrammarPhrase.Type.Type:
-            tuple_element_item = DynamicPhrasesType.Types
-
-        else:
-            assert False, grammar_phrase_type  # pragma: no cover
+        tuple_elemement_item = dynamic_phrases_type
 
         super(TupleBase, self).__init__(
-            grammar_phrase_type,
+            dynamic_phrases_type,
             CreatePhrase(
-                item=PhraseItem(
-                    name=phrase_name,
-                    item=(
-                        # Multiple Elements
-                        #   '(' <tuple_element> (',' <tuple_element>)+ ','? ')'
-                        PhraseItem(
-                            name="Multiple",
-                            item=[
-                                # '('
-                                "(",
-                                CommonTokens.PushIgnoreWhitespaceControl,
+                name=phrase_name,
+                item=(
+                    # Multiple Elements:
+                    #   '(' <tuple_element_item> (',' <tuple_element_item>)+ ','? ')'
+                    PhraseItem.Create(
+                        name="Multiple Elements",
+                        item=[
+                            # '('
+                            "(",
+                            CommonTokens.PushIgnoreWhitespaceControl,
 
-                                # <tuple_element> (',' <tuple_element>)+ ','?
-                                tuple_element_item,
+                            # <tuple_element_item>
+                            tuple_elemement_item,
 
-                                PhraseItem(
-                                    name="Comma and Element",
-                                    item=[
-                                        ",",
-                                        tuple_element_item,
-                                    ],
-                                    arity="+",
-                                ),
+                            # (',' <tuple_element_item>)+
+                            OneOrMorePhraseItem.Create(
+                                name="Comma and Element",
+                                item=[
+                                    ",",
+                                    tuple_elemement_item,
+                                ],
+                            ),
 
-                                PhraseItem(
-                                    name="Trailing Comma",
-                                    item=",",
-                                    arity="?",
-                                ),
+                            OptionalPhraseItem.Create(
+                                name="Trailing Comma",
+                                item=",",
+                            ),
 
-                                # ')'
-                                CommonTokens.PopIgnoreWhitespaceControl,
-                                ")",
-                            ],
-                        ),
-
-                        # Single Element
-                        #   '(' <tuple_element> ',' ')'
-                        PhraseItem(
-                            name="Single",
-                            item=[
-                                # '('
-                                "(",
-                                CommonTokens.PushIgnoreWhitespaceControl,
-
-                                # <tuple_element> ','
-                                tuple_element_item,
-                                ",",
-
-                                # ')'
-                                CommonTokens.PopIgnoreWhitespaceControl,
-                                ")",
-                            ],
-                        ),
+                            # ')'
+                            CommonTokens.PopIgnoreWhitespaceControl,
+                            ")",
+                        ],
                     ),
 
-                    # Use the order to disambiguate between group clauses and tuples.
-                    ordered_by_priority=True,
+
+                    # Single Element:
+                    #   '(' <tuple_element_item> ',' ')'
+                    PhraseItem.Create(
+                        name="Single Element",
+                        item=[
+                            # '('
+                            "(",
+                            CommonTokens.PushIgnoreWhitespaceControl,
+
+                            # <tuple_element_item> ','
+                            tuple_elemement_item,
+                            ",",
+
+                            # ')'
+                            CommonTokens.PopIgnoreWhitespaceControl,
+                            ")",
+                        ],
+                    ),
                 ),
             ),
         )
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def EnumNodeValues(
-        cls,
-        node: Node,
+    # |
+    # |  Protected Methods
+    # |
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _EnumNodes(
+        node: AST.Node,
     ) -> Generator[
-        Union[Leaf, Node],
+        Union[AST.Leaf, AST.Node],
         None,
         None,
     ]:
-        node = cast(Node, ExtractOr(node))
-        assert node.Type
+        node = cast(AST.Node, ExtractOr(node))
 
         nodes = ExtractSequence(node)
         assert len(nodes) >= 2
 
-        enumeration_items = [
-            [nodes[2]],
+        enumeration_items: List[List[AST.Node]] = [
+            [cast(AST.Node, nodes[2])],
         ]
 
-        if node.Type.Name == "Multiple":
+        assert node.Type is not None
+        if node.Type.Name == "Multiple Elements":
             assert len(nodes) == 7
 
             enumeration_items.append(
                 [
-                    ExtractSequence(child_node)[1] for child_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[3])))
+                    cast(AST.Node, ExtractSequence(delimited_node)[1])
+                    for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, nodes[3])))
                 ],
             )
 
-        elif node.Type.Name == "Single":
+        elif node.Type.Name == "Single Element":
             assert len(nodes) == 6
 
         else:
             assert False, node.Type  # pragma: no cover
 
         for item in itertools.chain(*enumeration_items):
-            yield ExtractDynamic(cast(Node, item))
+            yield ExtractDynamic(item)

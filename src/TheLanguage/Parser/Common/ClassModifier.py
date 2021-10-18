@@ -3,7 +3,7 @@
 # |  ClassModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-07 15:27:09
+# |      2021-10-08 10:16:11
 # |
 # ----------------------------------------------------------------------
 # |
@@ -29,9 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 # ----------------------------------------------------------------------
 class ClassModifier(Enum):
-    """\
-    Modifies the mutability of a method or attribute.
-    """
+    """Modifies the mutability of a method or attribute"""
 
     immutable                               = auto()
     mutable                                 = auto()

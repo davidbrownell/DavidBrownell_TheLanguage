@@ -3,7 +3,7 @@
 # |  ReturnStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 23:07:25
+# |      2021-10-14 11:04:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,32 +28,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..ReturnStatement import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_StandAlone():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                return
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            return
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_Value():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                return value
-                return (a,b)
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            return value
+            return (a, b)
+            """,
         ),
-    )
+    )))

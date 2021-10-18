@@ -3,7 +3,7 @@
 # |  TypeModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-07 22:30:47
+# |      2021-09-30 10:40:15
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality associated with type modifiers"""
+"""Contains the TypeModifier enum"""
 
 import os
 

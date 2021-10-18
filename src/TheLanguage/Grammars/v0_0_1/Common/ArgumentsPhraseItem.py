@@ -3,7 +3,7 @@
 # |  ArgumentsPhraseItem.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-05 13:45:40
+# |      2021-10-04 08:03:05
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps when processing arguments (such as when calling functions or methods)"""
+"""Contains functionality used when parsing arguments"""
 
 import itertools
 import os
 
-from typing import cast, List, Optional
+from typing import cast, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -35,15 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from . import Tokens as CommonTokens
 
-    from ...GrammarError import GrammarError
-    from ...GrammarPhrase import CreateParserRegions
-
-    from ....Parser.Common.ArgumentParserInfo import (
-        ArgumentParserInfo,
-        ExpressionParserInfo,
-    )
-
-    from ....Parser.ParserInfo import GetParserInfo
+    from ...Error import Error
 
     from ....Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -54,14 +46,25 @@ with InitRelativeImports():
         ExtractToken,
         Leaf,
         Node,
+        OptionalPhraseItem,
         PhraseItem,
+        ZeroOrMorePhraseItem,
     )
+
+    from ....Parser.Common.ArgumentParserInfo import (
+        ArgumentParserInfo,
+        ExpressionParserInfo,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class PositionalAfterKeywordError(GrammarError):
-    MessageTemplate                         = Interface.DerivedProperty("Positional arguments may not appear after keyword arguments.")  # type: ignore
+class PositionalAfterKeywordError(Error):
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Positional arguments may not appear after keyword arguments.",
+    )
 
 
 # ----------------------------------------------------------------------
@@ -70,56 +73,52 @@ def Create() -> PhraseItem:
     '(' <arguments>? ')'
     """
 
-    argument_item = PhraseItem(
+    argument_item = PhraseItem.Create(
         name="Argument",
         item=[
             # (<name> '=')?
-            PhraseItem(
+            OptionalPhraseItem.Create(
                 name="With Keyword",
                 item=[
-                    CommonTokens.GenericName,
+                    CommonTokens.ArgumentName,
                     "=",
                 ],
-                arity="?",
             ),
 
-            # <expr>
+            # <expression>
             DynamicPhrasesType.Expressions,
-        ]
+        ],
     )
 
-    return PhraseItem(
+    return PhraseItem.Create(
         name="Arguments",
         item=[
             # '('
             "(",
             CommonTokens.PushIgnoreWhitespaceControl,
 
-            # (<argument_item> (',' <argument_item>)* ','?)?
-            PhraseItem(
+            # (<argument_item> (',' <argument_item>)*) ','?)?
+            OptionalPhraseItem.Create(
                 name="Argument Items",
                 item=[
                     # <argument_item>
                     argument_item,
 
                     # (',' <argument_item>)*
-                    PhraseItem(
+                    ZeroOrMorePhraseItem.Create(
                         name="Comma and Argument",
                         item=[
                             ",",
                             argument_item,
                         ],
-                        arity="*",
                     ),
 
                     # ','?
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Trailing Comma",
                         item=",",
-                        arity="?",
                     ),
                 ],
-                arity="?",
             ),
 
             # ')'
@@ -132,19 +131,22 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def ExtractParserInfo(
     node: Node,
-) -> Optional[List[ArgumentParserInfo]]:
+) -> Union[bool, List[ArgumentParserInfo]]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
 
     arguments_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
     if arguments_node is None:
-        return None
+        # We don't want to return None here, as there aren't arguments, but argument information
+        # (e.g. '(' and ')' was found). Return a non-null value so that the caller can associate
+        # a node with the result.
+        return False
 
     # Extract the arguments
     arguments_nodes = ExtractSequence(arguments_node)
     assert len(arguments_nodes) == 3
 
-    argument_infos: List[ArgumentParserInfo] = []
+    argument_parser_infos: List[ArgumentParserInfo] = []
     encountered_keyword = False
 
     for argument_node in itertools.chain(
@@ -159,10 +161,19 @@ def ExtractParserInfo(
         argument_nodes = ExtractSequence(argument_node)
         assert len(argument_nodes) == 2
 
-        # Keyword
+        # (<name> '=')?
         keyword_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], argument_nodes[0])))
 
-        if keyword_node is not None:
+        if keyword_node is None:
+            # This is a positional argument
+
+            if encountered_keyword:
+                raise PositionalAfterKeywordError.FromNode(argument_node)
+
+            keyword_info = None
+
+        else:
+            # This is a keyword argument
             encountered_keyword = True
 
             keyword_nodes = ExtractSequence(keyword_node)
@@ -171,28 +182,18 @@ def ExtractParserInfo(
             keyword_node = cast(Leaf, keyword_nodes[0])
             keyword_info = cast(str, ExtractToken(keyword_node))
 
-        else:
-            if encountered_keyword:
-                raise PositionalAfterKeywordError.FromNode(argument_node)
-
-            keyword_info = None
-
-        # Expression
+        # <expression>
         expression_node = ExtractDynamic(cast(Node, argument_nodes[1]))
         expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-        # pylint: disable=too-many-function-args
-        argument_infos.append(
+        argument_parser_infos.append(
+            # pylint: disable=too-many-function-args
             ArgumentParserInfo(
-                CreateParserRegions(
-                    argument_node,
-                    expression_node,
-                    keyword_node,
-                ),  # type: ignore
+                CreateParserRegions(argument_node, expression_node, keyword_node),  # type: ignore
                 expression_info,
                 keyword_info,
             ),
         )
 
-    assert argument_infos
-    return argument_infos
+    assert argument_parser_infos
+    return argument_parser_infos

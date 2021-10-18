@@ -3,7 +3,7 @@
 # |  ClassMemberStatementParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 10:49:22
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit tests for ClassMemberStatementParserInfo.py"""
+"""Unit test for ClassMemberStatementParserInfo.py"""
 
 import copy
 import os
 
-import dataclasses
 import pytest
 
 import CommonEnvironment
@@ -33,255 +32,448 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..ClassMemberStatementParserInfo import *
     from ..ClassStatementParserInfo import *
-    from ...Common.AutomatedTests import CreateRegion
-    from ...Types.StandardTypeParserInfo import *
+    from ...Common.AutomatedTests import RegionCreator
+    from ...Common.MethodModifier import MethodModifier
+
+
+# ----------------------------------------------------------------------
+def _CreateClassStatementParserInfo(
+    type_info: TypeInfo,
+    visibility: VisibilityModifier=VisibilityModifier.private,
+    class_modifier: ClassModifierType=ClassModifierType.immutable,
+    name: str="CustomClass",
+) -> ClassStatementParserInfo:
+    region_creator = RegionCreator()
+
+    return ClassStatementParserInfo(
+        [
+            region_creator(container=True),
+            region_creator(),
+            region_creator(),
+            region_creator(),
+            region_creator(),
+            None,
+            None,
+            None,
+            region_creator(),
+            None,
+        ],  # type: ignore
+        visibility,  # type: ignore
+        class_modifier,  # type: ignore
+        ClassType.Class,
+        name,
+        None,
+        None,
+        None,
+        type_info,  # type: ignore
+    )
 
 
 # ----------------------------------------------------------------------
 class TestStandard(object):
-    _type                                   = StandardTypeParserInfo(
+    region_creator                          = RegionCreator()
+
+    _immutable_class_parser_info            = ClassStatementParserInfo(
         [
-            CreateRegion(1000, 2000, 30000, 40000),
-            CreateRegion(1000, 2000, 7000, 8000),
+            region_creator(container=True),
+            region_creator(),
+            region_creator(),
+            region_creator(),
+            region_creator(),
             None,
-        ],
-        "TheType",
-        None,
-
-    )
-
-    _regions                                = {
-        "Self__": CreateRegion(1, 2, 3000, 4000),
-        "Visibility": CreateRegion(1, 2, 3, 4),
-        "Type": CreateRegion(5, 6, 7, 8),
-        "Name": CreateRegion(9, 10, 11, 12),
-        "ClassModifier": CreateRegion(13, 14, 15, 16),
-        "DefaultValue": CreateRegion(17, 18, 19, 20),
-    }
-
-    _regions_no_default                     = copy.deepcopy(_regions)
-    _regions_no_default["DefaultValue"] = None
-
-    _class_lexer_info                       = ClassStatementParserInfo(
-        [
-            CreateRegion(5, 6, 7000, 8000),
-            CreateRegion(900, 1000, 1100, 1200),
-            CreateRegion(1300, 1400, 1500, 1600),
-            CreateRegion(1700, 1800, 1900, 2000),
-            CreateRegion(2100, 2200, 2300, 2400),
-            CreateRegion(2500, 2600, 2700, 2800),
-            CreateRegion(2900, 3000, 3100, 3200),
-            CreateRegion(3300, 3400, 3500, 3600),
-            CreateRegion(3700, 3800, 3900, 4000),
             None,
-        ],
-        VisibilityModifier.public,
-        ClassModifier.immutable,
+            None,
+            region_creator(),
+            None,
+        ],  # type: ignore
+        VisibilityModifier.public,  # type: ignore
+        ClassModifierType.immutable,  # type: ignore
         ClassType.Class,
-        "TheClass",
+        "ImmutableClass",
         None,
-        [],
-        [],
+        None,
+        None,
     )
 
-    _interface_lexer_info                   = ClassStatementParserInfo(
+    _mutable_class_parser_info              = ClassStatementParserInfo(
         [
-            CreateRegion(41, 42, 43000, 44000),
-            CreateRegion(4500, 4600, 4700, 4800),
-            CreateRegion(4900, 5000, 5100, 5200),
-            CreateRegion(5300, 5400, 5500, 5600),
-            CreateRegion(5700, 5800, 5900, 6000),
-            CreateRegion(6100, 6200, 6300, 6400),
-            CreateRegion(6500, 6600, 6700, 6800),
-            CreateRegion(6900, 7000, 7100, 7200),
-            CreateRegion(7300, 7400, 7500, 7600),
+            region_creator(container=True),
+            region_creator(),
+            region_creator(),
+            region_creator(),
+            region_creator(),
             None,
-        ],
-        VisibilityModifier.public,
-        ClassModifier.immutable,
-        ClassType.Interface,
-        "TheInterface",
+            None,
+            None,
+            region_creator(),
+            None,
+        ],  # type: ignore
+        VisibilityModifier.public,  # type: ignore
+        ClassModifierType.mutable,  # type: ignore
+        ClassType.Class,
+        "MutableClass",
         None,
-        [],
-        [],
+        None,
+        None,
     )
 
-    _struct_lexer_info                      = ClassStatementParserInfo(
+    _struct_parser_info                     = ClassStatementParserInfo(
         [
-            CreateRegion(77, 78, 79000, 80000),
-            CreateRegion(8100, 8200, 8300, 8400),
-            CreateRegion(8500, 8600, 8700, 8800),
-            CreateRegion(8900, 9000, 9100, 9200),
-            CreateRegion(9300, 9400, 9500, 9600),
-            CreateRegion(9700, 9800, 9900, 10000),
-            CreateRegion(10100, 10200, 10300, 10400),
-            CreateRegion(10500, 10600, 10700, 10800),
-            CreateRegion(10900, 11000, 11100, 11200),
+            region_creator(container=True),
+            region_creator(),
+            region_creator(),
+            region_creator(),
+            region_creator(),
             None,
-        ],
-        VisibilityModifier.private,
-        ClassModifier.mutable,
+            None,
+            None,
+            region_creator(),
+            None,
+        ],  # type: ignore
+        VisibilityModifier.public,  # type: ignore
+        ClassModifierType.mutable,  # type: ignore
         ClassType.Struct,
-        "TheStruct",
+        "ImmutableStruct",
         None,
+        None,
+        None,
+    )
+
+    _restricted_class_type_info             = TypeInfo(
+        # Visibility
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
+
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
+
+        # Base
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
         [],
+
+        # Implements
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
         [],
+
+        # Uses
+        VisibilityModifier.private,
+        [VisibilityModifier.private],
+        [],
+
+        # Modifiers
+        ClassModifierType.immutable,
+        [ClassModifierType.immutable],
+
+        # Methods
+        MethodModifier.standard,
+        [MethodModifier.standard],
+
+        # Members
+        AllowDataMembers=True,
+        AllowMutablePublicDataMembers=False,
+    )
+
+    _restricted_parser_info                 = _CreateClassStatementParserInfo(
+        _restricted_class_type_info,
     )
 
     # ----------------------------------------------------------------------
     def test_Data(self):
+        region_creator = RegionCreator()
+
         info = ClassMemberStatementParserInfo(
-            list(self._regions_no_default.values()),
-            self._class_lexer_info,
-            VisibilityModifier.private,
-            self._type,
-            "MemberName",
-            ClassModifier.immutable,
+            [
+                region_creator(container=True),
+                region_creator(),
+                region_creator(),
+                region_creator(),
+                region_creator(),
+                None,
+            ],  # type: ignore
+            self._mutable_class_parser_info,
+            VisibilityModifier.protected,
+            ClassModifierType.mutable,
+            TypeParserInfo([region_creator(container=True)]),
+            "TheMember",
             None,
         )
 
-        assert info.Visibility == VisibilityModifier.private
-        assert info.Type == self._type
-        assert info.Name == "MemberName"
-        assert info.ClassModifier == ClassModifier.immutable
-        assert info.DefaultValue is None
+        assert info.Visibility == VisibilityModifier.protected
+        assert info.ClassModifier == ClassModifierType.mutable
+        assert info.Type is not None
+        assert info.Name == "TheMember"
+        assert info.InitializedValue is None
 
-        assert info.Regions == info.RegionsType(**self._regions_no_default)
+        assert info.Regions__.Self__ == region_creator[0]
+        assert info.Regions__.Visibility == region_creator[1]
+        assert info.Regions__.ClassModifier == region_creator[2]
+        assert info.Regions__.Type == region_creator[3]
+        assert info.Regions__.Name == region_creator[4]
+        assert info.Regions__.InitializedValue is None
 
     # ----------------------------------------------------------------------
-    def test_InfoWithDefault(self):
+    def test_InitializedValue(self):
+        region_creator = RegionCreator()
+
         info = ClassMemberStatementParserInfo(
-            list(self._regions.values()),
-            self._class_lexer_info,
-            VisibilityModifier.public,
-            self._type,
-            "MemberName",
-            ClassModifier.immutable,
-            self._type,
+            [
+                region_creator(container=True),
+                region_creator(),
+                region_creator(),
+                region_creator(),
+                region_creator(),
+                region_creator(),
+            ],
+            self._mutable_class_parser_info,
+            VisibilityModifier.protected,
+            ClassModifierType.mutable,
+            TypeParserInfo([region_creator(container=True)]),
+            "TheMember",
+            ExpressionParserInfo([region_creator(container=True)]),
         )
 
-        assert info.Visibility == VisibilityModifier.public
-        assert info.Type == self._type
-        assert info.Name == "MemberName"
-        assert info.ClassModifier == ClassModifier.immutable
-        assert info.DefaultValue == self._type
+        assert info.Visibility == VisibilityModifier.protected
+        assert info.ClassModifier == ClassModifierType.mutable
+        assert info.Type is not None
+        assert info.Name == "TheMember"
+        assert info.InitializedValue is not None
 
-        assert info.Regions == info.RegionsType(**self._regions)
+        assert info.Regions__.Self__ == region_creator[0]
+        assert info.Regions__.Visibility == region_creator[1]
+        assert info.Regions__.ClassModifier == region_creator[2]
+        assert info.Regions__.Type == region_creator[3]
+        assert info.Regions__.Name == region_creator[4]
+        assert info.Regions__.InitializedValue == region_creator[5]
 
     # ----------------------------------------------------------------------
-    def test_InvalidClassStatement(self):
-        with pytest.raises(InvalidClassMemberError) as ex:
-            ClassMemberStatementParserInfo(
-                list(self._regions.values()),
+    def test_DefaultVisibility(self):
+        for parser_info, expected_visibility in [
+            (self._immutable_class_parser_info, VisibilityModifier.private),
+            (self._struct_parser_info, VisibilityModifier.public),
+        ]:
+            region_creator = RegionCreator()
+
+            info = ClassMemberStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    None,
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                ],
+                parser_info,
                 None,
+                ClassModifierType.immutable,
+                TypeParserInfo([region_creator(container=True)]),
+                "TheMember",
+                None,
+            )
+
+            assert info.Visibility == expected_visibility
+            assert info.Regions__.Visibility == info.Regions__.Self__
+
+    # ----------------------------------------------------------------------
+    def test_DefaultModifier(self):
+        for parser_info, expected_modifier in [
+            (self._immutable_class_parser_info, ClassModifierType.immutable),
+            (self._struct_parser_info, ClassModifierType.mutable),
+        ]:
+            region_creator = RegionCreator()
+
+            info = ClassMemberStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    None,
+                    region_creator(),
+                    region_creator(),
+                    None,
+                ],
+                parser_info,
                 VisibilityModifier.public,
-                self._type,
-                "MemberName",
-                ClassModifier.immutable,
+                None,
+                TypeParserInfo([region_creator(container=True)]),
+                "TheMember",
+                None,
+            )
+
+            assert info.ClassModifier == expected_modifier
+            assert info.Regions__.ClassModifier == info.Regions__.Self__
+
+    # ----------------------------------------------------------------------
+    def test_InvalidMemberVisibilityError(self):
+        with pytest.raises(InvalidMemberVisibilityError) as ex:
+            region_creator = RegionCreator()
+
+            ClassMemberStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(expected_error=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                ],
+                self._restricted_parser_info,
+                VisibilityModifier.public,
+                ClassModifierType.immutable,
+                TypeParserInfo([region_creator(container=True)]),
+                "TheMember",
+                None,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "'public' is not a supported visibility for members of 'class' types; supported values are 'private'."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidMemberClassModifierError(self):
+        with pytest.raises(InvalidMemberClassModifierError) as ex:
+            region_creator = RegionCreator()
+
+            ClassMemberStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(expected_error=True),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                ],
+                self._restricted_parser_info,
+                VisibilityModifier.private,
+                ClassModifierType.mutable,
+                TypeParserInfo([region_creator(container=True)]),
+                "TheMember",
+                None,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "'mutable' is not a supported modifier for members of 'class' types; supported values are 'immutable'."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidMemberMutableModifierError(self):
+        restricted_type_info = copy.deepcopy(self._restricted_class_type_info)
+        object.__setattr__(restricted_type_info, "AllowedClassModifiers", [ClassModifierType.immutable, ClassModifierType.mutable])
+
+        with pytest.raises(InvalidMemberMutableModifierError) as ex:
+            region_creator = RegionCreator()
+
+            ClassMemberStatementParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(expected_error=True),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                ],
+                _CreateClassStatementParserInfo(restricted_type_info),
+                VisibilityModifier.private,
+                ClassModifierType.mutable,
+                TypeParserInfo([region_creator(container=True)]),
+                "TheMember",
+                None,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "'mutable' is not a valid member modifier for an immutable 'class' type."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
+
+    # ----------------------------------------------------------------------
+    def test_InvalidClassMemberError(self):
+        with pytest.raises(InvalidClassMemberError) as ex:
+            region_creator = RegionCreator()
+
+            ClassMemberStatementParserInfo(
+                [
+                    region_creator(container=True, expected_error=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                ],
+                None,
+                VisibilityModifier.private,
+                ClassModifierType.immutable,
+                TypeParserInfo([region_creator(container=True)]),
+                "TheMember",
                 None,
             )
 
         ex = ex.value
 
         assert str(ex) == "Data member statements must be enclosed within a class-like object."
-        assert ex.Region == self._regions["Self__"]
+        assert ex.Region == region_creator.ExpectedErrorRegion()
 
     # ----------------------------------------------------------------------
-    def test_NotSupported(self):
+    def test_DataMembersNotSupportedError(self):
+        restricted_type_info = copy.deepcopy(self._restricted_class_type_info)
+        object.__setattr__(restricted_type_info, "AllowDataMembers", False)
+
         with pytest.raises(DataMembersNotSupportedError) as ex:
+            region_creator = RegionCreator()
+
             ClassMemberStatementParserInfo(
-                list(self._regions_no_default.values()),
-                self._interface_lexer_info,
-                VisibilityModifier.public,
-                self._type,
-                "MemberName",
-                ClassModifier.immutable,
-                None,
-            )
-
-        ex = ex.value
-
-        assert str(ex) == "Data members are not supported for 'interface' types."
-        assert ex.Region == self._regions["Self__"]
-
-    # ----------------------------------------------------------------------
-    def test_DefaultVisibility(self):
-        for class_statement_info, class_modifier, expected_visibility in [
-            (self._class_lexer_info, ClassModifier.immutable, VisibilityModifier.private),
-            (self._struct_lexer_info, ClassModifier.mutable, VisibilityModifier.public),
-        ]:
-            info = ClassMemberStatementParserInfo(
-                list(self._regions_no_default.values()),
-                class_statement_info,
-                None,
-                self._type,
-                "TheMember",
-                class_modifier,
-                None,
-            )
-
-            assert info.ClassModifier == class_modifier
-
-            assert info.Visibility == expected_visibility
-            assert info.Regions.Visibility == self._regions_no_default["Self__"]
-
-    # ----------------------------------------------------------------------
-    def test_InvalidVisibility(self):
-        with pytest.raises(InvalidMemberVisibilityError) as ex:
-            ClassMemberStatementParserInfo(
-                list(self._regions_no_default.values()),
-                self._struct_lexer_info,
+                [
+                    region_creator(container=True, expected_error=True),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                ],
+                _CreateClassStatementParserInfo(restricted_type_info),
                 VisibilityModifier.private,
-                self._type,
+                ClassModifierType.immutable,
+                TypeParserInfo([region_creator(container=True)]),
                 "TheMember",
-                ClassModifier.mutable,
                 None,
             )
 
         ex = ex.value
 
-        assert str(ex) == "'private' is not a supported visibility for members of 'struct' types; supported values are 'public'."
-        assert ex.Region == self._regions_no_default["Visibility"]
-        assert ex.ClassType == "struct"
-        assert ex.Visibility == "private"
-        assert ex.AllowedVisibilities == "'public'"
+        assert str(ex) == "Data members are not supported for 'class' types."
+        assert ex.Region == region_creator.ExpectedErrorRegion()
 
     # ----------------------------------------------------------------------
-    def test_DefaultModifier(self):
-        for class_statement_info, expected_modifier in [
-            (self._class_lexer_info, ClassModifier.immutable),
-            (self._struct_lexer_info, ClassModifier.mutable),
-        ]:
-            info = ClassMemberStatementParserInfo(
-                list(self._regions_no_default.values()),
-                class_statement_info,
-                VisibilityModifier.public,
-                self._type,
-                "TheMember",
-                None,
-                None,
-            )
+    def test_PublicMutableDataMembersNotSupportedError(self):
+        restricted_type_info = copy.deepcopy(self._restricted_class_type_info)
+        object.__setattr__(restricted_type_info, "AllowedMemberVisibilities", [VisibilityModifier.public, VisibilityModifier.private])
+        object.__setattr__(restricted_type_info, "AllowedClassModifiers", [ClassModifierType.immutable, ClassModifierType.mutable])
 
-            assert info.ClassModifier == expected_modifier
-            assert info.Regions.ClassModifier == self._regions_no_default["Self__"]
+        with pytest.raises(PublicMutableDataMembersNotSupportedError) as ex:
+            region_creator = RegionCreator()
 
-    # ----------------------------------------------------------------------
-    def test_InvalidModifier(self):
-        with pytest.raises(InvalidMemberClassModifierError) as ex:
             ClassMemberStatementParserInfo(
-                list(self._regions_no_default.values()),
-                self._struct_lexer_info,
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(expected_error=True),
+                    region_creator(),
+                    region_creator(),
+                    None,
+                ],
+                _CreateClassStatementParserInfo(
+                    restricted_type_info,
+                    class_modifier=ClassModifierType.mutable,
+                ),
                 VisibilityModifier.public,
-                self._type,
+                ClassModifierType.mutable,
+                TypeParserInfo([region_creator(container=True)]),
                 "TheMember",
-                ClassModifier.immutable,
                 None,
             )
 
         ex = ex.value
 
-        assert str(ex) == "'immutable' is not a supported modifier for members of 'struct' types; supported values are 'mutable'."
-        assert ex.Region == self._regions_no_default["ClassModifier"]
-        assert ex.ClassType == "struct"
-        assert ex.Modifier == "immutable"
-        assert ex.AllowedModifiers == "'mutable'"
+        assert str(ex) == "Public mutable data members are not supported for 'class' types."
+        assert ex.Region == region_creator.ExpectedErrorRegion()

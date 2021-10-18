@@ -1,7 +1,7 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           IsIgnored: True
@@ -34,8 +34,8 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
             Whitespace: None
           Phrase: "Newline+"
       IsComplete: True
-    Phrase: "Sequence: [lower, Newline+]"
-  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+    Phrase: "[lower, Newline+]"
+  Phrase: "([lower, Newline+] | [upper, Newline+])"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[4, 1] (9)"
 Success: True
@@ -43,7 +43,7 @@ Success: True
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -67,8 +67,8 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
             Whitespace: None
           Phrase: "Newline+"
       IsComplete: True
-    Phrase: "Sequence: [lower, Newline+]"
-  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+    Phrase: "[lower, Newline+]"
+  Phrase: "([lower, Newline+] | [upper, Newline+])"
 IterBegin: "[4, 1] (9)"
 IterEnd: "[5, 1] (16)"
 Success: True

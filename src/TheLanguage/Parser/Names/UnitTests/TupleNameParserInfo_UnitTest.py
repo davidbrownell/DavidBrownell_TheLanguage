@@ -3,7 +3,7 @@
 # |  TupleNameParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 09:38:15
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -28,48 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..TupleNameParserInfo import *
-    from ..VariableNameParserInfo import *
-    from ...Common.AutomatedTests import CreateRegion
 
 
 # ----------------------------------------------------------------------
-class TestStandard(object):
-    _name1                                  = VariableNameParserInfo(
-        [
-            CreateRegion(1, 2, 300, 400),
-            CreateRegion(1, 2, 3, 4),
-        ],
-        "Name1",
-    )
-
-    _name2                                  = VariableNameParserInfo(
-        [
-            CreateRegion(5, 6, 700, 800),
-            CreateRegion(5, 6, 7, 8),
-        ],
-        "Name2",
-    )
-
-    # ----------------------------------------------------------------------
-    def test_Single(self):
-        info = TupleNameParserInfo(
-            [
-                CreateRegion(1, 2, 3000, 4000),
-                CreateRegion(1, 2, 3000, 4000),
-            ],
-            [self._name1],
-        )
-
-        assert info.Names == [self._name1]
-
-    # ----------------------------------------------------------------------
-    def test_Multiple(self):
-        info = TupleNameParserInfo(
-            [
-                CreateRegion(1, 2, 3000, 4000),
-                CreateRegion(1, 2, 3000, 4000),
-            ],
-            [self._name1, self._name2],
-        )
-
-        assert info.Names == [self._name1, self._name2]
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
+def test_Placeholder():
+    assert True

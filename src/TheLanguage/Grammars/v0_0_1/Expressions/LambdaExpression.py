@@ -3,7 +3,7 @@
 # |  LambdaExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-28 11:10:21
+# |      2021-10-07 15:31:26
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,61 +32,55 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import ParametersPhraseItem
 
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractSequence,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
     from ....Parser.Expressions.LambdaExpressionParserInfo import (
         ExpressionParserInfo,
         LambdaExpressionParserInfo,
     )
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractSequence,
-        Node,
-    )
-
 
 # ----------------------------------------------------------------------
 class LambdaExpression(GrammarPhrase):
     """\
-    Creates a temporary function.
+    Creates a single-line anonymous function.
 
-    'lambda' <parameters_phrase_item> ':' <expr>
+    'lambda' <<parameters>> ':' <expression>
 
     Examples:
         lambda (Int a, Char b): b * a
         lambda (): 10
     """
 
+    # TODO: Add captures
+
     PHRASE_NAME                             = "Lambda Expression"
 
-    # TODO: Captures
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
     # ----------------------------------------------------------------------
     def __init__(self):
         super(LambdaExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # 'lambda'
                     "lambda",
 
-                    # <parameters>
+                    # <<parameters>>
                     ParametersPhraseItem.Create(),
 
                     # ':'
                     ":",
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
                 ],
             ),
@@ -96,33 +90,32 @@ class LambdaExpression(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 4
 
-            # <parameters>
-            parameters_node = cast(Node, nodes[1])
+            # <<parameters>>
+            parameters_node = cast(AST.Node, nodes[1])
             parameters_info = ParametersPhraseItem.ExtractParserInfo(parameters_node)
-            if parameters_info is None:
-                parameters_node = None
 
-            # <expr>
-            expression_node = ExtractDynamic(cast(Node, nodes[3]))
+            # <expression>
+            expression_node = ExtractDynamic(cast(AST.Node, nodes[3]))
             expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                LambdaExpressionParserInfo(
-                    CreateParserRegions(node, parameters_node, expression_node),  # type: ignore
-                    parameters_info,
-                    expression_info,
-                ),
+            return LambdaExpressionParserInfo(
+                CreateParserRegions(node, parameters_node, expression_node),  # type: ignore
+                parameters_info,
+                expression_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

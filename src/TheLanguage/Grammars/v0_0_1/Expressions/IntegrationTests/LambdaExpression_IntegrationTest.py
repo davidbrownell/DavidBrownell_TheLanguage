@@ -3,7 +3,7 @@
 # |  LambdaExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-28 11:37:02
+# |      2021-10-07 15:45:40
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,67 +28,66 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..LambdaExpression import *
-    from ...Common.AutomatedTests import Execute
+
 
 # ----------------------------------------------------------------------
 def test_NoArgs():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                var1 = lambda (): value
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            var0 = lambda(): one + two
 
-                var2 = Func1(a, lambda (): value, b)
+            var1 = lambda(): one + two - three / four
 
-                var3 = Func2(
-                    lambda (): true if condition else false,
-                    lambda (): one + two,
-                )
-                """,
-            ),
+            var2 = lambda (): value
+
+            var3 = Func1(a, lambda (): value, b)
+
+            var4 = Func2(
+                lambda(): one / two,
+                lambda(): three * four,
+            )
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_MultipleArgs():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                var1 = lambda (Int a, Bool b,): (a, b)
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            var1 = lambda (Int a1, Bool b1,): value
 
-                var2 = lambda (pos: Int a, Bool b, key: Char c): value
-                """,
-            ),
+            var2 = lambda (pos: Int a2, Bool b2, key: Char c2): one + two / three * four
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_MultilineArgs():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                var1 = lambda (
-                    pos:
-                        Int a,
-                        Bool b,
-                    key:
-                        Char c,
-                ): (a, b, c)
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            var1 = lambda (
+                pos:
+                    Int a1,
+                    Bool b1,
+                key:
+                    Char c1,
+            ): value
 
-                var2 = Func(
-                    lambda (
-                        key:
-                            Double d,
-                    ): value2,
-                    b,
-                    c,
-                )
-                """,
-            ),
+            var2 = Func(
+                lambda (
+                    key:
+                        Double d2,
+                ): one + two / three * four,
+                b2,
+                c2,
+            )
+            """,
         ),
-    )
+    )))

@@ -3,7 +3,7 @@
 # |  IfStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-16 09:36:16
+# |      2021-10-12 16:17:43
 # |
 # ----------------------------------------------------------------------
 # |
@@ -47,3 +47,10 @@ class IfStatementClauseParserInfo(ParserInfo):
 class IfStatementParserInfo(StatementParserInfo):
     Clauses: List[IfStatementClauseParserInfo]
     ElseStatements: Optional[List[StatementParserInfo]]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(IfStatementParserInfo, self).__post_init__(
+            regions,
+            regionless_attributes=["Clauses"],
+        )

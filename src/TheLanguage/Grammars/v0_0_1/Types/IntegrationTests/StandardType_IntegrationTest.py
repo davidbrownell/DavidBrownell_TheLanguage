@@ -3,7 +3,7 @@
 # |  StandardType_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-11 13:59:56
+# |      2021-09-30 12:51:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for StandardType.py"""
+"""Automated test for StandardType.py"""
 
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,36 +28,32 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..StandardType import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_NoModifier():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                Int Func():
-                    pass
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            Int Func():
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_WithModifier():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                Int var Func1():
-                    pass
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            Int var Func1():
+                pass
 
-                Char view Func2():
-                    pass
-                """,
-            ),
+            Char view Func2():
+                pass
+            """,
         ),
-    )
+    )))

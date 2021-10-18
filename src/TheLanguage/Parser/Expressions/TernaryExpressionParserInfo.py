@@ -3,7 +3,7 @@
 # |  TernaryExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-13 16:26:50
+# |      2021-10-11 16:45:47
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpressionParserData, TernaryExpressionParserInfo, and TernaryExpressionParserRegions objects"""
+"""Contains the TernaryExpressionParserInfo object"""
 
 import os
 
@@ -35,6 +35,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TernaryExpressionParserInfo(ExpressionParserInfo):
-    TrueExpression: ExpressionParserInfo
     ConditionExpression: ExpressionParserInfo
+    TrueExpression: ExpressionParserInfo
     FalseExpression: ExpressionParserInfo

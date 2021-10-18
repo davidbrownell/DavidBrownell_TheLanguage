@@ -3,7 +3,7 @@
 # |  StandardTypeParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 16:24:25
+# |      2021-09-30 10:45:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -32,14 +32,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeParserInfo import TypeParserInfo, Region
-    from ..Common.TypeModifier import TypeModifier
-    from ..ParserError import ParserError
+    from .TypeParserInfo import Region, TypeModifier, TypeParserInfo
+    from ..Error import Error
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidModifierError(ParserError):
+class InvalidModifierError(Error):
     Modifier: str
     ValidModifiers: str
 
@@ -58,20 +57,16 @@ class StandardTypeParserInfo(TypeParserInfo):
     def __post_init__(self, regions):
         super(StandardTypeParserInfo, self).__post_init__(regions)
 
-        invalid_modifiers = [
-            TypeModifier.mutable,
-            TypeModifier.immutable,
-            TypeModifier.isolated,
-            TypeModifier.shared,
-            TypeModifier.ref,
+        # TODO: I don't think that this is valid in this context
+
+        # Not all modifiers are valid in this context
+        valid_modifiers = [
+            TypeModifier.var,
+            TypeModifier.val,
+            TypeModifier.view,
         ]
 
-        if self.Modifier in invalid_modifiers:
-            assert self.Modifier is not None
-            assert self.Regions.Modifier is not None  # type: ignore && pylint: disable=no-member
-
-            valid_modifiers = [m for m in TypeModifier if m not in invalid_modifiers]
-
+        if self.Modifier is not None and self.Modifier not in valid_modifiers:
             raise InvalidModifierError(
                 self.Regions.Modifier,  # type: ignore && pylint: disable=no-member
                 cast(str, self.Modifier.name),
@@ -84,5 +79,4 @@ class StandardTypeParserInfo(TypeParserInfo):
         if self.Modifier is None:
             return None
 
-        assert self.Regions.Modifier is not None  # type: ignore && pylint: disable=no-member
-        return self.Modifier, self.Regions.Modifier  # type: ignore && pylint: disable=no-member
+        return (self.Modifier, self.Regions__.Modifier)  # type: ignore && pylint: disable=no-member

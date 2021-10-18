@@ -1,4 +1,4 @@
-# <class 'TheLanguage.Lexer.Components.AST.RootNode'>
+# <class 'TheLanguage.Lexer.Components.AST.Node'>
 Children:
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
@@ -53,9 +53,11 @@ Children:
                         Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(14, 19), match='UPPER'>"
                         Whitespace: None
+                    IsIgnored: False
                     IterBegin: "[2, 5] (14)"
                     IterEnd: "[2, 10] (19)"
-                    Type: "(Newline Phrase, New Scope) / (Upper Phrase, Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                    Type: "(Newline Phrase | New Scope) / (Upper Phrase | Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
                 IterBegin: "[2, 5] (14)"
                 IterEnd: "[2, 10] (19)"
                 Type: "DynamicPhrasesType.Statements <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -72,9 +74,11 @@ Children:
                           End: 21
                           Start: 19
                         Whitespace: None
+                    IsIgnored: False
                     IterBegin: "[2, 10] (19)"
                     IterEnd: "[4, 1] (21)"
-                    Type: "(Newline Phrase, New Scope) / (Upper Phrase, Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                    Type: "(Newline Phrase | New Scope) / (Upper Phrase | Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
                 IterBegin: "[2, 10] (19)"
                 IterEnd: "[4, 1] (21)"
                 Type: "DynamicPhrasesType.Statements <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -90,9 +94,11 @@ Children:
                         Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(25, 30), match='lower'>"
                         Whitespace: None
+                    IsIgnored: False
                     IterBegin: "[4, 5] (25)"
                     IterEnd: "[4, 10] (30)"
-                    Type: "(Newline Phrase, New Scope) / (Upper Phrase, Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                    Type: "(Newline Phrase | New Scope) / (Upper Phrase | Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
                 IterBegin: "[4, 5] (25)"
                 IterEnd: "[4, 10] (30)"
                 Type: "DynamicPhrasesType.Statements <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -109,9 +115,11 @@ Children:
                           End: 31
                           Start: 30
                         Whitespace: None
+                    IsIgnored: False
                     IterBegin: "[4, 10] (30)"
                     IterEnd: "[5, 1] (31)"
-                    Type: "(Newline Phrase, New Scope) / (Upper Phrase, Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                    Type: "(Newline Phrase | New Scope) / (Upper Phrase | Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
                 IterBegin: "[4, 10] (30)"
                 IterEnd: "[5, 1] (31)"
                 Type: "DynamicPhrasesType.Statements <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
@@ -123,15 +131,19 @@ Children:
                 Value: # <class 'TheLanguage.Lexer.Components.Token.DedentToken.MatchResult'>
                   {}
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[1, 1] (0)"
             IterEnd: "[5, 1] (31)"
             Type: "New Scope <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[5, 1] (31)"
-        Type: "(Newline Phrase, New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Newline Phrase | New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[5, 1] (31)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IsIgnored: False
 IterBegin: "[1, 1] (0)"
 IterEnd: "[5, 1] (31)"
 Type: "<None>"
