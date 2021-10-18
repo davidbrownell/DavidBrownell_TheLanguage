@@ -60,6 +60,8 @@ class LambdaExpression(GrammarPhrase):
         lambda (): 10
     """
 
+    # TODO: Add captures
+
     PHRASE_NAME                             = "Lambda Expression"
 
     # ----------------------------------------------------------------------

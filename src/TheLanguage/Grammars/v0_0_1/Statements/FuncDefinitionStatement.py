@@ -104,6 +104,9 @@ class FuncDefinitionStatement(GrammarPhrase):
 
     PHRASE_NAME                             = "Func Definition Statement"
 
+    # TODO: Add Captures
+    # TODO: Add Templates
+
     # ----------------------------------------------------------------------
     # |
     # |  Public Types
