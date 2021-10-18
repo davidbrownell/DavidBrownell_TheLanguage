@@ -67,12 +67,9 @@ class DynamicPhrase(Phrase):
             Tuple[List[Phrase], Optional[str]],         # List of phrases and optional name to refer to them by
         ],
         name: Optional[str]=None,
-        include_names: Optional[List[Union[str, Phrase]]]=None,
-        exclude_names: Optional[List[Union[str, Phrase]]]=None,
-        left_recursive_include_names: Optional[List[Union[str, Phrase]]]=None,
-        left_recursive_exclude_names: Optional[List[Union[str, Phrase]]]=None,
-        left_recursive_standard_include_names: Optional[List[Union[str, Phrase]]]=None,
-        left_recursive_standard_exclude_names: Optional[List[Union[str, Phrase]]]=None,
+        include_phrases: Optional[List[Union[str, Phrase]]]=None,
+        exclude_phrases: Optional[List[Union[str, Phrase]]]=None,
+        is_valid_data_func: Optional[Callable[[Phrase.StandardLexResultData], bool]]=None,
     ):
         assert get_dynamic_phrases_func
 
@@ -84,40 +81,39 @@ class DynamicPhrase(Phrase):
         self._get_dynamic_phrases_func      = get_dynamic_phrases_func
 
         # ----------------------------------------------------------------------
-        def CreateIncludePhraseFunc(include_names, exclude_names):
+        def CreateIncludePhraseFunc(include_phrase, exclude_phrases):
             assert (
-                (not include_names and not exclude_names)
-                or not exclude_names
-                or not include_names
+                (not include_phrase and not exclude_phrases)
+                or not exclude_phrases
+                or not include_phrase
             )
 
-            if include_names:
-                include_names = set(
+            if include_phrase:
+                include_phrase = set(
                     [
                         phrase.Name if isinstance(phrase, Phrase) else phrase
-                        for phrase in include_names
+                        for phrase in include_phrase
                     ],
                 )
 
-                return lambda phrase: phrase.Name in include_names
+                return lambda phrase: phrase.Name in include_phrase
 
-            if exclude_names:
-                exclude_names = set(
+            if exclude_phrases:
+                exclude_phrases = set(
                     [
                         phrase.Name if isinstance(phrase, Phrase) else phrase
-                        for phrase in exclude_names
+                        for phrase in exclude_phrases
                     ],
                 )
 
-                return lambda phrase: phrase.Name not in exclude_names
+                return lambda phrase: phrase.Name not in exclude_phrases
 
             return lambda phrase: True
 
         # ----------------------------------------------------------------------
 
-        self._standard_filter_func                      = CreateIncludePhraseFunc(include_names, exclude_names)
-        self._left_recursive_filter_func                = CreateIncludePhraseFunc(left_recursive_include_names, left_recursive_exclude_names)
-        self._left_recursive_standard_filter_func       = CreateIncludePhraseFunc(left_recursive_standard_include_names, left_recursive_standard_exclude_names)
+        self._pre_phrase_filter_func        = CreateIncludePhraseFunc(include_phrases, exclude_phrases)
+        self._is_valid_data_func            = is_valid_data_func or (lambda *args, **kwargs: True)
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -152,6 +148,23 @@ class DynamicPhrase(Phrase):
         )
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    def SkipDynamicData(
+        data: Phrase.StandardLexResultData,
+    ) -> Phrase.StandardLexResultData:
+        assert isinstance(data.Phrase, DynamicPhrase)
+        assert isinstance(data.Data, Phrase.StandardLexResultData)
+
+        data = data.Data
+
+        assert isinstance(data.Phrase, OrPhrase)
+        assert isinstance(data.Data, Phrase.StandardLexResultData)
+
+        data = data.Data
+
+        return data
+
+    # ----------------------------------------------------------------------
     @Interface.override
     async def LexAsync(
         self,
@@ -179,7 +192,7 @@ class DynamicPhrase(Phrase):
 
             # Filter the list by those that have been explicitly included or excluded
             dynamic_phrases = [
-                phrase for phrase in dynamic_phrases if self._standard_filter_func(phrase)
+                phrase for phrase in dynamic_phrases if self._pre_phrase_filter_func(phrase)
             ]
 
             # TODO: Is there a way to cache these results so that we don't have to filter over and over?
@@ -190,27 +203,23 @@ class DynamicPhrase(Phrase):
 
             for phrase in dynamic_phrases:
                 if self.__class__.IsLeftRecursivePhrase(phrase, self.DynamicPhrasesType):
-                    if self._left_recursive_filter_func(phrase):
-                        left_recursive_phrases.append(phrase)
+                    left_recursive_phrases.append(phrase)
                 else:
                     standard_phrases.append(phrase)
 
             if left_recursive_phrases:
-                standard_phrases = [
-                    phrase for phrase in standard_phrases if self._left_recursive_standard_filter_func(phrase)
-                ]
+                assert standard_phrases
 
-                if standard_phrases:
-                    result = await self._LexLeftRecursiveAsync(
-                        dynamic_phrases_name,
-                        left_recursive_phrases,
-                        standard_phrases,
-                        unique_id,
-                        normalized_iter,
-                        observer,
-                        ignore_whitespace=ignore_whitespace,
-                        single_threaded=single_threaded,
-                    )
+                result = await self._LexLeftRecursiveAsync(
+                    dynamic_phrases_name,
+                    left_recursive_phrases,
+                    standard_phrases,
+                    unique_id,
+                    normalized_iter,
+                    observer,
+                    ignore_whitespace=ignore_whitespace,
+                    single_threaded=single_threaded,
+                )
             elif standard_phrases:
                 result = await self._LexStandardAsync(
                     dynamic_phrases_name,
@@ -386,12 +395,6 @@ class DynamicPhrase(Phrase):
                 Phrase.StandardLexResultData(self, error_data_item, unique_id),
             )
 
-        # Create an OrPhrase item that looks like what would be generated by the standard lexer
-        pseudo_or_phrase = OrPhrase(
-            left_recursive_phrases + standard_phrases,
-            name=dynamic_phrases_name,
-        )
-
         # Strip the prefix- and suffix-cruft from the output data so that we can simulate a standard
         # phrase.
         for data_item_index, data_item in enumerate(data_items):
@@ -399,6 +402,12 @@ class DynamicPhrase(Phrase):
             assert data_item.Data is not None
 
             data_items[data_item_index] = data_item.Data
+
+        # Create an OrPhrase item that looks like what would be generated by the standard lexer
+        pseudo_or_phrase = OrPhrase(
+            left_recursive_phrases + standard_phrases,
+            name=dynamic_phrases_name,
+        )
 
         # Massage the results into the expected format
         for data_item_index, data_item in enumerate(data_items):
@@ -442,26 +451,7 @@ class DynamicPhrase(Phrase):
 
         # We may need to alter the tree if we are working with a combination of left- and right-
         # recursive phrases
-
-        # ----------------------------------------------------------------------
-        def SkipDynamicData(
-            data: Phrase.StandardLexResultData,
-        ) -> Phrase.StandardLexResultData:
-            assert isinstance(data.Phrase, DynamicPhrase)
-            assert data.Data is not None
-
-            data = data.Data
-
-            assert isinstance(data.Phrase, OrPhrase)
-            assert data.Data is not None
-
-            data = data.Data
-
-            return data
-
-        # ----------------------------------------------------------------------
-
-        value_data = SkipDynamicData(data)
+        value_data = self.SkipDynamicData(data)
 
         if (
             self.IsLeftRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
@@ -470,7 +460,7 @@ class DynamicPhrase(Phrase):
             assert isinstance(value_data.Data, Phrase.MultipleLexResultData)
             assert isinstance(value_data.Data.DataItems[-1], Phrase.StandardLexResultData)
 
-            value_data = SkipDynamicData(cast(Phrase.StandardLexResultData, value_data.Data.DataItems[-1]))
+            value_data = self.SkipDynamicData(cast(Phrase.StandardLexResultData, value_data.Data.DataItems[-1]))
 
             if self.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType):
                 # Splitting phrases into those that are left-recursive and those that
@@ -517,13 +507,13 @@ class DynamicPhrase(Phrase):
                 #   4) Root = new root
 
                 root_dynamic = data
-                root_actual = SkipDynamicData(root_dynamic)
+                root_actual = self.SkipDynamicData(root_dynamic)
 
                 assert isinstance(root_actual.Phrase, SequencePhrase)
                 assert isinstance(root_actual.Data, Phrase.MultipleLexResultData)
 
                 new_root_dynamic = root_actual.Data.DataItems[-1]
-                new_root_actual = SkipDynamicData(cast(Phrase.StandardLexResultData, new_root_dynamic))
+                new_root_actual = self.SkipDynamicData(cast(Phrase.StandardLexResultData, new_root_dynamic))
 
                 assert isinstance(new_root_actual.Phrase, SequencePhrase)
                 assert isinstance(new_root_actual.Data, Phrase.MultipleLexResultData)
@@ -532,7 +522,7 @@ class DynamicPhrase(Phrase):
 
                 while True:
                     potential_travel_dynamic = travel.Data.DataItems[0]
-                    potential_travel_actual = SkipDynamicData(potential_travel_dynamic)
+                    potential_travel_actual = self.SkipDynamicData(potential_travel_dynamic)
 
                     if not self.__class__.IsRightRecursivePhrase(potential_travel_actual.Phrase, self.DynamicPhrasesType):
                         break
@@ -544,11 +534,23 @@ class DynamicPhrase(Phrase):
 
                 data = new_root_dynamic
 
+        # Should this data be considered as valid?
+        assert isinstance(data, Phrase.StandardLexResultData)
+
+        if not self._is_valid_data_func(data):
+            # pylint: disable=too-many-function-args
+            return Phrase.LexResult(
+                False,
+                original_normalized_iter,
+                normalized_iter,
+                data,
+            )
+
         # At this point, we have massaged and modified the structure of the tree to the point where
         # attempting to use previously cached values will not work. Update all of the unique_ids for
         # all data in the hierarchy to prevent caching.
 
-        unique_id_suffix_str = "Psuedo ({})".format(uuid.uuid4())
+        unique_id_suffix_str = "Pseudo ({})".format(uuid.uuid4())
         unique_id_suffix_iteration = 0
 
         # ----------------------------------------------------------------------

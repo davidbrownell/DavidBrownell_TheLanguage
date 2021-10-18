@@ -61,6 +61,7 @@ with InitRelativeImports():
     from .Statements.DocstringStatement import DocstringStatement
     from .Statements.ForStatement import ForStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
+    from .Statements.FuncInvocationStatement import FuncInvocationStatement
     from .Statements.IfStatement import IfStatement
     from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
@@ -72,9 +73,6 @@ with InitRelativeImports():
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
     from .Statements.WhileStatement import WhileStatement
     from .Statements.YieldStatement import YieldStatement
-
-    # TODO: Remaining
-    #       - FuncInvocationStatement
 
     # Types
     from .Types.StandardType import StandardType
@@ -121,6 +119,7 @@ GrammarPhrases                              = [
     DocstringStatement(),
     ForStatement(),
     FuncDefinitionStatement(),
+    FuncInvocationStatement(),
     IfStatement(),
     ImportStatement(".TheLanguage"), # TODO: Update when the official name is known
     PassStatement(),

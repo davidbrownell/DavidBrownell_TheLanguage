@@ -243,7 +243,7 @@ def test_Standard():
     assert iter.AtEnd() == False
 
     # Final dedents
-    assert iter.HasEndOfFileDedents()
+    assert iter.HasEndOfFileDedents
     assert iter.IsBlankLine() == False
 
     assert iter.LineInfo.NumDedents == 2
@@ -274,7 +274,7 @@ def test_NoFinalDedents():
                 """,
             ),
         ),
-    ).HasEndOfFileDedents()
+    ).HasEndOfFileDedents
 
 # ----------------------------------------------------------------------
 def test_SkipWhitespacePrefix():

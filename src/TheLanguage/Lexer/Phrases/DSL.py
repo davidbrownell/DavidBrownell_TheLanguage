@@ -19,7 +19,7 @@ import os
 import re
 import textwrap
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import Callable, cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -91,10 +91,13 @@ class PhraseItem(object):
     Name: Optional[str]
 
     # List of phrase or phrase names that should never be matched by this phrase item
-    Excludes: Optional[List[Union[str, Phrase]]]        = field(default=None)
+    ExcludePhrases: Optional[List[Union[str, Phrase]]]  = field(default=None)
+
+    # Func that can be called to determine if a data result is valid in a specific context
+    IsValidDataFunc: Optional[Callable[[Phrase.StandardLexResultData], bool]]  = field(default=None)
 
     # When creating an OrPhrase, any ambiguities are resolved using the order in which they appear
-    AmbiguitiesResolvedByOrder: Optional[bool]          = field(default=None)
+    AmbiguitiesResolvedByOrder: Optional[bool]                              = field(default=None)
 
     # ----------------------------------------------------------------------
     # This method is here to provide an interface similar to CreatePhrase (in that arguments begin
@@ -104,10 +107,17 @@ class PhraseItem(object):
     def Create(
         item: PhraseItemItemType,
         name: Optional[str]=None,
-        excludes: Optional[List[Union[str, Phrase]]]=None,
+        exclude_phrases: Optional[List[Union[str, Phrase]]]=None,
+        is_valid_data_func: Optional[Callable[[Phrase.StandardLexResultData], bool]]=None,
         ambiguities_resolved_by_order: Optional[bool]=None,
     ) -> "PhraseItem":
-        return PhraseItem(item, name, excludes, ambiguities_resolved_by_order)
+        return PhraseItem(
+            item,
+            name,
+            exclude_phrases,
+            is_valid_data_func,
+            ambiguities_resolved_by_order,
+        )
 
 
 # ----------------------------------------------------------------------
@@ -434,7 +444,8 @@ def _PopulateItem(
     comment_token: RegexToken,
     item: PhraseItemItemType,
 ) -> Phrase:
-    excludes = None
+    exclude_phrases = None
+    is_valid_data_func = None
     ambiguities_resolved_by_order = None
 
     # Get a custom name
@@ -442,7 +453,8 @@ def _PopulateItem(
         name = item.Name
     elif isinstance(item, PhraseItem):
         name = item.Name
-        excludes = item.Excludes
+        exclude_phrases = item.ExcludePhrases
+        is_valid_data_func = item.IsValidDataFunc
         ambiguities_resolved_by_order = item.AmbiguitiesResolvedByOrder
         item = item.Item
     else:
@@ -487,12 +499,14 @@ def _PopulateItem(
     # below handles the OptionalPhraseItem that wraps a PhraseItem.
     if isinstance(item, PhraseItem):
         assert name is None
-        assert excludes is None
+        assert exclude_phrases is None
+        assert is_valid_data_func is None
         assert ambiguities_resolved_by_order is None
         assert arity is not None
 
         name = item.Name
-        excludes = item.Excludes
+        exclude_phrases = item.ExcludePhrases
+        is_valid_data_func = item.IsValidDataFunc
         ambiguities_resolved_by_order = item.AmbiguitiesResolvedByOrder
         item = item.Item
 
@@ -508,7 +522,8 @@ def _PopulateItem(
     ), item
 
     # Certain PhraseItem decorators can only be used with certain item types
-    assert excludes is None or (excludes and isinstance(item, DynamicPhrasesType)), (excludes, item)
+    assert exclude_phrases is None or (exclude_phrases and isinstance(item, DynamicPhrasesType)), (exclude_phrases, item)
+    assert is_valid_data_func is None or (is_valid_data_func and isinstance(item, DynamicPhrasesType)), (is_valid_data_func, item)
     assert ambiguities_resolved_by_order is None or (ambiguities_resolved_by_order and isinstance(item, (tuple, OrPhrase))), (ambiguities_resolved_by_order, item)
 
     # Begin the conversion process
@@ -533,7 +548,8 @@ def _PopulateItem(
         phrase = DynamicPhrase(
             item,
             lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type),
-            exclude_names=excludes,
+            exclude_phrases=exclude_phrases,
+            is_valid_data_func=is_valid_data_func,
             name=name or str(item),
         )
 

@@ -42,7 +42,6 @@ with InitRelativeImports():
     from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
-    from ..Common.Impl import ModifierImpl
 
     from ...Error import Error
     from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
