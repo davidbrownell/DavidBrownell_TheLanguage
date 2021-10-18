@@ -3,7 +3,7 @@
 # |  RecursivePlaceholderPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-08 23:24:30
+# |      2021-09-22 22:36:10
 # |
 # ----------------------------------------------------------------------
 # |
@@ -34,9 +34,10 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class RecursivePlaceholderPhrase(Phrase):
     """\
-    Temporary Phrase that should be replaced before participating in a Lex hierarchy.
+    Temporary Phrase that should be replaced before participating in Lexing activities.
 
-    These objects are used as sentinels within a tree to implement recursive grammars.
+    Instances of this object are used as sentinels within a Phrase hierarchy to implement
+    recursive grammars.
     """
 
     # ----------------------------------------------------------------------
@@ -44,20 +45,13 @@ class RecursivePlaceholderPhrase(Phrase):
         super(RecursivePlaceholderPhrase, self).__init__("Recursive")
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    )  -> bool:
-        raise Exception("'_PopulateRecursiveImpl' should never be called on a RecursivePlaceholderPhrase instance")
+    async def LexAsync(self, *args, **kwargs):  # <Parameters differ from overridden, unused argument> pylint: disable=W0221, W0613
+        raise Exception("This method should never be called on an instance of this object")
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    async def _LexAsyncImpl(
-        self,
-        *args,  # <unused argument> pylint: disable=W0613
-        **kwargs,  # <unused argument> pylint: disable=W0613
-    ):  # <parameters differ from overridden> pylint: disable=W0221
-        raise Exception("'LexAsync' should never be called on a RecursivePlaceholderPhrase instance")
+    def _PopulateRecursiveImpl(self, *args, **kwargs):  # <Parameters differ from overridden, unused argument> pylint: disable=W0221, W0613
+        raise Exception("This method should never be called on an instance of this object")

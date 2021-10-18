@@ -3,7 +3,7 @@
 # |  ModifierImpl.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-07 15:08:54
+# |      2021-09-30 12:25:21
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Mixin objects that help when creating modifiers used during the parsing process"""
+"""Functionality that helps lex and extract modifier enumerations"""
 
 import os
 
@@ -34,110 +34,80 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-EnumType                                    = TypeVar("EnumType")
+EnumType                                    = TypeVar("EnumType", bound=Enum)
 
 
 # ----------------------------------------------------------------------
-# |
-# |  Public Types
-# |
-# ----------------------------------------------------------------------
-class StandardMixin(object):
+def StandardCreatePhraseItemFuncFactory(
+    the_enum: Type[EnumType],
+) -> Callable[[], Tuple[str, ...]]:
     # ----------------------------------------------------------------------
-    @classmethod
-    def CreatePhraseItem(
-        cls,
-    ) -> Tuple[str, ...]:
-        return _StandardCreatePhraseItem(cls)  # type: ignore
+    def CreatePhraseItem() -> Tuple[str, ...]:
+        return tuple(e.name for e in the_enum)
 
     # ----------------------------------------------------------------------
-    @classmethod
+
+    return CreatePhraseItem
+
+
+# ----------------------------------------------------------------------
+def StandardExtractFuncFactory(
+    the_enum: Type[EnumType],
+) -> Callable[[Node], EnumType]:
+    # ----------------------------------------------------------------------
     def Extract(
-        cls: EnumType,
         node: Node,
     ) -> EnumType:
-        return _StandardExtract(cls, node)
+        value = cast(
+            str,
+            ExtractToken(
+                cast(Leaf, ExtractOr(node)),
+                use_match=True,
+            ),
+        )
+
+        return the_enum[value]
+
+    # ----------------------------------------------------------------------
+
+    return Extract
 
 
 # ----------------------------------------------------------------------
-# |
-# |  Public Functions
-# |
-# ----------------------------------------------------------------------
-def CreateStandardCreatePhraseItemFunc(
-    the_enum: Type[Enum],
+def ByValueCreatePhraseItemFuncFactory(
+    the_enum: Type[EnumType],
 ) -> Callable[[], Tuple[str, ...]]:
-    return lambda: _StandardCreatePhraseItem(the_enum)
+    # ----------------------------------------------------------------------
+    def CreatePhraseItem() -> Tuple[str, ...]:
+        return tuple(e.value for e in the_enum)
+
+    # ----------------------------------------------------------------------
+
+    return CreatePhraseItem
 
 
 # ----------------------------------------------------------------------
-def CreateStandardExtractFunc(
-    the_enum: EnumType,
+def ByValueExtractFuncFactory(
+    the_enum: Type[EnumType],
 ) -> Callable[[Node], EnumType]:
-    return lambda node: _StandardExtract(the_enum, node)
+    # ----------------------------------------------------------------------
+    def Extract(
+        node: Node,
+    ) -> EnumType:
+        value = cast(
+            str,
+            ExtractToken(
+                cast(Leaf, ExtractOr(node)),
+                use_match=True,
+            ),
+        )
 
+        for e in the_enum:
+            if e.value == value:
+                return e
 
-# ----------------------------------------------------------------------
-def CreateByValueCreatePhraseItemFunc(
-    the_enum: Type[Enum],
-) -> Callable[[], Tuple[str, ...]]:
-    return lambda: _ByValueCreatePhraseItem(the_enum)
+        assert False, value
 
+    # ----------------------------------------------------------------------
 
-# ----------------------------------------------------------------------
-def CreateByValueExtractFunc(
-    the_enum: EnumType,
-) -> Callable[[Node], EnumType]:
-    return lambda node: _ByValueExtract(the_enum, node)
-
-
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-def _StandardCreatePhraseItem(
-    the_enum: Type[Enum],
-) -> Tuple[str, ...]:
-    return tuple(e.name for e in the_enum)
-
-
-# ----------------------------------------------------------------------
-def _StandardExtract(
-    the_enum: EnumType,
-    node: Node,
-) -> EnumType:
-    value = cast(
-        str,
-        ExtractToken(
-            cast(Leaf, ExtractOr(node)),
-            use_match=True,
-        ),
-    )
-
-    return the_enum[value]  # type: ignore
-
-
-# ----------------------------------------------------------------------
-def _ByValueCreatePhraseItem(
-    the_enum: Type[Enum],
-) -> Tuple[str, ...]:
-    return tuple(e.value for e in the_enum)
-
-
-# ----------------------------------------------------------------------
-def _ByValueExtract(
-    the_enum: EnumType,
-    node: Node,
-) -> EnumType:
-    value = cast(
-        str,
-        ExtractToken(
-            cast(Leaf, ExtractOr(node)),
-            use_match=True,
-        ),
-    )
-
-    for e in the_enum:  # type: ignore
-        if e.value == value:
-            return e
-
-    assert False, value
+    return Extract

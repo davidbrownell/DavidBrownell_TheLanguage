@@ -3,7 +3,7 @@
 # |  ClassMemberStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-02 12:03:44
+# |      2021-10-15 09:50:13
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,32 +31,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassStatement import ClassStatement
-    from .FuncAndMethodDefinitionStatement import FuncAndMethodDefinitionStatement
+    from .FuncDefinitionStatement import FuncDefinitionStatement
 
     from ..Common import AttributesPhraseItem
-    from ..Common import Tokens as CommonTokens
     from ..Common import ClassModifier
+    from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
-
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-    from ....Parser.Statements.ClassMemberStatementParserInfo import (
-        ClassMemberStatementParserInfo,
-        ExpressionParserInfo,
-        TypeParserInfo,
-    )
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
         ExtractSequence,
         ExtractToken,
-        Leaf,
-        Node,
-        PhraseItem,
+        OptionalPhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Statements.ClassMemberStatementParserInfo import (
+        ClassMemberStatementParserInfo,
+        ExpressionParserInfo,
+        TypeParserInfo,
     )
 
 
@@ -65,7 +63,7 @@ class ClassMemberStatement(GrammarPhrase):
     """\
     Defines a class member.
 
-    <attributes>? <visibility>? <type> <name> <class_modifier>? ('=' <expr>)?
+    <attributes>? <visibility>? <type> <name> <class_modifier>? ('=' <expression>)?
 
     Examples:
         Int foo
@@ -80,12 +78,10 @@ class ClassMemberStatement(GrammarPhrase):
 
     PHRASE_NAME                             = "Class Member Statement"
 
-    # TODO (Parser Impl): Potential Attributes: Init, ToStr, Serialize, Equality # <TODO> pylint: disable=W0511
-
     # ----------------------------------------------------------------------
     def __init__(self):
         super(ClassMemberStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -93,33 +89,30 @@ class ClassMemberStatement(GrammarPhrase):
                     AttributesPhraseItem.Create(),
 
                     # <visibility>?
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Visibility",
                         item=VisibilityModifier.CreatePhraseItem(),
-                        arity="?",
                     ),
 
                     # <type>
                     DynamicPhrasesType.Types,
 
                     # <name>
-                    CommonTokens.GenericName,
+                    CommonTokens.VariableName,
 
                     # <class_modifier>?
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Class Modifier",
                         item=ClassModifier.CreatePhraseItem(),
-                        arity="?",
                     ),
 
-                    # ('=' <expr>)?
-                    PhraseItem(
-                        name="Default Value",
+                    # ('=' <expression>)?
+                    OptionalPhraseItem.Create(
+                        name="Initializer",
                         item=[
                             "=",
                             DynamicPhrasesType.Expressions,
                         ],
-                        arity="?",
                     ),
 
                     CommonTokens.Newline,
@@ -131,81 +124,67 @@ class ClassMemberStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 7
 
-            # <attributes>*
-            attributes_data = AttributesPhraseItem.ExtractData(cast(Optional[Node], nodes[0]))
+            # <attributes>+
+            attributes_node = cast(AST.Node, nodes[0])
+            attributes_info = AttributesPhraseItem.ExtractLexerData(attributes_node)
+
+            # TODO: use attributes_info
 
             # <visibility>?
-            visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
-
-            if visibility_node is not None:
-                visibility_info = VisibilityModifier.Extract(visibility_node)
-            else:
+            visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
+            if visibility_node is None:
                 visibility_info = None
+            else:
+                visibility_info = VisibilityModifier.Extract(visibility_node)
 
-            # <type> (The TypeParserInfo will be extracted as part of a deferred callback)
-            type_node = ExtractDynamic(cast(Node, nodes[2]))
+            # <type>
+            type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
             type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
             # <name>
-            name_leaf = cast(Leaf, nodes[3])
+            name_leaf = cast(AST.Leaf, nodes[3])
             name_info = cast(str, ExtractToken(name_leaf))
 
             # <class_modifier>?
-            class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
-
-            if class_modifier_node is not None:
-                class_modifier_info = ClassModifier.Extract(class_modifier_node)
-            else:
+            class_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[4])))
+            if class_modifier_node is None:
                 class_modifier_info = None
-
-            # ('=' <expr>)? (The ExprParserInfo will be extracted as part of a deferred callback)
-            default_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[5])))
-
-            if default_node is not None:
-                default_nodes = ExtractSequence(default_node)
-                assert len(default_nodes) == 2
-
-                default_node = ExtractDynamic(cast(Node, default_nodes[1]))
-
-            # TODO: Leverage attributes (init, serialize, etc.)
-
-            # Get the default ExprParserInfo
-            if default_node is not None:
-                default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
             else:
-                default_info = None
+                class_modifier_info = ClassModifier.Extract(class_modifier_node)
 
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                ClassMemberStatementParserInfo(
-                    CreateParserRegions(
-                        node,
-                        visibility_node,
-                        type_node,
-                        name_leaf,
-                        class_modifier_node,
-                        default_node,
-                    ),  # type: ignore
-                    ClassStatement.GetContainingClassParserInfo(  # type: ignore
-                        node,
-                        FuncAndMethodDefinitionStatement.PHRASE_NAME,
-                    ),
-                    visibility_info,  # type: ignore
-                    type_info,  # type: ignore
-                    name_info,  # type: ignore
-                    class_modifier_info,  # type: ignore
-                    default_info,  # type: ignore
-                ),
+            # ('=' <expression>)?
+            initializer_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[5])))
+            if initializer_node is None:
+                initializer_info = None
+            else:
+                initializer_nodes = ExtractSequence(initializer_node)
+                assert len(initializer_nodes) == 2
+
+                initializer_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, initializer_nodes[1])))
+                initializer_info = cast(ExpressionParserInfo, GetParserInfo(initializer_node))
+
+            return ClassMemberStatementParserInfo(
+                CreateParserRegions(node, visibility_node, class_modifier_node, type_node, name_leaf, initializer_node),  # type: ignore
+                ClassStatement.GetContainingClassParserInfo(node, FuncDefinitionStatement.PHRASE_NAME),  # type: ignore
+                visibility_info,  # type: ignore
+                class_modifier_info,  # type: ignore
+                type_info,
+                name_info,
+                initializer_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

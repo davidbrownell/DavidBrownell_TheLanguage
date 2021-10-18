@@ -3,7 +3,7 @@
 # |  StatementsPhraseItem.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-05 18:29:41
+# |      2021-10-08 13:45:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -33,13 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import Tokens as CommonTokens
+    from . import Tokens as CommonTokens
     from ..Statements.DocstringStatement import DocstringStatement
-
-    from ...GrammarError import GrammarError
-
-    from ....Parser.ParserInfo import GetParserInfo
-    from ....Parser.Statements.StatementParserInfo import StatementParserInfo
+    from ...Error import Error
 
     from ....Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -49,13 +45,17 @@ with InitRelativeImports():
         ExtractSequence,
         Leaf,
         Node,
+        OneOrMorePhraseItem,
         PhraseItem,
     )
+
+    from ....Parser.Parser import GetParserInfo
+    from ....Parser.Statements.StatementParserInfo import StatementParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidDocstringError(GrammarError):
+class InvalidDocstringError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Docstrings are not supported in this context.",
     )
@@ -63,15 +63,15 @@ class InvalidDocstringError(GrammarError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class MultipleDocstringsError(GrammarError):
+class MultipleDocstringsError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "There may only be one docstring within a single scope.",
+        "There may only be one docstring within a scope.",
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class MisplacedDocstringError(GrammarError):
+class MisplacedDocstringError(Error):
     StatementOrdinal: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -81,7 +81,7 @@ class MisplacedDocstringError(GrammarError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class StatementsRequiredError(GrammarError):
+class StatementsRequiredError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Statements are required.",
     )
@@ -89,7 +89,7 @@ class StatementsRequiredError(GrammarError):
 
 # ----------------------------------------------------------------------
 def Create() -> PhraseItem:
-    return PhraseItem(
+    return PhraseItem.Create(
         name="Statements",
         item=[
             # ':'
@@ -99,17 +99,16 @@ def Create() -> PhraseItem:
             # - Single-line statement
             (
                 # <newline> <indent> <statement>+ <dedent>
-                PhraseItem(
+                PhraseItem.Create(
                     name="Multi-line",
                     item=[
                         CommonTokens.Newline,
                         CommonTokens.Indent,
 
                         # <statement>+
-                        PhraseItem(
+                        OneOrMorePhraseItem.Create(
                             name="Statements",
                             item=DynamicPhrasesType.Statements,
-                            arity="+",
                         ),
 
                         CommonTokens.Dedent,
@@ -172,8 +171,8 @@ def _ExtractParserInfoImpl(
     assert len(nodes) == 2
 
     statements_node = cast(Node, ExtractOr(cast(Node, nodes[1])))
-    assert statements_node.Type
 
+    assert statements_node.Type is not None
     if statements_node.Type.Name == "Multi-line":
         multiline_nodes = ExtractSequence(statements_node)
         assert len(multiline_nodes) == 4
@@ -188,39 +187,36 @@ def _ExtractParserInfoImpl(
 
     assert statement_nodes
 
-    # Process docstrings
-    docstring_leaf = None
-    docstring_str = None
-
+    # Extract statements infos and process docstrings (if any)
     statement_infos: List[StatementParserInfo] = []
+    docstring_leaf: Optional[Leaf] = None
+    docstring_info: Optional[str] = None
 
     for statement_node_index, statement_node in enumerate(statement_nodes):
-        if statement_node.Type is not None:
-            if statement_node.Type.Name == DocstringStatement.PHRASE_NAME:
-                if validate_docstrings:
-                    if docstring_leaf is not None:
-                        raise MultipleDocstringsError.FromNode(
-                            cast(Node, statement_node).Children[0],
-                        )
+        statement_info = cast(Optional[StatementParserInfo], GetParserInfo(statement_node, allow_none=True))
 
-                    if statement_node_index != 0:
-                        raise MisplacedDocstringError.FromNode(
-                            cast(Node, statement_node).Children[0],
-                            inflect.engine().ordinal(statement_node_index + 1),
-                        )
+        if statement_node.Type is not None and statement_node.Type.Name == DocstringStatement.PHRASE_NAME:
+            if validate_docstrings:
+                if docstring_leaf is not None:
+                    raise MultipleDocstringsError.FromNode(cast(Node, statement_node).Children[0],)
 
-                docstring_leaf, docstring_str = DocstringStatement.GetInfo(cast(Node, statement_node))
+                if statement_node_index != 0:
+                    raise MisplacedDocstringError.FromNode(
+                        cast(Node, statement_node).Children[0],
+                        inflect.engine().ordinal(statement_node_index + 1),
+                    )
 
-        statement_info = cast(StatementParserInfo, GetParserInfo(statement_node))
+            docstring_leaf, docstring_info = DocstringStatement.GetMultilineContent(cast(Node, statement_node))
 
-        if statement_info is not None:
+        elif statement_info is not None:
             statement_infos.append(statement_info)
 
-    # Note that statement_infos may be an empty list; this is valid is some cases, so it is
-    # a condition that needs to be handled by the caller.
+    # Note that statement_infos may be empty; this is valid in some cases, so it is a condition that
+    # needs to be handled by the caller if necessary.
 
     if docstring_leaf is None:
+        assert docstring_info is None
         return statement_infos, None
 
-    assert docstring_str is not None
-    return statement_infos, (docstring_str, docstring_leaf)
+    assert docstring_info is not None
+    return statement_infos, (docstring_info, docstring_leaf)

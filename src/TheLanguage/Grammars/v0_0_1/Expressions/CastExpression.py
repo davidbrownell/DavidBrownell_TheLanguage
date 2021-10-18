@@ -3,7 +3,7 @@
 # |  CastExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 11:25:44
+# |      2021-10-04 09:25:46
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,38 +31,41 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import TypeModifier
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
+
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractOr,
+        ExtractSequence,
+        PhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
     from ....Parser.Expressions.CastExpressionParserInfo import (
         CastExpressionParserInfo,
         ExpressionParserInfo,
         TypeParserInfo,
-    )
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractOr,
-        ExtractSequence,
-        Node,
-        PhraseItem,
+        # The following imports are not used in this file but are here as a
+        # convenience
+        InvalidModifierError,
+        TypeWithModifierError,
     )
 
 
 # ----------------------------------------------------------------------
 class CastExpression(GrammarPhrase):
     """\
-    Casts a variable to a different type.
+    Casts an expression to a different type.
 
-    <expr> 'as' <modifier> | <type>
+    <expression> 'as' <modifier> | <type.
 
     Examples:
-        foo = bar as Int
-        biz = baz as Int val
-        another = a_var as val
+        bar as Int
+        baz as val
     """
 
     PHRASE_NAME                             = "Cast Expression"
@@ -70,22 +73,22 @@ class CastExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(CastExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
 
                     # 'as'
                     "as",
 
                     # <modifier> | <type>
-                    PhraseItem(
+                    PhraseItem.Create(
                         name="Type or Modifier",
                         item=(
                             # <modifier>
-                            PhraseItem(
+                            PhraseItem.Create(
                                 name="Modifier",
                                 item=TypeModifier.CreatePhraseItem(),
                             ),
@@ -102,19 +105,24 @@ class CastExpression(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # <expr>
-            expr_node = ExtractDynamic(cast(Node, nodes[0]))
-            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
+            # <expression>
+            expression_node = ExtractDynamic(cast(AST.Node, nodes[0]))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
             # <modifier> | <type>
-            type_node = cast(Node, ExtractOr(cast(Node, nodes[2])))
+            type_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[2])))
 
             assert type_node.Type is not None
             if type_node.Type.Name == "Modifier":
@@ -122,16 +130,12 @@ class CastExpression(GrammarPhrase):
             else:
                 type_info = cast(TypeParserInfo, GetParserInfo(ExtractDynamic(type_node)))
 
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                CastExpressionParserInfo(
-                    CreateParserRegions(node, expr_node, type_node),  # type: ignore
-                    expr_info,
-                    type_info,  # type: ignore
-                ),
+            return CastExpressionParserInfo(
+                CreateParserRegions(node, expression_node, type_node),  # type: ignore
+                expression_info,
+                type_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

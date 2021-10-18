@@ -3,7 +3,7 @@
 # |  VariantType_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-11 14:40:08
+# |      2021-10-12 11:48:33
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,38 +28,34 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..VariantType import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_TwoTypes():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                (Int var | Bool) Func():
-                    pass
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            (Int var | Bool) Func():
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_MultipleTypes():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                (
-                    Int var
-                    | Char view
-                    | Double
-                    | Foo var
-                ) Func():
-                    pass
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            (
+                Int var
+                | Char view
+                | Double
+                | Foo var
+            ) Func():
+                pass
+            """,
         ),
-    )
+    )))

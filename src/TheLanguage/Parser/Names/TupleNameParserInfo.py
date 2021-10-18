@@ -3,7 +3,7 @@
 # |  TupleNameParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-08 14:42:59
+# |      2021-10-12 10:55:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -38,3 +38,10 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class TupleNameParserInfo(NameParserInfo):
     Names: List[NameParserInfo]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(TupleNameParserInfo, self).__post_init__(
+            regions,
+            regionless_attributes=["Names"],
+        )

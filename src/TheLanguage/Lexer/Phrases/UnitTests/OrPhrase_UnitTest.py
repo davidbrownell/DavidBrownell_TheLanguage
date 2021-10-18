@@ -3,7 +3,7 @@
 # |  OrPhrase_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-28 07:05:27
+# |      2021-09-24 12:30:11
 # |
 # ----------------------------------------------------------------------
 # |
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..DSL import CommentToken
+    from ..DSL import DefaultCommentToken
     from ..OrPhrase import *
     from ..SequencePhrase import SequencePhrase
 
@@ -217,7 +217,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.IterEnd.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 6
+        assert len(parse_mock.method_calls) == 12
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -226,10 +226,15 @@ class TestStandard(object):
 
         iter = CreateIterator("12345678")
 
-        result = await self._phrase.LexAsync(("root", ), iter, parse_mock)
+        result = await self._phrase.LexAsync(
+            ("root", ),
+            iter,
+            parse_mock,
+            single_threaded=True,
+        )
         assert result is None
 
-        assert len(parse_mock.method_calls) == 5
+        assert len(parse_mock.method_calls) == 9
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -241,7 +246,7 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: None
@@ -284,7 +289,7 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: None
@@ -309,7 +314,7 @@ class TestStandard(object):
         assert iter.Offset == 0
         assert result.IterEnd.AtEnd() == False
 
-        assert len(parse_mock.method_calls) == 0
+        assert len(parse_mock.method_calls) == 10
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -335,8 +340,8 @@ class TestStandard(object):
                       Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
                     Whitespace: None
                   Phrase: "lower"
-                Phrase: "Or: (lower, number)"
-              Phrase: "Or: (upper, Or: (lower, number))"
+                Phrase: "(lower | number)"
+              Phrase: "(upper | (lower | number))"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 5] (4)"
             Success: True
@@ -370,8 +375,8 @@ class TestStandard(object):
                       Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
                     Whitespace: None
                   Phrase: "lower"
-                Phrase: "Or: (lower, number)"
-              Phrase: "Or: (upper, Or: (lower, number))"
+                Phrase: "(lower | number)"
+              Phrase: "(upper | (lower | number))"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 5] (4)"
             Success: True
@@ -380,10 +385,12 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0) StartPhrase, "Or: (upper, Or: (lower, number))"
-            1) StartPhrase, "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
-            2) StartPhrase, "lower", "Or: (lower, number)", "Or: (upper, Or: (lower, number))"
-            3) OnInternalPhraseAsync, 0, 4
+            0) StartPhrase, "(upper | (lower | number))"
+            1) StartPhrase, "upper"
+            2) EndPhrase, "upper" [False]
+            3) StartPhrase, "(lower | number)"
+            4) StartPhrase, "lower"
+            5) OnInternalPhraseAsync, 0, 4
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -394,21 +401,10 @@ class TestStandard(object):
                     Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
                   Whitespace: None
                 Phrase: "lower"
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                  DataItems: []
-                  IsComplete: False
-                Phrase: "Or: (lower, number)"
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                  DataItems:
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: None
-                      Phrase: "upper"
-                  IsComplete: False
-                Phrase: "Or: (upper, Or: (lower, number))"
-            4) EndPhrase, "lower" [True], "Or: (lower, number)" [None], "Or: (upper, Or: (lower, number))" [None]
-            5) OnInternalPhraseAsync, 0, 4
+            6) EndPhrase, "lower" [True]
+            7) StartPhrase, "number"
+            8) EndPhrase, "number" [False]
+            9) OnInternalPhraseAsync, 0, 4
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -420,17 +416,9 @@ class TestStandard(object):
                       Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
                     Whitespace: None
                   Phrase: "lower"
-                Phrase: "Or: (lower, number)"
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                  DataItems:
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: None
-                      Phrase: "upper"
-                  IsComplete: False
-                Phrase: "Or: (upper, Or: (lower, number))"
-            6) EndPhrase, "Or: (lower, number)" [True], "Or: (upper, Or: (lower, number))" [None]
-            7) OnInternalPhraseAsync, 0, 4
+                Phrase: "(lower | number)"
+            10) EndPhrase, "(lower | number)" [True]
+            11) OnInternalPhraseAsync, 0, 4
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -443,9 +431,9 @@ class TestStandard(object):
                         Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
                       Whitespace: None
                     Phrase: "lower"
-                  Phrase: "Or: (lower, number)"
-                Phrase: "Or: (upper, Or: (lower, number))"
-            8) EndPhrase, "Or: (upper, Or: (lower, number))" [True]
+                  Phrase: "(lower | number)"
+                Phrase: "(upper | (lower | number))"
+            12) EndPhrase, "(upper | (lower | number))" [True]
             """,
         )
 
@@ -472,7 +460,7 @@ class TestStandard(object):
                     Match: "<_sre.SRE_Match object; span=(0, 4), match='WORD'>"
                   Whitespace: None
                 Phrase: "upper"
-              Phrase: "Or: (upper, Or: (lower, number))"
+              Phrase: "(upper | (lower | number))"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 5] (4)"
             Success: True
@@ -571,7 +559,7 @@ class TestSort(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: None
@@ -596,17 +584,17 @@ class TestLexReturnsNone(object):
     class EmptyPhrase(Phrase):
         # ----------------------------------------------------------------------
         @Interface.override
+        async def LexAsync(self, *args, **kwargs):
+            return None
+
+        # ----------------------------------------------------------------------
+        @Interface.override
         def _PopulateRecursiveImpl(
             self,
             new_phrase: Phrase,
         ) -> bool:
             # Nothing to do here
             return False
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def _LexAsyncImpl(self, *args, **kwargs):
-            return None
 
     # ----------------------------------------------------------------------
 
@@ -646,8 +634,8 @@ async def test_BigFailuresTrumpSmallSuccesses(parse_mock):
     lower_phrase = TokenPhrase(RegexToken("lower", re.compile(r"(?P<value>[a-z]+[0-9]*)")))
     upper_phrase = TokenPhrase(RegexToken("upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)")))
 
-    short_phrase = SequencePhrase(CommentToken, [lower_phrase])
-    long_phrase = SequencePhrase(CommentToken, [lower_phrase, lower_phrase, upper_phrase])
+    short_phrase = SequencePhrase(DefaultCommentToken, [lower_phrase])
+    long_phrase = SequencePhrase(DefaultCommentToken, [lower_phrase, lower_phrase, upper_phrase])
 
     or_phrase = OrPhrase([short_phrase, long_phrase])
 
@@ -658,10 +646,10 @@ async def test_BigFailuresTrumpSmallSuccesses(parse_mock):
         """\
         # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
             DataItems:
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
                     - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -674,9 +662,9 @@ async def test_BigFailuresTrumpSmallSuccesses(parse_mock):
                         Whitespace: None
                       Phrase: "lower"
                   IsComplete: True
-                Phrase: "Sequence: [lower]"
+                Phrase: "[lower]"
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
                     - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -704,9 +692,9 @@ async def test_BigFailuresTrumpSmallSuccesses(parse_mock):
                       Data: None
                       Phrase: "upper"
                   IsComplete: True
-                Phrase: "Sequence: [lower, lower, upper]"
+                Phrase: "[lower, lower, upper]"
             IsComplete: True
-          Phrase: "Or: (Sequence: [lower], Sequence: [lower, lower, upper])"
+          Phrase: "([lower] | [lower, lower, upper])"
         IterBegin: "[1, 1] (0)"
         IterEnd: "[1, 8] (7)"
         Success: False

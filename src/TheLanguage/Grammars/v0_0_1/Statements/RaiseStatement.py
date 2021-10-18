@@ -3,7 +3,7 @@
 # |  RaiseStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 23:41:14
+# |      2021-10-14 09:51:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,22 +31,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-    from ....Parser.Statements.RaiseStatementParserInfo import (
-        ExpressionParserInfo,
-        RaiseStatementParserInfo,
-    )
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
         ExtractSequence,
-        Node,
-        PhraseItem,
+        OptionalPhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Statements.RaiseStatementParserInfo import (
+        ExpressionParserInfo,
+        RaiseStatementParserInfo,
     )
 
 
@@ -55,7 +55,7 @@ class RaiseStatement(GrammarPhrase):
     """\
     Raises an exception.
 
-    'raise' <expr>?
+    'raise' <expression>?
 
     Examples:
         raise
@@ -68,15 +68,16 @@ class RaiseStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(RaiseStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
+                    # 'raise'
                     "raise",
-                    PhraseItem(
-                        item=DynamicPhrasesType.Expressions,
-                        arity="?",
-                    ),
+
+                    # <expression>?
+                    OptionalPhraseItem(DynamicPhrasesType.Expressions),
+
                     CommonTokens.Newline,
                 ],
             ),
@@ -86,28 +87,31 @@ class RaiseStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # <expr>?
-            expression_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
-            if expression_node is not None:
-                expression_info = cast(ExpressionParserInfo, GetParserInfo(ExtractDynamic(cast(Node, expression_node))))
-            else:
+            # <expression>?
+            expression_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
+            if expression_node is None:
                 expression_info = None
+            else:
+                expression_node = cast(AST.Node, ExtractDynamic(expression_node))
+                expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            SetParserInfo(
-                node,
-                RaiseStatementParserInfo(
-                    CreateParserRegions(node, expression_node),  # type: ignore
-                    expression_info,
-                ),
+            return RaiseStatementParserInfo(
+                CreateParserRegions(node, expression_node),  # type: ignore
+                expression_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

@@ -3,7 +3,7 @@
 # |  VisibilityModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-07 15:05:18
+# |      2021-10-08 10:18:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -29,9 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 # ----------------------------------------------------------------------
 class VisibilityModifier(Enum):
-    """\
-    Modifies the external visibility of a function, method, class attribute, etc.
-    """
+    """Modifies the external visibility of a function, method, class attribute, etc."""
 
     private                                 = auto()
     protected                               = auto()

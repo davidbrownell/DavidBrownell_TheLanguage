@@ -3,7 +3,7 @@
 # |  DeleteStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 16:47:13
+# |      2021-10-12 14:30:35
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for DeleteStatement.py"""
+"""Automated tests for DeleteStatement.py"""
 
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,18 +28,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..DeleteStatement import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                del foo
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            del foo
+            """,
         ),
-    )
+    )))

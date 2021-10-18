@@ -3,7 +3,7 @@
 # |  MatchValueExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-30 15:47:58
+# |      2021-10-12 10:28:57
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional
+from typing import Callable, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,26 +32,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common.Impl.MatchExpressionBase import MatchExpressionBase
 
-    from ...GrammarPhrase import GrammarPhrase
+    from ...GrammarInfo import AST, DynamicPhrasesType, ParserInfo
 
     from ....Parser.Expressions.MatchValueExpressionParserInfo import (
         MatchValueCasePhraseParserInfo,
         MatchValueExpressionParserInfo,
     )
 
-    from ....Lexer.Phrases.DSL import DynamicPhrasesType, Node
-
 
 # ----------------------------------------------------------------------
 class MatchValueExpression(MatchExpressionBase):
     """\
-    Typed version of a match expression.
+    Value-based version of a match expression.
 
     Examples:
-        match value Add(1, 2):
-            case 1, 2: "Too low"
-            case 3: "Correct"
-            default: "Way off!"
+        str_value = (
+            match value Add(1, 2):
+                case 1, 2: "Too low"
+                case 3: "Correct"
+                default: "Way off!"
+        )
     """
 
     PHRASE_NAME                             = "Match Value Expression"
@@ -65,8 +65,13 @@ class MatchValueExpression(MatchExpressionBase):
     @Interface.override
     def ExtractParserInfo(
         cls,
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         return cls._ExtractParserInfoImpl(
             MatchValueExpressionParserInfo,
             MatchValueCasePhraseParserInfo,

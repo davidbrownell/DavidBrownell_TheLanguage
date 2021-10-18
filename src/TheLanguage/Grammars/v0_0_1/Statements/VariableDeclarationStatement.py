@@ -3,7 +3,7 @@
 # |  VariableDeclarationStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 15:25:12
+# |      2021-09-30 13:29:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,23 +32,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import TypeModifier
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractOptional,
+        ExtractSequence,
+        ExtractDynamic,
+        OptionalPhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
     from ....Parser.Statements.VariableDeclarationStatementParserInfo import (
         ExpressionParserInfo,
         NameParserInfo,
         VariableDeclarationStatementParserInfo,
-    )
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractOptional,
-        ExtractSequence,
-        Node,
-        PhraseItem,
     )
 
 
@@ -57,27 +57,26 @@ class VariableDeclarationStatement(GrammarPhrase):
     """\
     Declares a variable.
 
-    <modifier>? <name> '=' <expr>
+    <modifier>? <name> '=' <expression>
 
     Examples:
         foo = bar
         (a, b,) = Func()
     """
 
-    PHRASE_NAME                             = "Variable Declaration Statement"
+    PHRSE_NAME                              = "Variable Declaration Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
         super(VariableDeclarationStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
-                name=self.PHRASE_NAME,
+                name=self.PHRSE_NAME,
                 item=[
                     # <modifier>?
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Modifier",
                         item=TypeModifier.CreatePhraseItem(),
-                        arity="?",
                     ),
 
                     # <name>
@@ -85,9 +84,10 @@ class VariableDeclarationStatement(GrammarPhrase):
 
                     "=",
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
                     CommonTokens.Newline,
+
                 ],
             ),
         )
@@ -96,38 +96,41 @@ class VariableDeclarationStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
             # <modifier>?
-            modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[0])))
-            if modifier_node is not None:
-                modifier_info = TypeModifier.Extract(modifier_node)
-            else:
+            modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
+
+            if modifier_node is None:
                 modifier_info = None
+            else:
+                modifier_info = TypeModifier.Extract(modifier_node)
 
             # <name>
-            name_node = cast(Node, ExtractDynamic(cast(Node, nodes[1])))
+            name_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
             name_info = cast(NameParserInfo, GetParserInfo(name_node))
 
-            # <expr>
-            expr_node = cast(Node, ExtractDynamic(cast(Node, nodes[3])))
-            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            SetParserInfo(
-                node,
-                VariableDeclarationStatementParserInfo(
-                    CreateParserRegions(node, modifier_node, name_node, expr_node),  # type: ignore
-                    modifier_info,  # type: ignore
-                    name_info,
-                    expr_info,
-                ),
+            return VariableDeclarationStatementParserInfo(
+                CreateParserRegions(node, modifier_node, name_node, expression_node),  # type: ignore
+                modifier_info,
+                name_info,
+                expression_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

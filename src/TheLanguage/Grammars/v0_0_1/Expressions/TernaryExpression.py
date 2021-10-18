@@ -3,7 +3,7 @@
 # |  TernaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 19:28:52
+# |      2021-10-11 16:47:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,30 +30,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractSequence,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
     from ....Parser.Expressions.TernaryExpressionParserInfo import (
         ExpressionParserInfo,
         TernaryExpressionParserInfo,
     )
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractSequence,
-        Node,
-    )
-
 
 # ----------------------------------------------------------------------
 class TernaryExpression(GrammarPhrase):
     """\
-    Expression that yields on value on True and a different value on False.
+    Experssion that returns one value when a condition is True and a different one when it is false.
 
-    <expr> 'if' <expr> 'else' <expr>
+    <expression> 'if' <expression> 'else' <expression>
 
     Examples:
         "The Truth" if SomeExpr() else "The Lie"
@@ -64,14 +62,23 @@ class TernaryExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(TernaryExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
+                    # <expression> (true)
                     DynamicPhrasesType.Expressions,
+
+                    # 'if'
                     "if",
+
+                    # <expression> (condition)
                     DynamicPhrasesType.Expressions,
+
+                    # 'else'
                     "else",
+
+                    # <expression> (false)
                     DynamicPhrasesType.Expressions,
                 ],
             ),
@@ -81,36 +88,37 @@ class TernaryExpression(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
-            # <expr> (True)
-            true_node = ExtractDynamic(cast(Node, nodes[0]))
+            # <expression> (true)
+            true_node = ExtractDynamic(cast(AST.Node, nodes[0]))
             true_info = cast(ExpressionParserInfo, GetParserInfo(true_node))
 
-            # <expr> (Condition)
-            cond_node = ExtractDynamic(cast(Node, nodes[2]))
-            cond_info = cast(ExpressionParserInfo, GetParserInfo(cond_node))
+            # <expression> (condition)
+            condition_node = ExtractDynamic(cast(AST.Node, nodes[2]))
+            condition_info = cast(ExpressionParserInfo, GetParserInfo(condition_node))
 
-            # <expr> (False)
-            false_node = ExtractDynamic(cast(Node, nodes[4]))
+            # <expression> (false)
+            false_node = ExtractDynamic(cast(AST.Node, nodes[4]))
             false_info = cast(ExpressionParserInfo, GetParserInfo(false_node))
 
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                TernaryExpressionParserInfo(
-                    CreateParserRegions(node, true_node, cond_node, false_node),  # type: ignore
-                    true_info,
-                    cond_info,
-                    false_info,
-                ),
+            return TernaryExpressionParserInfo(
+                CreateParserRegions(node, condition_node, true_node, false_node),  # type: ignore
+                condition_info,
+                true_info,
+                false_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

@@ -3,7 +3,7 @@
 # |  IfStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-28 21:45:29
+# |      2021-10-12 16:20:13
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Union
+from typing import Callable, cast, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,36 +31,37 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import StatementsPhraseItem
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractOptional,
+        ExtractRepeat,
+        ExtractSequence,
+        OptionalPhraseItem,
+        ZeroOrMorePhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
     from ....Parser.Statements.IfStatementParserInfo import (
         ExpressionParserInfo,
         IfStatementClauseParserInfo,
         IfStatementParserInfo,
     )
 
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractOptional,
-        ExtractRepeat,
-        ExtractSequence,
-        Node,
-        PhraseItem,
-    )
-
 
 # ----------------------------------------------------------------------
 class IfStatement(GrammarPhrase):
     """\
-    If/Else If/Else statement.
+    If/Else If/Else statement,
 
-    'if <expr> ':'
+    'if' <expression> ':'
         <statement>+
     (
-        'elif' <expr> ':'
+        'elif' <expression> ':'
             <statement>+
     )*
     (
@@ -74,11 +75,8 @@ class IfStatement(GrammarPhrase):
         elif cond2:
             Func2()
             Func3()
-        elif cond3:
-            Func4()
         else:
-            Func5()
-            Func6()
+            Func4()
     """
 
     PHRASE_NAME                             = "If Statement"
@@ -88,41 +86,39 @@ class IfStatement(GrammarPhrase):
         statements_item = StatementsPhraseItem.Create()
 
         super(IfStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # 'if' <expr> ':'
+                    # 'if' <expression> ':'
                     #     <statement>+
                     "if",
                     DynamicPhrasesType.Expressions,
                     statements_item,
 
                     # (
-                    #     'elif' <expr> ':'
-                    #          <statement>+
+                    #     'elif' <expression> ':'
+                    #         <statement>+
                     # )*
-                    PhraseItem(
+                    ZeroOrMorePhraseItem.Create(
                         name="Elif",
                         item=[
                             "elif",
                             DynamicPhrasesType.Expressions,
                             statements_item,
                         ],
-                        arity="*",
                     ),
 
                     # (
                     #     'else' ':'
                     #         <statement>+
                     # )?
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Else",
                         item=[
                             "else",
                             statements_item,
                         ],
-                        arity="?",
                     ),
                 ],
             ),
@@ -133,77 +129,80 @@ class IfStatement(GrammarPhrase):
     @Interface.override
     def ExtractParserInfo(
         cls,
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
-            nodes = cast(List[Node], ExtractSequence(node))
+        def Impl():
+            nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
-            clauses: List[IfStatementClauseParserInfo] = []
+            clause_infos: List[IfStatementClauseParserInfo] = []
 
             # 'if'...
-            clauses.append(cls._CreateIfStatementClause(nodes))
+            clause_infos.append(cls._CreateIfStatementClause(cast(List[AST.Node], nodes)))
 
             # 'elif'...
-            for else_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[3]))):
-                clauses.append(cls._CreateIfStatementClause(else_node))
+            for elif_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, nodes[3]))):
+                clause_infos.append(cls._CreateIfStatementClause(elif_node))
 
             # 'else'...
-            else_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[4])))
-            if else_node is not None:
+            else_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[4])))
+            if else_node is None:
+                else_info = None
+            else:
                 else_nodes = ExtractSequence(else_node)
                 assert len(else_nodes) == 2
 
-                else_info = StatementsPhraseItem.ExtractParserInfo(cast(Node, else_nodes[1]))
-            else:
-                else_info = None
+                else_info = StatementsPhraseItem.ExtractParserInfo(cast(AST.Node, else_nodes[1]))
 
-            assert clauses
+            assert clause_infos
 
-            SetParserInfo(
-                node,
-                IfStatementParserInfo(
-                    CreateParserRegions(node, node, else_node),  # type: ignore
-                    clauses,
-                    else_info,
-                ),
+            return IfStatementParserInfo(
+                CreateParserRegions(node, else_node),  # type: ignore
+                clause_infos,
+                else_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @staticmethod
     def _CreateIfStatementClause(
-        node_or_nodes: Union[Node, List[Node]],
+        node_or_nodes: Union[AST.Node, List[AST.Node]],
     ) -> IfStatementClauseParserInfo:
-        if isinstance(node_or_nodes, Node):
+        if isinstance(node_or_nodes, AST.Node):
             nodes = ExtractSequence(node_or_nodes)
             containing_node = node_or_nodes
 
         elif isinstance(node_or_nodes, list):
             nodes = node_or_nodes
             containing_node = nodes[0].Parent
-            assert containing_node is not None
 
         else:
-            assert False, node_or_nodes
+            assert False, node_or_nodes  # pragma: no cover
 
         assert len(nodes) >= 3
 
-        cond_node = cast(Node, ExtractDynamic(cast(Node, nodes[1])))
-        cond_info = cast(ExpressionParserInfo, GetParserInfo(cond_node))
+        # <condition>
+        condition_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
+        condition_info = cast(ExpressionParserInfo, GetParserInfo(condition_node))
 
-        statements_node = cast(Node, nodes[2])
+        # <statement>+
+        statements_node = cast(AST.Node, nodes[2])
         statements_info = StatementsPhraseItem.ExtractParserInfo(statements_node)
 
         # pylint: disable=too-many-function-args
         return IfStatementClauseParserInfo(
-            CreateParserRegions(containing_node, cond_node, statements_node),  # type: ignore
-            cond_info,
+            CreateParserRegions(containing_node, condition_node, statements_node),  # type: ignore
+            condition_info,
             statements_info,
         )

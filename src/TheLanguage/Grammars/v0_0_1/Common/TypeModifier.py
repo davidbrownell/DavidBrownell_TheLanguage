@@ -3,7 +3,7 @@
 # |  TypeModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-07 22:32:04
+# |      2021-09-30 12:34:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -28,9 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Impl import ModifierImpl
-    from ....Parser.Common.TypeModifier import TypeModifier as Enum
+    from ....Parser.Common.TypeModifier import TypeModifier
 
 
 # ----------------------------------------------------------------------
-CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(Enum)
-Extract                                     = ModifierImpl.CreateStandardExtractFunc(Enum)
+CreatePhraseItem                            = ModifierImpl.StandardCreatePhraseItemFuncFactory(TypeModifier)
+Extract                                     = ModifierImpl.StandardExtractFuncFactory(TypeModifier)

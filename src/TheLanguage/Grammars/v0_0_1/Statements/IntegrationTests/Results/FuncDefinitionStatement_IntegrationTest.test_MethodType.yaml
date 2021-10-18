@@ -1,0 +1,288 @@
+# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Self__: "[Ln 1, Col 1] -> [Ln 22, Col 1]"
+Statements:
+  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements: None
+    Name: "Foo"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 1, Col 1] -> [Ln 22, Col 1]"
+      ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
+      Self__: "[Ln 1, Col 1] -> [Ln 22, Col 1]"
+      Statements: "[Ln 1, Col 12] -> [Ln 22, Col 1]"
+      Uses: None
+      Visibility: "[Ln 1, Col 1] -> [Ln 22, Col 1]"
+    Statements:
+      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        Documentation: None
+        IsAsync: None
+        IsDeferred: None
+        IsExceptional: None
+        IsGenerator: None
+        IsSynchronized: None
+        MethodModifier: "MethodModifier.standard"
+        Name: "StandardMethod"
+        Parameters: False
+        Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
+          ClassModifier: "[Ln 2, Col 5] -> [Ln 5, Col 5]"
+          Documentation: None
+          IsAsync: None
+          IsDeferred: None
+          IsExceptional: None
+          IsGenerator: None
+          IsSynchronized: None
+          MethodModifier: "[Ln 2, Col 5] -> [Ln 2, Col 13]"
+          Name: "[Ln 2, Col 18] -> [Ln 2, Col 32]"
+          Parameters: "[Ln 2, Col 32] -> [Ln 2, Col 34]"
+          ReturnType: "[Ln 2, Col 14] -> [Ln 2, Col 17]"
+          Self__: "[Ln 2, Col 5] -> [Ln 5, Col 5]"
+          Statements: "[Ln 2, Col 34] -> [Ln 5, Col 5]"
+          Visibility: "[Ln 2, Col 5] -> [Ln 5, Col 5]"
+        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 2, Col 14] -> [Ln 2, Col 17]"
+            TypeName: "[Ln 2, Col 14] -> [Ln 2, Col 17]"
+          TypeName: "Int"
+        Statements:
+          - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+            Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+              Self__: "[Ln 3, Col 9] -> [Ln 5, Col 1]"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+        ClassModifier: None
+        Documentation: None
+        IsAsync: None
+        IsDeferred: None
+        IsExceptional: None
+        IsGenerator: None
+        IsSynchronized: None
+        MethodModifier: "MethodModifier.static"
+        Name: "StaticMethod"
+        Parameters: False
+        Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
+          ClassModifier: None
+          Documentation: None
+          IsAsync: None
+          IsDeferred: None
+          IsExceptional: None
+          IsGenerator: None
+          IsSynchronized: None
+          MethodModifier: "[Ln 5, Col 5] -> [Ln 5, Col 11]"
+          Name: "[Ln 5, Col 16] -> [Ln 5, Col 28]"
+          Parameters: "[Ln 5, Col 28] -> [Ln 5, Col 30]"
+          ReturnType: "[Ln 5, Col 12] -> [Ln 5, Col 15]"
+          Self__: "[Ln 5, Col 5] -> [Ln 8, Col 5]"
+          Statements: "[Ln 5, Col 30] -> [Ln 8, Col 5]"
+          Visibility: "[Ln 5, Col 5] -> [Ln 8, Col 5]"
+        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 5, Col 12] -> [Ln 5, Col 15]"
+            TypeName: "[Ln 5, Col 12] -> [Ln 5, Col 15]"
+          TypeName: "Int"
+        Statements:
+          - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+            Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+              Self__: "[Ln 6, Col 9] -> [Ln 8, Col 1]"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        Documentation: None
+        IsAsync: None
+        IsDeferred: None
+        IsExceptional: None
+        IsGenerator: None
+        IsSynchronized: None
+        MethodModifier: "MethodModifier.abstract"
+        Name: "AbstractMethod"
+        Parameters: False
+        Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
+          ClassModifier: "[Ln 8, Col 5] -> [Ln 10, Col 1]"
+          Documentation: None
+          IsAsync: None
+          IsDeferred: None
+          IsExceptional: None
+          IsGenerator: None
+          IsSynchronized: None
+          MethodModifier: "[Ln 8, Col 5] -> [Ln 8, Col 13]"
+          Name: "[Ln 8, Col 18] -> [Ln 8, Col 32]"
+          Parameters: "[Ln 8, Col 32] -> [Ln 8, Col 34]"
+          ReturnType: "[Ln 8, Col 14] -> [Ln 8, Col 17]"
+          Self__: "[Ln 8, Col 5] -> [Ln 10, Col 1]"
+          Statements: None
+          Visibility: "[Ln 8, Col 5] -> [Ln 10, Col 1]"
+        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 8, Col 14] -> [Ln 8, Col 17]"
+            TypeName: "[Ln 8, Col 14] -> [Ln 8, Col 17]"
+          TypeName: "Int"
+        Statements: None
+        Visibility: "VisibilityModifier.private"
+      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        Documentation: None
+        IsAsync: None
+        IsDeferred: None
+        IsExceptional: None
+        IsGenerator: None
+        IsSynchronized: None
+        MethodModifier: "MethodModifier.virtual"
+        Name: "VirtualMethod"
+        Parameters: False
+        Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
+          ClassModifier: "[Ln 10, Col 5] -> [Ln 13, Col 5]"
+          Documentation: None
+          IsAsync: None
+          IsDeferred: None
+          IsExceptional: None
+          IsGenerator: None
+          IsSynchronized: None
+          MethodModifier: "[Ln 10, Col 5] -> [Ln 10, Col 12]"
+          Name: "[Ln 10, Col 17] -> [Ln 10, Col 30]"
+          Parameters: "[Ln 10, Col 30] -> [Ln 10, Col 32]"
+          ReturnType: "[Ln 10, Col 13] -> [Ln 10, Col 16]"
+          Self__: "[Ln 10, Col 5] -> [Ln 13, Col 5]"
+          Statements: "[Ln 10, Col 32] -> [Ln 13, Col 5]"
+          Visibility: "[Ln 10, Col 5] -> [Ln 13, Col 5]"
+        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 10, Col 13] -> [Ln 10, Col 16]"
+            TypeName: "[Ln 10, Col 13] -> [Ln 10, Col 16]"
+          TypeName: "Int"
+        Statements:
+          - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+            Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+              Self__: "[Ln 11, Col 9] -> [Ln 13, Col 1]"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        Documentation: None
+        IsAsync: None
+        IsDeferred: None
+        IsExceptional: None
+        IsGenerator: None
+        IsSynchronized: None
+        MethodModifier: "MethodModifier.override"
+        Name: "OverrideMethod"
+        Parameters: False
+        Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
+          ClassModifier: "[Ln 13, Col 5] -> [Ln 16, Col 5]"
+          Documentation: None
+          IsAsync: None
+          IsDeferred: None
+          IsExceptional: None
+          IsGenerator: None
+          IsSynchronized: None
+          MethodModifier: "[Ln 13, Col 5] -> [Ln 13, Col 13]"
+          Name: "[Ln 13, Col 18] -> [Ln 13, Col 32]"
+          Parameters: "[Ln 13, Col 32] -> [Ln 13, Col 34]"
+          ReturnType: "[Ln 13, Col 14] -> [Ln 13, Col 17]"
+          Self__: "[Ln 13, Col 5] -> [Ln 16, Col 5]"
+          Statements: "[Ln 13, Col 34] -> [Ln 16, Col 5]"
+          Visibility: "[Ln 13, Col 5] -> [Ln 16, Col 5]"
+        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 13, Col 14] -> [Ln 13, Col 17]"
+            TypeName: "[Ln 13, Col 14] -> [Ln 13, Col 17]"
+          TypeName: "Int"
+        Statements:
+          - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+            Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+              Self__: "[Ln 14, Col 9] -> [Ln 16, Col 1]"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        Documentation: None
+        IsAsync: None
+        IsDeferred: None
+        IsExceptional: None
+        IsGenerator: None
+        IsSynchronized: None
+        MethodModifier: "MethodModifier.final"
+        Name: "FinalMethod"
+        Parameters: False
+        Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
+          ClassModifier: "[Ln 16, Col 5] -> [Ln 19, Col 5]"
+          Documentation: None
+          IsAsync: None
+          IsDeferred: None
+          IsExceptional: None
+          IsGenerator: None
+          IsSynchronized: None
+          MethodModifier: "[Ln 16, Col 5] -> [Ln 16, Col 10]"
+          Name: "[Ln 16, Col 15] -> [Ln 16, Col 26]"
+          Parameters: "[Ln 16, Col 26] -> [Ln 16, Col 28]"
+          ReturnType: "[Ln 16, Col 11] -> [Ln 16, Col 14]"
+          Self__: "[Ln 16, Col 5] -> [Ln 19, Col 5]"
+          Statements: "[Ln 16, Col 28] -> [Ln 19, Col 5]"
+          Visibility: "[Ln 16, Col 5] -> [Ln 19, Col 5]"
+        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 16, Col 11] -> [Ln 16, Col 14]"
+            TypeName: "[Ln 16, Col 11] -> [Ln 16, Col 14]"
+          TypeName: "Int"
+        Statements:
+          - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+            Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+              Self__: "[Ln 17, Col 9] -> [Ln 19, Col 1]"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        Documentation: None
+        IsAsync: None
+        IsDeferred: None
+        IsExceptional: None
+        IsGenerator: None
+        IsSynchronized: None
+        MethodModifier: "MethodModifier.standard"
+        Name: "DefaultMethod"
+        Parameters: False
+        Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
+          ClassModifier: "[Ln 19, Col 5] -> [Ln 22, Col 1]"
+          Documentation: None
+          IsAsync: None
+          IsDeferred: None
+          IsExceptional: None
+          IsGenerator: None
+          IsSynchronized: None
+          MethodModifier: "[Ln 19, Col 5] -> [Ln 22, Col 1]"
+          Name: "[Ln 19, Col 9] -> [Ln 19, Col 22]"
+          Parameters: "[Ln 19, Col 22] -> [Ln 19, Col 24]"
+          ReturnType: "[Ln 19, Col 5] -> [Ln 19, Col 8]"
+          Self__: "[Ln 19, Col 5] -> [Ln 22, Col 1]"
+          Statements: "[Ln 19, Col 24] -> [Ln 22, Col 1]"
+          Visibility: "[Ln 19, Col 5] -> [Ln 22, Col 1]"
+        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 19, Col 5] -> [Ln 19, Col 8]"
+            TypeName: "[Ln 19, Col 5] -> [Ln 19, Col 8]"
+          TypeName: "Int"
+        Statements:
+          - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+            Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+              Self__: "[Ln 20, Col 9] -> [Ln 22, Col 1]"
+        Visibility: "VisibilityModifier.private"
+    Uses: None
+    Visibility: "VisibilityModifier.private"

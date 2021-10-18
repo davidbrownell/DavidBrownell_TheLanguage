@@ -3,7 +3,7 @@
 # |  RepeatPhrase_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-28 16:42:51
+# |      2021-09-24 14:30:09
 # |
 # ----------------------------------------------------------------------
 # |
@@ -77,7 +77,7 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -90,7 +90,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -103,9 +103,9 @@ class TestStandard(object):
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                 IsComplete: True
-              Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
+              Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (4)"
             Success: True
@@ -114,9 +114,9 @@ class TestStandard(object):
 
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
-            0) StartPhrase, "Repeat: {Or: (Word, Newline+), 2, 4}"
-            1) StartPhrase, "Or: (Word, Newline+)", "Repeat: {Or: (Word, Newline+), 2, 4}"
-            2) StartPhrase, "Word", "Or: (Word, Newline+)", "Repeat: {Or: (Word, Newline+), 2, 4}"
+            0) StartPhrase, "{(Word | Newline+), 2, 4}"
+            1) StartPhrase, "(Word | Newline+)"
+            2) StartPhrase, "Word"
             3) OnInternalPhraseAsync, 0, 3
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -128,19 +128,9 @@ class TestStandard(object):
                     Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                   Whitespace: None
                 Phrase: "Word"
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                  DataItems: []
-                  IsComplete: False
-                Phrase: "Or: (Word, Newline+)"
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                  DataItems: []
-                  IsComplete: False
-                Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
-            4) EndPhrase, "Word" [True], "Or: (Word, Newline+)" [None], "Repeat: {Or: (Word, Newline+), 2, 4}" [None]
-            5) StartPhrase, "Newline+", "Or: (Word, Newline+)", "Repeat: {Or: (Word, Newline+), 2, 4}"
-            6) EndPhrase, "Newline+" [False], "Or: (Word, Newline+)" [None], "Repeat: {Or: (Word, Newline+), 2, 4}" [None]
+            4) EndPhrase, "Word" [True]
+            5) StartPhrase, "Newline+"
+            6) EndPhrase, "Newline+" [False]
             7) OnInternalPhraseAsync, 0, 3
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -153,17 +143,12 @@ class TestStandard(object):
                       Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                     Whitespace: None
                   Phrase: "Word"
-                Phrase: "Or: (Word, Newline+)"
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                  DataItems: []
-                  IsComplete: False
-                Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
-            8) EndPhrase, "Or: (Word, Newline+)" [True], "Repeat: {Or: (Word, Newline+), 2, 4}" [None]
-            9) StartPhrase, "Or: (Word, Newline+)", "Repeat: {Or: (Word, Newline+), 2, 4}"
-            10) StartPhrase, "Word", "Or: (Word, Newline+)", "Repeat: {Or: (Word, Newline+), 2, 4}"
-            11) EndPhrase, "Word" [False], "Or: (Word, Newline+)" [None], "Repeat: {Or: (Word, Newline+), 2, 4}" [None]
-            12) StartPhrase, "Newline+", "Or: (Word, Newline+)", "Repeat: {Or: (Word, Newline+), 2, 4}"
+                Phrase: "(Word | Newline+)"
+            8) EndPhrase, "(Word | Newline+)" [True]
+            9) StartPhrase, "(Word | Newline+)"
+            10) StartPhrase, "Word"
+            11) EndPhrase, "Word" [False]
+            12) StartPhrase, "Newline+"
             13) OnInternalPhraseAsync, 3, 4
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -176,30 +161,7 @@ class TestStandard(object):
                     Start: 3
                   Whitespace: None
                 Phrase: "Newline+"
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                  DataItems:
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: None
-                      Phrase: "Word"
-                  IsComplete: False
-                Phrase: "Or: (Word, Newline+)"
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                  DataItems:
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                        IsIgnored: False
-                        IterBegin: "[1, 1] (0)"
-                        IterEnd: "[1, 4] (3)"
-                        Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                          Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
-                        Whitespace: None
-                      Phrase: "Word"
-                  IsComplete: False
-                Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
-            14) EndPhrase, "Newline+" [True], "Or: (Word, Newline+)" [None], "Repeat: {Or: (Word, Newline+), 2, 4}" [None]
+            14) EndPhrase, "Newline+" [True]
             15) OnInternalPhraseAsync, 3, 4
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -213,26 +175,11 @@ class TestStandard(object):
                       Start: 3
                     Whitespace: None
                   Phrase: "Newline+"
-                Phrase: "Or: (Word, Newline+)"
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                  DataItems:
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                        IsIgnored: False
-                        IterBegin: "[1, 1] (0)"
-                        IterEnd: "[1, 4] (3)"
-                        Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                          Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
-                        Whitespace: None
-                      Phrase: "Word"
-                  IsComplete: False
-                Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
-            16) EndPhrase, "Or: (Word, Newline+)" [True], "Repeat: {Or: (Word, Newline+), 2, 4}" [None]
+                Phrase: "(Word | Newline+)"
+            16) EndPhrase, "(Word | Newline+)" [True]
             17) OnInternalPhraseAsync, 0, 4
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
                     - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -245,7 +192,7 @@ class TestStandard(object):
                             Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                           Whitespace: None
                         Phrase: "Word"
-                      Phrase: "Or: (Word, Newline+)"
+                      Phrase: "(Word | Newline+)"
                     - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -258,10 +205,10 @@ class TestStandard(object):
                             Start: 3
                           Whitespace: None
                         Phrase: "Newline+"
-                      Phrase: "Or: (Word, Newline+)"
+                      Phrase: "(Word | Newline+)"
                   IsComplete: True
-                Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
-            18) EndPhrase, "Repeat: {Or: (Word, Newline+), 2, 4}" [True]
+                Phrase: "{(Word | Newline+), 2, 4}"
+            18) EndPhrase, "{(Word | Newline+), 2, 4}" [True]
             """,
         )
 
@@ -285,7 +232,7 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -298,7 +245,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -311,7 +258,7 @@ class TestStandard(object):
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -323,7 +270,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -336,9 +283,9 @@ class TestStandard(object):
                           Start: 7
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                 IsComplete: True
-              Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
+              Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (8)"
             Success: True
@@ -368,7 +315,7 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -381,7 +328,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -394,7 +341,7 @@ class TestStandard(object):
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -406,7 +353,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -419,9 +366,9 @@ class TestStandard(object):
                           Start: 7
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                 IsComplete: True
-              Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
+              Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (8)"
             Success: True
@@ -450,10 +397,10 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                       DataItems:
                         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                           Data: None
@@ -462,9 +409,9 @@ class TestStandard(object):
                           Data: None
                           Phrase: "Newline+"
                       IsComplete: True
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                 IsComplete: True
-              Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
+              Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 1] (0)"
             Success: False
@@ -493,7 +440,7 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -506,9 +453,9 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='abc'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                       DataItems:
                         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                           Data: None
@@ -517,9 +464,9 @@ class TestStandard(object):
                           Data: None
                           Phrase: "Newline+"
                       IsComplete: True
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                 IsComplete: True
-              Phrase: "Repeat: {Or: (Word, Newline+), 2, 4}"
+              Phrase: "{(Word | Newline+), 2, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 4] (3)"
             Success: False
@@ -548,7 +495,7 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -561,7 +508,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -574,7 +521,7 @@ class TestStandard(object):
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -586,7 +533,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -599,9 +546,9 @@ class TestStandard(object):
                           Start: 7
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                 IsComplete: True
-              Phrase: "Repeat: {Or: (Word, Newline+), 4, 4}"
+              Phrase: "{(Word | Newline+), 4, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (8)"
             Success: True
@@ -629,7 +576,7 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -642,7 +589,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -655,7 +602,7 @@ class TestStandard(object):
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -667,7 +614,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -680,9 +627,9 @@ class TestStandard(object):
                           Start: 7
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                 IsComplete: True
-              Phrase: "Repeat: {Or: (Word, Newline+), 4, 4}"
+              Phrase: "{(Word | Newline+), 4, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[3, 1] (8)"
             Success: True
@@ -702,7 +649,7 @@ class TestStandard(object):
             """\
             # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
@@ -715,7 +662,7 @@ class TestStandard(object):
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -728,14 +675,137 @@ class TestStandard(object):
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
-                    Phrase: "Or: (Word, Newline+)"
+                    Phrase: "(Word | Newline+)"
                 IsComplete: True
-              Phrase: "Repeat: {Or: (Word, Newline+), 4, 4}"
+              Phrase: "{(Word | Newline+), 4, 4}"
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (4)"
             Success: False
             """,
         )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_Error2ndLine3rdToken(self, parse_mock):
+        result = await self._phrase.LexAsync(
+            ("root", ),
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    one
+                    _expected_match_but_has_underscores
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        assert str(result) == textwrap.dedent(
+            """\
+            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+                DataItems:
+                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                        IsIgnored: False
+                        IterBegin: "[1, 1] (0)"
+                        IterEnd: "[1, 4] (3)"
+                        Token: "Word"
+                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+                        Whitespace: None
+                      Phrase: "Word"
+                    Phrase: "(Word | Newline+)"
+                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                        IsIgnored: False
+                        IterBegin: "[1, 4] (3)"
+                        IterEnd: "[2, 1] (4)"
+                        Token: "Newline+"
+                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                          End: 4
+                          Start: 3
+                        Whitespace: None
+                      Phrase: "Newline+"
+                    Phrase: "(Word | Newline+)"
+                IsComplete: True
+              Phrase: "{(Word | Newline+), 2, 4}"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[2, 1] (4)"
+            Success: True
+            """,
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_Error2ndLine4thToken(self, parse_mock):
+        result = await self._phrase.LexAsync(
+            ("root", ),
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    one
+                    two _invalid_
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        assert str(result) == textwrap.dedent(
+            """\
+            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+                DataItems:
+                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                        IsIgnored: False
+                        IterBegin: "[1, 1] (0)"
+                        IterEnd: "[1, 4] (3)"
+                        Token: "Word"
+                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+                        Whitespace: None
+                      Phrase: "Word"
+                    Phrase: "(Word | Newline+)"
+                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                        IsIgnored: False
+                        IterBegin: "[1, 4] (3)"
+                        IterEnd: "[2, 1] (4)"
+                        Token: "Newline+"
+                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                          End: 4
+                          Start: 3
+                        Whitespace: None
+                      Phrase: "Newline+"
+                    Phrase: "(Word | Newline+)"
+                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                        IsIgnored: False
+                        IterBegin: "[2, 1] (4)"
+                        IterEnd: "[2, 4] (7)"
+                        Token: "Word"
+                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                          Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
+                        Whitespace: None
+                      Phrase: "Word"
+                    Phrase: "(Word | Newline+)"
+                IsComplete: True
+              Phrase: "{(Word | Newline+), 2, 4}"
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[2, 4] (7)"
+            Success: True
+            """,
+        )
+
 
 # ----------------------------------------------------------------------
 def test_CreationErrors():
@@ -752,17 +822,17 @@ async def test_parseReturnsNone(parse_mock):
     class NonePhrase(Phrase):
         # ----------------------------------------------------------------------
         @Interface.override
+        async def LexAsync(self, *args, **kwargs):
+            return None
+
+        # ----------------------------------------------------------------------
+        @Interface.override
         def _PopulateRecursiveImpl(
             self,
             new_phrase: Phrase,
         ) -> bool:
             # Nothing to do here
             return False
-
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def _LexAsyncImpl(self, *args, **kwargs):
-            return None
 
     # ----------------------------------------------------------------------
 

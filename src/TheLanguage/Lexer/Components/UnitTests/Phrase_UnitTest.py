@@ -3,7 +3,7 @@
 # |  Phrase_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-24 07:26:11
+# |      2021-09-23 18:09:13
 # |
 # ----------------------------------------------------------------------
 # |
@@ -63,6 +63,11 @@ def CreatePhrase(result):
             )
 
         # ----------------------------------------------------------------------
+        @Interface.override
+        async def LexAsync(self, *args, **kwargs):
+            return self.parse_mock(*args, **kwargs)
+
+        # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         @Interface.override
@@ -73,14 +78,13 @@ def CreatePhrase(result):
             # Nothing to do here
             return True
 
-        # ----------------------------------------------------------------------
-        @Interface.override
-        async def _LexAsyncImpl(self, *args, **kwargs):
-            return self.parse_mock(*args, **kwargs)
-
     # ----------------------------------------------------------------------
 
-    return ThePhrase()
+    phrase = ThePhrase()
+
+    phrase.PopulateRecursive(None, phrase)
+    return phrase
+
 
 # ----------------------------------------------------------------------
 @pytest.fixture
@@ -95,6 +99,12 @@ class TestStandard(object):
     # ----------------------------------------------------------------------
     class MyPhrase(Phrase):
         # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.override
+        async def LexAsync(*args, **kwargs):
+            pass
+
+        # ----------------------------------------------------------------------
         @Interface.override
         def _PopulateRecursiveImpl(
             self,
@@ -102,12 +112,6 @@ class TestStandard(object):
         ) -> bool:
             # Nothing to do here
             return False
-
-        # ----------------------------------------------------------------------
-        @staticmethod
-        @Interface.override
-        async def _LexAsyncImpl(*args, **kwargs):
-            pass
 
     # ----------------------------------------------------------------------
     class MyLexResultData(Phrase.LexResultData):

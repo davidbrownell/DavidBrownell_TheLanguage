@@ -3,7 +3,7 @@
 # |  GroupExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-23 10:58:19
+# |      2021-10-02 12:41:48
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,34 +31,37 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractSequence,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
     from ....Parser.Expressions.GroupExpressionParserInfo import (
         ExpressionParserInfo,
         GroupExpressionParserInfo,
     )
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractSequence,
-        Node,
-    )
-
 
 # ----------------------------------------------------------------------
 class GroupExpression(GrammarPhrase):
-    """
+    """\
     Groups an expression.
 
-    '(' <expr> ')'
+    '(' <expression> ')'
 
     Examples:
         (one + two) + three
         one or (two and three)
+        (
+            one
+            + two
+            + three
+        )
     """
 
     PHRASE_NAME                             = "Group Expression"
@@ -66,7 +69,7 @@ class GroupExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(GroupExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -74,7 +77,7 @@ class GroupExpression(GrammarPhrase):
                     "(",
                     CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
 
                     # ')'
@@ -88,26 +91,27 @@ class GroupExpression(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
-            # <expr>
-            expression_node = ExtractDynamic(cast(Node, nodes[2]))
+            # <expression>
+            expression_node = ExtractDynamic(cast(AST.Node, nodes[2]))
             expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                GroupExpressionParserInfo(
-                    CreateParserRegions(node, expression_node),  # type: ignore
-                    expression_info,
-                ),
+            return GroupExpressionParserInfo(
+                CreateParserRegions(node, expression_node),  # type: ignore
+                expression_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

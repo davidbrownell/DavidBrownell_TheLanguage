@@ -3,7 +3,7 @@
 # |  DeleteStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-14 15:04:02
+# |      2021-10-12 14:23:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the DeleteStatementParserData, DeleteStatementParserInfo, and DeleteStatementParserRegion objects"""
+"""Contains the DeleteStatementParserInfo object"""
 
 import os
 
@@ -35,4 +35,4 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class DeleteStatementParserInfo(StatementParserInfo):
-    Variable: str
+    VariableName: str

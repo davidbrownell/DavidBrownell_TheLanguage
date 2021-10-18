@@ -3,7 +3,7 @@
 # |  TranslationUnitLexer_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-01 15:39:07
+# |      2021-09-27 08:33:35
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for TranslationUnit.py"""
+"""Unit tests for TranslationUnitLexer.py"""
 
 import os
 import re
@@ -35,8 +35,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..TranslationUnitLexer import *
 
-    from ..Components.AST import Node
-
     from ..Components.Token import (
         DedentToken,
         IndentToken,
@@ -51,7 +49,14 @@ with InitRelativeImports():
         parse_mock as parse_mock_impl,
     )
 
-    from ..Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from ..Phrases.DSL import (
+        CreatePhrase,
+        CustomArityPhraseItem,
+        DefaultCommentToken,
+        OneOrMorePhraseItem,
+        OrPhraseItem,
+        PhraseItem,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -61,10 +66,473 @@ def parse_mock(parse_mock_impl):
 
     return parse_mock_impl
 
+
 # ----------------------------------------------------------------------
-_upper_token                                = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+)"))
-_lower_token                                = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+)"))
-_number_token                               = RegexToken("Number", re.compile(r"(?P<value>\d+)"))
+_upper_token                                = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)"))
+_lower_token                                = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+[0-9]*)"))
+_number_token                               = RegexToken("Number", re.compile(r"(?P<value>\d+[a-z]*)"))
+
+
+# ----------------------------------------------------------------------
+class TestSyntaxInvalidError(object):
+    _phrase                                 = CreatePhrase(
+        name="Phrase",
+        item=[
+            _upper_token,
+            ":",
+            NewlineToken(),
+            IndentToken(),
+            CustomArityPhraseItem.Create(
+                OrPhraseItem()
+                    | [_upper_token, NewlineToken()]
+                    | [_lower_token, NewlineToken()]
+                    | [_number_token, NewlineToken()]
+                ,
+                2,
+                4,
+            ),
+            DedentToken(),
+        ],
+    )
+
+    _dynamic_phrases                        = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_phrase]})
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_SingleWord(self, parse_mock):
+        with pytest.raises(SyntaxInvalidError) as ex:
+            result = await LexAsync(
+                DefaultCommentToken,
+                self._dynamic_phrases,
+                CreateIterator(
+                    textwrap.dedent(
+                        """\
+                        SCOPE:
+                            one
+                        """,
+                    ),
+                ),
+                parse_mock,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [3, 1]
+
+            '{([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+]), 2, 4}' was expected.
+            """,
+        )
+
+        assert ex.Line == 3
+        assert ex.Column == 1
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_MultipleWords(self, parse_mock):
+        with pytest.raises(SyntaxInvalidError) as ex:
+            result = await LexAsync(
+                DefaultCommentToken,
+                self._dynamic_phrases,
+                CreateIterator(
+                    textwrap.dedent(
+                        """\
+                        SCOPE:
+                            one _two
+                        """,
+                    ),
+                ),
+                parse_mock,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [2, 9]
+
+            'Newline+' was expected in '[Lower, Newline+]'.
+            """,
+        )
+
+        assert ex.Line == 2
+        assert ex.Column == 9
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_4thLine1stToken(self, parse_mock):
+        with pytest.raises(SyntaxInvalidError) as ex:
+            result = await LexAsync(
+                DefaultCommentToken,
+                self._dynamic_phrases,
+                CreateIterator(
+                    textwrap.dedent(
+                        """\
+                        SCOPE:
+                            one
+                            two
+                            _invalid
+                        """,
+                    ),
+                ),
+                parse_mock,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [4, 1]
+
+            '([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+])' was evaluated but not matched; therefore 'Dedent' was expected in 'Phrase'.
+            """,
+        )
+
+        assert ex.Line == 4
+        assert ex.Column == 1
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_4thLine2ndToken(self, parse_mock):
+        with pytest.raises(SyntaxInvalidError) as ex:
+            result = await LexAsync(
+                DefaultCommentToken,
+                self._dynamic_phrases,
+                CreateIterator(
+                    textwrap.dedent(
+                        """\
+                        SCOPE:
+                            one
+                            two
+                            three _invalid
+                        """,
+                    ),
+                ),
+                parse_mock,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [4, 11]
+
+            'Newline+' was expected in '[Lower, Newline+]'.
+            """,
+        )
+
+        assert ex.Line == 4
+        assert ex.Column == 11
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_4thLine2ndTokenNumber(self, parse_mock):
+        with pytest.raises(SyntaxInvalidError) as ex:
+            result = await LexAsync(
+                DefaultCommentToken,
+                self._dynamic_phrases,
+                CreateIterator(
+                    textwrap.dedent(
+                        """\
+                        SCOPE:
+                            one
+                            two
+                            3 _invalid
+                        """,
+                    ),
+                ),
+                parse_mock,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [4, 7]
+
+            'Newline+' was expected in '[Number, Newline+]'.
+            """,
+        )
+
+        assert ex.Line == 4
+        assert ex.Column == 7
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_WayOff1(self, parse_mock):
+        with pytest.raises(SyntaxInvalidError) as ex:
+            result = await LexAsync(
+                DefaultCommentToken,
+                self._dynamic_phrases,
+                CreateIterator(
+                    textwrap.dedent(
+                        """\
+                        nope
+                        way_off
+                        """,
+                    ),
+                ),
+                parse_mock,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [1, 1]
+
+            # <class 'TheLanguage.Lexer.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                Children:
+                  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                    Children:
+                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                        Children:
+                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                            Children: []
+                            IsIgnored: False
+                            IterBegin: None
+                            IterEnd: None
+                            Type: "Upper <class 'TheLanguage.Lexer.Phrases.TokenPhrase.TokenPhrase'>"
+                        IsIgnored: False
+                        IterBegin: None
+                        IterEnd: None
+                        Type: "Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+                    IsIgnored: False
+                    IterBegin: None
+                    IterEnd: None
+                    Type: "(Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                IsIgnored: False
+                IterBegin: None
+                IterEnd: None
+                Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+            IsIgnored: False
+            IterBegin: None
+            IterEnd: None
+            Type: "<None>"
+            """,
+        )
+
+        assert ex.Line == 1
+        assert ex.Column == 1
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_NoChildren(self, parse_mock):
+        with pytest.raises(SyntaxInvalidError) as ex:
+            result = await LexAsync(
+                DefaultCommentToken,
+                self._dynamic_phrases,
+                CreateIterator(
+                    textwrap.dedent(
+                        """\
+                        SCOPE:
+                            _nope
+                        """,
+                    ),
+                ),
+                parse_mock,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [2, 5]
+
+            '{([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+]), 2, 4}' was expected in 'Phrase'.
+            """,
+        )
+
+        assert ex.Line == 2
+        assert ex.Column == 5
+
+
+# ----------------------------------------------------------------------
+class TestInterestingWhitespace(object):
+    _phrase                                 = CreatePhrase(
+        name="Phrase",
+        item=OneOrMorePhraseItem.Create(
+            [_lower_token, NewlineToken()],
+        ),
+    )
+
+    _dynamic_phrases                        = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_phrase]})
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_InitialComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    # Comment 1
+                    one # Comment 2
+                    # Comment 3
+                    two # Comment 4
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_InitialNewline(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+
+
+
+                    one
+
+
+
+
+                    two
+                    three
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_TrailingComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    one
+
+                    # Comment 1
+
+
+
+
+                    # Comment 2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_TrailingNewline(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    one
+
+
+
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_EmptyContent(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(""),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_AllWhitespace(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+
+
+
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_CommentIndentation1(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    # Comment 0
+                    lower
+
+                        # Comment
+                    another
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_CommentIndentation2(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    # Comment 0
+                    lower
+
+                        # Comment 1
+                    # Comment 2
+                    another
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
 
 # ----------------------------------------------------------------------
 class TestSimple(object):
@@ -72,17 +540,13 @@ class TestSimple(object):
     _lower_phrase                           = CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()])
     _number_phrase                          = CreatePhrase(name="Number Phrase", item=[_number_token, NewlineToken()])
 
-    _phrases                                = DynamicPhrasesInfo(
-        [],
-        [],
-        [_upper_phrase, _lower_phrase, _number_phrase],
-        [],
-    )
+    _phrases                                = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_upper_phrase, _lower_phrase, _number_phrase]})
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_MatchStandard(self, parse_mock):
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -104,6 +568,7 @@ class TestSimple(object):
     @pytest.mark.asyncio
     async def test_MatchReverse(self, parse_mock):
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -128,6 +593,7 @@ class TestSimple(object):
         )
 
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -159,12 +625,13 @@ class TestIndentation(object):
         ],
     )
 
-    _phrases                                = DynamicPhrasesInfo([], [], [_phrase], [])
+    _phrases                                = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_phrase]})
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -185,8 +652,8 @@ class TestNewPhrases(object):
     _upper_phrase                           = CreatePhrase(name="Upper Phrase", item=_upper_token)
     _lower_phrase                           = CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()])
 
-    _phrases                                = DynamicPhrasesInfo([], [], [_upper_phrase,], [])
-    _new_phrases                            = DynamicPhrasesInfo([], [], [_lower_phrase,], [])
+    _phrases                                = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_upper_phrase,]})
+    _new_phrases                            = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_lower_phrase,]})
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -196,6 +663,7 @@ class TestNewPhrases(object):
         )
 
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -214,6 +682,7 @@ class TestNewPhrases(object):
     async def test_NoMatch(self, parse_mock):
         with pytest.raises(SyntaxInvalidError) as ex:
             result = await LexAsync(
+                DefaultCommentToken,
                 self._phrases,
                 CreateIterator(
                     textwrap.dedent(
@@ -229,13 +698,16 @@ class TestNewPhrases(object):
 
         ex = ex.value
 
-        assert str(ex) == "The syntax is not recognized"
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [1, 5]
+
+            'Upper' was expected.
+            """,
+        )
+
         assert ex.Line == 1
         assert ex.Column == 5
-
-        CompareResultsFromFile(
-            ex.ToDebugString(),
-        )
 
 
 # ----------------------------------------------------------------------
@@ -247,17 +719,18 @@ class TestNewScopedPhrases(object):
     _indent_phrase                          = CreatePhrase(name="Indent Phrase", item=IndentToken())
     _dedent_phrase                          = CreatePhrase(name="Dedent Phrase", item=DedentToken())
 
-    _phrases                                = DynamicPhrasesInfo([], [], [_upper_phrase, _newline_phrase, _indent_phrase, _dedent_phrase], [])
-    _new_phrases                            = DynamicPhrasesInfo([], [], [_lower_phrase,], [])
+    _phrases                                = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_upper_phrase, _newline_phrase, _indent_phrase, _dedent_phrase]})
+    _new_phrases                            = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_lower_phrase,]})
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
-        parse_mock.OnIndentAsync = CoroutineMock(
+        parse_mock.OnPushScopeAsync = CoroutineMock(
             return_value=self._new_phrases,
         )
 
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -275,12 +748,13 @@ class TestNewScopedPhrases(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatch(self, parse_mock):
-        parse_mock.OnIndentAsync = CoroutineMock(
+        parse_mock.OnPushScopeAsync = CoroutineMock(
             return_value=self._new_phrases,
         )
 
         with pytest.raises(SyntaxInvalidError) as ex:
             result = await LexAsync(
+                DefaultCommentToken,
                 self._phrases,
                 CreateIterator(
                     textwrap.dedent(
@@ -299,13 +773,16 @@ class TestNewScopedPhrases(object):
 
         ex = ex.value
 
-        assert str(ex) == "The syntax is not recognized"
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [4, 1]
+
+            '(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase)' was expected.
+            """,
+        )
+
         assert ex.Line == 4
         assert ex.Column == 1
-
-        CompareResultsFromFile(
-            ex.ToDebugString(),
-        )
 
 
 # ----------------------------------------------------------------------
@@ -331,17 +808,18 @@ class TestNewScopedPhrasesComplex(object):
         ],
     )
 
-    _phrases                             = DynamicPhrasesInfo([], [], [_newline_phrase, _new_scope_phrase], [])
-    _new_phrases                         = DynamicPhrasesInfo([], [], [_upper_phrase, _lower_phrase], [])
+    _phrases                             = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_newline_phrase, _new_scope_phrase] })
+    _new_phrases                         = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_upper_phrase, _lower_phrase] })
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
-        parse_mock.OnIndentAsync = CoroutineMock(
+        parse_mock.OnPushScopeAsync = CoroutineMock(
             return_value=self._new_phrases,
         )
 
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -361,17 +839,18 @@ class TestNewScopedPhrasesComplex(object):
 
 # ----------------------------------------------------------------------
 class TestEmbeddedPhrases(object):
-    _upper_lower_phrase                     = CreatePhrase(name="Upper Lower Phrase", item=[_upper_token, _lower_token, NewlineToken()])
+    _upper_lower_phrase_item                = PhraseItem.Create(name="Upper Lower Phrase", item=[_upper_token, _lower_token, NewlineToken()])
 
-    _uul_phrase                             = CreatePhrase(name="uul", item=[_upper_token, _upper_lower_phrase])
-    _lul_phrase                             = CreatePhrase(name="lul", item=[_lower_token, _upper_lower_phrase])
+    _uul_phrase                             = CreatePhrase(name="uul", item=[_upper_token, _upper_lower_phrase_item])
+    _lul_phrase                             = CreatePhrase(name="lul", item=[_lower_token, _upper_lower_phrase_item])
 
-    _phrases                                = DynamicPhrasesInfo([], [], [_uul_phrase, _lul_phrase], [])
+    _phrases                                = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_uul_phrase, _lul_phrase]})
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -393,17 +872,13 @@ class TestVariedLengthMatches(object):
     _lower_phrase                           = CreatePhrase(name="Lower", item=[_lower_token, _lower_token, NewlineToken()])
     _number_phrase                          = CreatePhrase(name="Number", item=[_number_token, _number_token, _number_token, NewlineToken()])
 
-    _phrases                                = DynamicPhrasesInfo(
-        [],
-        [],
-        [_upper_phrase, _lower_phrase, _number_phrase],
-        [],
-    )
+    _phrases                                = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_upper_phrase, _lower_phrase, _number_phrase]})
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_Match(self, parse_mock):
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -421,65 +896,26 @@ class TestVariedLengthMatches(object):
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.asyncio
-async def test_EmptyDynamicPhrasesInfo(parse_mock):
-    parse_mock.OnPhraseCompleteAsync = CoroutineMock(
-        return_value=DynamicPhrasesInfo([], [], [], []),
-    )
-
-    result = await LexAsync(
-        DynamicPhrasesInfo(
-            [],
-            [],
-            [
-                CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()]),
-            ],
-            [],
-        ),
-        CreateIterator(
-            textwrap.dedent(
-                """\
-
-                word
-                """,
-            ),
-        ),
-        parse_mock,
-    )
-
-    CompareResultsFromFile(
-        str(result),
-    )
-
-
-# ----------------------------------------------------------------------
 class TestPreventParentTraversal(object):
     _upper_phrase                           = CreatePhrase(name="Upper Phrase", item=[_upper_token, NewlineToken()])
     _lower_phrase                           = CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()])
     _indent_phrase                          = CreatePhrase(name="Indent Phrase", item=IndentToken())
     _dedent_phrase                          = CreatePhrase(name="Dedent Phrase", item=DedentToken())
 
-    _phrases                                = DynamicPhrasesInfo(
-        [],
-        [],
-        [_upper_phrase, _indent_phrase, _dedent_phrase],
-        [],
-    )
+    _phrases                                = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_upper_phrase, _indent_phrase, _dedent_phrase]})
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async  def test_Match(self, parse_mock):
-        parse_mock.OnIndentAsync = CoroutineMock(
+        parse_mock.OnPushScopeAsync = CoroutineMock(
             return_value=DynamicPhrasesInfo(
-                [],
-                [],
-                [self._lower_phrase, self._dedent_phrase],
-                [],
-                False,
+                {DynamicPhrasesType.Statements: [self._lower_phrase, self._dedent_phrase]},
+                AllowParentTraversal=False,
             ),
         )
 
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -501,18 +937,16 @@ class TestPreventParentTraversal(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_NoMatch(self, parse_mock):
-        parse_mock.OnIndentAsync = CoroutineMock(
+        parse_mock.OnPushScopeAsync = CoroutineMock(
             return_value=DynamicPhrasesInfo(
-                [],
-                [],
-                [self._lower_phrase, self._dedent_phrase],
-                [],
-                False,
+                {DynamicPhrasesType.Statements: [self._lower_phrase, self._dedent_phrase]},
+                AllowParentTraversal=False,
             ),
         )
 
         with pytest.raises(SyntaxInvalidError) as ex:
             result = await LexAsync(
+                DefaultCommentToken,
                 self._phrases,
                 CreateIterator(
                     textwrap.dedent(
@@ -533,80 +967,77 @@ class TestPreventParentTraversal(object):
 
         ex = ex.value
 
-        assert str(ex) == "The syntax is not recognized"
+        assert str(ex) == textwrap.dedent(
+            """\
+            The syntax is not recognized. [6, 1]
+
+            '(Upper Phrase | Indent Phrase | Dedent Phrase)' was expected.
+            """,
+        )
+
         assert ex.Line == 6
         assert ex.Column == 1
 
-        CompareResultsFromFile(
-            ex.ToDebugString(),
-        )
 
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio
 async def test_InvalidDynamicTraversalError(parse_mock):
     parse_mock.OnPhraseCompleteAsync = CoroutineMock(
         return_value=DynamicPhrasesInfo(
-            [],
-            [],
-            [CreatePhrase(name="Newline", item=NewlineToken()),],
-            [],
-            False,
+            {DynamicPhrasesType.Statements: [CreatePhrase(name="Newline", item=NewlineToken()),]},
+            AllowParentTraversal=False,
         ),
     )
 
     with pytest.raises(InvalidDynamicTraversalError) as ex:
         result = await LexAsync(
+            DefaultCommentToken,
             DynamicPhrasesInfo(
-                [],
-                [],
-                [CreatePhrase(name="Newline", item=NewlineToken()),],
-                [],
+                {DynamicPhrasesType.Statements: [CreatePhrase(name="Lower", item=_lower_token),]},
             ),
             CreateIterator(
                 textwrap.dedent(
                     """\
-
-
-
+                    lower
                     """,
                 ),
             ),
             parse_mock,
         )
 
-        assert result is None, result
-
     ex = ex.value
 
     assert str(ex) == "Dynamic phrases that prohibit parent traversal should never be applied over other dynamic phrases within the same lexical scope; consider making these dynamic phrases the first ones applied in this lexical scope."
-    assert ex.Line == 4
-    assert ex.Column == 1
+    assert ex.Line == 1
+    assert ex.Column == 6
 
 
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio
 async def test_DynamicExpressions(parse_mock):
     result = await LexAsync(
+        DefaultCommentToken,
         DynamicPhrasesInfo(
-            [
-                CreatePhrase(
-                    name="Expression",
-                    item=_number_token,
-                ),
-            ],
-            [],
-            [
-                CreatePhrase(
-                    name="Statement",
-                    item=[
-                        _upper_token,
-                        DynamicPhrasesType.Expressions,
-                        _lower_token,
-                        NewlineToken(),
-                    ],
-                ),
-            ],
-            [],
+            {
+                DynamicPhrasesType.Statements: [
+                    CreatePhrase(
+                        name="Statement",
+                        item=[
+                            _upper_token,
+                            DynamicPhrasesType.Expressions,
+                            _lower_token,
+                            NewlineToken(),
+                        ],
+                    ),
+                ],
+
+                DynamicPhrasesType.Expressions: [
+                    CreatePhrase(
+                        name="Expression",
+                        item=_number_token,
+                    ),
+                ],
+            },
         ),
         CreateIterator("WORD 1234 lower"),
         parse_mock,
@@ -617,7 +1048,7 @@ async def test_DynamicExpressions(parse_mock):
 
 # ----------------------------------------------------------------------
 class TestCatastrophicInclude(object):
-    _include_phrase                         = CreatePhrase(
+    _include_phrase_item                    = PhraseItem.Create(
         name="Include Phrase",
         item=[
             RegexToken("include", re.compile(r"include")),
@@ -632,7 +1063,7 @@ class TestCatastrophicInclude(object):
     _lower_include_phrase                   = CreatePhrase(
         name="Lower Include Phrase",
         item=[
-            _include_phrase,
+            _include_phrase_item,
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
         ],
@@ -641,7 +1072,7 @@ class TestCatastrophicInclude(object):
     _number_include_phrase                  = CreatePhrase(
         name="Number Include Phrase",
         item=[
-            _include_phrase,
+            _include_phrase_item,
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
@@ -665,28 +1096,15 @@ class TestCatastrophicInclude(object):
     )
 
     _phrases                                = DynamicPhrasesInfo(
-        [],
-        [],
-        [_lower_include_phrase, _number_include_phrase],
-        [],
+        {DynamicPhrasesType.Statements: [_lower_include_phrase, _number_include_phrase]},
     )
 
     _lower_dynamic_phrases                  = DynamicPhrasesInfo(
-        [],
-        [],
-        [_lower_phrase,],
-        [],
-        True,
-        # "Lower Dynamic Phrases",
+        {DynamicPhrasesType.Statements: [_lower_phrase,]},
     )
 
     _number_dynamic_phrases                 = DynamicPhrasesInfo(
-        [],
-        [],
-        [_number_phrase,],
-        [],
-        True,
-        # "Number Dynamic Phrases",
+        {DynamicPhrasesType.Statements: [_number_phrase,]},
     )
 
     # ----------------------------------------------------------------------
@@ -696,11 +1114,11 @@ class TestCatastrophicInclude(object):
         # ----------------------------------------------------------------------
         async def OnPhraseCompleteAsync(
             phrase: Phrase,
-            node: Node,
+            node: AST.Node,
             iter_before: Phrase.NormalizedIterator,
             iter_after: Phrase.NormalizedIterator,
         ):
-            if phrase == cls._include_phrase:
+            if phrase.Name == cls._include_phrase_item.Name:
                 value = node.Children[1].Value.Match.group("value")
 
                 if value == "LOWER":
@@ -722,6 +1140,7 @@ class TestCatastrophicInclude(object):
     @pytest.mark.asyncio
     async def test_Lower(self, this_parse_mock):
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -742,6 +1161,7 @@ class TestCatastrophicInclude(object):
     @pytest.mark.asyncio
     async def test_LowerAdditionalItem(self, this_parse_mock):
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -765,6 +1185,7 @@ class TestCatastrophicInclude(object):
     @pytest.mark.asyncio
     async def test_Number(self, this_parse_mock):
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -786,6 +1207,7 @@ class TestCatastrophicInclude(object):
     @pytest.mark.asyncio
     async def test_NumberAdditionalItems(self, this_parse_mock):
         result = await LexAsync(
+            DefaultCommentToken,
             self._phrases,
             CreateIterator(
                 textwrap.dedent(
@@ -805,3 +1227,33 @@ class TestCatastrophicInclude(object):
 
         CompareResultsFromFile(str(result))
         assert this_parse_mock.method_calls == []
+
+
+# ----------------------------------------------------------------------
+@pytest.mark.asyncio
+async def test_EmptyDynamicPhrasesInfo(parse_mock):
+    parse_mock.OnPhraseCompleteAsync = CoroutineMock(
+        return_value=DynamicPhrasesInfo({}),
+    )
+
+    result = await LexAsync(
+        DefaultCommentToken,
+        DynamicPhrasesInfo(
+            {
+                DynamicPhrasesType.Statements: [
+                    CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()]),
+                ],
+            },
+        ),
+        CreateIterator(
+            textwrap.dedent(
+                """\
+
+                word
+                """,
+            ),
+        ),
+        parse_mock,
+    )
+
+    CompareResultsFromFile(str(result))

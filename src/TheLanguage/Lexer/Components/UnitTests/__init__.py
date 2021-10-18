@@ -3,7 +3,7 @@
 # |  __init__.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-08 01:07:34
+# |      2021-09-23 18:10:13
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Types and methods common across automatedunit tests"""
+"""Types and methods common across automated unit tests"""
 
-import asyncio
 import os
 import textwrap
 
-from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 
 from asynctest import CoroutineMock
@@ -38,7 +36,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Normalize import Normalize
     from ..NormalizedIterator import NormalizedIterator
-    from ..Phrase import Phrase
     from ..ThreadPool import CreateThreadPool
 
 
@@ -50,8 +47,8 @@ def parse_mock():
 
     mock.Enqueue = mock._thread_pool.EnqueueAsync
 
-    mock.OnIndentAsync = CoroutineMock()
-    mock.OnDedentAsync = CoroutineMock()
+    mock.OnPushScopeAsync = CoroutineMock()
+    mock.OnPopScopeAsync = CoroutineMock()
     mock.OnInternalPhraseAsync = CoroutineMock()
 
     return mock
@@ -85,24 +82,20 @@ def MethodCallsToString(
 
         if method_name == "StartPhrase":
             contents.append(
-                "{}) {}, {}".format(
+                '{}) {}, "{}"'.format(
                     index,
                     method_name,
-                    ", ".join(['"{}"'.format(phrase.Name) for phrase in method_call[1][1]]),
+                    method_call[1][1].Name,
                 ),
             )
 
         elif method_name == "EndPhrase":
             contents.append(
-                "{}) {}, {}".format(
+                '{}) {}, "{}" [{}]'.format(
                     index,
                     method_name,
-                    ", ".join(
-                        [
-                            '"{}" [{}]'.format(phrase.Name, result)
-                            for phrase, result in method_call[1][1]
-                        ],
-                    ),
+                    method_call[1][1].Name,
+                    method_call[1][2],
                 ),
             )
 
@@ -163,10 +156,7 @@ def MethodCallsToString(
                     method_name,
                     method_call[1][1].Offset,
                     method_call[1][2].Offset,
-                    StringHelpers.LeftJustify(
-                        "\n".join([data_item.ToYamlString().rstrip() for data_item in method_call[1][0]]),
-                        4,
-                    ),
+                    StringHelpers.LeftJustify(method_call[1][0].ToYamlString().rstrip(), 4),
                 ).rstrip(),
             )
 

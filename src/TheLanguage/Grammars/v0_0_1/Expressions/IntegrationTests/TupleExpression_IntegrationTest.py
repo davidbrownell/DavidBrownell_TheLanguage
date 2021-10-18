@@ -3,7 +3,7 @@
 # |  TupleExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 17:04:41
+# |      2021-10-12 08:35:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,48 +28,54 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..TupleExpression import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
-def test_SingleExpression():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                var1 = (a,)
+def test_SingleElement():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            var1 = (a,)
 
-                var2 = ( # Comment 0
-                    # Comment 1
-                    a # Comment 2
-                    , # Comment 3
-                    # Comment 4
-                )
-                """,
-            ),
+            var2 = (                        # Comment 0
+                # Comment 1
+                a # Comment 2
+                , # Comment 3
+                # Comment 4
+            )
+            """,
         ),
-    )
+    )))
+
 
 # ----------------------------------------------------------------------
-def test_MultipleExpressions():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                val1 = (a, b)
-                val2 = (c, d, )
+def test_MultipleElements():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            val1 = (a, b)
+            val2 = (c, d, )
 
-                val3 = (e, f, g, h)
-                val4 = (i, j, k, l, )
+            val3 = (e, f, g, h)
+            val4 = (i, j, k, l, )
 
-                val5 = (m, n,
-                    o, p,
-                        q,
-                r,)
-
-                val6 = ((x, y), z)
-                """,
-            ),
+            val5 = (m, n,
+                o, p,
+                    q,
+            r,)
+            """,
         ),
-    )
+    )))
+
+
+# ----------------------------------------------------------------------
+def test_Nested():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            var1 = ((a,), (b, c,), (d, e, f,))
+            """,
+        ),
+    )))

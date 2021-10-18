@@ -3,7 +3,7 @@
 # |  ExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-09 23:11:24
+# |      2021-09-30 13:11:40
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ExpressionParserData and ExpressionParserInfo objects"""
+"""Contains the ExpressionParserInfo object"""
 
 import os
 
@@ -36,6 +36,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ExpressionParserInfo(ParserInfo, Interface.Interface):
-    """Abstract base class for all expression-related lexer info"""
+    """Abstract base class for all expression-related parser info objects"""
 
     pass

@@ -3,7 +3,7 @@
 # |  NameParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-09 22:54:01
+# |      2021-09-30 13:00:15
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NameParserData and NameParserInfo objects"""
+"""Contains the NameParserInfo object"""
 
 import os
 
@@ -36,6 +36,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class NameParserInfo(ParserInfo, Interface.Interface):
-    """Abstract base class for all name-related lexer info"""
+    """Abstract base class for all name-related parser info objects"""
 
     pass

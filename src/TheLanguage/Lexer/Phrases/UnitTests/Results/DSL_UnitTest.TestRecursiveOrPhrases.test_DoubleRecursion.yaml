@@ -1,6 +1,6 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -14,7 +14,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
         Phrase: "lpar"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
             DataItems:
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -30,7 +30,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                 Phrase: "lpar"
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                     DataItems:
                       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -57,7 +57,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                               - 5
                               - 6
                           Phrase: "Word Token"
-                        Phrase: "Or: (Word Token, Recursive Phrase)"
+                        Phrase: "(Word Token | Recursive Phrase)"
                       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                           IsIgnored: False
@@ -70,7 +70,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                         Phrase: "rpar"
                     IsComplete: True
                   Phrase: "Recursive Phrase"
-                Phrase: "Or: (Word Token, Recursive Phrase)"
+                Phrase: "(Word Token | Recursive Phrase)"
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -83,7 +83,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                 Phrase: "rpar"
             IsComplete: True
           Phrase: "Recursive Phrase"
-        Phrase: "Or: (Word Token, Recursive Phrase)"
+        Phrase: "(Word Token | Recursive Phrase)"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           IsIgnored: False

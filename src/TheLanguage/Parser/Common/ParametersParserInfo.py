@@ -3,7 +3,7 @@
 # |  ParametersParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-13 15:22:33
+# |      2021-10-07 12:04:27
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the types that interact with parameters"""
+"""Contains the ParametersParserInfo and ParameterParserInfo objects"""
 
 import os
 
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo
+    from ..Parser import ParserInfo
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Types.TypeParserInfo import TypeParserInfo
 
@@ -56,3 +56,8 @@ class ParametersParserInfo(ParserInfo):
     Positional: Optional[List[ParameterParserInfo]]
     Keyword: Optional[List[ParameterParserInfo]]
     Any: Optional[List[ParameterParserInfo]]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(ParametersParserInfo, self).__post_init__(regions)
+        assert self.Positional or self.Keyword or self.Any

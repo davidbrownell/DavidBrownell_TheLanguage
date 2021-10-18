@@ -1,52 +1,9 @@
-# <class 'TheLanguage.Lexer.Components.AST.RootNode'>
-Children:
-  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-    Children:
-      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-        Children:
-          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-            Children:
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                IsIgnored: False
-                IterBegin: "[1, 1] (0)"
-                IterEnd: "[1, 4] (3)"
-                Type: "'del' <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                  Match: "<_sre.SRE_Match object; span=(0, 3), match='del'>"
-                Whitespace: None
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                IsIgnored: False
-                IterBegin: "[1, 5] (4)"
-                IterEnd: "[1, 8] (7)"
-                Type: "<generic_name> <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                  Match: "<_sre.SRE_Match object; span=(4, 7), match='foo'>"
-                Whitespace:
-                  - 3
-                  - 4
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                IsIgnored: False
-                IterBegin: "[1, 8] (7)"
-                IterEnd: "[2, 1] (8)"
-                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                  End: 8
-                  Start: 7
-                Whitespace: None
-            Info: # <class 'TheLanguage.Parser.Statements.DeleteStatementParserInfo.DeleteStatementParserInfo'>
-              Regions: # <class 'types.DeleteStatementParserInfoRegions'>
-                Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
-                Variable: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
-              Variable: "foo"
-            IterBegin: "[1, 1] (0)"
-            IterEnd: "[2, 1] (8)"
-            Type: "Delete Statement <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-        IterBegin: "[1, 1] (0)"
-        IterEnd: "[2, 1] (8)"
-        Type: "0.0.1 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
-    IterBegin: "[1, 1] (0)"
-    IterEnd: "[2, 1] (8)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
-IterBegin: "[1, 1] (0)"
-IterEnd: "[2, 1] (8)"
-Type: "<None>"
+# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+Statements:
+  - # <class 'TheLanguage.Parser.Statements.DeleteStatementParserInfo.DeleteStatementParserInfo'>
+    Regions__: # <class 'types.DeleteStatementParserInfoRegions'>
+      Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+      VariableName: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
+    VariableName: "foo"

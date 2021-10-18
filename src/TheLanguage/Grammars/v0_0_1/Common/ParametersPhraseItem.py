@@ -3,7 +3,7 @@
 # |  ParametersPhraseItem.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-11 21:12:19
+# |      2021-10-07 12:07:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps when processing parameters (such as functions and methods)"""
+"""Contains functionality when parsing parameters"""
 
 import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Generator, List, Optional, Tuple
+from typing import Any, cast, Dict, Generator, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -34,19 +34,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import Tokens as CommonTokens
+    from . import Tokens as CommonTokens
+    from .Impl import ModifierImpl
 
-    from ...GrammarError import GrammarError
-    from ...GrammarPhrase import CreateParserRegions
-
-    from ....Parser.Common.ParametersParserInfo import (
-        ExpressionParserInfo,
-        ParameterParserInfo,
-        ParametersParserInfo,
-        TypeParserInfo,
-    )
-
-    from ....Parser.ParserInfo import GetParserInfo
+    from ...Error import Error
 
     from ....Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -58,8 +49,20 @@ with InitRelativeImports():
         ExtractToken,
         Leaf,
         Node,
+        OneOrMorePhraseItem,
+        OptionalPhraseItem,
         PhraseItem,
+        ZeroOrMorePhraseItem,
     )
+
+    from ....Parser.Common.ParametersParserInfo import (
+        ExpressionParserInfo,
+        ParameterParserInfo,
+        ParametersParserInfo,
+        TypeParserInfo,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -68,101 +71,84 @@ class ParametersType(Enum):
     any                                     = auto()
     key                                     = auto()
 
-    # ----------------------------------------------------------------------
-    @classmethod
-    def CreatePhraseItem(cls):
-        return tuple(value.name for value in cls)
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Extract(
-        cls,
-        node: Node,
-    ) -> "ParametersType":
-        leaf = cast(Leaf, ExtractOr(node))
-
-        name = cast(
-            str,
-            ExtractToken(
-                leaf,
-                use_match=True,
-            ),
-        )
-
-        try:
-            return cls[name]
-        except KeyError:
-            assert False, (name, leaf)
+ParametersType.CreatePhraseItem             = staticmethod(ModifierImpl.StandardCreatePhraseItemFuncFactory(ParametersType))  # type: ignore
+ParametersType.Extract                      = staticmethod(ModifierImpl.StandardExtractFuncFactory(ParametersType))  # type: ignore
 
 
 # ----------------------------------------------------------------------
-class TraditionalParameterDelimiter(object):
+class TraditionalParameterDelimiter(Enum):
     Positional                              = "/"
     Keyword                                 = "*"
 
 
+TraditionalParameterDelimiter.CreatePhraseItem          = staticmethod(ModifierImpl.ByValueCreatePhraseItemFuncFactory(TraditionalParameterDelimiter))  # type: ignore
+TraditionalParameterDelimiter.Extract                   = staticmethod(ModifierImpl.ByValueExtractFuncFactory(TraditionalParameterDelimiter))  # type: ignore
+
+
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class NewStyleParameterGroupDuplicateError(GrammarError):
+class NewStyleParameterGroupDuplicateError(Error):
     GroupName: str
 
-    MessageTemplate                         = Interface.DerivedProperty("The parameter group '{GroupName}' has already been specified.")  # type: ignore
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "The parameter group '{GroupName}' has already been specified.",
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TraditionalDelimiterOrderError(GrammarError):
+class TraditionalDelimiterOrderError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The positional delimiter ('{}') must appear before the keyword delimiter ('{}').".format(
-            TraditionalParameterDelimiter.Positional,
-            TraditionalParameterDelimiter.Keyword,
+            TraditionalParameterDelimiter.Positional.value,
+            TraditionalParameterDelimiter.Keyword.value,
         ),
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TraditionalDelimiterDuplicatePositionalError(GrammarError):
+class TraditionalDelimiterDuplicatePositionalError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The positional delimiter ('{}') may only appear once in a list of parameters.".format(
-            TraditionalParameterDelimiter.Positional,
+            TraditionalParameterDelimiter.Positional.value,
         ),
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TraditionalDelimiterDuplicateKeywordError(GrammarError):
+class TraditionalDelimiterDuplicateKeywordError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The keyword delimiter ('{}') may only appear once in a list of parameters.".format(
-            TraditionalParameterDelimiter.Keyword,
+            TraditionalParameterDelimiter.Keyword.value,
         ),
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TraditionalDelimiterPositionalError(GrammarError):
+class TraditionalDelimiterPositionalError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The positional delimiter ('{}') must appear after at least 1 parameter.".format(
-            TraditionalParameterDelimiter.Positional,
+            TraditionalParameterDelimiter.Positional.value,
         ),
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TraditionalDelimiterKeywordError(GrammarError):
+class TraditionalDelimiterKeywordError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The keyword delimiter ('{}') must appear before at least 1 parameter.".format(
-            TraditionalParameterDelimiter.Keyword,
+            TraditionalParameterDelimiter.Keyword.value,
         ),
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class RequiredParameterAfterDefaultError(GrammarError):
+class RequiredParameterAfterDefaultError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "A required parameter may not appear after a parameter with a default value.",
     )
@@ -171,129 +157,111 @@ class RequiredParameterAfterDefaultError(GrammarError):
 # ----------------------------------------------------------------------
 def Create() -> PhraseItem:
     """\
-    '(' <parameters>? ')'
+    '(' <<parameters>>? ')'
     """
 
-    # <type> '*'? <name> ('=' <expr>)?
-    parameter_item = PhraseItem(
+    # <type> '*'? <name> ('=' <expression>)?
+    parameter_item = PhraseItem.Create(
         name="Parameter",
         item=[
             # <type>
             DynamicPhrasesType.Types,
 
             # '*'?
-            PhraseItem(
-                name="Var Args",
+            OptionalPhraseItem.Create(
+                name="Variable Parameter",
                 item="*",
-                arity="?",
             ),
 
             # <name>
-            CommonTokens.GenericName,
+            CommonTokens.ParameterName,
 
-            # ('=' <expr>)?
-            PhraseItem(
+            # ('=' <expression>)?
+            OptionalPhraseItem.Create(
                 name="With Default",
                 item=[
                     "=",
                     DynamicPhrasesType.Expressions,
                 ],
-                arity="?",
             ),
         ],
     )
 
-    return PhraseItem(
+    traditional_parameter_item = (parameter_item, ) + TraditionalParameterDelimiter.CreatePhraseItem()  # type: ignore
+
+    return PhraseItem.Create(
         name="Parameters",
         item=[
             # '('
             "(",
             CommonTokens.PushIgnoreWhitespaceControl,
 
-            # <parameters>?
-            PhraseItem(
+            # <<parameters>>?
+            OptionalPhraseItem.Create(
                 item=(
                     # New Style:
                     #
-                    #       ...(
-                    #               ('pos' ':' <parameter_item> (',' <parameter_item>)* ','?)?
-                    #               ('any' ':' <parameter_item> (',' <parameter_item>)* ','?)?
-                    #               ('key' ':' <parameter_item> (',' <parameter_item>)* ','?)?
-                    #       )
+                    #   ... '('
+                    #           ('pos' ':' <parameter_item> (',' <parameter_item>)* ','?)?
+                    #           ('any' ':' <parameter_item> (',' <parameter_item>)* ','?)?
+                    #           ('key' ':' <parameter_item> (',' <parameter_item>)* ','?)?
+                    #       ')'
                     #
-                    PhraseItem(
+                    OneOrMorePhraseItem.Create(
                         name="New Style",
                         item=[
-                            ParametersType.CreatePhraseItem(),
+                            # <parameters_type> ':'
+                            ParametersType.CreatePhraseItem(),  # type: ignore
                             ":",
 
                             # <parameter_item>
                             parameter_item,
 
                             # (',' <parameter_item>)*
-                            PhraseItem(
+                            ZeroOrMorePhraseItem.Create(
                                 name="Comma and Parameter",
                                 item=[
                                     ",",
                                     parameter_item,
                                 ],
-                                arity="*",
                             ),
 
                             # ','?
-                            PhraseItem(
+                            OptionalPhraseItem.Create(
                                 name="Trailing Comma",
                                 item=",",
-                                arity="?",
                             ),
                         ],
-                        arity="+",
                     ),
 
                     # Traditional:
                     #
-                    #       ...(
-                    #               (<parameter_item>|'/','*') (',' (<parameter_item>|'/','*'))* ','?
-                    #       )
+                    #   ... '('
+                    #           (<parameter_item>|'/'|'*') (',' (<parameter_item>|'/'|'*'))* ','?
+                    #       ')'
                     #
-                    #       Everything before '/' must be a positional argument
-                    #       Everything after '/' and before '*' can either be a positional or keyword argument (this is the default)
-                    #       Everything after '*' must be a keyword argument
-                    #
-                    PhraseItem(
+                    PhraseItem.Create(
                         name="Traditional",
                         item=[
-                            # <parameter_item>|'/'|'*'
-                            (
-                                parameter_item,
-                                TraditionalParameterDelimiter.Positional,
-                                TraditionalParameterDelimiter.Keyword,
-                            ),
+                            # (<parameter_item> | '/' | '*')
+                            traditional_parameter_item,
 
-                            # (',' (<parameter_item>|'/','*'))*
-                            PhraseItem(
-                                name="Comma and Parameter",
+                            # (',' (<parameter_item> | '/' | '*'))*
+                            ZeroOrMorePhraseItem.Create(
+                                name="Common and Parameter",
                                 item=[
                                     ",",
-                                    (
-                                        parameter_item,
-                                        TraditionalParameterDelimiter.Positional,
-                                        TraditionalParameterDelimiter.Keyword,
-                                    ),
+                                    traditional_parameter_item,
                                 ],
-                                arity="*",
                             ),
 
-                            # ','?
-                            PhraseItem(
+                            OptionalPhraseItem.Create(
                                 name="Trailing Comma",
                                 item=",",
-                                arity="?",
                             ),
                         ],
                     ),
                 ),
-                arity="?",
             ),
 
             # ')'
@@ -306,130 +274,154 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def ExtractParserInfo(
     node: Node,
-) -> Optional[ParametersParserInfo]:
+) -> Union[bool, ParametersParserInfo]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
 
-    # <parameters>
     all_parameters_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
     if all_parameters_node is None:
-        return None
+        # We don't want to return None here, as there aren't any parameters, but parameter information
+        # (e.g. '(' and ')') was found). Return a non-null value so that the caller can associate a
+        # node with the result.
+        return False
 
     all_parameters_node = cast(Node, ExtractOr(all_parameters_node))
     assert all_parameters_node.Type is not None
 
     if all_parameters_node.Type.Name == "Traditional":
-        enum_method = _EnumTraditional
+        enum_func = _EnumTraditional
     else:
-        enum_method = _EnumNewStyle
+        enum_func = _EnumNewStyle
 
     encountered_default = False
+    parameters_infos: Dict[ParametersType, Tuple[Node, List[ParameterParserInfo]]] = {}
 
-    positional_parameters_node = None
-    positional_parameters_info = None
-
-    keyword_parameters_node = None
-    keyword_parameters_info = None
-
-    any_parameters_node = None
-    any_parameters_info = None
-
-    for parameters_type, parameters_node, parameter_nodes in enum_method(all_parameters_node):
-        parameters = []
+    for parameters_type, parameters_node, parameter_nodes in enum_func(all_parameters_node):
+        parameters: List[ParameterParserInfo] = []
 
         for parameter_node in parameter_nodes:
             these_parameter_nodes = ExtractSequence(parameter_node)
             assert len(these_parameter_nodes) == 4
 
             # <type>
-            parameter_type_node = cast(Node, ExtractDynamic(cast(Node, these_parameter_nodes[0])))
-            parameter_type_info = cast(TypeParserInfo, GetParserInfo(parameter_type_node))
+            type_node = cast(Node, ExtractDynamic(cast(Node, these_parameter_nodes[0])))
+            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
             # '*'?
-            is_var_args_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], these_parameter_nodes[1])))
-
-            if is_var_args_node is not None:
-                is_var_args_info = True
-            else:
-                is_var_args_info = None
+            is_var_args_node = cast(
+                Optional[Node],
+                ExtractOptional(cast(Optional[Node], these_parameter_nodes[1])),
+            )
+            is_var_args_info = None if is_var_args_node is None else True
 
             # <name>
             name_leaf = cast(Leaf, these_parameter_nodes[2])
             name_info = cast(str, ExtractToken(name_leaf))
 
-            # ('=' <expr>)?
-            default_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], these_parameter_nodes[3])))
+            # ('=' <expression>)?
+            default_node = cast(
+                Optional[Node],
+                ExtractOptional(cast(Optional[Node], these_parameter_nodes[3])),
+            )
 
-            if default_node is not None:
+            if default_node is None:
+                if encountered_default:
+                    raise RequiredParameterAfterDefaultError.FromNode(parameter_node)
+
+                default_info = None
+            else:
                 encountered_default = True
 
                 default_nodes = ExtractSequence(default_node)
                 assert len(default_nodes) == 2
 
-                default_info = cast(ExpressionParserInfo, GetParserInfo(ExtractDynamic(cast(Node, default_nodes[1]))))
-            else:
-                if encountered_default:
-                    raise RequiredParameterAfterDefaultError.FromNode(parameter_node)
-
-                default_info = None
+                default_node = ExtractDynamic(cast(Node, default_nodes[1]))
+                default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
 
             parameters.append(
                 # pylint: disable=too-many-function-args
                 ParameterParserInfo(
-                    CreateParserRegions(
-                        parameter_node,
-                        parameter_type_node,
-                        name_leaf,
-                        default_node,
-                        is_var_args_node,
-                    ),  # type: ignore
-                    parameter_type_info,
+                    CreateParserRegions(parameter_node, type_node, name_leaf, default_node, is_var_args_node),  # type: ignore
+                    type_info,
                     name_info,
                     default_info,
                     is_var_args_info,
                 ),
             )
 
-        if parameters_type == ParametersType.pos:
-            assert positional_parameters_node is None
-            assert positional_parameters_info is None
+        assert parameters
 
-            positional_parameters_node = parameters_node
-            positional_parameters_info = parameters
+        assert parameters_type not in parameters_infos, parameters_type
+        parameters_infos[parameters_type] = (parameters_node, parameters)
 
-        elif parameters_type == ParametersType.key:
-            assert keyword_parameters_node is None
-            assert keyword_parameters_info is None
+    # Extract information from parameters_infos to create a dict used in invoke ParametersParserInfo
+    parser_regions_args: List[Any] = [node]
+    parser_info_args: List[Any] = []
 
-            keyword_parameters_node = parameters_node
-            keyword_parameters_info = parameters
-
-        elif parameters_type == ParametersType.any:
-            assert any_parameters_node is None
-            assert any_parameters_info is None
-
-            any_parameters_node = parameters_node
-            any_parameters_info = parameters
-
+    for parameter_type in [
+        ParametersType.pos,
+        ParametersType.key,
+        ParametersType.any,
+    ]:
+        parameter_info = parameters_infos.get(parameter_type, None)
+        if parameter_info is None:
+            parser_region_arg = None
+            parser_info_arg = None
         else:
-            assert False, parameters_type
+            parser_region_arg, parser_info_arg = parameter_info
 
-    # pylint: disable=too-many-function-args
-    return ParametersParserInfo(
-        CreateParserRegions(
-            all_parameters_node,
-            positional_parameters_node,
-            keyword_parameters_node,
-            any_parameters_node,
-        ),  # type: ignore
-        positional_parameters_info,
-        keyword_parameters_info,
-        any_parameters_info,
+        parser_regions_args.append(parser_region_arg)
+        parser_info_args.append(parser_info_arg)
+
+    parser_info_args.insert(
+        0,
+        CreateParserRegions(*parser_regions_args),  # type: ignore
     )
 
+    return ParametersParserInfo(*parser_info_args)
+
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+def _EnumNewStyle(
+    node: Node,
+) -> Generator[
+    Tuple[ParametersType, Node, List[Node]],
+    None,
+    None,
+]:
+    encountered: Set[ParametersType] = set()
+
+    for node in cast(List[Node], ExtractRepeat(node)):
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 5
+
+        # <parameters_type>
+        parameters_type_node = cast(Node, nodes[0])
+        parameters_type_value = ParametersType.Extract(parameters_type_node)  # type: ignore
+
+        if parameters_type_value in encountered:
+            raise NewStyleParameterGroupDuplicateError.FromNode(
+                parameters_type_node,
+                parameters_type_value.name,
+            )
+
+        encountered.add(parameters_type_value)
+
+        parameters = list(
+            itertools.chain(
+                [nodes[2]],
+                (
+                    ExtractSequence(delimited_node)[1]
+                    for delimited_node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[3])))
+                ),
+            ),
+        )
+
+        yield parameters_type_value, node, cast(List[Node], parameters)
+
+
 # ----------------------------------------------------------------------
 def _EnumTraditional(
     node: Node,
@@ -441,38 +433,32 @@ def _EnumTraditional(
     nodes = ExtractSequence(node)
     assert len(nodes) == 3
 
+    parameter_nodes = list(
+        itertools.chain(
+            [nodes[0]],
+            (
+                ExtractSequence(delimited_node)[1]
+                for delimited_node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[1])))
+            ),
+        ),
+    )
+
     encountered_positional_parameter = False
     keyword_parameter_index: Optional[int] = None
 
-    parameters = []
+    parameters: List[Node] = []
 
-    for parameter_node_index, parameter_node in enumerate(
-        itertools.chain(
-            [nodes[0]],
-            [
-                ExtractSequence(delimited_node)[1]
-                for delimited_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[1])))
-            ],
-        ),
-    ):
+    for parameter_node_index, parameter_node in enumerate(cast(List[Node], parameter_nodes)):
         # Drill into the or node
-        parameter_node = cast(Node, ExtractOr(cast(Node, parameter_node)))
+        parameter_or_delimiter_node = cast(Node, ExtractOr(parameter_node))
 
-        if isinstance(parameter_node, Node):
-            parameters.append(parameter_node)
+        if isinstance(parameter_or_delimiter_node, Node):
+            parameters.append(parameter_or_delimiter_node)
             continue
 
-        assert isinstance(parameter_node, Leaf)
+        delimiter_value = TraditionalParameterDelimiter.Extract(parameter_node)  # type: ignore
 
-        name = cast(
-            str,
-            ExtractToken(
-                parameter_node,
-                use_match=True,
-            ),
-        )
-
-        if name == TraditionalParameterDelimiter.Positional:
+        if delimiter_value == TraditionalParameterDelimiter.Positional:
             # This should never be the first parameter
             if parameter_node_index == 0:
                 raise TraditionalDelimiterPositionalError.FromNode(parameter_node)
@@ -490,9 +476,8 @@ def _EnumTraditional(
             assert parameters
 
             yield ParametersType.pos, node, parameters
-            parameters = []
 
-        elif name == TraditionalParameterDelimiter.Keyword:
+        elif delimiter_value == TraditionalParameterDelimiter.Keyword:
             # We shouldn't see this more than once
             if keyword_parameter_index is not None:
                 raise TraditionalDelimiterDuplicateKeywordError.FromNode(parameter_node)
@@ -501,14 +486,15 @@ def _EnumTraditional(
 
             if parameters:
                 yield ParametersType.any, node, parameters
-                parameters = []
 
         else:
-            assert False, name # pragma: no cover
+            assert False, delimiter_value  # pragma: no cover
+
+        parameters = []
 
     # The keyword delimiter should never be the last parameter
-    if keyword_parameter_index == parameter_node_index:  # type: ignore
-        raise TraditionalDelimiterKeywordError.FromNode(parameter_node)  # type: ignore
+    if keyword_parameter_index == len(parameter_nodes) - 1:
+        raise TraditionalDelimiterKeywordError.FromNode(cast(Node, parameter_nodes[-1]))
 
     if parameters:
         if keyword_parameter_index is not None:
@@ -517,37 +503,3 @@ def _EnumTraditional(
             parameters_type = ParametersType.any
 
         yield parameters_type, node, parameters
-
-
-# ----------------------------------------------------------------------
-def _EnumNewStyle(
-    node: Node,
-) -> Generator[
-    Tuple[ParametersType, Node, List[Node]],
-    None,
-    None,
-]:
-    encountered = set()
-
-    for node in cast(List[Node], ExtractRepeat(node)):
-        nodes = ExtractSequence(node)
-        assert len(nodes) == 5
-
-        # Get the parameter type
-        parameters_type = ParametersType.Extract(cast(Node, nodes[0]))
-
-        if parameters_type in encountered:
-            raise NewStyleParameterGroupDuplicateError.FromNode(cast(Node, nodes[0]), parameters_type.name)
-
-        encountered.add(parameters_type)
-
-        # Get the parameters
-        parameters = list(
-            itertools.chain(
-                [nodes[2]],
-                [ExtractSequence(delimited_node)[1]
-                for delimited_node in cast(List[Node], ExtractRepeat(cast(Optional[Node], nodes[3])))],
-            ),
-        )
-
-        yield parameters_type, node, cast(List[Node], parameters)

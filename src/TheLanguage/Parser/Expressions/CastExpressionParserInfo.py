@@ -3,7 +3,7 @@
 # |  CastExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 14:32:17
+# |      2021-10-04 09:03:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CastExpressionParserData, CastExpressionParserRegions, and CastExpressionParserInfo objects"""
+"""Contains the CastExpressionParserInfo object and errors generated during its use"""
 
 import os
 
@@ -37,12 +37,12 @@ with InitRelativeImports():
     from ..Common.TypeModifier import TypeModifier
     from ..Types.TypeParserInfo import TypeParserInfo
 
-    from ..ParserError import ParserError
+    from ..Error import Error
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TypeWithModifierError(ParserError):
+class TypeWithModifierError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "Cast expressions may specify a type or a modifier, but not both.",
     )
@@ -50,12 +50,12 @@ class TypeWithModifierError(ParserError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidModifierError(ParserError):
+class InvalidModifierError(Error):
     Modifier: str
     ValidModifiers: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "'{Modifier}' cannot be used with cast expressions; supported values are {ValidModifiers}.",
+        "'{Modifier}' cannot be used in cast expressions; supported values are {ValidModifiers}.",
     )
 
 
@@ -75,13 +75,18 @@ class CastExpressionParserInfo(ExpressionParserInfo):
                 raise TypeWithModifierError(type_modifier_info[1])
 
         elif isinstance(self.Type, TypeModifier):
-            valid_modifiers = [TypeModifier.ref, TypeModifier.val, TypeModifier.view]
+            valid_modifiers = [
+                TypeModifier.ref,
+                TypeModifier.val,
+                TypeModifier.view,
+            ]
 
             if self.Type not in valid_modifiers:
                 raise InvalidModifierError(
-                    self.Regions.Type,  # type: ignore && pylint: disable=no-member
+                    self.Regions__.Type,  # type: ignore && pylint: disable=no-member
                     cast(str, self.Type.name),
-                    ", ".join(["'{}'".format(m.name) for m in valid_modifiers]),
+                    ", ".join(["'{}'".format(e.name) for e in valid_modifiers]),
                 )
+
         else:
             assert False, self.Type  # pragma: no cover

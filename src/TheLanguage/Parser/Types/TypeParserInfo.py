@@ -3,7 +3,7 @@
 # |  TypeParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-09 22:57:03
+# |      2021-09-30 10:42:43
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TypeParserData and TypeParserInfo objects"""
+"""Contains the TypeParserInfo object"""
 
 import os
 
@@ -39,11 +39,13 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TypeParserInfo(ParserInfo, Interface.Interface):
-    """Abstract base class for all type-related lexer info"""
+    """Abstract base class for all type-related ParserInfo objects"""
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.extensionmethod
     def GetTypeModifier() -> Optional[Tuple[TypeModifier, Region]]:
-        """Returns information about a TypeModifier associated with the type (if any)"""
+        """Returns information a TypeModifier associated with the type (if any)"""
+
+        # By default, no TypeModifier
         return None

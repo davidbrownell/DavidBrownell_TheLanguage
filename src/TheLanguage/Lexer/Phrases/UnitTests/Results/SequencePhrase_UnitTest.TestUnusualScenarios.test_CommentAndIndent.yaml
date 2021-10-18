@@ -1,6 +1,6 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -67,14 +67,14 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
           Whitespace: None
         Phrase: "Dedent"
     IsComplete: True
-  Phrase: "Sequence: [lower, Newline+, Indent, upper, Newline+, Dedent]"
+  Phrase: "[lower, Newline+, Indent, upper, Newline+, Dedent]"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[4, 1] (19)"
 Success: True
 
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -113,7 +113,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
         IsIgnored: True
         IterBegin: "[5, 5] (30)"
         IterEnd: "[5, 65] (90)"
-        Token: "Comment"
+        Token: "<comment>"
         Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
           Match: "<_sre.SRE_Match object; span=(30, 90), match='# This is a comment; it should not interfere with>"
         Whitespace: None
@@ -158,7 +158,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
           Whitespace: None
         Phrase: "Dedent"
     IsComplete: True
-  Phrase: "Sequence: [lower, Newline+, Indent, upper, Newline+, Dedent]"
+  Phrase: "[lower, Newline+, Indent, upper, Newline+, Dedent]"
 IterBegin: "[4, 1] (19)"
 IterEnd: "[7, 1] (102)"
 Success: True

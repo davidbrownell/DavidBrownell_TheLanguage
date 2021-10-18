@@ -3,7 +3,7 @@
 # |  Token_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-04-11 20:06:33
+# |      2021-09-23 18:08:23
 # |
 # ----------------------------------------------------------------------
 # |
@@ -209,7 +209,7 @@ def test_Indent():
 
     # Skip the dedent line
     assert iter.AtEnd() == False
-    assert iter.HasEndOfFileDedents()
+    assert iter.HasEndOfFileDedents
     iter.ConsumeDedent()
 
     assert iter.AtEnd()

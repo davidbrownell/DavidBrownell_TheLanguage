@@ -3,7 +3,7 @@
 # |  VariantTypeParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 09:26:28
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for VariantTypeParserInfo"""
+"""Unit test for VariantTypeParserInfo.py"""
 
 import os
-
-from dataclasses import fields
 
 import CommonEnvironment
 
@@ -30,58 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..VariantTypeParserInfo import *
-    from ..StandardTypeParserInfo import *
-    from ...Common.AutomatedTests import CreateRegion
 
 
 # ----------------------------------------------------------------------
-class TestStandard(object):
-    _standard_type1                         = StandardTypeParserInfo(
-        [
-            CreateRegion(1, 2, 300, 400),
-            CreateRegion(1, 2, 3, 4),
-            None,
-        ],
-        "Type1",
-        None,
-    )
-
-    _standard_type2                         = StandardTypeParserInfo(
-        [
-            CreateRegion(5, 6, 700, 800),
-            CreateRegion(5, 6, 7, 8),
-            CreateRegion(9, 10, 11, 12),
-        ],
-        "Type2",
-        TypeModifier.val,
-    )
-
-    # ----------------------------------------------------------------------
-    def test_Single(self):
-        regions = {
-            "Self__": CreateRegion(1, 2, 300, 400),
-            "Types": CreateRegion(5, 6, 7, 8),
-        }
-
-        info = VariantTypeParserInfo(
-            list(regions.values()),
-            [self._standard_type1],
-        )
-
-        assert info.Types == [self._standard_type1]
-        assert info.Regions == info.RegionsType(**regions)
-
-    # ----------------------------------------------------------------------
-    def test_Multiple(self):
-        regions = {
-            "Self__": CreateRegion(1, 2, 300, 400),
-            "Types": CreateRegion(5, 6, 7, 8),
-        }
-
-        info = VariantTypeParserInfo(
-            list(regions.values()),
-            [self._standard_type1, self._standard_type2],
-        )
-
-        assert info.Types == [self._standard_type1, self._standard_type2]
-        assert info.Regions == info.RegionsType(**regions)
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
+def test_Placeholder():
+    assert True

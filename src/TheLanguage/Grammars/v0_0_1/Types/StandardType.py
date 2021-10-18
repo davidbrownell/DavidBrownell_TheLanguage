@@ -3,7 +3,7 @@
 # |  StandardType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-11 11:31:06
+# |      2021-09-30 12:17:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,20 +33,18 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import TypeModifier
 
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
-
-    from ....Parser.ParserInfo import SetParserInfo
-    from ....Parser.Types.StandardTypeParserInfo import StandardTypeParserInfo
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractOptional,
         ExtractSequence,
         ExtractToken,
-        Leaf,
-        Node,
-        PhraseItem,
+        OptionalPhraseItem,
     )
+
+    from ....Parser.Parser import CreateParserRegions
+    from ....Parser.Types.StandardTypeParserInfo import StandardTypeParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -66,7 +64,7 @@ class StandardType(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(StandardType, self).__init__(
-            GrammarPhrase.Type.Type,
+            DynamicPhrasesType.Types,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -74,10 +72,9 @@ class StandardType(GrammarPhrase):
                     CommonTokens.TypeName,
 
                     # <modifier>?
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Modifier",
                         item=TypeModifier.CreatePhraseItem(),
-                        arity="?",
                     ),
                 ],
             ),
@@ -87,29 +84,30 @@ class StandardType(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
         # <type_name>
-        type_leaf = cast(Leaf, nodes[0])
+        type_leaf = cast(AST.Leaf, nodes[0])
         type_info = cast(str, ExtractToken(type_leaf))
 
         # <modifier>?
-        modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
+        modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
 
-        if modifier_node is not None:
-            modifier_info = TypeModifier.Extract(modifier_node)
-        else:
+        if modifier_node is None:
             modifier_info = None
+        else:
+            modifier_info = TypeModifier.Extract(modifier_node)
 
-        # pylint: disable=too-many-function-args
-        SetParserInfo(
-            node,
-            StandardTypeParserInfo(
-                CreateParserRegions(node, type_leaf, modifier_node),  # type: ignore
-                type_info,
-                modifier_info,  # type: ignore
-            ),
+        return StandardTypeParserInfo(
+            CreateParserRegions(node, type_leaf, modifier_node),  # type: ignore
+            type_info,
+            modifier_info,
         )

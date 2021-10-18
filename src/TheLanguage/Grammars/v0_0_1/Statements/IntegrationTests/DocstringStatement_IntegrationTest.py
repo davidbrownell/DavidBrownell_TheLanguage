@@ -3,7 +3,7 @@
 # |  DocstringStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-29 06:36:44
+# |      2021-10-08 14:56:20
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,8 +28,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..DocstringStatement import *
-    from ...Common.AutomatedTests import ExecuteEx
 
     from ...Common.Impl.MultilineStatementBase import (
         InvalidMultilineHeaderError,
@@ -47,7 +43,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_SingleLine():
-    result, node = ExecuteEx(
+    node = ExecuteEx(
         textwrap.dedent(
             """\
             <<<
@@ -68,12 +64,13 @@ def test_SingleLine():
                 pass
             """,
         ),
+
     )
 
-    CompareResultsFromFile(result)
+    CompareResultsFromFile(str(node))
 
     # Item 1
-    leaf, value = DocstringStatement.GetInfo(node.Children[0].Children[0].Children[0])
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[0].Children[0].Children[0])
 
     assert leaf.IterBegin.Line == 1
     assert leaf.IterBegin.Column == 1
@@ -82,7 +79,7 @@ def test_SingleLine():
     assert value == "Single line 1."
 
     # Item 2 (This is a pain to get to)
-    leaf, value = DocstringStatement.GetInfo(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
 
     assert leaf.IterBegin.Line == 6
     assert leaf.IterBegin.Column == 5
@@ -91,7 +88,7 @@ def test_SingleLine():
     assert value == "Single line 2."
 
     # Item 3 (This is a pain to get to)
-    leaf, value = DocstringStatement.GetInfo(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
 
     assert leaf.IterBegin.Line == 12
     assert leaf.IterBegin.Column == 5
@@ -102,7 +99,7 @@ def test_SingleLine():
 
 # ----------------------------------------------------------------------
 def test_Multiline():
-    result, node = ExecuteEx(
+    node = ExecuteEx(
         textwrap.dedent(
             """\
             <<<
@@ -132,10 +129,10 @@ def test_Multiline():
         ),
     )
 
-    CompareResultsFromFile(result)
+    CompareResultsFromFile(str(node))
 
     # Item 1
-    leaf, value = DocstringStatement.GetInfo(node.Children[0].Children[0].Children[0])
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[0].Children[0].Children[0])
 
     assert leaf.IterBegin.Line == 1
     assert leaf.IterBegin.Column == 1
@@ -144,7 +141,7 @@ def test_Multiline():
     assert value == "Multi\nline\n1"
 
     # Item 2 (This is a pain to get to)
-    leaf, value = DocstringStatement.GetInfo(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[1].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
 
     assert leaf.IterBegin.Line == 8
     assert leaf.IterBegin.Column == 5
@@ -153,7 +150,7 @@ def test_Multiline():
     assert value == "Multi\nline\n    **1**\n  **2**"
 
     # Item 3
-    leaf, value = DocstringStatement.GetInfo(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
+    leaf, value = DocstringStatement.GetMultilineContent(node.Children[2].Children[0].Children[0].Children[4].Children[1].Children[0].Children[2].Children[0].Children[0].Children[0])
 
     assert leaf.IterBegin.Line == 17
     assert leaf.IterBegin.Column == 5
@@ -172,6 +169,7 @@ def test_InvalidHeaderError():
                 >>>
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value
@@ -189,6 +187,7 @@ def test_InvalidHeaderError():
                     >>>
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value
@@ -208,6 +207,7 @@ def test_InvalidFooterError():
                 Text>>>
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value
@@ -225,6 +225,7 @@ def test_InvalidFooterError():
                     Text>>>
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value
@@ -247,11 +248,12 @@ def test_InvalidIndentError():
                     >>>
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value
 
-    assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<') [Line 2]."
+    assert str(ex) == "Multi-line content must be aligned horizontally with the header ('<<<') [Line 2]."
     assert ex.Region.Begin.Line == 2
     assert ex.Region.Begin.Column == 5
     assert ex.Region.End.Line == 5
@@ -272,15 +274,17 @@ def test_InvalidIndentError():
                     >>>
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value
 
-    assert str(ex) == "Multi-line content must be aligned vertically with the header ('<<<') [Line 4]."
+    assert str(ex) == "Multi-line content must be aligned horizontally with the header ('<<<') [Line 4]."
     assert ex.Region.Begin.Line == 2
     assert ex.Region.Begin.Column == 5
     assert ex.Region.End.Line == 8
     assert ex.Region.End.Column == 8
+
 
 # ----------------------------------------------------------------------
 def test_EmptyContentError():
@@ -292,6 +296,7 @@ def test_EmptyContentError():
                 >>>
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value
@@ -312,6 +317,7 @@ def test_EmptyContentError():
                     >>>
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value

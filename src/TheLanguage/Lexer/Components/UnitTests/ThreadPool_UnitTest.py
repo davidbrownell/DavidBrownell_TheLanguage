@@ -3,7 +3,7 @@
 # |  ThreadPool_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 01:17:29
+# |      2021-09-23 17:57:54
 # |
 # ----------------------------------------------------------------------
 # |
@@ -46,6 +46,10 @@ async def test_Standard():
         return await Identity(a) + await Identity(b)
 
     # ----------------------------------------------------------------------
+    async def DoNothing():
+        pass
+
+    # ----------------------------------------------------------------------
 
     pool = CreateThreadPool()
 
@@ -54,9 +58,12 @@ async def test_Standard():
             (AddAsync, (1, 2)),
             (AddAsync, (30, 40)),
             (AddAsync, (500, 600)),
+            (AddAsync, {"a": 7, "b": 80}),
+            (AddAsync, (13,), {"b": 22}),
+            DoNothing,
         ],
     )
 
     results = await coro
 
-    assert results == [3, 70, 1100]
+    assert results == [3, 70, 1100, 87, 35, None]

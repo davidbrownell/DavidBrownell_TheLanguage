@@ -3,7 +3,7 @@
 # |  IndexExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-26 16:04:38
+# |      2021-10-07 11:48:34
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,26 +28,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..IndexExpression import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 = foo[ten]
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = foo[ten]
 
-                value2 = bar[(
-                    a, b, c
-                )]
+            value2 = bar[
+                abc
+            ]
 
-                value3 = baz[ten][twenty]
+            value3 = baz[ten][twenty]
 
-                value4 = biz[a][b][c][d][e]
-                """,
-            ),
+            value4 = biz[a][b][c][
+                d][e
+            ]
+            """,
         ),
-    )
+    )))
