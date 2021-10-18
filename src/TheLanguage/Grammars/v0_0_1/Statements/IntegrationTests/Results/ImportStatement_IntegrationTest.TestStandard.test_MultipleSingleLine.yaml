@@ -4,31 +4,31 @@ Regions__: # <class 'types.RootParserInfoRegions'>
 Statements:
   - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
     ImportItems:
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: None
         Name: "Obj1"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: None
           Name: "[Ln 1, Col 19] -> [Ln 1, Col 23]"
           Self__: "[Ln 1, Col 19] -> [Ln 1, Col 23]"
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: "Obj2Decorated"
         Name: "Obj2"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: "[Ln 1, Col 33] -> [Ln 1, Col 46]"
           Name: "[Ln 1, Col 25] -> [Ln 1, Col 29]"
           Self__: "[Ln 1, Col 25] -> [Ln 1, Col 46]"
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: "Obj3Decorated"
         Name: "Obj3"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: "[Ln 1, Col 56] -> [Ln 1, Col 69]"
           Name: "[Ln 1, Col 48] -> [Ln 1, Col 52]"
           Self__: "[Ln 1, Col 48] -> [Ln 1, Col 69]"
-      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportItemParserInfo'>
+      - # <class 'TheLanguage.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
         Alias: None
         Name: "Obj4"
-        Regions__: # <class 'types.ImportItemParserInfoRegions'>
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
           Alias: None
           Name: "[Ln 1, Col 71] -> [Ln 1, Col 75]"
           Self__: "[Ln 1, Col 71] -> [Ln 1, Col 75]"

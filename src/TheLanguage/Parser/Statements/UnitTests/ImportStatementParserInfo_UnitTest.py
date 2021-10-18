@@ -44,12 +44,12 @@ def test_Standard():
         VisibilityModifier.public,
         "TheFilename",
         [
-            ImportItemParserInfo(
+            ImportStatementItemParserInfo(
                 [region_creator(container=True), region_creator(), region_creator()],
                 "Import1",
                 "Alias",
             ),
-            ImportItemParserInfo(
+            ImportStatementItemParserInfo(
                 [region_creator(container=True), region_creator(), None],
                 "Import2",
                 None,
@@ -93,7 +93,7 @@ def test_DefaultVisibility():
         None,
         "TheFilename",
         [
-            ImportItemParserInfo(
+            ImportStatementItemParserInfo(
                 [region_creator(container=True), region_creator(), region_creator()],
                 "Import1",
                 "Alias",

@@ -35,7 +35,7 @@ with InitRelativeImports():
     from ...GrammarInfo import AST, DynamicPhrasesType, ParserInfo
 
     from ....Parser.Expressions.MatchTypeExpressionParserInfo import (
-        MatchTypeCasePhraseParserInfo,
+        MatchTypeExpressionClauseParserInfo,
         MatchTypeExpressionParserInfo,
     )
 
@@ -74,6 +74,6 @@ class MatchTypeExpression(MatchExpressionBase):
     ]:
         return cls._ExtractParserInfoImpl(
             MatchTypeExpressionParserInfo,
-            MatchTypeCasePhraseParserInfo,
+            MatchTypeExpressionClauseParserInfo,
             node,
         )

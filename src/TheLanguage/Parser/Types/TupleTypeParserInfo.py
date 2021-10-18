@@ -22,6 +22,7 @@ from typing import List
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .TypeParserInfo import TypeParserInfo
+    from ..Common.VisitorTools import StackHelper, VisitType
 
 
 # ----------------------------------------------------------------------
@@ -45,3 +47,17 @@ class TupleTypeParserInfo(TypeParserInfo):
             regions,
             regionless_attributes=["Types"],
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnTupleType(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[(self, "Types")] as helper:
+            results.append([the_type.Accept(visitor, helper.stack, *args, **kwargs) for the_type in self.Types])
+
+        results.append(visitor.OnTupleType(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

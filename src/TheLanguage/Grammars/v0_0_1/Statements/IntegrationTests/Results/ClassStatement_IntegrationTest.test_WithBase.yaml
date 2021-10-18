@@ -3,9 +3,9 @@ Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 12, Col 1]"
 Statements:
   - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
       Name: "Base1"
-      Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+      Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
         Name: "[Ln 1, Col 21] -> [Ln 1, Col 26]"
         Self__: "[Ln 1, Col 14] -> [Ln 1, Col 26]"
         Visibility: "[Ln 1, Col 14] -> [Ln 1, Col 20]"
@@ -33,9 +33,9 @@ Statements:
     Uses: None
     Visibility: "VisibilityModifier.private"
   - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
       Name: "Base2"
-      Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+      Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
         Name: "[Ln 4, Col 14] -> [Ln 4, Col 19]"
         Self__: "[Ln 4, Col 14] -> [Ln 4, Col 19]"
         Visibility: "[Ln 4, Col 14] -> [Ln 4, Col 19]"
@@ -63,9 +63,9 @@ Statements:
     Uses: None
     Visibility: "VisibilityModifier.private"
   - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassDependencyParserInfo'>
+    Base: # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
       Name: "Base3"
-      Regions__: # <class 'types.ClassDependencyParserInfoRegions'>
+      Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
         Name: "[Ln 9, Col 5] -> [Ln 9, Col 10]"
         Self__: "[Ln 8, Col 5] -> [Ln 9, Col 11]"
         Visibility: "[Ln 8, Col 5] -> [Ln 8, Col 14]"

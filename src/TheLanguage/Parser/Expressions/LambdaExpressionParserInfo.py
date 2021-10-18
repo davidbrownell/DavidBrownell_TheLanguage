@@ -22,6 +22,7 @@ from typing import Union
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
     from ..Common.ParametersParserInfo import ParametersParserInfo
+    from ..Common.VisitorTools import StackHelper, VisitType
 
 
 # ----------------------------------------------------------------------
@@ -55,3 +57,22 @@ class LambdaExpressionParserInfo(ExpressionParserInfo):
             assert self.Parameters is False, self.Parameters
         else:
             assert self.Parameters
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnLambdaExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            if isinstance(self.Parameters, ParametersParserInfo):
+                with helper["Parameters"]:
+                    results.append(self.Parameters.Accept(visitor, helper.stack, *args, **kwargs))
+
+            with helper["Expression"]:
+                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnLambdaExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

@@ -34,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .TypeParserInfo import Region, TypeModifier, TypeParserInfo
     from ..Error import Error
+    from ..Common.VisitorTools import VisitType
 
 
 # ----------------------------------------------------------------------
@@ -72,6 +73,11 @@ class StandardTypeParserInfo(TypeParserInfo):
                 cast(str, self.Modifier.name),
                 ", ".join(["'{}'".format(m.name) for m in valid_modifiers]),
             )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        return visitor.OnStandardType(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
