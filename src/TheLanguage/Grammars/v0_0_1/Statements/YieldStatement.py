@@ -3,7 +3,7 @@
 # |  YieldStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 23:18:03
+# |      2021-10-14 09:29:20
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,36 +31,36 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-    from ....Parser.Statements.YieldStatementParserInfo import (
-        ExpressionParserInfo,
-        YieldStatementParserInfo,
-    )
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
         ExtractSequence,
-        Node,
-        PhraseItem,
+        OptionalPhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Statements.YieldStatementParserInfo import (
+        ExpressionParserInfo,
+        YieldStatementParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
 class YieldStatement(GrammarPhrase):
     """\
-    Yields a value to the caller.
+    Yields a value to the caller from an async function.
 
-    'yield' ('from'? <expr>)?
+    'yield' ('from'? <expression>)?
 
     Examples:
         yield
         yield foo
-        yield from Func()
+        yield from Foo()
     """
 
     PHRASE_NAME                             = "Yield Statement"
@@ -68,22 +68,22 @@ class YieldStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(YieldStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
+                    # 'yield'
                     "yield",
-                    PhraseItem(
+
+                    # ('from'? <expression>)?
+                    OptionalPhraseItem.Create(
                         name="Suffix",
                         item=[
-                            PhraseItem(
-                                item="from",
-                                arity="?",
-                            ),
+                            OptionalPhraseItem("from"),
                             DynamicPhrasesType.Expressions,
                         ],
-                        arity="?",
                     ),
+
                     CommonTokens.Newline,
                 ],
             ),
@@ -93,40 +93,46 @@ class YieldStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # Suffix?
-            suffix_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
-            if suffix_node is not None:
+            # ('from'? <expression>)?
+            suffix_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
+            if suffix_node is None:
+                is_recursive_node = None
+
+                expression_node = None
+                expression_info = None
+
+            else:
                 suffix_nodes = ExtractSequence(suffix_node)
                 assert len(suffix_nodes) == 2
 
                 # 'from'?
-                is_recursive_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], suffix_nodes[0])))
+                is_recursive_node = cast(
+                    Optional[AST.Node],
+                    ExtractOptional(cast(Optional[AST.Node], suffix_nodes[0])),
+                )
 
-                # <expr>
-                expr_node = ExtractDynamic(cast(Node, suffix_nodes[1]))
-                expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
-            else:
-                is_recursive_node = None
+                # <expression>
+                expression_node = ExtractDynamic(cast(AST.Node, suffix_nodes[1]))
+                expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-                expr_node = None
-                expr_info = None
-
-            SetParserInfo(
-                node,
-                YieldStatementParserInfo(
-                    CreateParserRegions(node, expr_node, is_recursive_node),  # type: ignore
-                    expr_info,
-                    True if is_recursive_node is not None else None,
-                ),
+            return YieldStatementParserInfo(
+                CreateParserRegions(node, expression_node, is_recursive_node),  # type: ignore
+                expression_info,
+                True if is_recursive_node is not None else None,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

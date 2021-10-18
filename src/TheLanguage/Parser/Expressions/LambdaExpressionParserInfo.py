@@ -3,7 +3,7 @@
 # |  LambdaExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-13 14:42:05
+# |      2021-10-07 15:28:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LambdaExpressionParserData, LambdaExpressionParserInfo, and LambdaExpressionParserRegions objects"""
+"""Contains the LambdaExpressionParserInfo object"""
 
 import os
 
-from typing import Optional
+from typing import Union
 
 from dataclasses import dataclass
 
@@ -38,5 +38,20 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class LambdaExpressionParserInfo(ExpressionParserInfo):
-    Parameters: Optional[ParametersParserInfo]
+    """Single-line anonymous function definition"""
+
+    Parameters: Union[
+        bool,                               # Should always be False; indicates that no parameters were found
+        ParametersParserInfo,               # Non-empty list of parameters
+    ]
+
     Expression: ExpressionParserInfo
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(LambdaExpressionParserInfo, self).__post_init__(regions)
+
+        if isinstance(self.Parameters, bool):
+            assert self.Parameters is False, self.Parameters
+        else:
+            assert self.Parameters

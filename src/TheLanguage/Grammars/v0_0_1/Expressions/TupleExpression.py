@@ -3,7 +3,7 @@
 # |  TupleExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 16:59:59
+# |      2021-10-12 08:26:09
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, List, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,55 +31,60 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.Impl.TupleBase import TupleBase
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
+
+    from ...GrammarInfo import AST, DynamicPhrasesType, ParserInfo
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
     from ....Parser.Expressions.TupleExpressionParserInfo import (
         ExpressionParserInfo,
         TupleExpressionParserInfo,
     )
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import Node
-
 
 # ----------------------------------------------------------------------
 class TupleExpression(TupleBase):
     """\
-    Creates a tuple that can be used as an expression.
+    A tuple of expressions.
 
-    '(' <expr> ',' ')'
-    '(' <expr> (',' <expr>)+ ','? ')'
+    '(' (<expression> ',')+ ')'
 
-    Example:
-        var = (a, b)
-        Func((a, b, c), (d,))
+    Examples:
+        value1 = (a,)
+        value2 = (a, b, c, d, e)
+        Func((a, b), (d,))
     """
 
     PHRASE_NAME                             = "Tuple Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleExpression, self).__init__(GrammarPhrase.Type.Expression, self.PHRASE_NAME)
+        super(TupleExpression, self).__init__(DynamicPhrasesType.Expressions, self.PHRASE_NAME)
 
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
     def ExtractParserInfo(
         cls,
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                TupleExpressionParserInfo(
-                    CreateParserRegions(node, node),  # type: ignore
-                    [cast(ExpressionParserInfo, GetParserInfo(child)) for child in cls.EnumNodeValues(node)],
-                ),
+        def Impl():
+            expressions: List[ExpressionParserInfo] = []
+
+            for expression_node in cast(List[AST.Node], cls._EnumNodes(node)):
+                expressions.append(cast(ExpressionParserInfo, GetParserInfo(expression_node)))
+
+            return TupleExpressionParserInfo(
+                CreateParserRegions(node),  # type: ignore
+                expressions,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

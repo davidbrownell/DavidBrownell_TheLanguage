@@ -3,7 +3,7 @@
 # |  RecursivePlaceholderPhrase_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-15 14:11:40
+# |      2021-09-24 15:00:21
 # |
 # ----------------------------------------------------------------------
 # |
@@ -49,13 +49,13 @@ async def test_Lex(parse_mock):
 
     ex = ex.value
 
-    assert str(ex) == "'LexAsync' should never be called on a RecursivePlaceholderPhrase instance"
+    assert str(ex) == "This method should never be called on an instance of this object"
 
 # ----------------------------------------------------------------------
 def test_PopulateRecursive():
     with pytest.raises(Exception) as ex:
-        RecursivePlaceholderPhrase().PopulateRecursive()
+        RecursivePlaceholderPhrase().PopulateRecursive(None, None)
 
     ex = ex.value
 
-    assert str(ex) == "'_PopulateRecursiveImpl' should never be called on a RecursivePlaceholderPhrase instance"
+    assert str(ex) == "This method should never be called on an instance of this object"

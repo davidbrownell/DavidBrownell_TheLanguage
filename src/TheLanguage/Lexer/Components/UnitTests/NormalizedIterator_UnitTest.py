@@ -3,7 +3,7 @@
 # |  NormalizedIterator_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-04-11 18:14:13
+# |      2021-09-23 18:06:51
 # |
 # ----------------------------------------------------------------------
 # |
@@ -60,7 +60,7 @@ def test_Standard():
     assert iter.Content[iter.Offset] == "1"
     assert iter.Line == 1
     assert iter.Column == 1
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
     iter.Advance(1)
 
     assert iter.Offset == 1
@@ -68,7 +68,7 @@ def test_Standard():
     assert iter.Content[iter.Offset] == "\n"
     assert iter.Line == 1
     assert iter.Column == 2
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfLine
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfLine
     iter.Advance(1)
 
     assert iter.AtEnd() == False
@@ -82,7 +82,7 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 4] == "    "
     assert iter.Line == 2
     assert iter.Column == 1
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Indent
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Indent
     iter.SkipWhitespacePrefix()
 
     assert iter.Offset == 6
@@ -90,7 +90,7 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 2] == "22"
     assert iter.Line == 2
     assert iter.Column == 5
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
     iter.Advance(2)
 
     assert iter.Offset == 8
@@ -98,7 +98,7 @@ def test_Standard():
     assert iter.Content[iter.Offset] == "\n"
     assert iter.Line == 2
     assert iter.Column == 7
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfLine
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfLine
 
     iter.Advance(1)
     assert iter.AtEnd() == False
@@ -112,7 +112,7 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 8] == "        "
     assert iter.Line == 3
     assert iter.Column == 1
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Indent
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Indent
 
     iter.SkipWhitespacePrefix()
 
@@ -121,7 +121,7 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 3] == "333"
     assert iter.Line == 3
     assert iter.Column == 9
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
 
     iter.Advance(3)
 
@@ -130,7 +130,7 @@ def test_Standard():
     assert iter.Content[iter.Offset] == "\n"
     assert iter.Line == 3
     assert iter.Column == 12
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfLine
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfLine
 
     iter.Advance(1)
     assert iter.AtEnd() == False
@@ -144,10 +144,10 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 4] == "    "
     assert iter.Line == 4
     assert iter.Column == 1
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Dedent
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Dedent
 
     iter.ConsumeDedent()
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.WhitespacePrefix
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.WhitespacePrefix
 
     iter.SkipWhitespacePrefix()
 
@@ -156,7 +156,7 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 4] == "4444"
     assert iter.Line == 4
     assert iter.Column == 5
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
 
     iter.Advance(4)
 
@@ -165,7 +165,7 @@ def test_Standard():
     assert iter.Content[iter.Offset] == "\n"
     assert iter.Line == 4
     assert iter.Column == 9
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfLine
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfLine
 
     iter.Advance(1)
     assert iter.AtEnd() == False
@@ -179,7 +179,7 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 8] == "        "
     assert iter.Line == 5
     assert iter.Column == 1
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Indent
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Indent
 
     iter.SkipWhitespacePrefix()
 
@@ -188,7 +188,7 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 5] == "55555"
     assert iter.Line == 5
     assert iter.Column == 9
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
 
     iter.Advance(5)
 
@@ -197,7 +197,7 @@ def test_Standard():
     assert iter.Content[iter.Offset] == "\n"
     assert iter.Line == 5
     assert iter.Column == 14
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfLine
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfLine
 
     iter.Advance(1)
 
@@ -212,7 +212,7 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 8] == "        "
     assert iter.Line == 6
     assert iter.Column == 1
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.WhitespacePrefix
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.WhitespacePrefix
 
     iter.SkipWhitespacePrefix()
 
@@ -221,13 +221,13 @@ def test_Standard():
     assert iter.Content[iter.Offset : iter.Offset + 6] == "666666"
     assert iter.Line == 6
     assert iter.Column == 9
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
 
     iter.Advance(2)
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
 
     iter.Advance(2)
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
 
     iter.Advance(2)
 
@@ -236,14 +236,14 @@ def test_Standard():
     assert iter.Content[iter.Offset] == "\n"
     assert iter.Line == 6
     assert iter.Column == 15
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfLine
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfLine
 
     iter.Advance(1)
 
     assert iter.AtEnd() == False
 
     # Final dedents
-    assert iter.HasEndOfFileDedents()
+    assert iter.HasEndOfFileDedents
     assert iter.IsBlankLine() == False
 
     assert iter.LineInfo.NumDedents == 2
@@ -253,12 +253,12 @@ def test_Standard():
     assert iter.LineInfo == iter.LineInfos[6]
     assert iter.Line == 7
     assert iter.Column == 1
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Dedent
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Dedent
 
     iter.ConsumeDedent()
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Dedent
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Dedent
     iter.ConsumeDedent()
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfFile
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfFile
 
     assert iter.AtEnd()
 
@@ -274,7 +274,7 @@ def test_NoFinalDedents():
                 """,
             ),
         ),
-    ).HasEndOfFileDedents()
+    ).HasEndOfFileDedents
 
 # ----------------------------------------------------------------------
 def test_SkipWhitespacePrefix():
@@ -308,10 +308,10 @@ def test_SkipSuffix():
 
     assert iter.Line == 1
     assert iter.Column == 1
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
 
     iter.Advance(3)
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.WhitespaceSuffix
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.WhitespaceSuffix
 
     assert iter.Line == 1
     assert iter.Column == 4
@@ -321,7 +321,7 @@ def test_SkipSuffix():
     assert iter.Line == 1
     assert iter.Column == 8
     assert iter.Offset == 7
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfLine
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfLine
 
 # ----------------------------------------------------------------------
 def test_SkipSuffixNoSuffix():
@@ -329,21 +329,21 @@ def test_SkipSuffixNoSuffix():
 
     assert iter.Line == 1
     assert iter.Column == 1
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.Content
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.Content
 
     iter.Advance(3)
 
     assert iter.Line == 1
     assert iter.Column == 4
     assert iter.Offset == 3
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfLine
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfLine
 
     iter.SkipWhitespaceSuffix()
 
     assert iter.Line == 1
     assert iter.Column == 4
     assert iter.Offset == 3
-    assert iter.GetNextToken() == NormalizedIterator.TokenType.EndOfLine
+    assert iter.GetNextTokenType() == NormalizedIterator.TokenType.EndOfLine
 
 
 # ----------------------------------------------------------------------

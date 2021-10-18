@@ -3,7 +3,7 @@
 # |  UnaryExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-13 18:54:28
+# |      2021-10-11 17:01:18
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains UnaryExpressionParserData, UnaryExpressionParserInfo, and UnaryExpressionParserRegions objects"""
+"""Contains functionality used when working with Unary expressions"""
 
 import os
 
@@ -36,7 +36,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
-    # Coroutine
+    # Async
     Await                                   = auto()
 
     # Transfer

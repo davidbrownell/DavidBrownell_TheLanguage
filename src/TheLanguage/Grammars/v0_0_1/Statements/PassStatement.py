@@ -3,7 +3,7 @@
 # |  PassStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 22:49:44
+# |      2021-09-29 10:16:11
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement"""
+"""Contains the PassStatement object"""
 
 import os
 
-from typing import Optional
+from typing import Callable, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,18 +31,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import SetParserInfo
-    from ....Parser.Statements.PassStatementParserInfo import PassStatementParserInfo
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
-    from ....Lexer.Phrases.DSL import CreatePhrase, Node
+    from ....Lexer.Phrases.DSL import CreatePhrase
+
+    from ....Parser.Parser import CreateParserRegions
+    from ....Parser.Statements.NoopStatementParserInfo import NoopStatementParserInfo
 
 
 # ----------------------------------------------------------------------
 class PassStatement(GrammarPhrase):
     """\
-    Noop statement.
+    Noop (No-Operation) statement.
 
     'pass'
 
@@ -56,7 +57,7 @@ class PassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(PassStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -70,11 +71,13 @@ class PassStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
-        SetParserInfo(
-            node,
-            PassStatementParserInfo(
-                CreateParserRegions(node),  # type: ignore
-            ),
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
+        return NoopStatementParserInfo(
+            CreateParserRegions(node),  # type: ignore
         )

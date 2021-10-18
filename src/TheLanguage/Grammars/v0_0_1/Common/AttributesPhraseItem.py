@@ -3,7 +3,7 @@
 # |  AttributesPhraseItem.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-06 11:34:30
+# |      2021-10-11 08:17:05
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps when working with attributes"""
+"""Contains functionality used when lexing attributes"""
 
 import os
 
-from typing import Any, cast, List, Optional, Tuple
+from typing import cast, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -41,7 +41,9 @@ with InitRelativeImports():
         ExtractToken,
         Leaf,
         Node,
+        OptionalPhraseItem,
         PhraseItem,
+        ZeroOrMorePhraseItem,
     )
 
 
@@ -50,7 +52,7 @@ with InitRelativeImports():
 class AttributeData(object):
     Name: str
     NameLeaf: Leaf
-    Arguments: Optional[List[ArgumentsPhraseItem.ArgumentParserInfo]]
+    Arguments: Optional[Union[bool, List[ArgumentsPhraseItem.ArgumentParserInfo]]]
     ArgumentsNode: Optional[Node]
 
     # ----------------------------------------------------------------------
@@ -64,34 +66,35 @@ class AttributeData(object):
 # ----------------------------------------------------------------------
 def Create(
     allow_multiple=True,
-) -> PhraseItem:
+
+) -> Union[ZeroOrMorePhraseItem, OptionalPhraseItem]:
     """\
     ('@' <name> <<Arguments>>? <newline>?)*
         - or -
-    ('@' <name> <<Arguments>>? <newline>?)?    # If allow_multiple is False
+    ('@' <name> <<Arguments>>? <newline>?)?             # If 'allow_multiple' is False
     """
 
-    return PhraseItem(
+    phrase_item = PhraseItem.Create(
         name="Attribute",
         item=[
             "@",
-            CommonTokens.MethodName,
-            PhraseItem(
-                item=ArgumentsPhraseItem.Create(),
-                arity="?",
-            ),
-
-            PhraseItem(
-                item=CommonTokens.Newline,
-                arity="?",
-            ),
+            CommonTokens.AttributeName,
+            OptionalPhraseItem(ArgumentsPhraseItem.Create()),
+            OptionalPhraseItem(CommonTokens.Newline),
         ],
-        arity="*" if allow_multiple else "?",
     )
+
+    if allow_multiple:
+        return ZeroOrMorePhraseItem.Create(
+            name="Attributes",
+            item=phrase_item,
+        )
+
+    return OptionalPhraseItem(phrase_item)
 
 
 # ----------------------------------------------------------------------
-def ExtractData(
+def ExtractLexerData(
     node: Optional[Node],
 ) -> List[AttributeData]:
     if node is None:
@@ -99,30 +102,26 @@ def ExtractData(
 
     node_or_nodes = ExtractRepeat(node)
 
-    if isinstance(node_or_nodes, list):
-        return [_ExtractAttribute(cast(Node, child)) for child in node_or_nodes]
+    if not isinstance(node_or_nodes, list):
+        node_or_nodes = [node_or_nodes]
 
-    return [_ExtractAttribute(cast(Node, node_or_nodes))]
+    results: List[AttributeData] = []
 
+    for node in cast(List[Node], node_or_nodes):
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 4
 
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-def _ExtractAttribute(
-    node: Node,
-) -> AttributeData:
-    nodes = ExtractSequence(node)
-    assert len(nodes) == 4
+        # <name>
+        name_leaf = cast(Leaf, nodes[1])
+        name_info = cast(str, ExtractToken(name_leaf))
 
-    # <name>
-    leaf = cast(Leaf, nodes[1])
-    name = cast(str, ExtractToken(leaf))
+        # <<Arguments>>?
+        arguments_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
+        if arguments_node is None:
+            arguments_info = None
+        else:
+            arguments_info = ArgumentsPhraseItem.ExtractParserInfo(arguments_node)
 
-    # <<Arguments>>?
-    arguments_node = cast(Optional[Node], ExtractOptional(cast(Node, nodes[2])))
-    if arguments_node is not None:
-        arguments_info = ArgumentsPhraseItem.ExtractParserInfo(cast(Node, arguments_node))
-    else:
-        arguments_info = None
+        results.append(AttributeData(name_info, name_leaf, arguments_info, arguments_node))
 
-    return AttributeData(name, leaf, arguments_info, arguments_node)
+    return results

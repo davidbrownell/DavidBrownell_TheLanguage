@@ -1,9 +1,9 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -21,7 +21,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
           IsComplete: True
         Phrase: "Word Phrase"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: None
@@ -29,7 +29,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
           IsComplete: True
         Phrase: "Number Phrase"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: None
@@ -37,7 +37,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
           IsComplete: True
         Phrase: "Upper Phrase"
     IsComplete: True
-  Phrase: "Or: (Word Phrase, Number Phrase, Upper Phrase)"
+  Phrase: "(Word Phrase | Number Phrase | Upper Phrase)"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[1, 5] (4)"
 Success: False

@@ -3,7 +3,7 @@
 # |  VariableExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 15:20:43
+# |      2021-09-30 13:14:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,24 +30,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
+    # TODO from ..Names.TupleName import TupleName
 
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        PhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
     from ....Parser.Expressions.VariableExpressionParserInfo import (
         NameParserInfo,
         VariableExpressionParserInfo,
     )
-
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        Node,
-        PhraseItem,
-    )
-
-    from ..Names.TupleName import TupleName
 
 
 # ----------------------------------------------------------------------
@@ -68,10 +65,10 @@ class VariableExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(VariableExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 # <name>
-                PhraseItem(
+                PhraseItem.Create(
                     name=self.PHRASE_NAME,
                     item=DynamicPhrasesType.Names,
 
@@ -79,7 +76,7 @@ class VariableExpression(GrammarPhrase):
                     # explicit exclusion. For example, is "(a, b, c)" a tuple name or tuple
                     # expression? In this context, "tuple expression" is correct, so remove tuple
                     # name as a viable candidate.
-                    exclude=[TupleName.PHRASE_NAME],
+                    # TODO: exclude=[TupleName.PHRASE_NAME],
                 ),
             ),
         )
@@ -88,21 +85,24 @@ class VariableExpression(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
+            # <name>
             name_node = ExtractDynamic(node)
             name_info = cast(NameParserInfo, GetParserInfo(name_node))
 
-            SetParserInfo(
-                node,
-                VariableExpressionParserInfo(
-                    CreateParserRegions(node, name_node),  # type: ignore
-                    name_info,
-                ),
+            return VariableExpressionParserInfo(
+                CreateParserRegions(node, name_node),  # type: ignore
+                name_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

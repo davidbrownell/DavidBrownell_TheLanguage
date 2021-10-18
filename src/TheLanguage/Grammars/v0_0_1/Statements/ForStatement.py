@@ -3,7 +3,7 @@
 # |  ForStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-17 22:39:50
+# |      2021-10-12 14:48:25
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,30 +31,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import StatementsPhraseItem
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-    from ....Parser.Statements.ForStatementParserInfo import (
-        ExpressionParserInfo,
-        ForStatementParserInfo,
-        NameParserInfo,
-    )
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractDynamic,
         ExtractSequence,
-        Node,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Statements.IterateStatementParserInfo import (
+        ExpressionParserInfo,
+        IterateStatementParserInfo,
+        NameParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
 class ForStatement(GrammarPhrase):
     """\
-    Statement that exercises an iterator.
+    Statement that exercises as interator.
 
-    'for' <name> 'in' <expr> ':'
+    'for' <name> 'in' <expression> ':'
         <statement>+
 
     Examples:
@@ -70,7 +70,7 @@ class ForStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(ForStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -83,10 +83,10 @@ class ForStatement(GrammarPhrase):
                     # 'in'
                     "in",
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
 
-                    # ':' <statement>+
+                    # ":" <statement>+
                     StatementsPhraseItem.Create(),
                 ],
             ),
@@ -96,35 +96,37 @@ class ForStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
             # <name>
-            name_node = cast(Node, ExtractDynamic(cast(Node, nodes[1])))
+            name_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
             name_info = cast(NameParserInfo, GetParserInfo(name_node))
 
-            # <expr>
-            expr_node = cast(Node, ExtractDynamic(cast(Node, nodes[3])))
-            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            # <statements>
-            statement_node = cast(Node, nodes[4])
+            # <statement>+
+            statement_node = cast(AST.Node, nodes[4])
             statement_info = StatementsPhraseItem.ExtractParserInfo(statement_node)
 
-            SetParserInfo(
-                node,
-                ForStatementParserInfo(
-                    CreateParserRegions(node, name_node, expr_node, statement_node),  # type: ignore
-                    name_info,
-                    expr_info,
-                    statement_info,
-                ),
+            return IterateStatementParserInfo(
+                CreateParserRegions(node, name_node, expression_node, statement_node),  # type: ignore
+                name_info,
+                expression_info,
+                statement_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

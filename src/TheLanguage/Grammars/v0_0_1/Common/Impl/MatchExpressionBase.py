@@ -3,7 +3,7 @@
 # |  MatchExpressionBase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-30 15:09:25
+# |      2021-10-12 09:09:10
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import cast, List, Optional, Type
+from typing import Callable, cast, List, Optional, Type
 
 import CommonEnvironment
 
@@ -32,41 +32,40 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .. import Tokens as CommonTokens
 
-    from ....GrammarPhrase import CreateParserRegions, GrammarPhrase
-
-    from .....Parser.ParserInfo import GetParserInfo, ParserInfo, SetParserInfo
-
-    from .....Parser.Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ....GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from .....Lexer.Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractDynamic,
-        ExtractOptional,
-        ExtractOr,
         ExtractRepeat,
         ExtractSequence,
-        Node,
+        ExtractOptional,
+        ExtractOr,
+        OneOrMorePhraseItem,
+        OptionalPhraseItem,
         PhraseItem,
+        ZeroOrMorePhraseItem,
     )
 
+    from .....Parser.Parser import CreateParserRegions, GetParserInfo
+    from .....Parser.Expressions.ExpressionParserInfo import ExpressionParserInfo
 
-# TODO: Implementation should add the magic values '__MatchType__' and '__match_value__' to the scope
 
 # ----------------------------------------------------------------------
 class MatchExpressionBase(GrammarPhrase):
     """\
     Base class for match expressions.
 
-    'match' ('type'|'value') ':'
+    '(' 'match' ('type' | 'value') ':'
         (
             'case' <type|expr> (',' <type|expr>)* ','? ':'
-                <expr>
+                <expression>
         )+
         (
             'default' ':'
-                <expr>
+                <expression>
         )?
+    ')'
 
     Examples:
         result = (
@@ -78,10 +77,10 @@ class MatchExpressionBase(GrammarPhrase):
         )
 
         result = (match type Add(1, 2):
-            case Int: "Expected"
+            case Int: "Expected result type"
             case String: value
             default:
-                "What type is it?"
+                "What type is it?!"
         )
     """
 
@@ -104,38 +103,36 @@ class MatchExpressionBase(GrammarPhrase):
         elif match_type == DynamicPhrasesType.Expressions:
             type_token = "value"
         else:
-            assert False, match_type
+            assert False, match_type  # pragma: no cover
 
-        case_items = PhraseItem(
+        case_items = PhraseItem.Create(
             name="Case Items",
             item=[
                 # <token>
                 match_type,
 
                 # (',' <token>)*
-                PhraseItem(
-                    name="Comma and Content",
+                ZeroOrMorePhraseItem.Create(
+                    name="Comma and Token",
                     item=[
                         ",",
                         match_type,
                     ],
-                    arity="*",
                 ),
 
                 # ','?
-                PhraseItem(
+                OptionalPhraseItem.Create(
                     name="Trailing Comma",
                     item=",",
-                    arity="?",
                 ),
             ],
         )
 
-        case_expression_item = PhraseItem(
-            name="Expression",
+        case_expression_item = PhraseItem.Create(
+            name="Case Expression",
             item=(
-                # <newline> <indent> <expr> <newline> <dedent>
-                PhraseItem(
+                # <newline> <indent> <expression> <newline> <dedent>
+                PhraseItem.Create(
                     name="Multiple Lines",
                     item=[
                         CommonTokens.Newline,
@@ -146,8 +143,8 @@ class MatchExpressionBase(GrammarPhrase):
                     ],
                 ),
 
-                # <expr> <newline>
-                PhraseItem(
+                # <expression> <newline>
+                PhraseItem.Create(
                     name="Single Line",
                     item=[
                         DynamicPhrasesType.Expressions,
@@ -157,10 +154,10 @@ class MatchExpressionBase(GrammarPhrase):
             ),
         )
 
-        match_item = PhraseItem(
+        match_item = PhraseItem.Create(
             name="Match",
             item=[
-                # ''match' ('type'|'value') <expr> ':'
+                # 'match' ('type'|'value') <expression> ':' <newline> <indent>
                 "match",
                 type_token,
                 DynamicPhrasesType.Expressions,
@@ -169,16 +166,17 @@ class MatchExpressionBase(GrammarPhrase):
                 CommonTokens.Indent,
 
                 # ('case' <<Case Items>> ':' <case_expression_item>)+
-                PhraseItem(
+                OneOrMorePhraseItem.Create(
                     name="Case Phrase",
                     item=[
+                        # 'case'
                         "case",
 
                         # <<Case Items>>
-                        PhraseItem(
+                        PhraseItem.Create(
                             item=(
                                 # '(' <case_items> ')'
-                                PhraseItem(
+                                PhraseItem.Create(
                                     name="Grouped",
                                     item=[
                                         # '('
@@ -199,44 +197,43 @@ class MatchExpressionBase(GrammarPhrase):
                             ),
 
                             # Use the order to disambiguate between group clauses and tuples.
-                            ordered_by_priority=True,
+                            ambiguities_resolved_by_order=True,
                         ),
 
+                        # ':' <case_expression_item>
                         ":",
                         case_expression_item,
                     ],
-                    arity="+",
                 ),
 
                 # ('default' ':' <case_expression_item>)?
-                PhraseItem(
-                    name="Default",
+                OptionalPhraseItem.Create(
+                    name="Default Phrase",
                     item=[
                         "default",
                         ":",
                         case_expression_item,
                     ],
-                    arity="?",
                 ),
 
+                # <dedent>
                 CommonTokens.Dedent,
             ],
         )
 
         super(MatchExpressionBase, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=phrase_name,
                 item=[
                     CommonTokens.PushPreserveWhitespaceControl,
 
-                    PhraseItem(
+                    PhraseItem.Create(
                         name="Style",
                         item=(
-                            # '(' <match_item>
-                            # ')'
-                            PhraseItem(
-                                name="K&R-like",
+                            # '(' <match_item> ')'
+                            PhraseItem.Create(
+                                name="K&R-Like",
                                 item=[
                                     "(",
                                     match_item,
@@ -244,11 +241,9 @@ class MatchExpressionBase(GrammarPhrase):
                                 ],
                             ),
 
-                            # '('
-                            #      <match_item>
-                            # ')'
-                            PhraseItem(
-                                name="Allman-like",
+                            # '(' <newline> <indent> <match_item> <dedent> ')'
+                            PhraseItem.Create(
+                                name="Allman-Like",
                                 item=[
                                     "(",
                                     CommonTokens.Newline,
@@ -267,139 +262,144 @@ class MatchExpressionBase(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
+    # |
+    # |  Protected Methods
+    # |
     # ----------------------------------------------------------------------
     @classmethod
     def _ExtractParserInfoImpl(
         cls,
-        match_lexer_info_type: Type[ParserInfo],
-        case_phrase_lexer_info_type: Type[ParserInfo],
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        match_parser_info_type: Type[ParserInfo],
+        case_phrase_parser_info_type: Type[ParserInfo],
+        node: AST.Node,
+    ) -> Callable[[], ParserInfo]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # Drill into the specific match style.
-            match_node = cast(Node, ExtractOr(cast(Node, nodes[1])))
+            # Drill into the specific match style
+            match_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[1])))
             assert match_node.Type is not None
 
-            if match_node.Type.Name == "K&R-like":
+            if match_node.Type.Name == "K&R-Like":
                 num_match_nodes = 3
                 match_nodes_index = 1
-            elif match_node.Type.Name == "Allman-like":
+            elif match_node.Type.Name == "Allman-Like":
                 num_match_nodes = 6
                 match_nodes_index = 3
             else:
-                assert False, match_node.Type.Name
+                assert False, match_node.Type  # pragma: no cover
 
             match_nodes = ExtractSequence(match_node)
             assert len(match_nodes) == num_match_nodes
 
-            match_node = cast(Node, match_nodes[match_nodes_index])
+            match_node = cast(AST.Node, match_nodes[match_nodes_index])
 
             # Resume normal extraction
             nodes = ExtractSequence(match_node)
             assert len(nodes) == 9
 
-            # <expr>
-            expr_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
-            expr_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
             # Cases
-            cases_node = cast(Node, nodes[6])
-            cases_info: List[case_phrase_lexer_info_type] = []
+            cases_node = cast(AST.Node, nodes[6])
+            cases_info: List[case_phrase_parser_info_type] = []
 
-            for case_phrase_node in cast(List[Node], ExtractRepeat(cases_node)):
+            for case_phrase_node in cast(List[AST.Node], ExtractRepeat(cases_node)):
                 case_phrase_nodes = ExtractSequence(case_phrase_node)
                 assert len(case_phrase_nodes) == 4
 
                 # Case Items
-                case_items_node = cast(Node, ExtractOr(cast(Node, case_phrase_nodes[1])))
+                case_items_node = cast(AST.Node, ExtractOr(cast(AST.Node, case_phrase_nodes[1])))
 
                 assert case_items_node.Type is not None
                 if case_items_node.Type.Name == "Grouped":
-                    case_items_node = cast(Node, ExtractSequence(case_items_node)[2])
+                    case_items_node = cast(AST.Node, ExtractSequence(case_items_node)[2])
 
                 case_items_nodes = ExtractSequence(case_items_node)
                 assert len(case_items_nodes) == 3
 
-                case_items_info = []
+                case_items_info: List[ParserInfo] = []
 
                 for case_item_node in itertools.chain(
                     [case_items_nodes[0]],
                     [
                         ExtractSequence(delimited_node)[1]
                         for delimited_node in cast(
-                            List[Node],
-                            ExtractRepeat(cast(Node, case_items_nodes[1])),
+                            List[AST.Node],
+                            ExtractRepeat(cast(AST.Node, case_items_nodes[1])),
                         )
                     ],
                 ):
-                    case_items_info.append(GetParserInfo(ExtractDynamic(cast(Node, case_item_node))))
+                    case_items_info.append(
+                        cast(
+                            ParserInfo,
+                            GetParserInfo(ExtractDynamic(cast(AST.Node, case_item_node))),
+                        ),
+                    )
 
                 assert case_items_info
 
-                # <expr>
-                case_phrase_expr_node = cast(Node, case_phrase_nodes[3])
-                case_phrase_expr_info = cls._ExtractCaseExpression(case_phrase_expr_node)
+                # <expression> (case phrase)
+                case_phrase_expression_node = cast(AST.Node, case_phrase_nodes[3])
+                case_phrase_expression_info = cls._ExtractCasePhraseExpression(case_phrase_expression_node)
 
                 cases_info.append(
-                    case_phrase_lexer_info_type(
-                        CreateParserRegions(case_phrase_node, case_items_node, case_phrase_expr_node),  # type: ignore
+                    case_phrase_parser_info_type(
+                        CreateParserRegions(case_phrase_node, case_items_node, case_phrase_expression_node),  # type: ignore
                         case_items_info,  # type: ignore
-                        case_phrase_expr_info,
+                        case_phrase_expression_info,
                     ),
                 )
 
             assert cases_info
 
             # Default
-            default_node = cast(Node, ExtractOptional(cast(Node, nodes[7])))
+            default_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
 
-            if default_node is not None:
-                default_node = cast(Node, ExtractSequence(default_node)[2])
-                default_info = cls._ExtractCaseExpression(default_node)
-
-            else:
+            if default_node is None:
                 default_info = None
+            else:
+                default_node = cast(AST.Node, ExtractSequence(default_node)[2])
+                default_info = cls._ExtractCasePhraseExpression(default_node)
 
-            SetParserInfo(
-                node,
-                match_lexer_info_type(
-                    CreateParserRegions(node, expr_node, cases_node, default_node),  # type: ignore
-                    expr_info,  # type: ignore
-                    cases_info,
-                    default_info,
-                ),
+            return match_parser_info_type(
+                CreateParserRegions(node, expression_node, cases_node, default_node),  # type: ignore
+                expression_info,  # type: ignore
+                cases_info,
+                default_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
+    # ----------------------------------------------------------------------
     @staticmethod
-    def _ExtractCaseExpression(
-        node: Node,
+    def _ExtractCasePhraseExpression(
+        node: AST.Node,
     ) -> ExpressionParserInfo:
-        node = cast(Node, ExtractOr(node))
+        node = cast(AST.Node, ExtractOr(node))
         assert node.Type is not None
 
         if node.Type.Name == "Multiple Lines":
             num_nodes = 5
             node_index = 2
-
         elif node.Type.Name == "Single Line":
             num_nodes = 2
             node_index = 0
-
         else:
-            assert False, node.Type
+            assert False, node.Type  # pragma: no cover
 
         nodes = ExtractSequence(node)
         assert len(nodes) == num_nodes
 
-        data_node = ExtractDynamic(cast(Node, nodes[node_index]))
-        return cast(ExpressionParserInfo, GetParserInfo(data_node))
+        info_node = ExtractDynamic(cast(AST.Node, nodes[node_index]))
+        return cast(ExpressionParserInfo, GetParserInfo(info_node))

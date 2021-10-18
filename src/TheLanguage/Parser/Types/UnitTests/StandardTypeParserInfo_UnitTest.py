@@ -3,7 +3,7 @@
 # |  StandardTypeParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 08:45:14
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,8 +17,6 @@
 
 import os
 
-import pytest
-
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -30,75 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..StandardTypeParserInfo import *
-    from ...Common.AutomatedTests import CreateRegion
 
 
 # ----------------------------------------------------------------------
-def test_DataNoModifier():
-    regions = {
-        "Self__": CreateRegion(1, 2, 300, 400),
-        "TypeName": CreateRegion(5, 6, 7, 8),
-        "Modifier": None,
-    }
-
-    info = StandardTypeParserInfo(
-        list(regions.values()),
-        "TheName",
-        None,
-    )
-
-    assert info.TypeName == "TheName"
-    assert info.Modifier is None
-    assert info.Regions == info.RegionsType(**regions)
-
-
-# ----------------------------------------------------------------------
-def test_DataWithModifier():
-    regions = {
-        "Self__": CreateRegion(1, 2, 300, 400),
-        "TypeName": CreateRegion(5, 6, 7, 8),
-        "Modifier": CreateRegion(9, 10, 11, 12),
-    }
-
-    for modifier in [
-        TypeModifier.var,
-        TypeModifier.val,
-        TypeModifier.view,
-    ]:
-        info = StandardTypeParserInfo(
-            list(regions.values()),
-            "TheName",
-            modifier,
-        )
-
-        assert info.TypeName == "TheName"
-        assert info.Modifier == modifier
-        assert info.Regions == info.RegionsType(**regions)
-
-
-# ----------------------------------------------------------------------
-def test_InfoWithInvalidModifier():
-    regions = {
-        "Self__": CreateRegion(1, 2, 300, 400),
-        "TypeName": CreateRegion(5, 6, 7, 8),
-        "Modifier": CreateRegion(9, 10, 11, 12),
-    }
-
-    for modifier in [
-        TypeModifier.mutable,
-        TypeModifier.immutable,
-        TypeModifier.isolated,
-        TypeModifier.shared,
-        TypeModifier.ref,
-    ]:
-        with pytest.raises(InvalidModifierError) as ex:
-            StandardTypeParserInfo(
-                list(regions.values()),
-                "TheName",
-                modifier,
-            )
-
-        ex = ex.value
-
-        assert str(ex) == "'{}' cannot be applied to standard types in this context; supported values are 'var', 'val', 'view'.".format(modifier.name)
-        assert ex.Region == regions["Modifier"]
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
+def test_Placeholder():
+    assert True

@@ -3,7 +3,7 @@
 # |  BinaryExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 12:42:15
+# |      2021-09-30 18:44:24
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains BinaryExpressionParserData, BinaryExpressionParserRegions, and OperatorType objects"""
+"""Contains the BinaryExpressionParserInfo object"""
 
 import os
 

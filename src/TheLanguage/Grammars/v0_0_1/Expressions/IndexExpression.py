@@ -3,7 +3,7 @@
 # |  IndexExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-26 16:00:37
+# |      2021-10-07 11:40:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,23 +30,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
+    from ..Common import Tokens as CommonTokens
+
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractSequence,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
     from ....Parser.Expressions.IndexExpressionParserInfo import (
         ExpressionParserInfo,
         IndexExpressionParserInfo,
     )
-
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractSequence,
-        Node,
-    )
-
 
 
 # ----------------------------------------------------------------------
@@ -54,11 +53,12 @@ class IndexExpression(GrammarPhrase):
     """\
     Applies an index operation to an expression.
 
-    <expr> '[' <expr> ']'
+    <expression> '[' <expression> ']'
 
     Examples:
         foo[1]
         bar[(1, 2)]
+        baz[a][b][c]
     """
 
     PHRASE_NAME                             = "Index Expression"
@@ -66,20 +66,22 @@ class IndexExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(IndexExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
 
                     # '['
                     "[",
+                    CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
 
                     # ']'
+                    CommonTokens.PopIgnoreWhitespaceControl,
                     "]",
                 ],
             ),
@@ -89,31 +91,32 @@ class IndexExpression(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 4
+            assert len(nodes) == 6
 
-            # <expr>
-            prefix_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
-            prefix_info = cast(ExpressionParserInfo, GetParserInfo(prefix_node))
+            # <expression> (prefix)
+            expression_node = ExtractDynamic(cast(AST.Node, nodes[0]))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            # <expr>
-            index_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
+            # <expression> (index)
+            index_node = ExtractDynamic(cast(AST.Node, nodes[3]))
             index_info = cast(ExpressionParserInfo, GetParserInfo(index_node))
 
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                IndexExpressionParserInfo(
-                    CreateParserRegions(node, prefix_node, index_node),  # type: ignore
-                    prefix_info,
-                    index_info,
-                ),
+            return IndexExpressionParserInfo(
+                CreateParserRegions(node, expression_node, index_node),  # type: ignore
+                expression_info,
+                index_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

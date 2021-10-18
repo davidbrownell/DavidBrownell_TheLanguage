@@ -3,7 +3,7 @@
 # |  IndexExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-13 10:49:40
+# |      2021-10-07 11:39:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IndexExpressionParserData, IndexExpressionParserInfo, and IndexExpressionParserRegions objects"""
+"""Contains the IndexExpressionParserInfo object"""
 
 import os
 
@@ -35,5 +35,5 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class IndexExpressionParserInfo(ExpressionParserInfo):
-    PrefixExpression: ExpressionParserInfo
-    IndexExpression: ExpressionParserInfo
+    Expression: ExpressionParserInfo
+    Index: ExpressionParserInfo

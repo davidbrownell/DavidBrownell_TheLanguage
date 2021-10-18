@@ -3,7 +3,7 @@
 # |  ScopedRefStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-18 15:45:03
+# |      2021-10-14 12:56:58
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import cast, List, Optional
+from typing import Callable, cast, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,15 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Common import StatementsPhraseItem
     from ..Common import Tokens as CommonTokens
-    from ..Common import TypeModifier
+    from ..Common.TypeModifier import TypeModifier
 
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
-
-    from ....Parser.ParserInfo import SetParserInfo
-    from ....Parser.Statements.ScopedRefStatementParserInfo import (
-        ScopedRefStatementParserInfo,
-        VariableNameParserInfo,
-    )
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
@@ -49,9 +43,17 @@ with InitRelativeImports():
         ExtractRepeat,
         ExtractSequence,
         ExtractToken,
-        Leaf,
-        Node,
+        OptionalPhraseItem,
         PhraseItem,
+        ZeroOrMorePhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Statements.ScopedRefStatementParserInfo import (
+        ScopedRefStatementParserInfo,
+        StatementParserInfo,
+        VariableNameParserInfo,
     )
 
 
@@ -82,33 +84,31 @@ class ScopedRefStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        refs_expression = PhraseItem(
+        refs_expression = PhraseItem.Create(
             name="Refs",
             item=[
                 # <ref_expression>
-                CommonTokens.GenericName,
+                CommonTokens.VariableName,
 
                 # (',' <ref_expression>)*
-                PhraseItem(
+                ZeroOrMorePhraseItem.Create(
                     name="Comma and Ref",
                     item=[
                         ",",
-                        CommonTokens.GenericName,
+                        CommonTokens.VariableName,
                     ],
-                    arity="*",
                 ),
 
                 # ','?
-                PhraseItem(
+                OptionalPhraseItem.Create(
                     name="Trailing Comma",
                     item=",",
-                    arity="?",
                 ),
             ],
         )
 
         super(ScopedRefStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -116,10 +116,10 @@ class ScopedRefStatement(GrammarPhrase):
                     "with",
 
                     # Refs
-                    PhraseItem(
+                    PhraseItem.Create(
                         item=(
                             # '(' <refs_expression> ')'
-                            PhraseItem(
+                            PhraseItem.Create(
                                 name="Grouped",
                                 item=[
                                     # '('
@@ -140,14 +140,14 @@ class ScopedRefStatement(GrammarPhrase):
                         ),
 
                         # Use the order to disambiguate between group clauses and tuples.
-                        ordered_by_priority=True,
+                        ambiguities_resolved_by_order=True,
                     ),
 
                     # 'as'
                     "as",
 
                     # 'ref'
-                    TypeModifier.Enum.ref.name,
+                    TypeModifier.ref.name,
 
                     # ':' <statement>+
                     StatementsPhraseItem.Create(),
@@ -159,60 +159,62 @@ class ScopedRefStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
-            # Refs
-            refs_node = cast(Node, ExtractOr(cast(Node, nodes[1])))
-
+            # refs
+            refs_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[1])))
             assert refs_node.Type is not None
+
             if refs_node.Type.Name == "Grouped":
                 refs_nodes = ExtractSequence(refs_node)
                 assert len(refs_nodes) == 5
 
-                refs_node = cast(Node, refs_nodes[2])
+                refs_node = cast(AST.Node, refs_nodes[2])
 
             refs_nodes = ExtractSequence(refs_node)
             assert len(refs_nodes) == 3
 
-            variable_infos: List[VariableNameParserInfo] = []
+            ref_infos: List[VariableNameParserInfo] = []
 
-            for variable_node in itertools.chain(
+            for ref_node in itertools.chain(
                 [refs_nodes[0]],
                 [
                     ExtractSequence(delimited_node)[1]
-                    for delimited_node in cast(List[Node], ExtractRepeat(cast(Node, refs_nodes[1])))
+                    for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, refs_nodes[1])))
                 ],
             ):
-                variable_leaf = cast(Leaf, variable_node)
+                variable_leaf = cast(AST.Leaf, ref_node)
                 variable_info = cast(str, ExtractToken(variable_leaf))
 
-                variable_infos.append(
+                ref_infos.append(
                     VariableNameParserInfo(
-                        CreateParserRegions(variable_leaf, variable_leaf),  # type: ignore
+                        CreateParserRegions(ref_node, variable_leaf),  # type: ignore
                         variable_info,
                     ),
                 )
 
-            assert variable_infos
+            assert ref_infos
 
-            # Statements
-            statements_node = cast(Node, nodes[4])
+            # <statement>+
+            statements_node = cast(AST.Node, nodes[4])
             statements_info = StatementsPhraseItem.ExtractParserInfo(statements_node)
 
-            SetParserInfo(
-                node,
-                ScopedRefStatementParserInfo(
-                    CreateParserRegions(node, refs_node, statements_node),  # type: ignore
-                    variable_infos,
-                    statements_info,
-                ),
+            return ScopedRefStatementParserInfo(
+                CreateParserRegions(node, refs_node, statements_node),  # type: ignore
+                ref_infos,
+                statements_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

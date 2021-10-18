@@ -3,7 +3,7 @@
 # |  GeneratorExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-18 19:18:32
+# |      2021-10-04 10:23:33
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for GeneratorExpression.py"""
+"""Automated tests for GeneratorExpression.py"""
 
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,22 +28,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..GeneratorExpression import *
-    from ...Common.AutomatedTests import ExecuteEx
 
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    result, node = ExecuteEx(
+    CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
             a = value1 for value1 in OneToTen()
-
             b = AddOne(value2) for value2 in OneToTen()
-
             c = AddOne(value3) for value3 in OneToTen() if value3 % two
             """,
         ),
-    )
-
-    CompareResultsFromFile(result)
+    )))

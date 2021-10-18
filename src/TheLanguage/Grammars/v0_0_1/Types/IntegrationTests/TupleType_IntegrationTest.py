@@ -3,7 +3,7 @@
 # |  TupleType_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 22:30:25
+# |      2021-10-12 11:22:09
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,36 +28,32 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..TupleType import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_Single():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                (Int var,) Func():
-                    pass
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            (Int var,) Func():
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_Multiple():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                (
-                    Int var,
-                    Char view
-                ) Func():
-                    pass
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            (
+                Int var,
+                Char view
+            ) Func():
+                pass
+            """,
         ),
-    )
+    )))

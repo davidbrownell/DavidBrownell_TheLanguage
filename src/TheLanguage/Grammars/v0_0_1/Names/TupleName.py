@@ -3,7 +3,7 @@
 # |  TupleName.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 22:06:03
+# |      2021-10-12 10:57:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleHeader object"""
+"""Contains the TupleName object"""
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, List, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,23 +31,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.Impl.TupleBase import TupleBase
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-    from ....Parser.Names.TupleNameParserInfo import NameParserInfo, TupleNameParserInfo
+    from ...GrammarInfo import AST, DynamicPhrasesType, ParserInfo
 
-    from ....Lexer.Phrases.DSL import Node
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Names.TupleNameParserInfo import (
+        NameParserInfo,
+        TupleNameParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
 class TupleName(TupleBase):
     """\
-    Creates a tuple that can be used as a name.
+    A tuple of names.
 
-    '(' <name> ',' ')'
-    '(' <name> (',' <name>)+ ','? ')'
+    '(' (<name> ',')+ ')'
 
-    Example:
+    Examples:
         (a, b, (c, d)) = value
     """
 
@@ -55,26 +57,32 @@ class TupleName(TupleBase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleName, self).__init__(GrammarPhrase.Type.Name, self.PHRASE_NAME)
+        super(TupleName, self).__init__(DynamicPhrasesType.Names, self.PHRASE_NAME)
 
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
     def ExtractParserInfo(
         cls,
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                TupleNameParserInfo(
-                    CreateParserRegions(node, node),  # type: ignore
-                    [cast(NameParserInfo, GetParserInfo(child)) for child in cls.EnumNodeValues(node)],
-                ),
+        def Impl():
+            names: List[NameParserInfo] = []
+
+            for name_node in cast(List[AST.Node], cls._EnumNodes(node)):
+                names.append(cast(NameParserInfo, GetParserInfo(name_node)))
+
+            return TupleNameParserInfo(
+                CreateParserRegions(node),  # type: ignore
+                names,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

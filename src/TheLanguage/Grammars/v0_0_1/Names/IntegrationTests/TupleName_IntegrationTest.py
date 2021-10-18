@@ -3,7 +3,7 @@
 # |  TupleName_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 22:12:21
+# |      2021-10-12 11:05:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for TupleName"""
+"""Automated tests for TupleName.py"""
 
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,35 +28,48 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..TupleName import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_Single():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                (a,) = value1
-                (b,) = value2
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            (a, ) = value1
 
-                ( # Comment 1
-                  b # Comment 2
-                ,) = value3
-                """,
-            ),
+            ( # Comment 1
+              b # Comment 2
+            ,) = value3
+            """,
         ),
-    )
+    )))
+
 
 # ----------------------------------------------------------------------
 def test_Multiple():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                (a, (b, c), d,) = value
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            (a, b, c) = value1
+
+            (
+                d,
+                e,
+                    f,
+            ) = value2
+            """,
         ),
-    )
+    )))
+
+
+# ----------------------------------------------------------------------
+def test_Nested():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            (a, (b, c), (d, e, f,)) = value1
+            """,
+        ),
+    )))

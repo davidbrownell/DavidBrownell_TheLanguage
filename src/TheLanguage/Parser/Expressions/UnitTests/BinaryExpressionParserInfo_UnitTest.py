@@ -3,7 +3,7 @@
 # |  BinaryExpressionParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 12:50:23
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |

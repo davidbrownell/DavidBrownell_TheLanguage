@@ -1,7 +1,7 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -25,8 +25,8 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
             Whitespace: None
           Phrase: "Newline+"
       IsComplete: True
-    Phrase: "Sequence: [Upper Token, Newline+]"
-  Phrase: "Or: (Sequence: [Word Token, Newline+], Sequence: [Number Token, Newline+], Sequence: [Upper Token, Newline+])"
+    Phrase: "[Upper Token, Newline+]"
+  Phrase: "([Word Token, Newline+] | [Number Token, Newline+] | [Upper Token, Newline+])"
 IterBegin: "[3, 1] (9)"
 IterEnd: "[4, 1] (15)"
 Success: True

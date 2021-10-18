@@ -3,7 +3,7 @@
 # |  TokenPhrase_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-06-27 15:53:00
+# |      2021-09-24 12:16:23
 # |
 # ----------------------------------------------------------------------
 # |
@@ -327,8 +327,8 @@ class TestWords(object):
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
     async def test_IndentSimple(self, parse_mock):
-        parse_mock.OnIndentAsync = CoroutineMock()
-        parse_mock.OnDedentAsync = CoroutineMock()
+        parse_mock.OnPushScopeAsync = CoroutineMock()
+        parse_mock.OnPopScopeAsync = CoroutineMock()
 
         iter = CreateIterator(
             textwrap.dedent(
@@ -458,7 +458,7 @@ class TestWords(object):
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
             0) StartPhrase, "Indent"
-            1) OnIndentAsync, 4, 8
+            1) OnPushScopeAsync, 4, 8
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -594,7 +594,7 @@ class TestWords(object):
         assert MethodCallsToString(parse_mock) == textwrap.dedent(
             """\
             0) StartPhrase, "Dedent"
-            1) OnDedentAsync, 12, 12
+            1) OnPopScopeAsync, 12, 12
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -1087,7 +1087,7 @@ class TestWords(object):
                 Phrase: "Newline+"
             5) EndPhrase, "Newline+" [True]
             6) StartPhrase, "Indent"
-            7) OnIndentAsync, 4, 8
+            7) OnPushScopeAsync, 4, 8
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -1129,7 +1129,7 @@ class TestWords(object):
                 Phrase: "Newline+"
             14) EndPhrase, "Newline+" [True]
             15) StartPhrase, "Indent"
-            16) OnIndentAsync, 12, 20
+            16) OnPushScopeAsync, 12, 20
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -1198,7 +1198,7 @@ class TestWords(object):
                 Phrase: "Newline+"
             29) EndPhrase, "Newline+" [True]
             30) StartPhrase, "Dedent"
-            31) OnDedentAsync, 39, 43
+            31) OnPopScopeAsync, 39, 43
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -1238,7 +1238,7 @@ class TestWords(object):
                 Phrase: "Newline+"
             38) EndPhrase, "Newline+" [True]
             39) StartPhrase, "Indent"
-            40) OnIndentAsync, 48, 60
+            40) OnPushScopeAsync, 48, 60
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -1280,7 +1280,7 @@ class TestWords(object):
                 Phrase: "Newline+"
             47) EndPhrase, "Newline+" [True]
             48) StartPhrase, "Dedent"
-            49) OnDedentAsync, 64, 68
+            49) OnPopScopeAsync, 64, 68
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -1320,7 +1320,7 @@ class TestWords(object):
                 Phrase: "Newline+"
             56) EndPhrase, "Newline+" [True]
             57) StartPhrase, "Indent"
-            58) OnIndentAsync, 74, 82
+            58) OnPushScopeAsync, 74, 82
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -1362,7 +1362,7 @@ class TestWords(object):
                 Phrase: "Newline+"
             65) EndPhrase, "Newline+" [True]
             66) StartPhrase, "Dedent"
-            67) OnDedentAsync, 88, 88
+            67) OnPopScopeAsync, 88, 88
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
@@ -1375,7 +1375,7 @@ class TestWords(object):
                 Phrase: "Dedent"
             68) EndPhrase, "Dedent" [True]
             69) StartPhrase, "Dedent"
-            70) OnDedentAsync, 88, 88
+            70) OnPopScopeAsync, 88, 88
                 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False

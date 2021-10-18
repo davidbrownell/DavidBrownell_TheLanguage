@@ -3,7 +3,7 @@
 # |  Tokens.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 15:51:03
+# |      2021-09-29 10:25:55
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Tokens used across multiple phrases"""
+"""Tokens used in the creation of multiple phrases"""
 
 import os
 import re
@@ -67,6 +67,12 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 # We should not generically match these keywords:
 #
 DoNotMatchKeywords                          = [
+    # ../Statements/BreakStatement.py
+    "break",
+
+    # ../Statements/ContinueStatement.py
+    "continue",
+
     # ../Statements/DeleteStatement.py
     "del",
 
@@ -77,7 +83,7 @@ DoNotMatchKeywords                          = [
     "return",
 
     # ../Statements/ScopedRefStatement.py
-    "as",
+    "as", # TODO: Is this necessary?
 
     # ../Statements/YieldStatement.py
     "yield",
@@ -95,34 +101,59 @@ DoNotMatchKeywords                          = [
 # This token is intended to be a generic token that will match every name used in the grammar so that
 # we don't see complicated syntax errors when incorrect naming conventions are used. Grammars leveraging
 # this token should perform more specific regex matching during their custom validation process.
-def _CreateGenericName():
+def _CreateVariableName():
     regex_suffixes = []
 
     for do_not_match_keyword in DoNotMatchKeywords:
         regex_suffixes.append(r"(?<!{})".format(re.escape(do_not_match_keyword)))
 
-    regex = r"(?P<value>_?[A-Za-z0-9_]+(?:\.\.\.)?\??)(?!<__)\b{}".format("".join(regex_suffixes))
+    regex = r"(?P<value>_?[a-z][A-Za-z0-9_]*)(?<!__)\b{}".format("".join(regex_suffixes))
 
-    return RegexToken("<generic_name>", re.compile(regex))
+    return RegexToken("<variable_name>", re.compile(regex))
 
-GenericName                                 = _CreateGenericName()
 
-del _CreateGenericName
+VariableName                                = _CreateVariableName()
 
-TypeName                                    = RegexToken(
-    "<type_name>",
-    re.compile(r"(?P<value>_?[A-Z][A-Za-z0-9_]+(?!<__))\b"),
+del _CreateVariableName
+
+
+# ----------------------------------------------------------------------
+ArgumentName                                = RegexToken(
+    "<argument_name>",
+    re.compile(r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b"),
 )
 
-MethodName                                  = RegexToken(
-    "<method_name>",
+
+AttributeName                               = RegexToken(
+    "<attribute_name>",
+    re.compile(r"(?P<value>[A-Z][A-Za-z0-9_]+(?<!__))\b"),
+)
+
+
+FuncName                                    = RegexToken(
+    "<func_name>",
     re.compile(
         textwrap.dedent(
             r"""(?P<value>(?#
-                Operator Method             )(?:__[A-Z][A-Za-z0-9_]+(?:\.\.\.)?\??__\b)(?#
-                    - or -                  )|(?#
-                Standard Method             )(?:_?[A-Z][A-Za-z0-9_]+(?:\.\.\.)?\??(?!<__)\b)(?#
+                Underscores                             )_{0,2}(?#
+                Func Name                               )(?P<alphanum>[A-Z][A-Za-z0-9_]+)(?<!_)(?#
+                generator suffix                        )(?P<generator_suffix>\.\.\.)?(?#
+                exceptional suffix                      )(?P<exceptional_suffix>\?)?(?#
+                Underscores                             )_{0,2}(?#
+                End of Word                             )(?#
             ))""",
         ),
     ),
+)
+
+
+ParameterName                               = RegexToken(
+    "<parameter_name>",
+    re.compile(r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b"),
+)
+
+
+TypeName                                    = RegexToken(
+    "<type_name>",
+    re.compile(r"(?P<value>_?[A-Z][A-Za-z0-9_]+(?<!__))\b"),
 )

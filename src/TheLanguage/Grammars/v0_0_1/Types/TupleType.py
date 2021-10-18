@@ -3,7 +3,7 @@
 # |  TupleType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 22:27:10
+# |      2021-10-12 11:17:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, List, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,54 +31,59 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common.Impl.TupleBase import TupleBase
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
+    from ...GrammarInfo import AST, DynamicPhrasesType, ParserInfo
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
     from ....Parser.Types.TupleTypeParserInfo import (
         TupleTypeParserInfo,
         TypeParserInfo,
     )
 
-    from ....Lexer.Phrases.DSL import Node
-
 
 # ----------------------------------------------------------------------
 class TupleType(TupleBase):
-    """\
-    Creates a tuple type that can be used where types are used.
+    """
+    A tuple of types.
 
-    '(' <type> ',' ')'
-    '(' <type> (',' <type>)+ ','? ')'
+    '(' <type> ',')+ ')'
 
-    Example:
+    Examples:
         (Int, Char) Func():
-            <statement>+
+            pass
     """
 
     PHRASE_NAME                             = "Tuple Type"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleType, self).__init__(GrammarPhrase.Type.Type, self.PHRASE_NAME)
+        super(TupleType, self).__init__(DynamicPhrasesType.Types, self.PHRASE_NAME)
 
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
     def ExtractParserInfo(
         cls,
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                TupleTypeParserInfo(
-                    CreateParserRegions(node, node),  # type: ignore
-                    [cast(TypeParserInfo, GetParserInfo(child)) for child in cls.EnumNodeValues(node)],
-                ),
+        def Impl():
+            types: List[TypeParserInfo] = []
+
+            for type_node in cast(List[AST.Node], cls._EnumNodes(node)):
+                types.append(cast(TypeParserInfo, GetParserInfo(type_node)))
+
+            return TupleTypeParserInfo(
+                CreateParserRegions(node),  # type: ignore
+                types,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

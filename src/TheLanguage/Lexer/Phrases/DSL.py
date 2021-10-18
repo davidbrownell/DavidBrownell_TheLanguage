@@ -3,7 +3,7 @@
 # |  DSL.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-09 13:35:18
+# |      2021-09-23 10:45:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality that provides a simple Domain Specific Language (DLS) for creating phrase hierarchies"""
+"""Functionality that creates a Domain Specific Language (DSL) for creating complicated phrases"""
 
 import os
 import re
 import textwrap
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import Callable, cast, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -34,7 +34,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .DynamicPhrase import DynamicPhrase
-    from .LeftRecursiveSequencePhraseWrapper import LeftRecursiveSequencePhraseWrapper
     from .OrPhrase import OrPhrase
     from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
     from .RepeatPhrase import RepeatPhrase
@@ -47,8 +46,12 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-CommentToken                                = RegexToken(
-    "Comment",
+# |
+# |  Public Types
+# |
+# ----------------------------------------------------------------------
+DefaultCommentToken                         = RegexToken(
+    "<comment>",
     re.compile(
         textwrap.dedent(
             r"""(?P<value>(?#
@@ -62,69 +65,200 @@ CommentToken                                = RegexToken(
 
 
 # ----------------------------------------------------------------------
+PhraseItemItemType                          = Union[
+    # Arity of 1
+    "PhraseItem",
+    Phrase,
+    Token,                                  # Converts to a TokenPhrase
+    str,                                    # Converts to a TokenPhrase (using a very simple RegexToken)
+    DynamicPhrasesType,                     # Converts to a DynamicPhrase
+    List["PhraseItemItemType"],             # Converts to a SequencePhrase
+    Tuple["PhraseItemItemType", ...],       # Converts to an OrPhrase
+    "OrPhraseItem",                         # Converts to an OrPhrase
+    None,                                   # Converts to a RecursivePlaceholderPhrase
+
+    "CustomArityPhraseItem",                # Arity of (obj.Min, obj.Max)
+    "OptionalPhraseItem",                   # Arity of (0, 1)
+    "ZeroOrMorePhraseItem",                 # Arity of (0, None)
+    "OneOrMorePhraseItem",                  # Arity of (1, None)
+]
+
+# ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class PhraseItem(object):
     # ----------------------------------------------------------------------
-    # |  Public Types
-    ItemType                                = Union[
-        "PhraseItem",
-        Phrase,
-        Token,                              # Converts to a TokenPhrase
-        str,                                # Converts to a TokenPhrase (using a very simple RegexToken)
-        DynamicPhrasesType,                 # Converts to a DynamicPhrase
-        List["ItemType"],                   # Converts to a SequencePhrase
-        Tuple["ItemType", ...],             # Converts to an OrPhrase
-        None,                               # Converts to a RecursivePlaceholderPhrase
-    ]
+    Item: PhraseItemItemType
+    Name: Optional[str]
+
+    # List of phrase or phrase names that should never be matched by this phrase item
+    ExcludePhrases: Optional[List[Union[str, Phrase]]]  = field(default=None)
+
+    # Func that can be called to determine if a data result is valid in a specific context
+    IsValidDataFunc: Optional[Callable[[Phrase.StandardLexResultData], bool]]  = field(default=None)
+
+    # When creating an OrPhrase, any ambiguities are resolved using the order in which they appear
+    AmbiguitiesResolvedByOrder: Optional[bool]                              = field(default=None)
 
     # ----------------------------------------------------------------------
-    # |  Public Data
-    item: ItemType
-    name: Optional[str]                     = field(default=None)
-    arity: Union[
-        str,                                # Valid values are "?", "*", "+"
-        Tuple[int, Optional[int]],
-    ]                                       = field(default_factory=lambda: (1, 1))
-    exclude: List[Union[str, Phrase]]       = field(default_factory=list)
-    ordered_by_priority: Optional[bool]     = field(default=None)
-
-    # ----------------------------------------------------------------------
-    # |  Public Methods
-    def __post_init__(self):
-        if isinstance(self.arity, str):
-            if self.arity == "?":
-                value = (0, 1)
-            elif self.arity == "*":
-                value = (0, None)
-            elif self.arity == "+":
-                value = (1, None)
-            else:
-                assert False, self.arity
-
-            object.__setattr__(self, "arity", value)
+    # This method is here to provide an interface similar to CreatePhrase (in that arguments begin
+    # with lowercase) while still creating an object that follows the upper-case name convention
+    # for immutable data.
+    @staticmethod
+    def Create(
+        item: PhraseItemItemType,
+        name: Optional[str]=None,
+        exclude_phrases: Optional[List[Union[str, Phrase]]]=None,
+        is_valid_data_func: Optional[Callable[[Phrase.StandardLexResultData], bool]]=None,
+        ambiguities_resolved_by_order: Optional[bool]=None,
+    ) -> "PhraseItem":
+        return PhraseItem(
+            item,
+            name,
+            exclude_phrases,
+            is_valid_data_func,
+            ambiguities_resolved_by_order,
+        )
 
 
 # ----------------------------------------------------------------------
-def CreatePhrase(
-    item: PhraseItem.ItemType,
-    name: str=None,
-    comment_token: RegexToken=None,
-) -> Phrase:
+@dataclass(frozen=True)
+class OrPhraseItem(object):
+    Items: Optional[List[PhraseItemItemType]]           = field(default=None)
+    Name: Optional[str]                                 = field(default=None)
 
-    comment_token = comment_token or CommentToken
+    # ----------------------------------------------------------------------
+    def __or__(
+        self,
+        other: PhraseItemItemType,
+    ) -> "OrPhraseItem":
+        items = self.Items or []
+
+        if isinstance(other, OrPhraseItem):
+            assert other.Items
+            items += other.Items
+        else:
+            items.append(other)
+
+        return OrPhraseItem(items)
+
+    # ----------------------------------------------------------------------
+    # This method is here to provide an interface similar to CreatePhrase (in that arguments begin
+    # with lowercase) while still creating an object that follows the upper-case name convention
+    # for immutable data.
+    @staticmethod
+    def Create(
+        items: Optional[List[PhraseItemItemType]]=None,
+        name: Optional[str]=None,
+    ) -> "OrPhraseItem":
+        return OrPhraseItem(items, name)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class CustomArityPhraseItem(object):
+    Item: PhraseItemItemType
+    Min: int
+    Max: Optional[int]
+    Name: Optional[str]                     = field(default=None)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.Min >= 0
+        assert self.Max is None or self.Max >= self.Min
+
+    # ----------------------------------------------------------------------
+    # This method is here to provide an interface similar to CreatePhrase (in that arguments begin
+    # with lowercase) while still creating an object that follows the upper-case name convention
+    # for immutable data.
+    @staticmethod
+    def Create(
+        item: PhraseItemItemType,
+        min: int,
+        max: Optional[int],
+        name: Optional[str]=None,
+    ) -> "CustomArityPhraseItem":
+        return CustomArityPhraseItem(item, min, max, name)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class OptionalPhraseItem(object):
+    Item: PhraseItemItemType
+    Name: Optional[str]                     = field(default=None)
+
+    # ----------------------------------------------------------------------
+    # This method is here to provide an interface similar to CreatePhrase (in that arguments begin
+    # with lowercase) while still creating an object that follows the upper-case name convention
+    # for immutable data.
+    @staticmethod
+    def Create(
+        item: PhraseItemItemType,
+        name: Optional[str]=None,
+    ) -> "OptionalPhraseItem":
+        return OptionalPhraseItem(item, name)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class ZeroOrMorePhraseItem(object):
+    Item: PhraseItemItemType
+    Name: Optional[str]                     = field(default=None)
+
+    # ----------------------------------------------------------------------
+    # This method is here to provide an interface similar to CreatePhrase (in that arguments begin
+    # with lowercase) while still creating an object that follows the upper-case name convention
+    # for immutable data.
+    @staticmethod
+    def Create(
+        item: PhraseItemItemType,
+        name: Optional[str]=None,
+    ) -> "ZeroOrMorePhraseItem":
+        return ZeroOrMorePhraseItem(item, name)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class OneOrMorePhraseItem(object):
+    Item: PhraseItemItemType
+    Name: Optional[str]                     = field(default=None)
+
+    # ----------------------------------------------------------------------
+    # This method is here to provide an interface similar to CreatePhrase (in that arguments begin
+    # with lowercase) while still creating an object that follows the upper-case name convention
+    # for immutable data.
+    @staticmethod
+    def Create(
+        item: PhraseItemItemType,
+        name: Optional[str]=None,
+    ) -> "OneOrMorePhraseItem":
+        return OneOrMorePhraseItem(item, name)
+
+
+# ----------------------------------------------------------------------
+# |
+# |  Public Functions
+# |
+# ----------------------------------------------------------------------
+def CreatePhrase(
+    item: PhraseItemItemType,
+    name: Optional[str]=None,
+    comment_token: Optional[RegexToken]=None,
+) -> Phrase:
+    if comment_token is None:
+        comment_token = DefaultCommentToken
 
     if name is not None:
         assert item is not None
         assert not isinstance(item, (PhraseItem, Phrase)), item
 
-        item = PhraseItem(
+        item = PhraseItem.Create(
             item,
             name=name,
         )
 
     phrase = _PopulateItem(comment_token, item)
 
-    phrase.PopulateRecursive()
+    phrase.PopulateRecursive(None, phrase)
 
     return phrase
 
@@ -132,7 +266,9 @@ def CreatePhrase(
 # ----------------------------------------------------------------------
 def ExtractToken(
     leaf: Leaf,
+    *,
     use_match=False,
+    group_dict_name: Optional[str]=None,
 ) -> Optional[str]:
     assert isinstance(leaf, Leaf), leaf
 
@@ -140,6 +276,9 @@ def ExtractToken(
         return None
 
     if isinstance(leaf.Value, RegexToken.MatchResult):
+        if group_dict_name is not None:
+            return leaf.Value.Match.group(group_dict_name)
+
         groups_dict = leaf.Value.Match.groupdict()
 
         if len(groups_dict) == 1:
@@ -152,26 +291,48 @@ def ExtractToken(
 
 
 # ----------------------------------------------------------------------
+def ExtractTokenSpan(
+    leaf: Leaf,
+    match_group_name: str,
+) -> Optional[Tuple[Phrase.NormalizedIterator, Phrase.NormalizedIterator]]:
+    """\
+    Returns the iterators associated with the start and end of a group within a match (or None if the
+    group didn't match).
+    """
+
+    assert isinstance(leaf.Value, RegexToken.MatchResult)
+
+    start = leaf.Value.Match.start(match_group_name)
+    end = leaf.Value.Match.end(match_group_name)
+
+    if start == end:
+        return None
+
+    assert start >= leaf.IterBegin.Offset
+    assert end >= leaf.IterBegin.Offset
+    assert start < end, (start, end)
+
+    start -= leaf.IterBegin.Offset
+    end -= leaf.IterBegin.Offset
+
+    begin_iter = leaf.IterBegin.Clone()
+    begin_iter.Advance(start)
+
+    end_iter = leaf.IterBegin.Clone()
+    end_iter.Advance(end)
+
+    return begin_iter, end_iter
+
+
+# ----------------------------------------------------------------------
 def ExtractDynamic(
     node: Node,
 ) -> Union[Leaf, Node]:
-    # Drill into the dynamic node
-    if isinstance(node.Type, DynamicPhrase):
-        assert len(node.Children) == 1
-        node = cast(Node, node.Children[0])
+    assert isinstance(node.Type, DynamicPhrase), node.Type
+    assert len(node.Children) == 1
+    node = cast(Node, node.Children[0])
 
-        return ExtractOr(node)
-
-    # Handle the left-recursive scenario
-    if (
-        node.Parent is not None
-        and node == getattr(node.Parent, "Children", [None])[0]
-        and isinstance(node.Type, SequencePhrase)
-        and isinstance(node.Type.Phrases[0], DynamicPhrase)
-    ):
-        return node
-
-    assert False, node
+    return ExtractOr(node)
 
 
 # ----------------------------------------------------------------------
@@ -220,13 +381,14 @@ def ExtractOptional(
 def ExtractSequence(
     node: Node,
 ) -> List[Union[Leaf, Node, None]]:
-    assert isinstance(node.Type, SequencePhrase)
+    assert isinstance(node.Type, SequencePhrase), node.Type
     phrases = node.Type.Phrases
 
     results = []
     child_index = 0
 
-    while child_index != len(node.Children) or len(results) != len(phrases):
+    while len(results) != len(phrases) or child_index != len(node.Children):
+        # Get the phrase
         phrase = None
 
         if len(results) != len(phrases):
@@ -236,26 +398,29 @@ def ExtractSequence(
                 results.append(None)
                 continue
 
-        child = None
+        # Get the child node
+        child_node = None
 
         if child_index != len(node.Children):
-            child = node.Children[child_index]
+            child_node = node.Children[child_index]
             child_index += 1
 
-            if isinstance(child, Leaf) and child.IsIgnored:
+            if isinstance(child_node, Leaf) and child_node.IsIgnored:
                 continue
 
         else:
+            # If here, we have exhausted all of the children. This can only happen when we are
+            # looking at a RepeatPhrase that supported 0 matches.
             assert isinstance(phrase, RepeatPhrase), phrase
             assert phrase.MinMatches == 0, phrase.MinMatches
-            results.append(None)
 
+            results.append(None)
             continue
 
-        assert phrase
-        assert child
+        assert phrase is not None
+        assert child_node is not None
 
-        if isinstance(phrase, RepeatPhrase) and child.Type != phrase:
+        if isinstance(phrase, RepeatPhrase) and child_node.Type != phrase:
             assert phrase.MinMatches == 0, phrase.MinMatches
             results.append(None)
 
@@ -264,133 +429,177 @@ def ExtractSequence(
 
             continue
 
-        results.append(child)
+        results.append(child_node)
 
     assert len(results) == len(phrases), (len(results), len(phrases))
     return results
 
 
 # ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
+# |
+# |  Private Functions
+# |
 # ----------------------------------------------------------------------
 def _PopulateItem(
     comment_token: RegexToken,
-    item: PhraseItem.ItemType,
+    item: PhraseItemItemType,
 ) -> Phrase:
+    exclude_phrases = None
+    is_valid_data_func = None
+    ambiguities_resolved_by_order = None
 
-    if not isinstance(item, PhraseItem):
-        item = PhraseItem(item)
+    # Get a custom name
+    if isinstance(item, Phrase):
+        name = item.Name
+    elif isinstance(item, PhraseItem):
+        name = item.Name
+        exclude_phrases = item.ExcludePhrases
+        is_valid_data_func = item.IsValidDataFunc
+        ambiguities_resolved_by_order = item.AmbiguitiesResolvedByOrder
+        item = item.Item
+    else:
+        name = None
 
-    name = None
+    # Get a custom arity
+    if isinstance(
+        item,
+        (
+            CustomArityPhraseItem,
+            OptionalPhraseItem,
+            ZeroOrMorePhraseItem,
+            OneOrMorePhraseItem,
+        ),
+    ):
+        if isinstance(item, CustomArityPhraseItem):
+            arity = (item.Min, item.Max)
+        elif isinstance(item, OptionalPhraseItem):
+            arity = (0, 1)
+        elif isinstance(item, ZeroOrMorePhraseItem):
+            arity = (0, None)
+        elif isinstance(item, OneOrMorePhraseItem):
+            arity = (1, None)
+        else:
+            assert False, item  # pragma: no cover
 
-    assert not item.exclude or isinstance(item.item, (DynamicPhrasesType, DynamicPhrase)), item
+        if name is not None:
+            repeat_phrase_name = name
+            name = item.Name
+        else:
+            repeat_phrase_name = item.Name
 
-    # Phrase priorities should only be used for OrPhrases
-    assert item.ordered_by_priority is None or isinstance(item.item, (tuple, OrPhrase))
-
-    if isinstance(item.item, PhraseItem):
-        phrase = _PopulateItem(comment_token, item.item)
-        name = item.name
-
-    elif isinstance(item.item, Phrase):
-        phrase = item.item
-        name = item.name
+        item = item.Item
 
     else:
-        if isinstance(item.item, Token):
-            phrase = TokenPhrase(
-                item.item,
-                name=item.name,
-            )
+        arity = None
+        repeat_phrase_name = None
 
-        elif isinstance(item.item, str):
-            phrase = TokenPhrase(
-                RegexToken(
-                    item.name or "'{}'".format(item.item),
-                    re.compile(r"{}{}".format(re.escape(item.item), "\\b" if item.item.isalnum() else "")),
-                ),
-            )
+    # We can have a PhraseItem that wraps (for example) OptionalPhraseItem or
+    # an OptionalPhaseItem that wraps a PhraseItem. The code above handles a
+    # PhraseItem that wraps an OptionalPhraseItem; the seemingly redundant code
+    # below handles the OptionalPhraseItem that wraps a PhraseItem.
+    if isinstance(item, PhraseItem):
+        assert name is None
+        assert exclude_phrases is None
+        assert is_valid_data_func is None
+        assert ambiguities_resolved_by_order is None
+        assert arity is not None
 
-        elif isinstance(item.item, DynamicPhrasesType):
-            if item.exclude:
-                exclude_names = set(
-                    [
-                        phrase.Name if isinstance(phrase, Phrase) else phrase
-                        for phrase in item.exclude
-                    ],
-                )
+        name = item.Name
+        exclude_phrases = item.ExcludePhrases
+        is_valid_data_func = item.IsValidDataFunc
+        ambiguities_resolved_by_order = item.AmbiguitiesResolvedByOrder
+        item = item.Item
 
-                # ----------------------------------------------------------------------
-                def GetDynamicPhrases(
-                    unique_id: Tuple[str, ...],
-                    phrases_type: DynamicPhrasesType,
-                    observer: Phrase.Observer,
-                ) -> Tuple[Optional[str], List[Phrase]]:
-                    name, phrases = observer.GetDynamicPhrases(unique_id, phrases_type)
+    assert not isinstance(
+        item,
+        (
+            PhraseItem,
+            CustomArityPhraseItem,
+            OptionalPhraseItem,
+            ZeroOrMorePhraseItem,
+            OneOrMorePhraseItem,
+        ),
+    ), item
 
-                    updated_phrases = []
+    # Certain PhraseItem decorators can only be used with certain item types
+    assert exclude_phrases is None or (exclude_phrases and isinstance(item, DynamicPhrasesType)), (exclude_phrases, item)
+    assert is_valid_data_func is None or (is_valid_data_func and isinstance(item, DynamicPhrasesType)), (is_valid_data_func, item)
+    assert ambiguities_resolved_by_order is None or (ambiguities_resolved_by_order and isinstance(item, (tuple, OrPhrase))), (ambiguities_resolved_by_order, item)
 
-                    for phrase in phrases:
-                        if isinstance(phrase, LeftRecursiveSequencePhraseWrapper):
-                            phrase.ExcludePhrases(exclude_names)
+    # Begin the conversion process
+    if isinstance(item, Phrase):
+        phrase = item
 
-                        if phrase.Name in exclude_names:
-                            continue
+    elif isinstance(item, Token):
+        phrase = TokenPhrase(
+            item,
+            name=name,
+        )
 
-                        updated_phrases.append(phrase)
+    elif isinstance(item, str):
+        phrase = TokenPhrase(
+            RegexToken(
+                name or "'{}'".format(item),
+                re.compile(r"{}{}".format(re.escape(item), "\\b" if item.isalnum() else "")),
+            ),
+        )
 
-                    return name, updated_phrases
+    elif isinstance(item, DynamicPhrasesType):
+        phrase = DynamicPhrase(
+            item,
+            lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type),
+            exclude_phrases=exclude_phrases,
+            is_valid_data_func=is_valid_data_func,
+            name=name or str(item),
+        )
 
-                # ----------------------------------------------------------------------
+    elif isinstance(item, list):
+        sequence_phrases = [
+            _PopulateItem(comment_token, phrase_item) for phrase_item in item
+        ]
 
-                func = GetDynamicPhrases
+        phrase = SequencePhrase(
+            comment_token,
+            sequence_phrases,
+            name=name,
+        )
 
-            else:
-                func = lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type)
+    elif isinstance(item, tuple):
+        or_phrases = [
+            _PopulateItem(comment_token, phrase_item) for phrase_item in item
+        ]
 
-            phrase = DynamicPhrase(
-                item.item,
-                func,
-                name=item.name or str(item.item),
-            )
+        phrase = OrPhrase(
+            or_phrases,
+            name=name,
+            ambiguities_resolved_by_order=ambiguities_resolved_by_order,
+        )
 
-        elif isinstance(item.item, list):
-            sequence_phrases = [
-                _PopulateItem(comment_token, phrase_item) for phrase_item in item.item
-            ]
+    elif isinstance(item, OrPhraseItem):
+        assert item.Items
 
-            phrase = SequencePhrase(
-                comment_token,
-                sequence_phrases,
-                name=item.name,
-            )
+        or_phrases = [
+            _PopulateItem(comment_token, phrase_item) for phrase_item in item.Items
+        ]
 
-        elif isinstance(item.item, tuple):
-            or_phrases = [
-                _PopulateItem(comment_token, phrase_item) for phrase_item in item.item
-            ]
+        phrase = OrPhrase(
+            or_phrases,
+            name=name,
+            ambiguities_resolved_by_order=ambiguities_resolved_by_order,
+        )
 
-            phrase = OrPhrase(
-                or_phrases,
-                name=item.name,
-                ordered_by_priority=item.ordered_by_priority,
-            )
+    elif item is None:
+        phrase = RecursivePlaceholderPhrase()
 
-        elif item.item is None:
-            phrase = RecursivePlaceholderPhrase()
-            name = item.name
+    else:
+        assert False, item  # pragma: no cover
 
-        else:
-            assert False, item.item  # pragma: no cover
+    if arity is not None:
+        phrase = RepeatPhrase(
+            phrase,
+            arity[0],
+            arity[1],
+            name=repeat_phrase_name,
+        )
 
-    assert isinstance(item.arity, tuple), item.arity
-
-    if item.arity[0] == 1 and item.arity[1] == 1:
-        return phrase
-
-    return RepeatPhrase(
-        phrase,
-        item.arity[0],
-        item.arity[1],
-        name=name,
-    )
+    return phrase

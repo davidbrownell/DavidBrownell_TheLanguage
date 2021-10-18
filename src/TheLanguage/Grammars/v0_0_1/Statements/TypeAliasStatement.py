@@ -3,7 +3,7 @@
 # |  TypeAliasStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-30 14:40:21
+# |      2021-10-14 13:22:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,22 +31,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-    from ....Parser.Statements.TypeAliasStatementParserInfo import (
-        TypeAliasStatementParserInfo,
-        TypeParserInfo,
-    )
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractDynamic,
         ExtractSequence,
         ExtractToken,
-        Leaf,
-        Node,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Statements.TypeAliasStatementParserInfo import (
+        TypeAliasStatementParserInfo,
+        TypeParserInfo,
     )
 
 
@@ -66,7 +65,7 @@ class TypeAliasStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(TypeAliasStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -91,30 +90,32 @@ class TypeAliasStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
             # <name>
-            name_leaf = cast(Leaf, nodes[1])
+            name_leaf = cast(AST.Leaf, nodes[1])
             name_info = cast(str, ExtractToken(name_leaf))
 
             # <type>
-            type_node = cast(Node, ExtractDynamic(cast(Node, nodes[3])))
+            type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
             type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
-            SetParserInfo(
-                node,
-                TypeAliasStatementParserInfo(
-                    CreateParserRegions(node, name_leaf, type_node),  # type: ignore
-                    name_info,
-                    type_info,
-                ),
+            return TypeAliasStatementParserInfo(
+                CreateParserRegions(node, name_leaf, type_node),  # type: ignore
+                name_info,
+                type_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

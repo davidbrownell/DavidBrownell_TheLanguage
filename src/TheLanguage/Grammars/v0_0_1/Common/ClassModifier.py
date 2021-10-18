@@ -3,7 +3,7 @@
 # |  ClassModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-02 12:10:45
+# |      2021-10-08 13:27:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -28,9 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Impl import ModifierImpl
-    from ....Parser.Common.ClassModifier import ClassModifier as Enum
+    from ....Parser.Common.ClassModifier import ClassModifier
 
 
 # ----------------------------------------------------------------------
-CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(Enum)
-Extract                                     = ModifierImpl.CreateStandardExtractFunc(Enum)
+CreatePhraseItem                            = ModifierImpl.StandardCreatePhraseItemFuncFactory(ClassModifier)
+Extract                                     = ModifierImpl.StandardExtractFuncFactory(ClassModifier)

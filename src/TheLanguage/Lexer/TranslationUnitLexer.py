@@ -3,7 +3,7 @@
 # |  TranslationUnitLexer.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-09 16:29:57
+# |      2021-09-23 14:45:08
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality used to parse a single translation unit"""
+"""Functionality used to lex a single translation unit"""
 
 import os
 import sys
@@ -21,9 +21,10 @@ import textwrap
 import threading
 
 from collections import OrderedDict
-from typing import Any, Awaitable, cast, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Awaitable, cast, Dict, Generator, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
+import inflect as inflect_mod
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -37,20 +38,31 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Error import Error
+
     from .Components import AST
-    from .Components.LexerError import LexerError
     from .Components.Phrase import Phrase
 
-    from .Phrases.DSL import DynamicPhrasesType, Leaf
+    from .Phrases.DSL import DynamicPhrasesType
     from .Phrases.DynamicPhrase import DynamicPhrase
-    from .Phrases.LeftRecursiveSequencePhraseWrapper import LeftRecursiveSequencePhraseWrapper
-    from .Phrases.TokenPhrase import TokenPhrase
+    from .Phrases.OrPhrase import OrPhrase
+    from .Phrases.RepeatPhrase import RepeatPhrase
+    from .Phrases.SequencePhrase import SequencePhrase
+    from .Phrases.TokenPhrase import RegexToken, TokenPhrase
 
 
 # ----------------------------------------------------------------------
+inflect                                     = inflect_mod.engine()
+
+
+# ----------------------------------------------------------------------
+# |
+# |  Public Types
+# |
+# ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidDynamicTraversalError(LexerError):
-    """Exception raised when dynamic phrases that prohibit parent traversal are applied over other dynamic phrases"""
+class InvalidDynamicTraversalError(Error):
+    """Exception raised when dynamic phrases that prohibit parent traversal are applied over existing dynamic phrases"""
 
     ExistingDynamicPhrases: Phrase.NormalizedIterator
 
@@ -61,30 +73,44 @@ class InvalidDynamicTraversalError(LexerError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class SyntaxInvalidError(LexerError):
-    """Exception raised when no matching phrases were found"""
+class SyntaxInvalidError(Error):
+    """Exception raises when no matching phrases could be found"""
 
     iter_begin: InitVar[Phrase.NormalizedIterator]
+    iter_end: InitVar[Phrase.NormalizedIterator]
 
-    Root: AST.RootNode
-    LastMatch: AST.Node                     = field(init=False)
+    Root: AST.Node
 
-    MessageTemplate                         = Interface.DerivedProperty("The syntax is not recognized")  # type: ignore
+    ErrorContext: str                       = field(init=False)
+    ErrorNode: AST.Node                     = field(init=False)
 
-    # TODO: Add functionality that discusses naming conventions if the wrong type of name is used
-    # TODO: Added info about next expected token if one statement is obviously intended
-    # TODO: Outline potential statements (and their error) if there is no obvious statement
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        textwrap.dedent(
+            """\
+            The syntax is not recognized. [{Line}, {Column}]
+
+            {ErrorContext}
+            """,
+        ),
+    )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, iter_begin):
-        last_matches: List[
-            Tuple[
-                Union[AST.Leaf, AST.Node, AST.RootNode],
-                int,
-            ]
-        ] = []
+    def __post_init__(self, iter_begin, iter_end):
+        error_node: Optional[AST.Node] = None
+        error_context: Optional[str] = None
+
+        # When this exception is created, we are only provided with the root node.
+        # This algorithm attempts to drill down into the exact error to provided better
+        # contextual information.
 
         compare_begin_iters = iter_begin.Line != self.Line or iter_begin.Column != self.Column
+
+        node_matches: List[
+            Tuple[
+                int, # depth
+                Union[AST.Leaf, AST.Node],
+            ]
+        ] = []
 
         for node in self.Root.Enum():
             if isinstance(node, AST.Leaf):
@@ -96,20 +122,13 @@ class SyntaxInvalidError(LexerError):
                 continue
 
             # Get the end value
-            iter_end = node.IterEnd
-            if iter_end is None:
+            node_iter_end = node.IterEnd
+            if node_iter_end is None:
                 continue
 
             if (
-                iter_end.Line == self.Line
-                and iter_end.Column == self.Column
-                and (
-                    not compare_begin_iters
-                    or (
-                        node_iter_begin.Line == iter_begin.Line
-                        and node_iter_begin.Column == iter_begin.Column
-                    )
-                )
+                node_iter_end == iter_end
+                and (not compare_begin_iters or node_iter_begin == iter_begin)
             ):
                 # Calculate the depth of this node
                 depth = 0
@@ -117,50 +136,155 @@ class SyntaxInvalidError(LexerError):
                 parent = node
                 while parent is not None:
                     depth += 1
-                    parent = parent.Parent  # type: ignore
+                    parent = parent.Parent
 
-                last_matches.append((node, depth))
+                node_matches.append((depth, node))
 
-        if last_matches:
-            # Select the node with the lowest depth (as this is likely to include the other nodes)
-            last_matches.sort(
-                key=lambda value: value[-1] if value[-1] != 1 else sys.maxsize
+        # Attempt to provide more helpful information
+        if not node_matches:
+            error_node = self.Root
+
+            if iter_end.GetNextTokenType() == Phrase.NormalizedIterator.TokenType.Dedent:
+                error_context = "Dedent was expected."
+            else:
+                assert self.Root.IterEnd is None
+
+        else:
+            # Select the node with the lowest depth (or closest to the root), as it will include the
+            # other nodes.
+            node_matches.sort(
+                key=lambda value: value[:-1],
             )
 
-            last_match = last_matches[0][0]
-        else:
-            last_match = self.Root
+            error_node = cast(AST.Node, node_matches[-1][-1])
 
-        object.__setattr__(self, "LastMatch", last_match)
+            # Attempt to provide more helpful information
+            while True:
+                assert error_node is not None
+                assert error_node.Type is not None
 
-        # If necessary, adjust the column to account for whitespace
-        potential_whitespace = TokenPhrase.ExtractWhitespace(last_match.IterEnd.Clone())  # type: ignore
-        if potential_whitespace is not None:
-            object.__setattr__(self, "Column", self.Column + potential_whitespace[1] - potential_whitespace[0])
+                if isinstance(error_node, AST.Leaf):
+                    if isinstance(error_node.Type, RegexToken):
+                        phrase_name = error_node.Type.Name
+                    else:
+                        # If here, the last valid token was an indent, dedent, or newline. Most of the time,
+                        # we will see this happen when the scope has changed due to a dedent. However, we
+                        # need to display the expected phrase as it will be after this token is consumed
+                        # rather than what it was when it was consumed.
 
-    # ----------------------------------------------------------------------
-    def ToDebugString(
-        self,
-        verbose=False,
-    ) -> str:
-        return textwrap.dedent(
-            """\
-            {message} [{line}, {column}]
+                        # Walk up the hierarchy to find the parent of both this node and the actual error
+                        # node.
+                        while error_node.Parent is not None:
+                            error_node_parent = cast(AST.Node, error_node.Parent)
 
+                            if len(error_node_parent.Children) > 1 and error_node_parent.Children[-2] == error_node:
+                                error_node = cast(AST.Node, error_node_parent.Children[-1])
+                                break
 
-            {content}
+                            error_node = cast(AST.Node, error_node.Parent)
 
+                        # Now walk down the hierarchy until we find a node that we can key off of
+                        assert isinstance(error_node, AST.Node)
+                        assert error_node.Type is not None
 
-            {last_match_content}
-            """,
-        ).format(
-            message=str(self),
-            line=self.Line,
-            column=self.Column,
-            content=self.Root.ToYamlString().rstrip(),
-            # pylint: disable=no-member
-            last_match_content=self.LastMatch.ToYamlString().rstrip(),
-        )
+                        if isinstance(error_node.Type, DynamicPhrase):
+                            assert len(error_node.Children) == 1
+                            error_node = cast(AST.Node, error_node.Children[0])
+
+                        assert error_node.Type is not None
+                        phrase_name = error_node.Type.Name
+
+                    error_context = "'{}' was expected.".format(phrase_name)
+                    break
+
+                assert isinstance(error_node, AST.Node)
+                assert error_node.Children
+
+                if isinstance(error_node.Type, SequencePhrase):
+                    if error_node.Children[-1].IterEnd is None:
+                        # Sometimes, the problem isn't due to the phrase that failed, but rather the
+                        # phrase right before it.
+                        if len(error_node.Children) > 1:
+                            potential_error_node = getattr(error_node.Children[-2], _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME, None)
+                            if potential_error_node is not None:
+                                if potential_error_node.IterEnd is not None:
+                                    error_node = potential_error_node
+                                    continue
+
+                                assert potential_error_node.Type is not None
+
+                                if inflect.singular_noun(potential_error_node.Type.Name) is False:
+                                    verb_text = "was"
+                                else:
+                                    verb_text = "were"
+
+                                error_context = "'{}' {} evaluated but not matched; therefore ".format(
+                                    potential_error_node.Type.Name,
+                                    verb_text,
+                                )
+
+                        expected_phrase = error_node.Type.Phrases[len(error_node.Children) - 1]
+
+                        error_context = "{}'{}' was expected in '{}'.".format(
+                            error_context or "",
+                            expected_phrase.Name,
+                            error_node.Type.Name,
+                        )
+
+                        break
+
+                    if error_node.Children[-1].IterEnd is not None:
+                        error_node = cast(AST.Node, error_node.Children[-1])
+                        continue
+
+                elif isinstance(error_node.Type, RepeatPhrase):
+                    if error_node.Children[-1].IterEnd is None:
+                        # If here, no content matched in the repeat
+                        num_valid_children = len(error_node.Children) - 1
+                        num_expected = error_node.Type.MinMatches
+
+                        assert num_valid_children < num_expected, (num_valid_children, num_expected)
+
+                        error_context = "'{}' was expected.".format(error_node.Type.Name)
+                        break
+
+                    if error_node.Children[-1].IterEnd is not None:
+                        error_node = cast(AST.Node, error_node.Children[-1])
+                        continue
+
+                elif isinstance(error_node.Type, OrPhrase):
+                    assert error_node.IterEnd is not None
+
+                    child_error_node: Optional[AST.Node] = None
+
+                    for child_node in error_node.Children:
+                        if child_node.IterEnd == error_node.IterEnd:
+                            child_error_node = cast(AST.Node, child_node)
+                            break
+
+                    assert child_error_node is not None
+                    error_node = child_error_node
+
+                    continue
+
+                break
+
+            if error_node.IterEnd is not None:
+                # Adjust the column to account for whitespace
+                column = error_node.IterEnd.Column
+
+                potential_whitespace = TokenPhrase.ExtractPotentialWhitespace(error_node.IterEnd.Clone())
+                if potential_whitespace is not None:
+                    column += (potential_whitespace[1] - potential_whitespace[0])
+
+                object.__setattr__(self, "Column", column)
+                object.__setattr__(self, "Line", error_node.IterEnd.Line)
+
+        if error_context is None and error_node is not None:
+            error_context = error_node.ToYamlString().rstrip()
+
+        object.__setattr__(self, "ErrorNode", error_node)
+        object.__setattr__(self, "ErrorContext", error_context)
 
 
 # ----------------------------------------------------------------------
@@ -168,56 +292,43 @@ class SyntaxInvalidError(LexerError):
 class DynamicPhrasesInfo(YamlRepr.ObjectReprImplBase):
     """Phrases that should be dynamically added to the active scope"""
 
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    Expressions: List[Phrase]
-    Names: List[Phrase]
-    Statements: List[Phrase]
-    Types: List[Phrase]
-
+    Phrases: Dict[DynamicPhrasesType, List[Phrase]]
     AllowParentTraversal: bool              = field(default=True)
     Name: Optional[str]                     = field(default=None)
 
     # ----------------------------------------------------------------------
-    # |  Public Methods
     def __post_init__(self):
-        phrase_display_func = lambda phrases: ", ".join([phrase.Name for phrase in phrases])
+        assert all(phrases for phrases in self.Phrases.values())
 
         YamlRepr.ObjectReprImplBase.__init__(
             self,
-            Expressions=phrase_display_func,
-            Names=phrase_display_func,
-            Statements=phrase_display_func,
-            Types=phrase_display_func,
+            Phrases=lambda phrases: "\n".join(
+                [
+                    "- {}: [{}]".format(
+                        key,
+                        ", ".join(["'{}'".format(phrase.Name) for phrase in value]),
+                    )
+                    for key, value in phrases.items()
+                ],
+            ),
         )
 
     # ----------------------------------------------------------------------
     def __bool__(self):
-        return (
-            bool(self.Expressions)
-            or bool(self.Names)
-            or bool(self.Statements)
-            or bool(self.Types)
-        )
+        return bool(self.Phrases)
 
     # ----------------------------------------------------------------------
     def Clone(
         self,
-        updated_expressions=None,
-        updated_names=None,
-        updated_statements=None,
-        updated_types=None,
-        updated_allow_parent_traversal=None,
-        updated_name=None,
-    ):
+        new_phrases: Optional[Dict[DynamicPhrasesType, List[Phrase]]]=None,
+        new_allow_parent_traversal: Optional[bool]=None,
+        new_name: Optional[str]=None,
+    ) -> "DynamicPhrasesInfo":
         # pylint: disable=too-many-function-args
-        return self.__class__(
-            updated_expressions if updated_expressions is not None else self.Expressions,
-            updated_names if updated_names is not None else self.Names,
-            updated_statements if updated_statements is not None else self.Statements,
-            updated_types if updated_types is not None else self.Types,
-            updated_allow_parent_traversal if updated_allow_parent_traversal is not None else self.AllowParentTraversal,
-            updated_name if updated_name is not None else self.Name,
+        return DynamicPhrasesInfo(
+            self.Phrases if new_phrases is None else new_phrases,
+            self.AllowParentTraversal if new_allow_parent_traversal is None else new_allow_parent_traversal,
+            self.Name if new_name is None else new_name,
         )
 
 
@@ -234,18 +345,18 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnIndentAsync(
-        data_stack: List[Phrase.StandardLexResultData],
+    async def OnPushScopeAsync(
+        data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
         iter_after: Phrase.NormalizedIterator,
-    ) -> Optional[DynamicPhrasesInfo]:
+    ) -> None:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnDedentAsync(
-        data_stack: List[Phrase.StandardLexResultData],
+    async def OnPopScopeAsync(
+        data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
         iter_after: Phrase.NormalizedIterator,
     ) -> None:
@@ -260,22 +371,27 @@ class Observer(Interface.Interface):
         iter_before: Phrase.NormalizedIterator,
         iter_after: Phrase.NormalizedIterator,
     ) -> Union[
-        bool,                               # True to continue processing, False to terminate
-        DynamicPhrasesInfo,                 # Dynamic phases (if any) resulting from the parsed phrase
+        bool,                               # True to continue, False to terminate
+        DynamicPhrasesInfo,                 # Dynamic phrases to add to the active scope as a result of completing this phrase
     ]:
-        """Used when an internal phrase is successfully parsed"""
+        """Invoked when an internal phrase has been successfully parsed"""
         raise Exception("Abstract method")  # pragma: no cover
 
 
 # ----------------------------------------------------------------------
+# |
+# |  Public Functions
+# |
+# ----------------------------------------------------------------------
 async def LexAsync(
+    comment_token: RegexToken,
     initial_phrase_info: DynamicPhrasesInfo,
     normalized_iter: Phrase.NormalizedIterator,
     observer: Observer,
     single_threaded=False,
-    name: str=None,
-):
-    """Repeatedly matches the statements for the contents of the iterator"""
+    name: Optional[str]=None,
+) -> Optional[AST.Node]:
+    """Repeatedly matches the statements for everything within the iterator"""
 
     assert normalized_iter.Offset == 0, normalized_iter
 
@@ -291,21 +407,73 @@ async def LexAsync(
         name=name,
     )
 
-    root = AST.RootNode(None)
+    root = AST.Node(
+        None,
+        IsIgnored=False,
+    )
 
     # ----------------------------------------------------------------------
-    def FinalInit():
+    def FinalInit(
+        *,
+        is_error: bool,
+    ):
+        if is_error:
+            # ----------------------------------------------------------------------
+            def InitPotentialErrorNode(node, potential_error_node):
+                for node in potential_error_node.Enum(
+                    nodes_only=True,
+                    children_first=True,
+                ):
+                    node.FinalInit()
+
+            # ----------------------------------------------------------------------
+
+            process_potential_error_node_func = InitPotentialErrorNode
+
+        else:
+            # ----------------------------------------------------------------------
+            def RemovePotentialErrorNode(node, potential_error_node):
+                object.__delattr__(node, _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME)
+
+            # ----------------------------------------------------------------------
+
+            process_potential_error_node_func = RemovePotentialErrorNode
+
         for node in root.Enum(children_first=True):
-            if isinstance(node, Leaf):
+            if isinstance(node, AST.Leaf):
                 continue
 
             node.FinalInit()
+
+            potential_error_node = getattr(node, _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME, None)
+            if potential_error_node is not None:
+                process_potential_error_node_func(node, potential_error_node)
 
     # ----------------------------------------------------------------------
 
     while not normalized_iter.AtEnd():
         phrase_observer.ClearNodeCache()
 
+        # Get leading comments or whitespace
+        result = TokenPhrase.ExtractPotentialCommentsOrWhitespace(
+            comment_token,
+            normalized_iter,
+            0,
+            ignore_whitespace=False,
+            next_phrase_is_indent=False,
+            next_phrase_is_dedent=False,
+        )
+
+        if result is not None:
+            data_items, normalized_iter, _ = result
+
+            for data in data_items:
+                phrase_observer.__class__.CreateLeaf(data, root)
+
+            if normalized_iter.AtEnd():
+                continue
+
+        # Process the content
         result = await phrase.LexAsync(
             ("root", ),
             normalized_iter,
@@ -314,41 +482,45 @@ async def LexAsync(
             single_threaded=single_threaded,
         )
 
-        if result is None:
+        if result is None or result.Data is None:
             return None
 
-        assert result.Data
-
-        phrase_observer.CreateNode(
-            result.Data.Phrase,
-            result.Data.Data,
-            result.Data.UniqueId,
-            root,
-        )
+        phrase_observer.CreateNode(result.Data, root)
 
         if not result.Success:
-            FinalInit()
+            FinalInit(
+                is_error=True,
+            )
 
             raise SyntaxInvalidError(
                 result.IterEnd.Line,
                 result.IterEnd.Column,
                 result.IterBegin,  # type: ignore
+                result.IterEnd,  # type: ignore
                 root,
             )
 
         normalized_iter = result.IterEnd.Clone()
 
-    FinalInit()
+    FinalInit(
+        is_error=False,
+    )
 
     assert normalized_iter.AtEnd()
     return root
 
 
 # ----------------------------------------------------------------------
+# |
+# |  Private Types
+# |
 # ----------------------------------------------------------------------
+_POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME        = "_error_context_node"
+
+
 # ----------------------------------------------------------------------
 class _ScopeTracker(object):
-    """Manages access to scope impacted by phrase modifications via DynamicPhraseInfo objects"""
+    """Manages access to scopes impacted by phrase modifications via DynamicPhraseInfo objects"""
 
     # ----------------------------------------------------------------------
     # |
@@ -363,12 +535,11 @@ class _ScopeTracker(object):
         # Initialize the tracker nodes
         tracker_nodes: Dict[
             Union[str, _ScopeTracker._DefaultScopeTrackerTag],
-            _ScopeTracker._TrackerNode
+            _ScopeTracker._TrackerNode,
         ] = OrderedDict()
 
         tracker_nodes[self._DefaultScopeTrackerTagInstance] = _ScopeTracker._TrackerNode("")
-
-        tracker_nodes[self._DefaultScopeTrackerTagInstance].ScopeItems.append(
+        tracker_nodes[self._DefaultScopeTrackerTagInstance].scope_items.append(
             _ScopeTracker._ScopeItem(
                 0,
                 normalized_iter.Clone(),
@@ -378,14 +549,14 @@ class _ScopeTracker(object):
 
         # Create the cache info
         cache: Dict[
-            Tuple[
+            DynamicPhrasesType,
+            Dict[
                 Tuple[str, ...],            # unique_id
-                DynamicPhrasesType,
-            ],
-            Tuple[Optional[str], List[Phrase]]
+                Tuple[List[Phrase], Optional[str]]
+            ]
         ] = {}
 
-        # Commit the information
+        # Commit the info
         self._tracker_nodes                 = tracker_nodes
         self._cache                         = cache
 
@@ -397,14 +568,12 @@ class _ScopeTracker(object):
         d = self._tracker_nodes
 
         for id_part in unique_id:
-            node = d.get(id_part, None)
-            if node is None:
-                node = _ScopeTracker._TrackerNode(id_part)
-                d[id_part] = node
+            tracker_node = d.get(id_part, None)
+            if tracker_node is None:
+                tracker_node = _ScopeTracker._TrackerNode(id_part)
+                d[id_part] = tracker_node
 
-            d = node.Children
-
-        self._cache.clear()
+            d = tracker_node.children
 
     # ----------------------------------------------------------------------
     def RemoveNode(
@@ -414,27 +583,54 @@ class _ScopeTracker(object):
     ) -> None:
         # Get the tracker node
         d = self._tracker_nodes
-        tracker_node = None
+        tracker_node: Optional[_ScopeTracker._TrackerNode] = None
 
         for id_part in unique_id:
             tracker_node = d.get(id_part, None)
             assert tracker_node is not None
 
-            d = tracker_node.Children
+            d = tracker_node.children
 
         assert tracker_node is not None
 
-        # Collect all of the dynamic phrase info associated with the descendants and add them here
-        if was_successful:
-            if not tracker_node.ScopeItems:
-                for descendant_node in self._EnumDescendants(tracker_node.Children):
-                    tracker_node.ScopeItems += descendant_node.ScopeItems
-        else:
-            tracker_node.ScopeItems = []
+        clear_cache_types: Set[DynamicPhrasesType] = set()
 
-        tracker_node.Children = {}
+        # ----------------------------------------------------------------------
+        def ProcessScopeItems(scope_items):
+            for scope_item in scope_items:
+                for dynamic_phrase_info in scope_item.Info.Phrases.keys():
+                    clear_cache_types.add(dynamic_phrase_info)
 
-        self._cache.clear()
+        # ----------------------------------------------------------------------
+
+        if not tracker_node.scope_items:
+            if was_successful:
+                # Move all scope items found in the descendants to this node
+
+                # ----------------------------------------------------------------------
+                def OnDescendantTrackerNode(descendant_tracker_node):
+                    tracker_node.scope_items += descendant_tracker_node.scope_items  # type: ignore
+
+                # ----------------------------------------------------------------------
+
+                on_descendant_tracker_node_func = OnDescendantTrackerNode
+
+            else:
+                on_descendant_tracker_node_func = lambda *args, **kwargs: None
+
+            for descendant_tracker_node in self.__class__._EnumDescendants(tracker_node.children):
+                on_descendant_tracker_node_func(descendant_tracker_node)
+                ProcessScopeItems(descendant_tracker_node.scope_items)
+
+        elif not was_successful:
+            ProcessScopeItems(tracker_node.scope_items)
+            tracker_node.scope_items = []
+
+        tracker_node.children = {}
+
+        if self._cache:
+            for dynamic_phrases_type in clear_cache_types:
+                self._cache.pop(dynamic_phrases_type)
 
     # ----------------------------------------------------------------------
     def AddScopeItem(
@@ -442,13 +638,13 @@ class _ScopeTracker(object):
         unique_id: Tuple[str, ...],
         indentation_level: int,
         iter_after: Phrase.NormalizedIterator,
-        phrases_info: DynamicPhrasesInfo,
+        dynamic_phrases_info: DynamicPhrasesInfo,
     ) -> None:
-        if not phrases_info:
+        if not dynamic_phrases_info:
             return
 
-        this_tracker_node = None
-        last_scope_item = None
+        this_tracker_node: Optional[_ScopeTracker._TrackerNode] = None
+        last_scope_item: Optional[_ScopeTracker._ScopeItem] = None
 
         # The tracker node associated with this event will be the last one that we encounter when enumerating
         # through the previous tracker nodes. In addition to the current tracker node, get the last dynamic
@@ -456,16 +652,16 @@ class _ScopeTracker(object):
         for tracker_node in self._EnumPrevious(unique_id):
             this_tracker_node = tracker_node
 
-            if tracker_node.ScopeItems:
-                last_scope_item = tracker_node.ScopeItems[-1]
+            if tracker_node.scope_items:
+                last_scope_item = tracker_node.scope_items[-1]
 
         assert this_tracker_node is not None
-        assert this_tracker_node.UniqueIdPart == unique_id[-1], (this_tracker_node.UniqueIdPart, unique_id[-1])
+        assert this_tracker_node.unique_id_part == unique_id[-1], (this_tracker_node.unique_id_part, unique_id[-1])
 
         if (
-            not phrases_info.AllowParentTraversal
+            not dynamic_phrases_info.AllowParentTraversal
             and last_scope_item is not None
-            and last_scope_item.IndentLevel == indentation_level
+            and last_scope_item.IndentationLevel == indentation_level
         ):
             raise InvalidDynamicTraversalError(
                 iter_after.Line,
@@ -473,15 +669,17 @@ class _ScopeTracker(object):
                 last_scope_item.IterEnd,
             )
 
-        this_tracker_node.ScopeItems.append(
+        this_tracker_node.scope_items.append(
             _ScopeTracker._ScopeItem(
                 indentation_level,
                 iter_after.Clone(),
-                phrases_info,
+                dynamic_phrases_info,
             ),
         )
 
-        self._cache.clear()
+        if self._cache:
+            for dynamic_phrases_type in dynamic_phrases_info.Phrases.keys():
+                self._cache.pop(dynamic_phrases_type, None)
 
     # ----------------------------------------------------------------------
     def RemoveScopeItems(
@@ -489,58 +687,59 @@ class _ScopeTracker(object):
         unique_id: Tuple[str, ...],
         indentation_level: int,
     ) -> None:
+        clear_cache_types: Set[DynamicPhrasesType] = set()
+
         for tracker_node in self._EnumPrevious(unique_id):
-            if not tracker_node.ScopeItems:
+            if not tracker_node.scope_items:
                 continue
 
             item_index = 0
-            while item_index < len(tracker_node.ScopeItems):
-                scope_item = tracker_node.ScopeItems[item_index]
+            while item_index < len(tracker_node.scope_items):
+                scope_item = tracker_node.scope_items[item_index]
 
-                if scope_item.IndentLevel == indentation_level:
-                    del tracker_node.ScopeItems[item_index]
+                if scope_item.IndentationLevel == indentation_level:
+                    for dynamic_phrases_type in scope_item.Info.Phrases.keys():
+                        clear_cache_types.add(dynamic_phrases_type)
+
+                    del tracker_node.scope_items[item_index]
+
                 else:
                     item_index += 1
 
-        self._cache.clear()
+        if self._cache:
+            for dynamic_phrases_type in clear_cache_types:
+                self._cache.pop(dynamic_phrases_type)
 
     # ----------------------------------------------------------------------
     def GetDynamicPhrases(
         self,
         unique_id: Tuple[str, ...],
         dynamic_phrases_type: DynamicPhrasesType,
-    ) -> Tuple[Optional[str], List[Phrase]]:
+    ) -> Tuple[List[Phrase], Optional[str]]:
+        cache = self._cache.setdefault(dynamic_phrases_type, {})
+        cache_key = unique_id
 
-        # TODO: cache results
+        cache_value = cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
 
-        if dynamic_phrases_type == DynamicPhrasesType.Expressions:
-            attribute_name = "Expressions"
-        elif dynamic_phrases_type == DynamicPhrasesType.Names:
-            attribute_name = "Names"
-        elif dynamic_phrases_type == DynamicPhrasesType.Statements:
-            attribute_name = "Statements"
-        elif dynamic_phrases_type == DynamicPhrasesType.Types:
-            attribute_name = "Types"
-        else:
-            assert False, dynamic_phrases_type  # pragma: no cover
+        all_phrases: List[Phrase] = []
+        all_names: List[str] = []
 
-        all_phrases = []
-        all_names = []
-
-        processed_dynamic_infos = set()
-        processed_phrases = set()
+        processed_dynamic_infos: Set[int] = set()
+        processed_phrases: Set[int] = set()
 
         should_continue = True
 
-        # Process the phrases from most recently added to those added long ago (this is the reason
-        # for the use of 'reversed' in the code that follows)
+        # Process the phrases from the most recently added to those added long ago (this is the
+        # reason why 'reversed' is in the code that follows).
         previous_tracker_nodes = list(self._EnumPrevious(unique_id))
 
         for tracker_node in reversed(previous_tracker_nodes):
-            these_phrases = []
-            these_names = []
+            these_phrases: List[Phrase] = []
+            these_names: List[str] = []
 
-            for scope_item in tracker_node.ScopeItems:
+            for scope_item in tracker_node.scope_items:
                 dynamic_info = scope_item.Info
 
                 # Have we seen this info before?
@@ -552,14 +751,14 @@ class _ScopeTracker(object):
                 processed_dynamic_infos.add(dynamic_info_key)
 
                 # Get the phrases
-                phrases = getattr(dynamic_info, attribute_name)
-                if not phrases:
+                phrases = scope_item.Info.Phrases.get(dynamic_phrases_type, None)
+                if phrases is None:
                     continue
 
                 len_these_phrases = len(these_phrases)
 
                 for phrase in phrases:
-                    # Have we seen this phrase before
+                    # Have we seen this phrase before?
                     phrase_key = id(phrase)
 
                     if phrase_key in processed_phrases:
@@ -569,14 +768,12 @@ class _ScopeTracker(object):
 
                     these_phrases.append(phrase)
 
+                # No need to continue this iteration if we didn't see any new phrases
                 if len(these_phrases) == len_these_phrases:
-                    # No new phrases to process
                     continue
 
                 these_names.append(
-                    dynamic_info.Name or "({})".format(
-                        ", ".join([phrase.Name for phrase in these_phrases[len_these_phrases:]]),
-                    ),
+                    dynamic_info.Name or "({})".format(" | ".join([phrase.Name for phrase in these_phrases[len_these_phrases:]])),
                 )
 
                 if not dynamic_info.AllowParentTraversal:
@@ -591,31 +788,9 @@ class _ScopeTracker(object):
             if not should_continue:
                 break
 
-        # Combine the phrases into 2 groups, those that are left-recursive and those that are not
-        standard_phrases = []
-        left_recursive_phrases = []
+        result = (all_phrases, " / ".join(all_names))
 
-        for phrase in all_phrases:
-            if LeftRecursiveSequencePhraseWrapper.IsLeftRecursivePhrase(
-                phrase,
-                dynamic_phrases_type,
-            ):
-                left_recursive_phrases.append(phrase)
-            else:
-                standard_phrases.append(phrase)
-
-        if left_recursive_phrases:
-            standard_phrases.append(
-                LeftRecursiveSequencePhraseWrapper(
-                    dynamic_phrases_type,
-                    list(standard_phrases),
-                    left_recursive_phrases,
-                    prefix_name="Left Recursive Wrapper",
-                ),
-            )
-
-        result = " / ".join(all_names), standard_phrases
-
+        cache[cache_key] = result
         return result
 
     # ----------------------------------------------------------------------
@@ -635,16 +810,16 @@ class _ScopeTracker(object):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class _ScopeItem(object):
-        IndentLevel: int
+        IndentationLevel: int
         IterEnd: Phrase.NormalizedIterator
         Info: DynamicPhrasesInfo
 
     # ----------------------------------------------------------------------
     @dataclass
     class _TrackerNode(object):
-        UniqueIdPart: str
-        Children: Dict[Union[str, "_ScopeTracker._DefaultScopeTrackerTag"], "_ScopeTracker._TrackerNode"]   = field(default_factory=OrderedDict)
-        ScopeItems: List["_ScopeTracker._ScopeItem"]                                                        = field(default_factory=list)
+        unique_id_part: str
+        children: Dict[Union[str, "_ScopeTracker._DefaultScopeTrackerTag"], "_ScopeTracker._TrackerNode"]   = field(default_factory=OrderedDict)
+        scope_items: List["_ScopeTracker._ScopeItem"]                                                       = field(default_factory=list)
 
     # ----------------------------------------------------------------------
     # |
@@ -656,9 +831,9 @@ class _ScopeTracker(object):
         cls,
         tracker_nodes: Dict[Any, "_ScopeTracker._TrackerNode"],
     ) -> Generator["_ScopeTracker._TrackerNode", None, None]:
-        for v in tracker_nodes.values():
-            yield v
-            yield from cls._EnumDescendants(v.Children)
+        for tracker_node in tracker_nodes.values():
+            yield tracker_node
+            yield from cls._EnumDescendants(tracker_node.children)
 
     # ----------------------------------------------------------------------
     def _EnumPrevious(
@@ -670,14 +845,14 @@ class _ScopeTracker(object):
         d = self._tracker_nodes
 
         for id_part in unique_id:
-            for k, v in d.items():
+            for k, tracker_node in d.items():
                 if k == self._DefaultScopeTrackerTagInstance:
                     continue
 
-                yield v
+                yield tracker_node
 
                 if k == id_part:
-                    d = v.Children
+                    d = tracker_node.children
                     break
 
 
@@ -695,7 +870,7 @@ class _PhraseObserver(Phrase.Observer):
         self._scope_tracker                 = _ScopeTracker(normalized_iter, initial_phrase_info)
         self._scope_tracker_lock            = threading.Lock()
 
-        self._indent_level                  = 0
+        self._scope_level                   = 0
 
         self._node_cache: Dict[Any, Union[AST.Leaf, AST.Node]]              = {}
 
@@ -706,64 +881,85 @@ class _PhraseObserver(Phrase.Observer):
     # ----------------------------------------------------------------------
     def CreateNode(
         self,
-        phrase: Phrase,
-        data: Optional[Phrase.LexResultData],
-        unique_id: Optional[Tuple[str, ...]],
-        parent: Optional[Union[AST.RootNode, AST.Node]],
+        data: Phrase.StandardLexResultData,
+        parent: Optional[AST.Node],
     ) -> Union[AST.Leaf, AST.Node]:
 
         node: Optional[Union[AST.Leaf, AST.Node]] = None
 
         # Look for the cached value
-        cache_key = unique_id
-        was_cached = False
+        cache_key = data.UniqueId
 
-        potential_node = self._node_cache.get(cache_key, None)
-        if potential_node is not None:
-            node = potential_node
+        node = self._node_cache.get(cache_key, None)
+        if node is not None:
             was_cached = True
+        else:
+            was_cached = False
 
-        # Create the node (if necessary)
-        if node is None:
-            if isinstance(phrase, TokenPhrase) and data:
-                node = self._CreateLeaf(cast(Phrase.TokenLexResultData, data), parent)
+            if isinstance(data.Phrase, TokenPhrase) and data.Data is not None:
+                node = self.__class__.CreateLeaf(cast(Phrase.TokenLexResultData, data.Data), parent)
             else:
-                node = AST.Node(phrase)
+                node = AST.Node(
+                    data.Phrase,
+                    IsIgnored=False,
+                )
 
-        assert node
+        assert node is not None
 
         # Assign the parent (if necessary)
         if parent != node.Parent:
-            assert parent
+            assert parent is not None
 
             object.__setattr__(node, "Parent", parent)
             parent.Children.append(node)
 
         # Populate the children (if necessary)
         if not was_cached:
-            if isinstance(node, AST.Node) and data is not None:
-                for data_item in data.Enum():
+            if isinstance(node, AST.Node) and data.Data is not None:
+                if isinstance(data.Data, Phrase.StandardLexResultData):
+                    data_items = [data.Data]
+                elif isinstance(data.Data, Phrase.MultipleLexResultData):
+                    data_items = data.Data.DataItems
+                else:
+                    assert False, data.Data  # pragma: no cover
+
+                for data_item in data_items:
                     if isinstance(data_item, Phrase.TokenLexResultData):
-                        self._CreateLeaf(data_item, node)
+                        self.__class__.CreateLeaf(data_item, node)
                     elif isinstance(data_item, Phrase.StandardLexResultData):
-                        self.CreateNode(data_item.Phrase, data_item.Data, data_item.UniqueId, node)
+                        self.CreateNode(data_item, node)
                     else:
                         assert False, data_item  # pragma: no cover
 
             if cache_key is not None:
                 self._node_cache[cache_key] = node
 
+        if data.PotentialErrorContext is not None:
+            potential_error_node = self.CreateNode(data.PotentialErrorContext, None)
+            object.__setattr__(node, _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME, potential_error_node)
+
         return node
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def GetDynamicPhrases(
-        self,
-        unique_id: Tuple[str, ...],
-        phrases_type: DynamicPhrasesType,
-    ) -> Tuple[Optional[str], List[Phrase]]:
-        with self._scope_tracker_lock:
-            return self._scope_tracker.GetDynamicPhrases(unique_id, phrases_type)
+    @staticmethod
+    def CreateLeaf(
+        data: Phrase.TokenLexResultData,
+        parent: Optional[AST.Node],
+    ) -> AST.Leaf:
+        leaf = AST.Leaf(
+            data.Token,
+            data.IsIgnored,
+            data.Whitespace,
+            data.Value,
+            data.IterBegin,
+            data.IterEnd,
+        )
+
+        if parent:
+            object.__setattr__(leaf, "Parent", parent)
+            parent.Children.append(leaf)
+
+        return leaf
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -775,11 +971,21 @@ class _PhraseObserver(Phrase.Observer):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def GetDynamicPhrases(
+        self,
+        unique_id: Tuple[str, ...],
+        phrases_type: DynamicPhrasesType,
+    ) -> Tuple[List[Phrase], Optional[str]]:
+        with self._scope_tracker_lock:
+            return self._scope_tracker.GetDynamicPhrases(unique_id, phrases_type)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def StartPhrase(
         self,
         unique_id: Tuple[str, ...],
-        phrase_stack: List[Phrase],
-    ):
+        phrase: Phrase,
+    ) -> None:
         with self._scope_tracker_lock:
             self._scope_tracker.AddNode(unique_id)
 
@@ -788,112 +994,82 @@ class _PhraseObserver(Phrase.Observer):
     def EndPhrase(
         self,
         unique_id: Tuple[str, ...],
-        phrase_info_stack: List[Tuple[Phrase, Optional[bool]]],
-    ):
-        was_successful = bool(phrase_info_stack[0][1])
-
+        phrase: Phrase,
+        was_successful: bool,
+    ) -> None:
         with self._scope_tracker_lock:
             self._scope_tracker.RemoveNode(unique_id, was_successful)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnIndentAsync(
+    async def OnPushScopeAsync(
         self,
-        data_stack: List[Phrase.StandardLexResultData],
+        data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
         iter_after: Phrase.NormalizedIterator,
-    ):
-        self._indent_level += 1
+    ) -> None:
+        self._scope_level += 1
 
-        this_result = await self._observer.OnIndentAsync(data_stack, iter_before, iter_after)
-        if isinstance(this_result, DynamicPhrasesInfo):
-            assert data_stack[0].UniqueId is not None
-            unique_id = data_stack[0].UniqueId
+        result = await self._observer.OnPushScopeAsync(data, iter_before, iter_after)
+        if isinstance(result, DynamicPhrasesInfo):
+            assert data.UniqueId is not None
+            unique_id = data.UniqueId
 
             with self._scope_tracker_lock:
-                self._scope_tracker.AddScopeItem(unique_id, self._indent_level, iter_after, this_result)
-
-        return None
+                self._scope_tracker.AddScopeItem(
+                    unique_id,
+                    self._scope_level,
+                    iter_after,
+                    result,
+                )
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnDedentAsync(
+    async def OnPopScopeAsync(
         self,
-        data_stack: List[Phrase.StandardLexResultData],
+        data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
         iter_after: Phrase.NormalizedIterator,
-    ):
-        assert data_stack[0].UniqueId is not None
-        unique_id = data_stack[0].UniqueId
+    ) -> None:
+        assert data.UniqueId is not None
+        unique_id = data.UniqueId
 
         with self._scope_tracker_lock:
-            self._scope_tracker.RemoveScopeItems(unique_id, self._indent_level)
+            self._scope_tracker.RemoveScopeItems(unique_id, self._scope_level)
 
-        assert self._indent_level
-        self._indent_level -= 1
+        assert self._scope_level
+        self._scope_level -= 1
 
-        await self._observer.OnDedentAsync(data_stack, iter_before, iter_after)
+        await self._observer.OnPopScopeAsync(data, iter_before, iter_after)
 
     # ----------------------------------------------------------------------
     @Interface.override
     async def OnInternalPhraseAsync(
         self,
-        data_stack: List[Phrase.StandardLexResultData],
+        data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
         iter_after: Phrase.NormalizedIterator,
     ) -> bool:
-        assert data_stack[0].Data
+        assert data.Data is not None
+        assert data.UniqueId is not None
 
-        this_result = await self._observer.OnPhraseCompleteAsync(
-            data_stack[0].Phrase,
-            cast(
-                AST.Node,
-                self.CreateNode(
-                    data_stack[0].Phrase,
-                    data_stack[0].Data,
-                    data_stack[0].UniqueId,
-                    None,
-                ),
-            ),
+        result = await self._observer.OnPhraseCompleteAsync(
+            data.Phrase,
+            cast(AST.Node, self.CreateNode(data, None)),
             iter_before,
             iter_after,
         )
 
-        if isinstance(this_result, DynamicPhrasesInfo):
-            assert data_stack[0].UniqueId is not None
-
-            with self._scope_tracker_lock:
-                self._scope_tracker.AddScopeItem(
-                    data_stack[0].UniqueId,
-                    self._indent_level,
-                    iter_after,
-                    this_result,
-                )
+        if isinstance(result, DynamicPhrasesInfo):
+            if result:
+                with self._scope_tracker_lock:
+                    self._scope_tracker.AddScopeItem(
+                        data.UniqueId,
+                        self._scope_level,
+                        iter_after,
+                        result,
+                    )
 
             return True
 
-        return this_result
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _CreateLeaf(
-        data: Phrase.TokenLexResultData,
-        parent: Optional[Union[AST.RootNode, AST.Node]],
-    ) -> AST.Leaf:
-        # pylint: disable=too-many-function-args
-        leaf = AST.Leaf(
-            data.Token,
-            data.Whitespace,
-            data.Value,
-            data.IterBegin,
-            data.IterEnd,
-            data.IsIgnored,
-        )
-
-        if parent:
-            object.__setattr__(leaf, "Parent", parent)
-            parent.Children.append(leaf)
-
-        return leaf
+        return result

@@ -3,7 +3,7 @@
 # |  GroupExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-13 10:34:52
+# |      2021-10-02 12:40:33
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GroupExpressionParserData, GroupExpressionParserInfo, and GroupExpressionParserRegions objects"""
+"""Contains the GroupExpressionParserInfo object"""
 
 import os
 

@@ -1,4 +1,4 @@
-# <class 'TheLanguage.Lexer.Components.AST.RootNode'>
+# <class 'TheLanguage.Lexer.Components.AST.Node'>
 Children:
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
@@ -12,12 +12,14 @@ Children:
             Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
               Match: "<_sre.SRE_Match object; span=(0, 3), match='ONE'>"
             Whitespace: None
+        IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[1, 4] (3)"
         Type: "(Upper Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[1, 4] (3)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -43,15 +45,19 @@ Children:
                   End: 8
                   Start: 7
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[1, 5] (4)"
             IterEnd: "[2, 1] (8)"
             Type: "Lower Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[1, 5] (4)"
         IterEnd: "[2, 1] (8)"
         Type: "(Upper Phrase) / (Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[1, 5] (4)"
     IterEnd: "[2, 1] (8)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IsIgnored: False
 IterBegin: "[1, 1] (0)"
 IterEnd: "[2, 1] (8)"
 Type: "<None>"

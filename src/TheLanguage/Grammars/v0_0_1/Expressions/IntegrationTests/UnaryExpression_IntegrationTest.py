@@ -3,7 +3,7 @@
 # |  UnaryExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 11:51:22
+# |      2021-10-11 17:18:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,67 +28,62 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..UnaryExpression import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
-def test_Logical():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 = not foo
-                value2 = not (a, b, c)
-                """,
-            ),
+def test_Async():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = await foo
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_Transfer():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 = copy foo
-                value2 = copy (a, b, c)
-
-                value3 = move bar
-                value4 = move (e, f,)
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = copy foo
+            value2 = move bar
+            """,
         ),
-    )
+    )))
+
+
+# ----------------------------------------------------------------------
+def test_Logical():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = not foo
+            """,
+        ),
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_Mathematical():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 = +foo
-                value2 = +(a, b, c)
-
-                value3 = -bar
-                value4 = -(d,)
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = +foo
+            value2 = -bar
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_BitManipulation():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 = ~foo
-                value2 = ~(a, b, c)
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = ~foo
+            """,
         ),
-    )
+    )))

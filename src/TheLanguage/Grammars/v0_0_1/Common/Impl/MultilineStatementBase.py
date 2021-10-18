@@ -3,7 +3,7 @@
 # |  MultilineStatementBase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-03 10:51:57
+# |      2021-10-08 14:15:24
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the MultilineStatementBase object"""
+"""Contains functionality useful when creating statements that span multiple lines"""
 
 import os
 import re
 
-from typing import cast, Optional
+from typing import Callable, cast, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -35,28 +35,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ...Common import Tokens as CommonTokens
 
-    from ....GrammarError import GrammarError
-    from ....GrammarPhrase import GrammarPhrase
+    from ....Error import Error
+    from ....GrammarInfo import GrammarPhrase
 
-    from .....Parser.ParserInfo import (
-        Location as ParserLocation,
-        Region as ParserRegion,
-    )
-
-    from .....Lexer.Components.Normalize import TripletContentRegexTemplate
+    from .....Lexer.Components.Normalize import MultilineTokenDelimiterRegexTemplate
     from .....Lexer.Components.Token import RegexToken
     from .....Lexer.Phrases.DSL import (
         CreatePhrase,
+        DynamicPhrasesType,
         ExtractSequence,
         ExtractToken,
         Leaf,
         Node,
     )
 
+    from .....Parser.ParserInfo import Location, ParserInfo, Region
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMultilineHeaderError(GrammarError):
+class InvalidMultilineHeaderError(Error):
     Header: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
@@ -70,11 +68,10 @@ class InvalidMultilineHeaderError(GrammarError):
         node: Leaf,
         header: str,
     ):
-        # pylint: disable=too-many-function-args
         return cls(
-            ParserRegion(
-                ParserLocation(node.IterBegin.Line, node.IterBegin.Column),
-                ParserLocation(node.IterBegin.Line, node.IterBegin.Column + len(header)),
+            Region(
+                Location(node.IterBegin.Line, node.IterBegin.Column),
+                Location(node.IterBegin.Line, node.IterBegin.Column + len(header)),
             ),
             header,
         )
@@ -82,13 +79,13 @@ class InvalidMultilineHeaderError(GrammarError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMultilineFooterError(GrammarError):
+class InvalidMultilineFooterError(Error):
     Header: str
     Footer: str
     LineOffset: int
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "The footer ('{Footer}') must be aligned vertically with the header ('{Header}') [Line {LineOffset}]."
+        "The footer ('{Footer}') must be aligned horizontally with the header ('{Header}') [Line {LineOffset}].",
     )
 
     # ----------------------------------------------------------------------
@@ -100,11 +97,10 @@ class InvalidMultilineFooterError(GrammarError):
         footer: str,
         line_offset: int,
     ):
-        # pylint: disable=too-many-function-args
         return cls(
-            ParserRegion(
-                ParserLocation(node.IterEnd.Line, node.IterEnd.Column - len(footer)),
-                ParserLocation(node.IterEnd.Line, node.IterEnd.Column),
+            Region(
+                Location(node.IterEnd.Line, node.IterEnd.Column - len(footer)),
+                Location(node.IterEnd.Line, node.IterEnd.Column),
             ),
             header,
             footer,
@@ -114,19 +110,21 @@ class InvalidMultilineFooterError(GrammarError):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMultilineIndentError(GrammarError):
+class InvalidMultilineIndentError(Error):
     Header: str
     LineOffset: int
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "Multi-line content must be aligned vertically with the header ('{Header}') [Line {LineOffset}].",
+        "Multi-line content must be aligned horizontally with the header ('{Header}') [Line {LineOffset}].",
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidMultilineContentError(GrammarError):
-    MessageTemplate                         = Interface.DerivedProperty("Multi-line content cannot be empty.")  # type: ignore
+class InvalidMultilineContentError(Error):
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Multi-line content cannot be empty.",
+    )
 
 
 # ----------------------------------------------------------------------
@@ -136,12 +134,11 @@ class MultilineStatementBase(GrammarPhrase):
 
     Examples:
         <<<
-        This is a docstring.
+        A docstring
         >>>
 
         <<<!!!
-        This is compiler data.
-
+        Compiler content
         !!!>>>
     """
 
@@ -153,14 +150,14 @@ class MultilineStatementBase(GrammarPhrase):
         footer: str,
     ):
         super(MultilineStatementBase, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=phrase_name,
                 item=[
                     RegexToken(
                         "Multi-line Content",
                         re.compile(
-                            TripletContentRegexTemplate.format(
+                            MultilineTokenDelimiterRegexTemplate.format(
                                 header=re.escape(header),
                                 footer=re.escape(footer),
                             ),
@@ -179,12 +176,10 @@ class MultilineStatementBase(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ExtractParserInfo(
+    def GetDynamicContent(
         self,
         node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
-        # TODO: Revisit this
-
+    ) -> Optional[GrammarPhrase.GetDynamicContentResult]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
@@ -198,7 +193,6 @@ class MultilineStatementBase(GrammarPhrase):
         lines = value.split("\n")
 
         expected_indentation_len = leaf.IterBegin.Offset - leaf.IterBegin.LineInfo.OffsetStart
-
         if expected_indentation_len:
             expected_indentation = leaf.IterBegin.Content[leaf.IterBegin.Offset - expected_indentation_len : leaf.IterBegin.Offset]
 
@@ -208,7 +202,7 @@ class MultilineStatementBase(GrammarPhrase):
 
                 lines[line_index] = line[expected_indentation_len:]
 
-        # The last line should be empty, as it should be the prefix and footer
+        # The last line should be empty, as it should be the indentation and footer
         if lines[-1]:
             raise InvalidMultilineFooterError.FromNode(leaf, self.Header, self.Footer, len(lines))
 
@@ -218,18 +212,43 @@ class MultilineStatementBase(GrammarPhrase):
         if not value:
             raise InvalidMultilineContentError.FromNode(leaf)
 
-        value = value.replace("\\", "")
+        value = value.replace("\\{}".format(self.Footer), self.Footer)
 
-        return self._ValidateSyntaxImpl(node, leaf, value)
+        object.__setattr__(node, "_multiline_content", (leaf, value))
+        return self._GetDynamicContentImpl(node, leaf, value)
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def GetMultilineContent(
+        cls,
+        node: Node,
+    ) -> Tuple[Leaf, str]:
+        return getattr(node, "_multiline_content")
+
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.abstractmethod
-    def _ValidateSyntaxImpl(
+    @Interface.override
+    def ExtractParserInfo(
         self,
+        node: Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
+        # No parser info, as multi-line statements will never be consumed by the parser
+        return None
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def _GetDynamicContentImpl(
         node: Node,
         leaf: Leaf,
         value: str,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+    ) -> Optional[GrammarPhrase.GetDynamicContentResult]:
+        """Returns any dynamic content that results from the value extracted from the multiline statement"""
         raise Exception("Abstract method")  # pragma: no cover
