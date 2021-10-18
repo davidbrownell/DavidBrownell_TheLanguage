@@ -3,7 +3,7 @@
 # |  FuncInvocationStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-12 15:51:59
+# |      2021-10-17 18:33:34
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncInvocationStatementParserData, FuncInvocationStatementParserInfo, and FuncInvocationStatementParserRegions objects"""
+"""Contains the FuncInvocationStatementParserInfo object"""
 
 import os
-
-from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -32,11 +30,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
-    from ..Common.ArgumentParserInfo import ArgumentParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncInvocationStatementParserInfo(StatementParserInfo):
-    Name: str
-    Arguments: Optional[List[ArgumentParserInfo]]
+    Expression: ExpressionParserInfo

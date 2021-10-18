@@ -3,7 +3,7 @@
 # |  ArgumentParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-12 10:20:51
+# |      2021-10-04 08:01:00
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ArgumentParserData, ArgumentParserInfo, and ArgumentParserRegions items"""
+"""Contains the ArgumentParserInfo object"""
 
 import os
 
@@ -31,8 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo
-    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo, ParserInfo
 
 
 # ----------------------------------------------------------------------

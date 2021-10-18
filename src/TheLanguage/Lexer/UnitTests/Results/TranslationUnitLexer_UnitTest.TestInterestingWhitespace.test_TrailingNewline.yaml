@@ -1,0 +1,47 @@
+# <class 'TheLanguage.Lexer.Components.AST.Node'>
+Children:
+  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                Children:
+                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 4] (3)"
+                    Type: "Lower <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+                    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+                    Whitespace: None
+                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                    IsIgnored: False
+                    IterBegin: "[1, 4] (3)"
+                    IterEnd: "[5, 1] (7)"
+                    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+                    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                      End: 7
+                      Start: 3
+                    Whitespace: None
+                IsIgnored: False
+                IterBegin: "[1, 1] (0)"
+                IterEnd: "[5, 1] (7)"
+                Type: "[Lower, Newline+] <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+            IsIgnored: False
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[5, 1] (7)"
+            Type: "Phrase <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
+        IsIgnored: False
+        IterBegin: "[1, 1] (0)"
+        IterEnd: "[5, 1] (7)"
+        Type: "(Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
+    IterBegin: "[1, 1] (0)"
+    IterEnd: "[5, 1] (7)"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IsIgnored: False
+IterBegin: "[1, 1] (0)"
+IterEnd: "[5, 1] (7)"
+Type: "<None>"

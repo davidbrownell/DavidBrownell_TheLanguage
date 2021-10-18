@@ -3,7 +3,7 @@
 # |  SequencePhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-22 18:54:53
+# |      2021-09-22 23:06:38
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,13 +17,13 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 from CommonEnvironment.CallOnExit import CallOnExit
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -36,14 +36,12 @@ with InitRelativeImports():
     from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
     from .TokenPhrase import TokenPhrase
 
-    from ..Components.NormalizedIterator import NormalizedIterator
     from ..Components.Phrase import Phrase
 
     from ..Components.Token import (
         ControlTokenBase,
         DedentToken,
         IndentToken,
-        NewlineToken,
         PopIgnoreWhitespaceControlToken,
         PopPreserveWhitespaceControlToken,
         PushIgnoreWhitespaceControlToken,
@@ -58,6 +56,16 @@ class SequencePhrase(Phrase):
 
     # ----------------------------------------------------------------------
     # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class ExtractCommentResult(object):
+        Results: List[Phrase.TokenLexResultData]
+        IterEnd: Phrase.NormalizedIterator
+
+    # ----------------------------------------------------------------------
+    # |
     # |  Public Methods
     # |
     # ----------------------------------------------------------------------
@@ -65,8 +73,11 @@ class SequencePhrase(Phrase):
         self,
         comment_token: RegexToken,
         phrases: List[Phrase],
-        name: str=None,
+        name: Optional[str]=None,
     ):
+        assert phrases
+        assert all(phrase for phrase in phrases)
+
         # Ensure that any control tokens that come in pairs have peers
         control_token_tracker = set()
 
@@ -105,19 +116,75 @@ class SequencePhrase(Phrase):
 
         # Initialize the class
         if name is None:
-            name = self._CreateDefaultName(phrases)
+            name = self.__class__._CreateDefaultName(phrases)
             name_is_default = True
         else:
             name_is_default = False
 
+        assert name is not None
+
         super(SequencePhrase, self).__init__(
             name,
-            CommentToken=None,  # type: ignore
+            CommentToken=None,
         )
 
         self.CommentToken                   = comment_token
         self.Phrases                        = phrases
         self._name_is_default               = name_is_default
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    async def LexAsync(
+        self,
+        unique_id: Tuple[str, ...],
+        normalized_iter: Phrase.NormalizedIterator,
+        observer: Phrase.Observer,
+        ignore_whitespace=False,
+        single_threaded=False,
+    ) -> Optional[Phrase.LexResult]:
+
+        result: Optional[Phrase.LexResult] = None
+
+        observer.StartPhrase(unique_id, self)
+        with CallOnExit(
+            lambda: observer.EndPhrase(unique_id, self, result is not None and result.Success)
+        ):
+            original_normalized_iter = normalized_iter.Clone()
+
+            ignore_whitespace_ctr = 1 if ignore_whitespace else 0
+
+            # If the first phrase is a control token indicating that whitespace should be
+            # ignored, we need to make sure that the trailing dedents aren't greedily consumed,
+            # but rather we stop consuming them once we end up at the initial level.
+            if (
+                isinstance(self.Phrases[0], TokenPhrase)
+                and isinstance(self.Phrases[0].Token, PushIgnoreWhitespaceControlToken)
+            ):
+                ignored_indentation_level = 0
+            else:
+                ignored_indentation_level = None
+
+            result = await self._LexAsyncImpl(
+                unique_id,
+                normalized_iter,
+                observer,
+                single_threaded=single_threaded,
+                ignore_whitespace_ctr=ignore_whitespace_ctr,
+                ignored_indentation_level=ignored_indentation_level,
+                starting_phrase_index=0,
+            )
+
+            if result is None:
+                return None
+
+            if result.Success and not await observer.OnInternalPhraseAsync(
+                cast(Phrase.StandardLexResultData, result.Data),
+                original_normalized_iter,
+                result.IterEnd,
+            ):
+                return None
+
+            return result
 
     # ----------------------------------------------------------------------
     async def LexSuffixAsync(
@@ -127,38 +194,16 @@ class SequencePhrase(Phrase):
         observer: Phrase.Observer,
         ignore_whitespace=False,
         single_threaded=False,
-    ) -> Union[
-        Phrase.LexResult,
-        None,
-    ]:
-        return await self._LexSequenceItemsAsync(
-            1,
+    ) -> Optional[Phrase.LexResult]:
+        return await self._LexAsyncImpl(
             unique_id,
             normalized_iter,
             observer,
-            single_threaded,
-            1 if ignore_whitespace else 0,
-            None,
+            single_threaded=single_threaded,
+            ignore_whitespace_ctr=1 if ignore_whitespace else 0,
+            ignored_indentation_level=None,
+            starting_phrase_index=1,
         )
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class ExtractPotentialResults(object):
-        Results: List[Phrase.TokenLexResultData]
-        IterEnd: Phrase.NormalizedIterator
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _indent_token                           = IndentToken()
-    _dedent_token                           = DedentToken()
-    _newline_token                          = NewlineToken()
 
     # ----------------------------------------------------------------------
     # |
@@ -178,367 +223,69 @@ class SequencePhrase(Phrase):
                 replaced_phrase = True
 
             else:
-                replaced_phrase = phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
+                replaced_phrase = phrase.PopulateRecursive(self, new_phrase) or replaced_phrase
 
         if replaced_phrase and self._name_is_default:
-            self.Name = self._CreateDefaultName(self.Phrases)
+            self.Name = self.__class__._CreateDefaultName(self.Phrases)
 
         return replaced_phrase
 
     # ----------------------------------------------------------------------
-    @Interface.override
     async def _LexAsyncImpl(
         self,
-        unique_id: Tuple[str, ...],
-        normalized_iter: Phrase.NormalizedIterator,
-        observer: Phrase.Observer,
-        ignore_whitespace=False,
-        single_threaded=False,
-    ) -> Union[
-        Phrase.LexResult,
-        None,
-    ]:
-        success = False
-
-        observer.StartPhrase(unique_id, [self])
-        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
-            original_normalized_iter = normalized_iter.Clone()
-
-            ignore_whitespace_ctr = 1 if ignore_whitespace else 0
-
-            # If the first phrase is a control token indicating that whitespace should be
-            # ignored, we need to make sure that the trailing dedents aren't greedily consumed,
-            # but rather we stop consuming them once we end up at the initial level.
-            if (
-                isinstance(self.Phrases[0], TokenPhrase)
-                and isinstance(self.Phrases[0].Token, PushIgnoreWhitespaceControlToken)
-            ):
-                ignored_indentation_level = 0
-            else:
-                ignored_indentation_level = None
-
-            result = await self._LexSequenceItemsAsync(
-                0,
-                unique_id,
-                normalized_iter,
-                observer,
-                single_threaded,
-                ignore_whitespace_ctr,
-                ignored_indentation_level,
-            )
-
-            if result is None:
-                return None
-
-            if result.Success:
-                success = result.Success
-
-                if not await observer.OnInternalPhraseAsync(
-                    [cast(Phrase.StandardLexResultData, result.Data)],
-                    original_normalized_iter,
-                    result.IterEnd,
-                ):
-                    return None
-
-            return result
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _ExtractPotentialWhitespaceToken(
-        cls,
-        normalized_iter: Phrase.NormalizedIterator,
-        consume_indent=True,
-        consume_dedent=True,
-    ) -> Optional[Phrase.TokenLexResultData]:
-        """Eats any whitespace token when requested"""
-
-        normalized_iter_begin = normalized_iter.Clone()
-        normalized_iter = normalized_iter.Clone()
-
-        # Potential indent or dedent
-        for token in [
-            cls._dedent_token,
-            cls._indent_token,
-        ]:
-            if not consume_indent and token == cls._indent_token:
-                continue
-
-            if not consume_dedent and token == cls._dedent_token:
-                continue
-
-            result = token.Match(normalized_iter)
-            if result is not None:
-                # <Too many arguments> pylint: disable=E1121
-                return Phrase.TokenLexResultData(
-                    token,
-                    None,
-                    result,
-                    normalized_iter_begin,
-                    normalized_iter,
-                    IsIgnored=True,
-                )
-
-        # A potential newline
-        potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
-        normalized_iter_begin = normalized_iter.Clone()
-
-        result = cls._newline_token.Match(normalized_iter)
-        if result is not None:
-            # <Too many arguments> pylint: disable=E1121
-            return Phrase.TokenLexResultData(
-                cls._newline_token,
-                potential_whitespace,
-                result,
-                normalized_iter_begin,
-                normalized_iter,
-                IsIgnored=True,
-            )
-
-        return None
-
-    # ----------------------------------------------------------------------
-    def _ExtractPotentialCommentTokens(
-        self,
-        normalized_iter: Phrase.NormalizedIterator,
-        *,
-        next_phrase_is_indent: bool,
-        next_phrase_is_dedent: bool,
-    ) -> Optional["SequencePhrase.ExtractPotentialResults"]:
-        """Eats any comment (stand-alone or trailing) when requested"""
-
-        normalized_iter = normalized_iter.Clone()
-        next_token = normalized_iter.GetNextToken()
-
-        if next_token == NormalizedIterator.TokenType.Indent:
-            # There are 2 scenarios to consider here:
-            #
-            #     1) The indent that we are looking at is because the comment itself
-            #        is indented. Example:
-            #
-            #           Line 1: Int value = 1       # The first line of the comment
-            #           Line 2:                     # The second line of the comment
-            #           Line 3: value += 1
-            #
-            #        In this scenario, Line 2 starts with an indent and Line 3 starts with
-            #        a dedent. We want to consume and ignore both the indent and dedent.
-            #
-            #     2) The indent is a meaningful part of the statement. Example:
-            #
-            #           Line 1: class Foo():
-            #           Line 2:     # A comment
-            #           Line 3:     Int value = 1
-            #
-            #        In this scenario, Line 2 is part of the class declaration and we want
-            #        the indent to be officially consumed before we process the comment.
-
-            if next_phrase_is_indent:
-                # We are in scenario #2
-                return None
-
-            # If here, we are in scenario #1
-            at_beginning_of_line = True
-
-            normalized_iter_begin = normalized_iter.Clone()
-            normalized_iter.SkipWhitespacePrefix()
-
-            potential_whitespace = (normalized_iter_begin.Offset, normalized_iter.Offset)
-
-        elif next_token == NormalizedIterator.TokenType.WhitespacePrefix:
-            at_beginning_of_line = True
-
-            normalized_iter.SkipWhitespacePrefix()
-            potential_whitespace = None
-
-        else:
-            at_beginning_of_line = (
-                normalized_iter.Offset == normalized_iter.LineInfo.OffsetStart
-                or normalized_iter.Offset == normalized_iter.LineInfo.PosStart
-            )
-            potential_whitespace = TokenPhrase.ExtractWhitespace(normalized_iter)
-
-        normalized_iter_begin = normalized_iter.Clone()
-
-        result = self.CommentToken.Match(normalized_iter)
-        if result is None:
-            return None
-
-        results = [
-            # <Too many arguments> pylint: disable=E1121
-            Phrase.TokenLexResultData(
-                self.CommentToken,
-                potential_whitespace,
-                result,
-                normalized_iter_begin,
-                normalized_iter,
-                IsIgnored=True,
-            ),
-        ]
-
-        # Add additional content if we are at the beginning of the line
-        if at_beginning_of_line:
-            # Capture the trailing newline
-            result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
-            assert result
-
-            results.append(result)
-
-            # Consume potential dedents, but don't return it with the results (as we absorbed
-            # the corresponding indent when we skipped the prefix in the code above)
-            if (
-                results[0].Whitespace is not None
-                and results[-1].IterEnd.GetNextToken() == NormalizedIterator.TokenType.Dedent
-                and not next_phrase_is_dedent
-            ):
-                result = self._ExtractPotentialWhitespaceToken(results[-1].IterEnd)
-                assert result
-
-                # Ensure that the iterator is updated to account for the dedent even if
-                # it wasn't returned as part of the results. Comments are special beasts.
-                return SequencePhrase.ExtractPotentialResults(results, result.IterEnd)
-
-        return SequencePhrase.ExtractPotentialResults(results, results[-1].IterEnd)
-
-    # ----------------------------------------------------------------------
-    async def _LexSequenceItemsAsync(
-        self,
-        phrase_offset: int,
         unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         single_threaded: bool,
         ignore_whitespace_ctr: int,
         ignored_indentation_level: Optional[int],
+        starting_phrase_index: int,
     ) -> Optional[Phrase.LexResult]:
-
         original_normalized_iter = normalized_iter.Clone()
 
-        # ----------------------------------------------------------------------
-        def ExtractWhitespaceOrComments(
-            *,
-            next_phrase_is_indent: bool,
-            next_phrase_is_dedent: bool,
-        ) -> Optional[SequencePhrase.ExtractPotentialResults]:
-            nonlocal ignored_indentation_level
+        success = False
 
-            if normalized_iter.Offset == 0:
-                # If we are at the beginning of the content, consume any leading
-                # newlines. We don't need to worry about a content that starts with
-                # newline-comment-newline as the comment extract code will handle
-                # the newline(s) that appears after the comment.
-                process_whitespace = True
-                consume_indent = False
-                consume_dedent = False
-
-            elif ignore_whitespace_ctr:
-                process_whitespace = True
-                consume_indent = True
-                consume_dedent = ignored_indentation_level != 0
-
-            else:
-                process_whitespace = False
-                consume_indent = False
-                consume_dedent = False
-
-            if process_whitespace:
-                data_item = self._ExtractPotentialWhitespaceToken(
-                    normalized_iter,
-                    consume_indent=consume_indent,
-                    consume_dedent=consume_dedent,
-                )
-
-                if data_item is not None:
-                    if ignored_indentation_level is not None:
-                        if isinstance(data_item.Token, IndentToken):
-                            ignored_indentation_level += 1
-                        elif isinstance(data_item.Token, DedentToken):
-                            assert ignored_indentation_level
-                            ignored_indentation_level -= 1
-
-                    return SequencePhrase.ExtractPotentialResults(
-                        [data_item],
-                        data_item.IterEnd,
-                    )
-
-            return self._ExtractPotentialCommentTokens(
-                normalized_iter,
-                next_phrase_is_indent=next_phrase_is_indent,
-                next_phrase_is_dedent=next_phrase_is_dedent,
-            )
-
-        # ----------------------------------------------------------------------
-
-        success = True
         data_items: List[Optional[Phrase.LexResultData]] = []
-
         preserved_ignore_whitespace_ctr: Optional[int] = None
 
-        observer_decorator = Phrase.ObserverDecorator(
-            self,
-            unique_id,
-            observer,
-            data_items,
-            lambda data_item: data_item,
-        )
+        comments_or_whitespace_data_items: Optional[List[Phrase.TokenLexResultData]] = None
+        prev_token_was_pop_control = False
 
-        for phrase_index, phrase in enumerate(self.Phrases[phrase_offset:]):
-            phrase_index += phrase_offset
+        for phrase_index in range(starting_phrase_index, len(self.Phrases)):
+            phrase = self.Phrases[phrase_index]
 
-            # Extract whitespace or comments
-            pre_whitespace_iter = normalized_iter.Clone()
+            # Extract whitespace or comments if necessary
+            if (
+                comments_or_whitespace_data_items is None
+                or (isinstance(phrase, TokenPhrase) and not prev_token_was_pop_control)
+            ):
+                if comments_or_whitespace_data_items:
+                    normalized_iter = comments_or_whitespace_data_items[0].IterBegin  # pylint: disable=unsubscriptable-object
 
-            if isinstance(phrase, TokenPhrase):
-                next_phrase_is_indent = isinstance(phrase.Token, IndentToken)
-                next_phrase_is_dedent = isinstance(phrase.Token, DedentToken)
-            else:
-                next_phrase_is_indent = False
-                next_phrase_is_dedent = False
+                comments_or_whitespace_data_items = []
 
-            while not normalized_iter.AtEnd():
-                potential_prefix_info = ExtractWhitespaceOrComments(
+                if isinstance(phrase, TokenPhrase):
+                    next_phrase_is_indent = isinstance(phrase.Token, IndentToken)
+                    next_phrase_is_dedent = isinstance(phrase.Token, DedentToken)
+                else:
+                    next_phrase_is_indent = False
+                    next_phrase_is_dedent = False
+
+                potential_comments_or_whitespace_result = TokenPhrase.ExtractPotentialCommentsOrWhitespace(
+                    self.CommentToken,
+                    normalized_iter,
+                    ignored_indentation_level,
+                    ignore_whitespace=ignore_whitespace_ctr != 0,
                     next_phrase_is_indent=next_phrase_is_indent,
                     next_phrase_is_dedent=next_phrase_is_dedent,
                 )
 
-                if potential_prefix_info is None:
-                    break
-
-                data_items += potential_prefix_info.Results
-                normalized_iter = potential_prefix_info.IterEnd
-
-            # It shouldn't be considered an error when whitespace/comments
-            # were encountered at the end of the content when processing the
-            # first phrase in the list of phrases.
-            if (
-                normalized_iter.AtEnd()
-                and normalized_iter.Offset != original_normalized_iter.Offset
-                and phrase_index - phrase_offset == 0
-            ):
-                # This sequence has failed
-                success = False
-
-                # <Too many arguments> pylint: disable=E1121
-                return Phrase.LexResult(
-                    True,
-                    original_normalized_iter,
-                    normalized_iter,
-                    # <Too many arguments> pylint: disable=E1121
-                    Phrase.StandardLexResultData(
-                        # Note that this phrase will never be used directly, but
-                        # needs to be of a type that is expected to contain
-                        # MultipleStandardLexResultData items.
-                        SequencePhrase(
-                            self.CommentToken,
-                            [
-                                TokenPhrase(self.CommentToken),
-                                TokenPhrase(self._newline_token),
-                            ],
-                            name="End of File Whitespace and/or Comment(s)",
-                        ),
-                        # <Too many arguments> pylint: disable=E1121
-                        Phrase.MultipleStandardLexResultData(data_items, True),
-                        unique_id,
-                    ),
-                )
+                if potential_comments_or_whitespace_result is not None:
+                    (
+                        comments_or_whitespace_data_items,
+                        normalized_iter,
+                        ignored_indentation_level,
+                    ) = potential_comments_or_whitespace_result
 
             # Process control tokens
             if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
@@ -564,13 +311,26 @@ class SequencePhrase(Phrase):
                 else:
                     assert False, phrase.Token  # pragma: no cover
 
+                # If we are pushing a new value, reset the collected comment or whitespace tokens
+                # as they might be impacted by the new value. If popping, preserve the tokens that
+                # we collected under the previous settings.
+                prev_token_was_pop_control = phrase.Token.OpeningToken is not None
+
+                if not prev_token_was_pop_control:
+                    if comments_or_whitespace_data_items:
+                        normalized_iter = comments_or_whitespace_data_items[0].IterBegin
+
+                    comments_or_whitespace_data_items = None
+
                 continue
+
+            prev_token_was_pop_control = False
 
             # Process the phrase
             result = await phrase.LexAsync(
-                unique_id + ("Sequence: {} [{}]".format(phrase.Name, phrase_index), ),
-                normalized_iter.Clone(),
-                observer_decorator,
+                unique_id + ("{} [{}]".format(self.Name, phrase_index), ),
+                normalized_iter,
+                observer,
                 ignore_whitespace=ignore_whitespace_ctr != 0,
                 single_threaded=single_threaded,
             )
@@ -580,29 +340,41 @@ class SequencePhrase(Phrase):
 
             # Preserve the results
             if result.Data is not None:
+                if result.Success and comments_or_whitespace_data_items is not None:
+                    data_items += comments_or_whitespace_data_items
+
+                    comments_or_whitespace_data_items = None
+
                 data_items.append(result.Data)
 
             # Update the iterator
-            if result.IterEnd == normalized_iter:
-                # Nothing was matched, so revert back to the iterator before whitespace was consumed
-                normalized_iter = pre_whitespace_iter
-            else:
-                normalized_iter = result.IterEnd.Clone()
+            normalized_iter = result.IterEnd.Clone()
 
             if not result.Success:
                 success = False
                 break
 
-        # <Too many arguments> pylint: disable=E1121
+            success = True
+
+        if comments_or_whitespace_data_items:
+            # If the previous token was a pop, we should consider the output as part of the current
+            # phrase. Otherwise, we should consider the tokens as part of the next phrase.
+            if prev_token_was_pop_control:
+                data_items += comments_or_whitespace_data_items
+                normalized_iter = comments_or_whitespace_data_items[-1].IterEnd
+            else:
+                normalized_iter = comments_or_whitespace_data_items[0].IterBegin
+
+            comments_or_whitespace_data_items = None
+
+        # pylint: disable=too-many-function-args
         return Phrase.LexResult(
             success,
             original_normalized_iter,
             normalized_iter,
-            # <Too many arguments> pylint: disable=E1121
             Phrase.StandardLexResultData(
                 self,
-                # <Too many arguments> pylint: disable=E1121
-                Phrase.MultipleStandardLexResultData(data_items, True),
+                Phrase.MultipleLexResultData(data_items, True),
                 unique_id,
             ),
         )
@@ -612,4 +384,4 @@ class SequencePhrase(Phrase):
     def _CreateDefaultName(
         phrases: List[Phrase],
     ) -> str:
-        return "Sequence: [{}]".format(", ".join([phrase.Name for phrase in phrases]))
+        return "[{}]".format(", ".join([phrase.Name for phrase in phrases]))

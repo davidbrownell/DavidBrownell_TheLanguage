@@ -3,7 +3,7 @@
 # |  TypeAliasStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-16 11:54:26
+# |      2021-10-14 13:20:32
 # |
 # ----------------------------------------------------------------------
 # |

@@ -1,9 +1,9 @@
 0) StartPhrase, "Phrase"
-1) StartPhrase, "DynamicPhrasesType.Statements", "Phrase"
+1) StartPhrase, "DynamicPhrasesType.Statements"
 2) GetDynamicPhrases, e
-3) StartPhrase, "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
-4) StartPhrase, "Word Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
-5) StartPhrase, "Word Token", "Word Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
+3) StartPhrase, "(Word Phrase | Number Phrase)"
+4) StartPhrase, "Word Phrase"
+5) StartPhrase, "Word Token"
 6) OnInternalPhraseAsync, 0, 5
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -15,29 +15,8 @@
         Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
       Whitespace: None
     Phrase: "Word Token"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Word Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Or: (Word Phrase, Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Phrase"
-7) EndPhrase, "Word Token" [True], "Word Phrase" [None], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
-8) StartPhrase, "Word Token", "Word Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
+7) EndPhrase, "Word Token" [True]
+8) StartPhrase, "Word Token"
 9) OnInternalPhraseAsync, 6, 11
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -51,39 +30,8 @@
         - 5
         - 6
     Phrase: "Word Token"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[1, 1] (0)"
-            IterEnd: "[1, 6] (5)"
-            Token: "Word Token"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-            Whitespace: None
-          Phrase: "Word Token"
-      IsComplete: False
-    Phrase: "Word Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Or: (Word Phrase, Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Phrase"
-10) EndPhrase, "Word Token" [True], "Word Phrase" [None], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
-11) StartPhrase, "Newline+", "Word Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
+10) EndPhrase, "Word Token" [True]
+11) StartPhrase, "Newline+"
 12) OnInternalPhraseAsync, 11, 12
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -96,53 +44,10 @@
         Start: 11
       Whitespace: None
     Phrase: "Newline+"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[1, 1] (0)"
-            IterEnd: "[1, 6] (5)"
-            Token: "Word Token"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-            Whitespace: None
-          Phrase: "Word Token"
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[1, 7] (6)"
-            IterEnd: "[1, 12] (11)"
-            Token: "Word Token"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-            Whitespace:
-              - 5
-              - 6
-          Phrase: "Word Token"
-      IsComplete: False
-    Phrase: "Word Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Or: (Word Phrase, Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Phrase"
-13) EndPhrase, "Newline+" [True], "Word Phrase" [None], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
+13) EndPhrase, "Newline+" [True]
 14) OnInternalPhraseAsync, 0, 12
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -179,31 +84,15 @@
           Phrase: "Newline+"
       IsComplete: True
     Phrase: "Word Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Or: (Word Phrase, Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Phrase"
-15) EndPhrase, "Word Phrase" [True], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
-16) StartPhrase, "Number Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
-17) StartPhrase, "Number Token", "Number Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
-18) EndPhrase, "Number Token" [False], "Number Phrase" [None], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
-19) EndPhrase, "Number Phrase" [False], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
+15) EndPhrase, "Word Phrase" [True]
+16) StartPhrase, "Number Phrase"
+17) StartPhrase, "Number Token"
+18) EndPhrase, "Number Token" [False]
+19) EndPhrase, "Number Phrase" [False]
 20) OnInternalPhraseAsync, 0, 12
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
         DataItems:
           - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -240,24 +129,13 @@
             Phrase: "Newline+"
         IsComplete: True
       Phrase: "Word Phrase"
-    Phrase: "Or: (Word Phrase, Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Phrase"
-21) EndPhrase, "Or: (Word Phrase, Number Phrase)" [True], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
+    Phrase: "(Word Phrase | Number Phrase)"
+21) EndPhrase, "(Word Phrase | Number Phrase)" [True]
 22) OnInternalPhraseAsync, 0, 12
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -294,23 +172,18 @@
               Phrase: "Newline+"
           IsComplete: True
         Phrase: "Word Phrase"
-      Phrase: "Or: (Word Phrase, Number Phrase)"
+      Phrase: "(Word Phrase | Number Phrase)"
     Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Phrase"
-23) EndPhrase, "DynamicPhrasesType.Statements" [True], "Phrase" [None]
-24) StartPhrase, "DynamicPhrasesType.Statements", "Phrase"
+23) EndPhrase, "DynamicPhrasesType.Statements" [True]
+24) StartPhrase, "DynamicPhrasesType.Statements"
 25) GetDynamicPhrases, e
-26) StartPhrase, "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
-27) StartPhrase, "Word Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
-28) StartPhrase, "Word Token", "Word Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
-29) EndPhrase, "Word Token" [False], "Word Phrase" [None], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
-30) EndPhrase, "Word Phrase" [False], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
-31) StartPhrase, "Number Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
-32) StartPhrase, "Number Token", "Number Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
+26) StartPhrase, "(Word Phrase | Number Phrase)"
+27) StartPhrase, "Word Phrase"
+28) StartPhrase, "Word Token"
+29) EndPhrase, "Word Token" [False]
+30) EndPhrase, "Word Phrase" [False]
+31) StartPhrase, "Number Phrase"
+32) StartPhrase, "Number Token"
 33) OnInternalPhraseAsync, 12, 15
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -322,79 +195,8 @@
         Match: "<_sre.SRE_Match object; span=(12, 15), match='123'>"
       Whitespace: None
     Phrase: "Number Token"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Number Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-            DataItems:
-              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: None
-                Phrase: "Word Token"
-            IsComplete: True
-          Phrase: "Word Phrase"
-      IsComplete: False
-    Phrase: "Or: (Word Phrase, Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-34) EndPhrase, "Number Token" [True], "Number Phrase" [None], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
-35) StartPhrase, "Newline+", "Number Phrase", "Or: (Word Phrase, Number Phrase)", "DynamicPhrasesType.Statements", "Phrase"
+34) EndPhrase, "Number Token" [True]
+35) StartPhrase, "Newline+"
 36) OnInternalPhraseAsync, 15, 16
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -407,91 +209,10 @@
         Start: 15
       Whitespace: None
     Phrase: "Newline+"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[2, 1] (12)"
-            IterEnd: "[2, 4] (15)"
-            Token: "Number Token"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(12, 15), match='123'>"
-            Whitespace: None
-          Phrase: "Number Token"
-      IsComplete: False
-    Phrase: "Number Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-            DataItems:
-              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: None
-                Phrase: "Word Token"
-            IsComplete: True
-          Phrase: "Word Phrase"
-      IsComplete: False
-    Phrase: "Or: (Word Phrase, Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-37) EndPhrase, "Newline+" [True], "Number Phrase" [None], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
+37) EndPhrase, "Newline+" [True]
 38) OnInternalPhraseAsync, 12, 16
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -516,77 +237,11 @@
           Phrase: "Newline+"
       IsComplete: True
     Phrase: "Number Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-            DataItems:
-              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: None
-                Phrase: "Word Token"
-            IsComplete: True
-          Phrase: "Word Phrase"
-      IsComplete: False
-    Phrase: "Or: (Word Phrase, Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-39) EndPhrase, "Number Phrase" [True], "Or: (Word Phrase, Number Phrase)" [None], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
+39) EndPhrase, "Number Phrase" [True]
 40) OnInternalPhraseAsync, 12, 16
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
         DataItems:
           - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -611,66 +266,13 @@
             Phrase: "Newline+"
         IsComplete: True
       Phrase: "Number Phrase"
-    Phrase: "Or: (Word Phrase, Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-41) EndPhrase, "Or: (Word Phrase, Number Phrase)" [True], "DynamicPhrasesType.Statements" [None], "Phrase" [None]
+    Phrase: "(Word Phrase | Number Phrase)"
+41) EndPhrase, "(Word Phrase | Number Phrase)" [True]
 42) OnInternalPhraseAsync, 12, 16
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -695,61 +297,14 @@
               Phrase: "Newline+"
           IsComplete: True
         Phrase: "Number Phrase"
-      Phrase: "Or: (Word Phrase, Number Phrase)"
+      Phrase: "(Word Phrase | Number Phrase)"
     Phrase: "DynamicPhrasesType.Statements"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-43) EndPhrase, "DynamicPhrasesType.Statements" [True], "Phrase" [None]
-44) StartPhrase, "DynamicPhrasesType.Expressions", "Phrase"
+43) EndPhrase, "DynamicPhrasesType.Statements" [True]
+44) StartPhrase, "DynamicPhrasesType.Expressions"
 45) GetDynamicPhrases, e
-46) StartPhrase, "Or: (Number Phrase)", "DynamicPhrasesType.Expressions", "Phrase"
-47) StartPhrase, "Number Phrase", "Or: (Number Phrase)", "DynamicPhrasesType.Expressions", "Phrase"
-48) StartPhrase, "Number Token", "Number Phrase", "Or: (Number Phrase)", "DynamicPhrasesType.Expressions", "Phrase"
+46) StartPhrase, "(Number Phrase)"
+47) StartPhrase, "Number Phrase"
+48) StartPhrase, "Number Token"
 49) OnInternalPhraseAsync, 16, 19
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -761,101 +316,8 @@
         Match: "<_sre.SRE_Match object; span=(16, 19), match='456'>"
       Whitespace: None
     Phrase: "Number Token"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Number Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Or: (Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Expressions"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 1] (12)"
-                      IterEnd: "[2, 4] (15)"
-                      Token: "Number Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(12, 15), match='123'>"
-                      Whitespace: None
-                    Phrase: "Number Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 4] (15)"
-                      IterEnd: "[3, 1] (16)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 16
-                        Start: 15
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Number Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-50) EndPhrase, "Number Token" [True], "Number Phrase" [None], "Or: (Number Phrase)" [None], "DynamicPhrasesType.Expressions" [None], "Phrase" [None]
-51) StartPhrase, "Newline+", "Number Phrase", "Or: (Number Phrase)", "DynamicPhrasesType.Expressions", "Phrase"
+50) EndPhrase, "Number Token" [True]
+51) StartPhrase, "Newline+"
 52) OnInternalPhraseAsync, 19, 20
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -868,113 +330,10 @@
         Start: 19
       Whitespace: None
     Phrase: "Newline+"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[3, 1] (16)"
-            IterEnd: "[3, 4] (19)"
-            Token: "Number Token"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(16, 19), match='456'>"
-            Whitespace: None
-          Phrase: "Number Token"
-      IsComplete: False
-    Phrase: "Number Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Or: (Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Expressions"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 1] (12)"
-                      IterEnd: "[2, 4] (15)"
-                      Token: "Number Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(12, 15), match='123'>"
-                      Whitespace: None
-                    Phrase: "Number Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 4] (15)"
-                      IterEnd: "[3, 1] (16)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 16
-                        Start: 15
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Number Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-53) EndPhrase, "Newline+" [True], "Number Phrase" [None], "Or: (Number Phrase)" [None], "DynamicPhrasesType.Expressions" [None], "Phrase" [None]
+53) EndPhrase, "Newline+" [True]
 54) OnInternalPhraseAsync, 16, 20
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -999,99 +358,11 @@
           Phrase: "Newline+"
       IsComplete: True
     Phrase: "Number Phrase"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Or: (Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Expressions"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 1] (12)"
-                      IterEnd: "[2, 4] (15)"
-                      Token: "Number Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(12, 15), match='123'>"
-                      Whitespace: None
-                    Phrase: "Number Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 4] (15)"
-                      IterEnd: "[3, 1] (16)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 16
-                        Start: 15
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Number Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-55) EndPhrase, "Number Phrase" [True], "Or: (Number Phrase)" [None], "DynamicPhrasesType.Expressions" [None], "Phrase" [None]
+55) EndPhrase, "Number Phrase" [True]
 56) OnInternalPhraseAsync, 16, 20
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
         DataItems:
           - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -1116,96 +387,13 @@
             Phrase: "Newline+"
         IsComplete: True
       Phrase: "Number Phrase"
-    Phrase: "Or: (Number Phrase)"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - None
-      IsComplete: False
-    Phrase: "DynamicPhrasesType.Expressions"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 1] (12)"
-                      IterEnd: "[2, 4] (15)"
-                      Token: "Number Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(12, 15), match='123'>"
-                      Whitespace: None
-                    Phrase: "Number Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 4] (15)"
-                      IterEnd: "[3, 1] (16)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 16
-                        Start: 15
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Number Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-57) EndPhrase, "Or: (Number Phrase)" [True], "DynamicPhrasesType.Expressions" [None], "Phrase" [None]
+    Phrase: "(Number Phrase)"
+57) EndPhrase, "(Number Phrase)" [True]
 58) OnInternalPhraseAsync, 16, 20
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
       Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
             - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -1230,94 +418,17 @@
               Phrase: "Newline+"
           IsComplete: True
         Phrase: "Number Phrase"
-      Phrase: "Or: (Number Phrase)"
+      Phrase: "(Number Phrase)"
     Phrase: "DynamicPhrasesType.Expressions"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 1] (0)"
-                      IterEnd: "[1, 6] (5)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
-                      Whitespace: None
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 7] (6)"
-                      IterEnd: "[1, 12] (11)"
-                      Token: "Word Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(6, 11), match='wordb'>"
-                      Whitespace:
-                        - 5
-                        - 6
-                    Phrase: "Word Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[1, 12] (11)"
-                      IterEnd: "[2, 1] (12)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 12
-                        Start: 11
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-                DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 1] (12)"
-                      IterEnd: "[2, 4] (15)"
-                      Token: "Number Token"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                        Match: "<_sre.SRE_Match object; span=(12, 15), match='123'>"
-                      Whitespace: None
-                    Phrase: "Number Token"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      IsIgnored: False
-                      IterBegin: "[2, 4] (15)"
-                      IterEnd: "[3, 1] (16)"
-                      Token: "Newline+"
-                      Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                        End: 16
-                        Start: 15
-                      Whitespace: None
-                    Phrase: "Newline+"
-                IsComplete: True
-              Phrase: "Number Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
-          Phrase: "DynamicPhrasesType.Statements"
-      IsComplete: False
-    Phrase: "Phrase"
-59) EndPhrase, "DynamicPhrasesType.Expressions" [True], "Phrase" [None]
+59) EndPhrase, "DynamicPhrasesType.Expressions" [True]
 60) OnInternalPhraseAsync, 0, 20
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -1354,12 +465,12 @@
                     Phrase: "Newline+"
                 IsComplete: True
               Phrase: "Word Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
+            Phrase: "(Word Phrase | Number Phrase)"
           Phrase: "DynamicPhrasesType.Statements"
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -1384,12 +495,12 @@
                     Phrase: "Newline+"
                 IsComplete: True
               Phrase: "Number Phrase"
-            Phrase: "Or: (Word Phrase, Number Phrase)"
+            Phrase: "(Word Phrase | Number Phrase)"
           Phrase: "DynamicPhrasesType.Statements"
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
             Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
                   - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -1414,7 +525,7 @@
                     Phrase: "Newline+"
                 IsComplete: True
               Phrase: "Number Phrase"
-            Phrase: "Or: (Number Phrase)"
+            Phrase: "(Number Phrase)"
           Phrase: "DynamicPhrasesType.Expressions"
       IsComplete: True
     Phrase: "Phrase"

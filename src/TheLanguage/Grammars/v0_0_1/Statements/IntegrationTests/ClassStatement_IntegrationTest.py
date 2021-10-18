@@ -3,7 +3,7 @@
 # |  ClassStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-17 09:22:44
+# |      2021-10-12 12:58:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,308 +28,265 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..ClassStatement import *
-    from ...Common.AutomatedTests import Execute, ExecuteEx
-    from ...Common.StatementsPhraseItem import (
-        InvalidDocstringError,
-        MisplacedDocstringError,
-        MultipleDocstringsError,
-    )
 
 
 # ----------------------------------------------------------------------
 def test_NoBases():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                # ----------------------------------------------------------------------
-                public class PublicClass():
-                    pass
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            # ----------------------------------------------------------------------
+            public class PublicClass():
+                pass
 
-                protected class ProtectedClass():
-                    pass
+            protected class ProtectedClass():
+                pass
 
-                private class PrivateClass():
-                    pass
+            private class PrivateClass():
+                pass
 
-                class DefaultClass():
-                    pass
+            class DefaultClass():
+                pass
 
-                # ----------------------------------------------------------------------
-                public exception PublicException():
-                    pass
+            # ----------------------------------------------------------------------
+            public exception PublicException():
+                pass
 
-                exception DefaultException():
-                    pass
+            exception DefaultException():
+                pass
 
-                # ----------------------------------------------------------------------
-                public enum PublicEnum():
-                    pass
+            # ----------------------------------------------------------------------
+            public enum PublicEnum():
+                pass
 
-                protected interface ProtectedInterface():
-                    pass
+            protected interface ProtectedInterface():
+                pass
 
-                private mixin PrivateMixin():
-                    pass
-                """,
-            ),
+            private mixin PrivateMixin():
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_MultipleStatements():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                public class PublicClass():
-                    pass
-                    pass
-                    pass
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            public class PublicClass():
+                pass
+                pass
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_WithBase():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                class Class1(public Base1):
-                    pass
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            class Class1(public Base1):
+                pass
 
-                class Class2(Base2):
-                    pass
+            class Class2(Base2):
+                pass
 
-                class Class3(
-                    protected
-                    Base3,
-                ):
-                    pass
-                """,
-            ),
+            class Class3(
+                protected
+                Base3,
+            ):
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_WithInterface():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                class Class1() implements Interface1:
-                    pass
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            class Class1() implements Interface1:
+                pass
 
-                class Class2() implements Interface2,:
-                    pass
+            class Class2() implements Interface2,:
+                pass
 
-                class Class3()
-                    implements Interface3
-                :
-                    pass
+            class Class3()
+                implements Interface3
+            :
+                pass
 
-                class Class4()
-                    implements Interface4,
-                :
-                    pass
+            class Class4()
+                implements Interface4,
+            :
+                pass
 
-                class Class5()
-                    implements public Interface5
-                :
-                    pass
+            class Class5()
+                implements public Interface5
+            :
+                pass
 
-                class Class6() implements (Interface6):
-                    pass
+            class Class6() implements (Interface6):
+                pass
 
-                class Class7()
-                    implements (
-                        Interface7,
-                    )
-                :
-                    pass
-                """,
-            ),
+            class Class7()
+                implements (
+                    Interface7,
+                )
+            :
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_WithInterfaces():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                class Class1() implements Interface1A, Interface1B:
-                    pass
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            class Class1() implements Interface1A, Interface1B:
+                pass
 
-                class Class2() implements Interface2A, Interface2B,:
-                    pass
+            class Class2() implements Interface2A, Interface2B,:
+                pass
 
-                class Class3() implements (Interface3A, Interface3B):
-                    pass
+            class Class3() implements (Interface3A, Interface3B):
+                pass
 
-                class Class4() implements (Interface4A, Interface4B,):
-                    pass
+            class Class4() implements (Interface4A, Interface4B,):
+                pass
 
-                class Class5() implements (
-                    Interface5A,
-                    Interface5B
-                ):
-                    pass
+            class Class5() implements (
+                Interface5A,
+                Interface5B
+            ):
+                pass
 
-                class Class6() implements (
-                    protected Interface6A,
-                    public Interface6B,
-                ):
-                    pass
+            class Class6() implements (
+                protected Interface6A,
+                public Interface6B,
+            ):
+                pass
 
-                class Class7() implements(
-                    Interface7A, Interface7B,
-                        Interface7C,
-                            Interface7D,
-                    Interface7E,
-                ):
-                    pass
-                """,
-            ),
+            class Class7() implements(
+                Interface7A, Interface7B,
+                    Interface7C,
+                        Interface7D,
+                Interface7E,
+            ):
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_WithMixin():
     # Mixins are similar to interfaces, so we don't have to go through a comprehensive set of tests
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                class Class1() uses Mixin1:
-                    pass
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            class Class1() uses Mixin1:
+                pass
 
-                class Class2() uses Mixin2,:
-                    pass
+            class Class2() uses Mixin2,:
+                pass
 
-                class Class3() uses (
-                    Mixin3,
-                ):
-                    pass
+            class Class3() uses (
+                Mixin3,
+            ):
+                pass
 
-                class Class4() uses (
-                    public Mixin4,
-                ):
-                    pass
-                """,
-            ),
+            class Class4() uses (
+                public Mixin4,
+            ):
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_WithMixins():
     # Mixins are similar to interfaces, so we don't have to go through a comprehensive set of tests
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                class Class1() uses Mixin1A, Mixin1B:
-                    pass
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            class Class1() uses Mixin1A, Mixin1B:
+                pass
 
-                class Class2() uses Mixin2A, Mixin2B,:
-                    pass
+            class Class2() uses Mixin2A, Mixin2B,:
+                pass
 
-                class Class3() uses (Mixin3A, Mixin3B):
-                    pass
+            class Class3() uses (Mixin3A, Mixin3B):
+                pass
 
-                class Class4() uses (Mixin4A, Mixin4B,):
-                    pass
+            class Class4() uses (Mixin4A, Mixin4B,):
+                pass
 
-                class Class5() uses (
-                    Mixin5A,
-                    Mixin5B
-                ):
-                    pass
+            class Class5() uses (
+                Mixin5A,
+                Mixin5B
+            ):
+                pass
 
-                class Class6() uses (
-                    protected Mixin6A,
-                    public Mixin6B,
-                ):
-                    pass
+            class Class6() uses (
+                protected Mixin6A,
+                public Mixin6B,
+            ):
+                pass
 
-                class Class7() uses(
-                    Mixin7A, Mixin7B,
-                        Mixin7C,
-                            Mixin7D,
-                    Mixin7E,
-                ):
-                    pass
-                """,
-            ),
+            class Class7() uses(
+                Mixin7A, Mixin7B,
+                    Mixin7C,
+                        Mixin7D,
+                Mixin7E,
+            ):
+                pass
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_Complex():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                class Class1(Base1) implements Interface1:
-                    pass
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            class Class1(Base1) implements Interface1:
+                pass
 
-                class Class2(Base2) uses Mixin2:
-                    pass
+            class Class2(Base2) uses Mixin2:
+                pass
 
-                class Class3(Base3) implements Interface3, uses Mixin3:
-                    pass
+            class Class3(Base3) implements Interface3, uses Mixin3:
+                pass
 
-                class Class4(Base4) uses Mixin4, implements Interface4A, Interface4B,:
-                    pass
+            class Class4(Base4) uses Mixin4, implements Interface4A, Interface4B,:
+                pass
 
-                protected immutable class Class5(Base5)
-                    implements (
-                        Interface5A,
-                        Interface5B,
-                    )
-                    uses (
-                        public Mixin5A,
-                        protected Mixin5B,
-                        private Mixin5C,
-                    )
-                :
-                    pass
-                """,
-            ),
+            protected immutable class Class5(Base5)
+                implements (
+                    Interface5A,
+                    Interface5B,
+                )
+                uses (
+                    public Mixin5A,
+                    protected Mixin5B,
+                    private Mixin5C,
+                )
+            :
+                pass
+            """,
         ),
-    )
-
-
-# ----------------------------------------------------------------------
-def test_DuplicateInterfacesTypeError():
-    with pytest.raises(DuplicateInterfacesTypeError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                class Class(Base1) uses Mixin1, uses Mixin2:
-                    pass
-                """,
-            ),
-        )
-
-    ex = ex.value
-
-    assert str(ex) == "The base type indicator 'uses' may only appear once."
-    assert ex.Type == "uses"
-    assert ex.Region.Begin.Line == 1
-    assert ex.Region.Begin.Column == 33
-    assert ex.Region.End.Line == 1
-    assert ex.Region.End.Column == ex.Region.Begin.Column + len(ex.Type)
+    )))
 
 
 # ----------------------------------------------------------------------
@@ -346,11 +299,12 @@ def test_MultipleBasesError():
                     pass
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value
 
-    assert str(ex) == "Classes can have only one base class; consider using mixins and interfaces instead."
+    assert str(ex) == "Classes can have only one base class; consider using interfaces, mixins, and traits instead."
     assert ex.Region.Begin.Line == 1
     assert ex.Region.Begin.Column == 16
     assert ex.Region.End.Line == 1
@@ -358,10 +312,33 @@ def test_MultipleBasesError():
 
 
 # ----------------------------------------------------------------------
+def test_DuplicateBaseTypeError():
+    with pytest.raises(DuplicateBaseTypeError) as ex:
+        Execute(
+            textwrap.dedent(
+                """\
+                class Class(Base1) uses Mixin1, uses Mixin2:
+                    pass
+                """,
+            ),
+            debug_string_on_exceptions=False,
+        )
+
+    ex = ex.value
+
+    assert str(ex) == "The base type indicator 'uses' may appear only once."
+    assert ex.Type == "uses"
+    assert ex.Region.Begin.Line == 1
+    assert ex.Region.Begin.Column == 33
+    assert ex.Region.End.Line == 1
+    assert ex.Region.End.Column == ex.Region.Begin.Column + len(ex.Type)
+
+
+# ----------------------------------------------------------------------
 class TestStatementsPhraseItem(object):
     # ----------------------------------------------------------------------
     def test_Standard(self):
-        result, node = ExecuteEx(
+        CompareResultsFromFile(str(Execute(
             textwrap.dedent(
                 """\
                 class Class():
@@ -371,19 +348,12 @@ class TestStatementsPhraseItem(object):
                     pass
                 """,
             ),
-        )
-
-        info = node.Children[0].Children[0].Children[0].Info
-
-        assert info.Documentation == "This is the documentation for the class."
-        assert info.Regions.Documentation.Begin.Line == 2
-        assert info.Regions.Documentation.Begin.Column == 5
-        assert info.Regions.Documentation.End.Line == 4
-        assert info.Regions.Documentation.End.Column == 8
+        )))
 
     # ----------------------------------------------------------------------
+    @pytest.mark.skip("TODO: Depends on Compiler Statements")
     def test_RemovedStatements(self):
-        result, node = ExecuteEx(
+        CompareResultsFromFile(str(Execute(
             textwrap.dedent(
                 """\
                 class Class():
@@ -401,11 +371,7 @@ class TestStatementsPhraseItem(object):
                         pass
                 """,
             ),
-        )
-
-        info = node.Children[0].Children[0].Children[0].Info
-
-        assert len(info.Statements) == 1
+        )))
 
     # ----------------------------------------------------------------------
     def test_InvalidDocumentation(self):
@@ -420,6 +386,7 @@ class TestStatementsPhraseItem(object):
                             >>>
                     """,
                 ),
+                debug_string_on_exceptions=False,
             )
 
         ex = ex.value
@@ -447,11 +414,12 @@ class TestStatementsPhraseItem(object):
                         pass
                     """,
                 ),
+                debug_string_on_exceptions=False,
             )
 
         ex = ex.value
 
-        assert str(ex) == "There may only be one docstring within a single scope."
+        assert str(ex) == "There may only be one docstring within a scope."
         assert ex.Region.Begin.Line == 5
         assert ex.Region.Begin.Column == 5
         assert ex.Region.End.Line == 8
@@ -472,6 +440,7 @@ class TestStatementsPhraseItem(object):
 
                     """,
                 ),
+                debug_string_on_exceptions=False,
             )
 
         ex = ex.value
@@ -504,6 +473,7 @@ class TestStatementsPhraseItem(object):
 
                     """,
                 ),
+                debug_string_on_exceptions=False,
             )
 
         ex = ex.value
@@ -513,3 +483,26 @@ class TestStatementsPhraseItem(object):
         assert ex.Region.Begin.Column == 5
         assert ex.Region.End.Line == 13
         assert ex.Region.End.Column == 8
+
+    # ----------------------------------------------------------------------
+    def test_ClassStatementsRequiredError(self):
+        with pytest.raises(ClassStatementsRequiredError) as ex:
+            Execute(
+                textwrap.dedent(
+                    """\
+                    class Invalid():
+                        <<<
+                        A docstring cannot be the only statement within a class.
+                        >>>
+                    """,
+                ),
+                debug_string_on_exceptions=False,
+            )
+
+        ex = ex.value
+
+        assert str(ex) == "Classes must have at least one statement."
+        assert ex.Region.Begin.Line == 1
+        assert ex.Region.Begin.Column == 16
+        assert ex.Region.End.Line == 5
+        assert ex.Region.End.Column == 1

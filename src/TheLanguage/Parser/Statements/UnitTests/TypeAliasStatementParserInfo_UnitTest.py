@@ -3,7 +3,7 @@
 # |  TypeAliasStatementParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-16 11:53:57
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |

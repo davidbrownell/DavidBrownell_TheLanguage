@@ -3,7 +3,7 @@
 # |  VariableNameParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 09:35:37
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit tests for VariableName.py"""
+"""Unit test for VariableNameParserInfo.py"""
 
 import os
 
@@ -28,19 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..VariableNameParserInfo import *
-    from ...Common.AutomatedTests import CreateRegion
 
 
 # ----------------------------------------------------------------------
-def test_Data():
-    info = VariableNameParserInfo(
-        [
-            CreateRegion(1, 2, 300, 400),
-            CreateRegion(1, 2, 3, 4),
-        ],
-        "TheName"
-    )
-
-    assert info.Name == "TheName"
-    assert info.Regions.Self__ == CreateRegion(1, 2, 300, 400)
-    assert info.Regions.Name == CreateRegion(1, 2, 3, 4)
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
+def test_Placeholder():
+    assert True

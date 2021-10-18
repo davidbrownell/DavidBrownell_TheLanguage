@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PhraseDSL_UnitTest.py
+# |  DSL_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-12 16:26:38
+# |      2021-09-24 16:43:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -327,6 +327,7 @@ class TestLexIndentAndDedent(object):
                 ),
             ),
             parse_mock,
+            single_threaded=True,
         )
 
         CompareResultsFromFile(str(result))
@@ -470,7 +471,7 @@ class TestDynamicPhrases(object):
     @staticmethod
     @pytest.fixture
     def modified_parse_mock(parse_mock):
-        parse_mock.GetDynamicPhrases.side_effect = lambda unique_id, value: (None, [TestDynamicPhrases._word_phrase, TestDynamicPhrases._number_phrase] if value == DynamicPhrasesType.Statements else [TestDynamicPhrases._number_phrase])
+        parse_mock.GetDynamicPhrases.side_effect = lambda unique_id, value: ([TestDynamicPhrases._word_phrase, TestDynamicPhrases._number_phrase] if value == DynamicPhrasesType.Statements else [TestDynamicPhrases._number_phrase], None)
 
         return parse_mock
 
@@ -601,7 +602,7 @@ class TestOrPhrases(object):
         result = await self._phrase.LexAsync(("root", ), CreateIterator("word"), parse_mock)
 
         assert result is None
-        assert len(parse_mock.method_calls) == 10
+        assert len(parse_mock.method_calls) == 18
 
 
 # ----------------------------------------------------------------------
@@ -650,10 +651,10 @@ class TestEmbeddedOrPhrases(object):
 class TestRepeatPhrases(object):
     _phrase                                 = CreatePhrase(
         [
-            PhraseItem([_word_token, NewlineToken()], arity="*"),
-            PhraseItem([_number_token, NewlineToken()], arity="+"),
-            PhraseItem([_upper_token, NewlineToken()], arity="?"),
-            PhraseItem([_word_token, NewlineToken()], arity="+"),
+            ZeroOrMorePhraseItem([_word_token, NewlineToken()]),
+            OneOrMorePhraseItem([_number_token, NewlineToken()]),
+            OptionalPhraseItem([_upper_token, NewlineToken()]),
+            OneOrMorePhraseItem([_word_token, NewlineToken()]),
         ],
     )
 
@@ -833,14 +834,16 @@ class TestRepeatSimilarPhrases(object):
     # second phrase.
     _phrase                                 = CreatePhrase(
         item=[
-            PhraseItem(
-                name="Word & Number",
-                item=[_word_token, _number_token],
-                arity="*",
+            ZeroOrMorePhraseItem(
+                PhraseItem.Create(
+                    name="Word & Number",
+                    item=[_word_token, _number_token],
+                ),
             ),
-            PhraseItem(
-                item=_word_token,
-                arity="?",
+            OptionalPhraseItem(
+                PhraseItem.Create(
+                    item=_word_token,
+                ),
             ),
         ],
     )
@@ -872,22 +875,26 @@ class TestNamedPhrases(object):
     _phrase                                 = CreatePhrase(
         name="__Phrase__",
         item=[
-            PhraseItem(name="__Dynamic__", item=DynamicPhrasesType.Statements),
-            PhraseItem(
+            PhraseItem.Create(name="__Dynamic__", item=DynamicPhrasesType.Statements),
+            PhraseItem.Create(
                 name="__Or__",
-                item=(
-                    _word_line_phrase,
-                    PhraseItem(name="Upper Line", item=[_upper_token, NewlineToken()]),
-                ),
+                item=OrPhraseItem()
+                    | _word_line_phrase
+                    | PhraseItem.Create(name="Upper Line", item=[_upper_token, NewlineToken()])
+                ,
             ),
-            PhraseItem(name="__Repeat__", item=[_number_token, NewlineToken()], arity=(2, 2)),
+            CustomArityPhraseItem(
+                PhraseItem.Create(name="__Repeat__", item=[_number_token, NewlineToken()]),
+                2,
+                2,
+            ),
         ],
     )
 
     # ----------------------------------------------------------------------
     @pytest.fixture
     def modified_parse_mock(self, parse_mock):
-        parse_mock.GetDynamicPhrases.side_effect = lambda unique_id, value: (None, [self._word_line_phrase])
+        parse_mock.GetDynamicPhrases.side_effect = lambda unique_id, value: ([self._word_line_phrase], None)
 
         return parse_mock
 
@@ -935,14 +942,15 @@ class TestNamedPhrases(object):
 # ----------------------------------------------------------------------
 class TestComments(object):
     _multiline_phrase                       = CreatePhrase(
-        PhraseItem(
-            name="Multiline",
-            item=[
-                [_word_token, NewlineToken()],
-                [_upper_token, NewlineToken()],
-                [_number_token, NewlineToken()],
-            ],
-            arity="+",
+        OneOrMorePhraseItem(
+            PhraseItem.Create(
+                name="Multiline",
+                item=[
+                    [_word_token, NewlineToken()],
+                    [_upper_token, NewlineToken()],
+                    [_number_token, NewlineToken()],
+                ],
+            ),
         ),
     )
 
@@ -1103,7 +1111,7 @@ class TestRecursiveRepeatPhrase(object):
         item=[
             [_number_token, NewlineToken()],
             (
-                PhraseItem(None, arity=(1, 2)),
+                CustomArityPhraseItem(None, 1, 2),
                 [_word_token, NewlineToken()]
             ),
         ],
@@ -1182,6 +1190,7 @@ async def test_IgnoreWhitespace(parse_mock):
             PushIgnoreWhitespaceControlToken(),
             _word_token,
             _word_token,
+            _word_token,
             PopIgnoreWhitespaceControlToken(),
         ],
     )
@@ -1191,12 +1200,10 @@ async def test_IgnoreWhitespace(parse_mock):
         CreateIterator(
             textwrap.dedent(
                 """\
+                worda
+                            wordb
 
-
-
-                            worda
-
-                    wordb
+                    wordc
 
                 """,
             ),

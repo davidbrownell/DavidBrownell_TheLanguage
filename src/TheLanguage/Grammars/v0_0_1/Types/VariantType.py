@@ -3,7 +3,7 @@
 # |  VariantType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-11 14:34:08
+# |      2021-10-12 11:31:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -15,9 +15,10 @@
 # ----------------------------------------------------------------------
 """Contains the VariantType object"""
 
+import itertools
 import os
 
-from typing import cast, List, Optional
+from typing import Callable, cast, List, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,22 +32,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-    from ....Parser.Types.VariantTypeParserInfo import (
-        TypeParserInfo,
-        VariantTypeParserInfo,
-    )
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrasesType,
         ExtractDynamic,
         ExtractRepeat,
         ExtractSequence,
-        Node,
-        PhraseItem,
+        ZeroOrMorePhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Types.VariantTypeParserInfo import (
+        TypeParserInfo,
+        VariantTypeParserInfo,
     )
 
 
@@ -67,7 +68,7 @@ class VariantType(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(VariantType, self).__init__(
-            GrammarPhrase.Type.Type,
+            DynamicPhrasesType.Types,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -75,26 +76,22 @@ class VariantType(GrammarPhrase):
                     "(",
                     CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # <type>
+                    # <type> '|'
                     DynamicPhrasesType.Types,
-
-                    # '|'
                     "|",
 
-                    # (<type> '|')*
-                    PhraseItem(
+                    ZeroOrMorePhraseItem.Create(
                         name="Type and Sep",
                         item=[
                             DynamicPhrasesType.Types,
                             "|",
                         ],
-                        arity="*",
                     ),
 
                     # <type>
                     DynamicPhrasesType.Types,
 
-                    # ")"
+                    # ')'
                     CommonTokens.PopIgnoreWhitespaceControl,
                     ")",
                 ],
@@ -105,37 +102,39 @@ class VariantType(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 8
 
             type_infos: List[TypeParserInfo] = []
 
-            # <type>
-            type_infos.append(cast(TypeParserInfo, GetParserInfo(ExtractDynamic(cast(Node, nodes[2])))))
+            for child_node in itertools.chain(
+                [nodes[2]],
+                [
+                    ExtractSequence(delimited_node)[0]
+                    for delimited_node in cast(
+                        List[AST.Node],
+                        ExtractRepeat(cast(AST.Node, nodes[4])),
+                    )
+                ],
+                [nodes[5]],
+            ):
+                type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, child_node)))
+                type_infos.append(cast(TypeParserInfo, GetParserInfo(type_node)))
 
-            # (<type> '|') *
-            for child in cast(List[Node], ExtractRepeat(cast(Node, nodes[4]))):
-                child_nodes = ExtractSequence(child)
-                assert len(child_nodes) == 2
-
-                type_infos.append(cast(TypeParserInfo, GetParserInfo(ExtractDynamic(cast(Node, child_nodes[0])))))
-
-            # <type>
-            type_infos.append(cast(TypeParserInfo, GetParserInfo(ExtractDynamic(cast(Node, nodes[5])))))
-
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                VariantTypeParserInfo(
-                    CreateParserRegions(node, node),  # type: ignore
-                    type_infos,
-                ),
+            return VariantTypeParserInfo(
+                CreateParserRegions(node),  # type: ignore
+                type_infos,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

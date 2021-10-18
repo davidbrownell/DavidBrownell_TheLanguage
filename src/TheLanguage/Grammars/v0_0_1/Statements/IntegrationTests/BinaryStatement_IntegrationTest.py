@@ -3,7 +3,7 @@
 # |  BinaryStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-17 22:28:07
+# |      2021-10-12 14:11:24
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for BinaryStatement.py"""
+"""Automated tests for BinaryStatement.py"""
 
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,41 +28,37 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..BinaryStatement import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_Mathematical():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 += expr1
-                value2 -= expr2
-                value3 *= expr3
-                value4 **= expr4
-                value5 /= expr5
-                value6 //= expr6
-                value7 %= expr7
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 += expr1
+            value2 -= expr2
+            value3 *= expr3
+            value4 **= expr4
+            value5 /= expr5
+            value6 //= expr6
+            value7 %= expr7
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_BitManipulation():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 <<= expr1
-                value2 >>= expr2
-                value3 ^= expr3
-                value4 |= expr4
-                value5 &= expr5
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 <<= expr1
+            value2 >>= expr2
+            value3 ^= expr3
+            value4 |= expr4
+            value5 &= expr5
+            """,
         ),
-    )
+    )))

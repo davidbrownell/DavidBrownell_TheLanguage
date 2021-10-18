@@ -3,7 +3,7 @@
 # |  ClassStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-17 00:32:50
+# |      2021-10-08 13:10:32
 # |
 # ----------------------------------------------------------------------
 # |
@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Dict, List, Optional, Tuple, Type
+from typing import Callable, cast, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -37,19 +37,14 @@ with InitRelativeImports():
     from ..Common import AttributesPhraseItem
     from ..Common import ClassModifier
     from ..Common import StatementsPhraseItem
+
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
+
     from ..Common.Impl import ModifierImpl
 
-    from ...GrammarError import GrammarError
-    from ...GrammarPhrase import CreateParserRegion, CreateParserRegions, GrammarPhrase
-
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-    from ....Parser.Statements.ClassStatementParserInfo import (
-        ClassDependencyParserInfo,
-        ClassStatementParserInfo,
-        ClassType,
-    )
+    from ...Error import Error
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
@@ -58,27 +53,52 @@ with InitRelativeImports():
         ExtractRepeat,
         ExtractSequence,
         ExtractToken,
-        Leaf,
-        Node,
+        OptionalPhraseItem,
         PhraseItem,
+        ZeroOrMorePhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, CreateParserRegion, GetParserInfo
+
+    from ....Parser.Statements.ClassStatementParserInfo import (
+        ClassDependencyParserInfo,
+        ClassStatementParserInfo,
+        ClassType,
+    )
+
+    # Convenience imports
+    # <<unused-import> pylint: disable=W0611
+    from ..Common.StatementsPhraseItem import (
+        InvalidDocstringError,
+        MultipleDocstringsError,
+        MisplacedDocstringError,
+        StatementsRequiredError,
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class DuplicateInterfacesTypeError(GrammarError):
+class MultipleBasesError(Error):
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Classes can have only one base class; consider using interfaces, mixins, and traits instead.",
+    )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class DuplicateBaseTypeError(Error):
     Type: str
 
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "The base type indicator '{Type}' may only appear once.",
+        "The base type indicator '{Type}' may appear only once.",
     )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class MultipleBasesError(GrammarError):
+class ClassStatementsRequiredError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        "Classes can have only one base class; consider using mixins and interfaces instead.",
+        "Classes must have at least one statement.",
     )
 
 
@@ -87,9 +107,15 @@ class ClassStatement(GrammarPhrase):
     """\
     Statement that creates a class.
 
-    <attributes>? <visibility>? <class_type>? 'class'|'interface'|'mixin'|'enum'|'exception' <name>
+    <attributes>?
+    <visibility>?
+    <class_type>?
+    ('class' | 'enum' | 'exception' | 'interface' | 'mixin' | 'primitive' | 'struct' | 'trait')
+    <name>
         '(' (<base_visibility>? <name>)? ')'
-            ('implements'|'uses' <name> (',' <name>)* ','?)){2}
+        (
+            ('implements' | 'uses')) <name> (',' <name>)* ','?
+        )*
     ':'
         <statement>+
 
@@ -114,25 +140,20 @@ class ClassStatement(GrammarPhrase):
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
-    class BaseTypeIndicator(ModifierImpl.StandardMixin, Enum):
+    class BaseTypeIndicator(Enum):
         implements                          = auto()
         uses                                = auto()
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
-    # ----------------------------------------------------------------------
     def __init__(self):
         # <visibility>? <name>
-        base_item = PhraseItem(
+        base_item = PhraseItem.Create(
             name="Base Item",
             item=[
                 # <visibility>?
-                PhraseItem(
+                OptionalPhraseItem.Create(
                     name="Visibility",
                     item=VisibilityModifier.CreatePhraseItem(),
-                    arity="?",
                 ),
 
                 # <name>
@@ -141,57 +162,53 @@ class ClassStatement(GrammarPhrase):
         )
 
         # <base_item> (',' <base_item>)* ','?
-        base_items = PhraseItem(
+        base_items = PhraseItem.Create(
             name="Base Items",
             item=[
                 # <base_item>
                 base_item,
 
                 # (',' <base_item>)*
-                PhraseItem(
-                    name="Comma and Content",
+                ZeroOrMorePhraseItem.Create(
+                    name="Comma and Base",
                     item=[
                         ",",
                         base_item,
                     ],
-                    arity="*",
                 ),
 
                 # ','?
-                PhraseItem(
+                OptionalPhraseItem.Create(
                     name="Trailing Comma",
                     item=",",
-                    arity="?",
                 ),
             ],
         )
 
         super(ClassStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <attributes>?
+                    # <attributes>*
                     AttributesPhraseItem.Create(),
 
                     # <visibility>? (class)
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Visibility",
                         item=VisibilityModifier.CreatePhraseItem(),
-                        arity="?",
                     ),
 
                     # <class_modifier>?
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Class Modifier",
                         item=ClassModifier.CreatePhraseItem(),
-                        arity="?",
                     ),
 
-                    # 'class'|'interface'|'mixin'|'enum'|'exception'
-                    PhraseItem(
+                    # ('class' | 'enum' | 'exception' | 'interface' | 'mixin' | 'primitive' | 'struct' | 'trait')
+                    PhraseItem.Create(
                         name="Class Type",
-                        item=self._CreateClassTypePhraseItem(),
+                        item=self.__class__._CreateClassTypePhraseItem(),
                     ),
 
                     # <name> (class)
@@ -201,29 +218,29 @@ class ClassStatement(GrammarPhrase):
                     "(",
                     CommonTokens.PushIgnoreWhitespaceControl,
 
-                    PhraseItem(
+                    OptionalPhraseItem.Create(
                         name="Base Items",
                         item=base_items,
-                        arity="?",
                     ),
 
                     # ')'
                     CommonTokens.PopIgnoreWhitespaceControl,
                     ")",
 
-                    # Implements / Uses
+                    # Implements/Uses
                     CommonTokens.PushIgnoreWhitespaceControl,
-                    PhraseItem(
+
+                    ZeroOrMorePhraseItem.Create(
                         name="Implements and Uses",
                         item=[
-                            # 'implements'|'uses'
-                            self.BaseTypeIndicator.CreatePhraseItem(),
+                            # ('implements' | 'uses')
+                            self.__class__.BaseTypeIndicator.CreatePhraseItem(),  # type: ignore
 
                             # Items
-                            PhraseItem(
+                            PhraseItem.Create(
                                 item=(
                                     # '(' <base_items> ')'
-                                    PhraseItem(
+                                    PhraseItem.Create(
                                         name="Grouped",
                                         item=[
                                             "(",
@@ -241,11 +258,11 @@ class ClassStatement(GrammarPhrase):
                                 ),
 
                                 # Use the order to disambiguate between group clauses and tuples.
-                                ordered_by_priority=True,
+                                ambiguities_resolved_by_order=True,
                             ),
                         ],
-                        arity="*",
                     ),
+
                     CommonTokens.PopIgnoreWhitespaceControl,
 
                     StatementsPhraseItem.Create(),
@@ -258,41 +275,46 @@ class ClassStatement(GrammarPhrase):
     @Interface.override
     def ExtractParserInfo(
         cls,
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 14
 
         # <attributes>*
-        attributes_data = AttributesPhraseItem.ExtractData(cast(Optional[Node], nodes[0]))
+        attributes_node = cast(Optional[AST.Node], nodes[0])
+        attribute_data = AttributesPhraseItem.ExtractLexerData(attributes_node)
+
+        # TODO: Leverage attribute_data
 
         # <visibility>?
-        visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[1])))
-
-        if visibility_node is not None:
-            visibility_info = VisibilityModifier.Extract(visibility_node)
-        else:
+        visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
+        if visibility_node is None:
             visibility_info = None
+        else:
+            visibility_info = VisibilityModifier.Extract(visibility_node)
 
         # <class_modifier>?
-        class_modifier_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))
-
-        if class_modifier_node is not None:
-            class_modifier_info = ClassModifier.Extract(class_modifier_node)
-        else:
+        class_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[2])))
+        if class_modifier_node is None:
             class_modifier_info = None
+        else:
+            class_modifier_info = ClassModifier.Extract(class_modifier_node)
 
         # <class_type>
-        class_type_node = cast(Node, nodes[3])
+        class_type_node = cast(AST.Node, nodes[3])
         class_type_info = cls._ExtractClassType(class_type_node)
 
         # <name>
-        class_name_leaf = cast(Leaf, nodes[4])
+        class_name_leaf = cast(AST.Leaf, nodes[4])
         class_name_info = cast(str, ExtractToken(class_name_leaf))
 
         # Base Info
-        base_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[7])))
-
+        base_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
         if base_node is None:
             base_info = None
         else:
@@ -304,75 +326,73 @@ class ClassStatement(GrammarPhrase):
 
             base_info = base_infos[0]
 
-        # Interfaces and Mixins
-        interfaces_and_mixins: Dict[
-            Type[ClassStatement.BaseTypeIndicator],
+        # Implements/Uses
+        implements_and_uses: Dict[
+            ClassStatement.BaseTypeIndicator,
             Tuple[
-                Node,
+                AST.Node,
                 List[ClassDependencyParserInfo],
             ]
         ] = {}
 
-        for this_base_node in cast(List[Node], ExtractRepeat(cast(Node, nodes[11]))):
+        for this_base_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, nodes[11]))):
             base_nodes = ExtractSequence(this_base_node)
             assert len(base_nodes) == 2
 
-            # 'implements'|'uses'
-            base_type_node = cast(Node, base_nodes[0])
-            base_type = cls.BaseTypeIndicator.Extract(base_type_node)
+            # 'implements' | 'uses'
+            base_type_node = cast(AST.Node, base_nodes[0])
+            base_type_info = cls.BaseTypeIndicator.Extract(base_type_node)  # type: ignore
 
-            if base_type in interfaces_and_mixins:
-                raise DuplicateInterfacesTypeError.FromNode(base_type_node, base_type.name)
+            if base_type_info in implements_and_uses:
+                raise DuplicateBaseTypeError.FromNode(base_type_node, base_type_info.name)
 
             # Items
-            base_node_items = cast(Node, ExtractOr(cast(Node, base_nodes[1])))
+            base_node_items = cast(AST.Node, ExtractOr(cast(AST.Node, base_nodes[1])))
+
             assert base_node_items.Type is not None
-
             if base_node_items.Type.Name == "Grouped":
-                base_node_items = ExtractSequence(base_node_items)[2]
+                base_node_items = cast(AST.Node, ExtractSequence(base_node_items)[2])
 
-            interfaces_and_mixins[base_type] = (
+            implements_and_uses[base_type_info] = (
                 this_base_node,
-                cls._ExtractBaseInfo(cast(Node, base_node_items)),
+                cls._ExtractBaseInfo(base_node_items),
             )
 
         # Statements
-        statements_node = cast(Node, nodes[13])
+        statements_node = cast(AST.Node, nodes[13])
 
-        # TODO: Leverage attributes
+        # Note that the statements aren't fully available right now, so we will
+        # have to extract that information on the second pass
 
-        # pylint: disable=too-many-function-args
-        SetParserInfo(
-            node,
-            ClassStatementParserInfo(
-                CreateParserRegions(
-                    node,
-                    visibility_node,
-                    class_modifier_node,
-                    class_type_node,
-                    class_name_leaf,
-                    base_node,
-                    interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None,))[0],  # type: ignore
-                    interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None,))[0],  # type: ignore
-                    statements_node,
-                    None, # Documentation
-                ),
-                visibility_info,  # type: ignore
-                class_modifier_info,  # type: ignore
-                class_type_info,
-                class_name_info,  # type: ignore
-                base_info,  # type: ignore
-                interfaces_and_mixins.get(cls.BaseTypeIndicator.implements, (None, None))[1], # type: ignore
-                interfaces_and_mixins.get(cls.BaseTypeIndicator.uses, (None, None))[1],  # type: ignore
-            ),
+        parser_info = ClassStatementParserInfo(
+            CreateParserRegions(
+                node,
+                visibility_node,
+                class_modifier_node,
+                class_type_node,
+                class_name_leaf,
+                base_node,
+                implements_and_uses.get(cls.BaseTypeIndicator.implements, (None,))[0],
+                implements_and_uses.get(cls.BaseTypeIndicator.uses, (None,))[0],
+                statements_node,
+                None,
+            ),  # type: ignore
+            visibility_info,  # type: ignore
+            class_modifier_info,  # type: ignore
+            class_type_info,
+            class_name_info,
+            base_info,
+            implements_and_uses.get(cls.BaseTypeIndicator.implements, (None, None))[1],
+            implements_and_uses.get(cls.BaseTypeIndicator.uses, (None, None))[1],
         )
 
         # ----------------------------------------------------------------------
         def FinalConstruct():
             # <statement>+
-            statements_info, docstring_info = StatementsPhraseItem.ExtractParserInfoWithDocstrings(
-                statements_node,
-            )
+            (
+                statement_info,
+                docstring_info,
+            ) = StatementsPhraseItem.ExtractParserInfoWithDocstrings(statements_node)
 
             if docstring_info is not None:
                 docstring_info = (
@@ -380,33 +400,37 @@ class ClassStatement(GrammarPhrase):
                     CreateParserRegion(docstring_info[1]),
                 )
 
-            lexer_info = cast(ClassStatementParserInfo, GetParserInfo(node))
-            lexer_info.FinalConstruct(statements_info, docstring_info)
+                if not statement_info:
+                    raise ClassStatementsRequiredError.FromNode(statements_node)
+
+            parser_info.FinalConstruct(statement_info, docstring_info)
+
+            return parser_info
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(FinalConstruct)
+        return (parser_info, FinalConstruct)
 
     # ----------------------------------------------------------------------
     @classmethod
     def GetContainingClassParserInfo(
         cls,
-        child_node: Node,
+        child_node: AST.Node,
         # Taking this as a parameter to avoid circular dependencies, as
-        # FuncAndMethodDefinitionStatement.py imports this file.
-        func_and_method_statement_name: str,
+        # FuncDefinitionStatement.py imports this file.
+        func_definition_statement_phrase_name: str,
     ) -> Optional[ClassStatementParserInfo]:
-        """Returns the ClassStatementParserInfo for the class that contains the given node"""
+        """Returns the ClassStatementParserInfo for the class that contains the given node (if any)"""
 
         node = child_node.Parent
 
         while node is not None:
-            if node.Type:
+            if node.Type is not None:
                 if node.Type.Name == cls.PHRASE_NAME:
-                    return getattr(node, "Info")
+                    return cast(ClassStatementParserInfo, GetParserInfo(node))
 
-                if node.Type.Name == func_and_method_statement_name:
-                    return None
+                if node.Type.Name == func_definition_statement_phrase_name:
+                    break
 
             node = node.Parent
 
@@ -415,14 +439,14 @@ class ClassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    _CreateClassTypePhraseItem              = staticmethod(ModifierImpl.CreateByValueCreatePhraseItemFunc(ClassType))
-    _ExtractClassType                       = staticmethod(ModifierImpl.CreateByValueExtractFunc(ClassType))
+    _CreateClassTypePhraseItem              = staticmethod(ModifierImpl.ByValueCreatePhraseItemFuncFactory(ClassType))
+    _ExtractClassType                       = staticmethod(ModifierImpl.ByValueExtractFuncFactory(ClassType))
 
     # ----------------------------------------------------------------------
     @classmethod
     def _ExtractBaseInfo(
         cls,
-        node: Node,
+        node: AST.Node,
     ) -> List[ClassDependencyParserInfo]:
         nodes = ExtractSequence(node)
         assert len(nodes) == 3
@@ -433,41 +457,40 @@ class ClassStatement(GrammarPhrase):
             [nodes[0]],
             [
                 ExtractSequence(delimited_node)[1]
-                for delimited_node in cast(List[Node], ExtractRepeat(
-                    cast(Optional[Node],
-                    nodes[1])),
+                for delimited_node in cast(
+                    List[AST.Node],
+                    ExtractRepeat(cast(Optional[AST.Node], nodes[1])),
                 )
             ],
         ):
             assert base_item is not None
 
-            base_items = ExtractSequence(cast(Node, base_item))
+            base_items = ExtractSequence(cast(AST.Node, base_item))
             assert len(base_items) == 2
 
             # <visibility>?
-            visibility_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], base_items[0])))
-
-            if visibility_node is not None:
-                visibility_info = VisibilityModifier.Extract(visibility_node)
-            else:
+            visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], base_items[0])))
+            if visibility_node is None:
                 visibility_info = None
+            else:
+                visibility_info = VisibilityModifier.Extract(visibility_node)
 
             # <name>
-            name_leaf = cast(Leaf, base_items[1])
+            name_leaf = cast(AST.Leaf, base_items[1])
             name_info = cast(str, ExtractToken(name_leaf))
 
-            # Commit the results
             results.append(
-                # <Too many positional arguments> pylint: disable=too-many-function-args
+                # pylint: disable=too-many-function-args
                 ClassDependencyParserInfo(
-                    CreateParserRegions(
-                        node,
-                        visibility_node,
-                        name_leaf,
-                    ),  # type: ignore
+                    CreateParserRegions(node, visibility_node, name_leaf),  # type: ignore
                     visibility_info,  # type: ignore
-                    name_info,  # type: ignore
+                    name_info,
                 ),
             )
 
+        assert results
         return results
+
+
+ClassStatement.BaseTypeIndicator.CreatePhraseItem       = staticmethod(ModifierImpl.StandardCreatePhraseItemFuncFactory(ClassStatement.BaseTypeIndicator))  # type: ignore
+ClassStatement.BaseTypeIndicator.Extract                = staticmethod(ModifierImpl.StandardExtractFuncFactory(ClassStatement.BaseTypeIndicator))  # type: ignore

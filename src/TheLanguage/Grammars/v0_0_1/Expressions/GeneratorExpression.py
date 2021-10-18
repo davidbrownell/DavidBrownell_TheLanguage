@@ -3,7 +3,7 @@
 # |  GeneratorExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-18 19:13:34
+# |      2021-10-04 09:56:09
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,24 +32,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .TernaryExpression import TernaryExpression
 
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
+
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractOptional,
+        ExtractSequence,
+        OptionalPhraseItem,
+        PhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
 
     from ....Parser.Expressions.GeneratorExpressionParserInfo import (
         ExpressionParserInfo,
         GeneratorExpressionParserInfo,
         NameParserInfo,
-    )
-
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractOptional,
-        ExtractSequence,
-        Node,
-        PhraseItem,
     )
 
 
@@ -58,7 +57,7 @@ class GeneratorExpression(GrammarPhrase):
     """\
     Expression that generates values.
 
-    <expr> 'for' <name> 'in' <expr> ('if' <expr>)?
+    <expression> 'for' <name> 'in' <expression> ('if' <expression>)?
 
     Examples:
         AddOne(value) for value in OneToTen()
@@ -70,11 +69,11 @@ class GeneratorExpression(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(GeneratorExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
 
                     # 'for'
@@ -86,27 +85,23 @@ class GeneratorExpression(GrammarPhrase):
                     # 'in'
                     "in",
 
-                    # <expr>
-                    PhraseItem(
+                    # <expression>
+                    PhraseItem.Create(
                         item=DynamicPhrasesType.Expressions,
 
                         # Don't let the TernaryExpression capture the 'if' token that may follow, as
-                        # the TernaryExpression expects an 'else' clause, but the following 'if' will
-                        # never have one.
-                        exclude=[TernaryExpression.PHRASE_NAME],
+                        # the TernaryExpression requires an 'else' clause. This will never match
+                        # here, as there will never be an else clause prior to the 'if' below.
+                        exclude_phrases=[TernaryExpression.PHRASE_NAME],
                     ),
 
-                    # ('if' <expr>)?
-                    PhraseItem(
+                    # ('if' <expression>)?
+                    OptionalPhraseItem.Create(
                         name="Conditional",
                         item=[
-                            # 'if'
                             "if",
-
-                            # <expr>
                             DynamicPhrasesType.Expressions,
                         ],
-                        arity="?",
                     ),
                 ],
             ),
@@ -116,55 +111,50 @@ class GeneratorExpression(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 6
 
-            # <expr>
-            display_node = cast(Node, ExtractDynamic(cast(Node, nodes[0])))
-            display_info = cast(ExpressionParserInfo, GetParserInfo(display_node))
+            # <expression>: Result
+            result_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
+            result_info = cast(ExpressionParserInfo, GetParserInfo(result_node))
 
             # <name>
-            name_node = cast(Node, ExtractDynamic(cast(Node, nodes[2])))
+            name_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
             name_info = cast(NameParserInfo, GetParserInfo(name_node))
 
-            # <expr>
-            source_node = cast(Node, ExtractDynamic(cast(Node, nodes[4])))
+            # <expression>: Source
+            source_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[4])))
             source_info = cast(ExpressionParserInfo, GetParserInfo(source_node))
 
-            # ('if' <expr>)?
-            conditional_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[5])))
+            # ('if' <expression>)?
+            conditional_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[5])))
 
-            if conditional_node is not None:
+            if conditional_node is None:
+                conditional_info = None
+            else:
                 conditional_nodes = ExtractSequence(conditional_node)
                 assert len(conditional_nodes) == 2
 
-                expr_node = cast(Node, ExtractDynamic(cast(Node, conditional_nodes[1])))
-                conditional_info = cast(ExpressionParserInfo, GetParserInfo(expr_node))
-            else:
-                conditional_info = None
+                conditional_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, conditional_nodes[1])))
+                conditional_info = cast(ExpressionParserInfo, GetParserInfo(conditional_node))
 
-            # pylint: disable=too-many-function-args
-            SetParserInfo(
-                node,
-                GeneratorExpressionParserInfo(
-                    CreateParserRegions(  # type: ignore
-                        node,
-                        display_node,
-                        name_node,
-                        source_node,
-                        conditional_node,
-                    ),
-                    display_info,
-                    name_info,
-                    source_info,
-                    conditional_info,
-                ),
+            return GeneratorExpressionParserInfo(
+                CreateParserRegions(node, result_node, name_node, source_node, conditional_node),  # type: ignore
+                result_info,
+                name_info,
+                source_info,
+                conditional_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

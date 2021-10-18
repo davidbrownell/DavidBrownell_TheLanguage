@@ -1,20 +1,20 @@
-# <class 'TheLanguage.Lexer.Components.AST.RootNode'>
+# <class 'TheLanguage.Lexer.Components.AST.Node'>
 Children:
+  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+    IsIgnored: True
+    IterBegin: "[1, 1] (0)"
+    IterEnd: "[2, 1] (1)"
+    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+      End: 1
+      Start: 0
+    Whitespace: None
   - # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
         Children:
           - # <class 'TheLanguage.Lexer.Components.AST.Node'>
             Children:
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
-                IsIgnored: True
-                IterBegin: "[1, 1] (0)"
-                IterEnd: "[2, 1] (1)"
-                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
-                  End: 1
-                  Start: 0
-                Whitespace: None
               - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
                 IsIgnored: False
                 IterBegin: "[2, 1] (1)"
@@ -32,15 +32,19 @@ Children:
                   End: 6
                   Start: 5
                 Whitespace: None
+            IsIgnored: False
             IterBegin: "[2, 1] (1)"
             IterEnd: "[3, 1] (6)"
             Type: "Lower Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+        IsIgnored: False
         IterBegin: "[2, 1] (1)"
         IterEnd: "[3, 1] (6)"
         Type: "(Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
     IterBegin: "[2, 1] (1)"
     IterEnd: "[3, 1] (6)"
-    Type: "Dynamic Phrases <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+IsIgnored: False
 IterBegin: "[2, 1] (1)"
 IterEnd: "[3, 1] (6)"
 Type: "<None>"

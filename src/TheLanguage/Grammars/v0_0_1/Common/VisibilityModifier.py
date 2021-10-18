@@ -3,7 +3,7 @@
 # |  VisibilityModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-11 15:25:18
+# |      2021-10-08 13:22:47
 # |
 # ----------------------------------------------------------------------
 # |
@@ -28,9 +28,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Impl import ModifierImpl
-    from ....Parser.Common.VisibilityModifier import VisibilityModifier as VisibilityModifier
+    from ....Parser.Common.VisibilityModifier import VisibilityModifier
 
 
 # ----------------------------------------------------------------------
-CreatePhraseItem                            = ModifierImpl.CreateStandardCreatePhraseItemFunc(VisibilityModifier)
-Extract                                     = ModifierImpl.CreateStandardExtractFunc(VisibilityModifier)
+CreatePhraseItem                            = ModifierImpl.StandardCreatePhraseItemFuncFactory(VisibilityModifier)
+Extract                                     = ModifierImpl.StandardExtractFuncFactory(VisibilityModifier)

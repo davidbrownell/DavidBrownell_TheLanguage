@@ -3,7 +3,7 @@
 # |  FuncInvocationExpressionParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-12 15:57:18
+# |      2021-10-04 09:10:56
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for FuncInvicationExpressionParserInfo_UnitTest.py"""
+"""Unit test for FuncInvocationExpressionParserInfo.py"""
 
 import os
 

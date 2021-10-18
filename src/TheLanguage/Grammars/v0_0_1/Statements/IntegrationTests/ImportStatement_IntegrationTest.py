@@ -3,7 +3,7 @@
 # |  ImportStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-15 10:03:52
+# |      2021-10-15 15:31:27
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for ImportStatement.py"""
+"""Automated tests for ImportStatement.py"""
 
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,8 +28,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..ImportStatement import *
-    from ...Common.AutomatedTests import PatchAndExecute
 
 
 # ----------------------------------------------------------------------
@@ -105,17 +101,17 @@ class TestStandard(object):
         content = {
             self._filename : textwrap.dedent(
                 """\
-                from .File1 import obj1
-                from .File1 import obj1 as obj1Decorated
+                from .File1 import Obj1
+                from .File1 import Obj1 as Obj1Decorated
 
-                from ...File2 import obj2
-                from ...File2 import obj2 as obj2Decorated
+                from ...File2 import Obj2
+                from ...File2 import Obj2 as Obj2Decorated
 
-                from ...Dir1.File3 import obj3
-                from ...Dir1.File3 import obj3 as obj3Decorated
+                from ...Dir1.File3 import Obj3
+                from ...Dir1.File3 import Obj3 as Obj3Decorated
 
-                from .Dir2.Dir3.File4 import obj4
-                from .Dir2.Dir3.File4 import obj4 as obj4Decorated
+                from .Dir2.Dir3.File4 import Obj4
+                from .Dir2.Dir3.File4 import Obj4 as Obj4Decorated
                 """,
             ),
             self._file1 : "pass",
@@ -147,17 +143,17 @@ class TestStandard(object):
         content = {
             self._filename : textwrap.dedent(
                 """\
-                from File1 import obj1
-                from File1 import obj1 as obj1Decorated
+                from File1 import Obj1
+                from File1 import Obj1 as Obj1Decorated
 
-                from File2 import obj2
-                from File2 import obj2 as obj2Decorated
+                from File2 import Obj2
+                from File2 import Obj2 as Obj2Decorated
 
-                from File3 import obj3
-                from File3 import obj3 as obj3Decorated
+                from File3 import Obj3
+                from File3 import Obj3 as Obj3Decorated
 
-                from Dir1.Dir2.File4 import obj4
-                from Dir1.Dir2.File4 import obj4 as obj4Decorated
+                from Dir1.Dir2.File4 import Obj4
+                from Dir1.Dir2.File4 import Obj4 as Obj4Decorated
                 """,
             ),
             self._root_file1 : "pass",
@@ -193,7 +189,7 @@ class TestStandard(object):
         content = {
             self._filename : textwrap.dedent(
                 """\
-                from File1 import obj1, obj2 as obj2Decorated, obj3 as obj3Decorated, obj4
+                from File1 import Obj1, Obj2 as Obj2Decorated, Obj3 as Obj3Decorated, Obj4
                 """,
             ),
             self._root_file1 : "pass",
@@ -222,11 +218,11 @@ class TestStandard(object):
         content = {
             self._filename : textwrap.dedent(
                 """\
-                from File1 import (obj1, obj2 as obj2Decorated)
+                from File1 import (Obj1, Obj2 as Obj2Decorated)
 
                 from ...File2 import (
-                    obj3 as obj3Decorated,
-                    obj4,
+                    Obj3 as Obj3Decorated,
+                    Obj4,
 
                         obj5 as obj5Decorated,
 
@@ -262,14 +258,14 @@ class TestStandard(object):
             self._filename : textwrap.dedent(
                 """\
                 from . import File1,
-                from ...File2 import obj1, obj2,
+                from ...File2 import Obj1, Obj2,
 
                 from ...Dir1.File3 import (
-                    obj3 as obj3Decorated,
+                    Obj3 as Obj3Decorated,
                 )
 
                 from .Dir2.Dir3.File4 import (
-                    obj4, obj5,
+                    Obj4, obj5,
                 )
                 """,
             ),
@@ -315,6 +311,7 @@ class TestStandard(object):
                 content,
                 [self._filename],
                 [],
+                debug_string_on_exceptions=False,
             )
 
         ex = ex.value
@@ -332,7 +329,7 @@ class TestStandard(object):
         content = {
             self._filename : textwrap.dedent(
                 """\
-                from InvalidFile1 import (obj1, obj2)
+                from InvalidFile1 import (Obj1, Obj2)
                 """,
             ),
         }
@@ -342,11 +339,12 @@ class TestStandard(object):
                 content,
                 [self._filename],
                 [],
+                debug_string_on_exceptions=False,
             )
 
         ex = ex.value
 
-        assert str(ex) == "'InvalidFile1' could not be found"
+        assert str(ex) == "'InvalidFile1' could not be found."
         assert ex.FullyQualifiedName == self._filename
         assert ex.Line == 1
         assert ex.Column == 1

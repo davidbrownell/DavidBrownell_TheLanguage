@@ -3,7 +3,7 @@
 # |  RaiseStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-10 23:39:41
+# |      2021-10-14 09:57:51
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,11 +18,7 @@
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,32 +28,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..RaiseStatement import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_StandAlone():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                raise
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            raise
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_WithValue():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
                 raise foo
                 raise (a, b)
-                """,
-            ),
+            """,
         ),
-    )
+    )))

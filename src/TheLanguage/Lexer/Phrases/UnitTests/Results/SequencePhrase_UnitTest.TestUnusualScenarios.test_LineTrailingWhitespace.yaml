@@ -1,7 +1,7 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -27,8 +27,8 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
               - 10
           Phrase: "Newline+"
       IsComplete: True
-    Phrase: "Sequence: [lower, Newline+]"
-  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+    Phrase: "[lower, Newline+]"
+  Phrase: "([lower, Newline+] | [upper, Newline+])"
 IterBegin: "[1, 1] (0)"
 IterEnd: "[2, 1] (11)"
 Success: True
@@ -36,7 +36,7 @@ Success: True
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -62,8 +62,8 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
               - 19
           Phrase: "Newline+"
       IsComplete: True
-    Phrase: "Sequence: [lower, Newline+]"
-  Phrase: "Or: (Sequence: [lower, Newline+], Sequence: [upper, Newline+])"
+    Phrase: "[lower, Newline+]"
+  Phrase: "([lower, Newline+] | [upper, Newline+])"
 IterBegin: "[2, 1] (11)"
 IterEnd: "[3, 1] (20)"
 Success: True

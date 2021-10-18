@@ -3,7 +3,7 @@
 # |  GeneratorExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-13 09:02:08
+# |      2021-10-04 09:49:23
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GeneratorExpressionParserData, GeneratorExpressionParserInfo, and GeneratorExpressionParserRegions objects"""
+"""Contains the GeneratorExpressionParserInfo object"""
 
 import os
 
@@ -41,16 +41,16 @@ class GeneratorExpressionParserInfo(ExpressionParserInfo):
     """\
     Example syntax:
 
-        DisplayOdd(a) for variable in [1, 2, 3] if a & 1
-        -------------     --------    ---------    -----
-        |                 |           |            |
-        |                 |           |            - Condition Expression
-        |                 |           - SourceExpression
-        |                 - Name
-        - DisplayExpression
+        DecorateValue(value) for value in [1, 2, 3] if value & 1
+        --------------------     -----    ---------    ---------
+        |                        |        |            |
+        |                        |        |            - Condition Expression
+        |                        |        - Source Expression
+        |                        - Name
+        - Result Expression
     """
 
-    DisplayExpression: ExpressionParserInfo
+    ResultExpression: ExpressionParserInfo
     Name: NameParserInfo
     SourceExpression: ExpressionParserInfo
     ConditionExpression: Optional[ExpressionParserInfo]

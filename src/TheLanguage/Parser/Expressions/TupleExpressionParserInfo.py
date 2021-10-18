@@ -3,7 +3,7 @@
 # |  TupleExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-13 16:44:47
+# |      2021-10-12 08:24:24
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleExpressionParserData, TupleExpressionParserInfo, and TupleExpressionParserRegions objects"""
+"""Contains the TupleExpressionParserInfo object"""
 
 import os
 
@@ -38,3 +38,10 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class TupleExpressionParserInfo(ExpressionParserInfo):
     Expressions: List[ExpressionParserInfo]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(TupleExpressionParserInfo, self).__post_init__(
+            regions,
+            regionless_attributes=["Expressions"],
+        )

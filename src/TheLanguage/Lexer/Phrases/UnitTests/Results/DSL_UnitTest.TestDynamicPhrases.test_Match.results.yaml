@@ -1,11 +1,11 @@
 # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
               DataItems:
                 - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -42,12 +42,12 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                   Phrase: "Newline+"
               IsComplete: True
             Phrase: "Word Phrase"
-          Phrase: "Or: (Word Phrase, Number Phrase)"
+          Phrase: "(Word Phrase | Number Phrase)"
         Phrase: "DynamicPhrasesType.Statements"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
               DataItems:
                 - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -72,12 +72,12 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                   Phrase: "Newline+"
               IsComplete: True
             Phrase: "Number Phrase"
-          Phrase: "Or: (Word Phrase, Number Phrase)"
+          Phrase: "(Word Phrase | Number Phrase)"
         Phrase: "DynamicPhrasesType.Statements"
       - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
               DataItems:
                 - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                   Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -102,7 +102,7 @@ Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData
                   Phrase: "Newline+"
               IsComplete: True
             Phrase: "Number Phrase"
-          Phrase: "Or: (Number Phrase)"
+          Phrase: "(Number Phrase)"
         Phrase: "DynamicPhrasesType.Expressions"
     IsComplete: True
   Phrase: "Phrase"

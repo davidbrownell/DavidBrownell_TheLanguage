@@ -3,7 +3,7 @@
 # |  RepeatPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-08 23:30:18
+# |      2021-09-22 22:40:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,9 @@
 
 import os
 
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -40,26 +42,24 @@ class RepeatPhrase(Phrase):
     """Matches content that repeats the provided phrase N times"""
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
-    # ----------------------------------------------------------------------
     def __init__(
         self,
         phrase: Phrase,
         min_matches: int,
         max_matches: Optional[int],
-        name: str=None,
+        name: Optional[str]=None,
     ):
         assert phrase
         assert min_matches >= 0, min_matches
         assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
 
         if name is None:
-            name = self._CreateDefaultName(phrase, min_matches, max_matches)
+            name = self.__class__._CreateDefaultName(phrase, min_matches, max_matches)
             name_is_default = True
         else:
             name_is_default = False
+
+        assert name is not None
 
         super(RepeatPhrase, self).__init__(name)
 
@@ -69,43 +69,20 @@ class RepeatPhrase(Phrase):
         self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        replaced_phrase = False
-
-        if isinstance(self.Phrase, RecursivePlaceholderPhrase):
-            self.Phrase = new_phrase
-            replaced_phrase = True
-        else:
-            replaced_phrase = self.Phrase.PopulateRecursiveImpl(new_phrase) or replaced_phrase
-
-        if replaced_phrase and self._name_is_default:
-            self.Name = self._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)
-
-        return replaced_phrase
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    async def _LexAsyncImpl(
+    async def LexAsync(
         self,
         unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
         single_threaded=False,
-    ) -> Union[
-        Phrase.LexResult,
-        None,
-    ]:
+    ) -> Optional[Phrase.LexResult]:
+
         success = False
 
-        observer.StartPhrase(unique_id, [self])
-        with CallOnExit(lambda: observer.EndPhrase(unique_id, [(self, success)])):
+        observer.StartPhrase(unique_id, self)
+        with CallOnExit(lambda: observer.EndPhrase(unique_id, self, success)):
             original_normalized_iter = normalized_iter.Clone()
 
             results: List[Optional[Phrase.LexResultData]] = []
@@ -113,15 +90,9 @@ class RepeatPhrase(Phrase):
 
             while not normalized_iter.AtEnd():
                 result = await self.Phrase.LexAsync(
-                    unique_id + ("Repeat: {} [{}]".format(self.Phrase.Name, len(results)), ),
+                    unique_id + ("{} [{}]".format(self.Name, len(results)), ),
                     normalized_iter.Clone(),
-                    Phrase.ObserverDecorator(
-                        self,
-                        unique_id,
-                        observer,
-                        results,
-                        lambda result: result.Data,
-                    ),
+                    observer,
                     ignore_whitespace=ignore_whitespace,
                     single_threaded=single_threaded,
                 )
@@ -140,52 +111,63 @@ class RepeatPhrase(Phrase):
                     break
 
             if len(results) >= self.MinMatches:
-                assert self.MaxMatches is None or len(results) <= self.MaxMatches
                 success = True
+                assert self.MaxMatches is None or len(results) <= self.MaxMatches
 
-                # <Too many arguments> pylint: disable=E1121
-                data = Phrase.StandardLexResultData(
+                # pylint: disable=too-many-function-args
+                data = self.__class__.StandardLexResultData(
                     self,
-                    # <Too many arguments> pylint: disable=E1121
-                    Phrase.MultipleStandardLexResultData(
-                        results,
-                        True,
-                    ),
+                    Phrase.MultipleLexResultData(results, True),
                     unique_id,
+                    error_result.Data if error_result is not None else None,
                 )
 
                 if not await observer.OnInternalPhraseAsync(
-                    [data],
+                    data,
                     original_normalized_iter,
                     normalized_iter,
                 ):
                     return None
 
-                # <Too many arguments> pylint: disable=E1121
                 return Phrase.LexResult(True, original_normalized_iter, normalized_iter, data)
 
-            success = False
-
             # Gather the failure information
-            if error_result:
+            if error_result is not None:
                 results.append(error_result.Data)
-                end_iter = error_result.IterEnd
-            else:
-                end_iter = normalized_iter
+                normalized_iter = error_result.IterEnd
 
-            # <Too many arguments> pylint: disable=E1121
+            # pylint: disable=too-many-function-args
             return Phrase.LexResult(
                 False,
                 original_normalized_iter,
-                end_iter,
-                # <Too many arguments> pylint: disable=E1121
+                normalized_iter,
                 Phrase.StandardLexResultData(
                     self,
-                    # <Too many arguments> pylint: disable=E1121
-                    Phrase.MultipleStandardLexResultData(results, True),
+                    Phrase.MultipleLexResultData(results, True),
                     unique_id,
                 ),
             )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _PopulateRecursiveImpl(
+        self,
+        new_phrase: Phrase,
+    ) -> bool:
+        replaced_phrase = False
+
+        if isinstance(self.Phrase, RecursivePlaceholderPhrase):
+            self.Phrase = new_phrase
+            replaced_phrase = True
+        else:
+            replaced_phrase = self.Phrase.PopulateRecursive(self, new_phrase) or replaced_phrase
+
+        if replaced_phrase and self._name_is_default:
+            self.Name = self.__class__._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)
+
+        return replaced_phrase
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -194,4 +176,4 @@ class RepeatPhrase(Phrase):
         min_matches: int,
         max_matches: Optional[int],
     ) -> str:
-        return "Repeat: {{{}, {}, {}}}".format(phrase.Name, min_matches, max_matches)
+        return "{{{}, {}, {}}}".format(phrase.Name, min_matches, max_matches)

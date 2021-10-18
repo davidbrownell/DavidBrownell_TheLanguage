@@ -3,7 +3,7 @@
 # |  FuncInvocationExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 20:12:02
+# |      2021-10-04 08:37:01
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for FuncInvocationExpression.py"""
+"""Automated tests for FuncInvocationExpression.py"""
 
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,71 +28,70 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..FuncInvocationExpression import *
-
     from ...Common.ArgumentsPhraseItem import PositionalAfterKeywordError
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_NoArgs():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value = Func()
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = Func1()
+
+            value2 = Func2(
+            )
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_SingleArg():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 = Func1(arg)
-                value2 = Func2((a,))
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = Func1(arg)
+
+            value2 = Func2((a, ))
+
+            value3 = Func3(
+                argument,
+            )
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_MultipleArgs():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 = Func1(a, b, c)
-                value2 = Func2(e, InnerFunc(f, (g, h)), i)
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = Func1(a, b, c)
+            value2 = Func2(e, InnerFunc(f, g / h), i)
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_WithKeywords():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                value1 = Func1(a=one, b=two, c=three)
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = Func1(a=one, b=two, c=three)
 
-                value2 = Func2(
-                    a,
-                    b,
-                    c=three,
-                    d=four,
-                )
-                """,
-            ),
+            value2 = Func2(
+                a,
+                b,
+                c=three,
+                d=four,
+            )
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
@@ -108,6 +103,7 @@ def test_PositionalAfterKeywordError():
                 value = Func(a, b, c=three, dee, e=five)
                 """,
             ),
+            debug_string_on_exceptions=False,
         )
 
     ex = ex.value

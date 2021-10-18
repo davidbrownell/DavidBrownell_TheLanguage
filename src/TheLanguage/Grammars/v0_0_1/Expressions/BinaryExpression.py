@@ -3,7 +3,7 @@
 # |  BinaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-13 15:42:37
+# |      2021-09-30 18:48:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Dict, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,116 +30,125 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
+    from ....Lexer.Phrases.DSL import (
+        CreatePhrase,
+        ExtractDynamic,
+        ExtractOr,
+        ExtractSequence,
+        ExtractToken,
+        PhraseItem,
+    )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
     from ....Parser.Expressions.BinaryExpressionParserInfo import (
         BinaryExpressionParserInfo,
         ExpressionParserInfo,
         OperatorType,
     )
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Lexer.Phrases.DSL import (
-        CreatePhrase,
-        DynamicPhrasesType,
-        ExtractDynamic,
-        ExtractOr,
-        ExtractSequence,
-        ExtractToken,
-        Leaf,
-        Node,
-    )
-
 
 # ----------------------------------------------------------------------
 class BinaryExpression(GrammarPhrase):
     """\
-    Expression that follows the form:
+    Expression in the form:
 
-    <expr> <op> <expr>
+    <expression> <op> <expression>
 
-    Example:
+    Examples:
         one + two
         foo / bar
         biz and baz
+        instance.Method
     """
 
     PHRASE_NAME                             = "Binary Expression"
 
+    OPERATOR_MAP: Dict[str, OperatorType]   = {
+        # Logical
+        "and": OperatorType.LogicalAnd,
+        "or": OperatorType.LogicalOr,
+        "in": OperatorType.LogicalIn,
+        "is": OperatorType.LogicalIs,
+
+        # Function Invocation
+        ".": OperatorType.ChainedFunc,
+        "->": OperatorType.ChainedFuncReturnSelf,
+
+        # Comparison
+        "<": OperatorType.Less,
+        "<=": OperatorType.LessEqual,
+        ">": OperatorType.Greater,
+        ">=": OperatorType.GreaterEqual,
+        "==": OperatorType.Equal,
+        "!=": OperatorType.NotEqual,
+
+        # Mathematical
+        "+": OperatorType.Add,
+        "-": OperatorType.Subtract,
+        "*": OperatorType.Multiply,
+        "**": OperatorType.Power,
+        "/": OperatorType.Divide,
+        "//": OperatorType.DivideFloor,
+        "%": OperatorType.Modulo,
+
+        # Bit Manipulation
+        "<<": OperatorType.BitShiftLeft,
+        ">>": OperatorType.BitShiftRight,
+        "^": OperatorType.BitXor,
+        "&": OperatorType.BitAnd,
+        "|": OperatorType.BitOr,
+    }
+
+    assert len(OPERATOR_MAP) == len(OperatorType)
+
     # ----------------------------------------------------------------------
     def __init__(self):
         super(BinaryExpression, self).__init__(
-            GrammarPhrase.Type.Expression,
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
 
                     # <op>
-                    CreatePhrase(
+                    PhraseItem.Create(
                         name="Operator",
-                        item=(
-                            # Logical
-                            "and",          # Logical and
-                            "or",           # Logical or
-                            "in",           # Collection membership
-                            "is",           # Object identity
-
-                            # Function Invocation
-                            ".",
-                            "->",
-
-                            # Comparison
-                            "<",            # Less than
-                            "<=",           # Less than or equal to
-                            ">",            # Greater than
-                            ">=",           # Greater than or equal to
-                            "==",           # Equals
-                            "!=",           # Not equals
-
-                            # Mathematical
-                            "+",            # Addition
-                            "-",            # Subtraction
-                            "*",            # Multiplication
-                            "**",           # Power
-                            "/",            # Decimal division
-                            "//",           # Integer division
-                            "%",            # Modulo
-
-                            # Bit Manipulation
-                            "<<",           # Left shift
-                            ">>",           # Right shift
-                            "^",            # Xor
-                            "&",            # Bitwise and
-                            "|",            # Bitwise or
-                        ),
+                        item=tuple(self.__class__.OPERATOR_MAP.keys()),
                     ),
 
-                    # <expr>
+                    # <expression>
                     DynamicPhrasesType.Expressions,
                 ],
             ),
         )
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    @classmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
+        cls,
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
         # ----------------------------------------------------------------------
-        def CreateParserInfo():
+        def Impl():
             nodes = ExtractSequence(node)
             assert len(nodes) == 3
 
-            # <expr>
-            left_node = ExtractDynamic(cast(Node, nodes[0]))
+            # <expression>
+            left_node = ExtractDynamic(cast(AST.Node, nodes[0]))
             left_info = cast(ExpressionParserInfo, GetParserInfo(left_node))
 
             # <op>
-            operator_leaf = cast(Leaf, ExtractOr(cast(Node, nodes[1])))
+            operator_leaf = cast(AST.Leaf, ExtractOr(cast(AST.Node, nodes[1])))
+
             op_value = cast(
                 str,
                 ExtractToken(
@@ -148,71 +157,19 @@ class BinaryExpression(GrammarPhrase):
                 ),
             )
 
-            if op_value == "and":
-                operator_info = OperatorType.LogicalAnd
-            elif op_value == "or":
-                operator_info = OperatorType.LogicalOr
-            elif op_value == "in":
-                operator_info = OperatorType.LogicalIn
-            elif op_value == "is":
-                operator_info = OperatorType.LogicalIs
-            elif op_value == ".":
-                operator_info = OperatorType.ChainedFunc
-            elif op_value == "->":
-                operator_info = OperatorType.ChainedFuncReturnSelf
-            elif op_value == "<":
-                operator_info = OperatorType.Less
-            elif op_value == "<=":
-                operator_info = OperatorType.LessEqual
-            elif op_value == ">":
-                operator_info = OperatorType.Greater
-            elif op_value == ">=":
-                operator_info = OperatorType.GreaterEqual
-            elif op_value == "==":
-                operator_info = OperatorType.Equal
-            elif op_value == "!=":
-                operator_info = OperatorType.NotEqual
-            elif op_value == "+":
-                operator_info = OperatorType.Add
-            elif op_value == "-":
-                operator_info = OperatorType.Subtract
-            elif op_value == "*":
-                operator_info = OperatorType.Multiply
-            elif op_value == "**":
-                operator_info = OperatorType.Power
-            elif op_value == "/":
-                operator_info = OperatorType.Divide
-            elif op_value == "//":
-                operator_info = OperatorType.DivideFloor
-            elif op_value == "%":
-                operator_info = OperatorType.Modulo
-            elif op_value == "<<":
-                operator_info = OperatorType.BitShiftLeft
-            elif op_value == ">>":
-                operator_info = OperatorType.BitShiftRight
-            elif op_value == "^":
-                operator_info = OperatorType.BitXor
-            elif op_value == "&":
-                operator_info = OperatorType.BitAnd
-            elif op_value == "|":
-                operator_info = OperatorType.BitOr
-            else:
-                assert False, op_value
+            operator_info = cls.OPERATOR_MAP[op_value]
 
-            # <expr>
-            right_node = ExtractDynamic(cast(Node, nodes[2]))
+            # <expression>
+            right_node = ExtractDynamic(cast(AST.Node, nodes[2]))
             right_info = cast(ExpressionParserInfo, GetParserInfo(right_node))
 
-            SetParserInfo(
-                node,
-                BinaryExpressionParserInfo(
-                    CreateParserRegions(node, left_node, operator_leaf, right_node),  # type: ignore
-                    left_info,
-                    operator_info,
-                    right_info,
-                ),
+            return BinaryExpressionParserInfo(
+                CreateParserRegions(node, left_node, operator_leaf, right_node),  # type: ignore
+                left_info,
+                operator_info,
+                right_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return Impl

@@ -3,7 +3,7 @@
 # |  Normalize.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-29 09:25:30
+# |      2021-09-22 15:47:29
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains types and functions that normalize source content"""
+"""Contains types and functions used to normalize source content for lexing"""
 
 import hashlib
 import os
@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .LexerError import LexerError
+    from ..Error import Error
 
 
 # ----------------------------------------------------------------------
@@ -44,27 +44,30 @@ with InitRelativeImports():
 # |
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidTabsAndSpacesNormalizeError(LexerError):
-    MessageTemplate                         = Interface.DerivedProperty("The spaces and/or tabs used to indent this line differ from the spaces and/or tabs used on previous lines.")  # type: ignore
-
+class InvalidTabsAndSpacesNormalizeError(Error):
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "The spaces and/or tabs used to indent this line differ from the spaces and/or tabs used on previous lines.",
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class NoClosingMultilineTokenError(LexerError):
-    MessageTemplate                         = Interface.DerivedProperty("A closing token was not found to match this multi-line opening token.")  # type: ignore
+class NoClosingMultilineTokenError(Error):
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "A closing token was not found to match this multi-line opening token.",
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class LineInfo(YamlRepr.ObjectReprImplBase):
-    """Information about a line"""
+    """Information about a single line"""
 
     OffsetStart: int
     OffsetEnd: int
 
-    PosStart: int
-    PosEnd: int
+    ContentStart: int
+    ContentEnd: int
 
     NumDedents: Optional[int]               = field(default=None)
     NewIndentationValue: Optional[int]      = field(default=None)
@@ -73,29 +76,29 @@ class LineInfo(YamlRepr.ObjectReprImplBase):
     def __post_init__(self):
         assert self.OffsetStart >= 0, self
         assert self.OffsetEnd >= self.OffsetStart, self
-        assert self.PosStart >= self.OffsetStart, self
-        assert self.PosEnd >= self.PosStart, self
-        assert self.PosEnd <= self.OffsetEnd, self
+        assert self.ContentStart >= self.OffsetStart, self
+        assert self.ContentEnd  >= self.ContentStart, self
+        assert self.ContentEnd <= self.OffsetEnd, self
         assert self.NumDedents is None or self.NumDedents > 0, self
         assert self.NewIndentationValue is None or self.NewIndentationValue > 0, self
 
     # ----------------------------------------------------------------------
     def HasWhitespacePrefix(self):
-        return self.PosStart != self.OffsetStart
+        return self.ContentStart != self.OffsetStart
 
     # ----------------------------------------------------------------------
     def HasContent(self):
-        return self.PosStart != self.PosEnd
+        return self.ContentStart != self.ContentEnd
 
     # ----------------------------------------------------------------------
     def HasWhitespaceSuffix(self):
-        return self.PosEnd != self.OffsetEnd
+        return self.ContentEnd != self.OffsetEnd
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class NormalizedContent(object):
-    """Data returned from calls to `Normalize`"""
+@dataclass(frozen=True, repr=False)
+class NormalizedContent(YamlRepr.ObjectReprImplBase):
+    """"Data returned from calls to `Normalize`"""
 
     Content: str
     ContentLen: int
@@ -109,16 +112,42 @@ class NormalizedContent(object):
         assert self.LineInfos, self
 
         if self.Hash is None:
-            object.__setattr__(self, "Hash", self.CalculateHash(self.Content))
+            object.__setattr__(self, "Hash", self.__class__.CalculateHash(self.Content))
+
+        YamlRepr.ObjectReprImplBase.__init__(
+            self,
+            Content=None,
+            LineInfos=None,
+            Hash=None,
+        )
 
     # ----------------------------------------------------------------------
     @staticmethod
     def CalculateHash(
         content: str,
     ) -> bytes:
-        hash = hashlib.sha256()
-        hash.update(content.encode("utf-8"))
-        return hash.digest()
+        hasher = hashlib.sha256()
+        hasher.update(content.encode("utf-8"))
+        return hasher.digest()
+
+
+# ----------------------------------------------------------------------
+# Note that this regular expression template needs to change any time that there is a change
+# with `MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH` or `GetNumMultilineTokenDelimiters`.
+# ----------------------------------------------------------------------
+MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH       = 3
+
+MultilineTokenDelimiterRegexTemplate        = textwrap.dedent(
+    r"""{{header}}(?#
+        Don't consume other triplets.
+            The number of items here must match
+            MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH.           )(?!{triplet_item}{triplet_item}{triplet_item})(?#
+        Value                                           )(?P<value>.*?)(?#
+        No slash as a prefix to the closing triplet[s]  )(?<!\\)(?#
+    ){{footer}}""",
+).format(
+    triplet_item=r"[^A-Za-z0-9 \t\n]",
+)
 
 
 # ----------------------------------------------------------------------
@@ -126,61 +155,41 @@ class NormalizedContent(object):
 # |  Public Functions
 # |
 # ----------------------------------------------------------------------
-
-# ----------------------------------------------------------------------
-# Note that this regular expression template needs to change any time that there is a change with
-# `MULTILINE_PHRASE_TOKEN_LENGTH` or `GetNumMultilineTriplets`
-# ----------------------------------------------------------------------
-TripletContentRegexTemplate                 = textwrap.dedent(
-    r"""{{header}}(?#
-        Don't consume other triplets                    )(?!{triplet_item}{triplet_item}{triplet_item})(?#
-        Value                                           )(?P<value>.*?)(?#
-        No slash as a prefix to the closing triplet[s]  )(?<!\\)(?#
-        ){{footer}}""",
-).format(
-    triplet_item=r"[^A-Za-z0-9 \t\n]",
-)
-
-
-# ----------------------------------------------------------------------
-MULTILINE_PHRASE_TOKEN_LENGTH               = 3
-
-
-# ----------------------------------------------------------------------
-def GetNumMultilineTriplets(
+def GetNumMultilineTokenDelimiters(
     content: str,
-    start_index=0,
-    end_index=None,
+    start_index: int=0,
+    end_index: Optional[int]=None,
 ) -> int:
     """\
-    Returns the number of valid multiline triplets in the provided content.
+    Returns the number of valid multiline token items at the given position in the provided content.
 
-    See the comments in `Normalize` for more information.
+    See comments in `Normalize` for more information.
     """
 
     if end_index is None:
         end_index = len(content)
 
     if start_index == end_index:
-        return False
+        return 0
 
-    if (end_index - start_index) % MULTILINE_PHRASE_TOKEN_LENGTH != 0:
-        return False
+    if (end_index - start_index) % MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH != 0:
+        return 0
 
     original_start_index = start_index
 
     while start_index != end_index:
         # The character must be a symbol
         if content[start_index].isalnum():
-            return False
+            return 0
 
-        for offset in range(start_index + 1, start_index + MULTILINE_PHRASE_TOKEN_LENGTH):
+        # Every item within the delimiter must be the same
+        for offset in range(start_index + 1, start_index + MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH):
             if content[offset] != content[start_index]:
-                return False
+                return 0
 
-        start_index += MULTILINE_PHRASE_TOKEN_LENGTH
+        start_index += MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH
 
-    return (end_index - original_start_index) / MULTILINE_PHRASE_TOKEN_LENGTH
+    return (end_index - original_start_index) // MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH
 
 
 # ----------------------------------------------------------------------
@@ -262,8 +271,8 @@ def Normalize(
     # ----------------------------------------------------------------------
     @dataclass
     class MultilineTokenInfo(object):
-        index: int
-        num_triplets: int
+        line_index: int
+        num_delimiters: int
 
     # ----------------------------------------------------------------------
 
@@ -276,10 +285,10 @@ def Normalize(
     len_content = len(content)
 
     line_infos: List[LineInfo] = []
-    indentation_stack = [IndentationInfo(0, 0)]
+    indentation_stack: List[IndentationInfo] = [IndentationInfo(0, 0)]
+    multiline_token_info: Optional[MultilineTokenInfo] = None
 
     offset = 0
-    multiline_token_info: Optional[MultilineTokenInfo] = None
 
     # ----------------------------------------------------------------------
     def CreateLineInfo() -> LineInfo:
@@ -288,7 +297,7 @@ def Normalize(
         line_start_offset = offset
         line_end_offset: Optional[int] = None
 
-        indentation_value = 0
+        indentation_value: Optional[int] = 0
         new_indentation_value: Optional[int] = None
         num_dedents = 0
 
@@ -302,8 +311,8 @@ def Normalize(
                 if character == " ":
                     indentation_value += 1
                 elif character == "\t":
-                    # Ensure that " \t" compares as different from "\t " and that "\t"
-                    # compares different from " "
+                    # Ensure that " \t" compares as different from "\t " and that "\t" compares
+                    # as different from " ".
                     indentation_value += (offset - line_start_offset + 1) * 100
                 else:
                     assert character == "\n" or not character.isspace(), character
@@ -311,7 +320,7 @@ def Normalize(
                     num_chars = offset - line_start_offset
 
                     if character != "\n":
-                        # Ensure that the whitespace prefix for this line uses the same max of
+                        # Ensure that the whitespace prefix for this line use the same number of
                         # tabs and spaces as the indentation associated with the previous line.
                         if (
                             num_chars == indentation_stack[-1].num_chars
@@ -340,7 +349,7 @@ def Normalize(
                 line_end_offset = offset
                 offset += 1
 
-                # Account for the trailing whitespace
+                # Detect trailing whitespace
                 content_end_offset = line_end_offset
 
                 assert content_start_offset is not None
@@ -361,7 +370,7 @@ def Normalize(
             num_dedents = None
             new_indentation_value = None
 
-        # <Too many positional arguments> pylint: disable=E1121
+        # pylint: disable=too-many-function-args
         return LineInfo(
             line_start_offset,
             line_end_offset,
@@ -373,38 +382,38 @@ def Normalize(
 
     # ----------------------------------------------------------------------
 
-    # Lex the content
     while offset < len_content:
         line_infos.append(CreateLineInfo())
 
-        num_multiline_triplits = GetNumMultilineTriplets(
+        num_multiline_delimiters = GetNumMultilineTokenDelimiters(
             content,
-            start_index=line_infos[-1].PosStart,
-            end_index=line_infos[-1].PosEnd,
+            start_index=line_infos[-1].ContentStart,
+            end_index=line_infos[-1].ContentEnd,
         )
 
         if (
-            num_multiline_triplits != 0
-            and content[line_infos[-1].PosStart : line_infos[-1].PosEnd] not in multiline_tokens_to_ignore
+            num_multiline_delimiters != 0
+            and content[line_infos[-1].ContentStart : line_infos[-1].ContentEnd] not in multiline_tokens_to_ignore
         ):
+            # Toggle the current state
             if multiline_token_info is None:
-                multiline_token_info = MultilineTokenInfo(len(line_infos) - 1, num_multiline_triplits)
-            elif num_multiline_triplits == multiline_token_info.num_triplets:
+                multiline_token_info = MultilineTokenInfo(len(line_infos) - 1, num_multiline_delimiters)
+            elif num_multiline_delimiters == multiline_token_info.num_delimiters:
                 multiline_token_info = None
 
-    # Detect error when a multiline token has not been closed
+    # Detect when a multiline token has been opened but not closed
     if multiline_token_info is not None:
-        line_info = line_infos[multiline_token_info.index]
+        line_info = line_infos[multiline_token_info.line_index]
 
         raise NoClosingMultilineTokenError(
-            multiline_token_info.index + 1,
-            line_info.PosStart - line_info.OffsetStart + 1,
+            multiline_token_info.line_index + 1,
+            line_info.ContentStart - line_info.OffsetStart + 1,
         )
 
-    # Add trailing dedents (if necessary)
+    # Add trailing dedents if necessary
     if len(indentation_stack) > 1:
         line_infos.append(
-            # <Too many positional arguments> pylint: disable=E1121
+            # pylint: disable=too-many-function-args
             LineInfo(
                 offset,
                 offset,
@@ -414,4 +423,5 @@ def Normalize(
             ),
         )
 
+    # pylint: disable=too-many-function-args
     return NormalizedContent(content, len_content, line_infos)

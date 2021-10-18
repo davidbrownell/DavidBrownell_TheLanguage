@@ -1,0 +1,127 @@
+# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Self__: "[Ln 1, Col 1] -> [Ln 9, Col 1]"
+Statements:
+  - # <class 'TheLanguage.Parser.Statements.TryStatementParserInfo.TryStatementParserInfo'>
+    DefaultStatements:
+      - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+        Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+          Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+            Name: "foo"
+            Regions__: # <class 'types.VariableNameParserInfoRegions'>
+              Name: "[Ln 8, Col 15] -> [Ln 8, Col 18]"
+              Self__: "[Ln 8, Col 15] -> [Ln 8, Col 18]"
+          Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+            Name: "[Ln 8, Col 15] -> [Ln 8, Col 18]"
+            Self__: "[Ln 8, Col 15] -> [Ln 8, Col 18]"
+        Modifier: None
+        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+          Name: "value1d"
+          Regions__: # <class 'types.VariableNameParserInfoRegions'>
+            Name: "[Ln 8, Col 5] -> [Ln 8, Col 12]"
+            Self__: "[Ln 8, Col 5] -> [Ln 8, Col 12]"
+        Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+          Expression: "[Ln 8, Col 15] -> [Ln 8, Col 18]"
+          Modifier: None
+          Name: "[Ln 8, Col 5] -> [Ln 8, Col 12]"
+          Self__: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
+    ExceptClauses:
+      - # <class 'TheLanguage.Parser.Statements.TryStatementParserInfo.TryStatementClauseParserInfo'>
+        Name: "exception"
+        Regions__: # <class 'types.TryStatementClauseParserInfoRegions'>
+          Name: "[Ln 3, Col 19] -> [Ln 3, Col 28]"
+          Self__: "[Ln 3, Col 1] -> [Ln 5, Col 1]"
+          Statements: "[Ln 3, Col 28] -> [Ln 5, Col 1]"
+          Type: "[Ln 3, Col 8] -> [Ln 3, Col 18]"
+        Statements:
+          - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+            Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                Name: "foo"
+                Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                  Name: "[Ln 4, Col 15] -> [Ln 4, Col 18]"
+                  Self__: "[Ln 4, Col 15] -> [Ln 4, Col 18]"
+              Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+                Name: "[Ln 4, Col 15] -> [Ln 4, Col 18]"
+                Self__: "[Ln 4, Col 15] -> [Ln 4, Col 18]"
+            Modifier: None
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "value1b"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 4, Col 5] -> [Ln 4, Col 12]"
+                Self__: "[Ln 4, Col 5] -> [Ln 4, Col 12]"
+            Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+              Expression: "[Ln 4, Col 15] -> [Ln 4, Col 18]"
+              Modifier: None
+              Name: "[Ln 4, Col 5] -> [Ln 4, Col 12]"
+              Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+        Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 3, Col 8] -> [Ln 3, Col 18]"
+            TypeName: "[Ln 3, Col 8] -> [Ln 3, Col 18]"
+          TypeName: "Exception1"
+      - # <class 'TheLanguage.Parser.Statements.TryStatementParserInfo.TryStatementClauseParserInfo'>
+        Name: "ex"
+        Regions__: # <class 'types.TryStatementClauseParserInfoRegions'>
+          Name: "[Ln 5, Col 19] -> [Ln 5, Col 21]"
+          Self__: "[Ln 5, Col 1] -> [Ln 7, Col 1]"
+          Statements: "[Ln 5, Col 21] -> [Ln 7, Col 1]"
+          Type: "[Ln 5, Col 8] -> [Ln 5, Col 18]"
+        Statements:
+          - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+            Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+                Name: "foo"
+                Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                  Name: "[Ln 6, Col 15] -> [Ln 6, Col 18]"
+                  Self__: "[Ln 6, Col 15] -> [Ln 6, Col 18]"
+              Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+                Name: "[Ln 6, Col 15] -> [Ln 6, Col 18]"
+                Self__: "[Ln 6, Col 15] -> [Ln 6, Col 18]"
+            Modifier: None
+            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+              Name: "value1c"
+              Regions__: # <class 'types.VariableNameParserInfoRegions'>
+                Name: "[Ln 6, Col 5] -> [Ln 6, Col 12]"
+                Self__: "[Ln 6, Col 5] -> [Ln 6, Col 12]"
+            Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+              Expression: "[Ln 6, Col 15] -> [Ln 6, Col 18]"
+              Modifier: None
+              Name: "[Ln 6, Col 5] -> [Ln 6, Col 12]"
+              Self__: "[Ln 6, Col 5] -> [Ln 7, Col 1]"
+        Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 5, Col 8] -> [Ln 5, Col 18]"
+            TypeName: "[Ln 5, Col 8] -> [Ln 5, Col 18]"
+          TypeName: "Exception2"
+    Regions__: # <class 'types.TryStatementParserInfoRegions'>
+      DefaultStatements: "[Ln 7, Col 1] -> [Ln 9, Col 1]"
+      ExceptClauses: "[Ln 3, Col 1] -> [Ln 7, Col 1]"
+      Self__: "[Ln 1, Col 1] -> [Ln 9, Col 1]"
+      TryStatements: "[Ln 1, Col 4] -> [Ln 3, Col 1]"
+    TryStatements:
+      - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+        Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+          Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+            Name: "foo"
+            Regions__: # <class 'types.VariableNameParserInfoRegions'>
+              Name: "[Ln 2, Col 15] -> [Ln 2, Col 18]"
+              Self__: "[Ln 2, Col 15] -> [Ln 2, Col 18]"
+          Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+            Name: "[Ln 2, Col 15] -> [Ln 2, Col 18]"
+            Self__: "[Ln 2, Col 15] -> [Ln 2, Col 18]"
+        Modifier: None
+        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+          Name: "value1a"
+          Regions__: # <class 'types.VariableNameParserInfoRegions'>
+            Name: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
+            Self__: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
+        Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+          Expression: "[Ln 2, Col 15] -> [Ln 2, Col 18]"
+          Modifier: None
+          Name: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
+          Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"

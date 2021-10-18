@@ -3,7 +3,7 @@
 # |  VariableExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 13:18:53
+# |      2021-09-30 13:13:08
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpressionParserData and VariableExpressionParserRegions objects"""
+"""Contains the VariableExpressionParserInfo object"""
 
 import os
 

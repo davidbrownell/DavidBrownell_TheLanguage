@@ -1,5 +1,5 @@
 0) StartPhrase, "Phrase"
-1) StartPhrase, "lpar", "Phrase"
+1) StartPhrase, "lpar"
 2) OnInternalPhraseAsync, 0, 1
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -11,14 +11,9 @@
         Match: "<_sre.SRE_Match object; span=(0, 1), match='('>"
       Whitespace: None
     Phrase: "lpar"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Phrase"
-3) EndPhrase, "lpar" [True], "Phrase" [None]
-4) StartPhrase, "Inner", "Phrase"
-5) StartPhrase, "Word Token", "Inner", "Phrase"
+3) EndPhrase, "lpar" [True]
+4) StartPhrase, "Inner"
+5) StartPhrase, "Word Token"
 6) OnInternalPhraseAsync, 2, 5
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -32,28 +27,8 @@
         - 1
         - 2
     Phrase: "Word Token"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems: []
-      IsComplete: False
-    Phrase: "Inner"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[1, 1] (0)"
-            IterEnd: "[1, 2] (1)"
-            Token: "lpar"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(0, 1), match='('>"
-            Whitespace: None
-          Phrase: "lpar"
-      IsComplete: False
-    Phrase: "Phrase"
-7) EndPhrase, "Word Token" [True], "Inner" [None], "Phrase" [None]
-8) StartPhrase, "Word Token", "Inner", "Phrase"
+7) EndPhrase, "Word Token" [True]
+8) StartPhrase, "Word Token"
 9) OnInternalPhraseAsync, 6, 9
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -67,42 +42,10 @@
         - 5
         - 6
     Phrase: "Word Token"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[1, 3] (2)"
-            IterEnd: "[1, 6] (5)"
-            Token: "Word Token"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(2, 5), match='one'>"
-            Whitespace:
-              - 1
-              - 2
-          Phrase: "Word Token"
-      IsComplete: False
-    Phrase: "Inner"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[1, 1] (0)"
-            IterEnd: "[1, 2] (1)"
-            Token: "lpar"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(0, 1), match='('>"
-            Whitespace: None
-          Phrase: "lpar"
-      IsComplete: False
-    Phrase: "Phrase"
-10) EndPhrase, "Word Token" [True], "Inner" [None], "Phrase" [None]
+10) EndPhrase, "Word Token" [True]
 11) OnInternalPhraseAsync, 1, 9
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -130,23 +73,8 @@
           Phrase: "Word Token"
       IsComplete: True
     Phrase: "Inner"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[1, 1] (0)"
-            IterEnd: "[1, 2] (1)"
-            Token: "lpar"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(0, 1), match='('>"
-            Whitespace: None
-          Phrase: "lpar"
-      IsComplete: False
-    Phrase: "Phrase"
-12) EndPhrase, "Inner" [True], "Phrase" [None]
-13) StartPhrase, "rpar", "Phrase"
+12) EndPhrase, "Inner" [True]
+13) StartPhrase, "rpar"
 14) OnInternalPhraseAsync, 10, 11
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
     Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -160,54 +88,10 @@
         - 9
         - 10
     Phrase: "rpar"
-    # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-      DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            IsIgnored: False
-            IterBegin: "[1, 1] (0)"
-            IterEnd: "[1, 2] (1)"
-            Token: "lpar"
-            Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-              Match: "<_sre.SRE_Match object; span=(0, 1), match='('>"
-            Whitespace: None
-          Phrase: "lpar"
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
-            DataItems:
-              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                  IsIgnored: False
-                  IterBegin: "[1, 3] (2)"
-                  IterEnd: "[1, 6] (5)"
-                  Token: "Word Token"
-                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                    Match: "<_sre.SRE_Match object; span=(2, 5), match='one'>"
-                  Whitespace:
-                    - 1
-                    - 2
-                Phrase: "Word Token"
-              - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                  IsIgnored: False
-                  IterBegin: "[1, 7] (6)"
-                  IterEnd: "[1, 10] (9)"
-                  Token: "Word Token"
-                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
-                    Match: "<_sre.SRE_Match object; span=(6, 9), match='two'>"
-                  Whitespace:
-                    - 5
-                    - 6
-                Phrase: "Word Token"
-            IsComplete: True
-          Phrase: "Inner"
-      IsComplete: False
-    Phrase: "Phrase"
-15) EndPhrase, "rpar" [True], "Phrase" [None]
+15) EndPhrase, "rpar" [True]
 16) OnInternalPhraseAsync, 0, 11
     # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -220,7 +104,7 @@
             Whitespace: None
           Phrase: "lpar"
         - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleStandardLexResultData'>
+          Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
             DataItems:
               - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                 Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>

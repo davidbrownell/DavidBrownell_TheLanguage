@@ -3,7 +3,7 @@
 # |  Token.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-07 23:51:35
+# |      2021-09-22 16:49:14
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the building blocks for token processing"""
+"""Contains building blocks for token processing"""
 
 import os
 
-from typing import cast, Match as TypingMatch, Optional, Pattern
+from typing import Any, Callable, Match as TypingMatch, Optional, Pattern as TypingPattern
+
 
 from dataclasses import dataclass
 
@@ -33,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Normalize import GetNumMultilineTriplets, MULTILINE_PHRASE_TOKEN_LENGTH
+    from .Normalize import GetNumMultilineTokenDelimiters, MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH
     from .NormalizedIterator import NormalizedIterator
 
 
@@ -48,7 +49,12 @@ class Token(Interface.Interface, YamlRepr.ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class MatchResult(YamlRepr.ObjectReprImplBase):
-        pass
+        # ----------------------------------------------------------------------
+        def __post_init__(
+            self,
+            **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
+        ):
+            YamlRepr.ObjectReprImplBase.__init__(self, **custom_display_funcs)
 
     # ----------------------------------------------------------------------
     # |
@@ -86,13 +92,13 @@ class Token(Interface.Interface, YamlRepr.ObjectReprImplBase):
     def Match(
         normalized_iter: NormalizedIterator,
     ) -> Optional["MatchResult"]:
-        """Returns match information if applicable to the iterator at its current position"""
+        """Returns match information if a match was found for the iterator in its current position"""
         raise Exception("Abstract method")  # pragma: no cover
 
 
 # ----------------------------------------------------------------------
 class NewlineToken(Token):
-    """Token that matches 1 or more newlines"""
+    """Token that matches 1 or more newline"""
 
     # ----------------------------------------------------------------------
     # |
@@ -101,7 +107,6 @@ class NewlineToken(Token):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class MatchResult(Token.MatchResult):
-        # ----------------------------------------------------------------------
         Start: int
         End: int
 
@@ -109,6 +114,8 @@ class NewlineToken(Token):
         def __post_init__(self):
             assert self.Start >= 0, self
             assert self.End > self.Start, self
+
+            super(NewlineToken.MatchResult, self).__post_init__()
 
     # ----------------------------------------------------------------------
     # |
@@ -137,8 +144,8 @@ class NewlineToken(Token):
     def Match(
         self,
         normalized_iter: NormalizedIterator,
-    ) -> Optional["MatchResult"]:
-        if normalized_iter.GetNextToken() != NormalizedIterator.TokenType.EndOfLine:
+    ) -> Optional[Token.MatchResult]:
+        if normalized_iter.GetNextTokenType() != NormalizedIterator.TokenType.EndOfLine:
             return None
 
         newline_start = normalized_iter.Offset
@@ -155,7 +162,7 @@ class NewlineToken(Token):
 # ----------------------------------------------------------------------
 @Interface.staticderived
 class IndentToken(Token):
-    """Token that matches indentations"""
+    """Token that matches indentations of arbitrary length"""
 
     # ----------------------------------------------------------------------
     # |
@@ -164,7 +171,6 @@ class IndentToken(Token):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class MatchResult(Token.MatchResult):
-        # ----------------------------------------------------------------------
         Start: int
         End: int
         Value: int
@@ -174,6 +180,8 @@ class IndentToken(Token):
             assert self.Start >= 0, self
             assert self.End > self.Start, self
             assert self.Value >= 0, self
+
+            super(IndentToken.MatchResult, self).__post_init__()
 
     # ----------------------------------------------------------------------
     # |
@@ -191,16 +199,18 @@ class IndentToken(Token):
     @Interface.override
     def Match(
         normalized_iter: NormalizedIterator,
-    ) -> Optional["MatchResult"]:
-        if normalized_iter.GetNextToken() != NormalizedIterator.TokenType.Indent:
+    ) -> Optional[Token.MatchResult]:
+        if normalized_iter.GetNextTokenType() != NormalizedIterator.TokenType.Indent:
             return None
 
         normalized_iter.SkipWhitespacePrefix()
 
+        assert normalized_iter.LineInfo.NewIndentationValue is not None
+
         return IndentToken.MatchResult(
             normalized_iter.LineInfo.OffsetStart,
-            normalized_iter.LineInfo.PosStart,
-            cast(int, normalized_iter.LineInfo.NewIndentationValue),
+            normalized_iter.LineInfo.ContentStart,
+            normalized_iter.LineInfo.NewIndentationValue,
         )
 
 
@@ -234,13 +244,13 @@ class DedentToken(Token):
     @Interface.override
     def Match(
         normalized_iter: NormalizedIterator,
-    ) -> Optional["MatchResult"]:
-        if normalized_iter.GetNextToken() != NormalizedIterator.TokenType.Dedent:
+    ) -> Optional[Token.MatchResult]:
+        if normalized_iter.GetNextTokenType() != NormalizedIterator.TokenType.Dedent:
             return None
 
         normalized_iter.ConsumeDedent()
 
-        if normalized_iter.GetNextToken() == NormalizedIterator.TokenType.WhitespacePrefix:
+        if normalized_iter.GetNextTokenType() == NormalizedIterator.TokenType.WhitespacePrefix:
             normalized_iter.SkipWhitespacePrefix()
 
         return DedentToken.MatchResult()
@@ -257,7 +267,6 @@ class RegexToken(Token):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class MatchResult(Token.MatchResult):
-        # ----------------------------------------------------------------------
         Match: TypingMatch
 
     # ----------------------------------------------------------------------
@@ -268,7 +277,7 @@ class RegexToken(Token):
     def __init__(
         self,
         name: str,
-        regex: Pattern,
+        regex: TypingPattern,
         is_multiline=False,
         is_always_ignored=False,
     ):
@@ -287,20 +296,20 @@ class RegexToken(Token):
             # Take special care when working with multiline RegexTokens.
 
             # Check the opening token
-            assert GetNumMultilineTriplets(
+            assert GetNumMultilineTokenDelimiters(
                 pattern,
                 start_index=0,
-                end_index=min(pattern_len, MULTILINE_PHRASE_TOKEN_LENGTH),
+                end_index=min(pattern_len, MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH),
             ) == 1, (pattern, "The opening token must be a multiline phrase token")
 
             # Check the closing token
-            assert GetNumMultilineTriplets(
+            assert GetNumMultilineTokenDelimiters(
                 pattern,
-                start_index=max(0, pattern_len - MULTILINE_PHRASE_TOKEN_LENGTH),
+                start_index=max(0, pattern_len - MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH),
             ) == 1, (pattern, "The closing token must be a multiline phrase token")
 
         else:
-            assert GetNumMultilineTriplets(
+            assert GetNumMultilineTokenDelimiters(
                 pattern,
                 start_index=0,
                 end_index=pattern_len,
@@ -324,14 +333,14 @@ class RegexToken(Token):
     def Match(
         self,
         normalized_iter: NormalizedIterator,
-    ) -> Optional["MatchResult"]:
-        if normalized_iter.GetNextToken() != NormalizedIterator.TokenType.Content:
+    ) -> Optional[Token.MatchResult]:
+        if normalized_iter.GetNextTokenType() != NormalizedIterator.TokenType.Content:
             return None
 
         match = self.Regex.match(
             normalized_iter.Content,
             pos=normalized_iter.Offset,
-            endpos=normalized_iter.ContentLen if self.IsMultiline else normalized_iter.LineInfo.PosEnd,
+            endpos=normalized_iter.ContentLen if self.IsMultiline else normalized_iter.LineInfo.ContentEnd,
         )
 
         if match:
@@ -437,13 +446,13 @@ def _AdvanceMultiline(
 ):
     # The match may span multiple lines, so we have to be intentional about how we advance
     while delta:
-        while normalized_iter.GetNextToken() == NormalizedIterator.TokenType.Dedent:
+        while normalized_iter.GetNextTokenType() == NormalizedIterator.TokenType.Dedent:
             normalized_iter.ConsumeDedent()
 
         this_delta = min(delta, normalized_iter.LineInfo.OffsetEnd - normalized_iter.Offset)
 
         # The amount to advance can be 0 if we are looking at a blank line
-        if this_delta:
+        if this_delta != 0:
             normalized_iter.Advance(this_delta)
             delta -= this_delta
 

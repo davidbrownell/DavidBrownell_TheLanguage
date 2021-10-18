@@ -3,7 +3,7 @@
 # |  DeleteStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-14 16:44:10
+# |      2021-10-12 14:25:08
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, Optional
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,19 +31,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
-    from ...GrammarPhrase import CreateParserRegions, GrammarPhrase
 
-    from ....Parser.ParserInfo import GetParserInfo, SetParserInfo
-
-    from ....Parser.Statements.DeleteStatementParserInfo import DeleteStatementParserInfo
+    from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractSequence,
         ExtractToken,
-        Leaf,
-        Node,
     )
+
+    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+
+    from ....Parser.Statements.DeleteStatementParserInfo import DeleteStatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -63,12 +62,12 @@ class DeleteStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     def __init__(self):
         super(DeleteStatement, self).__init__(
-            GrammarPhrase.Type.Statement,
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     "del",
-                    CommonTokens.GenericName,
+                    CommonTokens.VariableName,
                     CommonTokens.Newline,
                 ],
             ),
@@ -78,25 +77,21 @@ class DeleteStatement(GrammarPhrase):
     @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        node: Node,
-    ) -> Optional[GrammarPhrase.ExtractParserInfoResult]:
-        # ----------------------------------------------------------------------
-        def CreateParserInfo():
-            nodes = ExtractSequence(node)
-            assert len(nodes) == 3
+        node: AST.Node,
+    ) -> Union[
+        None,
+        ParserInfo,
+        Callable[[], ParserInfo],
+        Tuple[ParserInfo, Callable[[], ParserInfo]],
+    ]:
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 3
 
-            # <name>
-            name_leaf = cast(Leaf, nodes[1])
-            name_info = cast(str, ExtractToken(name_leaf))
+        # <name>
+        name_leaf = cast(AST.Leaf, nodes[1])
+        name_info = cast(str, ExtractToken(name_leaf))
 
-            SetParserInfo(
-                node,
-                DeleteStatementParserInfo(
-                    CreateParserRegions(node, name_leaf),  # type: ignore
-                    name_info,
-                ),
-            )
-
-        # ----------------------------------------------------------------------
-
-        return GrammarPhrase.ExtractParserInfoResult(CreateParserInfo)
+        return DeleteStatementParserInfo(
+            CreateParserRegions(node, name_leaf),  # type: ignore
+            name_info,
+        )

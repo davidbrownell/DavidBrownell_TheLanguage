@@ -3,7 +3,7 @@
 # |  SequencePhrase_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-07-12 08:59:03
+# |      2021-09-24 12:57:18
 # |
 # ----------------------------------------------------------------------
 # |
@@ -59,13 +59,13 @@ class TestUnusualScenarios(object):
         [
             # Note that we are using 2 SequencePhrases to tease out potential ambiguity issues when
             # both phrases match the same content.
-            SequencePhrase(DSL.CommentToken, [_lower_phrase, _newline_phrase]),
-            SequencePhrase(DSL.CommentToken, [_upper_phrase, _newline_phrase]),
+            SequencePhrase(DSL.DefaultCommentToken, [_lower_phrase, _newline_phrase]),
+            SequencePhrase(DSL.DefaultCommentToken, [_upper_phrase, _newline_phrase]),
         ],
     )
 
     _indent_phrase                          = SequencePhrase(
-        DSL.CommentToken,
+        DSL.DefaultCommentToken,
         [
             _lower_phrase,
             _newline_phrase,
@@ -99,83 +99,23 @@ class TestUnusualScenarios(object):
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
-    async def test_InitialComment(self, parse_mock):
+    async def test_InternalComments(self, parse_mock):
         at_end, result = await self._GetResults(
             parse_mock,
             textwrap.dedent(
                 """\
-                # Comment1
                 lower1 # Comment2
                 lower2
                 # Comment3
                 lower3
-                """,
-            ),
-        )
-
-        CompareResultsFromFile(
-            result,
-        )
-
-        assert at_end
-
-    # ----------------------------------------------------------------------
-    @pytest.mark.asyncio
-    async def test_InitialWhitespaceCommentWhitespace(self, parse_mock):
-        at_end, result = await self._GetResults(
-            parse_mock,
-            textwrap.dedent(
-                """\
-
-
-                # Comment
-
-
-                lower1
-                lower2
-                """,
-            ),
-        )
-
-        CompareResultsFromFile(
-            result,
-        )
-
-        assert at_end
-
-    # ----------------------------------------------------------------------
-    @pytest.mark.asyncio
-    async def test_TrailingComment(self, parse_mock):
-        at_end, result = await self._GetResults(
-            parse_mock,
-            textwrap.dedent(
-                """\
-                lower1
-
-                # Trailing comment
-                """,
-            ),
-        )
-
-        CompareResultsFromFile(
-            result,
-        )
-
-        assert at_end
-
-    # ----------------------------------------------------------------------
-    @pytest.mark.asyncio
-    async def test_TrailingWhitespace(self, parse_mock):
-        at_end, result = await self._GetResults(
-            parse_mock,
-            textwrap.dedent(
-                """\
-                lower1
-                lower2
 
 
 
+                    # Comment4
+                # Comment5
 
+
+                lower4
                 """,
             ),
         )
@@ -192,45 +132,6 @@ class TestUnusualScenarios(object):
         at_end, result = await self._GetResults(
             parse_mock,
             "lower1    \nlower2\t\t",
-        )
-
-        CompareResultsFromFile(
-            result,
-        )
-
-        assert at_end
-
-    # ----------------------------------------------------------------------
-    @pytest.mark.asyncio
-    async def test_EmptyContent(self, parse_mock):
-        at_end, result = await self._GetResults(
-            parse_mock,
-            textwrap.dedent(
-                """\
-                """,
-            ),
-        )
-
-        CompareResultsFromFile(
-            result,
-        )
-
-        assert at_end
-
-    # ----------------------------------------------------------------------
-    @pytest.mark.asyncio
-    async def test_AllWhitespaceContent(self, parse_mock):
-        at_end, result = await self._GetResults(
-            parse_mock,
-            textwrap.dedent(
-                """\
-
-
-
-
-
-                """,
-            ),
         )
 
         CompareResultsFromFile(
@@ -271,13 +172,19 @@ class TestUnusualScenarios(object):
         parse_mock,
         content: str,
         phrase=None,
+        single_threaded=None,
     ) -> Tuple[bool, str]:
         iter = CreateIterator(content)
 
         results = []
 
         while not iter.AtEnd():
-            result = await (phrase or self._phrase).LexAsync(("root", str(len(results))), iter, parse_mock)
+            result = await (phrase or self._phrase).LexAsync(
+                ("root", str(len(results))),
+                iter,
+                parse_mock,
+                single_threaded=single_threaded,
+            )
             assert result is not None
 
             results.append(str(result))

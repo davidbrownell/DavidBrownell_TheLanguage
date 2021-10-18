@@ -3,7 +3,7 @@
 # |  VariableDeclarationStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-16 12:06:59
+# |      2021-09-30 13:27:25
 # |
 # ----------------------------------------------------------------------
 # |
@@ -43,3 +43,5 @@ class VariableDeclarationStatementParserInfo(StatementParserInfo):
     Modifier: Optional[TypeModifier]
     Name: NameParserInfo
     Expression: ExpressionParserInfo
+
+    # TODO: Not all type modifiers are valid in this context

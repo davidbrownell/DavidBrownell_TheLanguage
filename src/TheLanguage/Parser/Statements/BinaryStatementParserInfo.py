@@ -3,7 +3,7 @@
 # |  BinaryStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-14 08:56:03
+# |      2021-10-12 13:55:27
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains BinaryStatementParserData, BinaryStatementParserInfo, and BinaryStatementParserRegions objects"""
+"""Contains the BinaryStatementParserInfo"""
 
 import os
 

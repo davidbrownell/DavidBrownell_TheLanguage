@@ -3,7 +3,7 @@
 # |  CastExpressionParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-10 15:10:47
+# |      2021-10-04 09:14:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -30,97 +30,55 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..CastExpressionParserInfo import *
-    from ...Common.AutomatedTests import CreateRegion
-
-    from ...Types.StandardTypeParserInfo import StandardTypeParserInfo, TypeParserInfo
+    from ...Common.AutomatedTests import RegionCreator
+    from ...Types.StandardTypeParserInfo import StandardTypeParserInfo
 
 
 # ----------------------------------------------------------------------
-class TestStandard(object):
-    _expression_info                        = ExpressionParserInfo(
-        [CreateRegion(100, 200, 300, 400)],  # type: ignore
-    )
+def test_TypeWithModifierError():
+    region_creator = RegionCreator()
 
-    _type_info                              = TypeParserInfo(
-        [CreateRegion(500, 600, 700, 800)],  # type: ignore
-    )
-
-    # ----------------------------------------------------------------------
-    def test_InfoWithType(self):
-        info = CastExpressionParserInfo(
+    with pytest.raises(TypeWithModifierError) as ex:
+        CastExpressionParserInfo(
             [
-                CreateRegion(1, 2, 300, 400),
-                CreateRegion(5, 6, 7, 8),
-                CreateRegion(9, 10, 11, 12),
+                region_creator(container=True),
+                region_creator(),
+                region_creator(),
             ],
-            self._expression_info, self._type_info,
+            ExpressionParserInfo([region_creator(container=True)]),
+            StandardTypeParserInfo(
+                [
+                    region_creator(container=True),
+                    region_creator(),
+                    region_creator(expected_error=True),
+                ],
+                "TheType",
+                TypeModifier.val,
+            ),
         )
 
-        assert info.Expression == self._expression_info
-        assert info.Type == self._type_info
+    ex = ex.value
 
-        assert info.Regions.Self__ == CreateRegion(1, 2, 300, 400)
-        assert info.Regions.Expression == CreateRegion(5, 6, 7, 8)
-        assert info.Regions.Type == CreateRegion(9, 10, 11, 12)
+    assert str(ex) == "Cast expressions may specify a type or a modifier, but not both."
+    assert ex.Region == region_creator.ExpectedErrorRegion()
 
-    # ----------------------------------------------------------------------
-    def test_InfoWithModifier(self):
-        info = CastExpressionParserInfo(
+
+# ----------------------------------------------------------------------
+def test_InvalidModifierError():
+    region_creator = RegionCreator()
+
+    with pytest.raises(InvalidModifierError) as ex:
+        CastExpressionParserInfo(
             [
-                CreateRegion(1, 2, 300, 400),
-                CreateRegion(5, 6, 7, 8),
-                CreateRegion(9, 10, 11, 12),
+                region_creator(container=True),
+                region_creator(),
+                region_creator(expected_error=True),
             ],
-            self._expression_info, TypeModifier.val,
+            ExpressionParserInfo([region_creator(container=True),]),
+            TypeModifier.mutable,
         )
 
-        assert info.Expression == self._expression_info
-        assert info.Type == TypeModifier.val
+    ex = ex.value
 
-        assert info.Regions.Self__ == CreateRegion(1, 2, 300, 400)
-        assert info.Regions.Expression == CreateRegion(5, 6, 7, 8)
-        assert info.Regions.Type == CreateRegion(9, 10, 11, 12)
-
-    # ----------------------------------------------------------------------
-    def test_InfoInvalidType(self):
-        with pytest.raises(TypeWithModifierError) as ex:
-            CastExpressionParserInfo(
-                [
-                    CreateRegion(13, 14, 1500, 1600),
-                    CreateRegion(17, 18, 19, 20),
-                    CreateRegion(21, 22, 23, 24),
-                ],
-                self._expression_info,
-                StandardTypeParserInfo(
-                    [
-                        CreateRegion(1, 2, 300, 400),
-                        CreateRegion(5, 6, 7, 8),
-                        CreateRegion(9, 10, 11, 12),
-                    ],
-                    "TheType",
-                    TypeModifier.val,
-                ),
-            )
-
-        ex = ex.value
-
-        assert str(ex) == "Cast expressions may specify a type or a modifier, but not both."
-        assert ex.Region == CreateRegion(9, 10, 11, 12)
-
-    # ----------------------------------------------------------------------
-    def test_InfoInvalidModifier(self):
-        with pytest.raises(InvalidModifierError) as ex:
-            CastExpressionParserInfo(
-                [
-                    CreateRegion(1, 2, 300, 400),
-                    CreateRegion(5, 6, 7, 8),
-                    CreateRegion(9, 10, 11, 12),
-                ],
-                self._expression_info,
-                TypeModifier.mutable,
-            )
-
-        ex = ex.value
-
-        assert str(ex) == "'mutable' cannot be used with cast expressions; supported values are 'ref', 'val', 'view'."
-        assert ex.Region == CreateRegion(9, 10, 11, 12)
+    assert str(ex) == "'mutable' cannot be used in cast expressions; supported values are 'ref', 'val', 'view'."
+    assert ex.Region == region_creator.ExpectedErrorRegion()

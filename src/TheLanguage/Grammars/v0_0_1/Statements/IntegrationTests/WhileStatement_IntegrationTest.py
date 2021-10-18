@@ -3,7 +3,7 @@
 # |  WhileStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-08-18 16:21:44
+# |      2021-10-14 12:27:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated test for WhileStatement.py"""
+"""Automated tests for WhileStatement.py"""
 
 import os
 import textwrap
 
-import pytest
-pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
-
 import CommonEnvironment
-from CommonEnvironment.AutomatedTestHelpers import CompareResultsFromFile
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,33 +28,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .....IntegrationTests import *
     from ..WhileStatement import *
-    from ...Common.AutomatedTests import Execute
 
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                while value:
-                    Func1()
-                    Func2()
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            while value:
+                var1 = value
+                var2 = value
+            """,
         ),
-    )
+    )))
 
 
 # ----------------------------------------------------------------------
 def test_SingleLine():
-    CompareResultsFromFile(
-        Execute(
-            textwrap.dedent(
-                """\
-                while value: Func1()
-                """,
-            ),
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            while value: var1 = value
+            """,
         ),
-    )
+    )))

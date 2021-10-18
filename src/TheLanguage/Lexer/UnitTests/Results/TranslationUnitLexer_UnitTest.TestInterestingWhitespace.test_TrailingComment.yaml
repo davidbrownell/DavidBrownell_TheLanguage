@@ -1,0 +1,81 @@
+# <class 'TheLanguage.Lexer.Components.AST.Node'>
+Children:
+  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Children:
+      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+        Children:
+          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+            Children:
+              - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                Children:
+                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                    IsIgnored: False
+                    IterBegin: "[1, 1] (0)"
+                    IterEnd: "[1, 4] (3)"
+                    Type: "Lower <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+                    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                      Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+                    Whitespace: None
+                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                    IsIgnored: False
+                    IterBegin: "[1, 4] (3)"
+                    IterEnd: "[3, 1] (5)"
+                    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+                    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                      End: 5
+                      Start: 3
+                    Whitespace: None
+                IsIgnored: False
+                IterBegin: "[1, 1] (0)"
+                IterEnd: "[3, 1] (5)"
+                Type: "[Lower, Newline+] <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+            IsIgnored: False
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[3, 1] (5)"
+            Type: "Phrase <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
+        IsIgnored: False
+        IterBegin: "[1, 1] (0)"
+        IterEnd: "[3, 1] (5)"
+        Type: "(Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    IsIgnored: False
+    IterBegin: "[1, 1] (0)"
+    IterEnd: "[3, 1] (5)"
+    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+    IsIgnored: True
+    IterBegin: "[3, 1] (5)"
+    IterEnd: "[3, 12] (16)"
+    Type: "<comment> <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+      Match: "<_sre.SRE_Match object; span=(5, 16), match='# Comment 1'>"
+    Whitespace: None
+  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+    IsIgnored: True
+    IterBegin: "[3, 12] (16)"
+    IterEnd: "[8, 1] (21)"
+    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+      End: 21
+      Start: 16
+    Whitespace: None
+  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+    IsIgnored: True
+    IterBegin: "[8, 1] (21)"
+    IterEnd: "[8, 12] (32)"
+    Type: "<comment> <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
+    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+      Match: "<_sre.SRE_Match object; span=(21, 32), match='# Comment 2'>"
+    Whitespace: None
+  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+    IsIgnored: True
+    IterBegin: "[8, 12] (32)"
+    IterEnd: "[9, 1] (33)"
+    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
+    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+      End: 33
+      Start: 32
+    Whitespace: None
+IsIgnored: False
+IterBegin: "[1, 1] (0)"
+IterEnd: "[3, 1] (5)"
+Type: "<None>"
