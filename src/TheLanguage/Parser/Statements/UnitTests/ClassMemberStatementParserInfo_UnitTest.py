@@ -37,6 +37,22 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class DummyTypeParserInfo(TypeParserInfo):
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        raise Exception("Not implemented")
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class DummyExpressionParserInfo(ExpressionParserInfo):
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        raise Exception("Not implemented")
+
+
+# ----------------------------------------------------------------------
 def _CreateClassStatementParserInfo(
     type_info: TypeInfo,
     visibility: VisibilityModifier=VisibilityModifier.private,
@@ -195,7 +211,7 @@ class TestStandard(object):
             self._mutable_class_parser_info,
             VisibilityModifier.protected,
             ClassModifierType.mutable,
-            TypeParserInfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMember",
             None,
         )
@@ -229,9 +245,9 @@ class TestStandard(object):
             self._mutable_class_parser_info,
             VisibilityModifier.protected,
             ClassModifierType.mutable,
-            TypeParserInfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMember",
-            ExpressionParserInfo([region_creator(container=True)]),
+            DummyExpressionParserInfo([region_creator(container=True)]),
         )
 
         assert info.Visibility == VisibilityModifier.protected
@@ -267,7 +283,7 @@ class TestStandard(object):
                 parser_info,
                 None,
                 ClassModifierType.immutable,
-                TypeParserInfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMember",
                 None,
             )
@@ -295,7 +311,7 @@ class TestStandard(object):
                 parser_info,
                 VisibilityModifier.public,
                 None,
-                TypeParserInfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMember",
                 None,
             )
@@ -320,7 +336,7 @@ class TestStandard(object):
                 self._restricted_parser_info,
                 VisibilityModifier.public,
                 ClassModifierType.immutable,
-                TypeParserInfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMember",
                 None,
             )
@@ -347,7 +363,7 @@ class TestStandard(object):
                 self._restricted_parser_info,
                 VisibilityModifier.private,
                 ClassModifierType.mutable,
-                TypeParserInfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMember",
                 None,
             )
@@ -377,7 +393,7 @@ class TestStandard(object):
                 _CreateClassStatementParserInfo(restricted_type_info),
                 VisibilityModifier.private,
                 ClassModifierType.mutable,
-                TypeParserInfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMember",
                 None,
             )
@@ -404,7 +420,7 @@ class TestStandard(object):
                 None,
                 VisibilityModifier.private,
                 ClassModifierType.immutable,
-                TypeParserInfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMember",
                 None,
             )
@@ -434,7 +450,7 @@ class TestStandard(object):
                 _CreateClassStatementParserInfo(restricted_type_info),
                 VisibilityModifier.private,
                 ClassModifierType.immutable,
-                TypeParserInfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMember",
                 None,
             )
@@ -468,7 +484,7 @@ class TestStandard(object):
                 ),
                 VisibilityModifier.public,
                 ClassModifierType.mutable,
-                TypeParserInfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMember",
                 None,
             )

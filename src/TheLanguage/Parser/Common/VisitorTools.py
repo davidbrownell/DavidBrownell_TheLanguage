@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  DeleteStatementParserInfo.py
+# |  VisitTools.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-12 14:23:28
+# |      2021-10-18 08:25:50
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,33 +13,42 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the DeleteStatementParserInfo object"""
+"""Contains tools that help when writing visitors"""
 
 import os
 
-from dataclasses import dataclass
+from contextlib import contextmanager
+from enum import auto, Enum
 
 import CommonEnvironment
-from CommonEnvironment import Interface
-
-from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-with InitRelativeImports():
-    from .StatementParserInfo import StatementParserInfo
-    from ..Common.VisitorTools import VisitType
+
+# ----------------------------------------------------------------------
+class VisitType(Enum):
+    """Indicates when an On____ function is being invoked for a visitor."""
+
+    PreChildEnumeration                     = auto()
+    PostChildEnumeration                    = auto()
+    NoChildEnumeration                      = auto()
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class DeleteStatementParserInfo(StatementParserInfo):
-    VariableName: str
+class StackHelper(object):
+    # ----------------------------------------------------------------------
+    def __init__(self, stack):
+        self.stack                          = stack
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnDeleteStatement(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+    @contextmanager
+    def __getitem__(self, index):
+        self.stack.push(index)
+
+        try:
+            yield self
+        finally:
+            self.stack.pop()

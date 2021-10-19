@@ -36,10 +36,18 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class DummyStatementParserInfo(StatementParserInfo):
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        raise Exception("Not implemented")
+
+
+# ----------------------------------------------------------------------
 def test_ClassDependencyExplicitVisibility():
     region_creator = RegionCreator()
 
-    info = ClassDependencyParserInfo(
+    info = ClassStatementDependencyParserInfo(
         [region_creator(), region_creator(), region_creator()],
         VisibilityModifier.public,
         "DependencyName",
@@ -56,7 +64,7 @@ def test_ClassDependencyExplicitVisibility():
 def test_ClassDependencyDefautVisibility():
     region_creator = RegionCreator()
 
-    info = ClassDependencyParserInfo(
+    info = ClassStatementDependencyParserInfo(
         [region_creator(), region_creator(), region_creator()],
         None,
         "DependencyName",
@@ -206,7 +214,7 @@ def test_ClassStatementWithBase():
         ClassModifierType.mutable,
         ClassType.Class,
         "TheClass",
-        ClassDependencyParserInfo(
+        ClassStatementDependencyParserInfo(
             [region_creator(container=True), None, region_creator()],
             None,
             "TheBase",
@@ -247,12 +255,12 @@ def test_ClassStatementWithImplements():
         "TheClass",
         None,
         [
-            ClassDependencyParserInfo(
+            ClassStatementDependencyParserInfo(
                 [region_creator(container=True), region_creator(), region_creator()],
                 VisibilityModifier.public,
                 "Interface1",
             ),
-            ClassDependencyParserInfo(
+            ClassStatementDependencyParserInfo(
                 [region_creator(container=True), None, region_creator()],
                 None,
                 "Interface2",
@@ -301,7 +309,7 @@ def test_ClassStatementWithUses():
         None,
         None,
         [
-            ClassDependencyParserInfo(
+            ClassStatementDependencyParserInfo(
                 [region_creator(container=True), region_creator(), region_creator()],
                 VisibilityModifier.public,
                 "Uses1",
@@ -347,8 +355,8 @@ def test_ClassStatementFinalConstructNoDocumentation():
 
     info.FinalConstruct(
         [
-            StatementParserInfo([region_creator(container=True)]),
-            StatementParserInfo([region_creator(container=True)]),
+            DummyStatementParserInfo([region_creator(container=True)]),
+            DummyStatementParserInfo([region_creator(container=True)]),
         ],
         None,
     )
@@ -391,8 +399,8 @@ def test_ClassStatementFinalConstructWithDocumentation():
 
     info.FinalConstruct(
         [
-            StatementParserInfo([region_creator(container=True)]),
-            StatementParserInfo([region_creator(container=True)]),
+            DummyStatementParserInfo([region_creator(container=True)]),
+            DummyStatementParserInfo([region_creator(container=True)]),
         ],
         ("The documentation", region_creator()),
     )
@@ -570,7 +578,7 @@ class TestErrors(object):
                 ClassModifierType.mutable,
                 ClassType.Class,
                 "TheClass",
-                ClassDependencyParserInfo(
+                ClassStatementDependencyParserInfo(
                     [
                         region_creator(container=True),
                         region_creator(expected_error=True),
@@ -684,7 +692,7 @@ class TestErrors(object):
                 "TheClass",
                 None,
                 [
-                    ClassDependencyParserInfo(
+                    ClassStatementDependencyParserInfo(
                         [
                             region_creator(container=True),
                             region_creator(expected_error=True),
@@ -799,7 +807,7 @@ class TestErrors(object):
                 None,
                 None,
                 [
-                    ClassDependencyParserInfo(
+                    ClassStatementDependencyParserInfo(
                         [
                             region_creator(container=True),
                             region_creator(expected_error=True),

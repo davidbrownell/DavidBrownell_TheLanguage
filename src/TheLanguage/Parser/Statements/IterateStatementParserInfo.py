@@ -22,6 +22,7 @@ from typing import List
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
+
+    from ..Common.VisitorTools import StackHelper, VisitType
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Names.NameParserInfo import NameParserInfo
 
@@ -53,3 +56,24 @@ class IterateStatementParserInfo(StatementParserInfo):
     Name: NameParserInfo
     Expression: ExpressionParserInfo
     Statements: List[StatementParserInfo]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnIterateStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["Name"]:
+                results.append(self.Name.Accept(visitor, helper.stack, *args, **kwargs))
+
+            with helper["Expression"]:
+                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+
+            with helper["Statements"]:
+                results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])
+
+        results.append(visitor.OnIterateStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

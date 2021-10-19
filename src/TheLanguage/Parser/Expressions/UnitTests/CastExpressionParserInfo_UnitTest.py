@@ -35,6 +35,14 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class DummyExpressionParserInfo(ExpressionParserInfo):
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        raise Excpetion("Not implemented")
+
+
+# ----------------------------------------------------------------------
 def test_TypeWithModifierError():
     region_creator = RegionCreator()
 
@@ -45,7 +53,7 @@ def test_TypeWithModifierError():
                 region_creator(),
                 region_creator(),
             ],
-            ExpressionParserInfo([region_creator(container=True)]),
+            DummyExpressionParserInfo([region_creator(container=True)]),
             StandardTypeParserInfo(
                 [
                     region_creator(container=True),
@@ -74,7 +82,7 @@ def test_InvalidModifierError():
                 region_creator(),
                 region_creator(expected_error=True),
             ],
-            ExpressionParserInfo([region_creator(container=True),]),
+            DummyExpressionParserInfo([region_creator(container=True),]),
             TypeModifier.mutable,
         )
 

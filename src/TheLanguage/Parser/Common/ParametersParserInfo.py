@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,6 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .VisitorTools import StackHelper, VisitType
+
     from ..Parser import ParserInfo
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Types.TypeParserInfo import TypeParserInfo
@@ -49,6 +52,25 @@ class ParameterParserInfo(ParserInfo):
         super(ParameterParserInfo, self).__post_init__(regions)
         assert self.IsVarArgs is None or self.IsVarArgs, self
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnParameter(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["Type"]:
+                results.append(self.Type.Accept(visitor, helper.stack, *args, **kwargs))
+
+            if self.Default is not None:
+                with helper["Default"]:
+                    results.append(self.Default.Accept(visitor, helper.stack, *args, **kwargs))
+
+        results.append(visitor.OnParameter(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -61,3 +83,27 @@ class ParametersParserInfo(ParserInfo):
     def __post_init__(self, regions):
         super(ParametersParserInfo, self).__post_init__(regions)
         assert self.Positional or self.Keyword or self.Any
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnParameters(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            if self.Positional is not None:
+                with helper["Positional"]:
+                    results.append([parameter.Accept(visitor, helper.stack, *args, **kwargs) for parameter in self.Positional])
+
+            if self.Keyword is not None:
+                with helper["Keyword"]:
+                    results.append([parameter.Accept(visitor, helper.stack, *args, **kwargs) for parameter in self.Keyword])
+
+            if self.Any is not None:
+                with helper["Any"]:
+                    results.append([parameter.Accept(visitor, helper.stack, *args, **kwargs) for parameter in self.Any])
+
+        results.append(visitor.OnParameters(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results

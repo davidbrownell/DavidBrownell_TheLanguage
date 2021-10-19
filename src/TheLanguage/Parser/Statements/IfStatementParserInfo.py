@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfo, StatementParserInfo
+    from ..Common.VisitorTools import StackHelper, VisitType
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
@@ -40,6 +42,24 @@ with InitRelativeImports():
 class IfStatementClauseParserInfo(ParserInfo):
     Condition: ExpressionParserInfo
     Statements: List[StatementParserInfo]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnIfStatementClause(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["Condition"]:
+                results.append(self.Condition.Accept(visitor, helper.stack, *args, **kwargs))
+
+            with helper["Statements"]:
+                results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])
+
+        results.append(visitor.OnIfStatementClause(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results
 
 
 # ----------------------------------------------------------------------
@@ -54,3 +74,22 @@ class IfStatementParserInfo(StatementParserInfo):
             regions,
             regionless_attributes=["Clauses"],
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor, stack, *args, **kwargs):
+        results = []
+
+        results.append(visitor.OnIfStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+
+        with StackHelper(stack)[self] as helper:
+            with helper["Clauses"]:
+                results.append([clause.Accept(visitor, helper.stack, *args, **kwargs) for clause in self.Clauses])
+
+            if self.ElseStatements is not None:
+                with helper["ElseStatements"]:
+                    results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.ElseStatements])
+
+        results.append(visitor.OnIfStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
+
+        return results
