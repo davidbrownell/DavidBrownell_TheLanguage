@@ -79,6 +79,7 @@ class DynamicPhrase(Phrase):
 
         self.DynamicPhrasesType             = phrases_type
         self._get_dynamic_phrases_func      = get_dynamic_phrases_func
+        self._display_name: Optional[str]   = None
 
         # ----------------------------------------------------------------------
         def CreateIncludePhraseFunc(include_phrase, exclude_phrases):
@@ -114,6 +115,11 @@ class DynamicPhrase(Phrase):
 
         self._pre_phrase_filter_func        = CreateIncludePhraseFunc(include_phrases, exclude_phrases)
         self._is_valid_data_func            = is_valid_data_func or (lambda *args, **kwargs: True)
+
+    # ----------------------------------------------------------------------
+    @property
+    def DisplayName(self):
+        return self._display_name or self.Name
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -189,6 +195,8 @@ class DynamicPhrase(Phrase):
             )
 
             assert isinstance(dynamic_phrases, list), dynamic_phrases
+
+            self._display_name = dynamic_phrases_name
 
             # Filter the list by those that have been explicitly included or excluded
             dynamic_phrases = [

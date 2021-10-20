@@ -51,20 +51,30 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-OnPhraseCompleteFuncType                    = Callable[
-    [
-        str,                                            # fully_qualified_name
-        Phrase,                                         # phrase
-        AST.Node,                                       # node
-        Phrase.NormalizedIterator,                      # iter_before
-        Phrase.NormalizedIterator,                      # iter_after
-    ],
-    Union[
+class LexObserver(Interface.Interface):
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnPhraseComplete(
+        fully_qualified_name: str,
+        phrase: Phrase,
+        node: AST.Node,
+        iter_before: Phrase.NormalizedIterator,
+        iter_after: Phrase.NormalizedIterator,
+    ) -> Union[
         bool,                                           # True to continue processing, False to terminate
         DynamicPhrasesInfo,                             # Dynamic phrases (if any) resulting from the completion of the parsed phrase
         TranslationUnitsObserver.ImportInfo,            # Import information (if any) resulting from the completion of the parsed phrase
-    ]
-]
+    ]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def GetParentStatementNode(
+        node: AST.Node,
+    ) -> Optional[AST.Node]:
+        raise Exception("Abstract method")  # pragma: no cover
 
 
 # ----------------------------------------------------------------------
@@ -75,7 +85,7 @@ def Lex(
     target: str,
     fully_qualified_names: List[str],
     source_roots: List[str],
-    on_phrase_complete_func: OnPhraseCompleteFuncType,
+    lex_observer: LexObserver,
     *,
     default_grammar: Optional[SemVer]=None,
     max_num_threads: Optional[int]=None,
@@ -99,7 +109,7 @@ def Lex(
     observer = SyntaxObserverDecorator(
         _TranslationUnitsObserver(
             source_roots,
-            on_phrase_complete_func,
+            lex_observer,
             max_num_threads,
         ),
         grammars,
@@ -153,17 +163,16 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
     def __init__(
         self,
         source_roots: List[str],
-        on_phrase_complete_func: OnPhraseCompleteFuncType,
+        lex_observer: LexObserver,
         max_num_threads: Optional[int]=None,
     ):
         for source_root in source_roots:
             assert os.path.isdir(source_root), source_root
 
-        assert on_phrase_complete_func
         assert max_num_threads is None or max_num_threads > 0, max_num_threads
 
         self._source_roots                  = source_roots
-        self._on_phrase_complete_func       = on_phrase_complete_func
+        self._lex_observer                  = lex_observer
         self._executor                      = CreateThreadPool(max_workers=max_num_threads)
 
     # ----------------------------------------------------------------------
@@ -178,6 +187,14 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
             content = f.read()
 
         return content
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def GetParentStatementNode(
+        self,
+        node: AST.Node,
+    ) -> Optional[AST.Node]:
+        return self._lex_observer.GetParentStatementNode(node)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -238,7 +255,7 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
         DynamicPhrasesInfo,                 # Dynamic phrases to add to the active scope as a result of completing this phrase
         TranslationUnitsObserver.ImportInfo,# Import information (if any) resulting from the parsed phrase
     ]:
-        return self._on_phrase_complete_func(
+        return self._lex_observer.OnPhraseComplete(
             fully_qualified_name,
             phrase,
             node,

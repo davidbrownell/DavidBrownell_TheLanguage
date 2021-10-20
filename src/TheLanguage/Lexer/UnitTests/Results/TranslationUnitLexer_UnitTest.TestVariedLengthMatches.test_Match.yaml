@@ -40,7 +40,7 @@ Children:
         IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (8)"
-        Type: "(Upper | Lower | Number) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper | Lower | Number) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (8)"
@@ -95,7 +95,7 @@ Children:
         IsIgnored: False
         IterBegin: "[2, 1] (8)"
         IterEnd: "[3, 1] (14)"
-        Type: "(Upper | Lower | Number) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper | Lower | Number) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[2, 1] (8)"
     IterEnd: "[3, 1] (14)"
@@ -130,7 +130,7 @@ Children:
         IsIgnored: False
         IterBegin: "[3, 1] (14)"
         IterEnd: "[4, 1] (19)"
-        Type: "(Upper | Lower | Number) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper | Lower | Number) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[3, 1] (14)"
     IterEnd: "[4, 1] (19)"

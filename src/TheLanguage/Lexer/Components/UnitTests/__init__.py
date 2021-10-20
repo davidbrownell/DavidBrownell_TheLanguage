@@ -45,6 +45,21 @@ def parse_mock():
     mock = CoroutineMock()
     mock._thread_pool = CreateThreadPool(20)
 
+    # ----------------------------------------------------------------------
+    def GetParentStatementNode(node):
+        if (
+            node is None
+            or node.Type is None
+            or "Statement" in node.Type.Name
+        ):
+            return node
+
+        return node.Parent
+
+    # ----------------------------------------------------------------------
+
+    mock.GetParentStatementNode = GetParentStatementNode
+
     mock.Enqueue = mock._thread_pool.EnqueueAsync
 
     mock.OnPushScopeAsync = CoroutineMock()
