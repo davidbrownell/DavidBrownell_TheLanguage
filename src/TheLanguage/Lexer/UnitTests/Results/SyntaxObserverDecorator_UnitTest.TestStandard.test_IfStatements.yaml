@@ -127,7 +127,7 @@ Children:
                         IsIgnored: False
                         IterBegin: "[2, 5] (28)"
                         IterEnd: "[4, 1] (34)"
-                        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                     IsIgnored: False
                     IterBegin: "[2, 5] (28)"
                     IterEnd: "[4, 1] (34)"
@@ -151,7 +151,7 @@ Children:
         IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[4, 1] (34)"
-        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[4, 1] (34)"
@@ -305,7 +305,7 @@ Children:
                         IsIgnored: False
                         IterBegin: "[5, 5] (64)"
                         IterEnd: "[7, 1] (70)"
-                        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                     IsIgnored: False
                     IterBegin: "[5, 5] (64)"
                     IterEnd: "[7, 1] (70)"
@@ -329,7 +329,7 @@ Children:
         IsIgnored: False
         IterBegin: "[4, 1] (34)"
         IterEnd: "[7, 1] (70)"
-        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[4, 1] (34)"
     IterEnd: "[7, 1] (70)"
@@ -571,7 +571,7 @@ Children:
                         IsIgnored: False
                         IterBegin: "[8, 5] (116)"
                         IterEnd: "[10, 1] (122)"
-                        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                     IsIgnored: False
                     IterBegin: "[8, 5] (116)"
                     IterEnd: "[10, 1] (122)"
@@ -595,7 +595,7 @@ Children:
         IsIgnored: False
         IterBegin: "[7, 1] (70)"
         IterEnd: "[10, 1] (122)"
-        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[7, 1] (70)"
     IterEnd: "[10, 1] (122)"
@@ -947,7 +947,7 @@ Children:
                         IsIgnored: False
                         IterBegin: "[11, 5] (191)"
                         IterEnd: "[12, 1] (196)"
-                        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                     IsIgnored: False
                     IterBegin: "[11, 5] (191)"
                     IterEnd: "[12, 1] (196)"
@@ -982,7 +982,7 @@ Children:
                         IsIgnored: False
                         IterBegin: "[12, 5] (200)"
                         IterEnd: "[13, 1] (205)"
-                        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                     IsIgnored: False
                     IterBegin: "[12, 5] (200)"
                     IterEnd: "[13, 1] (205)"
@@ -1006,7 +1006,7 @@ Children:
         IsIgnored: False
         IterBegin: "[10, 1] (122)"
         IterEnd: "[13, 1] (205)"
-        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[10, 1] (122)"
     IterEnd: "[13, 1] (205)"

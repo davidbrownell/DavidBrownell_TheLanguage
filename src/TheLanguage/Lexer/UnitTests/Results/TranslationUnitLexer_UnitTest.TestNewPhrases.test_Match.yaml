@@ -15,7 +15,7 @@ Children:
         IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[1, 4] (3)"
-        Type: "(Upper Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[1, 4] (3)"
@@ -52,7 +52,7 @@ Children:
         IsIgnored: False
         IterBegin: "[1, 5] (4)"
         IterEnd: "[2, 1] (8)"
-        Type: "(Upper Phrase) / (Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase) Statements / (Lower Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 5] (4)"
     IterEnd: "[2, 1] (8)"

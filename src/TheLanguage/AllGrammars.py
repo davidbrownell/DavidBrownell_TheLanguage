@@ -25,6 +25,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -38,6 +39,7 @@ with InitRelativeImports():
         AST,
         DynamicPhrasesInfo,
         DynamicPhrasesType,
+        GetParentStatementNode as GetParentStatementNodeImpl,
         GrammarPhrase,
         ImportGrammarPhrase,
         Phrase,
@@ -45,6 +47,7 @@ with InitRelativeImports():
 
     from .Lexer.Lexer import (
         Lex as LexImpl,
+        LexObserver,
         Prune as PruneImpl,
     )
 
@@ -149,35 +152,48 @@ def Lex(
     List[Exception],                        # Errors
 ]:
     # ----------------------------------------------------------------------
-    def OnPhraseCompleteFunc(
-        fully_qualified_name: str,
-        phrase: Phrase,
-        node: AST.Node,
-        iter_before: Phrase.NormalizedIterator,
-        iter_after: Phrase.NormalizedIterator,
-    ) -> Union[
-        bool,
-        DynamicPhrasesInfo,
-        TranslationUnitsLexerObserver.ImportInfo,
-    ]:
-        try:
-            grammar_phrase = GrammarPhraseLookup.get(phrase, None)
-        except TypeError:
-            grammar_phrase = None
+    @Interface.staticderived
+    class Observer(LexObserver):
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.override
+        def OnPhraseComplete(
+            fully_qualified_name: str,
+            phrase: Phrase,
+            node: AST.Node,
+            iter_before: Phrase.NormalizedIterator,
+            iter_after: Phrase.NormalizedIterator,
+        ) -> Union[
+            bool,
+            DynamicPhrasesInfo,
+            TranslationUnitsLexerObserver.ImportInfo,
+        ]:
+            try:
+                grammar_phrase = GrammarPhraseLookup.get(phrase, None)
+            except TypeError:
+                grammar_phrase = None
 
-        if grammar_phrase is not None:
-            if isinstance(grammar_phrase, ImportGrammarPhrase):
-                return grammar_phrase.ProcessImportNode(
-                    source_roots,
-                    fully_qualified_name,
-                    node,
-                )
+            if grammar_phrase is not None:
+                if isinstance(grammar_phrase, ImportGrammarPhrase):
+                    return grammar_phrase.ProcessImportNode(
+                        source_roots,
+                        fully_qualified_name,
+                        node,
+                    )
 
-            result = grammar_phrase.GetDynamicContent(node)
+                result = grammar_phrase.GetDynamicContent(node)
 
-            # TODO: Process result
+                # TODO: Process result
 
-        return not cancellation_event.is_set()
+            return not cancellation_event.is_set()
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.override
+        def GetParentStatementNode(
+            node: AST.Node,
+        ) -> Optional[AST.Node]:
+            return GetParentStatementNodeImpl(node)
 
     # ----------------------------------------------------------------------
 
@@ -190,7 +206,7 @@ def Lex(
         target,
         fully_qualified_names,
         source_roots,
-        OnPhraseCompleteFunc,
+        Observer(),
         default_grammar=default_grammar,
         max_num_threads=max_num_threads,
     )

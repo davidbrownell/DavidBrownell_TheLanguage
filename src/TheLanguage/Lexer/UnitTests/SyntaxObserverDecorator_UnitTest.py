@@ -73,6 +73,7 @@ class TestStandard(object):
         mock.LoadContent = lambda fully_qualified_name: content_dict[fully_qualified_name]
         mock.Enqueue = mock._thread_pool.EnqueueAsync
 
+        mock.GetParentStatementNode = Mock(return_value=None)
         mock.OnPushScopeAsync = CoroutineMock()
         mock.OnPopScopeAsync = CoroutineMock()
         mock.OnPhraseCompleteAsync = CoroutineMock()

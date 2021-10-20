@@ -16,12 +16,11 @@
 """Functionality used to lex a single translation unit"""
 
 import os
-import sys
 import textwrap
 import threading
 
 from collections import OrderedDict
-from typing import Any, Awaitable, cast, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Awaitable, Callable, cast, Dict, Generator, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 import inflect as inflect_mod
@@ -76,8 +75,7 @@ class InvalidDynamicTraversalError(Error):
 class SyntaxInvalidError(Error):
     """Exception raises when no matching phrases could be found"""
 
-    iter_begin: InitVar[Phrase.NormalizedIterator]
-    iter_end: InitVar[Phrase.NormalizedIterator]
+    get_parent_statement_node_func : InitVar[Callable[[AST.Node], Optional[AST.Node]]]
 
     Root: AST.Node
 
@@ -95,196 +93,196 @@ class SyntaxInvalidError(Error):
     )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, iter_begin, iter_end):
-        error_node: Optional[AST.Node] = None
-        error_context: Optional[str] = None
-
+    def __post_init__(self, get_parent_statement_node_func):
         # When this exception is created, we are only provided with the root node.
-        # This algorithm attempts to drill down into the exact error to provided better
-        # contextual information.
+        # This code attempts to drill down into the exact node that caused a problem in
+        # the hope of providing better contextual information.
 
-        compare_begin_iters = iter_begin.Line != self.Line or iter_begin.Column != self.Column
+        # ----------------------------------------------------------------------
+        def CalcDepth(node) -> int:
+            depth = 0
 
-        node_matches: List[
+            while node is not None:
+                depth += 1
+                node = node.Parent
+
+            return depth
+
+        # ----------------------------------------------------------------------
+
+        # Find the node that matched the last phrase in the content
+        best_nodes: List[
             Tuple[
-                int, # depth
-                Union[AST.Leaf, AST.Node],
+                int,                        # depth
+                Union[AST.Leaf, AST.Node],  # node
+                Union[AST.Leaf, AST.Node],  # reference_node
             ]
         ] = []
 
-        for node in self.Root.Enum():
-            if isinstance(node, AST.Leaf):
-                continue
+        nodes_to_query = [(self.Root, self.Root)]
 
-            # Get the begin value
-            node_iter_begin = node.IterBegin
-            if node_iter_begin is None:
-                continue
+        while nodes_to_query:
+            node_to_query, reference_node = nodes_to_query.pop()
 
-            # Get the end value
-            node_iter_end = node.IterEnd
-            if node_iter_end is None:
-                continue
+            for node in node_to_query.Enum():
+                # Add potential error nodes to the list of nodes to query (if it exists)
+                potential_error_node = getattr(node, _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME, None)
+                if potential_error_node is not None:
+                    nodes_to_query.append((potential_error_node, node))
 
-            if (
-                node_iter_end == iter_end
-                and (not compare_begin_iters or node_iter_begin == iter_begin)
-            ):
-                # Calculate the depth of this node
-                depth = 0
+                # Get the end value
+                node_iter_end = node.IterEnd
+                if node_iter_end is None:
+                    continue
 
-                parent = node
-                while parent is not None:
-                    depth += 1
-                    parent = parent.Parent
+                if best_nodes and node_iter_end.Offset == best_nodes[-1][-1].IterEnd.Offset:
+                    best_nodes.append((CalcDepth(node), node, reference_node))
+                elif not best_nodes or node_iter_end.Offset > best_nodes[-1][-1].IterEnd.Offset:
+                    best_nodes = [(CalcDepth(node), node, reference_node)]
 
-                node_matches.append((depth, node))
+        # Calculate the error node and contextual information
+        error_node: Optional[AST.Node] = None
+        error_context: Optional[str] = None
 
-        # Attempt to provide more helpful information
-        if not node_matches:
+        if not best_nodes:
             error_node = self.Root
-
-            if iter_end.GetNextTokenType() == Phrase.NormalizedIterator.TokenType.Dedent:
-                error_context = "Dedent was expected."
-            else:
-                assert self.Root.IterEnd is None
-
+            error_reference_node = self.Root
         else:
-            # Select the node with the lowest depth (or closest to the root), as it will include the
-            # other nodes.
-            node_matches.sort(
-                key=lambda value: value[:-1],
+            # Sort by depth to get the node that is deepest in the tree
+            best_nodes.sort(
+                key=lambda value: value[0],
             )
 
-            error_node = cast(AST.Node, node_matches[-1][-1])
+            error_node, error_reference_node = best_nodes[-1][1:]
 
-            # Attempt to provide more helpful information
-            while True:
-                assert error_node is not None
-                assert error_node.Type is not None
+        # ----------------------------------------------------------------------
+        def GenerateContextPrefix(
+            phrase_name: str,
+            *,
+            make_singular: bool=False,
+        ) -> str:
+            # Ideally, we would use inflect here to better handle plural/singular detection and conversion,
+            # but it gets confused with strings formatted like "(One | Two | Three) Statements". So,
+            # we are taking things into our own hands here.
+            is_plural = phrase_name.endswith("s")
 
-                if isinstance(error_node, AST.Leaf):
-                    if isinstance(error_node.Type, RegexToken):
-                        phrase_name = error_node.Type.Name
-                    else:
-                        # If here, the last valid token was an indent, dedent, or newline. Most of the time,
-                        # we will see this happen when the scope has changed due to a dedent. However, we
-                        # need to display the expected phrase as it will be after this token is consumed
-                        # rather than what it was when it was consumed.
+            if make_singular and is_plural:
+                phrase_name = phrase_name[:-1]
+                is_plural = False
 
-                        # Walk up the hierarchy to find the parent of both this node and the actual error
-                        # node.
-                        while error_node.Parent is not None:
-                            error_node_parent = cast(AST.Node, error_node.Parent)
+            return "'{}' {}".format(phrase_name, "were" if is_plural else "was")
 
-                            if len(error_node_parent.Children) > 1 and error_node_parent.Children[-2] == error_node:
-                                error_node = cast(AST.Node, error_node_parent.Children[-1])
-                                break
+        # ----------------------------------------------------------------------
 
-                            error_node = cast(AST.Node, error_node.Parent)
-
-                        # Now walk down the hierarchy until we find a node that we can key off of
-                        assert isinstance(error_node, AST.Node)
-                        assert error_node.Type is not None
-
-                        if isinstance(error_node.Type, DynamicPhrase):
-                            assert len(error_node.Children) == 1
-                            error_node = cast(AST.Node, error_node.Children[0])
-
-                        assert error_node.Type is not None
-                        phrase_name = error_node.Type.Name
-
-                    error_context = "'{}' was expected.".format(phrase_name)
-                    break
-
-                assert isinstance(error_node, AST.Node)
-                assert error_node.Children
-
+        # Navigate up the tree until we have a node that can provide good contextual information
+        while True:
+            if isinstance(error_node, AST.Node) and error_node.Type is not None:
                 if isinstance(error_node.Type, SequencePhrase):
                     if error_node.Children[-1].IterEnd is None:
-                        # Sometimes, the problem isn't due to the phrase that failed, but rather the
-                        # phrase right before it.
+                        # Sometimes the problem isn't due to the phrase that failed, but rather the
+                        # phrase that came right before it. See if there is error information associated
+                        # with the second-to-last phrase.
                         if len(error_node.Children) > 1:
-                            potential_error_node = getattr(error_node.Children[-2], _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME, None)
-                            if potential_error_node is not None:
-                                if potential_error_node.IterEnd is not None:
-                                    error_node = potential_error_node
-                                    continue
+                            potential_error_node = getattr(
+                                error_node.Children[-2],
+                                _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME,
+                                None,
+                            )
 
-                                assert potential_error_node.Type is not None
-
-                                if inflect.singular_noun(potential_error_node.Type.Name) is False:
-                                    verb_text = "was"
-                                else:
-                                    verb_text = "were"
-
-                                error_context = "'{}' {} evaluated but not matched; therefore ".format(
-                                    potential_error_node.Type.Name,
-                                    verb_text,
+                            if potential_error_node is not None and potential_error_node.IterEnd is None:
+                                error_context = "{} evaluated but not matched; therefore ".format(
+                                    GenerateContextPrefix(potential_error_node.Type.Name),
                                 )
 
-                        expected_phrase = error_node.Type.Phrases[len(error_node.Children) - 1]
+                        # Get the phrase that failed. Due to implementation details associated with how
+                        # DynamicPhrases are deconstructed and then reconstructed, we need to add special
+                        # logic here to ensure that we are looking at the correct error phrase.
+                        if (
+                            DynamicPhrase.IsRightRecursivePhrase(error_node.Type, None)
+                            and len(error_node.Children) == len(error_node.Type.Phrases) - 1
+                        ):
+                            expected_phrase_name = cast(DynamicPhrase, error_node.Type.Phrases[-1]).DisplayName
+                        else:
+                            expected_phrase_name = error_node.Type.Phrases[len(error_node.Children) - 1].Name
 
-                        error_context = "{}'{}' was expected in '{}'.".format(
+                        error_context = "{}{} expected in '{}'".format(
                             error_context or "",
-                            expected_phrase.Name,
+                            GenerateContextPrefix(
+                                expected_phrase_name,
+                                make_singular=True,
+                            ),
                             error_node.Type.Name,
                         )
 
                         break
 
-                    if error_node.Children[-1].IterEnd is not None:
-                        error_node = cast(AST.Node, error_node.Children[-1])
-                        continue
-
                 elif isinstance(error_node.Type, RepeatPhrase):
                     if error_node.Children[-1].IterEnd is None:
-                        # If here, no content matched in the repeat
-                        num_valid_children = len(error_node.Children) - 1
-                        num_expected = error_node.Type.MinMatches
+                        error_context = "{} expected".format(
+                            GenerateContextPrefix(
+                                error_node.Type.Name,
+                                make_singular=True,
+                            ),
+                        )
 
-                        assert num_valid_children < num_expected, (num_valid_children, num_expected)
-
-                        error_context = "'{}' was expected.".format(error_node.Type.Name)
                         break
 
-                    if error_node.Children[-1].IterEnd is not None:
-                        error_node = cast(AST.Node, error_node.Children[-1])
-                        continue
+                elif isinstance(error_node.Type, (DynamicPhrase, OrPhrase)):
+                    # Keep walking
+                    pass
 
-                elif isinstance(error_node.Type, OrPhrase):
-                    assert error_node.IterEnd is not None
+                else:
+                    assert False, error_node.Type
 
-                    child_error_node: Optional[AST.Node] = None
+            if error_node.Parent is None:
+                assert isinstance(error_node, AST.Node)
+                assert error_node.Children[-1].Type is not None
 
-                    for child_node in error_node.Children:
-                        if child_node.IterEnd == error_node.IterEnd:
-                            child_error_node = cast(AST.Node, child_node)
-                            break
+                if isinstance(error_node.Children[-1].Type, DynamicPhrase):
+                    expected_phrase_name = error_node.Children[-1].Type.DisplayName
+                else:
 
-                    assert child_error_node is not None
-                    error_node = child_error_node
+                    expected_phrase_name = error_node.Children[-1].Type.Name
 
-                    continue
+                error_context = "{} expected".format(
+                    GenerateContextPrefix(
+                        expected_phrase_name,
+                        make_singular=True,
+                    ),
+                )
 
                 break
 
-            if error_node.IterEnd is not None:
-                # Adjust the column to account for whitespace
-                column = error_node.IterEnd.Column
+            error_node = error_node.Parent
 
-                potential_whitespace = TokenPhrase.ExtractPotentialWhitespace(error_node.IterEnd.Clone())
-                if potential_whitespace is not None:
-                    column += (potential_whitespace[1] - potential_whitespace[0])
-
-                object.__setattr__(self, "Column", column)
-                object.__setattr__(self, "Line", error_node.IterEnd.Line)
-
-        if error_context is None and error_node is not None:
+        if error_context is None:
             error_context = error_node.ToYamlString().rstrip()
+        else:
+            error_statement = get_parent_statement_node_func(error_reference_node)
+
+            if (
+                error_statement is not None
+                and error_statement != error_node
+                and error_statement.Type is not None
+            ):
+                error_context += " for '{}'".format(error_statement.Type.Name)
+
+            error_context += "."
 
         object.__setattr__(self, "ErrorNode", error_node)
         object.__setattr__(self, "ErrorContext", error_context)
+
+        if error_node.IterEnd is not None:
+            # Adjust the column to account for whitespace so that the error information is more
+            # accurate.
+            column = error_node.IterEnd.Column
+
+            potential_whitespace = TokenPhrase.ExtractPotentialWhitespace(error_node.IterEnd.Clone())
+            if potential_whitespace is not None:
+                column += (potential_whitespace[1] - potential_whitespace[0])
+
+            object.__setattr__(self, "Line", error_node.IterEnd.Line)
+            object.__setattr__(self, "Column", column)
 
 
 # ----------------------------------------------------------------------
@@ -334,6 +332,14 @@ class DynamicPhrasesInfo(YamlRepr.ObjectReprImplBase):
 
 # ----------------------------------------------------------------------
 class Observer(Interface.Interface):
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def GetParentStatementNode(
+        node: AST.Node,
+    ) -> Optional[AST.Node]:
+        raise Exception("Abstract method")  # pragma: no cover
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
@@ -495,8 +501,7 @@ async def LexAsync(
             raise SyntaxInvalidError(
                 result.IterEnd.Line,
                 result.IterEnd.Column,
-                result.IterBegin,  # type: ignore
-                result.IterEnd,  # type: ignore
+                observer.GetParentStatementNode,  # type: ignore
                 root,
             )
 
@@ -773,7 +778,10 @@ class _ScopeTracker(object):
                     continue
 
                 these_names.append(
-                    dynamic_info.Name or "({})".format(" | ".join([phrase.Name for phrase in these_phrases[len_these_phrases:]])),
+                    "{} {}".format(
+                        dynamic_info.Name or "({})".format(" | ".join([phrase.Name for phrase in these_phrases[len_these_phrases:]])),
+                        dynamic_phrases_type.name,
+                    ),
                 )
 
                 if not dynamic_info.AllowParentTraversal:

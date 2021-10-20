@@ -113,7 +113,7 @@ Children:
         IsIgnored: False
         IterBegin: "[2, 1] (12)"
         IterEnd: "[5, 1] (56)"
-        Type: "(Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[2, 1] (12)"
     IterEnd: "[5, 1] (56)"

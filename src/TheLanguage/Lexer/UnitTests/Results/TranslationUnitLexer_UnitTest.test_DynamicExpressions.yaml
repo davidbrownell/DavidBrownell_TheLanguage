@@ -31,7 +31,7 @@ Children:
                     IsIgnored: False
                     IterBegin: "[1, 6] (5)"
                     IterEnd: "[1, 10] (9)"
-                    Type: "(Expression) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                    Type: "(Expression) Expressions <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                 IsIgnored: False
                 IterBegin: "[1, 6] (5)"
                 IterEnd: "[1, 10] (9)"
@@ -62,7 +62,7 @@ Children:
         IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (16)"
-        Type: "(Statement) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Statement) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (16)"
