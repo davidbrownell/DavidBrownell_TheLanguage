@@ -30,7 +30,7 @@ Children:
         IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (6)"
-        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (6)"
@@ -65,7 +65,7 @@ Children:
         IsIgnored: False
         IterBegin: "[2, 1] (6)"
         IterEnd: "[3, 1] (12)"
-        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[2, 1] (6)"
     IterEnd: "[3, 1] (12)"
@@ -100,7 +100,7 @@ Children:
         IsIgnored: False
         IterBegin: "[3, 1] (12)"
         IterEnd: "[4, 1] (17)"
-        Type: "2.0.0 Grammar <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "2.0.0 Grammar Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[3, 1] (12)"
     IterEnd: "[4, 1] (17)"

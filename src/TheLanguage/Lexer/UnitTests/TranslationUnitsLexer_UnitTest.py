@@ -170,6 +170,21 @@ class TestStandard(object):
                 return content_dict[fully_qualified_name]
 
             # ----------------------------------------------------------------------
+            @staticmethod
+            @Interface.override
+            def GetParentStatementNode(
+                node: AST.Node,
+            ) -> Optional[AST.Node]:
+                if (
+                    node is None
+                    or node.Type is None
+                    or "Statement" in node.Type.Name
+                ):
+                    return node
+
+                return node.Parent
+
+            # ----------------------------------------------------------------------
             @Interface.override
             def Enqueue(
                 self,

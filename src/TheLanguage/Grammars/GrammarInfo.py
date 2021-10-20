@@ -146,7 +146,7 @@ def GetParentStatementNode(
     constitutes its parent.
     """
 
-    parent = node.Parent
+    parent = node
 
     while parent is not None:
         if parent.Type is not None and parent.Type.Name.endswith("Statement"):

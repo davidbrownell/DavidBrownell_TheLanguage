@@ -218,7 +218,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [4, 11]
 
-            'Newline+' was expected in '[Lower, Newline+]'.
+            'Newline+' was expected in '[Lower, Newline+]' for 'Phrase'.
             """,
         )
 
@@ -251,7 +251,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [4, 7]
 
-            'Newline+' was expected in '[Number, Newline+]'.
+            'Newline+' was expected in '[Number, Newline+]' for 'Phrase'.
             """,
         )
 
@@ -282,36 +282,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [1, 1]
 
-            # <class 'TheLanguage.Lexer.Components.AST.Node'>
-            Children:
-              - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                Children:
-                  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                    Children:
-                      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                        Children:
-                          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
-                            Children: []
-                            IsIgnored: False
-                            IterBegin: None
-                            IterEnd: None
-                            Type: "Upper <class 'TheLanguage.Lexer.Phrases.TokenPhrase.TokenPhrase'>"
-                        IsIgnored: False
-                        IterBegin: None
-                        IterEnd: None
-                        Type: "Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-                    IsIgnored: False
-                    IterBegin: None
-                    IterEnd: None
-                    Type: "(Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
-                IsIgnored: False
-                IterBegin: None
-                IterEnd: None
-                Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
-            IsIgnored: False
-            IterBegin: None
-            IterEnd: None
-            Type: "<None>"
+            '(Phrase) Statement' was expected.
             """,
         )
 
@@ -702,7 +673,7 @@ class TestNewPhrases(object):
             """\
             The syntax is not recognized. [1, 5]
 
-            'Upper' was expected.
+            '(Upper Phrase) Statement' was expected.
             """,
         )
 
@@ -777,7 +748,7 @@ class TestNewScopedPhrases(object):
             """\
             The syntax is not recognized. [4, 1]
 
-            '(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase)' was expected.
+            '(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) Statement' was expected.
             """,
         )
 
@@ -971,7 +942,7 @@ class TestPreventParentTraversal(object):
             """\
             The syntax is not recognized. [6, 1]
 
-            '(Upper Phrase | Indent Phrase | Dedent Phrase)' was expected.
+            '(Upper Phrase | Indent Phrase | Dedent Phrase) Statement' was expected.
             """,
         )
 

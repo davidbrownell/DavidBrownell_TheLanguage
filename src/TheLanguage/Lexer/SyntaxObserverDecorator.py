@@ -326,6 +326,11 @@ class SyntaxObserverDecorator(TranslationUnitsLexerObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def GetParentStatementNode(self, *args, **kwargs):  # pylint: disable=arguments-differ
+        return self._observer.GetParentStatementNode(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def Enqueue(self, *args, **kwargs):  # pylint: disable=arguments-differ
         return self._observer.Enqueue(*args, **kwargs)
 

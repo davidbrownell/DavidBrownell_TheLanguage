@@ -41,7 +41,7 @@
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (4)"
     Type: "Upper Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-3) OnPhraseCompleteAsync, (Upper Phrase | Lower Phrase | Number Phrase), 0, 4
+3) OnPhraseCompleteAsync, (Upper Phrase | Lower Phrase | Number Phrase) Statements, 0, 4
     # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -70,7 +70,7 @@
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (4)"
-    Type: "(Upper Phrase | Lower Phrase | Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    Type: "(Upper Phrase | Lower Phrase | Number Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
 4) OnPhraseCompleteAsync, Dynamic Phrase, 0, 4
     # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
@@ -102,7 +102,7 @@
         IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (4)"
-        Type: "(Upper Phrase | Lower Phrase | Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase | Lower Phrase | Number Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (4)"
@@ -150,7 +150,7 @@
     IterBegin: "[2, 1] (4)"
     IterEnd: "[3, 1] (8)"
     Type: "Lower Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-8) OnPhraseCompleteAsync, (Upper Phrase | Lower Phrase | Number Phrase), 4, 8
+8) OnPhraseCompleteAsync, (Upper Phrase | Lower Phrase | Number Phrase) Statements, 4, 8
     # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -179,7 +179,7 @@
     IsIgnored: False
     IterBegin: "[2, 1] (4)"
     IterEnd: "[3, 1] (8)"
-    Type: "(Upper Phrase | Lower Phrase | Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    Type: "(Upper Phrase | Lower Phrase | Number Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
 9) OnPhraseCompleteAsync, Dynamic Phrase, 4, 8
     # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
@@ -211,7 +211,7 @@
         IsIgnored: False
         IterBegin: "[2, 1] (4)"
         IterEnd: "[3, 1] (8)"
-        Type: "(Upper Phrase | Lower Phrase | Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase | Lower Phrase | Number Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[2, 1] (4)"
     IterEnd: "[3, 1] (8)"
@@ -259,7 +259,7 @@
     IterBegin: "[3, 1] (8)"
     IterEnd: "[4, 1] (14)"
     Type: "Number Phrase <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-13) OnPhraseCompleteAsync, (Upper Phrase | Lower Phrase | Number Phrase), 8, 14
+13) OnPhraseCompleteAsync, (Upper Phrase | Lower Phrase | Number Phrase) Statements, 8, 14
     # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
       - # <class 'TheLanguage.Lexer.Components.AST.Node'>
@@ -288,7 +288,7 @@
     IsIgnored: False
     IterBegin: "[3, 1] (8)"
     IterEnd: "[4, 1] (14)"
-    Type: "(Upper Phrase | Lower Phrase | Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    Type: "(Upper Phrase | Lower Phrase | Number Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
 14) OnPhraseCompleteAsync, Dynamic Phrase, 8, 14
     # <class 'TheLanguage.Lexer.Components.AST.Node'>
     Children:
@@ -320,7 +320,7 @@
         IsIgnored: False
         IterBegin: "[3, 1] (8)"
         IterEnd: "[4, 1] (14)"
-        Type: "(Upper Phrase | Lower Phrase | Number Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase | Lower Phrase | Number Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[3, 1] (8)"
     IterEnd: "[4, 1] (14)"
