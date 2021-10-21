@@ -86,6 +86,14 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
+    def GetParentStatementNode(
+        node: AST.Node,
+    ) -> Optional[AST.Node]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
     def Enqueue(
         func_infos: List[Phrase.EnqueueAsyncItemType],
     ) -> Awaitable[Any]:
@@ -344,6 +352,11 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         self._fully_qualified_name          = fully_qualified_name
         self._observer                      = observer
         self._async_lex_func                = async_lex_func
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def GetParentStatementNode(self, *args, **kwargs):
+        return self._observer.GetParentStatementNode(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override

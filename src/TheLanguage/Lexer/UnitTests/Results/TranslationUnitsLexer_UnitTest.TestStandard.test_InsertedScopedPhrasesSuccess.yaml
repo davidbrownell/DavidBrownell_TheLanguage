@@ -81,7 +81,7 @@ Children:
                     IsIgnored: False
                     IterBegin: "[2, 5] (14)"
                     IterEnd: "[3, 1] (29)"
-                    Type: "(Include | Upper | Lower | Number | New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                    Type: "(Include | Upper | Lower | Number | New Scope) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                 IsIgnored: False
                 IterBegin: "[2, 5] (14)"
                 IterEnd: "[3, 1] (29)"
@@ -136,7 +136,7 @@ Children:
                     IsIgnored: False
                     IterBegin: "[3, 5] (33)"
                     IterEnd: "[4, 1] (39)"
-                    Type: "(Include | Upper | Lower | Number | New Scope) / (Dynamic Number) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+                    Type: "(Include | Upper | Lower | Number | New Scope) Statements / (Dynamic Number) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
                 IsIgnored: False
                 IterBegin: "[3, 5] (33)"
                 IterEnd: "[4, 1] (39)"
@@ -156,7 +156,7 @@ Children:
         IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[4, 1] (39)"
-        Type: "(Include | Upper | Lower | Number | New Scope) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Include | Upper | Lower | Number | New Scope) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[4, 1] (39)"

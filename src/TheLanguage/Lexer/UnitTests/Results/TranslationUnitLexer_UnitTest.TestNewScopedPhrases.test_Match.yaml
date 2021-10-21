@@ -15,7 +15,7 @@ Children:
         IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[1, 4] (3)"
-        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[1, 4] (3)"
@@ -36,7 +36,7 @@ Children:
         IsIgnored: False
         IterBegin: "[1, 4] (3)"
         IterEnd: "[2, 1] (4)"
-        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 4] (3)"
     IterEnd: "[2, 1] (4)"
@@ -58,7 +58,7 @@ Children:
         IsIgnored: False
         IterBegin: "[2, 1] (4)"
         IterEnd: "[2, 5] (8)"
-        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[2, 1] (4)"
     IterEnd: "[2, 5] (8)"
@@ -78,7 +78,7 @@ Children:
         IsIgnored: False
         IterBegin: "[2, 5] (8)"
         IterEnd: "[2, 8] (11)"
-        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) / (Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) Statements / (Lower Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[2, 5] (8)"
     IterEnd: "[2, 8] (11)"
@@ -99,7 +99,7 @@ Children:
         IsIgnored: False
         IterBegin: "[2, 8] (11)"
         IterEnd: "[3, 1] (12)"
-        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) / (Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) Statements / (Lower Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[2, 8] (11)"
     IterEnd: "[3, 1] (12)"
@@ -119,7 +119,7 @@ Children:
         IsIgnored: False
         IterBegin: "[3, 1] (12)"
         IterEnd: "[3, 1] (12)"
-        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) / (Lower Phrase) <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase) Statements / (Lower Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[3, 1] (12)"
     IterEnd: "[3, 1] (12)"
