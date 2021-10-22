@@ -44,13 +44,10 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnTypeAliasStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnTypeAliasStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Type")] as helper:
-            results.append(self.Type.Accept(visitor, helper.stack, *args, **kwargs))
+            self.Type.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnTypeAliasStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnTypeAliasStatement(stack, VisitType.Exit, self, *args, **kwargs)

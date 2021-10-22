@@ -43,13 +43,10 @@ class VariableExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnVariableExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnVariableExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Name")] as helper:
-            results.append(self.Name.Accept(visitor, helper.stack, *args, **kwargs))
+            self.Name.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnVariableExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnVariableExpression(stack, VisitType.Exit, self, *args, **kwargs)

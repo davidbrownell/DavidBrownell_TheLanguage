@@ -48,20 +48,18 @@ class MatchTypeExpressionClauseParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnMatchTypeCasePhrase(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnMatchTypeCasePhrase(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Cases"]:
-                results.append([case_type.Accept(visitor, helper.stack, *args, **kwargs) for case_type in self.Cases])
+                for case_type in self.Cases:
+                    case_type.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Expression"]:
-                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnMatchTypeCasePhrase(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnMatchTypeCasePhrase(stack, VisitType.Exit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -74,21 +72,19 @@ class MatchTypeExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnMatchTypeExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnMatchTypeExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Expression"]:
-                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["CasePhrases"]:
-                results.append([case_phrase.Accept(visitor, helper.stack, *args, **kwargs) for case_phrase in self.CasePhrases])
+                for case_phrase in self.CasePhrases:
+                    case_phrase.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.Default is not None:
                 with helper["Default"]:
-                    results.append(self.Default.Accept(visitor, helper.stack, *args, **kwargs))
+                    self.Default.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnMatchTypeExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnMatchTypeExpression(stack, VisitType.Exit, self, *args, **kwargs)

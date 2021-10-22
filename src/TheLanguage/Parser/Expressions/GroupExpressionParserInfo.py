@@ -42,13 +42,10 @@ class GroupExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnGroupExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnGroupExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Expression")] as helper:
-            results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+            self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnGroupExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnGroupExpression(stack, VisitType.Exit, self, *args, **kwargs)

@@ -21,6 +21,7 @@ import sys
 import threading
 
 from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
 import CommonEnvironment
@@ -62,7 +63,10 @@ with InitRelativeImports():
         Parse as ParseImpl,
         ParserInfo,
         RootParserInfo,
+        Verify as VerifyImpl,
     )
+
+    from .Targets.Target import Target
 
 
 # ----------------------------------------------------------------------
@@ -134,6 +138,9 @@ assert GrammarPhraseLookup
 assert GrammarCommentToken is not None
 
 del _LoadDynamicContentFromFile
+
+# TODO: Right now, much of the functionality is concerned with processing the dicts. Remove that functionality
+#       from those files and only do it here.
 
 
 # ----------------------------------------------------------------------
@@ -262,3 +269,131 @@ def Parse(
         CreateParserInfo,
         max_num_threads=max_num_threads,
     )
+
+
+# ----------------------------------------------------------------------
+def Validate(
+    cancellation_event: threading.Event,
+    roots: Dict[str, RootParserInfo],
+    *,
+    max_num_threads: Optional[int]=None,
+) -> Union[
+    None,
+    Dict[str, RootParserInfo],
+    List[Exception],
+]:
+    # ----------------------------------------------------------------------
+    def Invoke(
+        fully_qualified_name: str,
+        root: RootParserInfo,
+    ):
+        pass # TODO
+
+    # ----------------------------------------------------------------------
+
+    return _Execute(
+        Invoke,
+        cancellation_event,
+        roots,
+        max_num_threads=max_num_threads,
+    )
+
+
+# ----------------------------------------------------------------------
+def InvokeTarget(
+    cancellation_event: threading.Event,
+    roots: Dict[str, RootParserInfo],
+    target: Target,
+    *,
+    max_num_threads: Optional[int]=None,
+) -> Union[
+    None,
+    Dict[str, RootParserInfo],
+    List[Exception],
+]:
+    # ----------------------------------------------------------------------
+    def Invoke(
+        fully_qualified_name: str,
+        root: RootParserInfo,
+    ):
+        target.Invoke(fully_qualified_name, root)
+
+    # ----------------------------------------------------------------------
+
+    return _Execute(
+        Invoke,
+        cancellation_event,
+        roots,
+        max_num_threads=max_num_threads,
+    )
+
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+def _Execute(
+    on_root_parser_info_func: Callable[[str, RootParserInfo], None],
+    cancellation_event: threading.Event,
+    roots: Dict[str, RootParserInfo],
+    *,
+    max_num_threads: Optional[int]=None,
+) -> Union[
+    None,
+    Dict[str, RootParserInfo],
+    List[Exception],
+]:
+    single_threaded = max_num_threads == 1 or len(roots) == 1
+
+    errors: List[Exception] = []
+
+    # ----------------------------------------------------------------------
+    def Impl(
+        fully_qualified_name: str,
+        root: RootParserInfo,
+    ) -> bool:
+        if cancellation_event.is_set():
+            return False
+
+        try:
+            result = on_root_parser_info_func(fully_qualified_name, root)
+            if result is not None:
+                assert isinstance(result, RootParserInfo), result
+                roots[fully_qualified_name] = result
+
+        except Exception as ex:
+            if not hasattr(ex, "FullyQualifiedName"):
+                object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
+
+            errors.append(ex)
+
+        return True
+
+    # ----------------------------------------------------------------------
+
+    if single_threaded:
+        for k, v in roots.items():
+            if not Impl(k, v):
+                return None
+
+    else:
+        with ThreadPoolExecutor(
+            max_workers=max_num_threads,
+        ) as executor:
+            futures = [
+                executor.submit(Impl, k, v)
+                for k, v in roots.items()
+            ]
+
+            return_none = False
+
+            for future in futures:
+                if future.result() is False:
+                    return_none = True
+
+            if return_none:
+                return None
+
+    if errors:
+        return errors
+
+    return roots

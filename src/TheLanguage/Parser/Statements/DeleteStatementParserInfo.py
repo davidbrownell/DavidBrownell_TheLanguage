@@ -42,4 +42,4 @@ class DeleteStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnDeleteStatement(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+        visitor.OnDeleteStatement(stack, VisitType.EnterAndExit, self, *args, **kwargs)

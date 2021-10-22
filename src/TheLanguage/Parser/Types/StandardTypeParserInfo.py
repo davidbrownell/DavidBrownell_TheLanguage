@@ -77,7 +77,7 @@ class StandardTypeParserInfo(TypeParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnStandardType(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+        visitor.OnStandardType(stack, VisitType.EnterAndExit, self, *args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override

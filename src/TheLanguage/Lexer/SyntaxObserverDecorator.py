@@ -54,7 +54,6 @@ with InitRelativeImports():
         PhraseItem,
     )
     from .Phrases.SequencePhrase import SequencePhrase
-    from .Phrases.TokenPhrase import TokenPhrase
 
     from .TranslationUnitsLexer import (
         AST,

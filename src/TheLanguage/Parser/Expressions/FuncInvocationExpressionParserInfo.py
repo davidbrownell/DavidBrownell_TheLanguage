@@ -59,18 +59,16 @@ class FuncInvocationExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnFuncInvocationExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnFuncInvocationExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Expression"]:
-                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
             if isinstance(self.Arguments, list):
                 with helper["Arguments"]:
-                    results.append([arg.Accept(visitor, helper.stack, *args, **kwargs) for arg in self.Arguments])
+                    for arg in self.Arguments:
+                        arg.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnFuncInvocationExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnFuncInvocationExpression(stack, VisitType.Exit, self, *args, **kwargs)

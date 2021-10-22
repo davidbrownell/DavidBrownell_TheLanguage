@@ -38,19 +38,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..AllGrammars import AST, Configurations, Lex, Prune, Parse
+    from ..AllGrammars import AST, Configurations, Lex, Prune, Parse, Validate
     from ..Lexer.TranslationUnitLexer import SyntaxInvalidError
     from ..Parser.ParserInfo import ParserInfo
+    from ..Parser.RootParserInfo import RootParserInfo
 
 
 # ----------------------------------------------------------------------
 class PatchAndExecuteFlag(Flag):
     prune_flag                              = auto()
     parse_flag                              = auto()
+    validate_flag                           = auto()
 
     Lex                                     = 0
     Prune                                   = prune_flag
     Parse                                   = prune_flag | parse_flag
+    Validate                                = prune_flag | parse_flag | validate_flag
 
 
 # ----------------------------------------------------------------------
@@ -131,6 +134,16 @@ def PatchAndExecute(
                     result,
                     max_num_threads=max_num_threads,
                 )
+
+            if not isinstance(result, list):
+                result = cast(Dict[str, RootParserInfo], result)
+
+                if flag & PatchAndExecuteFlag.validate_flag:
+                    result = Validate(
+                        cancellation_event,
+                        result,
+                        max_num_threads=max_num_threads,
+                    )
 
             assert result is not None
 
