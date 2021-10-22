@@ -43,17 +43,14 @@ class IndexExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnIndexExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnIndexExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Expression"]:
-                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Index"]:
-                results.append(self.Index.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Index.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnIndexExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnIndexExpression(stack, VisitType.Exit, self, *args, **kwargs)

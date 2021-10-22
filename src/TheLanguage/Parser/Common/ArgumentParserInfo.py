@@ -45,13 +45,10 @@ class ArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnArgument(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnArgument(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Expression")] as helper:
-            results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+            self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnArgument(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnArgument(stack, VisitType.Exit, self, *args, **kwargs)

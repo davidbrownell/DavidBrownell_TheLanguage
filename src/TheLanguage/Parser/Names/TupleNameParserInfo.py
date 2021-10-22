@@ -51,13 +51,11 @@ class TupleNameParserInfo(NameParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnTupleName(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnTupleName(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Names")] as helper:
-            results.append([name.Accept(visitor, helper.stack, *args, **kwargs) for name in self.Names])
+            for name in self.Names:
+                name.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnTupleName(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnTupleName(stack, VisitType.Exit, self, *args, **kwargs)

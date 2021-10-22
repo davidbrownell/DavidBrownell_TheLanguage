@@ -65,13 +65,10 @@ class UnaryExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnUnaryExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnUnaryExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Expression")] as helper:
-            results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+            self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnUnaryExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnUnaryExpression(stack, VisitType.Exit, self, *args, **kwargs)

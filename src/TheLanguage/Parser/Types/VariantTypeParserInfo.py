@@ -51,13 +51,11 @@ class VariantTypeParserInfo(TypeParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnVariantType(VisitType.PreChildEnumeration, self, stack, *args, **kwargs))
+        if visitor.OnVariantType(VisitType.Enter, self, stack, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Types")] as helper:
-            results.append([the_type.Accept(visitor, helper.stack, *args, **kwargs) for the_type in self.Types])
+            for the_type in self.Types:
+                the_type.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnVariantType(VisitType.PostChildEnumeration, self, stack, *args, **kwargs))
-
-        return results
+        visitor.OnVariantType(VisitType.Exit, self, stack, *args, **kwargs)

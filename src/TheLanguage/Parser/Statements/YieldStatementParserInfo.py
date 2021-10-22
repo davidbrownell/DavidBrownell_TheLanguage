@@ -53,14 +53,11 @@ class YieldStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnYieldStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnYieldStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         if self.Expression is not None:
             with StackHelper(stack)[(self, "Expression")] as helper:
-                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnYieldStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnYieldStatement(stack, VisitType.Exit, self, *args, **kwargs)

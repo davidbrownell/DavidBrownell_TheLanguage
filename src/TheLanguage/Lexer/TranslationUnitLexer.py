@@ -119,7 +119,12 @@ class SyntaxInvalidError(Error):
             ]
         ] = []
 
-        nodes_to_query = [(self.Root, self.Root)]
+        nodes_to_query: List[
+            Tuple[
+                Union[AST.Leaf, AST.Node],  # node
+                Union[AST.Leaf, AST.Node],  # reference_node
+            ]
+        ] = [(self.Root, self.Root)]
 
         while nodes_to_query:
             node_to_query, reference_node = nodes_to_query.pop()
@@ -141,7 +146,7 @@ class SyntaxInvalidError(Error):
                     best_nodes = [(CalcDepth(node), node, reference_node)]
 
         # Calculate the error node and contextual information
-        error_node: Optional[AST.Node] = None
+        error_node: Optional[Union[AST.Leaf, AST.Node]] = None
         error_context: Optional[str] = None
 
         if not best_nodes:
@@ -153,7 +158,7 @@ class SyntaxInvalidError(Error):
                 key=lambda value: value[0],
             )
 
-            error_node, error_reference_node = best_nodes[-1][1:]
+            error_node, error_reference_node = best_nodes[-1][1:]  # type: ignore
 
         # ----------------------------------------------------------------------
         def GenerateContextPrefix(
@@ -234,15 +239,17 @@ class SyntaxInvalidError(Error):
                 else:
                     assert False, error_node.Type
 
+            assert error_node is not None
+
             if error_node.Parent is None:
                 assert isinstance(error_node, AST.Node)
                 assert error_node.Children[-1].Type is not None
 
                 if isinstance(error_node.Children[-1].Type, DynamicPhrase):
-                    expected_phrase_name = error_node.Children[-1].Type.DisplayName
+                    expected_phrase_name = cast(DynamicPhrase, error_node.Children[-1].Type).DisplayName
                 else:
 
-                    expected_phrase_name = error_node.Children[-1].Type.Name
+                    expected_phrase_name = cast(Phrase, error_node.Children[-1].Type).Name
 
                 error_context = "{} expected".format(
                     GenerateContextPrefix(
@@ -253,7 +260,7 @@ class SyntaxInvalidError(Error):
 
                 break
 
-            error_node = error_node.Parent
+            error_node = error_node.Parent  # type: ignore
 
         if error_context is None:
             error_context = error_node.ToYamlString().rstrip()

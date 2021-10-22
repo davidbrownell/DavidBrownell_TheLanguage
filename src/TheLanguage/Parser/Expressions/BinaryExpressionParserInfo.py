@@ -42,6 +42,7 @@ class OperatorType(Enum):
     LogicalAnd                              = auto()
     LogicalOr                               = auto()
     LogicalIn                               = auto()
+    LogicalNotIn                            = auto()
     LogicalIs                               = auto()
 
     # Function Invocation
@@ -83,17 +84,14 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnBinaryExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnBinaryExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Left"]:
-                results.append(self.Left.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Left.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Right"]:
-                results.append(self.Right.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Right.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnBinaryExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnBinaryExpression(stack, VisitType.Exit, self, *args, **kwargs)

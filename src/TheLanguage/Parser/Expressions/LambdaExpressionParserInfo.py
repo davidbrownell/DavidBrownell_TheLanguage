@@ -61,18 +61,15 @@ class LambdaExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnLambdaExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnLambdaExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             if isinstance(self.Parameters, ParametersParserInfo):
                 with helper["Parameters"]:
-                    results.append(self.Parameters.Accept(visitor, helper.stack, *args, **kwargs))
+                    self.Parameters.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Expression"]:
-                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnLambdaExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnLambdaExpression(stack, VisitType.Exit, self, *args, **kwargs)

@@ -70,6 +70,7 @@ class BinaryExpression(GrammarPhrase):
         "and": OperatorType.LogicalAnd,
         "or": OperatorType.LogicalOr,
         "in": OperatorType.LogicalIn,
+        "not in": OperatorType.LogicalNotIn,
         "is": OperatorType.LogicalIs,
 
         # Function Invocation

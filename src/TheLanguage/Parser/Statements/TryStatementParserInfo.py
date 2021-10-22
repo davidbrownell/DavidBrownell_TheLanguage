@@ -47,20 +47,18 @@ class TryStatementClauseParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnTryStatementClause(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnTryStatementClause(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Type"]:
-                results.append(self.Type.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Type.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Statements"]:
-                results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])
+                for statement in self.Statements:
+                    statement.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnTryStatementClause(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnTryStatementClause(stack, VisitType.Exit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -73,22 +71,22 @@ class TryStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnTryStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnTryStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["TryStatements"]:
-                results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.TryStatements])
+                for statement in self.TryStatements:
+                    statement.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.ExceptClauses is not None:
                 with helper["ExceptClauses"]:
-                    results.append([clause.Accept(visitor, helper.stack, *args, **kwargs) for clause in self.ExceptClauses])
+                    for clause in self.ExceptClauses:
+                        clause.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.DefaultStatements is not None:
                 with helper["DefaultStatements"]:
-                    results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.DefaultStatements])
+                    for statement in self.DefaultStatements:
+                        statement.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnTryStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnTryStatement(stack, VisitType.Exit, self, *args, **kwargs)

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleExpressionParserInfo.py
+# |  Target.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-12 08:24:24
+# |      2021-10-19 08:19:18
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleExpressionParserInfo object"""
+"""Contains the Target object"""
 
 import os
 
-from typing import List
-
-from dataclasses import dataclass
+from semantic_version import Version as SemVer
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,30 +30,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Parser.RootParserInfo import RootParserInfo
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleExpressionParserInfo(ExpressionParserInfo):
-    Expressions: List[ExpressionParserInfo]
+class Target(Interface.Interface):
+    """Abstract base class for a target"""
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(TupleExpressionParserInfo, self).__post_init__(
-            regions,
-            regionless_attributes=["Expressions"],
-        )
+    @Interface.abstractproperty
+    def Name(self) -> str:
+        """Name of the target"""
+        raise Exception("Abstract property")  # pragma: no cover
+
+    @Interface.abstractproperty
+    def Version(self) -> SemVer:
+        """Version of the target implementation"""
+        raise Exception("Abstract property")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnTupleExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
-        with StackHelper(stack)[(self, "Expressions")] as helper:
-            for expression in self.Expressions:
-                expression.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnTupleExpression(stack, VisitType.Exit, self, *args, **kwargs)
+    @staticmethod
+    @Interface.abstractmethod
+    def Invoke(
+        fully_qualified_name: str,
+        parser_info: RootParserInfo,
+    ) -> None:
+        """Invokes the derived Target's functionality with the provided information"""
+        raise Exception("Abstract method")  # pragma: no cover

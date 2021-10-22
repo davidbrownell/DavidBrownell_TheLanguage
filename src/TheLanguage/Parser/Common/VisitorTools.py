@@ -32,9 +32,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 class VisitType(Enum):
     """Indicates when an On____ function is being invoked for a visitor."""
 
-    PreChildEnumeration                     = auto()
-    PostChildEnumeration                    = auto()
-    NoChildEnumeration                      = auto()
+    # TODO: Remove this
+
+    Enter                                   = auto()
+    Exit                                    = auto()
+    EnterAndExit                            = auto()
 
 
 # ----------------------------------------------------------------------
@@ -46,7 +48,7 @@ class StackHelper(object):
     # ----------------------------------------------------------------------
     @contextmanager
     def __getitem__(self, index):
-        self.stack.push(index)
+        self.stack.append(index)
 
         try:
             yield self

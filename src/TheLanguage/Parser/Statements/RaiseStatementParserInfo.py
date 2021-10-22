@@ -45,14 +45,11 @@ class RaiseStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnRaiseStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnRaiseStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         if self.Expression is not None:
             with StackHelper(stack)[(self, "Expression")] as helper:
-                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnRaiseStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnRaiseStatement(stack, VisitType.Exit, self, *args, **kwargs)

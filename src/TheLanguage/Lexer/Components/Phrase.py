@@ -24,7 +24,6 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    Generator,
     List,
     Optional,
     TextIO,
