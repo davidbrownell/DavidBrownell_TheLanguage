@@ -53,7 +53,7 @@ class ImportStatementItemParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnImportItem(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+        visitor.OnImportItem(stack, VisitType.EnterAndExit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -86,13 +86,11 @@ class ImportStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnImportStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnImportStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "ImportItems")] as helper:
-            results.append([import_item.Accept(visitor, helper.stack, *args, **kwargs) for import_item in self.ImportItems])
+            for import_item in self.ImportItems:
+                import_item.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnImportStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnImportStatement(stack, VisitType.Exit, self, *args, **kwargs)

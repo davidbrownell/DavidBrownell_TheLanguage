@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleExpressionParserInfo.py
+# |  PythonTarget.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-12 08:24:24
+# |      2021-10-19 08:22:43
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleExpressionParserInfo object"""
+"""Contains the PythonTarget object"""
 
 import os
 
-from typing import List
-
-from dataclasses import dataclass
-
 import CommonEnvironment
+from CommonEnvironment import FileSystem
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -32,30 +29,34 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from .PythonVisitor import PythonVisitor
+    from ..Target import RootParserInfo, SemVer, Target
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TupleExpressionParserInfo(ExpressionParserInfo):
-    Expressions: List[ExpressionParserInfo]
+class PythonTarget(Target):
+    Name                                    = Interface.DerivedProperty("Python")  # type: ignore
+    Version                                 = Interface.DerivedProperty(SemVer.coerce("0.1.0"))  # type: ignore
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(TupleExpressionParserInfo, self).__post_init__(
-            regions,
-            regionless_attributes=["Expressions"],
-        )
+    def __init__(
+        self,
+        output_dir: str,
+    ):
+        self._output_dir                    = output_dir
+
+        FileSystem.MakeDirs(self._output_dir)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnTupleExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
+    def Invoke(
+        self,
+        fully_qualified_name: str,
+        parser_info: RootParserInfo,
+    ):
+        output_filename = os.path.join(self._output_dir, "{}.py".format(os.path.basename(fully_qualified_name)))
 
-        with StackHelper(stack)[(self, "Expressions")] as helper:
-            for expression in self.Expressions:
-                expression.Accept(visitor, helper.stack, *args, **kwargs)
+        with open(output_filename, "w") as f:
+            visitor = PythonVisitor(f)
 
-        visitor.OnTupleExpression(stack, VisitType.Exit, self, *args, **kwargs)
+            visitor.Accept(parser_info)

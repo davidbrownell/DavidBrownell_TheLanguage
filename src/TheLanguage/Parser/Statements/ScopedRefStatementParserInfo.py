@@ -45,17 +45,16 @@ class ScopedRefStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnScopedRefStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnScopedRefStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Names"]:
-                results.append([name.Accept(visitor, helper.stack, *args, **kwargs) for name in self.Names])
+                for name in self.Names:
+                    name.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Statements"]:
-                results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])
+                for statement in self.Statements:
+                    statement.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnScopedRefStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnScopedRefStatement(stack, VisitType.Exit, self, *args, **kwargs)

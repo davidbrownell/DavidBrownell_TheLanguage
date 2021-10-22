@@ -39,4 +39,4 @@ class BreakStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnBreakStatement(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+        visitor.OnBreakStatement(stack, VisitType.EnterAndExit, self, *args, **kwargs)

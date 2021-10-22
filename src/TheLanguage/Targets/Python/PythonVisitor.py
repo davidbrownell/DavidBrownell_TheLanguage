@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Visitor.py
+# |  PythonVisitor.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-18 13:59:39
+# |      2021-10-18 14:59:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,17 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Visitor object"""
+"""Contains the PythonVisitor object"""
 
 import os
+import textwrap
 
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, TextIO, Tuple, Union
 
 import CommonEnvironment
+from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
-from CommonEnvironment.Visitor import Visitor as VisitorBase
+from CommonEnvironment.StreamDecorator import StreamDecorator
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,682 +33,757 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ParserInfo import ParserInfo
-    from .RootParserInfo import RootParserInfo
-
-    # Common
-    from .Common.ArgumentParserInfo import ArgumentParserInfo
-    from .Common.MethodModifier import MethodModifier   # Convenience
-    from .Common.ParametersParserInfo import ParametersParserInfo, ParameterParserInfo
-    from .Common.VisitorTools import VisitType
-
-    # Expressions
-    from .Expressions.BinaryExpressionParserInfo import (
-        BinaryExpressionParserInfo,
-        OperatorType as BinaryExpressionOperatorType,   # Convenience
-    )
-    from .Expressions.CastExpressionParserInfo import CastExpressionParserInfo
-    from .Expressions.FuncInvocationExpressionParserInfo import FuncInvocationExpressionParserInfo
-    from .Expressions.FuncNameExpressionParserInfo import FuncNameExpressionParserInfo
-    from .Expressions.GeneratorExpressionParserInfo import GeneratorExpressionParserInfo
-    from .Expressions.GroupExpressionParserInfo import GroupExpressionParserInfo
-    from .Expressions.IndexExpressionParserInfo import IndexExpressionParserInfo
-    from .Expressions.LambdaExpressionParserInfo import LambdaExpressionParserInfo
-    from .Expressions.MatchTypeExpressionParserInfo import MatchTypeExpressionParserInfo, MatchTypeExpressionClauseParserInfo
-    from .Expressions.MatchValueExpressionParserInfo import MatchValueExpressionParserInfo, MatchValueExpressionClauseParserInfo
-    from .Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
-    from .Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
-
-    from .Expressions.UnaryExpressionParserInfo import (
-        UnaryExpressionParserInfo,
-        OperatorType as UnaryExpressionOperatorType,    # Convenience
-    )
-
-    from .Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
-
-    # Names
-    from .Names.TupleNameParserInfo import TupleNameParserInfo
-    from .Names.VariableNameParserInfo import VariableNameParserInfo
-
-    # Statements
-    from .Statements.BinaryStatementParserInfo import BinaryStatementParserInfo
-    from .Statements.BreakStatementParserInfo import BreakStatementParserInfo
-    from .Statements.ClassMemberStatementParserInfo import ClassMemberStatementParserInfo
-    from .Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
-    from .Statements.ContinueStatementParserInfo import ContinueStatementParserInfo
-    from .Statements.DeleteStatementParserInfo import DeleteStatementParserInfo
-    from .Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
-    from .Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
-    from .Statements.IfStatementParserInfo import IfStatementParserInfo
-    from .Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportStatementItemParserInfo
-    from .Statements.IterateStatementParserInfo import IterateStatementParserInfo
-    from .Statements.NoopStatementParserInfo import NoopStatementParserInfo
-    from .Statements.RaiseStatementParserInfo import RaiseStatementParserInfo
-    from .Statements.ReturnStatementParserInfo import ReturnStatementParserInfo
-    from .Statements.ScopedRefStatementParserInfo import ScopedRefStatementParserInfo
-    from .Statements.TryStatementParserInfo import TryStatementParserInfo, TryStatementClauseParserInfo
-    from .Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
-    from .Statements.VariableDeclarationStatementParserInfo import VariableDeclarationStatementParserInfo
-    from .Statements.WhileStatementParserInfo import WhileStatementParserInfo
-    from .Statements.YieldStatementParserInfo import YieldStatementParserInfo
-
-    # Types
-    from .Types.StandardTypeParserInfo import StandardTypeParserInfo
-    from .Types.TupleTypeParserInfo import TupleTypeParserInfo
-    from .Types.VariantTypeParserInfo import VariantTypeParserInfo
+    from ...Parser.Visitor import *
 
 
 # ----------------------------------------------------------------------
-class Visitor(VisitorBase):
+class PythonVisitor(Visitor):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        output_stream: TextIO,
+        indent_level: Optional[int]=None,
+    ):
+        self._stream_stack: List[TextIO]    = [output_stream]
+        self._indent_level: int             = indent_level or 2
+
     # ----------------------------------------------------------------------
     # |
     # |  Root
     # |
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnRoot(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: RootParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        if visit_type == VisitType.Enter:
+            self._stream.write(
+                textwrap.dedent(
+                    """\
+                    # ----------------------------------------------------------------------
+                    # |
+                    # |  This file has been automatically generated by {}.
+                    # |
+                    # ----------------------------------------------------------------------
+
+                    <<<<imports placeholder>>>
+
+                    """,
+                ).format(_script_name),
+            )
 
     # ----------------------------------------------------------------------
     # |
     # |  Common
     # |
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnArgument(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ArgumentParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        if visit_type == VisitType.Enter:
+            if parser_info.Keyword is not None:
+                self._stream.write(parser_info.Keyword)
+                self._stream.write("=")
+
+        elif visit_type == VisitType.Exit:
+            self._stream.write(", ")
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnParameters(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ParametersParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        # TODO: Handle 'self' if necessary
+
+        if visit_type == VisitType.Enter:
+            self._stream.write("(")
+        elif visit_type == VisitType.Exit:
+            self._stream.write(")")
+        else:
+            assert False, visit_type
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnParameter(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ParameterParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        if visit_type == VisitType.Enter:
+            self._stream.write(parser_info.Name)
+
+            if parser_info.Default is not None:
+                self._stream.write("=")
+
+        elif visit_type == VisitType.Exit:
+            self._stream.write(", ")
 
     # ----------------------------------------------------------------------
     # |
     # |  Expressions
     # |
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnBinaryExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: BinaryExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        parser_info.Left.Accept(self, stack)
+
+        if parser_info.Operator == BinaryExpressionOperatorType.LogicalAnd:
+            self._stream.write(" and ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.LogicalOr:
+            self._stream.write(" or ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.LogicalIn:
+            self._stream.write(" in ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.LogicalNotIn:
+            self._stream.write(" not in ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.LogicalIs:
+            self._stream.write(" is ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.ChainedFunc:
+            assert False, "TODO"
+        elif parser_info.Operator == BinaryExpressionOperatorType.ChainedFuncReturnSelf:
+            assert False, "TODO"
+        elif parser_info.Operator == BinaryExpressionOperatorType.Less:
+            self._stream.write(" < ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.LessEqual:
+            self._stream.write(" <= ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.Greater:
+            self._stream.write(" > ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.GreaterEqual:
+            self._stream.write(" >= ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.Equal:
+            self._stream.write(" == ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.NotEqual:
+            self._stream.write(" != ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.Add:
+            self._stream.write(" + ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.Subtract:
+            self._stream.write(" - ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.Multiply:
+            self._stream.write(" * ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.Power:
+            self._stream.write(" ** ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.Divide:
+            self._stream.write(" / ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.DivideFloor:
+            self._stream.write(" // ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.Modulo:
+            self._stream.write(" % ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.BitShiftLeft:
+            self._stream.write(" << ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.BitShiftRight:
+            self._stream.write(" >> ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.BitXor:
+            self._stream.write(" ^ ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.BitAnd:
+            self._stream.write(" && ")
+        elif parser_info.Operator == BinaryExpressionOperatorType.BitOr:
+            self._stream.write(" || ")
+        else:
+            assert False, parser_info.Operator
+
+        parser_info.Right.Accept(self, stack)
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnCastExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: CastExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        # Nothing do do here, as python is dynamically typed and doesn't need to case
+        pass
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnFuncInvocationExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: FuncInvocationExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        parser_info.Expression.Accept(self, stack)
+
+        self._stream.write("(")
+
+        if isinstance(parser_info.Arguments, list):
+            for argument in parser_info.Arguments:
+                argument.Accept(self, stack)
+
+        self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnFuncNameExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: FuncNameExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        assert visit_type == VisitType.EnterAndExit
+        self._stream.write(parser_info.Name)
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnGeneratorExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: GeneratorExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        parser_info.ResultExpression.Accept(self, stack)
+        self._stream.write(" for ")
+        parser_info.Name.Accept(self, stack)
+        self._stream.write(" in ")
+        parser_info.Name.Accept(self, stack)
+
+        if parser_info.ConditionExpression is not None:
+            self._stream.write(" if ")
+            parser_info.ConditionExpression.Accept(self, stack)
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnGroupExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: GroupExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        self._stream.write("(")
+        parser_info.Expression.Accept(self, stack)
+        self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnIndexExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: IndexExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        parser_info.Expression.Accept(self, stack)
+        self._stream.write("[")
+        parser_info.Index.Accept(self, stack)
+        self._stream.write("]")
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnLambdaExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: LambdaExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        self._stream.write("(lambda ")
+
+        if isinstance(parser_info.Parameters, bool):
+            assert parser_info.Parameters is False
+
+            self._stream.write("()")
+        else:
+            parser_info.Parameters.Accept(self, stack)
+
+        self._stream.write(": ")
+        parser_info.Expression.Accept(self, stack)
+        self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnMatchTypeExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: MatchTypeExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnMatchTypeExpressionClause(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: MatchTypeExpressionClauseParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnMatchValueExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: MatchValueExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnMatchValueExpressionClause(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: MatchValueExpressionClauseParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnTernaryExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: TernaryExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        parser_info.TrueExpression.Accept(self, stack)
+        self._stream.write(" if ")
+        parser_info.ConditionExpression.Accept(self, stack)
+        self._stream.write(" else ")
+        parser_info.FalseExpression.Accept(self, stack)
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnTupleExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: TupleExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        self._stream.write("(")
+
+        for expression in parser_info.Expressions:
+            expression.Accept(self, stack)
+            self._stream.write(", ")
+
+        self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnUnaryExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: UnaryExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        if parser_info.Operator not in [
+            UnaryExpressionOperatorType.Copy,
+            UnaryExpressionOperatorType.Move,
+        ]:
+            if parser_info.Operator == UnaryExpressionOperatorType.Await:
+                self._stream.write("await ")
+            elif parser_info.Operator == UnaryExpressionOperatorType.Not:
+                self._stream.write("not ")
+            elif parser_info.Operator == UnaryExpressionOperatorType.Positive:
+                self._stream.write("+")
+            elif parser_info.Operator == UnaryExpressionOperatorType.Negative:
+                self._stream.write("-")
+            elif parser_info.Operator == UnaryExpressionOperatorType.BitCompliment:
+                self._stream.write("~")
+            else:
+                assert False, parser_info.Operator
+
+            parser_info.Expression.Accept(self, stack)
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnVariableExpression(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: VariableExpressionParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        # Nothing to do here
+        pass
 
     # ----------------------------------------------------------------------
     # |
     # |  Names
     # |
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnTupleName(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: TupleNameParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        for name in parser_info.Names:
+            name.Accept(self, stack)
+            self._stream.write(", ")
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnVariableName(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: VariableNameParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        self._stream.write(parser_info.Name)
 
     # ----------------------------------------------------------------------
     # |
     # |  Statements
     # |
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnBinaryStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: BinaryStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnBreakStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: BreakStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        self._stream.write("break\n")
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnClassMemberStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ClassMemberStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnClassStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ClassStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnClassStatementDependency(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ClassStatementDependencyParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnContinueStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ContinueStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        self._stream.write("continue\n")
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnDeleteStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: DeleteStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        self._stream.write("del {}\n".format(parser_info.VariableName))
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnFuncDefinitionStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: FuncDefinitionStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        if parser_info.Statements is not None:
+            self._stream.write("def {}".format(parser_info.Name))
+
+            if isinstance(parser_info.Parameters, bool):
+                assert parser_info.Parameters is False
+
+                if parser_info.ClassModifier is None or parser_info.MethodModifier == MethodModifier.static:
+                    self._stream.write("()")
+                else:
+                    self._stream.write("(self)")
+
+            else:
+                parser_info.Parameters.Accept(self, stack)
+
+            self._stream.write(":\n")
+
+            self._stream_stack.append(
+                StreamDecorator(
+                    self._stream,
+                    line_prefix="  ",
+                    skip_first_line_prefix=False,
+                ),  # type: ignore
+            )
+
+            with CallOnExit(self._stream_stack.pop):
+                for statement in parser_info.Statements:
+                    statement.Accept(self, stack)
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnFuncInvocationStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: FuncInvocationStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        # Nothing to do here
+        pass
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnIfStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: IfStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnImportStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ImportStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnImportStatementItem(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ImportStatementItemParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnIterateStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: IterateStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnNoopStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: NoopStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnRaiseStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: RaiseStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnReturnStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ReturnStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        self._stream.write("return")
+
+        if parser_info.Expression is not None:
+            self._stream.write(" ")
+            parser_info.Expression.Accept(self, stack)
+
+        self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnScopedRefStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: ScopedRefStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        # We don't need to do anything here, but don't want children to display
+        # themselves.
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnTryStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: TryStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnTryStatementClause(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: TryStatementClauseParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnTypeAliasStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: TypeAliasStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnVariableDeclarationStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: VariableDeclarationStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        parser_info.Name.Accept(self, stack)
+        self._stream.write(" = ")
+        parser_info.Expression.Accept(self, stack)
+        self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnWhileStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: WhileStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        pass # TODO
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnYieldStatement(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: YieldStatementParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        self._stream.write("yield")
+
+        if parser_info.IsRecursive is not None:
+            self._stream.write(" from")
+
+        if parser_info.Expression is not None:
+            parser_info.Expression.Accept(self, stack)
+
+        self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     # |
     # |  Types
     # |
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnStandardType(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: StandardTypeParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        # Nothing do do for types
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnTupleType(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: TupleTypeParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        # Nothing do do for types
+        return False
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
+    @Interface.override
     def OnVariantType(
+        self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: VariantTypeParserInfo,
-        *args,
-        **kwargs,
     ) -> Optional[bool]:
-        raise Exception("Abstract method")  # pragma: no cover
+        # Nothing do do for types
+        return False
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    @classmethod
-    def Accept(
-        cls,
-        parser_info: ParserInfo,
-        stack: Optional[List[Union[str, ParserInfo, Tuple[ParserInfo, str]]]]=None,
-        *args,
-        **kwargs,
-    ):
-        parser_info.Accept(cls, stack or [], *args, **kwargs)
+    @property
+    def _stream(self):
+        return self._stream_stack[-1]

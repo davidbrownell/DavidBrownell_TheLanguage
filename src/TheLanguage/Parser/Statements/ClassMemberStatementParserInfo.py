@@ -139,18 +139,15 @@ class ClassMemberStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnClassMemberStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnClassMemberStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Type"]:
-                results.append(self.Type.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Type.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.InitializedValue is not None:
                 with helper["InitializedValue"]:
-                    results.append(self.InitializedValue.Accept(visitor, helper.stack, *args, **kwargs))
+                    self.InitializedValue.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnClassMemberStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnClassMemberStatement(stack, VisitType.Exit, self, *args, **kwargs)

@@ -341,22 +341,20 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnFuncDefinitionStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnFuncDefinitionStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["ReturnType"]:
-                results.append(self.ReturnType.Accept(visitor, helper.stack, *args, **kwargs))
+                self.ReturnType.Accept(visitor, helper.stack, *args, **kwargs)
 
             if isinstance(self.Parameters, ParametersParserInfo):
                 with helper["Parameters"]:
-                    results.append(self.Parameters.Accept(visitor, helper.stack, *args, **kwargs))
+                    self.Parameters.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.Statements is not None:
                 with helper["Statements"]:
-                    results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])
+                    for statement in self.Statements:
+                        statement.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnFundDefinitionStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnFuncDefinitionStatement(stack, VisitType.Exit, self, *args, **kwargs)

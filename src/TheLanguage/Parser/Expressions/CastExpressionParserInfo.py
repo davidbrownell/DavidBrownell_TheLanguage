@@ -96,18 +96,15 @@ class CastExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnCastExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnCastExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Expression"]:
-                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
             if isinstance(self.Type, TypeParserInfo):
                 with helper["Type"]:
-                    results.append(self.Type.Accept(visitor, helper.stack, *args, **kwargs))
+                    self.Type.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnCastExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnCastExpression(stack, VisitType.Exit, self, *args, **kwargs)

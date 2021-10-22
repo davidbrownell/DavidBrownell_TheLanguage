@@ -40,4 +40,4 @@ class ContinueStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnContinueStatement(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+        visitor.OnContinueStatement(stack, VisitType.EnterAndExit, self, *args, **kwargs)

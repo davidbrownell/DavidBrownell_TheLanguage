@@ -167,6 +167,15 @@ def Parse(
 
 
 # ----------------------------------------------------------------------
+def Verify(
+    roots: Dict[str, RootParserInfo],
+    *,
+    max_num_threads: Optional[int]=None,
+):
+    pass # TODO
+
+
+# ----------------------------------------------------------------------
 def GetParserInfo(
     obj: Any,
     *,

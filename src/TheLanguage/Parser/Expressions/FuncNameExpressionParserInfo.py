@@ -42,4 +42,4 @@ class FuncNameExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnFuncNameExpression(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+        visitor.OnFuncNameExpression(stack, VisitType.EnterAndExit, self, *args, **kwargs)

@@ -47,4 +47,4 @@ class VariableNameParserInfo(NameParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnVariableName(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+        visitor.OnVariableName(stack, VisitType.EnterAndExit, self, *args, **kwargs)

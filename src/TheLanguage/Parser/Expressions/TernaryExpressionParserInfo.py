@@ -44,20 +44,17 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnTernaryExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnTernaryExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["ConditionExpression"]:
-                results.append(self.ConditionExpression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.ConditionExpression.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["TrueExpression"]:
-                results.append(self.TrueExpression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.TrueExpression.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["FalseExpression"]:
-                results.append(self.FalseExpression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.FalseExpression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnTernaryExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnTernaryExpression(stack, VisitType.Exit, self, *args, **kwargs)
