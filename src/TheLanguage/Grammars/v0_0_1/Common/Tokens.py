@@ -19,6 +19,8 @@ import os
 import re
 import textwrap
 
+from typing import Callable, Optional
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -66,7 +68,7 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 #
 # We should not generically match these keywords:
 #
-DoNotMatchKeywords                          = [
+ReservedKeywords                            = [
     # ../Statements/BreakStatement.py
     "break",
 
@@ -88,6 +90,9 @@ DoNotMatchKeywords                          = [
     # ../Statements/YieldStatement.py
     "yield",
 
+    # ../Expressions/NoneExpression.py
+    "None",
+
     # ../Expressions/UnaryExpression.py
     "await",                                # Coroutines
     "copy",                                 # Transfer
@@ -97,63 +102,53 @@ DoNotMatchKeywords                          = [
 
 
 # ----------------------------------------------------------------------
-
-# This token is intended to be a generic token that will match every name used in the grammar so that
-# we don't see complicated syntax errors when incorrect naming conventions are used. Grammars leveraging
-# this token should perform more specific regex matching during their custom validation process.
-def _CreateVariableName():
+def _CreateToken(
+    token_name: str,
+    regex: str,
+    filter_func: Callable[[str], bool],
+    *,
+    template_var: Optional[str]=None,
+):
     regex_suffixes = []
 
-    for do_not_match_keyword in DoNotMatchKeywords:
-        regex_suffixes.append(r"(?<!{})".format(re.escape(do_not_match_keyword)))
+    for reserved_keyword in ReservedKeywords:
+        if not filter_func(reserved_keyword[0]):
+            continue
 
-    regex = r"(?P<value>_?[a-z][A-Za-z0-9_]*)(?<!__)\b{}".format("".join(regex_suffixes))
+        regex_suffixes.append(r"(?<!{})".format(re.escape(reserved_keyword)))
 
-    return RegexToken("<variable_name>", re.compile(regex))
+    regex_suffixes = "".join(regex_suffixes)
 
+    if template_var is not None:
+        regex = regex.format(**{template_var: regex_suffixes})
+    else:
+        regex = "{}{}".format(regex, regex_suffixes)
 
-VariableName                                = _CreateVariableName()
-
-del _CreateVariableName
+    return RegexToken(token_name, re.compile(regex))
 
 
 # ----------------------------------------------------------------------
-ArgumentName                                = RegexToken(
-    "<argument_name>",
-    re.compile(r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b"),
-)
+ArgumentName                                = _CreateToken("<argument_name>", r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b", str.islower)
+VariableName                                = _CreateToken("<variable_name>", r"(?P<value>_?[a-z][A-Za-z0-9_]*)(?<!__)\b", str.islower)
+ParameterName                               = _CreateToken("<parameter_name>", r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b", str.islower)
 
+AttributeName                               = _CreateToken("<attribute_name>", r"(?P<value>[A-Z][A-Za-z0-9_]+(?<!__))\b", str.isupper)
+TypeName                                    = _CreateToken("<type_name>", r"(?P<value>_?[A-Z][A-Za-z0-9_]+(?<!__))\b", str.isupper)
 
-AttributeName                               = RegexToken(
-    "<attribute_name>",
-    re.compile(r"(?P<value>[A-Z][A-Za-z0-9_]+(?<!__))\b"),
-)
-
-
-FuncName                                    = RegexToken(
+FuncName                                    = _CreateToken(
     "<func_name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-                Underscores                             )_{0,2}(?#
-                Func Name                               )(?P<alphanum>[A-Z][A-Za-z0-9_]+)(?<!_)(?#
-                generator suffix                        )(?P<generator_suffix>\.\.\.)?(?#
-                exceptional suffix                      )(?P<exceptional_suffix>\?)?(?#
-                Underscores                             )_{0,2}(?#
-                End of Word                             )(?#
-            ))""",
-        ),
+    textwrap.dedent(
+        r"""(?P<value>(?#
+            Underscores                                 )_{{0,2}}(?#
+            Func Name                                   )(?P<alphanum>[A-Z][A-Za-z0-9_]+)(?#
+            Do not end with an underscore               )(?<!_)(?#
+            Do not match an extra alpha char            )(?![A-Za-z0-9])(?#
+            Do not match tokens                         ){tokens}(?#
+            generator suffix                            )(?P<generator_suffix>\.\.\.)?(?#
+            exceptional suffix                          )(?P<exceptional_suffix>\?)?(?#
+            Underscores                                 )(?:__)?(?#
+        ))""",
     ),
-)
-
-
-ParameterName                               = RegexToken(
-    "<parameter_name>",
-    re.compile(r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b"),
-)
-
-
-TypeName                                    = RegexToken(
-    "<type_name>",
-    re.compile(r"(?P<value>_?[A-Z][A-Za-z0-9_]+(?<!__))\b"),
+    str.isupper,
+    template_var="tokens",
 )

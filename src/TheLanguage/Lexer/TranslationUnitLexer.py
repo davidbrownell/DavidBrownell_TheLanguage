@@ -140,127 +140,152 @@ class SyntaxInvalidError(Error):
                 if node_iter_end is None:
                     continue
 
-                if best_nodes and node_iter_end.Offset == best_nodes[-1][-1].IterEnd.Offset:
+                if best_nodes and node_iter_end.Offset == best_nodes[-1][-1].IterEnd.Offset:  # type: ignore
                     best_nodes.append((CalcDepth(node), node, reference_node))
-                elif not best_nodes or node_iter_end.Offset > best_nodes[-1][-1].IterEnd.Offset:
+                elif not best_nodes or node_iter_end.Offset > best_nodes[-1][-1].IterEnd.Offset:  # type: ignore
                     best_nodes = [(CalcDepth(node), node, reference_node)]
 
-        # Calculate the error node and contextual information
+        # Calculate the error node
         error_node: Optional[Union[AST.Leaf, AST.Node]] = None
-        error_context: Optional[str] = None
+        error_reference_node: Optional[Union[AST.Leaf, AST.Node]] = None
 
         if not best_nodes:
             error_node = self.Root
             error_reference_node = self.Root
+
+            is_error_ambiguous = False
+
         else:
             # Sort by depth to get the node that is deepest in the tree
             best_nodes.sort(
                 key=lambda value: value[0],
             )
 
-            error_node, error_reference_node = best_nodes[-1][1:]  # type: ignore
+            # Resolve ties by taking the first node at this depth.
+            best_depth = best_nodes[-1][0]
 
-        # ----------------------------------------------------------------------
-        def GenerateContextPrefix(
-            phrase_name: str,
-            *,
-            make_singular: bool=False,
-        ) -> str:
-            # Ideally, we would use inflect here to better handle plural/singular detection and conversion,
-            # but it gets confused with strings formatted like "(One | Two | Three) Statements". So,
-            # we are taking things into our own hands here.
-            is_plural = phrase_name.endswith("s")
-
-            if make_singular and is_plural:
-                phrase_name = phrase_name[:-1]
-                is_plural = False
-
-            return "'{}' {}".format(phrase_name, "were" if is_plural else "was")
-
-        # ----------------------------------------------------------------------
-
-        # Navigate up the tree until we have a node that can provide good contextual information
-        while True:
-            if isinstance(error_node, AST.Node) and error_node.Type is not None:
-                if isinstance(error_node.Type, SequencePhrase):
-                    if error_node.Children[-1].IterEnd is None:
-                        # Sometimes the problem isn't due to the phrase that failed, but rather the
-                        # phrase that came right before it. See if there is error information associated
-                        # with the second-to-last phrase.
-                        if len(error_node.Children) > 1:
-                            potential_error_node = getattr(
-                                error_node.Children[-2],
-                                _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME,
-                                None,
-                            )
-
-                            if potential_error_node is not None and potential_error_node.IterEnd is None:
-                                error_context = "{} evaluated but not matched; therefore ".format(
-                                    GenerateContextPrefix(potential_error_node.Type.Name),
-                                )
-
-                        # Get the phrase that failed. Due to implementation details associated with how
-                        # DynamicPhrases are deconstructed and then reconstructed, we need to add special
-                        # logic here to ensure that we are looking at the correct error phrase.
-                        if (
-                            DynamicPhrase.IsRightRecursivePhrase(error_node.Type, None)
-                            and len(error_node.Children) == len(error_node.Type.Phrases) - 1
-                        ):
-                            expected_phrase_name = cast(DynamicPhrase, error_node.Type.Phrases[-1]).DisplayName
-                        else:
-                            expected_phrase_name = error_node.Type.Phrases[len(error_node.Children) - 1].Name
-
-                        error_context = "{}{} expected in '{}'".format(
-                            error_context or "",
-                            GenerateContextPrefix(
-                                expected_phrase_name,
-                                make_singular=True,
-                            ),
-                            error_node.Type.Name,
-                        )
-
-                        break
-
-                elif isinstance(error_node.Type, RepeatPhrase):
-                    if error_node.Children[-1].IterEnd is None:
-                        error_context = "{} expected".format(
-                            GenerateContextPrefix(
-                                error_node.Type.Name,
-                                make_singular=True,
-                            ),
-                        )
-
-                        break
-
-                elif isinstance(error_node.Type, (DynamicPhrase, OrPhrase)):
-                    # Keep walking
-                    pass
-
-                else:
-                    assert False, error_node.Type
+            for depth, error_node, error_reference_node in reversed(best_nodes):
+                if depth != best_depth:
+                    break
 
             assert error_node is not None
 
-            if error_node.Parent is None:
-                assert isinstance(error_node, AST.Node)
-                assert error_node.Children[-1].Type is not None
+            is_error_ambiguous = (
+                len(best_nodes) > 2
+                and best_nodes[-1][0] == best_nodes[-2][0]
+                and error_node.IterBegin is not None
+                and error_node.IterEnd is not None
+                and error_node.IterBegin.Offset != error_node.IterEnd.Offset
+            )
 
-                if isinstance(error_node.Children[-1].Type, DynamicPhrase):
-                    expected_phrase_name = cast(DynamicPhrase, error_node.Children[-1].Type).DisplayName
-                else:
+        # Generate contextual information
+        error_context: Optional[str] = None
 
-                    expected_phrase_name = cast(Phrase, error_node.Children[-1].Type).Name
+        if is_error_ambiguous:
+            error_context = "No statements matched this content"
 
-                error_context = "{} expected".format(
-                    GenerateContextPrefix(
-                        expected_phrase_name,
-                        make_singular=True,
-                    ),
-                )
+        else:
+            # ----------------------------------------------------------------------
+            def GenerateContextPrefix(
+                phrase_name: str,
+                *,
+                make_singular: bool=False,
+            ) -> str:
+                # Ideally, we would use inflect here to better handle plural/singular detection and conversion,
+                # but it gets confused with strings formatted like "(One | Two | Three) Statements". So,
+                # we are taking things into our own hands here.
+                is_plural = phrase_name.endswith("s")
 
-                break
+                if make_singular and is_plural:
+                    phrase_name = phrase_name[:-1]
+                    is_plural = False
 
-            error_node = error_node.Parent  # type: ignore
+                return "'{}' {}".format(phrase_name, "were" if is_plural else "was")
+
+            # ----------------------------------------------------------------------
+
+            # Navigate up the tree until we have a node that can provide good contextual information
+            while True:
+                if isinstance(error_node, AST.Node) and error_node.Type is not None:
+                    if isinstance(error_node.Type, SequencePhrase):
+                        if error_node.Children[-1].IterEnd is None:
+                            # Sometimes the problem isn't due to the phrase that failed, but rather the
+                            # phrase that came right before it. See if there is error information associated
+                            # with the second-to-last phrase.
+                            if len(error_node.Children) > 1:
+                                potential_error_node = getattr(
+                                    error_node.Children[-2],
+                                    _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME,
+                                    None,
+                                )
+
+                                if potential_error_node is not None and potential_error_node.IterEnd is None:
+                                    error_context = "{} evaluated but not matched; therefore ".format(
+                                        GenerateContextPrefix(potential_error_node.Type.Name),
+                                    )
+
+                            # Get the phrase that failed. Due to implementation details associated with how
+                            # DynamicPhrases are deconstructed and then reconstructed, we need to add special
+                            # logic here to ensure that we are looking at the correct error phrase.
+                            if (
+                                DynamicPhrase.IsRightRecursivePhrase(error_node.Type, None)
+                                and len(error_node.Children) == len(error_node.Type.Phrases) - 1
+                            ):
+                                expected_phrase_name = cast(DynamicPhrase, error_node.Type.Phrases[-1]).DisplayName
+                            else:
+                                expected_phrase_name = error_node.Type.Phrases[len(error_node.Children) - 1].Name
+
+                            error_context = "{}{} expected in '{}'".format(
+                                error_context or "",
+                                GenerateContextPrefix(
+                                    expected_phrase_name,
+                                    make_singular=True,
+                                ),
+                                error_node.Type.Name,
+                            )
+
+                            break
+
+                    elif isinstance(error_node.Type, RepeatPhrase):
+                        if error_node.Children[-1].IterEnd is None:
+                            error_context = "{} expected".format(
+                                GenerateContextPrefix(
+                                    error_node.Type.Name,
+                                    make_singular=True,
+                                ),
+                            )
+
+                            break
+
+                    elif isinstance(error_node.Type, (DynamicPhrase, OrPhrase)):
+                        # Keep walking
+                        pass
+
+                    else:
+                        assert False, error_node.Type
+
+                assert error_node is not None
+
+                if error_node.Parent is None:
+                    assert isinstance(error_node, AST.Node)
+                    assert error_node.Children[-1].Type is not None
+
+                    if isinstance(error_node.Children[-1].Type, DynamicPhrase):
+                        expected_phrase_name = cast(DynamicPhrase, error_node.Children[-1].Type).DisplayName
+                    else:
+
+                        expected_phrase_name = cast(Phrase, error_node.Children[-1].Type).Name
+
+                    error_context = "{} expected".format(
+                        GenerateContextPrefix(
+                            expected_phrase_name,
+                            make_singular=True,
+                        ),
+                    )
+
+                    break
+
+                error_node = error_node.Parent  # type: ignore
 
         if error_context is None:
             error_context = error_node.ToYamlString().rstrip()
