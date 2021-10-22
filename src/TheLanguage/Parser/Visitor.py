@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -63,6 +63,11 @@ with InitRelativeImports():
     )
 
     from .Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
+
+    # Literals
+    from .Literals.NoneLiteralParserInfo import NoneLiteralParserInfo
+    from .Literals.NumberLiteralParserInfo import NumberLiteralParserInfo
+    from .Literals.StringLiteralParserInfo import StringLiteralParserInfo
 
     # Names
     from .Names.TupleNameParserInfo import TupleNameParserInfo
@@ -345,6 +350,46 @@ class Visitor(VisitorBase):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         visit_type: VisitType,
         parser_info: VariableExpressionParserInfo,
+        *args,
+        **kwargs,
+    ) -> Optional[bool]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Literals
+    # |
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnNoneLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: NoneLiteralParserInfo,
+        *args,
+        **kwargs,
+    ) -> Optional[bool]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnNumberLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: NumberLiteralParserInfo,
+        *args,
+        **kwargs,
+    ) -> Optional[bool]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnStringLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: StringLiteralParserInfo,
         *args,
         **kwargs,
     ) -> Optional[bool]:
