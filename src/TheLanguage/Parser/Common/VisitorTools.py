@@ -32,6 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 class VisitType(Enum):
     """Indicates when an On____ function is being invoked for a visitor."""
 
+    # TODO: Remove this
+
     Enter                                   = auto()
     Exit                                    = auto()
     EnterAndExit                            = auto()
