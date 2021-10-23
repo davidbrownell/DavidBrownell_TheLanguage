@@ -51,13 +51,11 @@ class TupleTypeParserInfo(TypeParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnTupleType(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnTupleType(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Types")] as helper:
-            results.append([the_type.Accept(visitor, helper.stack, *args, **kwargs) for the_type in self.Types])
+            for the_type in self.Types:
+                the_type.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnTupleType(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnTupleType(stack, VisitType.Exit, self, *args, **kwargs)

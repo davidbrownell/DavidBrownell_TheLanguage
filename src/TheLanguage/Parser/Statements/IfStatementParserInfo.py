@@ -46,20 +46,18 @@ class IfStatementClauseParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnIfStatementClause(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnIfStatementClause(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Condition"]:
-                results.append(self.Condition.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Condition.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Statements"]:
-                results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])
+                for statement in self.Statements:
+                    statement.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnIfStatementClause(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnIfStatementClause(stack, VisitType.Exit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -78,18 +76,17 @@ class IfStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnIfStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnIfStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Clauses"]:
-                results.append([clause.Accept(visitor, helper.stack, *args, **kwargs) for clause in self.Clauses])
+                for clause in self.Clauses:
+                    clause.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.ElseStatements is not None:
                 with helper["ElseStatements"]:
-                    results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.ElseStatements])
+                    for statement in self.ElseStatements:
+                        statement.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnIfStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnIfStatement(stack, VisitType.Exit, self, *args, **kwargs)

@@ -61,24 +61,21 @@ class GeneratorExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnGeneratorExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnGeneratorExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["ResultExpression"]:
-                results.append(self.ResultExpression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.ResultExpression.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Name"]:
-                results.append(self.Name.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Name.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["SourceExpression"]:
-                results.append(self.SourceExpression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.SourceExpression.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.ConditionExpression is not None:
                 with helper["ConditionExpression"]:
-                    results.append(self.ConditionExpression.Accept(visitor, helper.stack, *args, **kwargs))
+                    self.ConditionExpression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnGeneratorExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnGeneratorExpression(stack, VisitType.Exit, self, *args, **kwargs)

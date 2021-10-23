@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -36,11 +36,15 @@ with InitRelativeImports():
 
     # Common
     from .Common.ArgumentParserInfo import ArgumentParserInfo
+    from .Common.MethodModifier import MethodModifier   # Convenience
     from .Common.ParametersParserInfo import ParametersParserInfo, ParameterParserInfo
     from .Common.VisitorTools import VisitType
 
     # Expressions
-    from .Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo
+    from .Expressions.BinaryExpressionParserInfo import (
+        BinaryExpressionParserInfo,
+        OperatorType as BinaryExpressionOperatorType,   # Convenience
+    )
     from .Expressions.CastExpressionParserInfo import CastExpressionParserInfo
     from .Expressions.FuncInvocationExpressionParserInfo import FuncInvocationExpressionParserInfo
     from .Expressions.FuncNameExpressionParserInfo import FuncNameExpressionParserInfo
@@ -52,8 +56,18 @@ with InitRelativeImports():
     from .Expressions.MatchValueExpressionParserInfo import MatchValueExpressionParserInfo, MatchValueExpressionClauseParserInfo
     from .Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
     from .Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
-    from .Expressions.UnaryExpressionParserInfo import UnaryExpressionParserInfo
+
+    from .Expressions.UnaryExpressionParserInfo import (
+        UnaryExpressionParserInfo,
+        OperatorType as UnaryExpressionOperatorType,    # Convenience
+    )
+
     from .Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
+
+    # Literals
+    from .Literals.NoneLiteralParserInfo import NoneLiteralParserInfo
+    from .Literals.NumberLiteralParserInfo import NumberLiteralParserInfo
+    from .Literals.StringLiteralParserInfo import StringLiteralParserInfo
 
     # Names
     from .Names.TupleNameParserInfo import TupleNameParserInfo
@@ -102,7 +116,7 @@ class Visitor(VisitorBase):
         parser_info: RootParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -118,19 +132,7 @@ class Visitor(VisitorBase):
         parser_info: ArgumentParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def OnParameter(
-        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
-        parser_info: ParameterParserInfo,
-        *args,
-        **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -142,7 +144,19 @@ class Visitor(VisitorBase):
         parser_info: ParametersParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnParameter(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: ParameterParserInfo,
+        *args,
+        **kwargs,
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -158,7 +172,7 @@ class Visitor(VisitorBase):
         parser_info: BinaryExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -170,7 +184,7 @@ class Visitor(VisitorBase):
         parser_info: CastExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -182,7 +196,7 @@ class Visitor(VisitorBase):
         parser_info: FuncInvocationExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -194,7 +208,7 @@ class Visitor(VisitorBase):
         parser_info: FuncNameExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -206,7 +220,7 @@ class Visitor(VisitorBase):
         parser_info: GeneratorExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -218,7 +232,7 @@ class Visitor(VisitorBase):
         parser_info: GroupExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -230,7 +244,7 @@ class Visitor(VisitorBase):
         parser_info: IndexExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -242,7 +256,7 @@ class Visitor(VisitorBase):
         parser_info: LambdaExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -254,7 +268,7 @@ class Visitor(VisitorBase):
         parser_info: MatchTypeExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -266,7 +280,7 @@ class Visitor(VisitorBase):
         parser_info: MatchTypeExpressionClauseParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -278,7 +292,7 @@ class Visitor(VisitorBase):
         parser_info: MatchValueExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -290,7 +304,7 @@ class Visitor(VisitorBase):
         parser_info: MatchValueExpressionClauseParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -302,7 +316,7 @@ class Visitor(VisitorBase):
         parser_info: TernaryExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -314,7 +328,7 @@ class Visitor(VisitorBase):
         parser_info: TupleExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -326,7 +340,7 @@ class Visitor(VisitorBase):
         parser_info: UnaryExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -338,7 +352,47 @@ class Visitor(VisitorBase):
         parser_info: VariableExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Literals
+    # |
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnNoneLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: NoneLiteralParserInfo,
+        *args,
+        **kwargs,
+    ) -> Optional[bool]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnNumberLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: NumberLiteralParserInfo,
+        *args,
+        **kwargs,
+    ) -> Optional[bool]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnStringLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: StringLiteralParserInfo,
+        *args,
+        **kwargs,
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -354,7 +408,7 @@ class Visitor(VisitorBase):
         parser_info: TupleNameParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -366,7 +420,7 @@ class Visitor(VisitorBase):
         parser_info: VariableNameParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -382,7 +436,7 @@ class Visitor(VisitorBase):
         parser_info: BinaryStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -394,7 +448,7 @@ class Visitor(VisitorBase):
         parser_info: BreakStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -406,7 +460,7 @@ class Visitor(VisitorBase):
         parser_info: ClassMemberStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -418,7 +472,7 @@ class Visitor(VisitorBase):
         parser_info: ClassStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -430,7 +484,7 @@ class Visitor(VisitorBase):
         parser_info: ClassStatementDependencyParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -442,7 +496,7 @@ class Visitor(VisitorBase):
         parser_info: ContinueStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -454,7 +508,7 @@ class Visitor(VisitorBase):
         parser_info: DeleteStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -466,7 +520,7 @@ class Visitor(VisitorBase):
         parser_info: FuncDefinitionStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -478,7 +532,7 @@ class Visitor(VisitorBase):
         parser_info: FuncInvocationStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -490,7 +544,7 @@ class Visitor(VisitorBase):
         parser_info: IfStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -502,7 +556,7 @@ class Visitor(VisitorBase):
         parser_info: ImportStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -514,7 +568,7 @@ class Visitor(VisitorBase):
         parser_info: ImportStatementItemParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -526,7 +580,7 @@ class Visitor(VisitorBase):
         parser_info: IterateStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -538,7 +592,7 @@ class Visitor(VisitorBase):
         parser_info: NoopStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -550,7 +604,7 @@ class Visitor(VisitorBase):
         parser_info: RaiseStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -562,7 +616,7 @@ class Visitor(VisitorBase):
         parser_info: ReturnStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -574,7 +628,7 @@ class Visitor(VisitorBase):
         parser_info: ScopedRefStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -586,7 +640,7 @@ class Visitor(VisitorBase):
         parser_info: TryStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -598,7 +652,7 @@ class Visitor(VisitorBase):
         parser_info: TryStatementClauseParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -610,7 +664,7 @@ class Visitor(VisitorBase):
         parser_info: TypeAliasStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -622,7 +676,7 @@ class Visitor(VisitorBase):
         parser_info: VariableDeclarationStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -634,7 +688,7 @@ class Visitor(VisitorBase):
         parser_info: WhileStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -646,7 +700,7 @@ class Visitor(VisitorBase):
         parser_info: YieldStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -662,7 +716,7 @@ class Visitor(VisitorBase):
         parser_info: StandardTypeParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -674,7 +728,7 @@ class Visitor(VisitorBase):
         parser_info: TupleTypeParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -686,5 +740,18 @@ class Visitor(VisitorBase):
         parser_info: VariantTypeParserInfo,
         *args,
         **kwargs,
-    ) -> Any:
+    ) -> Optional[bool]:
         raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Accept(
+        cls,
+        parser_info: ParserInfo,
+        stack: Optional[List[Union[str, ParserInfo, Tuple[ParserInfo, str]]]]=None,
+        *args,
+        **kwargs,
+    ):
+        parser_info.Accept(cls, stack or [], *args, **kwargs)

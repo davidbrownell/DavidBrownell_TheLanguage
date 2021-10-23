@@ -51,13 +51,11 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnTupleExpression(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnTupleExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Expressions")] as helper:
-            results.append([expression.Accept(visitor, helper.stack, *args, **kwargs) for expression in self.Expressions])
+            for expression in self.Expressions:
+                expression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnTupleExpression(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnTupleExpression(stack, VisitType.Exit, self, *args, **kwargs)

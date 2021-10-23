@@ -51,13 +51,11 @@ class RootParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnRoot(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnRoot(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[(self, "Statements")] as helper:
-            results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])
+            for statement in self.Statements:
+                statement.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnRoot(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnRoot(stack, VisitType.Exit, self, *args, **kwargs)

@@ -42,4 +42,4 @@ class NoopStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnNoopStatement(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+        visitor.OnNoopStatement(stack, VisitType.EnterAndExit, self, *args, **kwargs)

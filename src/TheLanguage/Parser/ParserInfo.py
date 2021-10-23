@@ -232,4 +232,7 @@ class ParserInfo(Interface.Interface, YamlRepr.ObjectReprImplBase):
     @staticmethod
     @Interface.abstractmethod
     def Accept(visitor, stack, *args, **kwargs):
+        # TODO: Simplify accept by removing the concept of VisitType; Nodes are visitied before children and then can prevent recursion if they
+        #       need different behavior.
+
         raise Exception("Abstract method")  # pragma: no cover

@@ -65,7 +65,7 @@ class UnaryExpression(GrammarPhrase):
 
     PHRASE_NAME                             = "Unary Expression"
 
-    # Note that any alphanumeric operators added here must also be added to 'DoNotMatchKeywords'
+    # Note that any alphanumeric operators added here must also be added to 'ReservedKeywords'
     # in ../Common/Tokens.py.
     OPERATOR_MAP: Dict[str, OperatorType]   = {
         # Async

@@ -53,17 +53,14 @@ class VariableDeclarationStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnVariableDeclarationStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnVariableDeclarationStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Name"]:
-                results.append(self.Name.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Name.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Expression"]:
-                results.append(self.Expression.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnVariableDeclarationStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnVariableDeclarationStatement(stack, VisitType.Exit, self, *args, **kwargs)

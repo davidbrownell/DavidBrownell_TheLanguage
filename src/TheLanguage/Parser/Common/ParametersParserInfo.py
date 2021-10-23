@@ -55,21 +55,18 @@ class ParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnParameter(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnParameter(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             with helper["Type"]:
-                results.append(self.Type.Accept(visitor, helper.stack, *args, **kwargs))
+                self.Type.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.Default is not None:
                 with helper["Default"]:
-                    results.append(self.Default.Accept(visitor, helper.stack, *args, **kwargs))
+                    self.Default.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnParameter(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnParameter(stack, VisitType.Exit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -87,23 +84,23 @@ class ParametersParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnParameters(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnParameters(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             if self.Positional is not None:
                 with helper["Positional"]:
-                    results.append([parameter.Accept(visitor, helper.stack, *args, **kwargs) for parameter in self.Positional])
+                    for parameter in self.Positional:
+                        parameter.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.Keyword is not None:
                 with helper["Keyword"]:
-                    results.append([parameter.Accept(visitor, helper.stack, *args, **kwargs) for parameter in self.Keyword])
+                    for parameter in self.Keyword:
+                        parameter.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.Any is not None:
                 with helper["Any"]:
-                    results.append([parameter.Accept(visitor, helper.stack, *args, **kwargs) for parameter in self.Any])
+                    for parameter in self.Any:
+                        parameter.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnParameters(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnParameters(stack, VisitType.Exit, self, *args, **kwargs)

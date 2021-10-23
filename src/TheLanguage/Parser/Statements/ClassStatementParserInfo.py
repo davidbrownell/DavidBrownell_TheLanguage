@@ -242,7 +242,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        return visitor.OnClassDependency(stack, VisitType.NoChildEnumeration, self, *args, **kwargs)
+        visitor.OnClassDependency(stack, VisitType.EnterAndExit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -440,29 +440,29 @@ class ClassStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor, stack, *args, **kwargs):
-        results = []
-
-        results.append(visitor.OnClassStatement(stack, VisitType.PreChildEnumeration, self, *args, **kwargs))
+        if visitor.OnClassStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
+            return
 
         with StackHelper(stack)[self] as helper:
             if self.Base is not None:
                 with helper["Base"]:
-                    results.append(self.Base.Accept(visitor, helper.stack, *args, **kwargs))
+                    self.Base.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.Implements is not None:
                 with helper["Implements"]:
-                    results.append([dependency.Accept(visitor, helper.stack, *args, **kwargs) for dependency in self.Implements])
+                    for dependency in self.Implements:
+                        dependency.Accept(visitor, helper.stack, *args, **kwargs)
 
             if self.Uses is not None:
                 with helper["Uses"]:
-                    results.append([dependency.Accept(visitor, helper.stack, *args, **kwargs) for dependency in self.Uses])
+                    for dependency in self.Uses:
+                        dependency.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Statements"]:
-                results.append([statement.Accept(visitor, helper.stack, *args, **kwargs) for statement in self.Statements])  # type: ignore && pylint: disable=not-an-iterable
+                for statement in self.Statements:  # type: ignore && pylint: disable=not-an-iterable
+                    statement.Accept(visitor, helper.stack, *args, **kwargs)
 
-        results.append(visitor.OnClassStatement(stack, VisitType.PostChildEnumeration, self, *args, **kwargs))
-
-        return results
+        visitor.OnClassStatement(stack, VisitType.Exit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
