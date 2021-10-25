@@ -20,7 +20,6 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,13 +30,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
-    from ..Common.VisitorTools import VisitType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ContinueStatementParserInfo(StatementParserInfo):
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        visitor.OnContinueStatement(stack, VisitType.EnterAndExit, self, *args, **kwargs)
+    pass

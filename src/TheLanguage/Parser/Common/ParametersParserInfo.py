@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .VisitorTools import StackHelper, VisitType
+    from .VisitorTools import StackHelper
 
     from ..Parser import ParserInfo
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
@@ -53,11 +53,10 @@ class ParameterParserInfo(ParserInfo):
         assert self.IsVarArgs is None or self.IsVarArgs, self
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnParameter(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["Type"]:
                 self.Type.Accept(visitor, helper.stack, *args, **kwargs)
@@ -65,8 +64,6 @@ class ParameterParserInfo(ParserInfo):
             if self.Default is not None:
                 with helper["Default"]:
                     self.Default.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnParameter(stack, VisitType.Exit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -82,11 +79,10 @@ class ParametersParserInfo(ParserInfo):
         assert self.Positional or self.Keyword or self.Any
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnParameters(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             if self.Positional is not None:
                 with helper["Positional"]:
@@ -102,5 +98,3 @@ class ParametersParserInfo(ParserInfo):
                 with helper["Any"]:
                     for parameter in self.Any:
                         parameter.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnParameters(stack, VisitType.Exit, self, *args, **kwargs)

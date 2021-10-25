@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
@@ -43,13 +43,10 @@ class RaiseStatementParserInfo(StatementParserInfo):
     Expression: Optional[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnRaiseStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         if self.Expression is not None:
             with StackHelper(stack)[(self, "Expression")] as helper:
                 self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnRaiseStatement(stack, VisitType.Exit, self, *args, **kwargs)

@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ParserInfo import ParserInfo
-    from .Common.VisitorTools import StackHelper, VisitType
+    from .Common.VisitorTools import StackHelper
 
 
 # ----------------------------------------------------------------------
@@ -49,13 +49,10 @@ class RootParserInfo(ParserInfo):
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnRoot(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[(self, "Statements")] as helper:
             for statement in self.Statements:
                 statement.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnRoot(stack, VisitType.Exit, self, *args, **kwargs)

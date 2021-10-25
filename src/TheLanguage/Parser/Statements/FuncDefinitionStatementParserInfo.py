@@ -41,7 +41,7 @@ with InitRelativeImports():
     from ..Common.MethodModifier import MethodModifier as MethodModifierType
     from ..Common.ParametersParserInfo import ParametersParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
 
     from ..Types.TypeParserInfo import TypeParserInfo
 
@@ -350,11 +350,10 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
         self.Validate()
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnFuncDefinitionStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["ReturnType"]:
                 self.ReturnType.Accept(visitor, helper.stack, *args, **kwargs)
@@ -367,5 +366,3 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                 with helper["Statements"]:
                     for statement in self.Statements:
                         statement.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnFuncDefinitionStatement(stack, VisitType.Exit, self, *args, **kwargs)

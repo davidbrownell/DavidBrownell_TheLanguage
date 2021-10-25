@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
     from ..Names.NameParserInfo import NameParserInfo
 
 
@@ -41,12 +41,9 @@ class VariableExpressionParserInfo(ExpressionParserInfo):
     Name: NameParserInfo
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnVariableExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[(self, "Name")] as helper:
             self.Name.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnVariableExpression(stack, VisitType.Exit, self, *args, **kwargs)

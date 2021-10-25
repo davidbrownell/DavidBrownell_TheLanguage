@@ -38,16 +38,18 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class DummyTypeParserinfo(TypeParserInfo):
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         raise Exception("Not implemented")
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class DummyStatementParserInfo(StatementParserInfo):
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         raise Exception("Not implemented")
 
 

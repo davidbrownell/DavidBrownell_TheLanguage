@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfo, StatementParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
 
 
 # ----------------------------------------------------------------------
@@ -49,11 +49,6 @@ class ImportType(Enum):
 class ImportStatementItemParserInfo(ParserInfo):
     Name: str
     Alias: Optional[str]
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        visitor.OnImportItem(stack, VisitType.EnterAndExit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -84,13 +79,10 @@ class ImportStatementParserInfo(StatementParserInfo):
         self.Validate()
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnImportStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[(self, "ImportItems")] as helper:
             for import_item in self.ImportItems:
                 import_item.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnImportStatement(stack, VisitType.Exit, self, *args, **kwargs)
