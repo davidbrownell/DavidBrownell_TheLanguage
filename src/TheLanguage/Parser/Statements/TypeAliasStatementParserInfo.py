@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
     from ..Types.TypeParserInfo import TypeParserInfo
 
 
@@ -42,12 +42,9 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     Type: TypeParserInfo
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnTypeAliasStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[(self, "Type")] as helper:
             self.Type.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnTypeAliasStatement(stack, VisitType.Exit, self, *args, **kwargs)

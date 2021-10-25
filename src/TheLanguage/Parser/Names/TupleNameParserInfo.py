@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .NameParserInfo import NameParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
 
 
 # ----------------------------------------------------------------------
@@ -49,13 +49,10 @@ class TupleNameParserInfo(NameParserInfo):
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnTupleName(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[(self, "Names")] as helper:
             for name in self.Names:
                 name.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnTupleName(stack, VisitType.Exit, self, *args, **kwargs)

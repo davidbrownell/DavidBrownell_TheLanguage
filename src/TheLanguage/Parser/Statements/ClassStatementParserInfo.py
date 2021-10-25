@@ -38,7 +38,7 @@ with InitRelativeImports():
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
     from ..Common.ClassType import ClassType
     from ..Common.VisibilityModifier import VisibilityModifier
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
 
     from ..Error import Error
     from ..ParserInfo import ParserInfo, Region
@@ -239,11 +239,6 @@ class ClassStatementDependencyParserInfo(ParserInfo):
 
         self.Validate()
 
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        visitor.OnClassDependency(stack, VisitType.EnterAndExit, self, *args, **kwargs)
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -438,11 +433,10 @@ class ClassStatementParserInfo(StatementParserInfo):
             )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnClassStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             if self.Base is not None:
                 with helper["Base"]:
@@ -461,8 +455,6 @@ class ClassStatementParserInfo(StatementParserInfo):
             with helper["Statements"]:
                 for statement in self.Statements:  # type: ignore && pylint: disable=not-an-iterable
                     statement.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnClassStatement(stack, VisitType.Exit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------

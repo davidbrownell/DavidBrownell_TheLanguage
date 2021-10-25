@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
 
 
 # ----------------------------------------------------------------------
@@ -42,11 +42,10 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
     FalseExpression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnTernaryExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["ConditionExpression"]:
                 self.ConditionExpression.Accept(visitor, helper.stack, *args, **kwargs)
@@ -56,5 +55,3 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
 
             with helper["FalseExpression"]:
                 self.FalseExpression.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnTernaryExpression(stack, VisitType.Exit, self, *args, **kwargs)

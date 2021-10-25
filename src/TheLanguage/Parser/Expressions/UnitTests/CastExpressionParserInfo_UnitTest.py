@@ -37,8 +37,9 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class DummyExpressionParserInfo(ExpressionParserInfo):
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         raise Excpetion("Not implemented")
 
 

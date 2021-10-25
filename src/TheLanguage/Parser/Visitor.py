@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Tuple, Union
+from typing import Any, Callable, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -38,7 +38,6 @@ with InitRelativeImports():
     from .Common.ArgumentParserInfo import ArgumentParserInfo
     from .Common.MethodModifier import MethodModifier   # Convenience
     from .Common.ParametersParserInfo import ParametersParserInfo, ParameterParserInfo
-    from .Common.VisitorTools import VisitType
 
     # Expressions
     from .Expressions.BinaryExpressionParserInfo import (
@@ -114,11 +113,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnRoot(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: RootParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -130,11 +128,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnArgument(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ArgumentParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -142,11 +139,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnParameters(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ParametersParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -154,11 +150,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnParameter(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ParameterParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -170,11 +165,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnBinaryExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: BinaryExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -182,11 +176,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnCastExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: CastExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -194,11 +187,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnFuncInvocationExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: FuncInvocationExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -206,11 +198,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnFuncNameExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: FuncNameExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -218,11 +209,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnGeneratorExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: GeneratorExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -230,11 +220,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnGroupExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: GroupExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -242,11 +231,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnIndexExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: IndexExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -254,11 +242,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnLambdaExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: LambdaExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -266,11 +253,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnMatchTypeExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: MatchTypeExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -278,11 +264,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnMatchTypeExpressionClause(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: MatchTypeExpressionClauseParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -290,11 +275,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnMatchValueExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: MatchValueExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -302,11 +286,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnMatchValueExpressionClause(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: MatchValueExpressionClauseParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -314,11 +297,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnTernaryExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: TernaryExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -326,11 +308,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnTupleExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: TupleExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -338,11 +319,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnUnaryExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: UnaryExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -350,11 +330,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnVariableExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: VariableExpressionParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -366,11 +345,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnBoolLiteral(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: BoolLiteralParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -378,11 +356,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnIntegerLiteral(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: IntegerLiteralParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -390,11 +367,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnNoneLiteral(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: NoneLiteralParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -402,11 +378,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnNumberLiteral(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: NumberLiteralParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -414,11 +389,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnStringLiteral(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: StringLiteralParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -430,11 +404,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnTupleName(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: TupleNameParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -442,11 +415,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnVariableName(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: VariableNameParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -458,11 +430,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnBinaryStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: BinaryStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -470,11 +441,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnBreakStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: BreakStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -482,11 +452,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnClassMemberStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ClassMemberStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -494,11 +463,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnClassStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ClassStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -506,11 +474,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnClassStatementDependency(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ClassStatementDependencyParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -518,11 +485,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnContinueStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ContinueStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -530,11 +496,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnDeleteStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: DeleteStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -542,11 +507,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnFuncDefinitionStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: FuncDefinitionStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -554,11 +518,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnFuncInvocationStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: FuncInvocationStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -566,11 +529,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnIfStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: IfStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -578,11 +540,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnImportStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ImportStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -590,11 +551,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnImportStatementItem(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ImportStatementItemParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -602,11 +562,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnIterateStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: IterateStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -614,11 +573,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnNoopStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: NoopStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -626,11 +584,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnRaiseStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: RaiseStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -638,11 +595,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnReturnStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ReturnStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -650,11 +606,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnScopedRefStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: ScopedRefStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -662,11 +617,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnTryStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: TryStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -674,11 +628,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnTryStatementClause(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: TryStatementClauseParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -686,11 +639,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnTypeAliasStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: TypeAliasStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -698,11 +650,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnVariableDeclarationStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: VariableDeclarationStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -710,11 +661,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnWhileStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: WhileStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -722,11 +672,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnYieldStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: YieldStatementParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -738,11 +687,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnStandardType(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: StandardTypeParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -750,11 +698,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnTupleType(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: TupleTypeParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -762,11 +709,10 @@ class Visitor(VisitorBase):
     @Interface.abstractmethod
     def OnVariantType(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        visit_type: VisitType,
         parser_info: VariantTypeParserInfo,
         *args,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> Union[None, bool, Callable[[], Any]]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
