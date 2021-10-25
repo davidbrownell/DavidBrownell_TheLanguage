@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
     from ..Names.VariableNameParserInfo import VariableNameParserInfo
 
 
@@ -44,10 +44,10 @@ class ScopedRefStatementParserInfo(StatementParserInfo):
     Statements: List[StatementParserInfo]
 
     # ----------------------------------------------------------------------
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnScopedRefStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["Names"]:
                 for name in self.Names:
@@ -56,5 +56,3 @@ class ScopedRefStatementParserInfo(StatementParserInfo):
             with helper["Statements"]:
                 for statement in self.Statements:
                     statement.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnScopedRefStatement(stack, VisitType.Exit, self, *args, **kwargs)

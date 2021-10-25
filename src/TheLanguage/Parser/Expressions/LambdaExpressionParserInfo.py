@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
     from ..Common.ParametersParserInfo import ParametersParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
 
 
 # ----------------------------------------------------------------------
@@ -59,11 +59,10 @@ class LambdaExpressionParserInfo(ExpressionParserInfo):
             assert self.Parameters
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnLambdaExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             if isinstance(self.Parameters, ParametersParserInfo):
                 with helper["Parameters"]:
@@ -71,5 +70,3 @@ class LambdaExpressionParserInfo(ExpressionParserInfo):
 
             with helper["Expression"]:
                 self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnLambdaExpression(stack, VisitType.Exit, self, *args, **kwargs)

@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
 
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
     from ..Names.NameParserInfo import NameParserInfo
 
 
@@ -59,11 +59,10 @@ class GeneratorExpressionParserInfo(ExpressionParserInfo):
     ConditionExpression: Optional[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnGeneratorExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["ResultExpression"]:
                 self.ResultExpression.Accept(visitor, helper.stack, *args, **kwargs)
@@ -77,5 +76,3 @@ class GeneratorExpressionParserInfo(ExpressionParserInfo):
             if self.ConditionExpression is not None:
                 with helper["ConditionExpression"]:
                     self.ConditionExpression.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnGeneratorExpression(stack, VisitType.Exit, self, *args, **kwargs)

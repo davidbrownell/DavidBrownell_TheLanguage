@@ -38,6 +38,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 
+
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class Location(object):
@@ -125,6 +126,7 @@ class ParserInfo(Interface.Interface, YamlRepr.ObjectReprImplBase):
     Regions__: Dict[str, Optional[Region]]  = field(init=False, default_factory=dict)
 
     _regionless_attributes: Set[str]        = field(init=False, default_factory=set)
+    _accept_func_name: str                  = field(init=False)
 
     # ----------------------------------------------------------------------
     def __post_init__(
@@ -142,6 +144,7 @@ class ParserInfo(Interface.Interface, YamlRepr.ObjectReprImplBase):
         regionless_attributes_set.add("RegionsType__")
         regionless_attributes_set.add("Regions__")
         regionless_attributes_set.add("_regionless_attributes")
+        regionless_attributes_set.add("_accept_func_name")
 
         object.__setattr__(self, "_regionless_attributes", regionless_attributes_set)
 
@@ -186,6 +189,14 @@ class ParserInfo(Interface.Interface, YamlRepr.ObjectReprImplBase):
             **custom_display_funcs,
         )
 
+        # Generate the Visitor name to invoke upon calls to Accept
+        suffix = self.__class__.__name__
+        assert suffix.endswith("ParserInfo"), suffix
+        suffix = suffix[:-len("ParserInfo")]
+
+        object.__setattr__(self, "_accept_func_name", "On{}".format(suffix))
+
+        # Validate (if necessary)
         if should_validate:
             self.Validate()
 
@@ -229,10 +240,24 @@ class ParserInfo(Interface.Interface, YamlRepr.ObjectReprImplBase):
             assert region_value in self.Regions__.Self__, (the_field.name, region_value, self.Regions__.Self__)  # type: ignore && pylint: disable=no-member
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def Accept(visitor, stack, *args, **kwargs):
-        # TODO: Simplify accept by removing the concept of VisitType; Nodes are visitied before children and then can prevent recursion if they
-        #       need different behavior.
+    @Interface.extensionmethod
+    def Accept(self, visitor, stack, *args, **kwargs):
+        result = getattr(visitor, self._accept_func_name)(stack, self, *args, **kwargs)
+        if result is False:
+            return
 
-        raise Exception("Abstract method")  # pragma: no cover
+        self._AcceptImpl(visitor, stack, *args, **kwargs)
+
+        if callable(result):
+            result()
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def _AcceptImpl(visitor, stack, *args, **kwargs) -> None:
+        """Provide custom visitation functionality"""
+
+        # By default, no custom functionality
+        return

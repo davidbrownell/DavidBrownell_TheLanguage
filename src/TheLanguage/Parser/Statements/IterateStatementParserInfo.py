@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
 
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Names.NameParserInfo import NameParserInfo
 
@@ -58,11 +58,10 @@ class IterateStatementParserInfo(StatementParserInfo):
     Statements: List[StatementParserInfo]
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnIterateStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["Name"]:
                 self.Name.Accept(visitor, helper.stack, *args, **kwargs)
@@ -73,5 +72,3 @@ class IterateStatementParserInfo(StatementParserInfo):
             with helper["Statements"]:
                 for statement in self.Statements:
                     statement.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnIterateStatement(stack, VisitType.Exit, self, *args, **kwargs)

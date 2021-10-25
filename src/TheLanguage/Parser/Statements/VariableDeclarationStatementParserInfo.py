@@ -35,7 +35,7 @@ with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
 
     from ..Common.TypeModifier import TypeModifier
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Names.NameParserInfo import NameParserInfo
@@ -51,16 +51,13 @@ class VariableDeclarationStatementParserInfo(StatementParserInfo):
     # TODO: Not all type modifiers are valid in this context
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnVariableDeclarationStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["Name"]:
                 self.Name.Accept(visitor, helper.stack, *args, **kwargs)
 
             with helper["Expression"]:
                 self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnVariableDeclarationStatement(stack, VisitType.Exit, self, *args, **kwargs)

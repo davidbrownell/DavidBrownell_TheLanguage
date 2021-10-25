@@ -20,7 +20,6 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,7 +30,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .NameParserInfo import NameParserInfo
-    from ..Common.VisitorTools import VisitType
 
 
 # ----------------------------------------------------------------------
@@ -43,8 +41,3 @@ class VariableNameParserInfo(NameParserInfo):
     def __post_init__(self, regions):
         assert self.Name
         super(VariableNameParserInfo, self).__post_init__(regions)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        visitor.OnVariableName(stack, VisitType.EnterAndExit, self, *args, **kwargs)

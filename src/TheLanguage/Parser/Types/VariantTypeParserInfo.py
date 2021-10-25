@@ -33,8 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .TypeParserInfo import TypeParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
-
+    from ..Common.VisitorTools import StackHelper
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -49,13 +48,10 @@ class VariantTypeParserInfo(TypeParserInfo):
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnVariantType(VisitType.Enter, self, stack, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[(self, "Types")] as helper:
             for the_type in self.Types:
                 the_type.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnVariantType(VisitType.Exit, self, stack, *args, **kwargs)
