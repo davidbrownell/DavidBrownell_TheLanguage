@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneExpression.py
+# |  IntegerLiteralExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-22 11:01:16
+# |      2021-10-25 09:41:40
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NoneExpression object"""
+"""Contains the IntegerLiteralExpression object"""
 
 import os
 import re
 
-from typing import Callable, Tuple, Union
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -38,35 +38,40 @@ with InitRelativeImports():
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractSequence,
+        ExtractToken,
     )
 
     from ....Parser.Parser import CreateParserRegions
 
-    from ....Parser.Literals.NoneLiteralParserInfo import NoneLiteralParserInfo
+    from ....Parser.Literals.IntegerLiteralParserInfo import IntegerLiteralParserInfo
 
 
 # ----------------------------------------------------------------------
-class NoneExpression(GrammarPhrase):
+class IntegerLiteralExpression(GrammarPhrase):
     """\
-    None.
+    An integer value.
 
     Examples:
-        None
+        1
+        123
+        -1
+        +45678
     """
 
-    PHRASE_NAME                             = "None Expression"
+    PHRASE_NAME                             = "Integer Literal Expression"
+    INTEGER_REGEX                           = r"[+-]?[0-9]+" # TODO: Enhance with optional delimiters
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(NoneExpression, self).__init__(
+        super(IntegerLiteralExpression, self).__init__(
             DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
                     RegexToken(
-                        "'None'",
-                        re.compile(r"None"),
+                        "<integer>",
+                        re.compile(r"(?P<value>{})".format(self.INTEGER_REGEX)),
                     ),
                 ],
             ),
@@ -74,8 +79,16 @@ class NoneExpression(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @staticmethod
+    def FromString(
+        value: str,
+    ) -> int:
+        return int(value) # TODO: Enhance this when INTEGER_REGEX is updated
+
+    # ----------------------------------------------------------------------
+    @classmethod
     @Interface.override
     def ExtractParserInfo(
+        cls,
         node: AST.Node,
     ) -> Union[
         None,
@@ -86,6 +99,12 @@ class NoneExpression(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
-        return NoneLiteralParserInfo(
+        # <integer>
+        integer_leaf = cast(AST.Leaf, nodes[0])
+        integer_value = cast(str, ExtractToken(integer_leaf))
+        integer_info = cls.FromString(integer_value)
+
+        return IntegerLiteralParserInfo(
             CreateParserRegions(node),  # type: ignore
+            integer_info,
         )

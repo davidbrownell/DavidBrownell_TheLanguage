@@ -20,7 +20,6 @@ import os
 from dataclasses import dataclass, field
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 

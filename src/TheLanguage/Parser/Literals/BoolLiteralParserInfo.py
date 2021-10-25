@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassType.py
+# |  BoolLiteralParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-15 10:48:12
+# |      2021-10-24 14:38:31
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,26 +13,26 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ClassType enum"""
+"""Contains the BoolLiteralParserInfo object"""
 
 import os
 
-from enum import Enum
+from dataclasses import dataclass
 
 import CommonEnvironment
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from .LiteralParserInfo import LiteralParserInfo
+
 
 # ----------------------------------------------------------------------
-class ClassType(Enum):
-    Class                                   = "class"
-    Enum                                    = "enum"
-    Exception                               = "exception"
-    Interface                               = "interface"
-    Mixin                                   = "mixin"
-    Struct                                  = "struct"
-    Trait                                   = "trait"
+@dataclass(frozen=True, repr=False)
+class BoolLiteralParserInfo(LiteralParserInfo):
+    Value: bool

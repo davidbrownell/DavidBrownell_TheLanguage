@@ -90,7 +90,11 @@ ReservedKeywords                            = [
     # ../Statements/YieldStatement.py
     "yield",
 
-    # ../Expressions/NoneExpression.py
+    # ../Expressions.BoolLiteralExpression.py
+    "True",
+    "False",
+
+    # ../Expressions/NoneLiteralExpression.py
     "None",
 
     # ../Expressions/UnaryExpression.py

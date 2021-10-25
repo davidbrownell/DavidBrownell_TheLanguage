@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NumberExpression_IntegrationTest.py
+# |  StringLiteralExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-22 13:48:01
+# |      2021-10-22 10:47:53
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for NumberExpression.py"""
+"""Automated tests for StringLiteralExpression.py"""
 
 import os
 import textwrap
@@ -29,34 +29,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .....IntegrationTests import *
-    from ..NumberExpression import *
+    from ..StringLiteralExpression import *
 
 
 # ----------------------------------------------------------------------
-def test_Integer():
+def test_Standard():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            standard = 123
+            value1 = "This is a sample string"
 
-            negative_single_digit = -1
-            negative_multiple_digits = -123
+            empty_string = ""
 
-            positive_single_digit = +4
-            positive_multiple_digits = +123456789
-            """,
-        ),
-    )))
-
-
-# ----------------------------------------------------------------------
-def test_Decimal():
-    CompareResultsFromFile(str(Execute(
-        textwrap.dedent(
-            """\
-            standard = 123.456
-            negative = -1.2345678
-            positive = +987.65
+            escaped_string = "This is a \\"great\\" test!"
             """,
         ),
     )))

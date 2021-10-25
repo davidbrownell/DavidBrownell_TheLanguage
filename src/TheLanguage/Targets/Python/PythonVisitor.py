@@ -430,6 +430,60 @@ class PythonVisitor(Visitor):
 
     # ----------------------------------------------------------------------
     # |
+    # |  Literals
+    # |
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnBoolLiteral(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: BoolLiteralParserInfo,
+    ) -> Optional[bool]:
+        self._stream.write(str(parser_info.Value))
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnIntegerLiteral(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: IntegerLiteralParserInfo,
+    ) -> Optional[bool]:
+        self._stream.write(str(parser_info.Value))
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnNoneLiteral(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: NoneLiteralParserInfo,
+    ) -> Optional[bool]:
+        self._stream.write("None")
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnNumberLiteral(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: NumberLiteralParserInfo,
+    ) -> Optional[bool]:
+        self._stream.write(str(parser_info.Value))
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnStringLiteral(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: StringLiteralParserInfo,
+    ) -> Optional[bool]:
+        self._stream.write('"{}"'.format(parser_info.Value.replace('"', '\\"')))
+
+    # ----------------------------------------------------------------------
+    # |
     # |  Names
     # |
     # ----------------------------------------------------------------------
