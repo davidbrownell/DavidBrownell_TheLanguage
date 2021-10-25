@@ -131,6 +131,17 @@ class OperatorType(Enum):
     BitXorInplace                           = auto()
 
 
+FOUNDATIONAL_OPERATORS                      = [
+    OperatorType.ToBool,
+    OperatorType.ToString,
+    OperatorType.Repr,
+    OperatorType.Clone,
+    OperatorType.Serialize,
+    OperatorType.Deserialize,
+    OperatorType.Compare,
+]
+
+
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class InvalidFunctionMethodModifierError(Error):

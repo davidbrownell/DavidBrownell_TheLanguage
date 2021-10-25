@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NumberExpression.py
+# |  BoolLiteralExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-22 13:38:55
+# |      2021-10-25 09:22:18
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NumberExpression object"""
+"""Contains the BoolLiteralExpression object"""
 
 import os
 import re
-import textwrap
 
 from typing import Callable, cast, Tuple, Union
 
@@ -44,45 +43,32 @@ with InitRelativeImports():
 
     from ....Parser.Parser import CreateParserRegions
 
-    from ....Parser.Literals.NumberLiteralParserInfo import NumberLiteralParserInfo
+    from ....Parser.Literals.BoolLiteralParserInfo import BoolLiteralParserInfo
 
 
 # ----------------------------------------------------------------------
-class NumberExpression(GrammarPhrase):
+class BoolLiteralExpression(GrammarPhrase):
     """\
-    An integer or decimal.
+    A boolean value.
 
     Examples:
-        123
-        3.14
-        -13
-        -1.2324
+        True
+        False
     """
 
-    PHRASE_NAME                             = "Number Expression"
+    PHRASE_NAME                             = "Bool Literal Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(NumberExpression, self).__init__(
+        super(BoolLiteralExpression, self).__init__(
             DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
                     RegexToken(
-                        "<number>",
-                        re.compile(
-                            textwrap.dedent(
-                                r"""(?P<value>(?#
-                                    +/- [opt]           )(?:[+-])?(?#
-                                    Integer             )\d+(?#
-                                    Decimal begin [opt] )(?:(?#
-                                        Dot             )\.(?#
-                                        Mantissa        )\d+(?#
-                                    Decimal end [opt]   ))?(?#
-                                ))""",
-                            ),
-                        ),
+                        "<bool>",
+                        re.compile(r"(?P<value>True|False)\b"),
                     ),
                 ],
             ),
@@ -102,13 +88,18 @@ class NumberExpression(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
-        # <number>
-        number_leaf = cast(AST.Leaf, nodes[0])
-        number_info = cast(str, ExtractToken(number_leaf))
+        # <bool>
+        bool_leaf = cast(AST.Leaf, nodes[0])
+        bool_value = cast(str, ExtractToken(bool_leaf))
 
-        number_info = float(number_info)
+        if bool_value == "True":
+            bool_info = True
+        elif bool_value == "False":
+            bool_info = False
+        else:
+            assert False, bool_value  # pragma: no cover
 
-        return NumberLiteralParserInfo(
+        return BoolLiteralParserInfo(
             CreateParserRegions(node),  # type: ignore
-            number_info,
+            bool_info,
         )
