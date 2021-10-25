@@ -37,7 +37,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class DummyTypeParserinfo(TypeParserInfo):
+class DummyTypeParserInfo(TypeParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def _AcceptImpl(self, visitor, stack, *args, **kwargs):
@@ -78,7 +78,7 @@ def test_StandardFunctionNoParameters():
         VisibilityModifier.public,
         MethodModifierType.standard,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         False,
         [
@@ -142,7 +142,7 @@ def test_StandardFunctionWithParameters():
         VisibilityModifier.public,
         MethodModifierType.standard,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         ParametersParserInfo(
             [region_creator(container=True), region_creator(), None, None],
@@ -155,7 +155,7 @@ def test_StandardFunctionWithParameters():
                         None,
                         None,
                     ],
-                    DummyTypeParserinfo([region_creator(container=True)]),
+                    DummyTypeParserInfo([region_creator(container=True)]),
                     "param1",
                     None,
                     None,
@@ -168,7 +168,7 @@ def test_StandardFunctionWithParameters():
                         None,
                         None,
                     ],
-                    DummyTypeParserinfo([region_creator(container=True)]),
+                    DummyTypeParserInfo([region_creator(container=True)]),
                     "param2",
                     None,
                     None,
@@ -226,7 +226,7 @@ def test_FunctionWithDocumentation():
         VisibilityModifier.public,
         MethodModifierType.standard,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         False,
         [
@@ -264,7 +264,7 @@ def test_FunctionIsAsync():
         VisibilityModifier.public,
         MethodModifierType.standard,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         False,
         [
@@ -307,7 +307,7 @@ def test_FunctionIsDeferred():
         VisibilityModifier.public,
         MethodModifierType.standard,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         False,
         None,
@@ -348,7 +348,7 @@ def test_FunctionIsExceptional():
         VisibilityModifier.public,
         MethodModifierType.standard,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         False,
         [
@@ -391,7 +391,7 @@ def test_FunctionIsGenerator():
         VisibilityModifier.public,
         MethodModifierType.standard,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         False,
         [
@@ -434,7 +434,7 @@ def test_FunctionIsSynchronized():
         VisibilityModifier.public,
         MethodModifierType.standard,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         False,
         [
@@ -477,7 +477,7 @@ def test_FunctionDefaultVisibility():
         None,
         MethodModifierType.standard,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         False,
         [
@@ -515,7 +515,7 @@ def test_FunctionDefaultMethodModifier():
         VisibilityModifier.public,
         None,
         None,
-        DummyTypeParserinfo([region_creator(container=True)]),
+        DummyTypeParserInfo([region_creator(container=True)]),
         "TheFunc",
         False,
         [
@@ -554,7 +554,7 @@ def test_DeferredStatementsError():
             VisibilityModifier.public,
             MethodModifierType.standard,
             None,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheFunc",
             False,
             [
@@ -597,7 +597,7 @@ def test_InvalidFunctionMethodModifierError():
             VisibilityModifier.public,
             MethodModifierType.abstract,
             None,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheFunc",
             False,
             [
@@ -638,7 +638,7 @@ def test_InvalidFunctionClassModifierError():
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheFunc",
             False,
             [
@@ -679,7 +679,7 @@ def test_FunctionStatementsRequiredError():
             VisibilityModifier.public,
             MethodModifierType.standard,
             None,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheFunc",
             False,
             None,
@@ -811,7 +811,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             False,
             [
@@ -873,7 +873,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             ParametersParserInfo(
                 [region_creator(container=True), region_creator(), None, None],
@@ -886,7 +886,7 @@ class TestMethods(object):
                             None,
                             None,
                         ],
-                        DummyTypeParserinfo([region_creator(container=True)]),
+                        DummyTypeParserInfo([region_creator(container=True)]),
                         "param1",
                         None,
                         None,
@@ -899,7 +899,7 @@ class TestMethods(object):
                             None,
                             None,
                         ],
-                        DummyTypeParserinfo([region_creator(container=True)]),
+                        DummyTypeParserInfo([region_creator(container=True)]),
                         "param2",
                         None,
                         None,
@@ -955,7 +955,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             False,
             [
@@ -992,7 +992,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             OperatorType.BitAnd,
             False,
             [
@@ -1029,7 +1029,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             False,
             [
@@ -1071,7 +1071,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             False,
             None,
@@ -1111,7 +1111,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             False,
             [
@@ -1153,7 +1153,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             False,
             [
@@ -1195,7 +1195,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             ClassModifierType.immutable,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             False,
             [
@@ -1241,7 +1241,7 @@ class TestMethods(object):
                 None,
                 MethodModifierType.standard,
                 None,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 [
@@ -1279,7 +1279,7 @@ class TestMethods(object):
                 VisibilityModifier.private,
                 MethodModifierType.standard,
                 None,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 [
@@ -1318,7 +1318,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             None,
             None,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             False,
             [
@@ -1356,7 +1356,7 @@ class TestMethods(object):
                 VisibilityModifier.public,
                 MethodModifierType.standard,
                 None,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 [
@@ -1399,7 +1399,7 @@ class TestMethods(object):
                 VisibilityModifier.public,
                 MethodModifierType.standard,
                 None,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 [
@@ -1437,7 +1437,7 @@ class TestMethods(object):
                 VisibilityModifier.public,
                 MethodModifierType.standard,
                 ClassModifierType.mutable,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 [
@@ -1477,7 +1477,7 @@ class TestMethods(object):
                 VisibilityModifier.public,
                 MethodModifierType.standard,
                 ClassModifierType.mutable,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 [
@@ -1517,7 +1517,7 @@ class TestMethods(object):
                 VisibilityModifier.public,
                 MethodModifierType.static,
                 ClassModifierType.immutable,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 [
@@ -1557,7 +1557,7 @@ class TestMethods(object):
                 VisibilityModifier.public,
                 MethodModifierType.standard,
                 None,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 [
@@ -1602,7 +1602,7 @@ class TestMethods(object):
                 VisibilityModifier.public,
                 MethodModifierType.abstract,
                 None,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 [
@@ -1643,7 +1643,7 @@ class TestMethods(object):
                 VisibilityModifier.public,
                 MethodModifierType.standard,
                 None,
-                DummyTypeParserinfo([region_creator(container=True)]),
+                DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
                 None,
@@ -1679,7 +1679,7 @@ class TestMethods(object):
             VisibilityModifier.public,
             MethodModifierType.standard,
             None,
-            DummyTypeParserinfo([region_creator(container=True)]),
+            DummyTypeParserInfo([region_creator(container=True)]),
             "TheMethod",
             False,
             None,
