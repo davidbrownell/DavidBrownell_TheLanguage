@@ -1,14 +1,14 @@
-# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
 Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 31, Col 1]"
 Statements:
-  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
+      - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface1"
         Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 1, Col 27] -> [Ln 1, Col 37]"
@@ -28,18 +28,18 @@ Statements:
       Uses: None
       Visibility: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 2, Col 5] -> [Ln 4, Col 1]"
     Uses: None
     Visibility: "VisibilityModifier.private"
-  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
+      - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface2"
         Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 4, Col 27] -> [Ln 4, Col 37]"
@@ -59,18 +59,18 @@ Statements:
       Uses: None
       Visibility: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
     Uses: None
     Visibility: "VisibilityModifier.private"
-  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
+      - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface3"
         Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 8, Col 16] -> [Ln 8, Col 26]"
@@ -90,18 +90,18 @@ Statements:
       Uses: None
       Visibility: "[Ln 7, Col 1] -> [Ln 12, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 10, Col 5] -> [Ln 12, Col 1]"
     Uses: None
     Visibility: "VisibilityModifier.private"
-  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
+      - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface4"
         Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 13, Col 16] -> [Ln 13, Col 26]"
@@ -121,18 +121,18 @@ Statements:
       Uses: None
       Visibility: "[Ln 12, Col 1] -> [Ln 17, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 15, Col 5] -> [Ln 17, Col 1]"
     Uses: None
     Visibility: "VisibilityModifier.private"
-  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
+      - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface5"
         Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 18, Col 23] -> [Ln 18, Col 33]"
@@ -152,18 +152,18 @@ Statements:
       Uses: None
       Visibility: "[Ln 17, Col 1] -> [Ln 22, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 20, Col 5] -> [Ln 22, Col 1]"
     Uses: None
     Visibility: "VisibilityModifier.private"
-  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
+      - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface6"
         Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 22, Col 28] -> [Ln 22, Col 38]"
@@ -183,18 +183,18 @@ Statements:
       Uses: None
       Visibility: "[Ln 22, Col 1] -> [Ln 25, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 23, Col 5] -> [Ln 25, Col 1]"
     Uses: None
     Visibility: "VisibilityModifier.private"
-  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"
     ClassType: "ClassType.Class"
     Documentation: None
     Implements:
-      - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
+      - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         Name: "Interface7"
         Regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           Name: "[Ln 27, Col 9] -> [Ln 27, Col 19]"
@@ -214,7 +214,7 @@ Statements:
       Uses: None
       Visibility: "[Ln 25, Col 1] -> [Ln 31, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
     Uses: None

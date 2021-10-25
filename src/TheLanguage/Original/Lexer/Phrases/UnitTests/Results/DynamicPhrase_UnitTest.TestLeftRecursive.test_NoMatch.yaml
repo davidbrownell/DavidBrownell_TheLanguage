@@ -1,12 +1,12 @@
-# <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: None
           Phrase: "Lower"
-        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           Data: None
           Phrase: "Upper"
       IsComplete: True

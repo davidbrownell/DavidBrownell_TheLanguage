@@ -1,8 +1,8 @@
-# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
 Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 63, Col 1]"
 Statements:
-  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"
     ClassType: "ClassType.Class"
@@ -21,7 +21,7 @@ Statements:
       Uses: None
       Visibility: "[Ln 1, Col 1] -> [Ln 63, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -47,7 +47,7 @@ Statements:
           Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
           Statements: None
           Visibility: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -56,7 +56,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -82,7 +82,7 @@ Statements:
           Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
           Statements: None
           Visibility: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -91,7 +91,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -117,7 +117,7 @@ Statements:
           Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
           Statements: None
           Visibility: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -126,7 +126,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -152,7 +152,7 @@ Statements:
           Self__: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
           Statements: None
           Visibility: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -161,7 +161,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -187,7 +187,7 @@ Statements:
           Self__: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
           Statements: None
           Visibility: "[Ln 6, Col 5] -> [Ln 8, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -196,7 +196,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -222,7 +222,7 @@ Statements:
           Self__: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
           Statements: None
           Visibility: "[Ln 8, Col 5] -> [Ln 9, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -231,7 +231,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -257,7 +257,7 @@ Statements:
           Self__: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
           Statements: None
           Visibility: "[Ln 9, Col 5] -> [Ln 11, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -266,7 +266,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -292,7 +292,7 @@ Statements:
           Self__: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
           Statements: None
           Visibility: "[Ln 11, Col 5] -> [Ln 12, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -301,7 +301,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -327,7 +327,7 @@ Statements:
           Self__: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
           Statements: None
           Visibility: "[Ln 12, Col 5] -> [Ln 13, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -336,7 +336,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -362,7 +362,7 @@ Statements:
           Self__: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
           Statements: None
           Visibility: "[Ln 13, Col 5] -> [Ln 14, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -371,7 +371,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -397,7 +397,7 @@ Statements:
           Self__: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
           Statements: None
           Visibility: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -406,7 +406,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -432,7 +432,7 @@ Statements:
           Self__: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
           Statements: None
           Visibility: "[Ln 16, Col 5] -> [Ln 17, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -441,7 +441,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -467,7 +467,7 @@ Statements:
           Self__: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
           Statements: None
           Visibility: "[Ln 17, Col 5] -> [Ln 18, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -476,7 +476,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -502,7 +502,7 @@ Statements:
           Self__: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
           Statements: None
           Visibility: "[Ln 18, Col 5] -> [Ln 19, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -511,7 +511,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -537,7 +537,7 @@ Statements:
           Self__: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
           Statements: None
           Visibility: "[Ln 19, Col 5] -> [Ln 21, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -546,7 +546,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -572,7 +572,7 @@ Statements:
           Self__: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
           Statements: None
           Visibility: "[Ln 21, Col 5] -> [Ln 22, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -581,7 +581,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -607,7 +607,7 @@ Statements:
           Self__: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
           Statements: None
           Visibility: "[Ln 22, Col 5] -> [Ln 23, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -616,7 +616,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -642,7 +642,7 @@ Statements:
           Self__: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
           Statements: None
           Visibility: "[Ln 23, Col 5] -> [Ln 24, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -651,7 +651,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -677,7 +677,7 @@ Statements:
           Self__: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
           Statements: None
           Visibility: "[Ln 24, Col 5] -> [Ln 25, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -686,7 +686,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -712,7 +712,7 @@ Statements:
           Self__: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
           Statements: None
           Visibility: "[Ln 25, Col 5] -> [Ln 26, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -721,7 +721,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -747,7 +747,7 @@ Statements:
           Self__: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
           Statements: None
           Visibility: "[Ln 26, Col 5] -> [Ln 27, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -756,7 +756,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -782,7 +782,7 @@ Statements:
           Self__: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
           Statements: None
           Visibility: "[Ln 27, Col 5] -> [Ln 29, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -791,7 +791,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -817,7 +817,7 @@ Statements:
           Self__: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
           Statements: None
           Visibility: "[Ln 29, Col 5] -> [Ln 30, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -826,7 +826,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -852,7 +852,7 @@ Statements:
           Self__: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
           Statements: None
           Visibility: "[Ln 30, Col 5] -> [Ln 31, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -861,7 +861,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -887,7 +887,7 @@ Statements:
           Self__: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
           Statements: None
           Visibility: "[Ln 31, Col 5] -> [Ln 33, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -896,7 +896,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -922,7 +922,7 @@ Statements:
           Self__: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
           Statements: None
           Visibility: "[Ln 33, Col 5] -> [Ln 34, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -931,7 +931,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -957,7 +957,7 @@ Statements:
           Self__: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
           Statements: None
           Visibility: "[Ln 34, Col 5] -> [Ln 35, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -966,7 +966,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -992,7 +992,7 @@ Statements:
           Self__: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
           Statements: None
           Visibility: "[Ln 35, Col 5] -> [Ln 36, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1001,7 +1001,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1027,7 +1027,7 @@ Statements:
           Self__: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
           Statements: None
           Visibility: "[Ln 36, Col 5] -> [Ln 37, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1036,7 +1036,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1062,7 +1062,7 @@ Statements:
           Self__: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
           Statements: None
           Visibility: "[Ln 37, Col 5] -> [Ln 38, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1071,7 +1071,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1097,7 +1097,7 @@ Statements:
           Self__: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
           Statements: None
           Visibility: "[Ln 38, Col 5] -> [Ln 39, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1106,7 +1106,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1132,7 +1132,7 @@ Statements:
           Self__: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
           Statements: None
           Visibility: "[Ln 39, Col 5] -> [Ln 40, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1141,7 +1141,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1167,7 +1167,7 @@ Statements:
           Self__: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
           Statements: None
           Visibility: "[Ln 40, Col 5] -> [Ln 41, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1176,7 +1176,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1202,7 +1202,7 @@ Statements:
           Self__: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
           Statements: None
           Visibility: "[Ln 41, Col 5] -> [Ln 43, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1211,7 +1211,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1237,7 +1237,7 @@ Statements:
           Self__: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
           Statements: None
           Visibility: "[Ln 43, Col 5] -> [Ln 44, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1246,7 +1246,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1272,7 +1272,7 @@ Statements:
           Self__: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
           Statements: None
           Visibility: "[Ln 44, Col 5] -> [Ln 45, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1281,7 +1281,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1307,7 +1307,7 @@ Statements:
           Self__: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
           Statements: None
           Visibility: "[Ln 45, Col 5] -> [Ln 46, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1316,7 +1316,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1342,7 +1342,7 @@ Statements:
           Self__: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
           Statements: None
           Visibility: "[Ln 46, Col 5] -> [Ln 47, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1351,7 +1351,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1377,7 +1377,7 @@ Statements:
           Self__: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
           Statements: None
           Visibility: "[Ln 47, Col 5] -> [Ln 48, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1386,7 +1386,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1412,7 +1412,7 @@ Statements:
           Self__: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
           Statements: None
           Visibility: "[Ln 48, Col 5] -> [Ln 49, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1421,7 +1421,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1447,7 +1447,7 @@ Statements:
           Self__: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
           Statements: None
           Visibility: "[Ln 49, Col 5] -> [Ln 51, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1456,7 +1456,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1482,7 +1482,7 @@ Statements:
           Self__: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
           Statements: None
           Visibility: "[Ln 51, Col 5] -> [Ln 52, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1491,7 +1491,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1517,7 +1517,7 @@ Statements:
           Self__: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
           Statements: None
           Visibility: "[Ln 52, Col 5] -> [Ln 53, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1526,7 +1526,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1552,7 +1552,7 @@ Statements:
           Self__: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
           Statements: None
           Visibility: "[Ln 53, Col 5] -> [Ln 54, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1561,7 +1561,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1587,7 +1587,7 @@ Statements:
           Self__: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
           Statements: None
           Visibility: "[Ln 54, Col 5] -> [Ln 55, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1596,7 +1596,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1622,7 +1622,7 @@ Statements:
           Self__: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
           Statements: None
           Visibility: "[Ln 55, Col 5] -> [Ln 56, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1631,7 +1631,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1657,7 +1657,7 @@ Statements:
           Self__: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
           Statements: None
           Visibility: "[Ln 56, Col 5] -> [Ln 58, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1666,7 +1666,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1692,7 +1692,7 @@ Statements:
           Self__: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
           Statements: None
           Visibility: "[Ln 58, Col 5] -> [Ln 59, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1701,7 +1701,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1727,7 +1727,7 @@ Statements:
           Self__: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
           Statements: None
           Visibility: "[Ln 59, Col 5] -> [Ln 60, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1736,7 +1736,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1762,7 +1762,7 @@ Statements:
           Self__: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
           Statements: None
           Visibility: "[Ln 60, Col 5] -> [Ln 61, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1771,7 +1771,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1797,7 +1797,7 @@ Statements:
           Self__: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
           Statements: None
           Visibility: "[Ln 61, Col 5] -> [Ln 62, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None
@@ -1806,7 +1806,7 @@ Statements:
           TypeName: "Int"
         Statements: None
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         Documentation: None
         IsAsync: None
@@ -1832,7 +1832,7 @@ Statements:
           Self__: "[Ln 62, Col 5] -> [Ln 63, Col 1]"
           Statements: None
           Visibility: "[Ln 62, Col 5] -> [Ln 63, Col 1]"
-        ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: None

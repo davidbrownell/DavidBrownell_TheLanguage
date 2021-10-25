@@ -75,30 +75,30 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 4] (3)"
                         IterEnd: "[2, 1] (4)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 4
                           Start: 3
                         Whitespace: None
@@ -118,13 +118,13 @@ class TestStandard(object):
             1) StartPhrase, "(Word | Newline+)"
             2) StartPhrase, "Word"
             3) OnInternalPhraseAsync, 0, 3
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
                   IterBegin: "[1, 1] (0)"
                   IterEnd: "[1, 4] (3)"
                   Token: "Word"
-                  Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                     Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                   Whitespace: None
                 Phrase: "Word"
@@ -132,14 +132,14 @@ class TestStandard(object):
             5) StartPhrase, "Newline+"
             6) EndPhrase, "Newline+" [False]
             7) OnInternalPhraseAsync, 0, 3
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                     IsIgnored: False
                     IterBegin: "[1, 1] (0)"
                     IterEnd: "[1, 4] (3)"
                     Token: "Word"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                       Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                     Whitespace: None
                   Phrase: "Word"
@@ -150,27 +150,27 @@ class TestStandard(object):
             11) EndPhrase, "Word" [False]
             12) StartPhrase, "Newline+"
             13) OnInternalPhraseAsync, 3, 4
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
                   IterBegin: "[1, 4] (3)"
                   IterEnd: "[2, 1] (4)"
                   Token: "Newline+"
-                  Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                     End: 4
                     Start: 3
                   Whitespace: None
                 Phrase: "Newline+"
             14) EndPhrase, "Newline+" [True]
             15) OnInternalPhraseAsync, 3, 4
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                     IsIgnored: False
                     IterBegin: "[1, 4] (3)"
                     IterEnd: "[2, 1] (4)"
                     Token: "Newline+"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                    Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                       End: 4
                       Start: 3
                     Whitespace: None
@@ -178,29 +178,29 @@ class TestStandard(object):
                 Phrase: "(Word | Newline+)"
             16) EndPhrase, "(Word | Newline+)" [True]
             17) OnInternalPhraseAsync, 0, 4
-                # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+                # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                    - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                           IsIgnored: False
                           IterBegin: "[1, 1] (0)"
                           IterEnd: "[1, 4] (3)"
                           Token: "Word"
-                          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                          Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                             Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                           Whitespace: None
                         Phrase: "Word"
                       Phrase: "(Word | Newline+)"
-                    - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                    - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                           IsIgnored: False
                           IterBegin: "[1, 4] (3)"
                           IterEnd: "[2, 1] (4)"
                           Token: "Newline+"
-                          Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                          Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                             End: 4
                             Start: 3
                           Whitespace: None
@@ -230,55 +230,55 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 4] (3)"
                         IterEnd: "[2, 1] (4)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 4
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[2, 1] (4)"
                         IterEnd: "[2, 4] (7)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[2, 4] (7)"
                         IterEnd: "[3, 1] (8)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 8
                           Start: 7
                         Whitespace: None
@@ -313,55 +313,55 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 4] (3)"
                         IterEnd: "[2, 1] (4)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 4
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[2, 1] (4)"
                         IterEnd: "[2, 4] (7)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[2, 4] (7)"
                         IterEnd: "[3, 1] (8)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 8
                           Start: 7
                         Whitespace: None
@@ -395,17 +395,17 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                       DataItems:
-                        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                           Data: None
                           Phrase: "Word"
-                        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                           Data: None
                           Phrase: "Newline+"
                       IsComplete: True
@@ -438,29 +438,29 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='abc'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                       DataItems:
-                        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                           Data: None
                           Phrase: "Word"
-                        - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                           Data: None
                           Phrase: "Newline+"
                       IsComplete: True
@@ -493,55 +493,55 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 4] (3)"
                         IterEnd: "[2, 1] (4)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 4
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[2, 1] (4)"
                         IterEnd: "[2, 4] (7)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[2, 4] (7)"
                         IterEnd: "[3, 1] (8)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 8
                           Start: 7
                         Whitespace: None
@@ -574,55 +574,55 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 4] (3)"
                         IterEnd: "[2, 1] (4)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 4
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[2, 1] (4)"
                         IterEnd: "[2, 4] (7)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[2, 4] (7)"
                         IterEnd: "[3, 1] (8)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 8
                           Start: 7
                         Whitespace: None
@@ -647,30 +647,30 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 4] (3)"
                         IterEnd: "[2, 1] (4)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 4
                           Start: 3
                         Whitespace: None
@@ -702,30 +702,30 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 4] (3)"
                         IterEnd: "[2, 1] (4)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 4
                           Start: 3
                         Whitespace: None
@@ -757,43 +757,43 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                 DataItems:
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 1] (0)"
                         IterEnd: "[1, 4] (3)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
                         Whitespace: None
                       Phrase: "Word"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[1, 4] (3)"
                         IterEnd: "[2, 1] (4)"
                         Token: "Newline+"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                           End: 4
                           Start: 3
                         Whitespace: None
                       Phrase: "Newline+"
                     Phrase: "(Word | Newline+)"
-                  - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                      Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         IsIgnored: False
                         IterBegin: "[2, 1] (4)"
                         IterEnd: "[2, 4] (7)"
                         Token: "Word"
-                        Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                           Match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
                         Whitespace: None
                       Phrase: "Word"

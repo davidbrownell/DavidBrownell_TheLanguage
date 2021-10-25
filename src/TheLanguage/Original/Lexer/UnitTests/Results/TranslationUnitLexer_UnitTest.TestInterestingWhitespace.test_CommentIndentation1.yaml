@@ -1,105 +1,105 @@
-# <class 'TheLanguage.Lexer.Components.AST.Node'>
+# <class 'Original.Lexer.Components.AST.Node'>
 Children:
-  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+  - # <class 'Original.Lexer.Components.AST.Leaf'>
     IsIgnored: True
     IterBegin: "[1, 1] (0)"
     IterEnd: "[1, 12] (11)"
-    Type: "<comment> <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+    Type: "<comment> <class 'Original.Lexer.Components.Token.RegexToken'>"
+    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
       Match: "<_sre.SRE_Match object; span=(0, 11), match='# Comment 0'>"
     Whitespace: None
-  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+  - # <class 'Original.Lexer.Components.AST.Leaf'>
     IsIgnored: True
     IterBegin: "[1, 12] (11)"
     IterEnd: "[2, 1] (12)"
-    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+    Type: "Newline+ <class 'Original.Lexer.Components.Token.NewlineToken'>"
+    Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
       End: 12
       Start: 11
     Whitespace: None
-  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+  - # <class 'Original.Lexer.Components.AST.Node'>
     Children:
-      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+      - # <class 'Original.Lexer.Components.AST.Node'>
         Children:
-          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+          - # <class 'Original.Lexer.Components.AST.Node'>
             Children:
-              - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+              - # <class 'Original.Lexer.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                  - # <class 'Original.Lexer.Components.AST.Leaf'>
                     IsIgnored: False
                     IterBegin: "[2, 1] (12)"
                     IterEnd: "[2, 6] (17)"
-                    Type: "Lower <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Type: "Lower <class 'Original.Lexer.Components.Token.RegexToken'>"
+                    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                       Match: "<_sre.SRE_Match object; span=(12, 17), match='lower'>"
                     Whitespace: None
-                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                  - # <class 'Original.Lexer.Components.AST.Leaf'>
                     IsIgnored: False
                     IterBegin: "[2, 6] (17)"
                     IterEnd: "[4, 1] (19)"
-                    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                    Type: "Newline+ <class 'Original.Lexer.Components.Token.NewlineToken'>"
+                    Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                       End: 19
                       Start: 17
                     Whitespace: None
                 IsIgnored: False
                 IterBegin: "[2, 1] (12)"
                 IterEnd: "[4, 1] (19)"
-                Type: "[Lower, Newline+] <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-              - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+                Type: "[Lower, Newline+] <class 'Original.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+              - # <class 'Original.Lexer.Components.AST.Node'>
                 Children:
-                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                  - # <class 'Original.Lexer.Components.AST.Leaf'>
                     IsIgnored: True
                     IterBegin: "[4, 5] (23)"
                     IterEnd: "[4, 14] (32)"
-                    Type: "<comment> <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Type: "<comment> <class 'Original.Lexer.Components.Token.RegexToken'>"
+                    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                       Match: "<_sre.SRE_Match object; span=(23, 32), match='# Comment'>"
                     Whitespace:
                       - 19
                       - 23
-                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                  - # <class 'Original.Lexer.Components.AST.Leaf'>
                     IsIgnored: True
                     IterBegin: "[4, 14] (32)"
                     IterEnd: "[5, 1] (33)"
-                    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                    Type: "Newline+ <class 'Original.Lexer.Components.Token.NewlineToken'>"
+                    Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                       End: 33
                       Start: 32
                     Whitespace: None
-                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                  - # <class 'Original.Lexer.Components.AST.Leaf'>
                     IsIgnored: False
                     IterBegin: "[5, 1] (33)"
                     IterEnd: "[5, 8] (40)"
-                    Type: "Lower <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Type: "Lower <class 'Original.Lexer.Components.Token.RegexToken'>"
+                    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                       Match: "<_sre.SRE_Match object; span=(33, 40), match='another'>"
                     Whitespace: None
-                  - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+                  - # <class 'Original.Lexer.Components.AST.Leaf'>
                     IsIgnored: False
                     IterBegin: "[5, 8] (40)"
                     IterEnd: "[6, 1] (41)"
-                    Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                    Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                    Type: "Newline+ <class 'Original.Lexer.Components.Token.NewlineToken'>"
+                    Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                       End: 41
                       Start: 40
                     Whitespace: None
                 IsIgnored: False
                 IterBegin: "[5, 1] (33)"
                 IterEnd: "[6, 1] (41)"
-                Type: "[Lower, Newline+] <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+                Type: "[Lower, Newline+] <class 'Original.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
             IsIgnored: False
             IterBegin: "[2, 1] (12)"
             IterEnd: "[6, 1] (41)"
-            Type: "Phrase <class 'TheLanguage.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
+            Type: "Phrase <class 'Original.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
         IsIgnored: False
         IterBegin: "[2, 1] (12)"
         IterEnd: "[6, 1] (41)"
-        Type: "(Phrase) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Phrase) Statements <class 'Original.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[2, 1] (12)"
     IterEnd: "[6, 1] (41)"
-    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'Original.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 IsIgnored: False
 IterBegin: "[2, 1] (12)"
 IterEnd: "[6, 1] (41)"

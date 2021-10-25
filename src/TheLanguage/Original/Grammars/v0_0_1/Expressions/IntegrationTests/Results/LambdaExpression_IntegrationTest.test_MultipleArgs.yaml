@@ -1,11 +1,11 @@
-# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
 Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
 Statements:
-  - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
-    Expression: # <class 'TheLanguage.Parser.Expressions.LambdaExpressionParserInfo.LambdaExpressionParserInfo'>
-      Expression: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-        Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+  - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Expressions.LambdaExpressionParserInfo.LambdaExpressionParserInfo'>
+      Expression: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+        Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
           Name: "value"
           Regions__: # <class 'types.VariableNameParserInfoRegions'>
             Name: "[Ln 1, Col 35] -> [Ln 1, Col 40]"
@@ -13,9 +13,9 @@ Statements:
         Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
           Name: "[Ln 1, Col 35] -> [Ln 1, Col 40]"
           Self__: "[Ln 1, Col 35] -> [Ln 1, Col 40]"
-      Parameters: # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParametersParserInfo'>
+      Parameters: # <class 'Original.Parser.Common.ParametersParserInfo.ParametersParserInfo'>
         Any:
-          - # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
+          - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
             Default: None
             IsVarArgs: None
             Name: "a1"
@@ -25,14 +25,14 @@ Statements:
               Name: "[Ln 1, Col 20] -> [Ln 1, Col 22]"
               Self__: "[Ln 1, Col 16] -> [Ln 1, Col 22]"
               Type: "[Ln 1, Col 16] -> [Ln 1, Col 19]"
-            Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+            Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
               Modifier: None
               Regions__: # <class 'types.StandardTypeParserInfoRegions'>
                 Modifier: None
                 Self__: "[Ln 1, Col 16] -> [Ln 1, Col 19]"
                 TypeName: "[Ln 1, Col 16] -> [Ln 1, Col 19]"
               TypeName: "Int"
-          - # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
+          - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
             Default: None
             IsVarArgs: None
             Name: "b1"
@@ -42,7 +42,7 @@ Statements:
               Name: "[Ln 1, Col 29] -> [Ln 1, Col 31]"
               Self__: "[Ln 1, Col 24] -> [Ln 1, Col 31]"
               Type: "[Ln 1, Col 24] -> [Ln 1, Col 28]"
-            Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+            Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
               Modifier: None
               Regions__: # <class 'types.StandardTypeParserInfoRegions'>
                 Modifier: None
@@ -61,7 +61,7 @@ Statements:
         Parameters: "[Ln 1, Col 15] -> [Ln 1, Col 33]"
         Self__: "[Ln 1, Col 8] -> [Ln 1, Col 40]"
     Modifier: None
-    Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+    Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
       Name: "var1"
       Regions__: # <class 'types.VariableNameParserInfoRegions'>
         Name: "[Ln 1, Col 1] -> [Ln 1, Col 5]"
@@ -71,13 +71,13 @@ Statements:
       Modifier: None
       Name: "[Ln 1, Col 1] -> [Ln 1, Col 5]"
       Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
-  - # <class 'TheLanguage.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
-    Expression: # <class 'TheLanguage.Parser.Expressions.LambdaExpressionParserInfo.LambdaExpressionParserInfo'>
-      Expression: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
-        Left: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
-          Left: # <class 'TheLanguage.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
-            Left: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+  - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Expressions.LambdaExpressionParserInfo.LambdaExpressionParserInfo'>
+      Expression: # <class 'Original.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+        Left: # <class 'Original.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+          Left: # <class 'Original.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+            Left: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
                 Name: "one"
                 Regions__: # <class 'types.VariableNameParserInfoRegions'>
                   Name: "[Ln 3, Col 53] -> [Ln 3, Col 56]"
@@ -91,8 +91,8 @@ Statements:
               Operator: "[Ln 3, Col 57] -> [Ln 3, Col 58]"
               Right: "[Ln 3, Col 59] -> [Ln 3, Col 62]"
               Self__: "[Ln 3, Col 53] -> [Ln 3, Col 62]"
-            Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-              Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+            Right: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+              Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
                 Name: "two"
                 Regions__: # <class 'types.VariableNameParserInfoRegions'>
                   Name: "[Ln 3, Col 59] -> [Ln 3, Col 62]"
@@ -106,8 +106,8 @@ Statements:
             Operator: "[Ln 3, Col 63] -> [Ln 3, Col 64]"
             Right: "[Ln 3, Col 65] -> [Ln 3, Col 70]"
             Self__: "[Ln 3, Col 53] -> [Ln 3, Col 70]"
-          Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+          Right: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
               Name: "three"
               Regions__: # <class 'types.VariableNameParserInfoRegions'>
                 Name: "[Ln 3, Col 65] -> [Ln 3, Col 70]"
@@ -121,8 +121,8 @@ Statements:
           Operator: "[Ln 3, Col 71] -> [Ln 3, Col 72]"
           Right: "[Ln 3, Col 73] -> [Ln 3, Col 77]"
           Self__: "[Ln 3, Col 53] -> [Ln 3, Col 77]"
-        Right: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-          Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+        Right: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+          Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
             Name: "four"
             Regions__: # <class 'types.VariableNameParserInfoRegions'>
               Name: "[Ln 3, Col 73] -> [Ln 3, Col 77]"
@@ -130,10 +130,10 @@ Statements:
           Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
             Name: "[Ln 3, Col 73] -> [Ln 3, Col 77]"
             Self__: "[Ln 3, Col 73] -> [Ln 3, Col 77]"
-      Parameters: # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParametersParserInfo'>
+      Parameters: # <class 'Original.Parser.Common.ParametersParserInfo.ParametersParserInfo'>
         Any: None
         Keyword:
-          - # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
+          - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
             Default: None
             IsVarArgs: None
             Name: "c2"
@@ -143,7 +143,7 @@ Statements:
               Name: "[Ln 3, Col 48] -> [Ln 3, Col 50]"
               Self__: "[Ln 3, Col 43] -> [Ln 3, Col 50]"
               Type: "[Ln 3, Col 43] -> [Ln 3, Col 47]"
-            Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+            Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
               Modifier: None
               Regions__: # <class 'types.StandardTypeParserInfoRegions'>
                 Modifier: None
@@ -151,7 +151,7 @@ Statements:
                 TypeName: "[Ln 3, Col 43] -> [Ln 3, Col 47]"
               TypeName: "Char"
         Positional:
-          - # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
+          - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
             Default: None
             IsVarArgs: None
             Name: "a2"
@@ -161,14 +161,14 @@ Statements:
               Name: "[Ln 3, Col 25] -> [Ln 3, Col 27]"
               Self__: "[Ln 3, Col 21] -> [Ln 3, Col 27]"
               Type: "[Ln 3, Col 21] -> [Ln 3, Col 24]"
-            Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+            Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
               Modifier: None
               Regions__: # <class 'types.StandardTypeParserInfoRegions'>
                 Modifier: None
                 Self__: "[Ln 3, Col 21] -> [Ln 3, Col 24]"
                 TypeName: "[Ln 3, Col 21] -> [Ln 3, Col 24]"
               TypeName: "Int"
-          - # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
+          - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
             Default: None
             IsVarArgs: None
             Name: "b2"
@@ -178,7 +178,7 @@ Statements:
               Name: "[Ln 3, Col 34] -> [Ln 3, Col 36]"
               Self__: "[Ln 3, Col 29] -> [Ln 3, Col 36]"
               Type: "[Ln 3, Col 29] -> [Ln 3, Col 33]"
-            Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+            Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
               Modifier: None
               Regions__: # <class 'types.StandardTypeParserInfoRegions'>
                 Modifier: None
@@ -195,7 +195,7 @@ Statements:
         Parameters: "[Ln 3, Col 15] -> [Ln 3, Col 51]"
         Self__: "[Ln 3, Col 8] -> [Ln 3, Col 77]"
     Modifier: None
-    Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+    Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
       Name: "var2"
       Regions__: # <class 'types.VariableNameParserInfoRegions'>
         Name: "[Ln 3, Col 1] -> [Ln 3, Col 5]"

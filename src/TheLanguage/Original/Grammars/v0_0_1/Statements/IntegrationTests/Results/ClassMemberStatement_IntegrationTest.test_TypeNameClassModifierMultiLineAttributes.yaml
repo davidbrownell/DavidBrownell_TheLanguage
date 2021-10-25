@@ -1,8 +1,8 @@
-# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
 Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 13, Col 1]"
 Statements:
-  - # <class 'TheLanguage.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
     ClassModifier: "ClassModifier.immutable"
     ClassType: "ClassType.Class"
@@ -21,7 +21,7 @@ Statements:
       Uses: None
       Visibility: "[Ln 1, Col 1] -> [Ln 13, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         InitializedValue: None
         Name: "value3"
@@ -32,7 +32,7 @@ Statements:
           Self__: "[Ln 2, Col 5] -> [Ln 8, Col 1]"
           Type: "[Ln 6, Col 5] -> [Ln 6, Col 13]"
           Visibility: "[Ln 2, Col 5] -> [Ln 8, Col 1]"
-        Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: TypeModifier.var
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: "[Ln 6, Col 10] -> [Ln 6, Col 13]"
@@ -40,7 +40,7 @@ Statements:
             TypeName: "[Ln 6, Col 5] -> [Ln 6, Col 9]"
           TypeName: "Char"
         Visibility: "VisibilityModifier.private"
-      - # <class 'TheLanguage.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
         InitializedValue: None
         Name: "value4"
@@ -51,7 +51,7 @@ Statements:
           Self__: "[Ln 8, Col 5] -> [Ln 13, Col 1]"
           Type: "[Ln 12, Col 5] -> [Ln 12, Col 13]"
           Visibility: "[Ln 8, Col 5] -> [Ln 13, Col 1]"
-        Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+        Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: TypeModifier.var
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
             Modifier: "[Ln 12, Col 10] -> [Ln 12, Col 13]"

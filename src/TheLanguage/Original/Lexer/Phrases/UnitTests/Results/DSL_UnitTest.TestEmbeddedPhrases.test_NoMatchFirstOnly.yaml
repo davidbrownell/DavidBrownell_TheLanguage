@@ -1,21 +1,21 @@
-# <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
     DataItems:
-      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           IsIgnored: False
           IterBegin: "[1, 1] (0)"
           IterEnd: "[1, 2] (1)"
           Token: "lpar"
-          Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+          Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
             Match: "<_sre.SRE_Match object; span=(0, 1), match='('>"
           Whitespace: None
         Phrase: "lpar"
-      - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
           DataItems:
-            - # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
               Data: None
               Phrase: "Word Token"
           IsComplete: True

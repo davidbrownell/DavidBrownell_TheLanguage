@@ -1,8 +1,8 @@
-# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
 Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
 Statements:
-  - # <class 'TheLanguage.Parser.Statements.YieldStatementParserInfo.YieldStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.YieldStatementParserInfo.YieldStatementParserInfo'>
     Expression: None
     IsRecursive: None
     Regions__: # <class 'types.YieldStatementParserInfoRegions'>

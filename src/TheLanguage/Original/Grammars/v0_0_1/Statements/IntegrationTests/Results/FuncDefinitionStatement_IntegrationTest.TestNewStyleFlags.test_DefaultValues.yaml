@@ -1,8 +1,8 @@
-# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
 Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
 Statements:
-  - # <class 'TheLanguage.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
     ClassModifier: None
     Documentation: None
     IsAsync: None
@@ -12,9 +12,9 @@ Statements:
     IsSynchronized: None
     MethodModifier: "MethodModifier.standard"
     Name: "Func"
-    Parameters: # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParametersParserInfo'>
+    Parameters: # <class 'Original.Parser.Common.ParametersParserInfo.ParametersParserInfo'>
       Any:
-        - # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
+        - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
           Default: None
           IsVarArgs: None
           Name: "a"
@@ -24,15 +24,15 @@ Statements:
             Name: "[Ln 1, Col 14] -> [Ln 1, Col 15]"
             Self__: "[Ln 1, Col 10] -> [Ln 1, Col 15]"
             Type: "[Ln 1, Col 10] -> [Ln 1, Col 13]"
-          Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
             Modifier: None
             Regions__: # <class 'types.StandardTypeParserInfoRegions'>
               Modifier: None
               Self__: "[Ln 1, Col 10] -> [Ln 1, Col 13]"
               TypeName: "[Ln 1, Col 10] -> [Ln 1, Col 13]"
             TypeName: "Int"
-        - # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
-          Default: # <class 'TheLanguage.Parser.Literals.BoolLiteralParserInfo.BoolLiteralParserInfo'>
+        - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
+          Default: # <class 'Original.Parser.Literals.BoolLiteralParserInfo.BoolLiteralParserInfo'>
             Regions__: # <class 'types.BoolLiteralParserInfoRegions'>
               Self__: "[Ln 1, Col 24] -> [Ln 1, Col 29]"
             Value: False
@@ -44,16 +44,16 @@ Statements:
             Name: "[Ln 1, Col 22] -> [Ln 1, Col 23]"
             Self__: "[Ln 1, Col 17] -> [Ln 1, Col 29]"
             Type: "[Ln 1, Col 17] -> [Ln 1, Col 21]"
-          Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
             Modifier: None
             Regions__: # <class 'types.StandardTypeParserInfoRegions'>
               Modifier: None
               Self__: "[Ln 1, Col 17] -> [Ln 1, Col 21]"
               TypeName: "[Ln 1, Col 17] -> [Ln 1, Col 21]"
             TypeName: "Bool"
-        - # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
-          Default: # <class 'TheLanguage.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-            Name: # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+        - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
+          Default: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+            Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
               Name: "value"
               Regions__: # <class 'types.VariableNameParserInfoRegions'>
                 Name: "[Ln 1, Col 38] -> [Ln 1, Col 43]"
@@ -69,7 +69,7 @@ Statements:
             Name: "[Ln 1, Col 36] -> [Ln 1, Col 37]"
             Self__: "[Ln 1, Col 31] -> [Ln 1, Col 43]"
             Type: "[Ln 1, Col 31] -> [Ln 1, Col 35]"
-          Type: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
             Modifier: None
             Regions__: # <class 'types.StandardTypeParserInfoRegions'>
               Modifier: None
@@ -98,7 +98,7 @@ Statements:
       Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
       Statements: "[Ln 1, Col 44] -> [Ln 3, Col 1]"
       Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
-    ReturnType: # <class 'TheLanguage.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+    ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
       Modifier: None
       Regions__: # <class 'types.StandardTypeParserInfoRegions'>
         Modifier: None
@@ -106,7 +106,7 @@ Statements:
         TypeName: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
       TypeName: "Int"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
     Visibility: "VisibilityModifier.private"

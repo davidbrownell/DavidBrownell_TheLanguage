@@ -1,10 +1,10 @@
-# <class 'TheLanguage.Parser.RootParserInfo.RootParserInfo'>
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
 Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 28, Col 1]"
 Statements:
-  - # <class 'TheLanguage.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
     Names:
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var1"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 1, Col 6] -> [Ln 1, Col 10]"
@@ -14,12 +14,12 @@ Statements:
       Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
       Statements: "[Ln 1, Col 17] -> [Ln 4, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 2, Col 5] -> [Ln 4, Col 1]"
-  - # <class 'TheLanguage.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
     Names:
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var2"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 4, Col 6] -> [Ln 4, Col 10]"
@@ -29,17 +29,17 @@ Statements:
       Self__: "[Ln 4, Col 1] -> [Ln 7, Col 1]"
       Statements: "[Ln 4, Col 18] -> [Ln 7, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 5, Col 5] -> [Ln 7, Col 1]"
-  - # <class 'TheLanguage.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
     Names:
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var3"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 7, Col 6] -> [Ln 7, Col 10]"
           Self__: "[Ln 7, Col 6] -> [Ln 7, Col 10]"
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var4"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 7, Col 12] -> [Ln 7, Col 16]"
@@ -49,17 +49,17 @@ Statements:
       Self__: "[Ln 7, Col 1] -> [Ln 10, Col 1]"
       Statements: "[Ln 7, Col 23] -> [Ln 10, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 8, Col 5] -> [Ln 10, Col 1]"
-  - # <class 'TheLanguage.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
     Names:
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var5"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 10, Col 6] -> [Ln 10, Col 10]"
           Self__: "[Ln 10, Col 6] -> [Ln 10, Col 10]"
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var6"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 10, Col 12] -> [Ln 10, Col 16]"
@@ -69,12 +69,12 @@ Statements:
       Self__: "[Ln 10, Col 1] -> [Ln 13, Col 1]"
       Statements: "[Ln 10, Col 24] -> [Ln 13, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 11, Col 5] -> [Ln 13, Col 1]"
-  - # <class 'TheLanguage.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
     Names:
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var7"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 13, Col 7] -> [Ln 13, Col 11]"
@@ -84,22 +84,22 @@ Statements:
       Self__: "[Ln 13, Col 1] -> [Ln 16, Col 1]"
       Statements: "[Ln 13, Col 19] -> [Ln 16, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 14, Col 5] -> [Ln 16, Col 1]"
-  - # <class 'TheLanguage.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
     Names:
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var8"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 16, Col 7] -> [Ln 16, Col 11]"
           Self__: "[Ln 16, Col 7] -> [Ln 16, Col 11]"
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var9"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 16, Col 13] -> [Ln 16, Col 17]"
           Self__: "[Ln 16, Col 13] -> [Ln 16, Col 17]"
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var10"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 16, Col 19] -> [Ln 16, Col 24]"
@@ -109,22 +109,22 @@ Statements:
       Self__: "[Ln 16, Col 1] -> [Ln 19, Col 1]"
       Statements: "[Ln 16, Col 32] -> [Ln 19, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 17, Col 5] -> [Ln 19, Col 1]"
-  - # <class 'TheLanguage.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
     Names:
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var11"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 19, Col 7] -> [Ln 19, Col 12]"
           Self__: "[Ln 19, Col 7] -> [Ln 19, Col 12]"
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var12"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 19, Col 14] -> [Ln 19, Col 19]"
           Self__: "[Ln 19, Col 14] -> [Ln 19, Col 19]"
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var13"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 19, Col 21] -> [Ln 19, Col 26]"
@@ -134,22 +134,22 @@ Statements:
       Self__: "[Ln 19, Col 1] -> [Ln 22, Col 1]"
       Statements: "[Ln 19, Col 35] -> [Ln 22, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 20, Col 5] -> [Ln 22, Col 1]"
-  - # <class 'TheLanguage.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
+  - # <class 'Original.Parser.Statements.ScopedRefStatementParserInfo.ScopedRefStatementParserInfo'>
     Names:
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var14"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 23, Col 5] -> [Ln 23, Col 10]"
           Self__: "[Ln 23, Col 5] -> [Ln 23, Col 10]"
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var15"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 24, Col 5] -> [Ln 24, Col 10]"
           Self__: "[Ln 24, Col 5] -> [Ln 24, Col 10]"
-      - # <class 'TheLanguage.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      - # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
         Name: "var16"
         Regions__: # <class 'types.VariableNameParserInfoRegions'>
           Name: "[Ln 25, Col 9] -> [Ln 25, Col 14]"
@@ -159,6 +159,6 @@ Statements:
       Self__: "[Ln 22, Col 1] -> [Ln 28, Col 1]"
       Statements: "[Ln 26, Col 9] -> [Ln 28, Col 1]"
     Statements:
-      - # <class 'TheLanguage.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
           Self__: "[Ln 27, Col 5] -> [Ln 28, Col 1]"

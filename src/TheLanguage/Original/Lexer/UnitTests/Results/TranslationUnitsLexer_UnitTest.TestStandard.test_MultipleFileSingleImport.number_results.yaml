@@ -1,110 +1,110 @@
-# <class 'TheLanguage.Lexer.Components.AST.Node'>
+# <class 'Original.Lexer.Components.AST.Node'>
 Children:
-  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+  - # <class 'Original.Lexer.Components.AST.Node'>
     Children:
-      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+      - # <class 'Original.Lexer.Components.AST.Node'>
         Children:
-          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+          - # <class 'Original.Lexer.Components.AST.Node'>
             Children:
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+              - # <class 'Original.Lexer.Components.AST.Leaf'>
                 IsIgnored: False
                 IterBegin: "[1, 1] (0)"
                 IterEnd: "[1, 2] (1)"
-                Type: "Number Token <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                Type: "Number Token <class 'Original.Lexer.Components.Token.RegexToken'>"
+                Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(0, 1), match='4'>"
                 Whitespace: None
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+              - # <class 'Original.Lexer.Components.AST.Leaf'>
                 IsIgnored: False
                 IterBegin: "[1, 2] (1)"
                 IterEnd: "[2, 1] (2)"
-                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                Type: "Newline+ <class 'Original.Lexer.Components.Token.NewlineToken'>"
+                Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                   End: 2
                   Start: 1
                 Whitespace: None
             IsIgnored: False
             IterBegin: "[1, 1] (0)"
             IterEnd: "[2, 1] (2)"
-            Type: "Number <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+            Type: "Number <class 'Original.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
         IsIgnored: False
         IterBegin: "[1, 1] (0)"
         IterEnd: "[2, 1] (2)"
-        Type: "(Include | Upper | Lower | Number | New Scope) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Include | Upper | Lower | Number | New Scope) Statements <class 'Original.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[1, 1] (0)"
     IterEnd: "[2, 1] (2)"
-    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
-  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Type: "Dynamic Phrase <class 'Original.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'Original.Lexer.Components.AST.Node'>
     Children:
-      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+      - # <class 'Original.Lexer.Components.AST.Node'>
         Children:
-          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+          - # <class 'Original.Lexer.Components.AST.Node'>
             Children:
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+              - # <class 'Original.Lexer.Components.AST.Leaf'>
                 IsIgnored: False
                 IterBegin: "[2, 1] (2)"
                 IterEnd: "[2, 2] (3)"
-                Type: "Number Token <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                Type: "Number Token <class 'Original.Lexer.Components.Token.RegexToken'>"
+                Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(2, 3), match='5'>"
                 Whitespace: None
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+              - # <class 'Original.Lexer.Components.AST.Leaf'>
                 IsIgnored: False
                 IterBegin: "[2, 2] (3)"
                 IterEnd: "[3, 1] (4)"
-                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                Type: "Newline+ <class 'Original.Lexer.Components.Token.NewlineToken'>"
+                Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                   End: 4
                   Start: 3
                 Whitespace: None
             IsIgnored: False
             IterBegin: "[2, 1] (2)"
             IterEnd: "[3, 1] (4)"
-            Type: "Number <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+            Type: "Number <class 'Original.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
         IsIgnored: False
         IterBegin: "[2, 1] (2)"
         IterEnd: "[3, 1] (4)"
-        Type: "(Include | Upper | Lower | Number | New Scope) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Include | Upper | Lower | Number | New Scope) Statements <class 'Original.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[2, 1] (2)"
     IterEnd: "[3, 1] (4)"
-    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
-  - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+    Type: "Dynamic Phrase <class 'Original.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+  - # <class 'Original.Lexer.Components.AST.Node'>
     Children:
-      - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+      - # <class 'Original.Lexer.Components.AST.Node'>
         Children:
-          - # <class 'TheLanguage.Lexer.Components.AST.Node'>
+          - # <class 'Original.Lexer.Components.AST.Node'>
             Children:
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+              - # <class 'Original.Lexer.Components.AST.Leaf'>
                 IsIgnored: False
                 IterBegin: "[3, 1] (4)"
                 IterEnd: "[3, 2] (5)"
-                Type: "Number Token <class 'TheLanguage.Lexer.Components.Token.RegexToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.RegexToken.MatchResult'>
+                Type: "Number Token <class 'Original.Lexer.Components.Token.RegexToken'>"
+                Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(4, 5), match='6'>"
                 Whitespace: None
-              - # <class 'TheLanguage.Lexer.Components.AST.Leaf'>
+              - # <class 'Original.Lexer.Components.AST.Leaf'>
                 IsIgnored: False
                 IterBegin: "[3, 2] (5)"
                 IterEnd: "[4, 1] (6)"
-                Type: "Newline+ <class 'TheLanguage.Lexer.Components.Token.NewlineToken'>"
-                Value: # <class 'TheLanguage.Lexer.Components.Token.NewlineToken.MatchResult'>
+                Type: "Newline+ <class 'Original.Lexer.Components.Token.NewlineToken'>"
+                Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
                   End: 6
                   Start: 5
                 Whitespace: None
             IsIgnored: False
             IterBegin: "[3, 1] (4)"
             IterEnd: "[4, 1] (6)"
-            Type: "Number <class 'TheLanguage.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+            Type: "Number <class 'Original.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
         IsIgnored: False
         IterBegin: "[3, 1] (4)"
         IterEnd: "[4, 1] (6)"
-        Type: "(Include | Upper | Lower | Number | New Scope) Statements <class 'TheLanguage.Lexer.Phrases.OrPhrase.OrPhrase'>"
+        Type: "(Include | Upper | Lower | Number | New Scope) Statements <class 'Original.Lexer.Phrases.OrPhrase.OrPhrase'>"
     IsIgnored: False
     IterBegin: "[3, 1] (4)"
     IterEnd: "[4, 1] (6)"
-    Type: "Dynamic Phrase <class 'TheLanguage.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+    Type: "Dynamic Phrase <class 'Original.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 IsIgnored: False
 IterBegin: "[1, 1] (0)"
 IterEnd: "[4, 1] (6)"

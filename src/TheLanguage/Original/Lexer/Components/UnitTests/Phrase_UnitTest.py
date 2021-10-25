@@ -139,7 +139,7 @@ class TestStandard(object):
     def test_LexResultEmptyData(self, iterator):
         assert str(Phrase.LexResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: None
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 1] (0)"
@@ -153,7 +153,7 @@ class TestStandard(object):
 
         assert str(Phrase.LexResult(True, iterator, iterator, None)) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
             Data: None
             IterBegin: "[1, 6] (5)"
             IterEnd: "[1, 6] (5)"
@@ -167,8 +167,8 @@ class TestStandard(object):
             Phrase.LexResult(False, iterator, iterator, self.MyLexResultData()),
         ) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.UnitTests.Phrase_UnitTest.TestStandard.MyLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.UnitTests.Phrase_UnitTest.TestStandard.MyLexResultData'>
               {}
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 1] (0)"
@@ -189,9 +189,9 @@ class TestStandard(object):
             ),
         )) == textwrap.dedent(
             """\
-            # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'TheLanguage.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'TheLanguage.Lexer.Components.UnitTests.Phrase_UnitTest.TestStandard.MyLexResultData'>
+            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.UnitTests.Phrase_UnitTest.TestStandard.MyLexResultData'>
                 {}
               Phrase: "The Phrase"
             IterBegin: "[1, 1] (0)"
