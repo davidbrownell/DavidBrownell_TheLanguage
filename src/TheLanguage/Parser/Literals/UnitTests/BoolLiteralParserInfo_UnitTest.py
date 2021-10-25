@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassType.py
+# |  BoolLiteralParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-15 10:48:12
+# |      2021-10-22 10:12:54
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,26 +13,24 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ClassType enum"""
+"""Unit test for BoolLiteralParserInfo.py"""
 
 import os
 
-from enum import Enum
-
 import CommonEnvironment
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from ..BoolLiteralParserInfo import *
+
 
 # ----------------------------------------------------------------------
-class ClassType(Enum):
-    Class                                   = "class"
-    Enum                                    = "enum"
-    Exception                               = "exception"
-    Interface                               = "interface"
-    Mixin                                   = "mixin"
-    Struct                                  = "struct"
-    Trait                                   = "trait"
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
+def test_Placeholder():
+    assert True

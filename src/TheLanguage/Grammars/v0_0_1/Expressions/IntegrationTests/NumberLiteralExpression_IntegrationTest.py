@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassType.py
+# |  NumberLiteralExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-15 10:48:12
+# |      2021-10-22 13:48:01
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,26 +13,33 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ClassType enum"""
+"""Automated tests for NumberLiteralExpression.py"""
 
 import os
-
-from enum import Enum
+import textwrap
 
 import CommonEnvironment
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from .....IntegrationTests import *
+    from ..NumberLiteralExpression import *
+
 
 # ----------------------------------------------------------------------
-class ClassType(Enum):
-    Class                                   = "class"
-    Enum                                    = "enum"
-    Exception                               = "exception"
-    Interface                               = "interface"
-    Mixin                                   = "mixin"
-    Struct                                  = "struct"
-    Trait                                   = "trait"
+def test_Standard():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            standard = 123.456
+            negative = -1.2345678
+            positive = +987.65
+            """,
+        ),
+    )))

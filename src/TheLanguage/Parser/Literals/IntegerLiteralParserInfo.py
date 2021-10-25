@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  StringExpression_IntegrationTest.py
+# |  IntegerLiteralParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-22 10:47:53
+# |      2021-10-22 10:14:38
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for StringExpression.py"""
+"""Contains the IntegerLiteralParserInfo object"""
 
 import os
-import textwrap
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -28,20 +29,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .....IntegrationTests import *
-    from ..StringExpression import *
+    from .LiteralParserInfo import LiteralParserInfo
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
-    CompareResultsFromFile(str(Execute(
-        textwrap.dedent(
-            """\
-            value1 = "This is a sample string"
-
-            empty_string = ""
-
-            escaped_string = "This is a \\"great\\" test!"
-            """,
-        ),
-    )))
+@dataclass(frozen=True, repr=False)
+class IntegerLiteralParserInfo(LiteralParserInfo):
+    Value: int

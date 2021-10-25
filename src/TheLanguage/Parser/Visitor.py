@@ -65,6 +65,8 @@ with InitRelativeImports():
     from .Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
 
     # Literals
+    from .Literals.BoolLiteralParserInfo import BoolLiteralParserInfo
+    from .Literals.IntegerLiteralParserInfo import IntegerLiteralParserInfo
     from .Literals.NoneLiteralParserInfo import NoneLiteralParserInfo
     from .Literals.NumberLiteralParserInfo import NumberLiteralParserInfo
     from .Literals.StringLiteralParserInfo import StringLiteralParserInfo
@@ -359,6 +361,30 @@ class Visitor(VisitorBase):
     # |
     # |  Literals
     # |
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnBoolLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: BoolLiteralParserInfo,
+        *args,
+        **kwargs,
+    ) -> Optional[bool]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnIntegerLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        visit_type: VisitType,
+        parser_info: IntegerLiteralParserInfo,
+        *args,
+        **kwargs,
+    ) -> Optional[bool]:
+        raise Exception("Abstract method")  # pragma: no cover
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
@@ -750,8 +776,8 @@ class Visitor(VisitorBase):
     def Accept(
         cls,
         parser_info: ParserInfo,
-        stack: Optional[List[Union[str, ParserInfo, Tuple[ParserInfo, str]]]]=None,
         *args,
+        stack: Optional[List[Union[str, ParserInfo, Tuple[ParserInfo, str]]]]=None,
         **kwargs,
     ):
         parser_info.Accept(cls, stack or [], *args, **kwargs)

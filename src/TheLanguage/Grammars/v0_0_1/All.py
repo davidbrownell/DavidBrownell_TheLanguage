@@ -33,18 +33,20 @@ with InitRelativeImports():
 
     # Expressions
     from .Expressions.BinaryExpression import BinaryExpression
+    from .Expressions.BoolLiteralExpression import BoolLiteralExpression
     from .Expressions.CastExpression import CastExpression
     from .Expressions.FuncInvocationExpression import FuncInvocationExpression
     from .Expressions.FuncNameExpression import FuncNameExpression
     from .Expressions.GeneratorExpression import GeneratorExpression
     from .Expressions.GroupExpression import GroupExpression
     from .Expressions.IndexExpression import IndexExpression
+    from .Expressions.IntegerLiteralExpression import IntegerLiteralExpression
     from .Expressions.LambdaExpression import LambdaExpression
     from .Expressions.MatchTypeExpression import MatchTypeExpression
     from .Expressions.MatchValueExpression import MatchValueExpression
-    from .Expressions.NoneExpression import NoneExpression
-    from .Expressions.NumberExpression import NumberExpression
-    from .Expressions.StringExpression import StringExpression
+    from .Expressions.NoneLiteralExpression import NoneLiteralExpression
+    from .Expressions.NumberLiteralExpression import NumberLiteralExpression
+    from .Expressions.StringLiteralExpression import StringLiteralExpression
     from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.TupleExpression import TupleExpression
     from .Expressions.UnaryExpression import UnaryExpression
@@ -93,18 +95,20 @@ GrammarPhrases                              = [
 
     # Expressions
     BinaryExpression(),
+    BoolLiteralExpression(),
     CastExpression(),
     FuncInvocationExpression(),
     FuncNameExpression(),
     GeneratorExpression(),
     GroupExpression(),
     IndexExpression(),
+    IntegerLiteralExpression(),
     LambdaExpression(),
     MatchTypeExpression(),
     MatchValueExpression(),
-    NoneExpression(),
-    NumberExpression(),
-    StringExpression(),
+    NoneLiteralExpression(),
+    NumberLiteralExpression(),
+    StringLiteralExpression(),
     TernaryExpression(),
     TupleExpression(),
     UnaryExpression(),

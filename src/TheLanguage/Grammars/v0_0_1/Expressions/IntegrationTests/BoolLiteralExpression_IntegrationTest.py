@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassType.py
+# |  BoolLiteralExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-15 10:48:12
+# |      2021-10-25 09:32:51
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,26 +13,32 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ClassType enum"""
+"""Automated test for BoolLiteralExpression.py"""
 
 import os
-
-from enum import Enum
+import textwrap
 
 import CommonEnvironment
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from .....IntegrationTests import *
+    from ..BoolLiteralExpression import *
+
 
 # ----------------------------------------------------------------------
-class ClassType(Enum):
-    Class                                   = "class"
-    Enum                                    = "enum"
-    Exception                               = "exception"
-    Interface                               = "interface"
-    Mixin                                   = "mixin"
-    Struct                                  = "struct"
-    Trait                                   = "trait"
+def test_Standard():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            true_value = True
+            false_value = False
+            """,
+        ),
+    )))

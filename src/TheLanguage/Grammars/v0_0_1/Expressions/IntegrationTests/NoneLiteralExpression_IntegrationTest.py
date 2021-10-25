@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneExpression_IntegrationTest.py
+# |  NoneLiteralExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2021-10-22 11:10:49
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for NoneExpression.py"""
+"""Automated tests for NoneLiteralExpression.py"""
 
 import os
 import textwrap
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .....IntegrationTests import *
-    from ..NoneExpression import NoneExpression
+    from ..NoneLiteralExpression import NoneLiteralExpression
 
 
 # ----------------------------------------------------------------------

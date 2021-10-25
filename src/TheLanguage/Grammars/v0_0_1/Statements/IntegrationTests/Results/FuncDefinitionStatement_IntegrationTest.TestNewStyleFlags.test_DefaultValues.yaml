@@ -32,11 +32,10 @@ Statements:
               TypeName: "[Ln 1, Col 10] -> [Ln 1, Col 13]"
             TypeName: "Int"
         - # <class 'TheLanguage.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
-          Default: # <class 'TheLanguage.Parser.Expressions.FuncNameExpressionParserInfo.FuncNameExpressionParserInfo'>
-            Name: "False"
-            Regions__: # <class 'types.FuncNameExpressionParserInfoRegions'>
-              Name: "[Ln 1, Col 24] -> [Ln 1, Col 29]"
+          Default: # <class 'TheLanguage.Parser.Literals.BoolLiteralParserInfo.BoolLiteralParserInfo'>
+            Regions__: # <class 'types.BoolLiteralParserInfoRegions'>
               Self__: "[Ln 1, Col 24] -> [Ln 1, Col 29]"
+            Value: False
           IsVarArgs: None
           Name: "b"
           Regions__: # <class 'types.ParameterParserInfoRegions'>
