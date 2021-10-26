@@ -1,5 +1,7 @@
 # <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
 Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
   Self__: "[Ln 1, Col 1] -> [Ln 13, Col 1]"
 Statements:
   - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>

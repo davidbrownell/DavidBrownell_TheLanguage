@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -40,6 +40,7 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class RootParserInfo(ParserInfo):
     Statements: List[ParserInfo]
+    Documentation: Optional[str]
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):

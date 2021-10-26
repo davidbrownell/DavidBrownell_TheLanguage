@@ -20,7 +20,10 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Callable, cast, Dict, List, Optional, Tuple, Union
 
+from dataclasses import dataclass
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Error import Error
     from .ParserInfo import Location, ParserInfo, Region
     from .RootParserInfo import RootParserInfo
 
@@ -37,24 +41,41 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-CreateParserInfoFuncType                    = Callable[
-    [
-        AST.Node,
-    ],
-    Union[
-        None,                                           # No parser info associated with the node
+@dataclass(frozen=True)
+class DuplicateDocInfoError(Error):
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "Documentation information has already been provided.",
+    )
+
+
+# ----------------------------------------------------------------------
+class ParserObserver(Interface.Interface):
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def CreateParserInfo(
+        node: AST.Node,
+    ) -> Union[
         bool,                                           # True to continue processing, False to terminate
         ParserInfo,                                     # The result; implies that we should continue processing
         Callable[[], ParserInfo],                       # A callback that must be invoked before the ParserInfo is available; implies that we should continue processing
         Tuple[ParserInfo, Callable[[], ParserInfo]],    # A combination of the previous 2 items
-    ]
-]
+    ]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def GetPotentialDocInfo(
+        node: Union[AST.Leaf, AST.Node],
+    ) -> Optional[Tuple[AST.Leaf, str]]:
+        raise Exception("Abstract method")  # pragma: no cover
 
 
 # ----------------------------------------------------------------------
 def Parse(
     roots: Dict[str, AST.Node],
-    create_parser_info_func: CreateParserInfoFuncType,
+    observer: ParserObserver,
     *,
     max_num_threads: Optional[int]=None,
 ) -> Union[
@@ -77,11 +98,9 @@ def Parse(
             for node in root.Enum(nodes_only=True):
                 assert isinstance(node, AST.Node)
 
-                result = create_parser_info_func(node)
-                if result is None:
-                    continue
+                result = observer.CreateParserInfo(node)
 
-                elif isinstance(result, bool):
+                if isinstance(result, bool):
                     if not result:
                         return None
 
@@ -104,18 +123,29 @@ def Parse(
                 _SetParserInfo(node, func())
 
             # Extract the info
-            children = []
+            doc_info: Optional[Tuple[AST.Leaf, str]] = None
+            children: List[ParserInfo] = []
 
             for child in root.Children:
-                if isinstance(child, AST.Leaf):
+                potential_doc_info = observer.GetPotentialDocInfo(child)
+                if potential_doc_info is not None:
+                    if doc_info is not None:
+                        raise DuplicateDocInfoError(CreateParserRegion(potential_doc_info[0]))
+
+                    doc_info = potential_doc_info
                     continue
 
-                children.append(_Extract(cast(AST.Node, child)))
+                parser_info = _Extract(child)
+                if parser_info is None:
+                    continue
+
+                children.append(parser_info)
 
             # pylint: disable=too-many-function-args
             return RootParserInfo(
-                CreateParserRegions(root),  # type: ignore
+                CreateParserRegions(root, None if doc_info is None else doc_info[0]),  # type: ignore
                 children,
+                None if doc_info is None else doc_info[1],
             )
 
         except Exception as ex:
@@ -257,7 +287,7 @@ def _SetParserInfo(
 
 # ----------------------------------------------------------------------
 def _Extract(
-    node: AST.Node,
+    node: Union[AST.Leaf, AST.Node],
 ) -> Optional[ParserInfo]:
     parser_info = GetParserInfo(
         node,

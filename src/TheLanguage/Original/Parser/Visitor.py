@@ -81,7 +81,10 @@ with InitRelativeImports():
     from .Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from .Statements.ContinueStatementParserInfo import ContinueStatementParserInfo
     from .Statements.DeleteStatementParserInfo import DeleteStatementParserInfo
-    from .Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+    from .Statements.FuncDefinitionStatementParserInfo import (
+        FuncDefinitionStatementParserInfo,
+        OperatorType as FuncDefinitionStatementOperatorType,  # Convenience
+    )
     from .Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from .Statements.IfStatementParserInfo import IfStatementParserInfo
     from .Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportStatementItemParserInfo

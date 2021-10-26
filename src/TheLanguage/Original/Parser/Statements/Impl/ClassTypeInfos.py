@@ -191,7 +191,7 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
 
         # Members
         VisibilityModifier.public,
-        [VisibilityModifier.public],
+        _all_visibilities,
 
         # Base
         VisibilityModifier.public,
@@ -229,8 +229,8 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         _all_visibilities,
 
         # Members
-        VisibilityModifier.private,
-        _all_visibilities,
+        VisibilityModifier.public,
+        [VisibilityModifier.public],
 
         # Base
         None,

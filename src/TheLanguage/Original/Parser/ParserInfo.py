@@ -137,6 +137,13 @@ class ParserInfo(Interface.Interface, YamlRepr.ObjectReprImplBase):
         should_validate: Optional[bool]=True,
         **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
+        YamlRepr.ObjectReprImplBase.__init__(
+            self,
+            RegionsType=None,
+            _regionless_attributes=None,
+            **custom_display_funcs,
+        )
+
         assert hasattr(self, DATACLASS_PARAMS) and not getattr(self, DATACLASS_PARAMS).repr, "Derived classes should be based on `dataclass` with `repr` set to `False`"
 
         regionless_attributes_set = set(regionless_attributes or [])
@@ -179,15 +186,14 @@ class ParserInfo(Interface.Interface, YamlRepr.ObjectReprImplBase):
         # Create an instance of the new class
         new_regions_instance = new_regions_class(**new_regions)
 
+        # Update the regions class to skip those members that are skipped for the standard class
+        skipped_display_funcs = {k:v for k, v in custom_display_funcs.items() if v is None}
+
+        if skipped_display_funcs:
+            YamlRepr.ObjectReprImplBase.__init__(new_regions_instance, **skipped_display_funcs)
+
         object.__setattr__(self, "RegionsType__", new_regions_class)
         object.__setattr__(self, "Regions__", new_regions_instance)
-
-        YamlRepr.ObjectReprImplBase.__init__(
-            self,
-            RegionsType=None,
-            _regionless_attributes=None,
-            **custom_display_funcs,
-        )
 
         # Generate the Visitor name to invoke upon calls to Accept
         suffix = self.__class__.__name__

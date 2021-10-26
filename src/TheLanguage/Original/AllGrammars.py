@@ -16,13 +16,14 @@
 """Loads all the Grammars"""
 
 import importlib
+import itertools
 import os
 import sys
 import threading
 
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Callable, cast, Dict, List, Optional, Set, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -52,6 +53,8 @@ with InitRelativeImports():
         Prune as PruneImpl,
     )
 
+    from .Lexer.Phrases.DSL import DynamicPhrase, ExtractDynamic
+
     from .Lexer.SyntaxObserverDecorator import (
         Configurations,
         RegexToken,
@@ -62,6 +65,7 @@ with InitRelativeImports():
     from .Parser.Parser import (
         Parse as ParseImpl,
         ParserInfo,
+        ParserObserver,
         RootParserInfo,
         Verify as VerifyImpl,
     )
@@ -78,8 +82,8 @@ GrammarCommentToken: Optional[RegexToken]               = None
 # ----------------------------------------------------------------------
 def _LoadDynamicContentFromFile(
     filename: str,
-    module_comment_attribute_name: Optional[str]=None,
-    module_phrases_attribute_name: Optional[str]=None,
+    module_comment_attribute_name: Optional[str]=None,  # Defaults to "GrammarCommentToken"
+    module_phrases_attribute_name: Optional[str]=None,  # Defaults to "GrammarPhrases"
 ) -> DynamicPhrasesInfo:
     global GrammarCommentToken
 
@@ -131,13 +135,31 @@ def _LoadDynamicContentFromFile(
 # ----------------------------------------------------------------------
 Grammars[SemVer("0.0.1")]                   = _LoadDynamicContentFromFile(os.path.join(_script_dir, "Grammars", "v0_0_1", "All.py"))
 
-
-# ----------------------------------------------------------------------
 assert Grammars
 assert GrammarPhraseLookup
 assert GrammarCommentToken is not None
 
 del _LoadDynamicContentFromFile
+
+
+# ----------------------------------------------------------------------
+def _CreateGrammarVersionLookup() -> Dict[Phrase, SemVer]:
+    result: Dict[Phrase, SemVer] = {}
+
+    for grammar_version, dynamic_phrases_info in Grammars.items():
+        for phrase in itertools.chain(*dynamic_phrases_info.Phrases.values()):
+            result[phrase] = grammar_version
+
+    return result
+
+
+GrammarVersionLookup                        = _CreateGrammarVersionLookup()
+
+assert GrammarVersionLookup
+
+del _CreateGrammarVersionLookup
+
+
 
 # TODO: Right now, much of the functionality is concerned with processing the dicts. Remove that functionality
 #       from those files and only do it here.
@@ -242,31 +264,81 @@ def Parse(
     Dict[str, RootParserInfo],
     List[Exception],
 ]:
+    documentation_phrase_infos: Dict[SemVer, Tuple[Phrase, GrammarPhrase]] = {}
+
     # ----------------------------------------------------------------------
-    def CreateParserInfo(
-        node: AST.Node,
-    ) -> Union[
-        None,
-        bool,
-        ParserInfo,
-        Callable[[], ParserInfo],
-        Tuple[ParserInfo, Callable[[], ParserInfo]],
-    ]:
-        if isinstance(node.Type, Phrase):
-            grammar_phrase = GrammarPhraseLookup.get(node.Type, None)
-            if grammar_phrase is not None:
-                return grammar_phrase.ExtractParserInfo(node)
+    @Interface.staticderived
+    class Observer(ParserObserver):
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.override
+        def CreateParserInfo(
+            node: AST.Node,
+        ) -> Union[
+            bool,
+            ParserInfo,
+            Callable[[], ParserInfo],
+            Tuple[ParserInfo, Callable[[], ParserInfo]],
+        ]:
+            if isinstance(node.Type, Phrase):
+                grammar_phrase = GrammarPhraseLookup.get(node.Type, None)
+                if grammar_phrase is not None:
+                    result = grammar_phrase.ExtractParserInfo(node)
+                    if result is None:
+                        return True
 
-        if cancellation_event.is_set():
-            return False
+                    return result
 
-        return None
+            if cancellation_event.is_set():
+                return False
+
+            return True
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        @Interface.override
+        def GetPotentialDocInfo(
+            node: Union[AST.Leaf, AST.Node],
+        ) -> Optional[Tuple[AST.Leaf, str]]:
+            if isinstance(node.Type, Phrase):
+                if isinstance(node.Type, DynamicPhrase):
+                    node = cast(AST.Node, ExtractDynamic(cast(AST.Node, node)))
+
+                semver = GrammarVersionLookup.get(node.Type, None)  # type: ignore
+                if semver is not None:
+                    documentation_phrase_info = documentation_phrase_infos.get(semver, None)
+
+                    if documentation_phrase_info is None:
+                        documentation_phrase = None
+
+                        for phrase in itertools.chain(*Grammars[semver].Phrases.values()):
+                            if phrase.Name.startswith("Doc") and phrase.Name.endswith("Statement"):
+                                documentation_phrase = phrase
+                                break
+
+                        assert documentation_phrase is not None
+
+                        documentation_grammar_phrase = GrammarPhraseLookup[documentation_phrase]
+
+                        documentation_phrase_info = (
+                            documentation_phrase,
+                            documentation_grammar_phrase,
+                        )
+
+                        documentation_phrase_infos[semver] = documentation_phrase_info
+
+                    assert documentation_phrase_info is not None
+
+                    if node.Type == documentation_phrase_info[0]:
+                        return documentation_phrase_info[1].GetMultilineContent(node)  # type: ignore
+
+            return None
 
     # ----------------------------------------------------------------------
 
     return ParseImpl(
         roots,
-        CreateParserInfo,
+        Observer(),
         max_num_threads=max_num_threads,
     )
 

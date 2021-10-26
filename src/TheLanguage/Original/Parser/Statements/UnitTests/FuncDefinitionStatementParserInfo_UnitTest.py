@@ -1267,7 +1267,7 @@ class TestMethods(object):
                     region_creator(),
                     region_creator(),
                     region_creator(),
-                    region_creator(),
+                    None,
                     None,
                     None,
                     None,
@@ -1275,22 +1275,20 @@ class TestMethods(object):
                     None,
                     None,
                 ],  # type: ignore
-                self._exception_parser_info,
+                self._interface_parser_info,
                 VisibilityModifier.private,
-                MethodModifierType.standard,
+                MethodModifierType.abstract,
                 None,
                 DummyTypeParserInfo([region_creator(container=True)]),
                 "TheMethod",
                 False,
-                [
-                    DummyStatementParserInfo([region_creator(container=True)]),
-                ],
+                None,
                 None,
             )
 
         ex = ex.value
 
-        assert str(ex) == "'private' is not a supported visibility for members of 'exception' types; supported values are 'public'."
+        assert str(ex) == "'private' is not a supported visibility for members of 'interface' types; supported values are 'public'."
         assert ex.Region == region_creator.ExpectedErrorRegion()
 
     # ----------------------------------------------------------------------

@@ -764,3 +764,19 @@ def test_InvalidOperatorNameError():
     assert ex.Region.Begin.Column == 9
     assert ex.Region.End.Line == 2
     assert ex.Region.End.Column == ex.Region.Begin.Column + len(ex.Name)
+
+
+# ----------------------------------------------------------------------
+def test_NoneReturnType():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            None StandardFunc():
+                pass
+
+            class Foo():
+                None StandardMethod():
+                    pass
+            """,
+        ),
+    )))
