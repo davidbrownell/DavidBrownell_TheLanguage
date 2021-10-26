@@ -228,7 +228,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                         name="Return Type",
                         item=(
                             DynamicPhrasesType.Types,
-                            NoneLiteralExpression().Phrase,
+                            NoneLiteralExpression.CreatePhraseItem(),
                         ),
                     ),
 
@@ -296,10 +296,11 @@ class FuncDefinitionStatement(GrammarPhrase):
             return_type_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[3])))
 
             assert return_type_node.Type is not None
+
             if isinstance(return_type_node.Type, DynamicPhrase):
                 return_type_node = ExtractDynamic(return_type_node)
                 return_type_info = cast(TypeParserInfo, GetParserInfo(return_type_node))
-            elif return_type_node.Type.Name == NoneLiteralExpression.PHRASE_NAME:
+            elif return_type_node.Type.Name == NoneLiteralExpression.PHRASE_ITEM_NAME:
                 return_type_info = False
             else:
                 assert False, return_type_node.Type  # pragma: no cover

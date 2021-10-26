@@ -59,3 +59,16 @@ def test_MultipleTypes():
             """,
         ),
     )))
+
+
+# ----------------------------------------------------------------------
+def test_WithNone():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            (None | Int) Func1(): pass
+            (Int | None) Func2(): pass
+            (Int | None | String) Func3(): pass
+            """,
+        ),
+    )))

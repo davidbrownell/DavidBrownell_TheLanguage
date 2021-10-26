@@ -75,6 +75,7 @@ with InitRelativeImports():
     from .Names.VariableNameParserInfo import VariableNameParserInfo
 
     # Statements
+    from .Statements.AssertStatementParserInfo import AssertStatementParserInfo
     from .Statements.BinaryStatementParserInfo import BinaryStatementParserInfo
     from .Statements.BreakStatementParserInfo import BreakStatementParserInfo
     from .Statements.ClassMemberStatementParserInfo import ClassMemberStatementParserInfo
@@ -428,6 +429,17 @@ class Visitor(VisitorBase):
     # |
     # |  Statements
     # |
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnAssertStatement(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: AssertStatementParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")  # pragma: no cover
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod

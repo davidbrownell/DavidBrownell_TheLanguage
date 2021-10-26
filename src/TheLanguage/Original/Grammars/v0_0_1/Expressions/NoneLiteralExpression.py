@@ -38,6 +38,7 @@ with InitRelativeImports():
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractSequence,
+        PhraseItem,
     )
 
     from ....Parser.Parser import CreateParserRegions
@@ -54,6 +55,7 @@ class NoneLiteralExpression(GrammarPhrase):
         None
     """
 
+    PHRASE_ITEM_NAME                        = "'None'"
     PHRASE_NAME                             = "None Literal Expression"
 
     # ----------------------------------------------------------------------
@@ -64,12 +66,17 @@ class NoneLiteralExpression(GrammarPhrase):
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
-                    RegexToken(
-                        "'None'",
-                        re.compile(r"None\b"),
-                    ),
+                    self.__class__.CreatePhraseItem(),
                 ],
             ),
+        )
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def CreatePhraseItem(cls) -> RegexToken:
+        return RegexToken(
+            cls.PHRASE_ITEM_NAME,
+            re.compile(r"None\b"),
         )
 
     # ----------------------------------------------------------------------
