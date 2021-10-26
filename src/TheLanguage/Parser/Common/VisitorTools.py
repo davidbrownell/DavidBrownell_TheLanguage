@@ -18,7 +18,6 @@
 import os
 
 from contextlib import contextmanager
-from enum import auto, Enum
 
 import CommonEnvironment
 
@@ -26,17 +25,6 @@ import CommonEnvironment
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
-
-
-# ----------------------------------------------------------------------
-class VisitType(Enum):
-    """Indicates when an On____ function is being invoked for a visitor."""
-
-    # TODO: Remove this
-
-    Enter                                   = auto()
-    Exit                                    = auto()
-    EnterAndExit                            = auto()
 
 
 # ----------------------------------------------------------------------

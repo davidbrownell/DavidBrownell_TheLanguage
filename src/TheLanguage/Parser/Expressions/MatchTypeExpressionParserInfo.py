@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
 
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
     from ..ParserInfo import ParserInfo
     from ..Types.TypeParserInfo import TypeParserInfo
 
@@ -46,11 +46,10 @@ class MatchTypeExpressionClauseParserInfo(ParserInfo):
     Expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnMatchTypeCasePhrase(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["Cases"]:
                 for case_type in self.Cases:
@@ -58,8 +57,6 @@ class MatchTypeExpressionClauseParserInfo(ParserInfo):
 
             with helper["Expression"]:
                 self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnMatchTypeCasePhrase(stack, VisitType.Exit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -70,11 +67,10 @@ class MatchTypeExpressionParserInfo(ExpressionParserInfo):
     Default: Optional[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnMatchTypeExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["Expression"]:
                 self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
@@ -86,5 +82,3 @@ class MatchTypeExpressionParserInfo(ExpressionParserInfo):
             if self.Default is not None:
                 with helper["Default"]:
                     self.Default.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnMatchTypeExpression(stack, VisitType.Exit, self, *args, **kwargs)

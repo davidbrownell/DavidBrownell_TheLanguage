@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
     from ..Common.ArgumentParserInfo import ArgumentParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
 
 
 # ----------------------------------------------------------------------
@@ -57,11 +57,10 @@ class FuncInvocationExpressionParserInfo(ExpressionParserInfo):
             assert self.Arguments
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnFuncInvocationExpression(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["Expression"]:
                 self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
@@ -70,5 +69,3 @@ class FuncInvocationExpressionParserInfo(ExpressionParserInfo):
                 with helper["Arguments"]:
                     for arg in self.Arguments:
                         arg.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnFuncInvocationExpression(stack, VisitType.Exit, self, *args, **kwargs)

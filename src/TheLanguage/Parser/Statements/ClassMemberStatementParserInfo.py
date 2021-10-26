@@ -37,7 +37,7 @@ with InitRelativeImports():
 
     from ..Common.ClassModifier import ClassModifier as ClassModifierType
     from ..Common.VisibilityModifier import VisibilityModifier
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
 
     from ..Error import Error
 
@@ -137,11 +137,10 @@ class ClassMemberStatementParserInfo(StatementParserInfo):
         self.Validate()
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnClassMemberStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["Type"]:
                 self.Type.Accept(visitor, helper.stack, *args, **kwargs)
@@ -149,5 +148,3 @@ class ClassMemberStatementParserInfo(StatementParserInfo):
             if self.InitializedValue is not None:
                 with helper["InitializedValue"]:
                     self.InitializedValue.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnClassMemberStatement(stack, VisitType.Exit, self, *args, **kwargs)

@@ -300,45 +300,6 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
     ),
 
     # ----------------------------------------------------------------------
-    # |  Primitive
-    ClassType.Primitive: TypeInfo(
-        # Class
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Members
-        VisibilityModifier.private,
-        _all_visibilities,
-
-        # Base
-        None,
-        [],
-        [],
-
-        # Implements
-        None,
-        [],
-        [],
-
-        # Uses
-        None,
-        [],
-        [],
-
-        # Modifier
-        ClassModifierType.immutable,
-        _all_modifiers,
-
-        # Methods
-        MethodModifier.standard,
-        [MethodModifier.standard, MethodModifier.static],
-
-        # Members
-        AllowDataMembers=False,
-        AllowMutablePublicDataMembers=False,
-    ),
-
-    # ----------------------------------------------------------------------
     # |  Struct
     ClassType.Struct: TypeInfo(
         # Class

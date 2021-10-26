@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  StringExpression.py
+# |  NumberLiteralExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-22 10:28:06
+# |      2021-10-22 13:38:55
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the StringExpression object"""
+"""Contains the NumberLiteralExpression object"""
 
 import os
 import re
@@ -31,6 +31,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .IntegerLiteralExpression import IntegerLiteralExpression
+
     from ..Common.Tokens import RegexToken
 
     from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
@@ -43,33 +45,34 @@ with InitRelativeImports():
 
     from ....Parser.Parser import CreateParserRegions
 
-    from ....Parser.Literals.StringLiteralParserInfo import StringLiteralParserInfo
+    from ....Parser.Literals.NumberLiteralParserInfo import NumberLiteralParserInfo
 
 
 # ----------------------------------------------------------------------
-class StringExpression(GrammarPhrase):
+class NumberLiteralExpression(GrammarPhrase):
     """\
-    A single-line string.
-
-    "<content>"
+    An integer or decimal.
 
     Examples:
-        "Hello, World!"
+        123
+        3.14
+        -13
+        -1.2324
     """
 
-    PHRASE_NAME                             = "String Expression"
+    PHRASE_NAME                             = "Number Literal Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(StringExpression, self).__init__(
+        super(NumberLiteralExpression, self).__init__(
             DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
                     RegexToken(
-                        "<string>",
-                        re.compile(r'\"(?P<value>(?:\\\"|[^\"])*)\"'),
+                        "<number>",
+                        re.compile(r"(?P<value>{}\.\d+)".format(IntegerLiteralExpression.INTEGER_REGEX)),
                     ),
                 ],
             ),
@@ -89,13 +92,13 @@ class StringExpression(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
-        # <string>
-        string_node = cast(AST.Leaf, nodes[0])
-        string_info = cast(str, ExtractToken(string_node))
+        # <number>
+        number_leaf = cast(AST.Leaf, nodes[0])
+        number_info = cast(str, ExtractToken(number_leaf))
 
-        string_info = string_info.replace(r'\"', '"')
+        number_info = float(number_info)
 
-        return StringLiteralParserInfo(
+        return NumberLiteralParserInfo(
             CreateParserRegions(node),  # type: ignore
-            string_info,
+            number_info,
         )

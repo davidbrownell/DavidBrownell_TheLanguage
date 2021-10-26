@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoopStatementParserInfo.py
+# |  NumberLiteralExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 10:12:40
+# |      2021-10-22 13:48:01
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NoopStatementParserInfo object"""
+"""Automated tests for NumberLiteralExpression.py"""
 
 import os
-
-from dataclasses import dataclass
+import textwrap
 
 import CommonEnvironment
 
@@ -29,12 +28,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import StatementParserInfo
+    from .....IntegrationTests import *
+    from ..NumberLiteralExpression import *
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class NoopStatementParserInfo(StatementParserInfo):
-    """Represents a Noop (No-Operation) statement"""
-
-    pass
+def test_Standard():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            standard = 123.456
+            negative = -1.2345678
+            positive = +987.65
+            """,
+        ),
+    )))

@@ -20,7 +20,6 @@ import os
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -36,5 +35,4 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class NumberLiteralParserInfo(LiteralParserInfo):
-    """An integer or float value; context is necessary to determine if the literal is used correctly"""
     Value: float

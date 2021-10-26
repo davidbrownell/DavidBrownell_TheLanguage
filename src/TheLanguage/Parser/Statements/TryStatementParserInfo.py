@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfo, StatementParserInfo
-    from ..Common.VisitorTools import StackHelper, VisitType
+    from ..Common.VisitorTools import StackHelper
     from ..Types.TypeParserInfo import TypeParserInfo
 
 
@@ -45,11 +45,10 @@ class TryStatementClauseParserInfo(ParserInfo):
     Statements: List[StatementParserInfo]
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnTryStatementClause(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["Type"]:
                 self.Type.Accept(visitor, helper.stack, *args, **kwargs)
@@ -57,8 +56,6 @@ class TryStatementClauseParserInfo(ParserInfo):
             with helper["Statements"]:
                 for statement in self.Statements:
                     statement.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnTryStatementClause(stack, VisitType.Exit, self, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
@@ -69,11 +66,10 @@ class TryStatementParserInfo(StatementParserInfo):
     DefaultStatements: Optional[List[StatementParserInfo]]
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor, stack, *args, **kwargs):
-        if visitor.OnTryStatement(stack, VisitType.Enter, self, *args, **kwargs) is False:
-            return
-
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
             with helper["TryStatements"]:
                 for statement in self.TryStatements:
@@ -88,5 +84,3 @@ class TryStatementParserInfo(StatementParserInfo):
                 with helper["DefaultStatements"]:
                     for statement in self.DefaultStatements:
                         statement.Accept(visitor, helper.stack, *args, **kwargs)
-
-        visitor.OnTryStatement(stack, VisitType.Exit, self, *args, **kwargs)

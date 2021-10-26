@@ -17,7 +17,7 @@
 
 import os
 
-from enum import auto, Enum
+from enum import Enum
 
 import CommonEnvironment
 
@@ -34,8 +34,5 @@ class ClassType(Enum):
     Exception                               = "exception"
     Interface                               = "interface"
     Mixin                                   = "mixin"
-    Primitive                               = "primitive"
     Struct                                  = "struct"
     Trait                                   = "trait"
-
-    # TODO: Introduce synchronized; only mutable, no public data members, ...

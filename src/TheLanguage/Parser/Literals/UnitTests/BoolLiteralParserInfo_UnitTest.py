@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoopStatementParserInfo.py
+# |  BoolLiteralParserInfo_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-29 10:12:40
+# |      2021-10-22 10:12:54
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NoopStatementParserInfo object"""
+"""Unit test for BoolLiteralParserInfo.py"""
 
 import os
-
-from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -29,12 +27,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import StatementParserInfo
+    from ..BoolLiteralParserInfo import *
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class NoopStatementParserInfo(StatementParserInfo):
-    """Represents a Noop (No-Operation) statement"""
-
-    pass
+# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
+def test_Placeholder():
+    assert True
