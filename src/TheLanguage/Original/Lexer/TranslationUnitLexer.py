@@ -140,9 +140,9 @@ class SyntaxInvalidError(Error):
                 if node_iter_end is None:
                     continue
 
-                if best_nodes and node_iter_end.Offset == best_nodes[-1][-1].IterEnd.Offset:  # type: ignore
+                if best_nodes and node_iter_end.Offset == best_nodes[-1][1].IterEnd.Offset:  # type: ignore
                     best_nodes.append((CalcDepth(node), node, reference_node))
-                elif not best_nodes or node_iter_end.Offset > best_nodes[-1][-1].IterEnd.Offset:  # type: ignore
+                elif not best_nodes or node_iter_end.Offset > best_nodes[-1][1].IterEnd.Offset:  # type: ignore
                     best_nodes = [(CalcDepth(node), node, reference_node)]
 
         # Calculate the error node

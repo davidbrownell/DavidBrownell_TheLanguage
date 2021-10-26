@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import Callable, cast, List, Tuple, Union
+from typing import Callable, cast, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,14 +32,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
+    from ..Expressions.NoneLiteralExpression import NoneLiteralExpression
 
     from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
+        DynamicPhrase,
         ExtractDynamic,
+        ExtractOr,
         ExtractRepeat,
         ExtractSequence,
+        PhraseItem,
         ZeroOrMorePhraseItem,
     )
 
@@ -67,6 +71,14 @@ class VariantType(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
+        type_phrase_item = PhraseItem.Create(
+            name="Type",
+            item=(
+                DynamicPhrasesType.Types,
+                NoneLiteralExpression.CreatePhraseItem(),
+            ),
+        )
+
         super(VariantType, self).__init__(
             DynamicPhrasesType.Types,
             CreatePhrase(
@@ -77,19 +89,19 @@ class VariantType(GrammarPhrase):
                     CommonTokens.PushIgnoreWhitespaceControl,
 
                     # <type> '|'
-                    DynamicPhrasesType.Types,
+                    type_phrase_item,
                     "|",
 
                     ZeroOrMorePhraseItem.Create(
                         name="Type and Sep",
                         item=[
-                            DynamicPhrasesType.Types,
+                            type_phrase_item,
                             "|",
                         ],
                     ),
 
                     # <type>
-                    DynamicPhrasesType.Types,
+                    type_phrase_item,
 
                     # ')'
                     CommonTokens.PopIgnoreWhitespaceControl,
@@ -114,7 +126,7 @@ class VariantType(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 8
 
-            type_infos: List[TypeParserInfo] = []
+            type_infos: List[Optional[TypeParserInfo]] = []
 
             for child_node in itertools.chain(
                 [nodes[2]],
@@ -127,8 +139,19 @@ class VariantType(GrammarPhrase):
                 ],
                 [nodes[5]],
             ):
-                type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, child_node)))
-                type_infos.append(cast(TypeParserInfo, GetParserInfo(type_node)))
+                type_node = cast(AST.Node, ExtractOr(cast(AST.Node, child_node)))
+
+                assert type_node.Type is not None
+
+                if isinstance(type_node.Type, DynamicPhrase):
+                    type_node = ExtractDynamic(type_node)
+                    type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+                elif type_node.Type.Name == NoneLiteralExpression.PHRASE_ITEM_NAME:
+                    type_info = None
+                else:
+                    assert False, type_node.Type  # pragma: no cover
+
+                type_infos.append(type_info)
 
             return VariantTypeParserInfo(
                 CreateParserRegions(node),  # type: ignore

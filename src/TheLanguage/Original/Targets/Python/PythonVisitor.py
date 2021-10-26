@@ -486,6 +486,24 @@ class PythonVisitor(Visitor):
     # |
     # ----------------------------------------------------------------------
     @Interface.override
+    def OnAssertStatement(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: AssertStatementParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        self._stream.write("assert ")
+        parser_info.Expression.Accept(self, stack)
+
+        if parser_info.DisplayExpression is not None:
+            self._stream.write(", ")
+            parser_info.DisplayExpression.Accept(self, stack)
+
+        self._stream.write("\n")
+
+        return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def OnBinaryStatement(
         self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
