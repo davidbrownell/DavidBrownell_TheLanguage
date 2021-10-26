@@ -69,6 +69,9 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 # We should not generically match these keywords:
 #
 ReservedKeywords                            = [
+    # ../Statements/AssertStatement.py
+    "assert",
+
     # ../Statements/BreakStatement.py
     "break",
 

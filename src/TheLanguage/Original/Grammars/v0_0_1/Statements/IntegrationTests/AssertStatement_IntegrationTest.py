@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneLiteralExpression_IntegrationTest.py
+# |  AssertStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-22 11:10:49
+# |      2021-10-26 12:16:33
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for NoneLiteralExpression.py"""
+"""Automated tests for AssertStatement.py"""
 
 import os
 import textwrap
-
-import pytest
 
 import CommonEnvironment
 
@@ -31,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .....IntegrationTests import *
-    from ..NoneLiteralExpression import NoneLiteralExpression
+    from ..AssertStatement import *
 
 
 # ----------------------------------------------------------------------
@@ -39,31 +37,8 @@ def test_Standard():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            value = None
+            assert foo
+            assert bar, "Bar"
             """,
         ),
     )))
-
-
-# ----------------------------------------------------------------------
-def test_NoneAsFuncName():
-    with pytest.raises(SyntaxInvalidError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                Int None(a, b, c):
-                    pass
-                """,
-            ),
-            debug_string_on_exceptions=False,
-        )
-
-    ex = ex.value
-
-    assert str(ex) == textwrap.dedent(
-        """\
-        The syntax is not recognized. [1, 5]
-
-        '0.0.1 Grammar Statement' was expected.
-        """,
-    )

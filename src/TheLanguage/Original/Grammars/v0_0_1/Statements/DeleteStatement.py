@@ -40,12 +40,13 @@ with InitRelativeImports():
         ExtractToken,
     )
 
-    from ....Parser.Parser import CreateParserRegions, GetParserInfo
+    from ....Parser.Parser import CreateParserRegions
 
     from ....Parser.Statements.DeleteStatementParserInfo import DeleteStatementParserInfo
 
 
 # ----------------------------------------------------------------------
+# TODO: Should support deleting a list of items
 class DeleteStatement(GrammarPhrase):
     """\
     Deletes a variable so that it is no longer accessible.
