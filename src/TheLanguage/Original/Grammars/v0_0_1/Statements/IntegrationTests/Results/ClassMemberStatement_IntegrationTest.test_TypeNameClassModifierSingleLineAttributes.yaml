@@ -1,0 +1,103 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: None
+    Implements: None
+    Name: "Foo"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+      ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+      Documentation: None
+      Implements: None
+      Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
+      Self__: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+      Statements: "[Ln 1, Col 12] -> [Ln 6, Col 1]"
+      Uses: None
+      Visibility: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+    Statements:
+      - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        InitializedValue: None
+        Name: "value1"
+        Regions__: # <class 'types.ClassMemberStatementParserInfoRegions'>
+          ClassModifier: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+          InitializedValue: None
+          Name: "[Ln 2, Col 53] -> [Ln 2, Col 59]"
+          Self__: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+          Type: "[Ln 2, Col 49] -> [Ln 2, Col 52]"
+          Visibility: "[Ln 2, Col 5] -> [Ln 3, Col 1]"
+        Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 2, Col 49] -> [Ln 2, Col 52]"
+            TypeName: "[Ln 2, Col 49] -> [Ln 2, Col 52]"
+          TypeName: "Int"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        InitializedValue: None
+        Name: "value2"
+        Regions__: # <class 'types.ClassMemberStatementParserInfoRegions'>
+          ClassModifier: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
+          InitializedValue: None
+          Name: "[Ln 3, Col 34] -> [Ln 3, Col 40]"
+          Self__: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
+          Type: "[Ln 3, Col 30] -> [Ln 3, Col 33]"
+          Visibility: "[Ln 3, Col 5] -> [Ln 4, Col 1]"
+        Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: None
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: None
+            Self__: "[Ln 3, Col 30] -> [Ln 3, Col 33]"
+            TypeName: "[Ln 3, Col 30] -> [Ln 3, Col 33]"
+          TypeName: "Int"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        InitializedValue: None
+        Name: "value3"
+        Regions__: # <class 'types.ClassMemberStatementParserInfoRegions'>
+          ClassModifier: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+          InitializedValue: None
+          Name: "[Ln 4, Col 51] -> [Ln 4, Col 57]"
+          Self__: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+          Type: "[Ln 4, Col 42] -> [Ln 4, Col 50]"
+          Visibility: "[Ln 4, Col 5] -> [Ln 5, Col 1]"
+        Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: TypeModifier.var
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: "[Ln 4, Col 47] -> [Ln 4, Col 50]"
+            Self__: "[Ln 4, Col 42] -> [Ln 4, Col 50]"
+            TypeName: "[Ln 4, Col 42] -> [Ln 4, Col 46]"
+          TypeName: "Char"
+        Visibility: "VisibilityModifier.private"
+      - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
+        ClassModifier: "ClassModifier.immutable"
+        InitializedValue: None
+        Name: "value4"
+        Regions__: # <class 'types.ClassMemberStatementParserInfoRegions'>
+          ClassModifier: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
+          InitializedValue: None
+          Name: "[Ln 5, Col 40] -> [Ln 5, Col 46]"
+          Self__: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
+          Type: "[Ln 5, Col 31] -> [Ln 5, Col 39]"
+          Visibility: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
+        Type: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: TypeModifier.var
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: "[Ln 5, Col 36] -> [Ln 5, Col 39]"
+            Self__: "[Ln 5, Col 31] -> [Ln 5, Col 39]"
+            TypeName: "[Ln 5, Col 31] -> [Ln 5, Col 35]"
+          TypeName: "Char"
+        Visibility: "VisibilityModifier.private"
+    Uses: None
+    Visibility: "VisibilityModifier.private"

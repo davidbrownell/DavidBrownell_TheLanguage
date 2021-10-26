@@ -1,0 +1,144 @@
+# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+    DataItems:
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[10, 1] (123)"
+          IterEnd: "[10, 4] (126)"
+          Token: "Word Token"
+          Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+            Match: "<_sre.SRE_Match object; span=(123, 126), match='ten'>"
+          Whitespace: None
+        Phrase: "Word Token"
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[10, 4] (126)"
+          IterEnd: "[10, 5] (127)"
+          Token: "Colon"
+          Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+            Match: "<_sre.SRE_Match object; span=(126, 127), match=':'>"
+          Whitespace: None
+        Phrase: "Colon"
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        IsIgnored: True
+        IterBegin: "[10, 17] (139)"
+        IterEnd: "[10, 29] (151)"
+        Token: "<comment>"
+        Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+          Match: "<_sre.SRE_Match object; span=(139, 151), match='# Comment 10'>"
+        Whitespace:
+          - 127
+          - 139
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[10, 29] (151)"
+          IterEnd: "[11, 1] (152)"
+          Token: "Newline+"
+          Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+            End: 152
+            Start: 151
+          Whitespace: None
+        Phrase: "Newline+"
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[11, 1] (152)"
+          IterEnd: "[11, 5] (156)"
+          Token: "Indent"
+          Value: # <class 'Original.Lexer.Components.Token.IndentToken.MatchResult'>
+            End: 156
+            Start: 152
+            Value: 4
+          Whitespace: None
+        Phrase: "Indent"
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+          DataItems:
+            - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                IsIgnored: False
+                IterBegin: "[11, 5] (156)"
+                IterEnd: "[11, 11] (162)"
+                Token: "Upper Token"
+                Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(156, 162), match='ELEVEN'>"
+                Whitespace: None
+              Phrase: "Upper Token"
+            - # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+              IsIgnored: True
+              IterBegin: "[11, 17] (168)"
+              IterEnd: "[11, 29] (180)"
+              Token: "<comment>"
+              Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                Match: "<_sre.SRE_Match object; span=(168, 180), match='# Comment 11'>"
+              Whitespace:
+                - 162
+                - 168
+            - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                IsIgnored: False
+                IterBegin: "[11, 29] (180)"
+                IterEnd: "[12, 1] (181)"
+                Token: "Newline+"
+                Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  End: 181
+                  Start: 180
+                Whitespace: None
+              Phrase: "Newline+"
+          IsComplete: True
+        Phrase: "[Upper Token, Newline+]"
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+          DataItems:
+            - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                IsIgnored: False
+                IterBegin: "[12, 5] (185)"
+                IterEnd: "[12, 7] (187)"
+                Token: "Number Token"
+                Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Match: "<_sre.SRE_Match object; span=(185, 187), match='12'>"
+                Whitespace: None
+              Phrase: "Number Token"
+            - # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+              IsIgnored: True
+              IterBegin: "[12, 17] (197)"
+              IterEnd: "[12, 29] (209)"
+              Token: "<comment>"
+              Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                Match: "<_sre.SRE_Match object; span=(197, 209), match='# Comment 12'>"
+              Whitespace:
+                - 187
+                - 197
+            - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                IsIgnored: False
+                IterBegin: "[12, 29] (209)"
+                IterEnd: "[13, 1] (210)"
+                Token: "Newline+"
+                Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+                  End: 210
+                  Start: 209
+                Whitespace: None
+              Phrase: "Newline+"
+          IsComplete: True
+        Phrase: "[Number Token, Newline+]"
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[13, 1] (210)"
+          IterEnd: "[13, 1] (210)"
+          Token: "Dedent"
+          Value: # <class 'Original.Lexer.Components.Token.DedentToken.MatchResult'>
+            {}
+          Whitespace: None
+        Phrase: "Dedent"
+    IsComplete: True
+  Phrase: "Indent"
+IterBegin: "[10, 1] (123)"
+IterEnd: "[13, 1] (210)"
+Success: True

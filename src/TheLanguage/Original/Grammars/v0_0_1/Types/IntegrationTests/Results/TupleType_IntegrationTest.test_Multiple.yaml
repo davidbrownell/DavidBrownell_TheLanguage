@@ -1,0 +1,55 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
+    ClassModifier: None
+    Documentation: None
+    IsAsync: None
+    IsDeferred: None
+    IsExceptional: None
+    IsGenerator: None
+    IsSynchronized: None
+    MethodModifier: "MethodModifier.standard"
+    Name: "Func"
+    Parameters: False
+    Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
+      ClassModifier: None
+      Documentation: None
+      IsAsync: None
+      IsDeferred: None
+      IsExceptional: None
+      IsGenerator: None
+      IsSynchronized: None
+      MethodModifier: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+      Name: "[Ln 4, Col 3] -> [Ln 4, Col 7]"
+      Parameters: "[Ln 4, Col 7] -> [Ln 4, Col 9]"
+      ReturnType: "[Ln 1, Col 1] -> [Ln 4, Col 2]"
+      Self__: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+      Statements: "[Ln 4, Col 9] -> [Ln 6, Col 1]"
+      Visibility: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+    ReturnType: # <class 'Original.Parser.Types.TupleTypeParserInfo.TupleTypeParserInfo'>
+      Regions__: # <class 'types.TupleTypeParserInfoRegions'>
+        Self__: "[Ln 1, Col 1] -> [Ln 4, Col 2]"
+      Types:
+        - # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: TypeModifier.var
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: "[Ln 2, Col 9] -> [Ln 2, Col 12]"
+            Self__: "[Ln 2, Col 5] -> [Ln 2, Col 12]"
+            TypeName: "[Ln 2, Col 5] -> [Ln 2, Col 8]"
+          TypeName: "Int"
+        - # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
+          Modifier: TypeModifier.view
+          Regions__: # <class 'types.StandardTypeParserInfoRegions'>
+            Modifier: "[Ln 3, Col 10] -> [Ln 3, Col 14]"
+            Self__: "[Ln 3, Col 5] -> [Ln 3, Col 14]"
+            TypeName: "[Ln 3, Col 5] -> [Ln 3, Col 9]"
+          TypeName: "Char"
+    Statements:
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
+    Visibility: "VisibilityModifier.private"
