@@ -1,0 +1,69 @@
+# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+      DataItems:
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 7] (6)"
+            Token: "lower"
+            Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(0, 6), match='lower1'>"
+            Whitespace: None
+          Phrase: "lower"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[1, 11] (10)"
+            IterEnd: "[2, 1] (11)"
+            Token: "Newline+"
+            Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+              End: 11
+              Start: 10
+            Whitespace:
+              - 6
+              - 10
+          Phrase: "Newline+"
+      IsComplete: True
+    Phrase: "[lower, Newline+]"
+  Phrase: "([lower, Newline+] | [upper, Newline+])"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[2, 1] (11)"
+Success: True
+
+# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+      DataItems:
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[2, 1] (11)"
+            IterEnd: "[2, 7] (17)"
+            Token: "lower"
+            Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(11, 17), match='lower2'>"
+            Whitespace: None
+          Phrase: "lower"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[2, 9] (19)"
+            IterEnd: "[3, 1] (20)"
+            Token: "Newline+"
+            Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+              End: 20
+              Start: 19
+            Whitespace:
+              - 17
+              - 19
+          Phrase: "Newline+"
+      IsComplete: True
+    Phrase: "[lower, Newline+]"
+  Phrase: "([lower, Newline+] | [upper, Newline+])"
+IterBegin: "[2, 1] (11)"
+IterEnd: "[3, 1] (20)"
+Success: True

@@ -1,0 +1,38 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Literals.BoolLiteralParserInfo.BoolLiteralParserInfo'>
+      Regions__: # <class 'types.BoolLiteralParserInfoRegions'>
+        Self__: "[Ln 1, Col 14] -> [Ln 1, Col 18]"
+      Value: True
+    Modifier: None
+    Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "true_value"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 1, Col 1] -> [Ln 1, Col 11]"
+        Self__: "[Ln 1, Col 1] -> [Ln 1, Col 11]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 1, Col 14] -> [Ln 1, Col 18]"
+      Modifier: None
+      Name: "[Ln 1, Col 1] -> [Ln 1, Col 11]"
+      Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+  - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Literals.BoolLiteralParserInfo.BoolLiteralParserInfo'>
+      Regions__: # <class 'types.BoolLiteralParserInfoRegions'>
+        Self__: "[Ln 2, Col 15] -> [Ln 2, Col 20]"
+      Value: False
+    Modifier: None
+    Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "false_value"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 2, Col 1] -> [Ln 2, Col 12]"
+        Self__: "[Ln 2, Col 1] -> [Ln 2, Col 12]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 2, Col 15] -> [Ln 2, Col 20]"
+      Modifier: None
+      Name: "[Ln 2, Col 1] -> [Ln 2, Col 12]"
+      Self__: "[Ln 2, Col 1] -> [Ln 3, Col 1]"

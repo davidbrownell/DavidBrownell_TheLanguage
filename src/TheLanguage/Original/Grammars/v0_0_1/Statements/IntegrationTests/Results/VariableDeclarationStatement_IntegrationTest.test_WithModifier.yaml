@@ -1,0 +1,27 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
+      Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+        Name: "value"
+        Regions__: # <class 'types.VariableNameParserInfoRegions'>
+          Name: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+          Self__: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+      Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+        Name: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+        Self__: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+    Modifier: TypeModifier.var
+    Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "one"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
+        Self__: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 1, Col 11] -> [Ln 1, Col 16]"
+      Modifier: "[Ln 1, Col 1] -> [Ln 1, Col 4]"
+      Name: "[Ln 1, Col 5] -> [Ln 1, Col 8]"
+      Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
