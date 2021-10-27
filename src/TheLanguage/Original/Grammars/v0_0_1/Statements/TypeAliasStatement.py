@@ -107,7 +107,7 @@ class TypeAliasStatement(GrammarPhrase):
             name_info = cast(str, ExtractToken(name_leaf))
 
             if not CommonTokens.TypeNameRegex.match(name_info):
-                raise CommonTokens.InvalidTokenError(name_leaf, name_info, "type")
+                raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "type")
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))

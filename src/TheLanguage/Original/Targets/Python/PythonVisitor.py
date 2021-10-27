@@ -227,15 +227,6 @@ class PythonVisitor(Visitor):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def OnFuncNameExpression(
-        self,
-        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        parser_info: FuncNameExpressionParserInfo,
-    ) -> Union[None, bool, Callable[[], Any]]:
-        self._stream.write(parser_info.Name)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     def OnGeneratorExpression(
         self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
@@ -252,6 +243,15 @@ class PythonVisitor(Visitor):
             parser_info.ConditionExpression.Accept(self, stack)
 
         return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnGenericNameExpression(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: GenericNameExpressionParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        self._stream.write(parser_info.Name)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -394,16 +394,6 @@ class PythonVisitor(Visitor):
             parser_info.Expression.Accept(self, stack)
 
         return False
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def OnVariableExpression(
-        self,
-        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        parser_info: VariableExpressionParserInfo,
-    ) -> Union[None, bool, Callable[[], Any]]:
-        # Nothing to do here
-        pass
 
     # ----------------------------------------------------------------------
     # |
