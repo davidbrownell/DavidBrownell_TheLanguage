@@ -232,8 +232,8 @@ class FuncDefinitionStatement(GrammarPhrase):
                         ),
                     ),
 
-                    # <name>
-                    CommonTokens.FuncName,
+                    # <generic_name>
+                    CommonTokens.GenericUpperName,
 
                     # <parameters>
                     ParametersPhraseItem.Create(),
@@ -305,12 +305,16 @@ class FuncDefinitionStatement(GrammarPhrase):
             else:
                 assert False, return_type_node.Type  # pragma: no cover
 
-            # <name>
+            # <generic_name>
             func_name_leaf = cast(AST.Leaf, nodes[4])
             func_name_info = cast(str, ExtractToken(func_name_leaf, group_dict_name="value"))
 
+            func_name_match = CommonTokens.FuncNameRegex.match(func_name_info)
+            if not func_name_match:
+                raise CommonTokens.InvalidTokenError.FromNode(func_name_leaf, func_name_info, "function")
+
             # Get the alphanumeric portion of the function name to determine if it is async
-            alpha_region = ExtractTokenSpan(func_name_leaf, "alphanum")
+            alpha_region = ExtractTokenSpan(func_name_leaf, "alphanum", func_name_match)
             assert alpha_region is not None
 
             alpha_text = alpha_region[0].Content[alpha_region[0].Offset : alpha_region[1].Offset]
@@ -323,10 +327,10 @@ class FuncDefinitionStatement(GrammarPhrase):
                 is_async_info = None
                 is_async_region = None
 
-            is_generator_region = ExtractTokenSpan(func_name_leaf, "generator_suffix")
+            is_generator_region = ExtractTokenSpan(func_name_leaf, "generator_suffix", func_name_match)
             is_generator_info = None if is_generator_region is None else True
 
-            is_exceptional_region = ExtractTokenSpan(func_name_leaf, "exceptional_suffix")
+            is_exceptional_region = ExtractTokenSpan(func_name_leaf, "exceptional_suffix", func_name_match)
             is_exceptional_info = None if is_exceptional_region is None else True
 
             if func_name_info.startswith("__") or func_name_info.endswith("__"):

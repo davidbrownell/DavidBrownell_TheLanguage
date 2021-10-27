@@ -69,16 +69,16 @@ def Create(
 
 ) -> Union[ZeroOrMorePhraseItem, OptionalPhraseItem]:
     """\
-    ('@' <name> <<Arguments>>? <newline>?)*
+    ('@' <generic_name> <<Arguments>>? <newline>?)*
         - or -
-    ('@' <name> <<Arguments>>? <newline>?)?             # If 'allow_multiple' is False
+    ('@' <generic_name> <<Arguments>>? <newline>?)?             # If 'allow_multiple' is False
     """
 
     phrase_item = PhraseItem.Create(
         name="Attribute",
         item=[
             "@",
-            CommonTokens.AttributeName,
+            CommonTokens.GenericUpperName,
             OptionalPhraseItem(ArgumentsPhraseItem.Create()),
             OptionalPhraseItem(CommonTokens.Newline),
         ],
@@ -111,9 +111,12 @@ def ExtractLexerData(
         nodes = ExtractSequence(node)
         assert len(nodes) == 4
 
-        # <name>
+        # <generic_name>
         name_leaf = cast(Leaf, nodes[1])
         name_info = cast(str, ExtractToken(name_leaf))
+
+        if not CommonTokens.AttributeNameRegex.match(name_info):
+            raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "attribute")
 
         # <<Arguments>>?
         arguments_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], nodes[2])))

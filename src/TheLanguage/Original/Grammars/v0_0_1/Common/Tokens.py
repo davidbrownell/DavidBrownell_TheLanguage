@@ -21,7 +21,10 @@ import textwrap
 
 from typing import Callable, Optional
 
+from dataclasses import dataclass
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,6 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ...Error import Error
+
     from ....Lexer.Components.Token import (
         DedentToken,
         IndentToken,
@@ -56,6 +61,8 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 
 
 # ----------------------------------------------------------------------
+# TODO: There really has to be a better way to do this.
+
 # The following keywords are special and should not be consumed by the generic expression below.
 # Without this special consideration, the phrase (for example):
 #
@@ -66,96 +73,166 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 #   - Function invocation expression: 'move' is the function name and '(foo,)' are the arguments
 #   - Unary expression: 'move' is the operator and '(foo,)' is a tuple
 #
-# We should not generically match these keywords:
+# A word should be added to this list if any of these conditions are true:
+#
+#   A) A literal keyword (should always begin with an uppercase)
+#   B) Non-enum word potentially followed by a tuple
 #
 ReservedKeywords                            = [
-    # ../Statements/AssertStatement.py
-    "assert",
+    # ----------------------------------------------------------------------
+    # |  Expressions
 
-    # ../Statements/BreakStatement.py
-    "break",
-
-    # ../Statements/ContinueStatement.py
-    "continue",
-
-    # ../Statements/DeleteStatement.py
-    "del",
-
-    # ../Statements/RaiseStatement.py
-    "raise",
-
-    # ../Statements/ReturnStatement.py
-    "return",
-
-    # ../Statements/ScopedRefStatement.py
-    "as", # TODO: Is this necessary?
-
-    # ../Statements/YieldStatement.py
-    "yield",
+    # ../Expressions.BinaryExpression.py
+    "and",                                  # (B)
+    "or",                                   # (B)
+    "in",                                   # (B)
+    "not in",                               # (B)
+    "is",                                   # (B)
 
     # ../Expressions.BoolLiteralExpression.py
-    "True",
-    "False",
+    "True",                                 # (A)
+    "False",                                # (A)
+
+    # ../Expressions/CastExpression.py
+    "as",                                   # (B)
+
+    # ../Expression/GeneratorExpression.py
+    "for",                                  # (B)
+    "if",                                   # (B)
+
+    # ../Expressions/LambdaExpression.py
+    "lambda",                               # (B)
+
+    # ../Expressions/MatchTypeExpression.py|MatchValueExpression.py
+    "case",                                 # (B)
 
     # ../Expressions/NoneLiteralExpression.py
     "None",
 
+    # ../Expressions/TernaryExpression.py
+    "if",                                   # (B)
+    "else",                                 # (B)
+
     # ../Expressions/UnaryExpression.py
-    "await",                                # Coroutines
-    "copy",                                 # Transfer
-    "move",                                 # Transfer
-    "not",                                  # Logical
+    "await",                                # (B)
+    "copy",                                 # (B)
+    "move",                                 # (B)
+    "not",                                  # (B)
+
+    # ----------------------------------------------------------------------
+    # |  Statements
+
+    # ../Statements/AssertStatement.py
+    "assert",                               # (B)
+
+    # ../Statements/ForStatement.py
+    "in",                                   # (B)
+
+    # ../Statements/IfStatement.py
+    "if",                                   # (B)
+    "elif",                                 # (B)
+
+    # ../Statements/ImportStatement.py
+    "from",
+
+    # ../Statements/RaiseStatement.py
+    "raise",                                # (B)
+
+    # ../Statements/ReturnStatement.py
+    "return",                               # (B)
+
+    # ../Statements/WhileStatement.py
+    "while",                                # (B)
+
+    # ../Statements/YieldStatement.py
+    "yield",                                # (B)
+    "from",                                 # (B)
 ]
 
-
-# ----------------------------------------------------------------------
-def _CreateToken(
-    token_name: str,
-    regex: str,
-    filter_func: Callable[[str], bool],
-    *,
-    template_var: Optional[str]=None,
-):
-    regex_suffixes = []
-
-    for reserved_keyword in ReservedKeywords:
-        if not filter_func(reserved_keyword[0]):
-            continue
-
-        regex_suffixes.append(r"(?<!{})".format(re.escape(reserved_keyword)))
-
-    regex_suffixes = "".join(regex_suffixes)
-
-    if template_var is not None:
-        regex = regex.format(**{template_var: regex_suffixes})
-    else:
-        regex = "{}{}".format(regex, regex_suffixes)
-
-    return RegexToken(token_name, re.compile(regex))
+ReservedKeywords                            = set(ReservedKeywords)
 
 
 # ----------------------------------------------------------------------
-ArgumentName                                = _CreateToken("<argument_name>", r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b", str.islower)
-VariableName                                = _CreateToken("<variable_name>", r"(?P<value>_?[a-z][A-Za-z0-9_]*)(?<!__)\b", str.islower)
-ParameterName                               = _CreateToken("<parameter_name>", r"(?P<value>[a-z][A-Za-z0-9_]*)(?<!__)\b", str.islower)
+ArgumentNameRegex                           = re.compile(r"^[a-z][a-zA-Z0-9_]*(?<!__)$")
+AttributeNameRegex                          = re.compile(r"^[A-Z][a-zA-Z0-9_]*(?<!__)$")
+ParameterNameRegex                          = re.compile(r"^[a-z][a-zA-Z0-9_]*(?<!__)$")
+TypeNameRegex                               = re.compile(r"^_?[A-Z][a-zA-Z0-9_]*(?<!__)$")
+VariableNameRegex                           = re.compile(r"^_?[a-z][a-zA-Z0-9_]*(?<!__)$")
 
-AttributeName                               = _CreateToken("<attribute_name>", r"(?P<value>[A-Z][A-Za-z0-9_]+(?<!__))\b", str.isupper)
-TypeName                                    = _CreateToken("<type_name>", r"(?P<value>_?[A-Z][A-Za-z0-9_]+(?<!__))\b", str.isupper)
-
-FuncName                                    = _CreateToken(
-    "<func_name>",
+FuncNameRegex                               = re.compile(
     textwrap.dedent(
-        r"""(?P<value>(?#
-            Underscores                                 )_{{0,2}}(?#
-            Func Name                                   )(?P<alphanum>[A-Z][A-Za-z0-9_]+)(?#
-            Do not end with an underscore               )(?<!_)(?#
-            Do not match an extra alpha char            )(?![A-Za-z0-9])(?#
-            Do not match tokens                         ){tokens}(?#
-            generator suffix                            )(?P<generator_suffix>\.\.\.)?(?#
-            exceptional suffix                          )(?P<exceptional_suffix>\?)?(?#
-            Underscores                                 )(?:__)?(?#
-        ))""",
+        r"""(?#
+            Start                           )^(?#
+            Underscores                     )_{0,2}(?#
+            Func Name                       )(?P<alphanum>[A-Z][a-zA-Z0-9_]+)(?#
+            Don't end with an underscore;
+                that will come later        )(?<!_)(?#
+            Generator Suffix                )(?P<generator_suffix>\.\.\.)?(?#
+            Exceptional Suffix              )(?P<exceptional_suffix>\?)?(?#
+            Underscores                     )_{0,2}(?#
+            End                             )$(?#
+        )""",
     ),
-    str.isupper,
-    template_var="tokens",
 )
+
+
+# ----------------------------------------------------------------------
+def _CreateGenericNameToken(
+    token_name: str,
+    filter_func: Optional[Callable[[str], bool]],
+) -> RegexToken:
+    if filter_func is None:
+        initial_char = "[a-zA-Z]"
+        filter_func = lambda value: True
+    elif filter_func == str.islower:
+        initial_char = "[a-z]"
+    elif filter_func == str.isupper:
+        initial_char = "[A-Z]"
+    else:
+        assert False, filter_func  # pragma: no cover
+
+    return RegexToken(
+        token_name,
+        re.compile(
+            textwrap.dedent(
+                r"""(?P<value>(?#
+                    Initial Underscores [optional]                          )_*(?#
+                    Alpha                                                   ){initial_char}(?#
+                    Alphanumeric                                            )[a-zA-Z0-9_]*(?#
+                    Don't end with an underscore; that will come later      )(?<!_)(?#
+                    Don't leave any alphanumeric                            )(?![a-zA-Z0-9])(?#
+                    Tokens to ignore                                        ){tokens_to_ignore}(?#
+                    Elipsis [optional]                                      )(?:\.\.\.)?(?#
+                    Question Mark [optional]                                )\??(?#
+                    Trailing Underscores [optional]                         )_*(?#
+                ))""",
+            ).format(
+                initial_char=initial_char,
+                tokens_to_ignore="".join(
+                    [
+                        "(?<!{})".format(re.escape(keyword))
+                        for keyword in ReservedKeywords
+                        if filter_func(keyword[0])
+                    ],
+                ),
+            ),
+        ),
+    )
+
+
+GenericName                                 = _CreateGenericNameToken("<generic_name>", None)
+GenericUpperName                            = _CreateGenericNameToken("<generic_upper_name>", str.isupper)
+GenericLowerName                            = _CreateGenericNameToken("<generic_lower_name>", str.islower)
+
+del _CreateGenericNameToken
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class InvalidTokenError(Error):
+    Value: str
+    TokenType: str
+
+    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
+        "'{Value}' is not a valid '{TokenType}' token.", # TODO: Additional error info
+    )

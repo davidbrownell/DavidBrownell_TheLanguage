@@ -101,7 +101,7 @@ class TryStatement(GrammarPhrase):
                     statements_phrase_item,
 
                     # (
-                    #     'except' <type> <name>? ':'
+                    #     'except' <type> <generic_name>? ':'
                     #         <statement>+
                     # )*
                     ZeroOrMorePhraseItem.Create(
@@ -109,7 +109,7 @@ class TryStatement(GrammarPhrase):
                         item=[
                             "except",
                             DynamicPhrasesType.Types,
-                            OptionalPhraseItem.Create(CommonTokens.VariableName),
+                            OptionalPhraseItem.Create(CommonTokens.GenericLowerName),
                             statements_phrase_item,
                         ],
                     ),
@@ -164,12 +164,15 @@ class TryStatement(GrammarPhrase):
                     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, except_clause_nodes[1])))
                     type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
-                    # <name>?
+                    # <generic_name>?
                     name_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], except_clause_nodes[2])))
                     if name_node is None:
                         name_info = None
                     else:
                         name_info = cast(str, ExtractToken(cast(AST.Leaf, name_node)))
+
+                        if not CommonTokens.VariableNameRegex.match(name_info):
+                            raise CommonTokens.InvalidTokenError.FromNode(name_node, name_info, "variable")
 
                     # <statement>+
                     statements_node = cast(AST.Node, except_clause_nodes[3])
