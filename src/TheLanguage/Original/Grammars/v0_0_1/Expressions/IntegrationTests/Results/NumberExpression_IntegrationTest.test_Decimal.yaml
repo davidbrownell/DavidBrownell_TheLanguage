@@ -1,0 +1,54 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 4, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Literals.NumberLiteralParserInfo.NumberLiteralParserInfo'>
+      Regions__: # <class 'types.NumberLiteralParserInfoRegions'>
+        Self__: "[Ln 1, Col 12] -> [Ln 1, Col 19]"
+      Value: 123.456
+    Modifier: None
+    Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "standard"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 1, Col 1] -> [Ln 1, Col 9]"
+        Self__: "[Ln 1, Col 1] -> [Ln 1, Col 9]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 1, Col 12] -> [Ln 1, Col 19]"
+      Modifier: None
+      Name: "[Ln 1, Col 1] -> [Ln 1, Col 9]"
+      Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+  - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Literals.NumberLiteralParserInfo.NumberLiteralParserInfo'>
+      Regions__: # <class 'types.NumberLiteralParserInfoRegions'>
+        Self__: "[Ln 2, Col 12] -> [Ln 2, Col 22]"
+      Value: -1.2345678
+    Modifier: None
+    Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "negative"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 2, Col 1] -> [Ln 2, Col 9]"
+        Self__: "[Ln 2, Col 1] -> [Ln 2, Col 9]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 2, Col 12] -> [Ln 2, Col 22]"
+      Modifier: None
+      Name: "[Ln 2, Col 1] -> [Ln 2, Col 9]"
+      Self__: "[Ln 2, Col 1] -> [Ln 3, Col 1]"
+  - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Literals.NumberLiteralParserInfo.NumberLiteralParserInfo'>
+      Regions__: # <class 'types.NumberLiteralParserInfoRegions'>
+        Self__: "[Ln 3, Col 12] -> [Ln 3, Col 19]"
+      Value: 987.65
+    Modifier: None
+    Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "positive"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 3, Col 1] -> [Ln 3, Col 9]"
+        Self__: "[Ln 3, Col 1] -> [Ln 3, Col 9]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 3, Col 12] -> [Ln 3, Col 19]"
+      Modifier: None
+      Name: "[Ln 3, Col 1] -> [Ln 3, Col 9]"
+      Self__: "[Ln 3, Col 1] -> [Ln 4, Col 1]"

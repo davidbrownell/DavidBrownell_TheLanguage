@@ -1,0 +1,66 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 11, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
+    ImportItems:
+      - # <class 'Original.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
+        Alias: None
+        Name: "Obj1"
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
+          Alias: None
+          Name: "[Ln 1, Col 20] -> [Ln 1, Col 24]"
+          Self__: "[Ln 1, Col 20] -> [Ln 1, Col 24]"
+      - # <class 'Original.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
+        Alias: "Obj2Decorated"
+        Name: "Obj2"
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
+          Alias: "[Ln 1, Col 34] -> [Ln 1, Col 47]"
+          Name: "[Ln 1, Col 26] -> [Ln 1, Col 30]"
+          Self__: "[Ln 1, Col 26] -> [Ln 1, Col 47]"
+    ImportType: "ImportType.SourceIsModule"
+    Regions__: # <class 'types.ImportStatementParserInfoRegions'>
+      Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+      SourceFilename: "[Ln 1, Col 6] -> [Ln 1, Col 11]"
+      Visibility: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+    SourceFilename: "File1"
+    Visibility: "VisibilityModifier.private"
+  - # <class 'Original.Parser.Statements.ImportStatementParserInfo.ImportStatementParserInfo'>
+    ImportItems:
+      - # <class 'Original.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
+        Alias: "Obj3Decorated"
+        Name: "Obj3"
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
+          Alias: "[Ln 4, Col 13] -> [Ln 4, Col 26]"
+          Name: "[Ln 4, Col 5] -> [Ln 4, Col 9]"
+          Self__: "[Ln 4, Col 5] -> [Ln 4, Col 26]"
+      - # <class 'Original.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
+        Alias: None
+        Name: "Obj4"
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
+          Alias: None
+          Name: "[Ln 5, Col 5] -> [Ln 5, Col 9]"
+          Self__: "[Ln 5, Col 5] -> [Ln 5, Col 9]"
+      - # <class 'Original.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
+        Alias: "obj5Decorated"
+        Name: "obj5"
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
+          Alias: "[Ln 7, Col 17] -> [Ln 7, Col 30]"
+          Name: "[Ln 7, Col 9] -> [Ln 7, Col 13]"
+          Self__: "[Ln 7, Col 9] -> [Ln 7, Col 30]"
+      - # <class 'Original.Parser.Statements.ImportStatementParserInfo.ImportStatementItemParserInfo'>
+        Alias: None
+        Name: "obj6"
+        Regions__: # <class 'types.ImportStatementItemParserInfoRegions'>
+          Alias: None
+          Name: "[Ln 9, Col 13] -> [Ln 9, Col 17]"
+          Self__: "[Ln 9, Col 13] -> [Ln 9, Col 17]"
+    ImportType: "ImportType.SourceIsModule"
+    Regions__: # <class 'types.ImportStatementParserInfoRegions'>
+      Self__: "[Ln 3, Col 1] -> [Ln 11, Col 1]"
+      SourceFilename: "[Ln 3, Col 6] -> [Ln 3, Col 14]"
+      Visibility: "[Ln 3, Col 1] -> [Ln 11, Col 1]"
+    SourceFilename: "...File2"
+    Visibility: "VisibilityModifier.private"

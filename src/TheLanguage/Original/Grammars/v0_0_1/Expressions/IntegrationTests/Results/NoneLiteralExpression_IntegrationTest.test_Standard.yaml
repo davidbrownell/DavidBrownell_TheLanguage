@@ -1,0 +1,22 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Literals.NoneLiteralParserInfo.NoneLiteralParserInfo'>
+      Regions__: # <class 'types.NoneLiteralParserInfoRegions'>
+        Self__: "[Ln 1, Col 9] -> [Ln 1, Col 13]"
+      Value: None
+    Modifier: None
+    Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
+      Name: "value"
+      Regions__: # <class 'types.VariableNameParserInfoRegions'>
+        Name: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+        Self__: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+    Regions__: # <class 'types.VariableDeclarationStatementParserInfoRegions'>
+      Expression: "[Ln 1, Col 9] -> [Ln 1, Col 13]"
+      Modifier: None
+      Name: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+      Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"

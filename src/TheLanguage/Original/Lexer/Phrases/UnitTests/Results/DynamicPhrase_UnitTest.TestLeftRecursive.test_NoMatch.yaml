@@ -1,0 +1,17 @@
+# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+      DataItems:
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: None
+          Phrase: "Lower"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: None
+          Phrase: "Upper"
+      IsComplete: True
+    Phrase: "All Phrases <Prefix>"
+  Phrase: "Dynamic Phrase"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[1, 1] (0)"
+Success: False

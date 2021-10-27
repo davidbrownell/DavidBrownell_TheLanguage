@@ -1,0 +1,61 @@
+# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+      Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+        DataItems:
+          - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 1] (0)"
+                  IterEnd: "[1, 4] (3)"
+                  Token: "Lower"
+                  Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(0, 3), match='var'>"
+                  Whitespace: None
+                Phrase: "Lower"
+              Phrase: "All Phrases"
+            Phrase: "Dynamic Phrase"
+          - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+              IsIgnored: False
+              IterBegin: "[1, 4] (3)"
+              IterEnd: "[1, 5] (4)"
+              Token: "'['"
+              Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                Match: "<_sre.SRE_Match object; span=(3, 4), match='['>"
+              Whitespace: None
+            Phrase: "'['"
+          - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                  IsIgnored: False
+                  IterBegin: "[1, 5] (4)"
+                  IterEnd: "[1, 6] (5)"
+                  Token: "Lower"
+                  Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Match: "<_sre.SRE_Match object; span=(4, 5), match='a'>"
+                  Whitespace: None
+                Phrase: "Lower"
+              Phrase: "All Phrases"
+            Phrase: "DynamicPhrasesType.Statements"
+          - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+              IsIgnored: False
+              IterBegin: "[1, 6] (5)"
+              IterEnd: "[1, 7] (6)"
+              Token: "']'"
+              Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                Match: "<_sre.SRE_Match object; span=(5, 6), match=']'>"
+              Whitespace: None
+            Phrase: "']'"
+        IsComplete: True
+      Phrase: "Index"
+    Phrase: "All Phrases"
+  Phrase: "Dynamic Phrase"
+IterBegin: "[1, 1] (0)"
+IterEnd: "[1, 7] (6)"
+Success: True

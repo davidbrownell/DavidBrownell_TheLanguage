@@ -1,0 +1,32 @@
+# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+      DataItems:
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[2, 1] (4)"
+            IterEnd: "[2, 5] (8)"
+            Token: "Number Token"
+            Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(4, 8), match='2222'>"
+            Whitespace: None
+          Phrase: "Number Token"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[2, 5] (8)"
+            IterEnd: "[3, 1] (9)"
+            Token: "Newline+"
+            Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+              End: 9
+              Start: 8
+            Whitespace: None
+          Phrase: "Newline+"
+      IsComplete: True
+    Phrase: "[Number Token, Newline+]"
+  Phrase: "([Word Token, Newline+] | [Number Token, Newline+] | [Upper Token, Newline+])"
+IterBegin: "[2, 1] (4)"
+IterEnd: "[3, 1] (9)"
+Success: True
