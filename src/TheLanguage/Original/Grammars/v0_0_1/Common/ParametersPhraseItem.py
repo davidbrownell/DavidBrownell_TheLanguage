@@ -173,8 +173,8 @@ def Create() -> PhraseItem:
                 item="*",
             ),
 
-            # <name>
-            CommonTokens.ParameterName,
+            # <generic_name>
+            CommonTokens.GenericLowerName,
 
             # ('=' <expression>)?
             OptionalPhraseItem.Create(
@@ -314,9 +314,12 @@ def ExtractParserInfo(
             )
             is_var_args_info = None if is_var_args_node is None else True
 
-            # <name>
+            # <generic_name>
             name_leaf = cast(Leaf, these_parameter_nodes[2])
             name_info = cast(str, ExtractToken(name_leaf))
+
+            if not CommonTokens.ParameterNameRegex.match(name_info):
+                raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "parameter")
 
             # ('=' <expression>)?
             default_node = cast(

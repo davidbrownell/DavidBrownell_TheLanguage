@@ -41,8 +41,10 @@ class PythonTarget(Target):
     # ----------------------------------------------------------------------
     def __init__(
         self,
+        input_dir: str,
         output_dir: str,
     ):
+        self._input_dir                     = input_dir
         self._output_dir                    = output_dir
 
         FileSystem.MakeDirs(self._output_dir)
@@ -54,7 +56,16 @@ class PythonTarget(Target):
         fully_qualified_name: str,
         parser_info: RootParserInfo,
     ):
-        output_filename = os.path.join(self._output_dir, "{}.py".format(os.path.basename(fully_qualified_name)))
+        assert fully_qualified_name.startswith(self._input_dir), (fully_qualified_name, self._input_dir)
+        relative_path = FileSystem.TrimPath(fully_qualified_name, self._input_dir)
+
+        output_filename = os.path.join(self._output_dir, "{}.py".format(relative_path))
+        output_dirname = os.path.dirname(output_filename)
+
+        if not os.path.isdir(output_dirname):
+            FileSystem.MakeDirs(output_dirname)
+            with open(os.path.join(output_dirname, "__init__.py"), "w"):
+                pass
 
         with open(output_filename, "w") as f:
             visitor = PythonVisitor(f)

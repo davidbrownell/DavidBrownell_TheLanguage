@@ -68,8 +68,8 @@ class StandardType(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <type_name>
-                    CommonTokens.TypeName,
+                    # <generic_name>
+                    CommonTokens.GenericUpperName,
 
                     # <modifier>?
                     OptionalPhraseItem.Create(
@@ -94,9 +94,12 @@ class StandardType(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
-        # <type_name>
+        # <generic_name>
         type_leaf = cast(AST.Leaf, nodes[0])
         type_info = cast(str, ExtractToken(type_leaf))
+
+        if not CommonTokens.TypeNameRegex.match(type_info):
+            raise CommonTokens.InvalidTokenError.FromNode(type_leaf, type_info, "type")
 
         # <modifier>?
         modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))

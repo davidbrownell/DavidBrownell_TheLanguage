@@ -54,13 +54,9 @@ Statements:
               TypeName: "[Ln 1, Col 17] -> [Ln 1, Col 21]"
             TypeName: "Bool"
         - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
-          Default: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-            Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-              Name: "value"
-              Regions__: # <class 'types.VariableNameParserInfoRegions'>
-                Name: "[Ln 1, Col 38] -> [Ln 1, Col 43]"
-                Self__: "[Ln 1, Col 38] -> [Ln 1, Col 43]"
-            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+          Default: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+            Name: "value"
+            Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
               Name: "[Ln 1, Col 38] -> [Ln 1, Col 43]"
               Self__: "[Ln 1, Col 38] -> [Ln 1, Col 43]"
           IsVarArgs: None

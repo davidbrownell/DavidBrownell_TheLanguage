@@ -72,8 +72,8 @@ class TypeAliasStatement(GrammarPhrase):
                     # 'using'
                     "using",
 
-                    # <name>
-                    CommonTokens.TypeName,
+                    # <generic_name>
+                    CommonTokens.GenericUpperName,
 
                     # '='
                     "=",
@@ -102,9 +102,12 @@ class TypeAliasStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
-            # <name>
+            # <generic_name>
             name_leaf = cast(AST.Leaf, nodes[1])
             name_info = cast(str, ExtractToken(name_leaf))
+
+            if not CommonTokens.TypeNameRegex.match(name_info):
+                raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "type")
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))

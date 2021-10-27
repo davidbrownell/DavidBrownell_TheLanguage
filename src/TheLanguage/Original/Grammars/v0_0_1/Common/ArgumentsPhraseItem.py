@@ -76,11 +76,11 @@ def Create() -> PhraseItem:
     argument_item = PhraseItem.Create(
         name="Argument",
         item=[
-            # (<name> '=')?
+            # (<generic_name> '=')?
             OptionalPhraseItem.Create(
                 name="With Keyword",
                 item=[
-                    CommonTokens.ArgumentName,
+                    CommonTokens.GenericLowerName,
                     "=",
                 ],
             ),
@@ -161,7 +161,7 @@ def ExtractParserInfo(
         argument_nodes = ExtractSequence(argument_node)
         assert len(argument_nodes) == 2
 
-        # (<name> '=')?
+        # (<generic_name> '=')?
         keyword_node = cast(Optional[Node], ExtractOptional(cast(Optional[Node], argument_nodes[0])))
 
         if keyword_node is None:
@@ -181,6 +181,9 @@ def ExtractParserInfo(
 
             keyword_node = cast(Leaf, keyword_nodes[0])
             keyword_info = cast(str, ExtractToken(keyword_node))
+
+            if not CommonTokens.ArgumentNameRegex.match(keyword_info):
+                raise CommonTokens.InvalidTokenError.FromNode(keyword_node, keyword_info, "argument")
 
         # <expression>
         expression_node = ExtractDynamic(cast(Node, argument_nodes[1]))

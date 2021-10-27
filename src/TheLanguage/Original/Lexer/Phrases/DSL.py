@@ -19,7 +19,7 @@ import os
 import re
 import textwrap
 
-from typing import Callable, cast, List, Optional, Tuple, Union
+from typing import Callable, cast, List, Match as RegexMatch, Optional, Tuple, Union
 
 from dataclasses import dataclass, field
 
@@ -294,6 +294,7 @@ def ExtractToken(
 def ExtractTokenSpan(
     leaf: Leaf,
     match_group_name: str,
+    regex_match: Optional[RegexMatch]=None,
 ) -> Optional[Tuple[Phrase.NormalizedIterator, Phrase.NormalizedIterator]]:
     """\
     Returns the iterators associated with the start and end of a group within a match (or None if the
@@ -302,18 +303,24 @@ def ExtractTokenSpan(
 
     assert isinstance(leaf.Value, RegexToken.MatchResult)
 
-    start = leaf.Value.Match.start(match_group_name)
-    end = leaf.Value.Match.end(match_group_name)
+    if regex_match is not None:
+        start = regex_match.start(match_group_name)
+        end = regex_match.end(match_group_name)
+
+    else:
+        start = leaf.Value.Match.start(match_group_name)
+        end = leaf.Value.Match.end(match_group_name)
+
+        assert start >= leaf.IterBegin.Offset
+        assert end >= leaf.IterBegin.Offset
+
+        start -= leaf.IterBegin.Offset
+        end -= leaf.IterBegin.Offset
 
     if start == end:
         return None
 
-    assert start >= leaf.IterBegin.Offset
-    assert end >= leaf.IterBegin.Offset
     assert start < end, (start, end)
-
-    start -= leaf.IterBegin.Offset
-    end -= leaf.IterBegin.Offset
 
     begin_iter = leaf.IterBegin.Clone()
     begin_iter.Advance(start)

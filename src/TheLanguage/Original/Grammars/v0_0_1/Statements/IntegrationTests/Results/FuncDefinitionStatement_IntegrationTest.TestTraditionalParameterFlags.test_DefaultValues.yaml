@@ -35,13 +35,9 @@ Statements:
             TypeName: "Int"
       Keyword:
         - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
-          Default: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-            Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-              Name: "value1"
-              Regions__: # <class 'types.VariableNameParserInfoRegions'>
-                Name: "[Ln 1, Col 26] -> [Ln 1, Col 32]"
-                Self__: "[Ln 1, Col 26] -> [Ln 1, Col 32]"
-            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+          Default: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+            Name: "value1"
+            Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
               Name: "[Ln 1, Col 26] -> [Ln 1, Col 32]"
               Self__: "[Ln 1, Col 26] -> [Ln 1, Col 32]"
           IsVarArgs: None
@@ -60,13 +56,9 @@ Statements:
               TypeName: "[Ln 1, Col 20] -> [Ln 1, Col 23]"
             TypeName: "Int"
         - # <class 'Original.Parser.Common.ParametersParserInfo.ParameterParserInfo'>
-          Default: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-            Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-              Name: "value2"
-              Regions__: # <class 'types.VariableNameParserInfoRegions'>
-                Name: "[Ln 1, Col 40] -> [Ln 1, Col 46]"
-                Self__: "[Ln 1, Col 40] -> [Ln 1, Col 46]"
-            Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+          Default: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+            Name: "value2"
+            Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
               Name: "[Ln 1, Col 40] -> [Ln 1, Col 46]"
               Self__: "[Ln 1, Col 40] -> [Ln 1, Col 46]"
           IsVarArgs: None

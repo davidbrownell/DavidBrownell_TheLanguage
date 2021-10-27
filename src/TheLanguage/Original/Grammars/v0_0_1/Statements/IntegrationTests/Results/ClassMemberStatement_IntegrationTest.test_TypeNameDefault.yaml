@@ -25,13 +25,9 @@ Statements:
     Statements:
       - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
-        InitializedValue: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-          Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-            Name: "value1"
-            Regions__: # <class 'types.VariableNameParserInfoRegions'>
-              Name: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
-              Self__: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
-          Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+        InitializedValue: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+          Name: "value1"
+          Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
             Name: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
             Self__: "[Ln 2, Col 15] -> [Ln 2, Col 21]"
         Name: "foo"
@@ -52,13 +48,9 @@ Statements:
         Visibility: "VisibilityModifier.private"
       - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
-        InitializedValue: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-          Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-            Name: "value2"
-            Regions__: # <class 'types.VariableNameParserInfoRegions'>
-              Name: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
-              Self__: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
-          Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+        InitializedValue: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+          Name: "value2"
+          Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
             Name: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
             Self__: "[Ln 3, Col 17] -> [Ln 3, Col 23]"
         Name: "_bar"

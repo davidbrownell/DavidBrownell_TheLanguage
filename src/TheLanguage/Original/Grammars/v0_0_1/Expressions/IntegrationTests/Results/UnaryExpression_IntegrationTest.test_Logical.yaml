@@ -6,13 +6,9 @@ Regions__: # <class 'types.RootParserInfoRegions'>
 Statements:
   - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
     Expression: # <class 'Original.Parser.Expressions.UnaryExpressionParserInfo.UnaryExpressionParserInfo'>
-      Expression: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-        Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-          Name: "foo"
-          Regions__: # <class 'types.VariableNameParserInfoRegions'>
-            Name: "[Ln 1, Col 14] -> [Ln 1, Col 17]"
-            Self__: "[Ln 1, Col 14] -> [Ln 1, Col 17]"
-        Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+      Expression: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+        Name: "foo"
+        Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
           Name: "[Ln 1, Col 14] -> [Ln 1, Col 17]"
           Self__: "[Ln 1, Col 14] -> [Ln 1, Col 17]"
       Operator: "OperatorType.Not"

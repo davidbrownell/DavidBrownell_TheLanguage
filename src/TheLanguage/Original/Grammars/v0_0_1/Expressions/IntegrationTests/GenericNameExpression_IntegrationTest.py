@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpressionParserInfo_UnitTest.py
+# |  GenericNameExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-04 09:10:56
+# |      2021-10-11 13:07:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit test for VariableExpressionParserInfo.py"""
+"""Automated test for GenericNameExpression.py"""
 
 import os
+import textwrap
 
 import CommonEnvironment
 
@@ -27,10 +28,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..VariableExpressionParserInfo import *
+    from .....IntegrationTests import *
+    from ..GenericNameExpression import *
 
 
 # ----------------------------------------------------------------------
-# TODO: Remove this in favor of a real test once the ParserInfo object does something more interesting
-def test_Placeholder():
-    assert True
+def test_Standard():
+    CompareResultsFromFile(str(Execute(
+        textwrap.dedent(
+            """\
+            value1 = Func
+            value2 = foo
+            value3 = Func...?
+            """,
+        ),
+    )))
