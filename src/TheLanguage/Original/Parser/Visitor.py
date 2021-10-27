@@ -46,8 +46,8 @@ with InitRelativeImports():
     )
     from .Expressions.CastExpressionParserInfo import CastExpressionParserInfo
     from .Expressions.FuncInvocationExpressionParserInfo import FuncInvocationExpressionParserInfo
-    from .Expressions.FuncNameExpressionParserInfo import FuncNameExpressionParserInfo
     from .Expressions.GeneratorExpressionParserInfo import GeneratorExpressionParserInfo
+    from .Expressions.GenericNameExpressionParserInfo import GenericNameExpressionParserInfo
     from .Expressions.GroupExpressionParserInfo import GroupExpressionParserInfo
     from .Expressions.IndexExpressionParserInfo import IndexExpressionParserInfo
     from .Expressions.LambdaExpressionParserInfo import LambdaExpressionParserInfo
@@ -60,8 +60,6 @@ with InitRelativeImports():
         UnaryExpressionParserInfo,
         OperatorType as UnaryExpressionOperatorType,    # Convenience
     )
-
-    from .Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
 
     # Literals
     from .Literals.BoolLiteralParserInfo import BoolLiteralParserInfo
@@ -200,9 +198,9 @@ class Visitor(VisitorBase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnFuncNameExpression(
+    def OnGeneratorExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        parser_info: FuncNameExpressionParserInfo,
+        parser_info: GeneratorExpressionParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:
@@ -211,9 +209,9 @@ class Visitor(VisitorBase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def OnGeneratorExpression(
+    def OnGenericNameExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        parser_info: GeneratorExpressionParserInfo,
+        parser_info: GenericNameExpressionParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:
@@ -324,17 +322,6 @@ class Visitor(VisitorBase):
     def OnUnaryExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: UnaryExpressionParserInfo,
-        *args,
-        **kwargs,
-    ) -> Union[None, bool, Callable[[], Any]]:
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def OnVariableExpression(
-        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
-        parser_info: VariableExpressionParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:

@@ -44,13 +44,9 @@ Statements:
         Visibility: "VisibilityModifier.private"
       - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
-        InitializedValue: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-          Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-            Name: "rhs1"
-            Regions__: # <class 'types.VariableNameParserInfoRegions'>
-              Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-              Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
-          Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+        InitializedValue: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+          Name: "rhs1"
+          Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
             Name: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
             Self__: "[Ln 3, Col 33] -> [Ln 3, Col 37]"
         Name: "value2"
@@ -71,13 +67,9 @@ Statements:
         Visibility: "VisibilityModifier.protected"
       - # <class 'Original.Parser.Statements.ClassMemberStatementParserInfo.ClassMemberStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
-        InitializedValue: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-          Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-            Name: "rhs2"
-            Regions__: # <class 'types.VariableNameParserInfoRegions'>
-              Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-              Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
-          Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+        InitializedValue: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+          Name: "rhs2"
+          Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
             Name: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
             Self__: "[Ln 4, Col 40] -> [Ln 4, Col 44]"
         Name: "value3"

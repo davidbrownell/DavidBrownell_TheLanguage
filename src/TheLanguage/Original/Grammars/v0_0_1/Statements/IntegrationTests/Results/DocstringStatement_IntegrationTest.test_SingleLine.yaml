@@ -59,7 +59,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[5, 7] (30)"
                 IterEnd: "[5, 10] (33)"
-                Type: "<type_name> <class 'Original.Lexer.Components.Token.RegexToken'>"
+                Type: "<generic_upper_name> <class 'Original.Lexer.Components.Token.RegexToken'>"
                 Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(30, 33), match='Foo'>"
                 Whitespace:
@@ -246,7 +246,7 @@ Children:
                 IsIgnored: False
                 IterBegin: "[11, 7] (88)"
                 IterEnd: "[11, 10] (91)"
-                Type: "<type_name> <class 'Original.Lexer.Components.Token.RegexToken'>"
+                Type: "<generic_upper_name> <class 'Original.Lexer.Components.Token.RegexToken'>"
                 Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
                   Match: "<_sre.SRE_Match object; span=(88, 91), match='Bar'>"
                 Whitespace:

@@ -68,7 +68,7 @@ class DeleteStatement(GrammarPhrase):
                 name=self.PHRASE_NAME,
                 item=[
                     "del",
-                    CommonTokens.VariableName,
+                    CommonTokens.GenericLowerName,
                     CommonTokens.Newline,
                 ],
             ),
@@ -88,9 +88,12 @@ class DeleteStatement(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 3
 
-        # <name>
+        # <generic_name>
         name_leaf = cast(AST.Leaf, nodes[1])
         name_info = cast(str, ExtractToken(name_leaf))
+
+        if not CommonTokens.VariableNameRegex.match(name_info):
+            raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "variable")
 
         return DeleteStatementParserInfo(
             CreateParserRegions(node, name_leaf),  # type: ignore

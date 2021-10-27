@@ -97,8 +97,8 @@ class ClassMemberStatement(GrammarPhrase):
                     # <type>
                     DynamicPhrasesType.Types,
 
-                    # <name>
-                    CommonTokens.VariableName,
+                    # <generic_name>
+                    CommonTokens.GenericLowerName,
 
                     # <class_modifier>?
                     OptionalPhraseItem.Create(
@@ -153,9 +153,12 @@ class ClassMemberStatement(GrammarPhrase):
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
             type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
-            # <name>
+            # <generic_name>
             name_leaf = cast(AST.Leaf, nodes[3])
             name_info = cast(str, ExtractToken(name_leaf))
+
+            if not CommonTokens.VariableNameRegex.match(name_info):
+                raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "variable")
 
             # <class_modifier>?
             class_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[4])))

@@ -84,18 +84,20 @@ class ScopedRefStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
+        ref_phrase_item = CommonTokens.GenericLowerName
+
         refs_expression = PhraseItem.Create(
             name="Refs",
             item=[
-                # <ref_expression>
-                CommonTokens.VariableName,
+                # <generic_name>
+                ref_phrase_item,
 
-                # (',' <ref_expression>)*
+                # (',' <generic_name>)*
                 ZeroOrMorePhraseItem.Create(
                     name="Comma and Ref",
                     item=[
                         ",",
-                        CommonTokens.VariableName,
+                        ref_phrase_item,
                     ],
                 ),
 
@@ -195,6 +197,9 @@ class ScopedRefStatement(GrammarPhrase):
             ):
                 variable_leaf = cast(AST.Leaf, ref_node)
                 variable_info = cast(str, ExtractToken(variable_leaf))
+
+                if not CommonTokens.VariableNameRegex.match(variable_info):
+                    raise CommonTokens.InvalidTokenError.FromNode(variable_leaf, variable_info, "variable")
 
                 ref_infos.append(
                     VariableNameParserInfo(

@@ -5,13 +5,9 @@ Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 8, Col 1]"
 Statements:
   - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
-    Expression: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-      Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-        Name: "value1"
-        Regions__: # <class 'types.VariableNameParserInfoRegions'>
-          Name: "[Ln 1, Col 13] -> [Ln 1, Col 19]"
-          Self__: "[Ln 1, Col 13] -> [Ln 1, Col 19]"
-      Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+    Expression: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+      Name: "value1"
+      Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
         Name: "[Ln 1, Col 13] -> [Ln 1, Col 19]"
         Self__: "[Ln 1, Col 13] -> [Ln 1, Col 19]"
     Modifier: None
@@ -40,13 +36,9 @@ Statements:
       Name: "[Ln 1, Col 1] -> [Ln 1, Col 10]"
       Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
   - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
-    Expression: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-      Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-        Name: "value2"
-        Regions__: # <class 'types.VariableNameParserInfoRegions'>
-          Name: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
-          Self__: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
-      Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+    Expression: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+      Name: "value2"
+      Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
         Name: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
         Self__: "[Ln 7, Col 5] -> [Ln 7, Col 11]"
     Modifier: None

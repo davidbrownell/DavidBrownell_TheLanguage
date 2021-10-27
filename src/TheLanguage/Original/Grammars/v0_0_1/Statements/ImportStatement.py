@@ -103,7 +103,7 @@ class ImportStatement(ImportGrammarPhrase):
 
         # Note that we don't want to be too restrictive here, as we want to be able to import different
         # types of content.
-        import_name = RegexToken("<import_name>", re.compile(r"(?P<value>[a-zA-Z0-9\._]+)"))
+        import_name = RegexToken("<import_name>", re.compile(r"(?P<value>[a-zA-Z0-9\._?]+)"))
 
         # <name> ('as' <name>)?
         content_phrase_item = PhraseItem.Create(
