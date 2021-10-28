@@ -147,6 +147,12 @@ ReservedKeywords                            = [
     # ../Statements/YieldStatement.py
     "yield",                                # (B)
     "from",                                 # (B)
+
+    # ----------------------------------------------------------------------
+    # |  Types
+
+    # ../Types/NoneType.py
+    "None",                                 # (A)
 ]
 
 ReservedKeywords                            = set(ReservedKeywords)

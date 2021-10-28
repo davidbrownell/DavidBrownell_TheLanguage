@@ -60,11 +60,11 @@ def test_MultipleEmptyTypesError():
 
     with pytest.raises(MultipleEmptyTypesError) as ex:
         VariantTypeParserInfo(
-            [region_creator(container=True, expected_error=True)],
+            [region_creator(container=True)],
             [
-                None,
+                NoneTypeParserInfo([region_creator(container=True)]),
                 TypeParserInfo([region_creator(container=True)]),
-                None,
+                NoneTypeParserInfo([region_creator(container=True, expected_error=True)]),
                 TypeParserInfo([region_creator(container=True)]),
             ],
         )

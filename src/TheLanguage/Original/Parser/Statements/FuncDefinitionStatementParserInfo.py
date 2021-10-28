@@ -229,7 +229,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     MethodModifier: MethodModifierType                  = field(init=False)
     ClassModifier: Optional[ClassModifierType]          = field(init=False)
 
-    ReturnType: Union[bool, TypeParserInfo]
+    ReturnType: TypeParserInfo
     Name: Union[str, OperatorType]
     Parameters: Union[bool, ParametersParserInfo]
     Statements: Optional[List[StatementParserInfo]]
@@ -356,9 +356,8 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     @Interface.override
     def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
-            if isinstance(self.ReturnType, TypeParserInfo):
-                with helper["ReturnType"]:
-                    self.ReturnType.Accept(visitor, helper.stack, *args, **kwargs)
+            with helper["ReturnType"]:
+                self.ReturnType.Accept(visitor, helper.stack, *args, **kwargs)
 
             if isinstance(self.Parameters, ParametersParserInfo):
                 with helper["Parameters"]:

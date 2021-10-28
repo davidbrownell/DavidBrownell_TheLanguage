@@ -43,14 +43,11 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
-    from ..Expressions.NoneLiteralExpression import NoneLiteralExpression
-
     from ...Error import Error
     from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        DynamicPhrase,
         ExtractDynamic,
         ExtractOptional,
         ExtractOr,
@@ -58,7 +55,6 @@ with InitRelativeImports():
         ExtractToken,
         ExtractTokenSpan,
         OptionalPhraseItem,
-        PhraseItem,
     )
 
     from ....Parser.Parser import CreateParserRegions, GetParserInfo
@@ -224,13 +220,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                     ),
 
                     # <type>
-                    PhraseItem.Create(
-                        name="Return Type",
-                        item=(
-                            DynamicPhrasesType.Types,
-                            NoneLiteralExpression.CreatePhraseItem(),
-                        ),
-                    ),
+                    DynamicPhrasesType.Types,
 
                     # <generic_name>
                     CommonTokens.GenericUpperName,
@@ -293,17 +283,8 @@ class FuncDefinitionStatement(GrammarPhrase):
                 method_type_modifier_info = MethodModifier.Extract(method_type_modifier_node)
 
             # <type>
-            return_type_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[3])))
-
-            assert return_type_node.Type is not None
-
-            if isinstance(return_type_node.Type, DynamicPhrase):
-                return_type_node = ExtractDynamic(return_type_node)
-                return_type_info = cast(TypeParserInfo, GetParserInfo(return_type_node))
-            elif return_type_node.Type.Name == NoneLiteralExpression.PHRASE_ITEM_NAME:
-                return_type_info = False
-            else:
-                assert False, return_type_node.Type  # pragma: no cover
+            return_type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
+            return_type_info = cast(TypeParserInfo, GetParserInfo(return_type_node))
 
             # <generic_name>
             func_name_leaf = cast(AST.Leaf, nodes[4])
