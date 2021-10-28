@@ -342,7 +342,7 @@ class SequencePhrase(Phrase):
             if result.Data is not None:
                 if (
                     result.Success
-                    and result.IterEnd.Offset != result.IterBegin.Offset
+                    and result.IterEnd != result.IterBegin
                     and comments_or_whitespace_data_items is not None
                 ):
                     data_items += comments_or_whitespace_data_items

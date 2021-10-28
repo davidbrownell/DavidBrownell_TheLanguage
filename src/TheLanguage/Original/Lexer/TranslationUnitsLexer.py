@@ -261,6 +261,30 @@ async def LexAsync(
                     try:
                         content = observer.LoadContent(fully_qualified_name)
 
+                        # ----------------------------------------------------------------------
+                        def SuppressIndentationInfo(
+                            offset_start: int,
+                            offset_end: int,
+                            content_start: int,
+                            content_end: int,
+                        ) -> bool:
+                            return bool(
+                                comment_token.Regex.match(
+                                    content,
+                                    pos=content_start,
+                                    endpos=content_end,
+                                ),
+                            )
+
+                        # ----------------------------------------------------------------------
+
+                        normalized_iter = Phrase.NormalizedIterator.FromNormalizedContent(
+                            Normalize(
+                                content,
+                                suppress_indentation_func=SuppressIndentationInfo,
+                            ),
+                        )
+
                         translation_unit_observer = _TranslationUnitObserver(
                             fully_qualified_name,
                             observer,
@@ -270,7 +294,7 @@ async def LexAsync(
                         root = await TranslationUnitLexAsync(
                             comment_token,
                             initial_phrases_info,
-                            Phrase.NormalizedIterator.FromNormalizedContent(Normalize(content)),
+                            normalized_iter,
                             translation_unit_observer,
                             single_threaded=single_threaded,
                         )
