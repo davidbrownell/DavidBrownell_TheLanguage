@@ -63,6 +63,7 @@ with InitRelativeImports():
 
     # Literals
     from .Literals.BoolLiteralParserInfo import BoolLiteralParserInfo
+    from .Literals.CharacterLiteralParserInfo import CharacterLiteralParserInfo
     from .Literals.IntegerLiteralParserInfo import IntegerLiteralParserInfo
     from .Literals.NoneLiteralParserInfo import NoneLiteralParserInfo
     from .Literals.NumberLiteralParserInfo import NumberLiteralParserInfo
@@ -338,6 +339,17 @@ class Visitor(VisitorBase):
     def OnBoolLiteral(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: BoolLiteralParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnCharacterLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: CharacterLiteralParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:
