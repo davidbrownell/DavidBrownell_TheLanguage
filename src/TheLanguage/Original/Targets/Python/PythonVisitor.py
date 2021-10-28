@@ -412,6 +412,15 @@ class PythonVisitor(Visitor):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def OnCharacterLiteral(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: CharacterLiteralParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        self._stream.write('"{}"'.format(parser_info.Value.replace('"', '\\"')))
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def OnIntegerLiteral(
         self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
