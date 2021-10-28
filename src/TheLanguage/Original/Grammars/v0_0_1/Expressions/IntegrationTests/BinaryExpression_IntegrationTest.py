@@ -75,6 +75,8 @@ def test_FunctionInvocation():
                     .funcB()
                     .funcC()
             )
+
+            var4 = Type1::Type2::FuncA()
             """,
         ),
     )))

@@ -153,6 +153,8 @@ class PythonVisitor(Visitor):
             self._stream.write(".")
         elif parser_info.Operator == BinaryExpressionOperatorType.ChainedFuncReturnSelf:
             assert False, "TODO"
+        elif parser_info.Operator == BinaryExpressionOperatorType.StaticAccessor:
+            assert False, "TODO"
         elif parser_info.Operator == BinaryExpressionOperatorType.Less:
             self._stream.write(" < ")
         elif parser_info.Operator == BinaryExpressionOperatorType.LessEqual:
