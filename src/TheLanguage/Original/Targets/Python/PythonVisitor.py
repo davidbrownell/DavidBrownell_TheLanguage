@@ -809,6 +809,16 @@ class PythonVisitor(Visitor):
     # |
     # ----------------------------------------------------------------------
     @Interface.override
+    def OnNoneType(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: NoneTypeParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        # Nothing to do for types
+        return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def OnStandardType(
         self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],

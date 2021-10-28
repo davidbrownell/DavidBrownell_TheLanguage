@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneLiteralExpression_IntegrationTest.py
+# |  NoneType_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-22 11:10:49
+# |      2021-10-27 15:23:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for NoneLiteralExpression.py"""
+"""Automated tests for NoneType.py"""
 
 import os
 import textwrap
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .....IntegrationTests import *
-    from ..NoneLiteralExpression import NoneLiteralExpression
+    from ..NoneType import *
 
 
 # ----------------------------------------------------------------------
@@ -39,19 +39,23 @@ def test_Standard():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            value = None
+            None Func1():
+                pass
+
+            (Int | None) Func2():
+                pass
             """,
         ),
     )))
 
 
 # ----------------------------------------------------------------------
-def test_NoneAsFuncName():
-    with pytest.raises(SyntaxInvalidError) as ex:
+def test_NoneWithModifierError():
+    with pytest.raises(NoneWithModifierError) as ex:
         Execute(
             textwrap.dedent(
                 """\
-                Int None(a, b, c):
+                None var Func():
                     pass
                 """,
             ),
@@ -60,10 +64,8 @@ def test_NoneAsFuncName():
 
     ex = ex.value
 
-    assert str(ex) == textwrap.dedent(
-        """\
-        The syntax is not recognized. [1, 5]
-
-        No statements matched this content for 'Func Invocation Statement'.
-        """,
-    )
+    assert str(ex) == "Modifiers should never be applied to 'None' types."
+    assert ex.Region.Begin.Line == 1
+    assert ex.Region.Begin.Column == 6
+    assert ex.Region.End.Line == 1
+    assert ex.Region.End.Column == 9

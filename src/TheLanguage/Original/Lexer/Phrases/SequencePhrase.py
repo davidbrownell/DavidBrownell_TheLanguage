@@ -340,7 +340,11 @@ class SequencePhrase(Phrase):
 
             # Preserve the results
             if result.Data is not None:
-                if result.Success and comments_or_whitespace_data_items is not None:
+                if (
+                    result.Success
+                    and result.IterEnd.Offset != result.IterBegin.Offset
+                    and comments_or_whitespace_data_items is not None
+                ):
                     data_items += comments_or_whitespace_data_items
 
                     comments_or_whitespace_data_items = None
