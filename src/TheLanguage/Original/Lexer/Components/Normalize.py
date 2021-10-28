@@ -19,7 +19,7 @@ import hashlib
 import os
 import textwrap
 
-from typing import List, Optional, Set
+from typing import Callable, List, Optional, Set
 
 from dataclasses import dataclass, field
 
@@ -200,6 +200,20 @@ def Normalize(
     # as such. An example of when to use this would be "---" when parsing yaml files.
     multiline_tokens_to_ignore: Optional[Set[str]]=None,
 
+    # Optional function that can be used to suppress the generation of indentation infomration
+    # on a per-line basis. An example of when to use this would be when a line starts with a comment
+    # that isn't aligned when the current indentation level.
+    suppress_indentation_func: Optional[
+        Callable[
+            [
+                int,                        # offset_start
+                int,                        # offset_end
+                int,                        # content_start
+                int                         # content_end
+            ],
+            bool                            # True to suppress the indentation change, False to allow it
+        ]
+    ]=None,
 ) -> NormalizedContent:
     """Normalizes the provided content to prevent repeated calculations"""
 
@@ -259,8 +273,10 @@ def Normalize(
     #       ----------------------  ---------------------
     #                """                    """
     #                <<<                    >>>         !!! Note that the enter and exit triplets do not have to be the same
-    #               <<<!!!                !!!>>>        !!! Note that there can be multiple triplets on the line
+    #               <<<!!!                !!!>>>        !!! Note that there can be multiple triplets as part of a phrase
     #
+
+    suppress_indentation_func = suppress_indentation_func or (lambda *args, **kwargs: False)
 
     # ----------------------------------------------------------------------
     @dataclass
@@ -297,9 +313,12 @@ def Normalize(
         line_start_offset = offset
         line_end_offset: Optional[int] = None
 
+        # TODO: There is likely a way to optimize the way in which indents/dedents are initially
+        # committed and then reverted when suppress_indentation_func returns True.
+
         indentation_value: Optional[int] = 0
         new_indentation_value: Optional[int] = None
-        num_dedents = 0
+        popped_indentations: List[IndentationInfo] = []
 
         content_start_offset: Optional[int] = None
         content_end_offset: Optional[int] = None
@@ -334,8 +353,7 @@ def Normalize(
                         if multiline_token_info is None:
                             # Detect dedents
                             while num_chars < indentation_stack[-1].num_chars:
-                                indentation_stack.pop()
-                                num_dedents += 1
+                                popped_indentations.append(indentation_stack.pop())
 
                             # Detect indents
                             if num_chars > indentation_stack[-1].num_chars:
@@ -365,8 +383,33 @@ def Normalize(
         assert content_end_offset is not None
 
         if multiline_token_info is None:
-            num_dedents = num_dedents or None
+            # If here, we are not in the midst of a multi-line token. Is this indentation
+            # information that should be suppressed?
+            if (
+                (popped_indentations or new_indentation_value is not None)
+                and suppress_indentation_func(
+                    line_start_offset,
+                    line_end_offset,
+                    content_start_offset,
+                    content_end_offset,
+                )
+            ):
+                if new_indentation_value is not None:
+                    assert indentation_stack
+                    indentation_stack.pop()
+
+                    new_indentation_value = None
+                    content_start_offset = line_start_offset
+
+                # Restore any popped indentations
+                indentation_stack.extend(popped_indentations)
+                popped_indentations = []
+
+            num_dedents = len(popped_indentations) if popped_indentations else None
+
         else:
+            # If here, we are in the midst of a multi-line token and all indentation information
+            # should be ignored.
             num_dedents = None
             new_indentation_value = None
 

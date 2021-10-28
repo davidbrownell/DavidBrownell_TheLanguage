@@ -97,18 +97,6 @@ Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
             Start: 25
           Whitespace: None
         Phrase: "Newline+"
-      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          IsIgnored: False
-          IterBegin: "[5, 1] (26)"
-          IterEnd: "[5, 5] (30)"
-          Token: "Indent"
-          Value: # <class 'Original.Lexer.Components.Token.IndentToken.MatchResult'>
-            End: 30
-            Start: 26
-            Value: 4
-          Whitespace: None
-        Phrase: "Indent"
       - # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
         IsIgnored: True
         IterBegin: "[5, 5] (30)"
@@ -116,7 +104,9 @@ Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Token: "<comment>"
         Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
           Match: "<_sre.SRE_Match object; span=(30, 90), match='# This is a comment; it should not interfere with>"
-        Whitespace: None
+        Whitespace:
+          - 26
+          - 30
       - # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
         IsIgnored: True
         IterBegin: "[5, 65] (90)"
@@ -126,6 +116,18 @@ Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
           End: 91
           Start: 90
         Whitespace: None
+      - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+        Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          IsIgnored: False
+          IterBegin: "[6, 1] (91)"
+          IterEnd: "[6, 5] (95)"
+          Token: "Indent"
+          Value: # <class 'Original.Lexer.Components.Token.IndentToken.MatchResult'>
+            End: 95
+            Start: 91
+            Value: 4
+          Whitespace: None
+        Phrase: "Indent"
       - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
         Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           IsIgnored: False

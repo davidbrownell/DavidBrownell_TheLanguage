@@ -73,7 +73,21 @@ def parse_mock():
 def CreateIterator(
     content: str,
 ) -> NormalizedIterator:
-    return NormalizedIterator.FromNormalizedContent(Normalize(content))
+    # ----------------------------------------------------------------------
+    def SuppressIndentation(offset_start, offset_end, content_start, content_end):
+        return (
+            content_start != content_end
+            and content[content_start] == "#"
+        )
+
+    # ----------------------------------------------------------------------
+
+    return NormalizedIterator.FromNormalizedContent(
+        Normalize(
+            content,
+            suppress_indentation_func=SuppressIndentation,
+        ),
+    )
 
 
 # ----------------------------------------------------------------------

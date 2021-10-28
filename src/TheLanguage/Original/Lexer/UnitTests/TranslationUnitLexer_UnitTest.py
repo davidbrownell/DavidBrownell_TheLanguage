@@ -506,6 +506,159 @@ class TestInterestingWhitespace(object):
 
 
 # ----------------------------------------------------------------------
+class TestIndentAndComments(object):
+    _phrase                                 = CreatePhrase(
+        name="Phrase",
+        item=OneOrMorePhraseItem(
+            [
+                _lower_token,
+                ":",
+                NewlineToken(),
+                IndentToken(),
+                OneOrMorePhraseItem.Create(
+                    [_upper_token, NewlineToken()],
+                ),
+                DedentToken(),
+            ],
+        ),
+    )
+
+    _dynamic_phrases                        = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_phrase]})
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_DedentedComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower:
+                        UPPER1
+                    # Comment 1
+                        UPPER2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_DedentedStartComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower:
+                    # Comment1
+                        UPPER1
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_DedentedEndComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower1:
+                        UPPER1
+
+                    # Comment 1
+
+                    lower2:
+                        UPPER2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_IndentedComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower:
+                        UPPER1
+                            # Comment 1
+                        UPPER2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_IndentedStartComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower:
+                            # Comment1
+                        UPPER1
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_IndentedEndComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower1:
+                        UPPER1
+
+                            # Comment 1
+
+
+
+                    lower2:
+                        UPPER2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+
+# ----------------------------------------------------------------------
 class TestSimple(object):
     _upper_phrase                           = CreatePhrase(name="Upper Phrase", item=[_upper_token, NewlineToken()])
     _lower_phrase                           = CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()])
