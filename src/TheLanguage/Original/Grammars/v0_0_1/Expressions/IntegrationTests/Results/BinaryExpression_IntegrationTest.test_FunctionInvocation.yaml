@@ -2,7 +2,7 @@
 Documentation: None
 Regions__: # <class 'types.RootParserInfoRegions'>
   Documentation: None
-  Self__: "[Ln 1, Col 1] -> [Ln 9, Col 1]"
+  Self__: "[Ln 1, Col 1] -> [Ln 11, Col 1]"
 Statements:
   - # <class 'Original.Parser.Statements.VariableDeclarationStatementParserInfo.VariableDeclarationStatementParserInfo'>
     Expression: # <class 'Original.Parser.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
