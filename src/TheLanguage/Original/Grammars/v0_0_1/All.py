@@ -80,6 +80,7 @@ with InitRelativeImports():
     from .Statements.YieldStatement import YieldStatement
 
     # Types
+    from .Types.NoneType import NoneType
     from .Types.StandardType import StandardType
     from .Types.TupleType import TupleType
     from .Types.VariantType import VariantType
@@ -144,6 +145,7 @@ GrammarPhrases                              = [
     # TODO: CompilerStatement
 
     # Types
+    NoneType(),
     StandardType(),
     TupleType(),
     VariantType(),

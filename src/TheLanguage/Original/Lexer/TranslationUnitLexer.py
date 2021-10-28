@@ -178,7 +178,34 @@ class SyntaxInvalidError(Error):
                 and error_node.IterBegin.Offset != error_node.IterEnd.Offset
             )
 
+            if error_node.IterEnd is not None:
+                # Adjust the column to account for whitespace so that the error information is more
+                # accurate.
+                column = error_node.IterEnd.Column
+
+                potential_whitespace = TokenPhrase.ExtractPotentialWhitespace(error_node.IterEnd.Clone())
+                if potential_whitespace is not None:
+                    column += (potential_whitespace[1] - potential_whitespace[0])
+
+                object.__setattr__(self, "Line", error_node.IterEnd.Line)
+                object.__setattr__(self, "Column", column)
+
         # Generate contextual information
+
+        # ----------------------------------------------------------------------
+        def MakeSingular(
+            phrase_name: str,
+        ) -> str:
+            # Ideally, we would use inflect here to better handle plural/singular detection and conversion,
+            # but it gets confused with strings formatted like "(One | Two | Three) Statements". So,
+            # we are taking things into our own hands here.
+            if phrase_name.endswith("s"):
+                return phrase_name[:-1]
+
+            return phrase_name
+
+        # ----------------------------------------------------------------------
+
         error_context: Optional[str] = None
 
         if is_error_ambiguous:
@@ -191,9 +218,6 @@ class SyntaxInvalidError(Error):
                 *,
                 make_singular: bool=False,
             ) -> str:
-                # Ideally, we would use inflect here to better handle plural/singular detection and conversion,
-                # but it gets confused with strings formatted like "(One | Two | Three) Statements". So,
-                # we are taking things into our own hands here.
                 is_plural = phrase_name.endswith("s")
 
                 if make_singular and is_plural:
@@ -233,7 +257,10 @@ class SyntaxInvalidError(Error):
                             ):
                                 expected_phrase_name = cast(DynamicPhrase, error_node.Type.Phrases[-1]).DisplayName
                             else:
-                                expected_phrase_name = error_node.Type.Phrases[len(error_node.Children) - 1].Name
+                                num_phrases = sum(0 if child.IsIgnored else 1 for child in error_node.Children) - 1
+                                assert num_phrases < len(error_node.Type.Phrases)
+
+                                expected_phrase_name = error_node.Type.Phrases[num_phrases].Name
 
                             error_context = "{}{} expected in '{}'".format(
                                 error_context or "",
@@ -290,31 +317,21 @@ class SyntaxInvalidError(Error):
         if error_context is None:
             error_context = error_node.ToYamlString().rstrip()
         else:
-            error_statement = get_parent_statement_node_func(error_reference_node)
+            error_statement = get_parent_statement_node_func(error_node)
+            if error_statement is None:
+                error_statement = get_parent_statement_node_func(error_reference_node)
 
             if (
                 error_statement is not None
                 and error_statement != error_node
                 and error_statement.Type is not None
             ):
-                error_context += " for '{}'".format(error_statement.Type.Name)
+                error_context += " for '{}'".format(MakeSingular(error_statement.Type.Name))
 
             error_context += "."
 
         object.__setattr__(self, "ErrorNode", error_node)
         object.__setattr__(self, "ErrorContext", error_context)
-
-        if error_node.IterEnd is not None:
-            # Adjust the column to account for whitespace so that the error information is more
-            # accurate.
-            column = error_node.IterEnd.Column
-
-            potential_whitespace = TokenPhrase.ExtractPotentialWhitespace(error_node.IterEnd.Clone())
-            if potential_whitespace is not None:
-                column += (potential_whitespace[1] - potential_whitespace[0])
-
-            object.__setattr__(self, "Line", error_node.IterEnd.Line)
-            object.__setattr__(self, "Column", column)
 
 
 # ----------------------------------------------------------------------

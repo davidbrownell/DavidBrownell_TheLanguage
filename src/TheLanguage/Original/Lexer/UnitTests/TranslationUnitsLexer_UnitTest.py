@@ -486,7 +486,7 @@ class TestStandard(object):
             """\
             The syntax is not recognized. [1, 3]
 
-            'Newline+' was expected in 'Number'.
+            'Newline+' was expected in 'Number' for '(Include | Upper | Lower | Number | New Scope) Statement'.
             """,
         )
 
@@ -556,7 +556,7 @@ class TestStandard(object):
             """\
             The syntax is not recognized. [4, 3]
 
-            'Newline+' was expected in 'Number'.
+            'Newline+' was expected in 'Number' for '(Include | Upper | Lower | Number | New Scope) Statement'.
             """,
         )
 

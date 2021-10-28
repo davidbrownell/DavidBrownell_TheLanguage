@@ -99,6 +99,7 @@ with InitRelativeImports():
     from .Statements.YieldStatementParserInfo import YieldStatementParserInfo
 
     # Types
+    from .Types.NoneTypeParserInfo import NoneTypeParserInfo
     from .Types.StandardTypeParserInfo import StandardTypeParserInfo
     from .Types.TupleTypeParserInfo import TupleTypeParserInfo
     from .Types.VariantTypeParserInfo import VariantTypeParserInfo
@@ -684,6 +685,17 @@ class Visitor(VisitorBase):
     # |
     # |  Types
     # |
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnNoneType(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: NoneTypeParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
