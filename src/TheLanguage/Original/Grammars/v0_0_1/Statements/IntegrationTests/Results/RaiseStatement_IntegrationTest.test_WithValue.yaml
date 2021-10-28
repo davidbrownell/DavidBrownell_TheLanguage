@@ -5,13 +5,9 @@ Regions__: # <class 'types.RootParserInfoRegions'>
   Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
 Statements:
   - # <class 'Original.Parser.Statements.RaiseStatementParserInfo.RaiseStatementParserInfo'>
-    Expression: # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-      Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-        Name: "foo"
-        Regions__: # <class 'types.VariableNameParserInfoRegions'>
-          Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
-          Self__: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
-      Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+    Expression: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+      Name: "foo"
+      Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
         Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
         Self__: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
     Regions__: # <class 'types.RaiseStatementParserInfoRegions'>
@@ -20,22 +16,14 @@ Statements:
   - # <class 'Original.Parser.Statements.RaiseStatementParserInfo.RaiseStatementParserInfo'>
     Expression: # <class 'Original.Parser.Expressions.TupleExpressionParserInfo.TupleExpressionParserInfo'>
       Expressions:
-        - # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-          Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-            Name: "a"
-            Regions__: # <class 'types.VariableNameParserInfoRegions'>
-              Name: "[Ln 2, Col 8] -> [Ln 2, Col 9]"
-              Self__: "[Ln 2, Col 8] -> [Ln 2, Col 9]"
-          Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+        - # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+          Name: "a"
+          Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
             Name: "[Ln 2, Col 8] -> [Ln 2, Col 9]"
             Self__: "[Ln 2, Col 8] -> [Ln 2, Col 9]"
-        - # <class 'Original.Parser.Expressions.VariableExpressionParserInfo.VariableExpressionParserInfo'>
-          Name: # <class 'Original.Parser.Names.VariableNameParserInfo.VariableNameParserInfo'>
-            Name: "b"
-            Regions__: # <class 'types.VariableNameParserInfoRegions'>
-              Name: "[Ln 2, Col 11] -> [Ln 2, Col 12]"
-              Self__: "[Ln 2, Col 11] -> [Ln 2, Col 12]"
-          Regions__: # <class 'types.VariableExpressionParserInfoRegions'>
+        - # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+          Name: "b"
+          Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
             Name: "[Ln 2, Col 11] -> [Ln 2, Col 12]"
             Self__: "[Ln 2, Col 11] -> [Ln 2, Col 12]"
       Regions__: # <class 'types.TupleExpressionParserInfoRegions'>

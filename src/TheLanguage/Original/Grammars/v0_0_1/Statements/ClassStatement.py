@@ -156,8 +156,8 @@ class ClassStatement(GrammarPhrase):
                     item=VisibilityModifier.CreatePhraseItem(),
                 ),
 
-                # <name>
-                CommonTokens.TypeName,
+                # <generic_name>
+                CommonTokens.GenericUpperName,
             ],
         )
 
@@ -212,7 +212,7 @@ class ClassStatement(GrammarPhrase):
                     ),
 
                     # <name> (class)
-                    CommonTokens.TypeName,
+                    CommonTokens.GenericUpperName,
 
                     # '('
                     "(",
@@ -309,9 +309,12 @@ class ClassStatement(GrammarPhrase):
         class_type_node = cast(AST.Node, nodes[3])
         class_type_info = cls._ExtractClassType(class_type_node)
 
-        # <name>
+        # <generic_name>
         class_name_leaf = cast(AST.Leaf, nodes[4])
         class_name_info = cast(str, ExtractToken(class_name_leaf))
+
+        if not CommonTokens.TypeNameRegex.match(class_name_info):
+            raise CommonTokens.InvalidTokenError.FromNode(class_name_leaf, class_name_info, "type")
 
         # Base Info
         base_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
@@ -475,9 +478,12 @@ class ClassStatement(GrammarPhrase):
             else:
                 visibility_info = VisibilityModifier.Extract(visibility_node)
 
-            # <name>
+            # <generic_name>
             name_leaf = cast(AST.Leaf, base_items[1])
             name_info = cast(str, ExtractToken(name_leaf))
+
+            if not CommonTokens.TypeNameRegex.match(name_info):
+                raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "type")
 
             results.append(
                 # pylint: disable=too-many-function-args

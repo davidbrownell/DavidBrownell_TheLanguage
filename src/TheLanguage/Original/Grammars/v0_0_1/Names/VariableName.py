@@ -68,7 +68,7 @@ class VariableName(GrammarPhrase):
                 # Note that this needs to be a sequence rather than just the name as this is the only
                 # way to ensure that the extraction below is invoked. If just the name, there would
                 # be nothing to tie the token to this phrase.
-                item=[CommonTokens.VariableName],
+                item=[CommonTokens.GenericLowerName],
             ),
         )
 
@@ -86,9 +86,12 @@ class VariableName(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
-        # <name>
+        # <generic_name>
         name_leaf = cast(AST.Leaf, nodes[0])
         name_info = cast(str, ExtractToken(name_leaf))
+
+        if not CommonTokens.VariableNameRegex.match(name_info):
+            raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "variable")
 
         return VariableNameParserInfo(
             CreateParserRegions(node, name_leaf),  # type: ignore

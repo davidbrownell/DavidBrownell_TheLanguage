@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpressionParserInfo.py
+# |  GenericNameExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-30 13:13:08
+# |      2021-10-11 13:01:00
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpressionParserInfo object"""
+"""Contains the GenericNameExpressionParserInfo object"""
 
 import os
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,19 +30,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo
-    from ..Common.VisitorTools import StackHelper
-    from ..Names.NameParserInfo import NameParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableExpressionParserInfo(ExpressionParserInfo):
-    Name: NameParserInfo
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
-        with StackHelper(stack)[(self, "Name")] as helper:
-            self.Name.Accept(visitor, helper.stack, *args, **kwargs)
+class GenericNameExpressionParserInfo(ExpressionParserInfo):
+    Name: str

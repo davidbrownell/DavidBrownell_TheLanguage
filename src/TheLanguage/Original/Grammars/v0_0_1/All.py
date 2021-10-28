@@ -36,8 +36,8 @@ with InitRelativeImports():
     from .Expressions.BoolLiteralExpression import BoolLiteralExpression
     from .Expressions.CastExpression import CastExpression
     from .Expressions.FuncInvocationExpression import FuncInvocationExpression
-    from .Expressions.FuncNameExpression import FuncNameExpression
     from .Expressions.GeneratorExpression import GeneratorExpression
+    from .Expressions.GenericNameExpression import GenericNameExpression
     from .Expressions.GroupExpression import GroupExpression
     from .Expressions.IndexExpression import IndexExpression
     from .Expressions.IntegerLiteralExpression import IntegerLiteralExpression
@@ -50,7 +50,6 @@ with InitRelativeImports():
     from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.TupleExpression import TupleExpression
     from .Expressions.UnaryExpression import UnaryExpression
-    from .Expressions.VariableExpression import VariableExpression
 
     # Names
     from .Names.TupleName import TupleName
@@ -99,8 +98,8 @@ GrammarPhrases                              = [
     BoolLiteralExpression(),
     CastExpression(),
     FuncInvocationExpression(),
-    FuncNameExpression(),
     GeneratorExpression(),
+    GenericNameExpression(),
     GroupExpression(),
     IndexExpression(),
     IntegerLiteralExpression(),
@@ -113,7 +112,6 @@ GrammarPhrases                              = [
     TernaryExpression(),
     TupleExpression(),
     UnaryExpression(),
-    VariableExpression(),
     # TODO: AnonymousFunction
 
     # Names

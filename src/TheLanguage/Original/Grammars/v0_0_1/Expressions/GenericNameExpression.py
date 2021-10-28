@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpression.py
+# |  FuncNameExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-30 13:14:52
+# |      2021-10-11 12:58:57
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpression object"""
+"""Contains the FuncNameExpression object"""
 
 import os
 
@@ -30,54 +30,37 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    # TODO from ..Names.TupleName import TupleName
+    from ..Common import Tokens as CommonTokens
 
     from ...GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        ExtractDynamic,
-        PhraseItem,
+        ExtractSequence,
+        ExtractToken,
     )
 
-    from ....Parser.Parser import CreateParserRegions, GetParserInfo
-    from ....Parser.Expressions.VariableExpressionParserInfo import (
-        NameParserInfo,
-        VariableExpressionParserInfo,
-    )
+    from ....Parser.Parser import CreateParserRegions
+    from ....Parser.Expressions.GenericNameExpressionParserInfo import GenericNameExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
-class VariableExpression(GrammarPhrase):
+class GenericNameExpression(GrammarPhrase):
     """\
-    A variable name.
-
-    <name>
-
-    Example:
-        foo
-        bar
-        (a, b)
+    A generic name.
     """
 
-    PHRASE_NAME                             = "Variable Expression"
+    PHRASE_NAME                             = "Generic Name Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(VariableExpression, self).__init__(
+        super(GenericNameExpression, self).__init__(
             DynamicPhrasesType.Expressions,
             CreatePhrase(
-                # <name>
-                PhraseItem.Create(
-                    name=self.PHRASE_NAME,
-                    item=DynamicPhrasesType.Names,
-
-                    # Ambiguity is introduced between this statement and TupleName without this
-                    # explicit exclusion. For example, is "(a, b, c)" a tuple name or tuple
-                    # expression? In this context, "tuple expression" is correct, so remove tuple
-                    # name as a viable candidate.
-                    # TODO: exclude=[TupleName.PHRASE_NAME],
-                ),
+                name=self.PHRASE_NAME,
+                item=[
+                    CommonTokens.GenericName,
+                ],
             ),
         )
 
@@ -92,17 +75,14 @@ class VariableExpression(GrammarPhrase):
         Callable[[], ParserInfo],
         Tuple[ParserInfo, Callable[[], ParserInfo]],
     ]:
-        # ----------------------------------------------------------------------
-        def Impl():
-            # <name>
-            name_node = ExtractDynamic(node)
-            name_info = cast(NameParserInfo, GetParserInfo(name_node))
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 1
 
-            return VariableExpressionParserInfo(
-                CreateParserRegions(node, name_node),  # type: ignore
-                name_info,
-            )
+        # <func_name>
+        func_name_leaf = cast(AST.Leaf, nodes[0])
+        func_name_info = cast(str, ExtractToken(func_name_leaf))
 
-        # ----------------------------------------------------------------------
-
-        return Impl
+        return GenericNameExpressionParserInfo(
+            CreateParserRegions(node, func_name_leaf),  # type: ignore
+            func_name_info,
+        )
