@@ -299,7 +299,7 @@ def _Extract(
 
     children: List[ParserInfo] = []
 
-    for child in node.Children:
+    for child in node.Children:  # type: ignore
         if isinstance(child, AST.Leaf):
             continue
 
