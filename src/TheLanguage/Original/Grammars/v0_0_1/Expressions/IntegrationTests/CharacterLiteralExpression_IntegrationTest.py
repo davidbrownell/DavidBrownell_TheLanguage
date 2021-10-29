@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneLiteralExpression_IntegrationTest.py
+# |  CharacterLiteralExpression_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-22 11:10:49
+# |      2021-10-28 14:51:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for NoneLiteralExpression.py"""
+"""Automated tests for CharacterLiteralExpression.py"""
 
 import os
 import textwrap
-
-import pytest
 
 import CommonEnvironment
 
@@ -31,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .....IntegrationTests import *
-    from ..NoneLiteralExpression import NoneLiteralExpression
+    from ..CharacterLiteralExpression import *
 
 
 # ----------------------------------------------------------------------
@@ -39,31 +37,9 @@ def test_Standard():
     CompareResultsFromFile(str(Execute(
         textwrap.dedent(
             """\
-            value = None
+            value1 = 'a'
+            value2 = 'B'
+            value3 = '\\''
             """,
         ),
     )))
-
-
-# ----------------------------------------------------------------------
-def test_NoneAsFuncName():
-    with pytest.raises(SyntaxInvalidError) as ex:
-        Execute(
-            textwrap.dedent(
-                """\
-                Int None(a, b, c):
-                    pass
-                """,
-            ),
-            debug_string_on_exceptions=False,
-        )
-
-    ex = ex.value
-
-    assert str(ex) == textwrap.dedent(
-        """\
-        The syntax is not recognized. [1, 5]
-
-        No statements matched this content for 'Func Invocation Statement'.
-        """,
-    )

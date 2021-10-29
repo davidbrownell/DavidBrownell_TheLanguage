@@ -63,6 +63,7 @@ with InitRelativeImports():
 
     # Literals
     from .Literals.BoolLiteralParserInfo import BoolLiteralParserInfo
+    from .Literals.CharacterLiteralParserInfo import CharacterLiteralParserInfo
     from .Literals.IntegerLiteralParserInfo import IntegerLiteralParserInfo
     from .Literals.NoneLiteralParserInfo import NoneLiteralParserInfo
     from .Literals.NumberLiteralParserInfo import NumberLiteralParserInfo
@@ -99,6 +100,7 @@ with InitRelativeImports():
     from .Statements.YieldStatementParserInfo import YieldStatementParserInfo
 
     # Types
+    from .Types.NoneTypeParserInfo import NoneTypeParserInfo
     from .Types.StandardTypeParserInfo import StandardTypeParserInfo
     from .Types.TupleTypeParserInfo import TupleTypeParserInfo
     from .Types.VariantTypeParserInfo import VariantTypeParserInfo
@@ -337,6 +339,17 @@ class Visitor(VisitorBase):
     def OnBoolLiteral(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: BoolLiteralParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnCharacterLiteral(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: CharacterLiteralParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:
@@ -684,6 +697,17 @@ class Visitor(VisitorBase):
     # |
     # |  Types
     # |
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnNoneType(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: NoneTypeParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod

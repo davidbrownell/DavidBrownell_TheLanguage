@@ -85,15 +85,15 @@ Statements:
     Name: "DefaultClass"
     Regions__: # <class 'types.ClassStatementParserInfoRegions'>
       Base: None
-      ClassModifier: "[Ln 11, Col 1] -> [Ln 14, Col 1]"
+      ClassModifier: "[Ln 11, Col 1] -> [Ln 15, Col 1]"
       ClassType: "[Ln 11, Col 1] -> [Ln 11, Col 6]"
       Documentation: None
       Implements: None
       Name: "[Ln 11, Col 7] -> [Ln 11, Col 19]"
-      Self__: "[Ln 11, Col 1] -> [Ln 14, Col 1]"
-      Statements: "[Ln 11, Col 21] -> [Ln 14, Col 1]"
+      Self__: "[Ln 11, Col 1] -> [Ln 15, Col 1]"
+      Statements: "[Ln 11, Col 21] -> [Ln 15, Col 1]"
       Uses: None
-      Visibility: "[Ln 11, Col 1] -> [Ln 14, Col 1]"
+      Visibility: "[Ln 11, Col 1] -> [Ln 15, Col 1]"
     Statements:
       - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
@@ -133,15 +133,15 @@ Statements:
     Name: "DefaultException"
     Regions__: # <class 'types.ClassStatementParserInfoRegions'>
       Base: None
-      ClassModifier: "[Ln 18, Col 1] -> [Ln 21, Col 1]"
+      ClassModifier: "[Ln 18, Col 1] -> [Ln 22, Col 1]"
       ClassType: "[Ln 18, Col 1] -> [Ln 18, Col 10]"
       Documentation: None
       Implements: None
       Name: "[Ln 18, Col 11] -> [Ln 18, Col 27]"
-      Self__: "[Ln 18, Col 1] -> [Ln 21, Col 1]"
-      Statements: "[Ln 18, Col 29] -> [Ln 21, Col 1]"
+      Self__: "[Ln 18, Col 1] -> [Ln 22, Col 1]"
+      Statements: "[Ln 18, Col 29] -> [Ln 22, Col 1]"
       Uses: None
-      Visibility: "[Ln 18, Col 1] -> [Ln 21, Col 1]"
+      Visibility: "[Ln 18, Col 1] -> [Ln 22, Col 1]"
     Statements:
       - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>

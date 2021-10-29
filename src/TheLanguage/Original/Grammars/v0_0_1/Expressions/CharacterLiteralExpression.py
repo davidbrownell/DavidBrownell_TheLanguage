@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneLiteralExpression.py
+# |  CharacterLiteralExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-22 11:01:16
+# |      2021-10-28 14:45:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NoneLiteralExpression object"""
+"""Contains the CharacterLiteralExpression object"""
 
 import os
 import re
 
-from typing import Callable, Tuple, Union
+from typing import Callable, cast, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -38,33 +38,42 @@ with InitRelativeImports():
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
         ExtractSequence,
+        ExtractToken,
     )
 
     from ....Parser.Parser import CreateParserRegions
 
-    from ....Parser.Literals.NoneLiteralParserInfo import NoneLiteralParserInfo
+    from ....Parser.Literals.CharacterLiteralParserInfo import CharacterLiteralParserInfo
 
 
 # ----------------------------------------------------------------------
-class NoneLiteralExpression(GrammarPhrase):
+class CharacterLiteralExpression(GrammarPhrase):
     """\
-    None.
+    A single character.
+
+    '<char>'
 
     Examples:
-        None
+        'a'
+        'A'
     """
 
-    PHRASE_NAME                             = "None Literal Expression"
+    # TODO: Allow for unicode chars
+
+    PHRASE_NAME                             = "Character Literal Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(NoneLiteralExpression, self).__init__(
+        super(CharacterLiteralExpression, self).__init__(
             DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
-                    RegexToken("'None'", re.compile(r"None\b")),
+                    RegexToken(
+                        "<char>",
+                        re.compile(r"'(?P<value>(?:\\'|[^']))'"),
+                    ),
                 ],
             ),
         )
@@ -83,6 +92,13 @@ class NoneLiteralExpression(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
-        return NoneLiteralParserInfo(
+        # <char>
+        char_node = cast(AST.Leaf, nodes[0])
+        char_info = cast(str, ExtractToken(char_node))
+
+        char_info = char_info.replace(r"\'", "'")
+
+        return CharacterLiteralParserInfo(
             CreateParserRegions(node),  # type: ignore
+            char_info,
         )

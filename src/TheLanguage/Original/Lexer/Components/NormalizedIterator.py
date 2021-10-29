@@ -37,7 +37,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-def NormalizedIteratorCopyOnWrite(method):
+def NormalizedIteratorCopyOnWriteDecorator(method):
     # ----------------------------------------------------------------------
     def CopyOnWrite(self, *args, **kwargs):
         if not self._own_impl:
@@ -185,7 +185,7 @@ class NormalizedIterator(object):
         return self._impl.IsBlankLine()
 
     # ----------------------------------------------------------------------
-    @NormalizedIteratorCopyOnWrite
+    @NormalizedIteratorCopyOnWriteDecorator
     def ConsumeDedent(self) -> None:
         if not self._own_impl:
             self._impl = self._impl.Clone()
@@ -194,25 +194,25 @@ class NormalizedIterator(object):
         self._impl.ConsumeDedent()
 
     # ----------------------------------------------------------------------
-    @NormalizedIteratorCopyOnWrite
+    @NormalizedIteratorCopyOnWriteDecorator
     def SkipLine(self) -> "NormalizedIterator":
         self._impl.SkipLine()
         return self
 
     # ----------------------------------------------------------------------
-    @NormalizedIteratorCopyOnWrite
+    @NormalizedIteratorCopyOnWriteDecorator
     def SkipWhitespacePrefix(self) -> "NormalizedIterator":
         self._impl.SkipWhitespacePrefix()
         return self
 
     # ----------------------------------------------------------------------
-    @NormalizedIteratorCopyOnWrite
+    @NormalizedIteratorCopyOnWriteDecorator
     def SkipWhitespaceSuffix(self) -> "NormalizedIterator":
         self._impl.SkipWhitespaceSuffix()
         return self
 
     # ----------------------------------------------------------------------
-    @NormalizedIteratorCopyOnWrite
+    @NormalizedIteratorCopyOnWriteDecorator
     def Advance(
         self,
         delta: int,

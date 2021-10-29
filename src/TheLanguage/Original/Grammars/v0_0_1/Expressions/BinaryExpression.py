@@ -76,6 +76,7 @@ class BinaryExpression(GrammarPhrase):
         # Function Invocation
         ".": OperatorType.ChainedFunc,
         "->": OperatorType.ChainedFuncReturnSelf,
+        "::": OperatorType.StaticAccessor,
 
         # Comparison
         "<": OperatorType.Less,

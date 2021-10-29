@@ -48,6 +48,7 @@ class OperatorType(Enum):
     # Function Invocation
     ChainedFunc                             = auto()
     ChainedFuncReturnSelf                   = auto()
+    StaticAccessor                          = auto()
 
     # Comparison
     Less                                    = auto()

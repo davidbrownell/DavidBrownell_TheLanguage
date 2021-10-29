@@ -34,7 +34,9 @@ Statements:
       Regions__: # <class 'types.VariantTypeParserInfoRegions'>
         Self__: "[Ln 1, Col 1] -> [Ln 1, Col 13]"
       Types:
-        - None
+        - # <class 'Original.Parser.Types.NoneTypeParserInfo.NoneTypeParserInfo'>
+          Regions__: # <class 'types.NoneTypeParserInfoRegions'>
+            Self__: "[Ln 1, Col 2] -> [Ln 1, Col 6]"
         - # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>
@@ -84,7 +86,9 @@ Statements:
             Self__: "[Ln 2, Col 2] -> [Ln 2, Col 5]"
             TypeName: "[Ln 2, Col 2] -> [Ln 2, Col 5]"
           TypeName: "Int"
-        - None
+        - # <class 'Original.Parser.Types.NoneTypeParserInfo.NoneTypeParserInfo'>
+          Regions__: # <class 'types.NoneTypeParserInfoRegions'>
+            Self__: "[Ln 2, Col 8] -> [Ln 2, Col 12]"
     Statements:
       - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
         Regions__: # <class 'types.NoopStatementParserInfoRegions'>
@@ -127,7 +131,9 @@ Statements:
             Self__: "[Ln 3, Col 2] -> [Ln 3, Col 5]"
             TypeName: "[Ln 3, Col 2] -> [Ln 3, Col 5]"
           TypeName: "Int"
-        - None
+        - # <class 'Original.Parser.Types.NoneTypeParserInfo.NoneTypeParserInfo'>
+          Regions__: # <class 'types.NoneTypeParserInfoRegions'>
+            Self__: "[Ln 3, Col 8] -> [Ln 3, Col 12]"
         - # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>

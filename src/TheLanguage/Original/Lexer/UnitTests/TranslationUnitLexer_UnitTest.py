@@ -121,7 +121,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [3, 1]
 
-            '{([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+]), 2, 4}' was expected.
+            '{([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+]), 2, 4}' was expected for 'Phrase'.
             """,
         )
 
@@ -152,7 +152,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [2, 9]
 
-            'Newline+' was expected in '[Lower, Newline+]'.
+            'Newline+' was expected in '[Lower, Newline+]' for '([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+])'.
             """,
         )
 
@@ -185,7 +185,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [4, 1]
 
-            '([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+])' was evaluated but not matched; therefore 'Dedent' was expected in 'Phrase'.
+            '([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+])' was evaluated but not matched; therefore 'Dedent' was expected in 'Phrase' for '(Phrase) Statement'.
             """,
         )
 
@@ -218,7 +218,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [4, 11]
 
-            'Newline+' was expected in '[Lower, Newline+]' for 'Phrase'.
+            'Newline+' was expected in '[Lower, Newline+]' for '([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+])'.
             """,
         )
 
@@ -251,7 +251,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [4, 7]
 
-            'Newline+' was expected in '[Number, Newline+]' for 'Phrase'.
+            'Newline+' was expected in '[Number, Newline+]' for '([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+])'.
             """,
         )
 
@@ -313,7 +313,7 @@ class TestSyntaxInvalidError(object):
             """\
             The syntax is not recognized. [2, 5]
 
-            '{([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+]), 2, 4}' was expected in 'Phrase'.
+            '{([Upper, Newline+] | [Lower, Newline+] | [Number, Newline+]), 2, 4}' was expected in 'Phrase' for '(Phrase) Statement'.
             """,
         )
 
@@ -496,6 +496,159 @@ class TestInterestingWhitespace(object):
                         # Comment 1
                     # Comment 2
                     another
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+
+# ----------------------------------------------------------------------
+class TestIndentAndComments(object):
+    _phrase                                 = CreatePhrase(
+        name="Phrase",
+        item=OneOrMorePhraseItem(
+            [
+                _lower_token,
+                ":",
+                NewlineToken(),
+                IndentToken(),
+                OneOrMorePhraseItem.Create(
+                    [_upper_token, NewlineToken()],
+                ),
+                DedentToken(),
+            ],
+        ),
+    )
+
+    _dynamic_phrases                        = DynamicPhrasesInfo({DynamicPhrasesType.Statements: [_phrase]})
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_DedentedComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower:
+                        UPPER1
+                    # Comment 1
+                        UPPER2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_DedentedStartComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower:
+                    # Comment1
+                        UPPER1
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_DedentedEndComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower1:
+                        UPPER1
+
+                    # Comment 1
+
+                    lower2:
+                        UPPER2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_IndentedComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower:
+                        UPPER1
+                            # Comment 1
+                        UPPER2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_IndentedStartComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower:
+                            # Comment1
+                        UPPER1
+                    """,
+                ),
+            ),
+            parse_mock,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_IndentedEndComment(self, parse_mock):
+        result = await LexAsync(
+            DefaultCommentToken,
+            self._dynamic_phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    lower1:
+                        UPPER1
+
+                            # Comment 1
+
+
+
+                    lower2:
+                        UPPER2
                     """,
                 ),
             ),

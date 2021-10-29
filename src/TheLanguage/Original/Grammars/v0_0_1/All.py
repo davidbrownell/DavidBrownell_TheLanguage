@@ -35,6 +35,7 @@ with InitRelativeImports():
     from .Expressions.BinaryExpression import BinaryExpression
     from .Expressions.BoolLiteralExpression import BoolLiteralExpression
     from .Expressions.CastExpression import CastExpression
+    from .Expressions.CharacterLiteralExpression import CharacterLiteralExpression
     from .Expressions.FuncInvocationExpression import FuncInvocationExpression
     from .Expressions.GeneratorExpression import GeneratorExpression
     from .Expressions.GenericNameExpression import GenericNameExpression
@@ -80,6 +81,7 @@ with InitRelativeImports():
     from .Statements.YieldStatement import YieldStatement
 
     # Types
+    from .Types.NoneType import NoneType
     from .Types.StandardType import StandardType
     from .Types.TupleType import TupleType
     from .Types.VariantType import VariantType
@@ -97,6 +99,7 @@ GrammarPhrases                              = [
     BinaryExpression(),
     BoolLiteralExpression(),
     CastExpression(),
+    CharacterLiteralExpression(),
     FuncInvocationExpression(),
     GeneratorExpression(),
     GenericNameExpression(),
@@ -144,6 +147,7 @@ GrammarPhrases                              = [
     # TODO: CompilerStatement
 
     # Types
+    NoneType(),
     StandardType(),
     TupleType(),
     VariantType(),

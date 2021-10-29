@@ -200,6 +200,8 @@ class ClassStatement(GrammarPhrase):
                     ),
 
                     # <class_modifier>?
+                    # TODO: Add 'static' and 'deferred' here; ensure those values are used in parser_info
+                    # TODO: 'static' and 'deferred' should fall before the class name; 'immutable' and 'mutable' should be after
                     OptionalPhraseItem.Create(
                         name="Class Modifier",
                         item=ClassModifier.CreatePhraseItem(),

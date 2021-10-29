@@ -2,7 +2,7 @@
 Documentation: None
 Regions__: # <class 'types.RootParserInfoRegions'>
   Documentation: None
-  Self__: "[Ln 1, Col 1] -> [Ln 22, Col 1]"
+  Self__: "[Ln 1, Col 1] -> [Ln 25, Col 1]"
 Statements:
   - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     Base: None
@@ -13,15 +13,15 @@ Statements:
     Name: "Foo"
     Regions__: # <class 'types.ClassStatementParserInfoRegions'>
       Base: None
-      ClassModifier: "[Ln 1, Col 1] -> [Ln 22, Col 1]"
+      ClassModifier: "[Ln 1, Col 1] -> [Ln 25, Col 1]"
       ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
       Documentation: None
       Implements: None
       Name: "[Ln 1, Col 7] -> [Ln 1, Col 10]"
-      Self__: "[Ln 1, Col 1] -> [Ln 22, Col 1]"
-      Statements: "[Ln 1, Col 12] -> [Ln 22, Col 1]"
+      Self__: "[Ln 1, Col 1] -> [Ln 25, Col 1]"
+      Statements: "[Ln 1, Col 12] -> [Ln 25, Col 1]"
       Uses: None
-      Visibility: "[Ln 1, Col 1] -> [Ln 22, Col 1]"
+      Visibility: "[Ln 1, Col 1] -> [Ln 25, Col 1]"
     Statements:
       - # <class 'Original.Parser.Statements.FuncDefinitionStatementParserInfo.FuncDefinitionStatementParserInfo'>
         ClassModifier: "ClassModifier.immutable"
@@ -260,20 +260,20 @@ Statements:
         Name: "DefaultMethod"
         Parameters: False
         Regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
-          ClassModifier: "[Ln 19, Col 5] -> [Ln 22, Col 1]"
+          ClassModifier: "[Ln 19, Col 5] -> [Ln 25, Col 1]"
           Documentation: None
           IsAsync: None
           IsDeferred: None
           IsExceptional: None
           IsGenerator: None
           IsSynchronized: None
-          MethodModifier: "[Ln 19, Col 5] -> [Ln 22, Col 1]"
+          MethodModifier: "[Ln 19, Col 5] -> [Ln 25, Col 1]"
           Name: "[Ln 19, Col 9] -> [Ln 19, Col 22]"
           Parameters: "[Ln 19, Col 22] -> [Ln 19, Col 24]"
           ReturnType: "[Ln 19, Col 5] -> [Ln 19, Col 8]"
-          Self__: "[Ln 19, Col 5] -> [Ln 22, Col 1]"
-          Statements: "[Ln 19, Col 24] -> [Ln 22, Col 1]"
-          Visibility: "[Ln 19, Col 5] -> [Ln 22, Col 1]"
+          Self__: "[Ln 19, Col 5] -> [Ln 25, Col 1]"
+          Statements: "[Ln 19, Col 24] -> [Ln 25, Col 1]"
+          Visibility: "[Ln 19, Col 5] -> [Ln 25, Col 1]"
         ReturnType: # <class 'Original.Parser.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           Modifier: None
           Regions__: # <class 'types.StandardTypeParserInfoRegions'>

@@ -153,6 +153,8 @@ class PythonVisitor(Visitor):
             self._stream.write(".")
         elif parser_info.Operator == BinaryExpressionOperatorType.ChainedFuncReturnSelf:
             assert False, "TODO"
+        elif parser_info.Operator == BinaryExpressionOperatorType.StaticAccessor:
+            assert False, "TODO"
         elif parser_info.Operator == BinaryExpressionOperatorType.Less:
             self._stream.write(" < ")
         elif parser_info.Operator == BinaryExpressionOperatorType.LessEqual:
@@ -407,6 +409,15 @@ class PythonVisitor(Visitor):
         parser_info: BoolLiteralParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
         self._stream.write(str(parser_info.Value))
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnCharacterLiteral(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: CharacterLiteralParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        self._stream.write('"{}"'.format(parser_info.Value.replace('"', '\\"')))
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -807,6 +818,16 @@ class PythonVisitor(Visitor):
     # |
     # |  Types
     # |
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnNoneType(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: NoneTypeParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        # Nothing to do for types
+        return False
+
     # ----------------------------------------------------------------------
     @Interface.override
     def OnStandardType(
